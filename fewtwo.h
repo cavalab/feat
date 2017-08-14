@@ -4,10 +4,13 @@ license: GNU/GPL v3
 */
 
 #include <iostream>
-#include "Eigen/Dense.h"
+#include <vector>
+#include <Eigen/Dense>
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
-using namespace std;
+
+using std::vector;
+#include "population.h"
 
 class Fewtwo {
     /* main class for the Fewtwo learner.
@@ -31,10 +34,10 @@ public :
     
 
     
-	void Fewtwo(){
+	Fewtwo(){
         // initialization routine.
     }
-	void ~Fewtwo(){}
+	~Fewtwo(){}
     
     void fit(MatrixXd& X, VectorXd& y){
         // train a model. 
@@ -61,6 +64,6 @@ public :
     }
     
 
-}
+};
 
 
