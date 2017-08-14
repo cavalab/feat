@@ -3,14 +3,21 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 
+//external includes
 #include <iostream>
 #include <vector>
 #include <Eigen/Dense>
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
 
+// stuff being used
+using Eigen::MatrixXd;
 using std::vector;
+using std::string;
+
+// internal includes
 #include "population.h"
+#include "selection.h"
+#include "evaluation.h"
+#include "variation.h"
 
 namespace f2{
     class Fewtwo {
@@ -23,23 +30,25 @@ namespace f2{
         transformations. 
         */
     public : 
-        int pop_size; // popsize
-        int gens; // number of generations
-        //string selection; // 
-        string ml; 
-        vector<Individual> pop; // population
-        MatrixXd F; // matrix of fitness values for population
-        float cross_ratio; // ratio of crossover to mutation. 
-        int max_stall; // termination criterion if best model does not improve for max_stall 
-                       // generations. 0 means not to use
-        bool classification; // whether to conduct classification
+        //////////////////////////////////////////////////////////////////////////////// Parameters
+        int pop_size;           // popsize
+        int gens;               // number of generations
+        string ml;              // machine learner with which Fewtwo is paired 
+        //vector<Individual> pop; // population
+        MatrixXd F;             // matrix of fitness values for population
+        float cross_ratio;      // ratio of crossover to mutation. 
+        int max_stall;          // termination criterion if best model does not improve for 
+                                // max_stall generations. 0 means not to use
+        bool classification;    // whether to conduct classification
+        
         // subclasses for main steps of the evolutionary computation routine
-        Population pop;
-        Selection selection;
-        Evaluation evaluation;
-        Variation variaton;
-        Selection survival;
+        Population pop;         // population of programs
+        Selection selection;    // selection algorithm
+        Evaluation evaluation;  // evaluation code
+        Variation variaton;     // variation operators
+        Selection survival;     // survival algorithm
 
+        /////////////////////////////////////////////////////////////////////////////////// Methods 
         Fewtwo(): pop_size(100),
                   gens(100),
                   ml("RidgeRegression"),
@@ -72,7 +81,7 @@ namespace f2{
             initial_model(X,y,estimator);
 
             // initialize population 
-            pop.init();
+            pop.init(pop_size);
 
             // resize F to be twice the pop-size x number of samples
             F.resize(2*pop_size,X.rows());
@@ -82,7 +91,7 @@ namespace f2{
             
             vector<size_t> survivors;
 
-            ////////////////////////////////////////////////////////////// main generational loop
+            // main generational loop
             for (size_t g = 0; g<gens; ++g)
             {
 
