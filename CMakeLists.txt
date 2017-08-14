@@ -8,11 +8,11 @@ cmake_minimum_required (VERSION 3.0)
 # project name
 project(Fewtwo)
 
-#add Eigen include paths
+# add Eigen include paths
 find_package(Eigen3 REQUIRED NO_MODULE)
 include_directories(${EIGEN3_INCLUDE_DIR})
 
-#autocomplete for YouCompleteMe needs commands to be exported
+# autocomplete for YouCompleteMe needs commands to be exported
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # executable
