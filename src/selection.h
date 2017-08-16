@@ -11,6 +11,7 @@ using std::cerr;
 
 namespace FT{
     struct Parameters; // forward declaration of Parameters       
+    ////////////////////////////////////////////////////////////////////////////////// Declarations
 
     struct SelectionOperator 
     {
@@ -73,5 +74,7 @@ namespace FT{
             return pselector->select(F, p);
         };
     };
+
+    /////////////////////////////////////////////////////////////////////////////////// Definitions
 }
 #endif

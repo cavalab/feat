@@ -45,9 +45,9 @@ namespace FT{
             // member initializer list constructor
             Fewtwo(int pop_size=100, int gens = 100, string ml = "RidgeRegression", 
                    bool classification = false, float cross_ratio = 0.5, int max_stall = 0,
-                   string sel ="lexicase", string surv="pareto"): 
+                   string sel ="lexicase", string surv="pareto", char otype='f'): 
                       // construct subclasses
-                      params(pop_size, gens, ml, classification, cross_ratio, max_stall),      
+                      params(pop_size, gens, ml, classification, cross_ratio, max_stall, otype),      
                       p_pop(new Population),
                       p_sel(new Selection(sel)),
                       p_surv(new Selection(surv,true)),
@@ -88,6 +88,8 @@ namespace FT{
             void initial_model(const MatrixXd& X, const VectorXd& y);
     };
 
+    //////////////////////////////////////////////////////////////////////////// Fewtwo Definitions
+    
     // train a model
     void Fewtwo::fit(const MatrixXd& X, const VectorXd& y){
         // Parameters:
@@ -139,5 +141,6 @@ namespace FT{
             p_pop->update(survivors);
         }
     }
+   
 }
 #endif

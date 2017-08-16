@@ -16,14 +16,16 @@ namespace FT{
         bool classification;    // flag to conduct classification rather than regression
         float cross_ratio;      // fraction of crossover for variation
         int max_stall;          // maximum stall in learning (termination criterion) in generations
+        char otype; 
 
         Parameters(int pop_size, int gens, string& ml, bool classification, float cross_ratio, 
-                   int max_stall): pop_size(pop_size),
+                   int max_stall, char otype): pop_size(pop_size),
                                    gens(gens),
                                    ml(ml),
                                    classification(classification),
                                    cross_ratio(cross_ratio),
-                                   max_stall(max_stall)
+                                   max_stall(max_stall),
+                                   otype(otype)
         {};
         ~Parameters();
     };
