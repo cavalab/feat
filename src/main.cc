@@ -1,4 +1,5 @@
 #include "fewtwo.h"
+using FT::Fewtwo;
 
 int main(int argc, char** argv){
     // runs FEWTWO from the command line. 
