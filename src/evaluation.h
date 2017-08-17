@@ -5,6 +5,22 @@ license: GNU/GPL v3
 #ifndef EVALUATION_H
 #define EVALUATION_H
 
+// external includes
+#include <shogun/machine/Machine.h>
+#include <shogun/base/some.h>                                                                       
+#include <shogun/base/init.h>                                                                       
+#include <shogun/lib/common.h>                                                                      
+#include <shogun/labels/RegressionLabels.h>                                                         
+#include <shogun/features/Features.h>                                                               
+//#include <shogun/preprocessor/PruneVarSubMean.h>        
+#include <shogun/preprocessor/NormOne.h>        
+
+// internal includes
+#include "ml.h"
+
+using namespace shogun;
+using Eigen::Map;
+
 // code to evaluate GP programs.
 namespace FT{
     
@@ -20,11 +36,12 @@ namespace FT{
             ~Evaluation(){}
                 
             // fitness of population.
-            void fitness(Population& pop, const MatrixXd& X, const VectorXd& y, MatrixXd& F, 
+            void fitness(Population& pop, const MatrixXd& X, VectorXd& y, MatrixXd& F, 
                          const Parameters& params);
 
             // output of an ml model. 
-            VectorXd out_ml(const MatrixXd& Phi, const VectorXd& y, const Parameters& params);
+            VectorXd out_ml(MatrixXd& Phi, VectorXd& y, const Parameters& params,
+                            std::shared_ptr<ML> ml = nullptr);
 
             // assign fitness to an individual and to F. 
             void assign_fit(Individual& ind, MatrixXd& F, const VectorXd& yhat, const VectorXd& y,
@@ -38,7 +55,7 @@ namespace FT{
     /////////////////////////////////////////////////////////////////////////////// Definitions  
     
     // fitness of population
-    void Evaluation::fitness(Population& pop, const MatrixXd& X, const VectorXd& y, MatrixXd& F, 
+    void Evaluation::fitness(Population& pop, const MatrixXd& X, VectorXd& y, MatrixXd& F, 
                  const Parameters& p)
     {
         // Input:
@@ -73,8 +90,44 @@ namespace FT{
     
 
     // train ML model and generate output
-    VectorXd Evaluation::out_ml(const MatrixXd& Phi, const VectorXd& y,const Parameters& params)
+    VectorXd Evaluation::out_ml(MatrixXd& X, VectorXd& y, const Parameters& params,
+                                std::shared_ptr<ML> ml)
     {
+        if (ml == nullptr)      // make new ML estimator if one is not provided 
+        {
+            ml = std::make_shared<ML>(params.ml);
+        }
+
+        // initialize shogun
+        init_shogun_with_defaults();
+
+        // define shogun data
+        auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
+        auto labels = some<CRegressionLabels>(SGVector<float64_t>(y));
+
+        // preprocess features
+        auto Normalize = some<CNormOne>();
+        Normalize->init(features);
+        Normalize->apply_to_feature_matrix(features);
+
+        // pass data to ml
+        //ml->p_est->set_features(features);
+        ml->p_est->set_labels(labels);
+
+        // train ml
+        ml->p_est->train(features);
+
+        //get output
+        auto y_pred = ml->p_est->apply_regression(features)->get_labels();
+
+        // map to Eigen vector
+        Map<VectorXd> yhat(y_pred.data(),y_pred.data()+y_pred.size());
+        
+        // exit shogun
+        exit_shogun();
+
+        // return
+        return yhat;
     }
     
     // assign fitness to program

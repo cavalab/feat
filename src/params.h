@@ -25,9 +25,9 @@ namespace FT{
                                    classification(classification),
                                    cross_ratio(cross_ratio),
                                    max_stall(max_stall),
-                                   otype(otype)
-        {};
-        ~Parameters();
+                                   otype(otype){}
+        
+        ~Parameters(){}
     };
 }
 #endif

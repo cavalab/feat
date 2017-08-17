@@ -17,6 +17,7 @@ using Eigen::VectorXd;
 using std::vector;
 using std::string;
 using std::shared_ptr;
+using std::make_shared;
 using std::cout; 
 
 // internal includes
@@ -25,6 +26,7 @@ using std::cout;
 #include "selection.h"
 #include "evaluation.h"
 #include "variation.h"
+#include "ml.h"
 
 namespace FT{
     
@@ -48,15 +50,16 @@ namespace FT{
                    string sel ="lexicase", string surv="pareto", char otype='f'): 
                       // construct subclasses
                       params(pop_size, gens, ml, classification, cross_ratio, max_stall, otype),      
-                      p_pop(new Population),
-                      p_sel(new Selection(sel)),
-                      p_surv(new Selection(surv,true)),
-                      p_eval(new Evaluation()),
-                      p_variation(new Variation())
+                      p_pop( make_shared<Population>() ),
+                      p_sel( make_shared<Selection>(sel) ),
+                      p_surv( make_shared<Selection>(surv,true) ),
+                      p_eval( make_shared<Evaluation>() ),
+                      p_variation( make_shared<Variation>() ),
+                      p_ml( make_shared<ML>(ml) )
             {};           
 
             // destructor
-            ~Fewtwo(); 
+            ~Fewtwo(){} 
             
             // train a model.
             void fit(const MatrixXd& X, const VectorXd& y);
@@ -82,30 +85,32 @@ namespace FT{
             shared_ptr<Evaluation> p_eval;      // evaluation code
             shared_ptr<Variation> p_variation;  // variation operators
             shared_ptr<Selection> p_surv;       // survival algorithm
-            //shared_ptr<CMachine> p_est;       // pointer to estimator
+            shared_ptr<ML> p_ml;                // pointer to machine learning class
             // private methods
             // method to finit inital ml model
             void initial_model(const MatrixXd& X, const VectorXd& y);
     };
 
-    //////////////////////////////////////////////////////////////////////////// Fewtwo Definitions
+    /////////////////////////////////////////////////////////////////////////////////// Definitions
     
-    // train a model
     void Fewtwo::fit(const MatrixXd& X, const VectorXd& y){
-        // Parameters:
-        //      X: MatrixXd of features
-        //      y: VectorXd of labels 
-        // Output:
-        //      updates best_estimator, hof
-        //
-        // steps:
-        //  1. fit model yhat = f(X)
-        //  2. generate transformations Phi(X) for each individual
-        //  3. fit model yhat_new = f( Phi(X)) for each individual
-        //  4. evaluate features
-        //  5. selection parents
-        //  6. produce offspring from parents via variation
-        //  7. select surviving individuals from parents and offspring
+        /*  trains a fewtwo model. 
+
+            Parameters:
+                X: MatrixXd of features
+                y: VectorXd of labels 
+            Output:
+                updates best_estimator, hof
+        
+            steps:
+            1. fit model yhat = f(X)
+            2. generate transformations Phi(X) for each individual
+            3. fit model yhat_new = f( Phi(X)) for each individual
+            4. evaluate features
+            5. selection parents
+            6. produce offspring from parents via variation
+            7. select surviving individuals from parents and offspring
+        */
         
         // initial model on raw input
         initial_model(X,y);
@@ -141,6 +146,15 @@ namespace FT{
             p_pop->update(survivors);
         }
     }
+
+    void Fewtwo::initial_model(const MatrixXd& X, const VectorXd& y)
+    {
+        /* fits an ML model to the raw data as a starting point. 
+         */
+        // 
+        VectorXd yhat = p_eval->out_ml(X,y,params,p_ml);
+    }
+
    
 }
 #endif
