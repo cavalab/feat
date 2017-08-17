@@ -18,18 +18,22 @@ namespace FT{
 
         public:
             //constructor
-            Variation(){}
+            Variation(float cr){cross_ratio=cr;}
+            
             //destructor
             ~Variation(){}
+
             //method to handle variation of population
             void vary(Population& pop, const vector<size_t> parents, const Parameters& params);
             
         private:
             // crossover 
-            void crossover(const Individual& mom, const Individual& dad, Individual& child);
+            void cross(const Individual& mom, const Individual& dad, Individual& child);
 
             // mutation
-            void mutation(const Individual& mom, Individual& child);
+            void mutate(const Individual& mom, Individual& child);
+            
+            float cross_ratio;     // ratio of crossover in total variation
     };
 
 
@@ -46,27 +50,29 @@ namespace FT{
          * Output:
          *      pop: appends params.pop_size offspring derived from parent variation
          */
+        
+        Individual child;
 
         for (auto ind : pop.individuals)
         {
             float rand;
-            if ( rand < 0.5)    // mutation
-            {
-
-                // get random mom 
-                // create child
-                // push child into pop
-            }
-            else                // crossover
+            if ( rand < cross_ratio)    // crossover
             {
                 // get random mom and dad 
                 // create child
-                // push child into pop
+                
             }
+            else                // mutation
+            {
+                // get random mom 
+                // create child
+                
+            }
+            //push child into pop
         }
     }
 
-    void Variation::mutation(const Individual& mom, Individual& child)
+    void Variation::mutate(const Individual& mom, Individual& child)
     {
         /* 1/n point mutation
          * 
@@ -78,7 +84,7 @@ namespace FT{
 
     }
 
-    void Variation::crossover(const Individual& mom, const Individual& dad, Individual& child)
+    void Variation::cross(const Individual& mom, const Individual& dad, Individual& child)
     {
         /* subtree crossover
          *

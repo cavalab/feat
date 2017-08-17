@@ -14,20 +14,29 @@ namespace FT{
         int gens;               // max generations
         string ml;              // machine learner with which Fewtwo is paired
         bool classification;    // flag to conduct classification rather than regression
-        float cross_ratio;      // fraction of crossover for variation
         int max_stall;          // maximum stall in learning (termination criterion) in generations
-        char otype; 
+        char otype;             // output type of the programs ('f': float, 'b': boolean)
+        int verbosity;          // amount of printing. 0: none, 1: minimal, 2: all
 
-        Parameters(int pop_size, int gens, string& ml, bool classification, float cross_ratio, 
-                   int max_stall, char otype): pop_size(pop_size),
-                                   gens(gens),
-                                   ml(ml),
-                                   classification(classification),
-                                   cross_ratio(cross_ratio),
-                                   max_stall(max_stall),
-                                   otype(otype){}
+        Parameters(int pop_size, int gens, string& ml, bool classification, int max_stall, 
+                   char otype, int vebosity):    
+            pop_size(pop_size),
+            gens(gens),
+            ml(ml),
+            classification(classification),
+            max_stall(max_stall),
+            otype(otype), 
+            verbosity(verbosity){}
         
         ~Parameters(){}
+        
+        void msg(string m, int v)
+        {
+            /* prints messages based on verbosity level. */
+
+            if (verbosity >= v)
+                std::cout << m << "...\n";
+        }
     };
 }
 #endif

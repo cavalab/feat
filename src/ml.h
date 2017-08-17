@@ -6,6 +6,7 @@ license: GNU/GPL v3
 #define ML_H
 
 //external includes
+#include <shogun/base/init.h>
 #include <shogun/machine/Machine.h>
 #include <shogun/regression/LeastAngleRegression.h>
 #include <shogun/regression/LinearRidgeRegression.h>
@@ -26,9 +27,11 @@ namespace FT{
 
         public:
         
-            ML(string ml)
+            ML(string ml, bool init=true)
             {
                 /* use string to specify a desired ML algorithm from shogun. */
+                                
+                if (init) sh::init_shogun_with_defaults();  // initialize shogun if needed
 
                 if (!ml.compare("LeastAngleRegression"))
                     p_est = make_shared<sh::CLeastAngleRegression>();
@@ -47,7 +50,7 @@ namespace FT{
                 
             }
         
-            ~ML(){}
+            ~ML(){ sh::exit_shogun(); }
 
       
             shared_ptr<sh::CMachine> p_est;

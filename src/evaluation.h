@@ -70,7 +70,7 @@ namespace FT{
         
         
         // loop through individuals
-        for (auto ind : pop.individuals)
+        for (auto& ind : pop.individuals)
         {
             // calculate program output matrix Phi
             MatrixXd Phi = ind.out(X, y, p);
@@ -97,34 +97,53 @@ namespace FT{
         {
             ml = std::make_shared<ML>(params.ml);
         }
-
-        // initialize shogun
-        init_shogun_with_defaults();
+               
 
         // define shogun data
+        
+        X.transposeInPlace();
+
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
         auto labels = some<CRegressionLabels>(SGVector<float64_t>(y));
+        std::cout << "features and labels defined\n";
+
+        cout << "number of samples:" <<  (*features).get_num_vectors() <<"\n"; 
+        cout << "number of features:" << (*features).get_num_features() <<"\n";
+        cout << "number of labels:" << (*labels).get_labels().size() << "\n";     
 
         // preprocess features
         auto Normalize = some<CNormOne>();
         Normalize->init(features);
         Normalize->apply_to_feature_matrix(features);
+        std::cout << "features normalized\n";
 
         // pass data to ml
         //ml->p_est->set_features(features);
         ml->p_est->set_labels(labels);
+        std::cout << "ml labels set\n";
 
         // train ml
         ml->p_est->train(features);
+        std::cout << "ml model trained\n";
 
         //get output
         auto y_pred = ml->p_est->apply_regression(features)->get_labels();
+        std::cout << "prediction generated\n";
 
         // map to Eigen vector
-        Map<VectorXd> yhat(y_pred.data(),y_pred.data()+y_pred.size());
+        Map<VectorXd> yhat(y_pred.data(),y_pred.size());
+        std::cout << "mapped to eigen matrix\n";
         
         // exit shogun
-        exit_shogun();
+        //exit_shogun();
+
+        cout << "y true: ";
+        for (size_t i = 0; i<y.size(); ++i) cout << y(i) << " ";
+        cout << "\n";
+
+        cout << "y_pred: ";
+        for (size_t i = 0; i<y_pred.size(); ++i) cout << y_pred[i] << " ";
+        cout << "\n";
 
         // return
         return yhat;

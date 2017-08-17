@@ -8,6 +8,7 @@ license: GNU/GPL v3
 #include "node.h" // including node.h since definition of node is in the header
 using std::vector;
 using std::string;
+using Eigen::Map;
 
 namespace FT{    
     ////////////////////////////////////////////////////////////////////////////////// Declarations
@@ -26,10 +27,10 @@ namespace FT{
         ~Individual(){}
 
         // calculate program output matrix Phi
-        MatrixXd out(const MatrixXd& X, const VectorXd& y, const Parameters& p);
+        MatrixXd out(const MatrixXd& X, const VectorXd& y, const Parameters& params);
 
         // return symbolic representation of program
-        string get_eqn(const Parameters& p);
+        string get_eqn(const Parameters& params);
         
     };
 
@@ -40,33 +41,42 @@ namespace FT{
 
         Population(){}
         ~Population(){}
-
-        void init(const Parameters& params)
-        {
-            // initialize population of programs. 
-        }
-        void update(vector<size_t> survivors)
-        {
-            // reduce programs to the indices in survivors.
-        }
+        
+        // initialize population of programs. 
+        void init(const Parameters& params){}
+        
+        // reduce programs to the indices in survivors.
+        void update(vector<size_t> survivors){}
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
     
     // calculate program output matrix
     MatrixXd Individual::out(const MatrixXd& X, const VectorXd& y, 
-                                const Parameters& p)
+                                const Parameters& params)
     {
-        MatrixXd Phi; 
+        /* evaluate program output. 
+         * Input:
+         *      X: n_samples x n_features data
+         *      y: target data
+         *      params: Fewtwo parameters
+         * Output:
+         *      Phi: n_samples x n_features transformation
+         */
+
         vector<ArrayXd> stack_f; 
         vector<ArrayXi> stack_b;
 
         // evaluate each node in program
-        for (auto n : program)
-        {   
-            n.evaluate(X, y, stack_f, stack_b);
-        }
+        for (auto& n : program) 
+            n.evaluate(X, y, stack_f, stack_b); 
+        
         // convert stack_f to Phi
+        int rows = stack_f[0].size();
+        int cols = stack_f.size();
+        double * p = stack_f[0].data();
+        // WIP: need to conditional this on the output type parameter
+        Map<MatrixXd> Phi (p, rows, cols);       
         return Phi;
     }
 

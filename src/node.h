@@ -94,43 +94,43 @@ namespace FT{
                 }
                 case 'e': //exponential
                 {
-                    ArrayXd x = stack_f.back(); stack_f.back();
+                    ArrayXd x = stack_f.back(); stack_f.pop_back();
                     stack_f.push_back(exp(x));
                     break;
                 }
                 case 'l': //log
                 {
-                    ArrayXd x = stack_f.back(); stack_f.back();
+                    ArrayXd x = stack_f.back(); stack_f.pop_back();
                     stack_f.push_back(log(x));
                     break;
                 }
                 case 's': //sin
                 {
-                    ArrayXd x = stack_f.back(); stack_f.back();
+                    ArrayXd x = stack_f.back(); stack_f.pop_back();
                     stack_f.push_back(sin(x));
                     break;
                 }
                 case 'c': //cos
                 {
-                    ArrayXd x = stack_f.back(); stack_f.back();
+                    ArrayXd x = stack_f.back(); stack_f.pop_back();
                     stack_f.push_back(cos(x));
                     break;
                 }
                 case '2': //square
                 {
-                    ArrayXd x = stack_f.back(); stack_f.back();
+                    ArrayXd x = stack_f.back(); stack_f.pop_back();
                     stack_f.push_back(pow(x,2));
                     break;
                 }
                 case '3': //cube
                 {
-                    ArrayXd x = stack_f.back(); stack_f.back();
+                    ArrayXd x = stack_f.back(); stack_f.pop_back();
                     stack_f.push_back(pow(x,3));
                     break;
                 }
                 case 'q': //square root
                 {
-                    ArrayXd x = stack_f.back(); stack_f.back();
+                    ArrayXd x = stack_f.back(); stack_f.pop_back();
                     stack_f.push_back(sqrt(abs(x)));
                     break;
                 }
@@ -205,43 +205,43 @@ namespace FT{
                 }
                 case 'e': //exponential
                 {
-                    string x = stack_f.back(); stack_f.back();
+                    string x = stack_f.back(); stack_f.pop_back();
                     stack_f.push_back("exp(" + x + ")");
                     break;
                 }
                 case 'l': //log
                 {
-                    string x = stack_f.back(); stack_f.back();
+                    string x = stack_f.back(); stack_f.pop_back();
                     stack_f.push_back("log(" + x + ")");
                     break;
                 }
                 case 's': //sin
                 {
-                    string x = stack_f.back(); stack_f.back();
+                    string x = stack_f.back(); stack_f.pop_back();
                     stack_f.push_back("sin(" + x + ")");
                     break;
                 }
                 case 'c': //cos
                 {
-                    string x = stack_f.back(); stack_f.back();
+                    string x = stack_f.back(); stack_f.pop_back();
                     stack_f.push_back("cos(" + x + ")");
                     break;
                 }
                 case '2': //square
                 {
-                    string x = stack_f.back(); stack_f.back();
+                    string x = stack_f.back(); stack_f.pop_back();
                     stack_f.push_back("(" + x + "^2)");
                     break;
                 }
                 case '3': //cube
                 {
-                    string x = stack_f.back(); stack_f.back();
+                    string x = stack_f.back(); stack_f.pop_back();
                     stack_f.push_back("(" + x + "^3)");
                     break;
                 }
                 case 'q': //square root
                 {
-                    string x = stack_f.back(); stack_f.back();
+                    string x = stack_f.back(); stack_f.pop_back();
                     stack_f.push_back("sqrt(|" + x + "|)");
                     break;
                 }

@@ -10,6 +10,7 @@ license: GNU/GPL v3
 #include <vector>
 #include <Eigen/Dense>
 #include <memory>
+#include <shogun/base/init.h>
 
 // stuff being used
 using Eigen::MatrixXd;
@@ -40,29 +41,30 @@ namespace FT{
         */
         public : 
             // Parameters
-            const Parameters params;    // hyperparameters of Fewtwo 
+            Parameters params;    // hyperparameters of Fewtwo 
             MatrixXd F;                 // matrix of fitness values for population
             
             // Methods 
             // member initializer list constructor
-            Fewtwo(int pop_size=100, int gens = 100, string ml = "RidgeRegression", 
-                   bool classification = false, float cross_ratio = 0.5, int max_stall = 0,
-                   string sel ="lexicase", string surv="pareto", char otype='f'): 
+            Fewtwo(int pop_size=100, int gens = 100, string ml = "LinearRidgeRegression", 
+                   bool classification = false, int verbosity = 1, int max_stall = 0,
+                   string sel ="lexicase", string surv="pareto", float cross_ratio = 0.5,
+                   char otype='f'): 
                       // construct subclasses
-                      params(pop_size, gens, ml, classification, cross_ratio, max_stall, otype),      
+                      params(pop_size, gens, ml, classification, max_stall, otype, verbosity),
                       p_pop( make_shared<Population>() ),
                       p_sel( make_shared<Selection>(sel) ),
                       p_surv( make_shared<Selection>(surv,true) ),
                       p_eval( make_shared<Evaluation>() ),
-                      p_variation( make_shared<Variation>() ),
-                      p_ml( make_shared<ML>(ml) )
-            {};           
+                      p_variation( make_shared<Variation>(cross_ratio) ),
+                      p_ml( make_shared<ML>(ml, true) )
+            {}           
 
             // destructor
             ~Fewtwo(){} 
             
             // train a model.
-            void fit(const MatrixXd& X, const VectorXd& y);
+            void fit(MatrixXd& X, VectorXd& y);
 
             // predict on unseen data.
             VectorXd predict(const MatrixXd& X);
@@ -71,11 +73,11 @@ namespace FT{
             MatrixXd transform(const MatrixXd& X, const Individual ind = Individual());
 
             // convenience function calls fit then predict.           
-            VectorXd fit_predict(const MatrixXd& X, const VectorXd& y)
+            VectorXd fit_predict(MatrixXd& X, VectorXd& y)
             { fit(X,y); return predict(X); };
         
             // convenience function calls fit then transform. 
-            MatrixXd fit_transform(const MatrixXd& X, const VectorXd& y)
+            MatrixXd fit_transform(MatrixXd& X, VectorXd& y)
             { fit(X,y); return transform(X); };
                   
         private:
@@ -88,12 +90,12 @@ namespace FT{
             shared_ptr<ML> p_ml;                // pointer to machine learning class
             // private methods
             // method to finit inital ml model
-            void initial_model(const MatrixXd& X, const VectorXd& y);
+            void initial_model(MatrixXd& X, VectorXd& y);
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
     
-    void Fewtwo::fit(const MatrixXd& X, const VectorXd& y){
+    void Fewtwo::fit(MatrixXd& X, VectorXd& y){
         /*  trains a fewtwo model. 
 
             Parameters:
@@ -113,15 +115,18 @@ namespace FT{
         */
         
         // initial model on raw input
+        params.msg("Fitting initial model", 1);
         initial_model(X,y);
 
         // initialize population 
+        params.msg("Initializing population", 1);
         p_pop->init(params);
 
         // resize F to be twice the pop-size x number of samples
         F.resize(int(2*params.pop_size),X.rows());
         
         // evaluate initial population
+        params.msg("Evaluating initial population",1);
         p_eval->fitness(*p_pop,X,y,F,params);
         
         vector<size_t> survivors;
@@ -129,17 +134,22 @@ namespace FT{
         // main generational loop
         for (size_t g = 0; g<params.gens; ++g)
         {
+            params.msg("g " + std::to_string(g),1);
 
             // select parents
+            params.msg("selection", 1);
             vector<size_t> parents = p_sel->select(F, params);
 
             // variation to produce offspring
+            params.msg("variation", 1);
             p_variation->vary(*p_pop, parents, params);
 
             // evaluate offspring
+            params.msg("evaluation", 1);
             p_eval->fitness(*p_pop, X, y, F, params);
 
             // select survivors from combined pool of parents and offspring
+            params.msg("survival", 1);
             survivors = p_surv->select(F, params);
 
             // reduce population to survivors
@@ -147,7 +157,7 @@ namespace FT{
         }
     }
 
-    void Fewtwo::initial_model(const MatrixXd& X, const VectorXd& y)
+    void Fewtwo::initial_model(MatrixXd& X, VectorXd& y)
     {
         /* fits an ML model to the raw data as a starting point. 
          */

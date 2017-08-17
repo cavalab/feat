@@ -62,7 +62,8 @@ namespace FT{
         
         Selection(string type="lexicase", bool survival=false)
         {
-            // set type of selection operator. 
+            /* set type of selection operator. */
+
             if (!type.compare("lexicase"))
                 pselector = std::make_shared<Lexicase>(survival); 
             else if (!type.compare("pareto"))
@@ -74,7 +75,7 @@ namespace FT{
 
         ~Selection(){}
         
-        // perform selection
+        // perform selection by pointing to the select command for the SelectionOperator
         vector<size_t> select(const MatrixXd& F, const Parameters& p)
         {       
             return pselector->select(F, p);
