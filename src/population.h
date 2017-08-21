@@ -21,6 +21,7 @@ namespace FT{
         double fitness;             // aggregate fitness score
         unsigned int loc;           // index of individual in semantic matrix F
         string eqn;                 // symbolic representation of program
+        vector<double> weights;     // weights from ML training on program output
 
         Individual(){}
 
@@ -102,6 +103,49 @@ namespace FT{
         }
 
         return eqn;
+    }
+
+    void Population::init(const Parameters& params)
+    {
+        /* create random programs in the population, seeded by initial model weights */
+
+        for (auto& ind : individuals){
+            // make a program for each individual
+            // pick a max depth for this program
+            int max_d = 3; // set randomly from [params.min_depth, params.max_depth]
+
+            make_program(ind.program, params.func_set, params.term_set, params.max_d,
+                         params.otype, params.term_weights);
+
+            // reverse program so that it is post-fix notation
+            std::reverse(ind.program.begin(),ind.program.end());
+        }
+    }
+    
+    void Population::make_program(vector<Node>& program, const vector<Node>& func_set, 
+                                  const vector<Node>& term_set, int max_d, char otype, 
+                                  const vector<double>& term_weights)
+    {
+        /* recursively builds a program with complete arguments. */
+        if (max_d == 0)     // append terminal if program has reached max depth
+        {
+        }
+        else
+        {
+            // let fs be a subset of functions whose output type matches ntype and with an input    
+            // type of float if max_d > 1 (assuming all input data is continouous) 
+            
+            // append a random choice from fs
+            // chosen 
+            program.push_back(chosen);
+
+            // recurse to fulfill the arity of the chosen function
+            for (size_t i = 0; i < chosen.arity_f)
+                make_program(program, func_set, term_set, max_d-1, 'f', term_weights);
+            for (size_t i = 0; i < chosen.arity_b)
+                make_program(program, func_set, term_set, max_d-1, 'b', term_weights);
+
+        }
     }
 
 }

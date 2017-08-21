@@ -10,14 +10,15 @@ namespace FT{
     struct Parameters
     {
         // holds the hyperparameters for Fewtwo. 
-        int pop_size;           // population size
-        int gens;               // max generations
-        string ml;              // machine learner with which Fewtwo is paired
-        bool classification;    // flag to conduct classification rather than regression
-        int max_stall;          // maximum stall in learning (termination criterion) in generations
-        char otype;             // output type of the programs ('f': float, 'b': boolean)
-        int verbosity;          // amount of printing. 0: none, 1: minimal, 2: all
-
+        int pop_size;                   // population size
+        int gens;                       // max generations
+        string ml;                      // machine learner with which Fewtwo is paired
+        bool classification;            // flag to conduct classification rather than regression
+        int max_stall;                  // maximum stall in learning, in generations
+        char otype;                     // output type of the programs ('f': float, 'b': boolean)
+        int verbosity;                  // amount of printing. 0: none, 1: minimal, 2: all
+        vector<double> term_weights;    // probability weighting of terminals
+        
         Parameters(int pop_size, int gens, string& ml, bool classification, int max_stall, 
                    char otype, int vebosity):    
             pop_size(pop_size),
@@ -36,6 +37,11 @@ namespace FT{
 
             if (verbosity >= v)
                 std::cout << m << "...\n";
+        }
+
+        void set_term_weights(vector<double>& w)
+        {
+           term_weights = w;
         }
     };
 }

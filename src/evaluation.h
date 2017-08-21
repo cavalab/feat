@@ -95,17 +95,22 @@ namespace FT{
     {
         if (ml == nullptr)      // make new ML estimator if one is not provided 
         {
-            ml = std::make_shared<ML>(params.ml);
+            ml = std::make_shared<ML>(params.ml,params.classification);
         }
                
 
         // define shogun data
         
         X.transposeInPlace();
+        std::cout << "X:\n";
+        std::cout << X;
 
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
         auto labels = some<CRegressionLabels>(SGVector<float64_t>(y));
         std::cout << "features and labels defined\n";
+        
+        std::cout << "loaded features:\n";
+        (*features).get_feature_matrix().display_matrix();
 
         cout << "number of samples:" <<  (*features).get_num_vectors() <<"\n"; 
         cout << "number of features:" << (*features).get_num_features() <<"\n";
@@ -114,8 +119,16 @@ namespace FT{
         // preprocess features
         auto Normalize = some<CNormOne>();
         Normalize->init(features);
-        Normalize->apply_to_feature_matrix(features);
+        auto feat_returned = Normalize->apply_to_feature_matrix(features);
         std::cout << "features normalized\n";
+    
+        std::cout << "norm features:\n";
+        (*features).get_feature_matrix().display_matrix();
+        
+        feat_returned.display_matrix();
+
+        std::cout << "labels:\n";
+        (*labels).get_labels().display_vector();
 
         // pass data to ml
         //ml->p_est->set_features(features);
@@ -129,6 +142,12 @@ namespace FT{
         //get output
         auto y_pred = ml->p_est->apply_regression(features)->get_labels();
         std::cout << "prediction generated\n";
+
+        // weights
+        vector<double> w = ml->get_weights();
+        std::cout << "weights: ";
+        for (int i =0; i < w.size(); ++i) std::cout << w[i] << ", ";
+        std::cout << "\n";
 
         // map to Eigen vector
         Map<VectorXd> yhat(y_pred.data(),y_pred.size());

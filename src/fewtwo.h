@@ -40,16 +40,13 @@ namespace FT{
         represents a set of feature transformations. 
         */
         public : 
-            // Parameters
-            Parameters params;    // hyperparameters of Fewtwo 
-            MatrixXd F;                 // matrix of fitness values for population
-            
+                        
             // Methods 
             // member initializer list constructor
             Fewtwo(int pop_size=100, int gens = 100, string ml = "LinearRidgeRegression", 
                    bool classification = false, int verbosity = 1, int max_stall = 0,
                    string sel ="lexicase", string surv="pareto", float cross_ratio = 0.5,
-                   char otype='f'): 
+                   char otype='f'):
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity),
                       p_pop( make_shared<Population>() ),
@@ -57,7 +54,7 @@ namespace FT{
                       p_surv( make_shared<Selection>(surv,true) ),
                       p_eval( make_shared<Evaluation>() ),
                       p_variation( make_shared<Variation>(cross_ratio) ),
-                      p_ml( make_shared<ML>(ml, true) )
+                      p_ml( make_shared<ML>(ml, classification) )
             {}           
 
             // destructor
@@ -81,6 +78,10 @@ namespace FT{
             { fit(X,y); return transform(X); };
                   
         private:
+            // Parameters
+            Parameters params;    // hyperparameters of Fewtwo 
+            MatrixXd F;                 // matrix of fitness values for population
+            
             // subclasses for main steps of the evolutionary computation routine
             shared_ptr<Population> p_pop;       // population of programs
             shared_ptr<Selection> p_sel;        // selection algorithm
@@ -159,10 +160,12 @@ namespace FT{
 
     void Fewtwo::initial_model(MatrixXd& X, VectorXd& y)
     {
-        /* fits an ML model to the raw data as a starting point. 
-         */
-        // 
+        /* fits an ML model to the raw data as a starting point. */
+         
         VectorXd yhat = p_eval->out_ml(X,y,params,p_ml);
+
+        // set terminal weights based on model
+        params.set_term_weights(p_eval->get_weights());
     }
 
    
