@@ -47,7 +47,8 @@ namespace FT{
                 
                 else if (!ml.compare("RandomForest")){
                     p_est = make_shared<sh::CRandomForest>();
-                    dynamic_pointer_cast<sh::CRandomForest>(p_est)->set_machine_problem_type(prob_type);
+                    dynamic_pointer_cast<sh::CRandomForest>(p_est)->
+                                                               set_machine_problem_type(prob_type);
                 }
                 else if (!ml.compare("CART")){
                     p_est = make_shared<sh::CCARTree>();

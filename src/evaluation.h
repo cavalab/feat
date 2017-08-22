@@ -45,9 +45,7 @@ namespace FT{
 
             // assign fitness to an individual and to F. 
             void assign_fit(Individual& ind, MatrixXd& F, const VectorXd& yhat, const VectorXd& y,
-                            const Parameters& params);
-        private:
-            
+                            const Parameters& params);       
             
 
     };

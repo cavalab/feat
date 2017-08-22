@@ -22,6 +22,7 @@ using std::make_shared;
 using std::cout; 
 
 // internal includes
+#include "utils.h"
 #include "params.h"
 #include "population.h"
 #include "selection.h"
@@ -30,6 +31,8 @@ using std::cout;
 #include "ml.h"
 
 namespace FT{
+    
+    ////////////////////////////////////////////////////////////////////////////////// Declarations
     
     class Fewtwo 
     {
@@ -46,12 +49,15 @@ namespace FT{
             Fewtwo(int pop_size=100, int gens = 100, string ml = "LinearRidgeRegression", 
                    bool classification = false, int verbosity = 1, int max_stall = 0,
                    string sel ="lexicase", string surv="pareto", float cross_ratio = 0.5,
-                   char otype='f'):
+                   char otype='f', string functions = "+,-,*,/,exp,log", 
+                   vector<double> term_weights = vector<double>(), unsigned int max_d = 6, 
+                   unsigned int min_d = 1):
                       // construct subclasses
-                      params(pop_size, gens, ml, classification, max_stall, otype, verbosity),
+                      params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
+                             functions, term_weights, max_d, min_d),
                       p_pop( make_shared<Population>() ),
                       p_sel( make_shared<Selection>(sel) ),
-                      p_surv( make_shared<Selection>(surv,true) ),
+                      p_surv( make_shared<Selection>(surv, true) ),
                       p_eval( make_shared<Evaluation>() ),
                       p_variation( make_shared<Variation>(cross_ratio) ),
                       p_ml( make_shared<ML>(ml, classification) )
@@ -118,7 +124,10 @@ namespace FT{
         // initial model on raw input
         params.msg("Fitting initial model", 1);
         initial_model(X,y);
-
+        
+        // define terminals based on size of X
+        params.set_terminals(X.cols()); 
+        
         // initialize population 
         params.msg("Initializing population", 1);
         p_pop->init(params);
@@ -165,7 +174,7 @@ namespace FT{
         VectorXd yhat = p_eval->out_ml(X,y,params,p_ml);
 
         // set terminal weights based on model
-        params.set_term_weights(p_eval->get_weights());
+        params.set_term_weights(p_ml->get_weights());
     }
 
    

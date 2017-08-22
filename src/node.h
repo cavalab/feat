@@ -2,6 +2,8 @@
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
+#ifndef NODE_H
+#define NODE_H
 
 using std::vector;
 using std::string;
@@ -13,27 +15,37 @@ namespace FT{
 
     //////////////////////////////////////////////////////////////////////////////// Declarations
     
-    struct Node
+    class Node
     {
         // represents nodes in a program. 
         
-        char name;              // node type
-        char otype;             // output type
-        unsigned int arity_f;   // floating arity of the operator 
-        unsigned int arity_b;   // floating arity of the operator 
-        double value;           // value, for k and x types
-        size_t loc;             // column location in X, for x types
+        public:
+            char name;              // node type
+            char otype;             // output type
+            unsigned int arity_f;   // floating arity of the operator 
+            unsigned int arity_b;   // boolean arity of the operator 
+            double value;           // value, for k and x types
+            size_t loc;             // column location in X, for x types
+            int complexity;         // complexity of node
 
-        Node(){}
-        ~Node(){}
-        
-        // evaluates the node and updates the stack states. 
-        void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
-                      vector<ArrayXi>& stack_b);
+            // constructors 
+            Node(char n);
+            Node(char n, const size_t& l);
+            Node(char n, const double& v);
+            
+            ~Node(){}
+            
+            // evaluates the node and updates the stack states. 
+            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
+                          vector<ArrayXi>& stack_b);
 
-        // evaluates the node symbolically.
-        void eval_eqn(vector<string>& stack_f, vector<string>& stack_b);
+            // evaluates the node symbolically
+            void eval_eqn(vector<string>& stack_f, vector<string>& stack_b);
 
+        private: 
+            Node(){}                // disallows constructors that don't at least specify a node 
+                                    // type
+            void set_complexity();  // sets complexity of operator. 
     };
     
     ///////////////////////////////////////////////////////////////////////////////// Definitions
@@ -260,5 +272,99 @@ namespace FT{
             }
         }   
     }
+    
+    Node::Node(char n)
+    {
+        /* node representing an operator. */
+        name = n;
 
+ 	    if (name=='s' || name=='c' || name=='e' || name=='l' || name=='q')
+        {
+			arity_f = 1;
+			arity_b=0;
+			otype='f';
+		}
+		else if (name=='+' || name=='-' || name=='*' || name=='/' || name=='^')
+        {
+			arity_f=2;
+			arity_b=0;
+			otype='f';
+		}
+		else if (name=='<' || name=='>' || name=='{' || name=='}' || name=='=')
+        {
+			arity_f=2;
+			arity_b=0;
+			otype='b';
+		}
+		else if (name=='&' || name=='|' )
+        {
+			arity_f = 0;
+			arity_b = 2;
+			otype='b';
+		}
+		else if (name=='!')
+        {
+			arity_f=0;
+			arity_b=1;
+			otype='b';
+		}
+		else if (name=='i')
+        {
+			arity_b=1;
+			arity_f=1;
+			otype='f';
+		}
+		else if (name=='t')
+        {
+			arity_b=1;
+			arity_f=2;
+			otype='f';
+		}
+		else{
+			std::cerr << "error in node.h: node name not specified";
+			throw;
+		}
+		
+		// assign complexity
+		set_complexity(); 
+         
+    }
+    Node::Node(char n, const size_t& l)
+    {
+        /* node representing a variable terminal.*/
+        name = n;
+        loc = l; 
+        arity_f = 0;
+        arity_b = 0; 
+        otype = 'f';
+        complexity = 1;
+    }
+    Node::Node(char n, const double& v)
+    {
+        /* node representing a floating point value terminal.*/
+        name = n;
+        value = v;
+        arity_f = 0;
+        arity_b = 0;
+        otype = 'f';
+        complexity = 1;
+
+    }
+    void Node::set_complexity()
+    {
+        /* assign complexity to nodes.*/
+		
+		if (name=='i' || name=='t')
+			complexity = 5;
+		else if (name=='e' || name=='l' || name=='^')
+			complexity = 4;
+		else if (name=='s' || name=='c' )
+			complexity = 3;
+		else if (name=='/' || name=='q' || name=='<' || name=='>' || name=='{' || name=='}' 
+                || name=='&' || name=='|')
+			complexity = 2;
+		else
+			complexity = 1;
+    }
 }
+#endif
