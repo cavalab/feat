@@ -29,6 +29,7 @@ namespace FT{
                                 RowMajor>>(values.data(), rows, values.size()/rows);
     }
     
+    // check if element is in vector.
     template<typename T>
     bool in(const vector<T> v, const T& i)
     {
@@ -41,6 +42,7 @@ namespace FT{
         return false;
     }
     
+    // check if element is not in vector.
     template<typename T>
     bool not_in(const vector<T>& v, const T& i )
     {

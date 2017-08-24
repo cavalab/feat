@@ -24,12 +24,12 @@ namespace FT{
         vector<double> term_weights;    // probability weighting of terminals
         vector<Node> functions;         // function nodes available in programs
         vector<Node> terminals;         // terminal nodes available in programs
-        unsigned int max_d;             // max depth of programs
-        unsigned int min_d;             // minimum depth of programs
+        unsigned int max_depth;         // max depth of programs
+        unsigned int max_dim;           // maximum dimensionality of programs (initially)
 
         Parameters(int pop_size, int gens, string& ml, bool classification, int max_stall, 
                    char otype, int vebosity, string functions, vector<double> term_weights,
-                   unsigned int max_d, unsigned int min_d):    
+                   unsigned int max_depth, unsigned int max_dim):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
@@ -37,8 +37,8 @@ namespace FT{
             max_stall(max_stall),
             otype(otype), 
             verbosity(verbosity),
-            max_d(max_d),
-            min_d(min_d)
+            max_depth(max_depth),
+            max_dim(max_dim)
         {
             set_functions(functions);
         }
@@ -57,7 +57,9 @@ namespace FT{
         
         // sets weights for terminals. 
         void set_term_weights(const vector<double>& w)
-        { 
+        {
+            std::cout << "w size: " << w.size() << "\n";
+            std::cout << "terminals size: " << terminals.size() << "\n";
             assert(w.size()==terminals.size());
             term_weights = w; 
         }
@@ -91,9 +93,8 @@ namespace FT{
     void Parameters::set_terminals(int num_features)
     {
         /* set terminals based on number of features. */
-        
-        for (size_t i = 0; i < num_features; ++i)
-            terminals.push_back(Node('x',i));
+        for (size_t i = 0; i < num_features; ++i) 
+            terminals.push_back(Node('x',i)); 
     }
 }
 #endif

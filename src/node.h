@@ -63,17 +63,17 @@ namespace FT{
                 case 'k': // push array of values equal to k
                 {   
                     if (otype == 'b')
-                        stack_b.push_back(ArrayXi::Constant(X.rows(),int(value)));
+                        stack_b.push_back(ArrayXi::Constant(X.cols(),int(value)));
                     else 	
-                        stack_f.push_back(ArrayXd::Constant(X.rows(),value));
+                        stack_f.push_back(ArrayXd::Constant(X.cols(),value));
                     break;
                 }
                 case 'x': // push variable to correct stack
                 {
                     if (otype == 'b')
-                        stack_b.push_back(X.col(loc).cast<int>());
+                        stack_b.push_back(X.row(loc).cast<int>());
                     else
-                        stack_f.push_back(X.col(loc));
+                        stack_f.push_back(X.row(loc));
                     break;
                 }
                 case '+': // add  

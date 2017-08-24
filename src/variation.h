@@ -9,7 +9,7 @@ namespace FT{
     struct Individual;  // forward declarations
     struct Parameters;
     struct Population;
-
+    //Rnd r;
     ////////////////////////////////////////////////////////////////////////////////// Declarations
     
     class Variation 
@@ -18,7 +18,7 @@ namespace FT{
 
         public:
             //constructor
-            Variation(float cr){cross_ratio=cr;}
+            Variation(float cr){cross_rate=cr;}
             
             //destructor
             ~Variation(){}
@@ -33,7 +33,7 @@ namespace FT{
             // mutation
             void mutate(const Individual& mom, Individual& child);
             
-            float cross_ratio;     // ratio of crossover in total variation
+            float cross_rate;     // ratio of crossover in total variation
     };
 
 
@@ -53,22 +53,28 @@ namespace FT{
         
         Individual child;
 
-        for (auto ind : pop.individuals)
+        while (pop.size() < 2*params.pop_size)
         {
-            float rand;
-            if ( rand < cross_ratio)    // crossover
+            Individual child;
+
+            if ( r() < cross_rate)    // crossover
             {
                 // get random mom and dad 
+                int mom = r.random_choice(parents);
+                int dad = r.random_choice(parents);
                 // create child
+                cross(pop[mom],pop[dad],child);
                 
             }
             else                // mutation
             {
-                // get random mom 
+                // get random mom
+                int mom = r.random_choice(parents);
                 // create child
-                
+                mutate(pop[mom],child);
             }
             //push child into pop
+            pop.individuals.push_back(child);
         }
     }
 

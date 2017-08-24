@@ -99,7 +99,7 @@ namespace FT{
 
         // define shogun data
         
-        X.transposeInPlace();
+        //X.transposeInPlace();
         std::cout << "X:\n";
         std::cout << X;
 

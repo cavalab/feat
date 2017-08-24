@@ -11,6 +11,7 @@ license: GNU/GPL v3
 #include <Eigen/Dense>
 #include <memory>
 #include <shogun/base/init.h>
+#include <omp.h>
 
 // stuff being used
 using Eigen::MatrixXd;
@@ -22,6 +23,7 @@ using std::make_shared;
 using std::cout; 
 
 // internal includes
+#include "rnd.h"
 #include "utils.h"
 #include "params.h"
 #include "population.h"
@@ -33,6 +35,7 @@ using std::cout;
 namespace FT{
     
     ////////////////////////////////////////////////////////////////////////////////// Declarations
+    
     
     class Fewtwo 
     {
@@ -48,20 +51,22 @@ namespace FT{
             // member initializer list constructor
             Fewtwo(int pop_size=100, int gens = 100, string ml = "LinearRidgeRegression", 
                    bool classification = false, int verbosity = 1, int max_stall = 0,
-                   string sel ="lexicase", string surv="pareto", float cross_ratio = 0.5,
+                   string sel ="lexicase", string surv="pareto", float cross_rate = 0.5,
                    char otype='f', string functions = "+,-,*,/,exp,log", 
-                   vector<double> term_weights = vector<double>(), unsigned int max_d = 6, 
-                   unsigned int min_d = 1):
+                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
+                    vector<double> term_weights = vector<double>()):
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
-                             functions, term_weights, max_d, min_d),
-                      p_pop( make_shared<Population>() ),
+                             functions, term_weights, max_depth, max_dim),
+                      p_pop( make_shared<Population>(pop_size) ),
                       p_sel( make_shared<Selection>(sel) ),
                       p_surv( make_shared<Selection>(surv, true) ),
                       p_eval( make_shared<Evaluation>() ),
-                      p_variation( make_shared<Variation>(cross_ratio) ),
+                      p_variation( make_shared<Variation>(cross_rate) ),
                       p_ml( make_shared<ML>(ml, classification) )
-            {}           
+            {
+                r.set_seed(random_state);                    
+            }           
 
             // destructor
             ~Fewtwo(){} 
@@ -106,7 +111,7 @@ namespace FT{
         /*  trains a fewtwo model. 
 
             Parameters:
-                X: MatrixXd of features
+                X: n_features x n_samples MatrixXd of features
                 y: VectorXd of labels 
             Output:
                 updates best_estimator, hof
@@ -121,19 +126,20 @@ namespace FT{
             7. select surviving individuals from parents and offspring
         */
         
+        // define terminals based on size of X
+        params.set_terminals(X.rows()); 
+
         // initial model on raw input
         params.msg("Fitting initial model", 1);
         initial_model(X,y);
         
-        // define terminals based on size of X
-        params.set_terminals(X.cols()); 
-        
+                
         // initialize population 
         params.msg("Initializing population", 1);
         p_pop->init(params);
 
         // resize F to be twice the pop-size x number of samples
-        F.resize(int(2*params.pop_size),X.rows());
+        F.resize(int(2*params.pop_size),X.cols());
         
         // evaluate initial population
         params.msg("Evaluating initial population",1);

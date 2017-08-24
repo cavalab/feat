@@ -19,6 +19,8 @@ int main(int argc, char** argv){
          0.59847214, -0.80114362,
          0.14112001,-0.9899925;
 
+    X.transposeInPlace();
+    
     VectorXd y(7); 
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
@@ -29,7 +31,7 @@ int main(int argc, char** argv){
 
     std::cout<< "initializing model...\n";
     
-    Fewtwo fewtwo; 
+    Fewtwo fewtwo(10); 
     std::cout << "fitting model...\n";
 
     fewtwo.fit(X,y);
