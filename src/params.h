@@ -25,11 +25,12 @@ namespace FT{
         vector<Node> functions;         // function nodes available in programs
         vector<Node> terminals;         // terminal nodes available in programs
         unsigned int max_depth;         // max depth of programs
-        unsigned int max_dim;           // maximum dimensionality of programs (initially)
+        unsigned int max_size;          // max size of programs (length)
+        unsigned int max_dim;           // maximum dimensionality of programs 
 
         Parameters(int pop_size, int gens, string& ml, bool classification, int max_stall, 
-                   char otype, int vebosity, string functions, vector<double> term_weights,
-                   unsigned int max_depth, unsigned int max_dim):    
+                   char otype, int vebosity, string functions, unsigned int max_depth, 
+                   unsigned int max_dim, vector<double> term_weights):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
@@ -38,9 +39,11 @@ namespace FT{
             otype(otype), 
             verbosity(verbosity),
             max_depth(max_depth),
-            max_dim(max_dim)
+            max_dim(max_dim),
+            term_weights(term_weights)
         {
             set_functions(functions);
+            max_size = pow(2,max_depth)*max_dim; // max_size is max_dim binary trees of max_depth
         }
         
         

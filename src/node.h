@@ -42,6 +42,9 @@ namespace FT{
             // evaluates the node symbolically
             void eval_eqn(vector<string>& stack_f, vector<string>& stack_b);
 
+            // total arity
+            unsigned int total_arity(){ return arity_f + arity_b; }
+
         private: 
             Node(){}                // disallows constructors that don't at least specify a node 
                                     // type

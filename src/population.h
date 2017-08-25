@@ -16,11 +16,11 @@ namespace FT{
 
     // individual programs
     struct Individual{
-        //Represents individual programs in the population 
+        /* individual programs in the population. */
         
         vector<Node> program;       // executable data structure
         double fitness;             // aggregate fitness score
-        size_t loc;           // index of individual in semantic matrix F
+        size_t loc;                 // index of individual in semantic matrix F
         string eqn;                 // symbolic representation of program
         vector<double> weights;     // weights from ML training on program output
 
@@ -33,7 +33,33 @@ namespace FT{
 
         // return symbolic representation of program
         string get_eqn(char otype);
+
+        // setting and getting from individuals vector
+        const Node operator [](int i) const {return program[i];}
+        const Node & operator [](int i) {return program[i];}
+
+        // overload = to copy just the program
+        Individual& operator=(Individual rhs)   // note: pass-by-value for implicit copy of rhs
+        {
+            std::swap(this->program , rhs.program);
+            return *this;            
+        }
+
+        // size
+        int size(){ return program.size(); }
         
+        // grab sub-tree locations given starting point.
+        size_t subtree(size_t i, char otype);
+
+       // // get program depth.
+       // unsigned int depth();
+
+        // get program dimensionality
+        unsigned int dim();
+
+        private:
+   //         unsigned int depth;         // program depth
+            unsigned int dim;           // program dimensionality
     };
 
     // population of individuals
@@ -164,6 +190,7 @@ namespace FT{
     {
         /* create random programs in the population, seeded by initial model weights */
         std::cout << "population size: " << individuals.size() << "\n";
+        size_t count = 0;
         for (auto& ind : individuals){
             // make a program for each individual
             // pick a max depth for this program
@@ -176,13 +203,16 @@ namespace FT{
                 int depth =  r.rnd_int(1, params.max_depth);
                 
                 make_program(ind.program, params.functions, params.terminals, depth,
-                             params.otype, params.term_weights);
-                
+                             params.otype, params.term_weights);               
                 
             }
             // reverse program so that it is post-fix notation
             std::reverse(ind.program.begin(),ind.program.end());
-            std::cout << ind.get_eqn(params.otype) << "\n";
+            std::cout << ind.get_eqn(params.otype) << "\n"; // test output
+            
+            // set location of individual and increment counter
+            ind.loc = count;         
+            ++count;               
         }
     }
    
@@ -197,6 +227,75 @@ namespace FT{
       // reset individual locations and F matrix to match
 
    
+   }
+
+   size_t Individual::subtree(size_t i, char otype='0')
+   {
+
+       /* finds indices of subtree in program with root i.
+        * Input: i, root index of subtree
+        * Output: k, last index in subtree
+        * note that this function assumes a subtree's arguments to be contiguous in the program.
+        */
+        
+       size_t i2 = i;                              // index for second recursion
+
+       if (program[i].otype == otype || otype=='0')     // if this node is a subtree argument
+       {
+           for (unsigned int j = 0; j<program[i].arity_f; ++j)
+               subtree(--i,'f');                  // recurse for floating arguments
+           for (unsigned int j = 0; j<program[i2].arity_b; ++j)
+               subtree(--i2,'b');                 // recurse for boolean arguments
+       }
+       return std::min(i,i2);
+   }
+   
+   //// get program depth.
+   //unsigned int Individual::depth()
+   //{
+   //    /* returns the maximum depth of program.
+   //     * the depth is calculated by looping thru the program and incrementing whenever the 
+   //     * arity increases, and resetting whenever it is zero.
+   //     */
+   //    if (depth == 0)      // only calculate if depth hasn't been assigned
+   //    {
+   //        unsigned int tmp_depth = 0;
+   //        unsigned int ca=0, pa=0;     // current arity, previous arity
+   //        for (unsigned int i = program.size()-1; i>=0; --i)
+   //        {
+   //            pa = ca;
+   //            ca += program[i].total_arity() - 1;
+
+   //            if (ca > pa)
+   //                ++tmp_depth;
+   //            else if (ca == 0) 
+   //            {
+   //                if (tmp_depth > depth)
+   //                    depth = tmp_depth;
+   //                tmp_depth = 0;
+   //            }                 
+   //        }
+   //    }
+   //}
+
+   // get program dimensionality
+   unsigned int dim()
+   {
+       /* returns the dimensionality, i.e. number of outputs, of a program.
+       *  the dimensionality is equal to the number of times the program arities are fully
+       *  satisfied. 
+       */
+       if (dim == 0)        // only calculate if dim hasn't been assigned
+       {
+           unsigned int ca=0;     // current arity
+           for (unsigned int i = program.size()-1; i>=0; --i)
+           {
+               ca += program[i].total_arity() - 1;
+               if (ca == 0) ++dim;
+
+           }
+       }
+       return dim;
    }
 
 }

@@ -24,7 +24,7 @@ using Eigen::Map;
 // code to evaluate GP programs.
 namespace FT{
     
-    //////////////////////////////////////////////////////////////////////////////// Declarations
+    ////////////////////////////////////////////////////////////////////////////////// Declarations
     
     class Evaluation 
     {
@@ -50,7 +50,7 @@ namespace FT{
 
     };
     
-    /////////////////////////////////////////////////////////////////////////////// Definitions  
+    /////////////////////////////////////////////////////////////////////////////////// Definitions  
     
     // fitness of population
     void Evaluation::fitness(Population& pop, const MatrixXd& X, VectorXd& y, MatrixXd& F, 
@@ -86,11 +86,20 @@ namespace FT{
      
     }
     
-
     // train ML model and generate output
     VectorXd Evaluation::out_ml(MatrixXd& X, VectorXd& y, const Parameters& params,
                                 std::shared_ptr<ML> ml)
-    {
+    { 
+        /* Trains ml on X, y to generate output yhat = f(X). 
+        *  Input: 
+        *       X: n_features x n_samples matrix
+        *       y: n_samples vector of training labels
+        *       params: fewtwo parameters
+        *       ml: the ML model to be trained on X
+        *  Output:
+        *       yhat: n_samples vector of outputs
+        */
+
         if (ml == nullptr)      // make new ML estimator if one is not provided 
         {
             ml = std::make_shared<ML>(params.ml,params.classification);
@@ -170,6 +179,20 @@ namespace FT{
     void Evaluation::assign_fit(Individual& ind, MatrixXd& F, const VectorXd& yhat, 
                                 const VectorXd& y, const Parameters& params)
     {
+        /* assign raw errors to F, and aggregate fitnesses to individuals. 
+        *  Input: 
+        *       ind: individual 
+        *       F: n_samples x pop_size matrix of errors
+        *       yhat: predicted output of ind
+        *       y: true labels
+        *       params: fewtwo parameters
+        *  Output:
+        *       modifies F and ind.fitness
+        */
+        
+        F.col(ind.loc) = (yhat - y).pow(2);
+
+        ind.fitness = F.col(ind.loc).mean();
     }
 }
 #endif
