@@ -23,6 +23,7 @@ namespace FT{
         size_t loc;                 // index of individual in semantic matrix F
         string eqn;                 // symbolic representation of program
         vector<double> weights;     // weights from ML training on program output
+        unsigned int dim;           // dimensionality of individual
 
         Individual(){}
 
@@ -46,20 +47,20 @@ namespace FT{
         }
 
         // size
-        int size(){ return program.size(); }
+        int size() const { return program.size(); }
         
         // grab sub-tree locations given starting point.
-        size_t subtree(size_t i, char otype);
+        size_t subtree(size_t i, char otype='0') const;
 
        // // get program depth.
        // unsigned int depth();
 
         // get program dimensionality
-        unsigned int dim();
+        unsigned int get_dim();
 
         private:
    //         unsigned int depth;         // program depth
-            unsigned int dim;           // program dimensionality
+     
     };
 
     // population of individuals
@@ -229,7 +230,7 @@ namespace FT{
    
    }
 
-   size_t Individual::subtree(size_t i, char otype='0')
+   size_t Individual::subtree(size_t i, char otype) const 
    {
 
        /* finds indices of subtree in program with root i.
@@ -243,9 +244,9 @@ namespace FT{
        if (program[i].otype == otype || otype=='0')     // if this node is a subtree argument
        {
            for (unsigned int j = 0; j<program[i].arity_f; ++j)
-               subtree(--i,'f');                  // recurse for floating arguments
+               i = subtree(--i,'f');                  // recurse for floating arguments
            for (unsigned int j = 0; j<program[i2].arity_b; ++j)
-               subtree(--i2,'b');                 // recurse for boolean arguments
+               i2 = subtree(--i2,'b');                 // recurse for boolean arguments
        }
        return std::min(i,i2);
    }
@@ -279,7 +280,7 @@ namespace FT{
    //}
 
    // get program dimensionality
-   unsigned int dim()
+   unsigned int Individual::get_dim()
    {
        /* returns the dimensionality, i.e. number of outputs, of a program.
        *  the dimensionality is equal to the number of times the program arities are fully

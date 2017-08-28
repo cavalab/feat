@@ -190,7 +190,7 @@ namespace FT{
         *       modifies F and ind.fitness
         */
         
-        F.col(ind.loc) = (yhat - y).pow(2);
+        F.col(ind.loc) = (yhat - y).array().pow(2);
 
         ind.fitness = F.col(ind.loc).mean();
     }

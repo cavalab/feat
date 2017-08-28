@@ -18,7 +18,7 @@ namespace FT{
 
         public:
             //constructor
-            Variation(float cr){cross_rate=cr;}
+            Variation(float cr): cross_rate(cr) {}
             
             //destructor
             ~Variation(){}
@@ -28,15 +28,15 @@ namespace FT{
             
         private:
             // crossover 
-            void cross(const Individual& mom, const Individual& dad, Individual& child);
+            bool cross(const Individual& mom, const Individual& dad, Individual& child,
+                       const Parameters& params);
 
             // mutation
-            void mutate(const Individual& mom, Individual& child, const Parameters& params);
+            bool mutate(const Individual& mom, Individual& child, const Parameters& params);
         
-            // splice two programs together. 
-            template<typename T>
-            vector<T> Variation::splice_programs(const vector<T>& v1, size_t i1, size_t j1, 
-                                                 const vector<T>& v2, size_t i2, size_t j2)
+            // splice two programs together
+            vector<Node> splice_programs(const vector<Node>& v1, size_t i1, size_t j1, 
+                                                 const vector<Node>& v2, size_t i2, size_t j2);
        
             float cross_rate;     // fraction of crossover in total variation
     };
@@ -68,7 +68,7 @@ namespace FT{
                 int mom = r.random_choice(parents);
                 int dad = r.random_choice(parents);
                 // create child
-                pass = cross(pop[mom],pop[dad],child);
+                pass = cross(pop[mom],pop[dad],child,params);
                 
             }
             else                        // mutation
@@ -138,10 +138,11 @@ namespace FT{
             }
         }
         // check child depth and dimensionality
-        return child.size() <= params.max_size && child.dims() <= params.max_dim;
+        return child.size() <= params.max_size && child.get_dim() <= params.max_dim;
     }
 
-    bool Variation::cross(const Individual& mom, const Individual& dad, Individual& child)
+    bool Variation::cross(const Individual& mom, const Individual& dad, Individual& child, 
+                          const Parameters& params)
     {
         /* subtree crossover
          *
@@ -161,7 +162,7 @@ namespace FT{
 
        // get valid subtree locations
        vector<size_t> locs;
-       for (size_t i =0; i<mom.size(), ++i) if (in(otypes,mom[i].otype)) locs.push_back(i);
+       for (size_t i =0; i<mom.size(); ++i) if (in(otypes,mom[i].otype)) locs.push_back(i);
        //std::iota(locs.begin(),locs.end());
 
        // get subtree
@@ -171,7 +172,7 @@ namespace FT{
 
        // get locations in dad's program that match the subtree type picked from mom
        vector<size_t> dlocs;
-       for (size_t i =0; i<dad.size(), ++i) if (dad[i].otype == mom[j1].otype) dlocs.push_back(i);
+       for (size_t i =0; i<dad.size(); ++i) if (dad[i].otype == mom[j1].otype) dlocs.push_back(i);
        //std::iota(dlocs.begin(),dlocs.end());
        
        // get dad subtree
@@ -182,13 +183,12 @@ namespace FT{
        child.program = splice_programs(mom.program, i1, j1, dad.program, i2, j2);
         
        // check child depth and dimensionality
-       return child.size() <= params.max_size && child.dims() <= params.max_dim;
+       return child.size() <= params.max_size && child.get_dim() <= params.max_dim;
     }
     
     // swap vector subsets with different sizes. 
-    template<typename T>
-    vector<T> Variation::splice_programs(const vector<T>& v1, size_t i1, size_t j1, 
-                                         const vector<T>& v2, size_t i2, size_t j2)
+    vector<Node> Variation::splice_programs(const vector<Node>& v1, size_t i1, size_t j1, 
+                                         const vector<Node>& v2, size_t i2, size_t j2)
     {
         /* constructs a vector made of v1[0:i1], v2[i2:j2], v1[i1:end].
          * Input:
@@ -203,13 +203,10 @@ namespace FT{
          */
 
         // size difference between subtrees  
-        vector<T> vnew;
+        vector<Node> vnew;
         vnew.insert(vnew.end(),v1.begin(),v1.begin()+i1+1);     // beginning of v1
         vnew.insert(vnew.end(),v2.begin()+i2,v2.begin()+j2+1);  // spliced in v2 portion
         vnew.insert(vnew.end(),v1.begin()+j1+1,v1.end());       // end of v1
-
-        
-
     }
 }
 #endif

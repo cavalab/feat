@@ -53,11 +53,10 @@ namespace FT{
                    bool classification = false, int verbosity = 1, int max_stall = 0,
                    string sel ="lexicase", string surv="pareto", float cross_rate = 0.5,
                    char otype='f', string functions = "+,-,*,/,exp,log", 
-                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
-                    vector<double> term_weights = vector<double>()):
+                   unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0):
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
-                             functions, term_weights, max_depth, max_dim),
+                             functions, max_depth, max_dim),
                       p_pop( make_shared<Population>(pop_size) ),
                       p_sel( make_shared<Selection>(sel) ),
                       p_surv( make_shared<Selection>(surv, true) ),
@@ -107,7 +106,8 @@ namespace FT{
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
     
-    void Fewtwo::fit(MatrixXd& X, VectorXd& y){
+    void Fewtwo::fit(MatrixXd& X, VectorXd& y)
+    {
         /*  trains a fewtwo model. 
 
             Parameters:

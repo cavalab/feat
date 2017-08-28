@@ -30,7 +30,7 @@ namespace FT{
 
         Parameters(int pop_size, int gens, string& ml, bool classification, int max_stall, 
                    char otype, int vebosity, string functions, unsigned int max_depth, 
-                   unsigned int max_dim, vector<double> term_weights):    
+                   unsigned int max_dim):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
@@ -39,8 +39,7 @@ namespace FT{
             otype(otype), 
             verbosity(verbosity),
             max_depth(max_depth),
-            max_dim(max_dim),
-            term_weights(term_weights)
+            max_dim(max_dim)
         {
             set_functions(functions);
             max_size = pow(2,max_depth)*max_dim; // max_size is max_dim binary trees of max_depth
