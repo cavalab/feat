@@ -56,7 +56,6 @@ namespace FT{
          *      pop: appends params.pop_size offspring derived from parent variation
          */
         
-        size_t count = pop.size();      // counter for setting child location
         bool pass;                      // pass check for children undergoing variation       
         while (pop.size() < 2*params.pop_size)
         {
@@ -80,9 +79,8 @@ namespace FT{
             }
             if (pass)                   // congrats! you produced a viable child.
             {
-                // set child location
-                child.loc = count;
-                ++count;
+                // give child an open location in F
+                child.loc = pop.get_open_loc(); 
                 //push child into pop
                 pop.individuals.push_back(child);
             }
