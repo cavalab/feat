@@ -6,6 +6,7 @@ license: GNU/GPL v3
 #define POPULATION_H
 
 //#include "node.h" // including node.h since definition of node is in the header
+#include "individual.h"
 using std::vector;
 using std::string;
 using Eigen::Map;
@@ -35,6 +36,8 @@ namespace FT{
 
         // returns an open location 
         size_t get_open_loc(); 
+        // updates open locations to reflect population.
+        void update_open_loc();
 
         // adds a program to the population. 
         void add(Individual&);
@@ -123,6 +126,8 @@ namespace FT{
             ind.loc = count;         
             ++count;               
         }
+        // define open locations
+        update_open_loc(); 
     }
    
    void Population::update(vector<size_t> survivors)
@@ -149,21 +154,28 @@ namespace FT{
 
    void Population::update_open_loc()
    {
-       /* updates open_loc to include any locations not in [0, 2*popsize-1] not in individuals.loc
+       /* updates open_loc to any locations in [0, 2*popsize-1] not in individuals.loc
         */
-       vector<size_t> all_locs(pop.size()*2);
-       std::iota(all_locs.begin(),all_locs.end());
+      
+       vector<size_t> current_locs, new_open_locs;
        
+       // get vector of current locations       
+       for (const auto& ind : individuals)
+           current_locs.push_back(ind.loc);
        
-       all_locs.erase(std::remove_if(all_locs.begin(), all_locs.end(), 
-                        [&](const Individual& ind){ return not_in(survivors,ind.loc);}),
-                        all_locs.end());
-       for (const auto& i : individuals)
+       // find open locations
+       size_t i = 0;
+       while (i < 2* individuals.size())
        {
-           if (in(all_locs,i.loc))
-               all_locs.
+           if (not_in(current_locs,i))
+               new_open_locs.push_back(i);
+           ++i;
        }
-        
+
+
+       // re-assign open locations
+       open_loc = new_open_locs;
+              
    }
    void Population::add(Individual& ind)
    {
