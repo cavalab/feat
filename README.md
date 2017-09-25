@@ -13,6 +13,13 @@ differences are:
  - FEW-two is pure c++
  - FEw-two uses the Shogun C++ ML toolbox instead of Scikit-learn
 
+## Build
+```
+mkdir build
+cd build
+cmake ..
+```
+
 ## Contributing
 Please follow the [Github flow](https://guides.github.com/introduction/flow/) guidelines for
 contributing to this project. 
