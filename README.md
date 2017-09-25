@@ -1,6 +1,9 @@
 # FEW-two
 
-**Few-two** is a feature engineering wrapper that wraps around the Shogun C++ machine learning toolkit and interfaces with scikit-learn. Its purpose is to learn new representations of raw data to improve classifier and regressor performance. The underlying methods are based on Pareto optimization and evolutionary computation to search the space of possible transformations.
+**Few-two** is a feature engineering wrapper that wraps around the Shogun C++ machine learning 
+toolkit and interfaces with scikit-learn. Its purpose is to learn new representations of raw data 
+to improve classifier and regressor performance. The underlying methods are based on Pareto 
+optimization and evolutionary computation to search the space of possible transformations.
 
 FEW-two is a completely different code base from [Few](https://lacava.github.io/few). The main
 differences are:
@@ -9,6 +12,10 @@ differences are:
    overall model
  - FEW-two is pure c++
  - FEw-two uses the Shogun C++ ML toolbox instead of Scikit-learn
+
+## Contributing
+Please follow the [Github flow](https://guides.github.com/introduction/flow/) guidelines for
+contributing to this project. 
 
 ## Acknowledgments
 
