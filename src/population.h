@@ -138,10 +138,8 @@ namespace FT{
                         [&survivors](const Individual& ind){ return not_in(survivors,ind.loc);}),
                         individuals.end());
 
-      // reset individual locations and F matrix to match
-      
-      // sort individuals by location
-      // 
+      // reset the open locations in F matrix 
+      update_open_loc();
    
    }
 
