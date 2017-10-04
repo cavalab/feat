@@ -15,34 +15,51 @@ namespace FT{
     ////////////////////////////////////////////////////////////////////////////////// Declarations
     extern Rnd r;
 
-    // population of individuals
+    /*!
+     * @class Population
+     */
     struct Population
     {
-        vector<Individual> individuals;     // individual programs
-        vector<size_t> open_loc;            // unfilled matrix positions
+        vector<Individual> individuals;     ///< individual programs
+        vector<size_t> open_loc;            ///< unfilled matrix positions
 
         Population(){}
         Population(int p){individuals.resize(p);}
         ~Population(){}
         
-        // initialize population of programs. 
+        /*!
+         * @brief initialize population of programs. 
+         */
         void init(const Parameters& params);
         
-        // reduce programs to the indices in survivors.
+        /*!
+         * @brief reduce programs to the indices in survivors.
+         */
         void update(vector<size_t> survivors);
         
-        // returns population size
+        /*!
+         * @brief returns population size
+         */
         int size(){return individuals.size();}
 
-        // returns an open location 
+        /*!
+         * @brief returns an open location 
+         */
         size_t get_open_loc(); 
-        // updates open locations to reflect population.
+        
+        /*!
+         * @brief updates open locations to reflect population.
+         */
         void update_open_loc();
 
-        // adds a program to the population. 
+        /*!
+         * @brief adds a program to the population. 
+         */
         void add(Individual&);
         
-        // setting and getting from individuals vector
+        /*!
+         * @brief setting and getting from individuals vector
+         */
         const Individual operator [](int i) const {return individuals[i];}
         const Individual & operator [](int i) {return individuals[i];}
         // make a program.
@@ -58,7 +75,9 @@ namespace FT{
                                   const vector<Node>& terminals, int max_d, char otype, 
                                   const vector<double>& term_weights)
     {
-        /* recursively builds a program with complete arguments. */
+        /*!
+         * recursively builds a program with complete arguments.
+         */
         if (max_d == 0 || r.rnd_flt() < terminals.size()/(terminals.size()+functions.size())) 
         {
             // append terminal 
@@ -100,7 +119,9 @@ namespace FT{
 
     void Population::init(const Parameters& params)
     {
-        /* create random programs in the population, seeded by initial model weights */
+        /*!
+         *create random programs in the population, seeded by initial model weights 
+         */
         std::cout << "population size: " << individuals.size() << "\n";
         size_t count = 0;
         for (auto& ind : individuals){
@@ -132,7 +153,9 @@ namespace FT{
    
    void Population::update(vector<size_t> survivors)
    {
-       /* cull population down to survivor indices.*/
+       /*!
+        * cull population down to survivor indices.
+        */
        
       individuals.erase(std::remove_if(individuals.begin(), individuals.end(), 
                         [&survivors](const Individual& ind){ return not_in(survivors,ind.loc);}),
@@ -145,14 +168,17 @@ namespace FT{
 
    size_t Population::get_open_loc()
    {
-       /* grabs an open location and removes it from the vector. */
+       /*!
+        * grabs an open location and removes it from the vector.
+        */
        size_t loc = open_loc.back(); open_loc.pop_back();
        return loc;
    }
 
    void Population::update_open_loc()
    {
-       /* updates open_loc to any locations in [0, 2*popsize-1] not in individuals.loc
+       /*!
+        * updates open_loc to any locations in [0, 2*popsize-1] not in individuals.loc
         */
       
        vector<size_t> current_locs, new_open_locs;
@@ -177,7 +203,9 @@ namespace FT{
    }
    void Population::add(Individual& ind)
    {
-       /* adds ind to individuals, giving it an open location and bookeeping. */
+       /*!
+        * adds ind to individuals, giving it an open location and bookeeping.
+        */
 
        ind.loc = get_open_loc();
        individuals.push_back(ind);

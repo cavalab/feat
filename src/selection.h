@@ -12,10 +12,14 @@ license: GNU/GPL v3
 namespace FT{
     struct Parameters; // forward declaration of Parameters       
     ////////////////////////////////////////////////////////////////////////////////// Declarations
-
+	/*!
+     * @class SelectionOperator
+     */ 
     struct SelectionOperator 
     {
-        /* base class for selection operators. */
+        /*!
+         * base class for selection operators.
+         */
 
         bool survival; 
 
@@ -28,41 +32,63 @@ namespace FT{
             std::cerr << "Error. No selection implementation for base SelectionOperator.\n";
         }
     };
-
+	
+	/*!
+     * @class Lexicase
+     */
     struct Lexicase : SelectionOperator
     {
-        /* Lexicase selection operator. */
+        /*!
+         * Lexicase selection operator.
+         */
 
         Lexicase(bool surv){ survival = surv; }
         
         ~Lexicase(){}
 
-        // select function returns a set of selected indices from F. 
+        /*!
+         * select function returns a set of selected indices from F. 
+         */
         vector<size_t> select(const MatrixXd& F, const Parameters& p);
 
     };
-
+	
+	/*!
+     * @class Tournament
+     */
     struct Tournament: SelectionOperator
     {
-        /* tournament selection operator. */
+        /*!
+         * tournament selection operator.
+         */
     };
-
+	
+	/*!
+     * @class Pareto
+     */
     struct Pareto : SelectionOperator
     {
-        /* Pareto selection operator. */
+        /*!
+         * Pareto selection operator.
+         */
         Pareto(bool surv){ survival = surv; };
         
         ~Pareto(){}
     };
     
+    /*!
+     * @class Selection
+     * @brief implements selection methods. 
+     */
     struct Selection
     {
-        // implements selection methods. 
         shared_ptr<SelectionOperator> pselector; 
         
         Selection(string type="lexicase", bool survival=false)
         {
-            /* set type of selection operator. */
+            /*!
+             * set type of selection operator.
+             */
 
             if (!type.compare("lexicase"))
                 pselector = std::make_shared<Lexicase>(survival); 
@@ -75,7 +101,9 @@ namespace FT{
 
         ~Selection(){}
         
-        // perform selection by pointing to the select command for the SelectionOperator
+        /*!
+         * perform selection by pointing to the select command for the SelectionOperator
+         */
         vector<size_t> select(const MatrixXd& F, const Parameters& p)
         {       
             return pselector->select(F, p);
@@ -86,12 +114,17 @@ namespace FT{
     
     vector<size_t> Lexicase::select(const MatrixXd& F, const Parameters& p)
     {
-        /* conducts lexicase selection using semantic matrix F. 
+        /*!
+         * @brief conducts lexicase selection using semantic matrix F. 
+         *
          * Inputs:
-         *      F: samples x pop_size matrix defining the raw population errors, i.e. its semantics
-         *      params: Fewtwo parameters
+         *
+         * 			F: samples x pop_size matrix defining the raw population errors, i.e. its semantics
+         * 			params: Fewtwo parameters
+         *
          * Outputs:
-         *      choices: vector of indices corresponding to selected individuals and cols in F
+         *
+         * 			choices: vector of indices corresponding to selected individuals and cols in F
          */
     }
 }

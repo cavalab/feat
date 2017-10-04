@@ -36,19 +36,22 @@ namespace FT{
     
     ////////////////////////////////////////////////////////////////////////////////// Declarations
     
-    
+    /*!
+     * @class Fewtwo
+     * @brief main class for the Fewtwo learner.
+     
+     * @details Fewtwo optimizes feature represenations for a given machine learning algorithm. It does so
+     *			by using evolutionary computation to optimize a population of programs. Each program 
+     *			represents a set of feature transformations. 
+     */
     class Fewtwo 
     {
-        /* main class for the Fewtwo learner.
-        
-        Fewtwo optimizes feature represenations for a given machine learning algorithm. It does so
-        by using evolutionary computation to optimize a population of programs. Each program 
-        represents a set of feature transformations. 
-        */
         public : 
                         
             // Methods 
-            // member initializer list constructor
+            /*!
+              * @brief member initializer list constructor
+              */
             Fewtwo(int pop_size=100, int gens = 100, string ml = "LinearRidgeRegression", 
                    bool classification = false, int verbosity = 1, int max_stall = 0,
                    string sel ="lexicase", string surv="pareto", float cross_rate = 0.5,
@@ -67,40 +70,55 @@ namespace FT{
                 r.set_seed(random_state);                    
             }           
 
-            // destructor
+            /*!
+             * @brief destructor
+             */
             ~Fewtwo(){} 
             
-            // train a model.
+            /*!
+             * @brief train a model.
+             */
             void fit(MatrixXd& X, VectorXd& y);
 
-            // predict on unseen data.
+            /*!
+             * @brief predict on unseen data.
+             */
             VectorXd predict(const MatrixXd& X);
              
-            // transform an input matrix using a program.             
+            /*!
+             * @brief transform an input matrix using a program.             
+             */
             MatrixXd transform(const MatrixXd& X, const Individual ind = Individual());
 
-            // convenience function calls fit then predict.           
+            /*!
+             * @brief convenience function calls fit then predict.           
+             */
             VectorXd fit_predict(MatrixXd& X, VectorXd& y)
             { fit(X,y); return predict(X); };
         
-            // convenience function calls fit then transform. 
+            /*!
+             * @brief convenience function calls fit then transform. 
+             */
             MatrixXd fit_transform(MatrixXd& X, VectorXd& y)
             { fit(X,y); return transform(X); };
                   
         private:
             // Parameters
-            Parameters params;    // hyperparameters of Fewtwo 
-            MatrixXd F;                 // matrix of fitness values for population
+            Parameters params;    					///< hyperparameters of Fewtwo 
+            MatrixXd F;                 			///< matrix of fitness values for population
             
             // subclasses for main steps of the evolutionary computation routine
-            shared_ptr<Population> p_pop;       // population of programs
-            shared_ptr<Selection> p_sel;        // selection algorithm
-            shared_ptr<Evaluation> p_eval;      // evaluation code
-            shared_ptr<Variation> p_variation;  // variation operators
-            shared_ptr<Selection> p_surv;       // survival algorithm
-            shared_ptr<ML> p_ml;                // pointer to machine learning class
+            shared_ptr<Population> p_pop;       	///< population of programs
+            shared_ptr<Selection> p_sel;        	///< selection algorithm
+            shared_ptr<Evaluation> p_eval;      	///< evaluation code
+            shared_ptr<Variation> p_variation;  	///< variation operators
+            shared_ptr<Selection> p_surv;       	///< survival algorithm
+            shared_ptr<ML> p_ml;                	///< pointer to machine learning class
             // private methods
-            // method to finit inital ml model
+            
+            /*!
+             * @brief method to finit inital ml model
+             */
             void initial_model(MatrixXd& X, VectorXd& y);
     };
 
@@ -108,23 +126,25 @@ namespace FT{
     
     void Fewtwo::fit(MatrixXd& X, VectorXd& y)
     {
-        /*  trains a fewtwo model. 
-
-            Parameters:
-                X: n_features x n_samples MatrixXd of features
-                y: VectorXd of labels 
-            Output:
-                updates best_estimator, hof
+        /*!
+         *  Input:
+         
+         *       X: n_features x n_samples MatrixXd of features
+         *       y: VectorXd of labels 
+         
+         *  Output:
+         
+         *       updates best_estimator, hof
         
-            steps:
-            1. fit model yhat = f(X)
-            2. generate transformations Phi(X) for each individual
-            3. fit model yhat_new = f( Phi(X)) for each individual
-            4. evaluate features
-            5. selection parents
-            6. produce offspring from parents via variation
-            7. select surviving individuals from parents and offspring
-        */
+         *   steps:
+         *	   1. fit model yhat = f(X)
+         *	   2. generate transformations Phi(X) for each individual
+         *	   3. fit model yhat_new = f( Phi(X)) for each individual
+         *	   4. evaluate features
+         *	   5. selection parents
+         *	   6. produce offspring from parents via variation
+         *	   7. select surviving individuals from parents and offspring
+         */
         
         // define terminals based on size of X
         params.set_terminals(X.rows()); 
@@ -175,7 +195,9 @@ namespace FT{
 
     void Fewtwo::initial_model(MatrixXd& X, VectorXd& y)
     {
-        /* fits an ML model to the raw data as a starting point. */
+        /*!
+         * fits an ML model to the raw data as a starting point.
+         */
          
         VectorXd yhat = p_eval->out_ml(X,y,params,p_ml);
 

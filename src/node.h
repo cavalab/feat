@@ -14,41 +14,63 @@ using Eigen::ArrayXi;
 namespace FT{
 
     //////////////////////////////////////////////////////////////////////////////// Declarations
-    
+    /*!
+     * @class Node
+     * @brief represents nodes in a program. 
+     */
     class Node
-    {
-        // represents nodes in a program. 
-        
+    {        
         public:
-            char name;              // node type
-            char otype;             // output type
-            unsigned int arity_f;   // floating arity of the operator 
-            unsigned int arity_b;   // boolean arity of the operator 
-            double value;           // value, for k and x types
-            size_t loc;             // column location in X, for x types
-            int complexity;         // complexity of node
+            char name;              ///< node type
+            char otype;             ///< output type
+            unsigned int arity_f;   ///< floating arity of the operator 
+            unsigned int arity_b;   ///< boolean arity of the operator 
+            double value;           ///< value, for k and x types
+            size_t loc;             ///< column location in X, for x types
+            int complexity;         ///< complexity of node
 
             // constructors 
+            /*!
+             * @brief node representing an operator.
+             */
             Node(char n);
+            /*!
+             * @brief node representing a variable terminal.
+             */
             Node(char n, const size_t& l);
+            /*!
+             * @brief node representing a floating point value terminal.
+             */
             Node(char n, const double& v);
             
             ~Node(){}
             
-            // evaluates the node and updates the stack states. 
+            /*!
+             * @brief evaluates the node and updates the stack states. 
+             */
             void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
                           vector<ArrayXi>& stack_b);
 
-            // evaluates the node symbolically
+            /*!
+             * @brief evaluates the node symbolically
+             */
             void eval_eqn(vector<string>& stack_f, vector<string>& stack_b);
 
-            // total arity
+            /*!
+             * @brief total arity
+             */
             unsigned int total_arity(){ return arity_f + arity_b; }
 
-        private: 
-            Node(){}                // disallows constructors that don't at least specify a node 
-                                    // type
-            void set_complexity();  // sets complexity of operator. 
+        private:
+        	/*!
+             * @brief  disallows constructors that don't at least specify a node type
+             */
+            Node(){}                 
+                                    
+            /*!
+             * sets complexity of operator
+             */
+            void set_complexity();
     };
     
     ///////////////////////////////////////////////////////////////////////////////// Definitions

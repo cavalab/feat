@@ -11,34 +11,50 @@ namespace FT{
     struct Population;
     //Rnd r;
     ////////////////////////////////////////////////////////////////////////////////// Declarations
-    
+    /*!
+     * @class Variation
+     */ 
     class Variation 
     {
-        /* methods for crossover and mutation of programs. */
+        /*!
+         * methods for crossover and mutation of programs.
+         */
 
         public:
-            //constructor
+            /*!
+             * @brief constructor
+             */
             Variation(float cr): cross_rate(cr) {}
             
-            //destructor
+            /*!
+             * @brief destructor
+             */
             ~Variation(){}
 
-            //method to handle variation of population
+            /*!
+             * @brief method to handle variation of population
+             */
             void vary(Population& pop, const vector<size_t> parents, const Parameters& params);
             
         private:
-            // crossover 
+            /*!
+             * @brief crossover 
+             */
             bool cross(const Individual& mom, const Individual& dad, Individual& child,
                        const Parameters& params);
 
-            // mutation
+            /*!
+             * @brief mutation
+             */
             bool mutate(const Individual& mom, Individual& child, const Parameters& params);
         
-            // splice two programs together
+            /*!
+             * @brief splice two programs together
+             */
             vector<Node> splice_programs(const vector<Node>& v1, size_t i1, size_t j1, 
                                                  const vector<Node>& v2, size_t i2, size_t j2);
        
-            float cross_rate;     // fraction of crossover in total variation
+            float cross_rate;     ///< fraction of crossover in total variation
     };
 
 
@@ -46,14 +62,18 @@ namespace FT{
     
     void Variation::vary(Population& pop, const vector<size_t> parents, const Parameters& params)
     {
-        /* performs variation on the current population. 
+        /*!
+         * performs variation on the current population. 
          *
          * Input:
-         *      pop: current population
-         *      parents: indices of population to use for variation
-         *      params: fewtwo parameters
+         *
+         *      	pop: current population
+         *      	parents: indices of population to use for variation
+         *      	params: fewtwo parameters
+         *
          * Output:
-         *      pop: appends params.pop_size offspring derived from parent variation
+         *
+         *      	pop: appends params.pop_size offspring derived from parent variation
          */
         
         bool pass;                      // pass check for children undergoing variation       
@@ -89,12 +109,16 @@ namespace FT{
 
     bool Variation::mutate(const Individual& mom, Individual& child, const Parameters& params)
     {
-        /* 1/n point mutation
+        /*!
+         * 1/n point mutation
          * 
          * Input:
-         *      mom: root parent
+         *
+         *      	mom: root parent
+         *
          * Output:
-         *      child: copy of mom with some mutations
+         *
+         *      	child: copy of mom with some mutations
          */
         
         // make child a copy of mom
@@ -142,13 +166,17 @@ namespace FT{
     bool Variation::cross(const Individual& mom, const Individual& dad, Individual& child, 
                           const Parameters& params)
     {
-        /* subtree crossover
+        /*!
+         * subtree crossover
          *
          * Input:
-         *      mom: root parent
-         *      dad: parent from which subtree is chosen
+         *
+         *      	mom: root parent
+         *      	dad: parent from which subtree is chosen
+         *
          * Output:
-         *      child: mom with dad subtree graft
+         *
+         *      	child: mom with dad subtree graft
          */
                     
        // we must limit ourselves to matching output types in the programs. 
@@ -188,15 +216,21 @@ namespace FT{
     vector<Node> Variation::splice_programs(const vector<Node>& v1, size_t i1, size_t j1, 
                                          const vector<Node>& v2, size_t i2, size_t j2)
     {
-        /* constructs a vector made of v1[0:i1], v2[i2:j2], v1[i1:end].
+        /*!
+         * @brief swap vector subsets with different sizes. 
+         * constructs a vector made of v1[0:i1], v2[i2:j2], v1[i1:end].
+         *
          * Input:
+         *
          *      v1: root parent 
          *          i1: start of splicing 
          *          j1: end of root splicing
          *      v2: donating parent
          *          i2: start of donation
          *          j2: end of donation
+         *
          * Output: 
+         *
          *      vnew: new vector 
          */
 

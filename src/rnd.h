@@ -13,21 +13,27 @@ namespace FT {
     
     ////////////////////////////////////////////////////////////////////////////////// Declarations
     
+    /*!
+     * @class Population
+     * @brief Defines a multi-core random number generator and its operators.
+     */
     class Rnd
     {
-        /* Defines a multi-core random number generator and its operators.*/
-
         public:
             
             Rnd()
             {
-                // need a random generator for each core to do multiprocessing
+                /*!
+                 * need a random generator for each core to do multiprocessing
+                 */
                 rg.resize(omp_get_max_threads());                      
             }
 
             void set_seed(int seed)
             { 
-                /* set seeds for each core's random number generator */
+                /*!
+                 * set seeds for each core's random number generator
+                 */
                 if (seed == 0)
                 {
                     std::random_device rd; 
@@ -94,13 +100,18 @@ namespace FT {
             template<typename T>
             T random_choice(const vector<T>& v)
             {
-               /* return a random element of a vector. */          
+               /*!
+                * return a random element of a vector.
+                */          
                 return *select_randomly(v.begin(),v.end());
             }
+            
             template<typename T, typename D>
             T random_choice(const vector<T>& v, const vector<D>& w )
             {
-                /* return a weighted random element of a vector */
+                /*!
+                 * return a weighted random element of a vector
+                 */
                 assert(v.size() == w.size());
                     
                 std::discrete_distribution<size_t> dis(w.begin(), w.end());

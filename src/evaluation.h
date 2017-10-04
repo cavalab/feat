@@ -25,25 +25,33 @@ using Eigen::Map;
 namespace FT{
     
     ////////////////////////////////////////////////////////////////////////////////// Declarations
-    
+    /*!
+     * @class Evaluation
+     * @brief evaluation mixin class for Fewtwo
+     */
     class Evaluation 
     {
-        // evaluation mixin class for Fewtwo
         public:
         
             Evaluation(){}
 
             ~Evaluation(){}
                 
-            // fitness of population.
+            /*!
+             * @brief fitness of population.
+             */
             void fitness(Population& pop, const MatrixXd& X, VectorXd& y, MatrixXd& F, 
                          const Parameters& params);
 
-            // output of an ml model. 
+            /*!
+             * @brief output of an ml model. 
+             */
             VectorXd out_ml(MatrixXd& Phi, VectorXd& y, const Parameters& params,
                             std::shared_ptr<ML> ml = nullptr);
 
-            // assign fitness to an individual and to F. 
+            /*! 
+             * @brief assign fitness to an individual and to F. 
+             */
             void assign_fit(Individual& ind, MatrixXd& F, const VectorXd& yhat, const VectorXd& y,
                             const Parameters& params);       
             
@@ -56,15 +64,20 @@ namespace FT{
     void Evaluation::fitness(Population& pop, const MatrixXd& X, VectorXd& y, MatrixXd& F, 
                  const Parameters& p)
     {
-        // Input:
-        //      pop: population
-        //      X: feature data
-        //      y: label
-        //      F: matrix of raw fitness values
-        //      p: algorithm parameters
-        // Output:
-        //      F is modified
-        //      pop[:].fitness is modified
+    	/*!
+         * Input:
+         
+         *      pop: population
+         *      X: feature data
+         *      y: label
+         *      F: matrix of raw fitness values
+         *      p: algorithm parameters
+         
+         * Output:
+         
+         *      F is modified
+         *      pop[:].fitness is modified
+         */
         
         
         // loop through individuals
@@ -90,14 +103,19 @@ namespace FT{
     VectorXd Evaluation::out_ml(MatrixXd& X, VectorXd& y, const Parameters& params,
                                 std::shared_ptr<ML> ml)
     { 
-        /* Trains ml on X, y to generate output yhat = f(X). 
-        *  Input: 
-        *       X: n_features x n_samples matrix
-        *       y: n_samples vector of training labels
-        *       params: fewtwo parameters
-        *       ml: the ML model to be trained on X
-        *  Output:
-        *       yhat: n_samples vector of outputs
+    	/*!
+         * Trains ml on X, y to generate output yhat = f(X). 
+         *
+         *  Input: 
+         
+         *       X: n_features x n_samples matrix
+         *       y: n_samples vector of training labels
+         *       params: fewtwo parameters
+         *       ml: the ML model to be trained on X
+         
+         *  Output:
+         
+         *       yhat: n_samples vector of outputs
         */
 
         if (ml == nullptr)      // make new ML estimator if one is not provided 
@@ -179,15 +197,21 @@ namespace FT{
     void Evaluation::assign_fit(Individual& ind, MatrixXd& F, const VectorXd& yhat, 
                                 const VectorXd& y, const Parameters& params)
     {
-        /* assign raw errors to F, and aggregate fitnesses to individuals. 
-        *  Input: 
-        *       ind: individual 
-        *       F: n_samples x pop_size matrix of errors
-        *       yhat: predicted output of ind
-        *       y: true labels
-        *       params: fewtwo parameters
-        *  Output:
-        *       modifies F and ind.fitness
+        /*!
+         * assign raw errors to F, and aggregate fitnesses to individuals. 
+         *
+         *  Input: 
+         *
+         *       ind: individual 
+         *       F: n_samples x pop_size matrix of errors
+         *       yhat: predicted output of ind
+         *       y: true labels
+         *       params: fewtwo parameters
+         *
+        
+         *  Output:
+         
+         *       modifies F and ind.fitness
         */
         
         F.col(ind.loc) = (yhat - y).array().pow(2);
