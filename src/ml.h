@@ -21,17 +21,20 @@ using std::cout;
 namespace sh = shogun;
 
 namespace FT{
-
+	
+	/*!
+     * @class ML
+     * @brief class that specifies the machine learning algorithm to pair with Fewtwo. 
+     */
     class ML 
     {
-        /* class that specifies the machine learning algorithm to pair with Fewtwo. 
-         */
-
         public:
-        
+        	
             ML(string ml, bool classification)
             {
-                /* use string to specify a desired ML algorithm from shogun. */
+                /*!
+                 * use string to specify a desired ML algorithm from shogun.
+                 */
                 
                 sh::init_shogun_with_defaults();  // initialize shogun if needed
         
@@ -75,7 +78,9 @@ namespace FT{
 
     vector<double> ML::get_weights()
     {    
-        /* return weight vector from model. */
+        /*!
+         * return weight vector from model.
+         */
         vector<double> w;
         
         if (!type.compare("LeastAngleRegression") || !type.compare("LinearRidgeRegression"))

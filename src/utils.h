@@ -9,7 +9,9 @@ using namespace Eigen;
 
 namespace FT{
  
-    // load csv file into matrix. 
+    /*!
+     * load csv file into matrix. 
+     */
     template<typename M>
     M load_csv (const std::string & path) {
         std::ifstream indata;
@@ -29,7 +31,9 @@ namespace FT{
                                 RowMajor>>(values.data(), rows, values.size()/rows);
     }
     
-    // check if element is in vector.
+    /*!
+     * check if element is in vector.
+     */
     template<typename T>
     bool in(const vector<T> v, const T& i)
     {
@@ -42,7 +46,9 @@ namespace FT{
         return false;
     }
     
-    // check if element is not in vector.
+    /*!
+     * check if element is not in vector.
+     */
     template<typename T>
     bool not_in(const vector<T>& v, const T& i )
     {

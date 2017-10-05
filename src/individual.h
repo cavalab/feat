@@ -9,48 +9,64 @@ namespace FT{
     
     ////////////////////////////////////////////////////////////////////////////////// Declarations
 
-    // individual programs
+    /*!
+     * @class Individual
+     * @brief individual programs in the population
+     */
     struct Individual{
-        /* individual programs in the population. */
         
-        vector<Node> program;       // executable data structure
-        double fitness;             // aggregate fitness score
-        size_t loc;                 // index of individual in semantic matrix F
-        string eqn;                 // symbolic representation of program
-        vector<double> weights;     // weights from ML training on program output
-        unsigned int dim;           // dimensionality of individual
+        vector<Node> program;       ///< executable data structure
+        double fitness;             ///< aggregate fitness score
+        size_t loc;                 ///< index of individual in semantic matrix F
+        string eqn;                 ///< symbolic representation of program
+        vector<double> weights;     ///< weights from ML training on program output
+        unsigned int dim;           ///< dimensionality of individual
 
         Individual(){}
 
         ~Individual(){}
 
-        // calculate program output matrix Phi
+        /*!
+         * @brief calculate program output matrix Phi
+         */
         MatrixXd out(const MatrixXd& X, const VectorXd& y, const Parameters& params);
 
-        // return symbolic representation of program
+        /*!
+         * @brief return symbolic representation of program
+         */
         string get_eqn(char otype);
 
-        // setting and getting from individuals vector
+        /*!
+         * @brief setting and getting from individuals vector
+         */
         const Node operator [](int i) const {return program[i];}
         const Node & operator [](int i) {return program[i];}
 
-        // overload = to copy just the program
+        /*!
+         * @brief overload = to copy just the program
+         */
         Individual& operator=(Individual rhs)   // note: pass-by-value for implicit copy of rhs
         {
             std::swap(this->program , rhs.program);
             return *this;            
         }
 
-        // size
+        /*!
+         * @brief return size of program
+         */
         int size() const { return program.size(); }
         
-        // grab sub-tree locations given starting point.
+        /*!
+         * @brief grab sub-tree locations given starting point.
+         */
         size_t subtree(size_t i, char otype='0') const;
 
        // // get program depth.
        // unsigned int depth();
 
-        // get program dimensionality
+        /*!
+         * @brief get program dimensionality
+         */
         unsigned int get_dim();
 
         private:
@@ -63,12 +79,15 @@ namespace FT{
     MatrixXd Individual::out(const MatrixXd& X, const VectorXd& y, 
                                 const Parameters& params)
     {
-        /* evaluate program output. 
+        /*!
          * Input:
+         
          *      X: n_features x n_samples data
          *      y: target data
          *      params: Fewtwo parameters
+         
          * Output:
+         
          *      Phi: n_samples x n_features transformation
          */
 
@@ -115,9 +134,17 @@ namespace FT{
     size_t Individual::subtree(size_t i, char otype) const 
     {
 
-       /* finds indices of subtree in program with root i.
-        * Input: i, root index of subtree
-        * Output: k, last index in subtree
+       /*!
+        * finds indices of subtree in program with root i.
+        
+        * Input:
+        
+        *		i, root index of subtree
+        
+        * Output:
+        
+        *		k, last index in subtree
+        
         * note that this function assumes a subtree's arguments to be contiguous in the program.
         */
         
@@ -137,9 +164,12 @@ namespace FT{
     // get program dimensionality
     unsigned int Individual::get_dim()
     {    
-        /* returns the dimensionality, i.e. number of outputs, of a program.
-         *  the dimensionality is equal to the number of times the program arities are fully
-         *  satisfied. 
+        /*!
+         * Output:
+         
+         *	 	returns the dimensionality, i.e. number of outputs, of a program.
+         *   	the dimensionality is equal to the number of times the program arities are fully
+         *   	satisfied. 
          */
         if (dim == 0)        // only calculate if dim hasn't been assigned
         {
