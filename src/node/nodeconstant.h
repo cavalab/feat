@@ -12,7 +12,8 @@ namespace FT{
     {
     	public:
     		
-    		double value;           ///< value, for k and x types
+    		double d_value;           ///< value, for k and x types
+    		bool b_value;
     		
     		NodeConstant()
     		{
@@ -25,7 +26,7 @@ namespace FT{
     												arity['f'](0), 
     												arity['b'](0),
     												complexity(1), 
-    												value(v) {}
+    												b_value(v) {}
     		
     		
     		NodeConstant(std::string n, const double& v) : name(n), 
@@ -33,7 +34,7 @@ namespace FT{
     												arity['f'](0), 
     												arity['b'](0),
     												complexity(1), 
-    												value(v) {}
+    												d_value(v) {}
     		
     		/*!
              * @brief Evaluates the node and updates the stack states. 
@@ -43,9 +44,9 @@ namespace FT{
             	if (stack_f.size() >= arity['f'] && stack_b.size() >= arity['b'])
             	{
             		if (otype == 'b')
-                        stack_b.push_back(ArrayXi::Constant(X.cols(),int(value)));
+                        stack_b.push_back(ArrayXi::Constant(X.cols(),int(b_value)));
                     else 	
-                        stack_f.push_back(ArrayXd::Constant(X.cols(),value));
+                        stack_f.push_back(ArrayXd::Constant(X.cols(),d_value));
             	}
             }
 
@@ -57,9 +58,9 @@ namespace FT{
             	if (stack_f.size() >= arity['f'] && stack_b.size() >= arity['b'])
             	{
             		if (otype == 'b')
-                        stack_b.push_back(std::to_string(value));
+                        stack_b.push_back(std::to_string(b_value));
                     else 	
-                        stack_f.push_back(std::to_string(value));
+                        stack_f.push_back(std::to_string(d_value));
             	}
             }
     		
