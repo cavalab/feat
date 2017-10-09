@@ -14,16 +14,18 @@ namespace FT{
     	
     		NodeExponent()
     		{
-    			std::cerr << "error in node.h : invalid constructor called";
+    			std::cerr << "error in nodeexponent.h : invalid constructor called";
 				throw;
     		}
     	
-    		NodeExponent(std::string n) : name(n),
-    						     otype('f'),
-    						     arity['f'](2),
-    						     arity['b'](0),
-    						     complexity(4) {}
-    		
+    		NodeExponent(string n)
+    		{
+    			name = n;
+    			otype = 'f';
+    			arity['f'] = 2;
+    			arity['b'] = 0;
+    			complexity = 4;
+    		}
     		/*!
              * @brief Evaluates the node and updates the stack states. 
              */
@@ -51,3 +53,5 @@ namespace FT{
             }
     };
 }	
+
+#endif

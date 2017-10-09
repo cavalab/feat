@@ -14,16 +14,18 @@ namespace FT{
     	
     		NodeLessThan()
     		{
-    			std::cerr << "error in node.h : invalid constructor called";
+    			std::cerr << "error in nodelessthan.h : invalid constructor called";
 				throw;
     		}
     	
-    		NodeLessThan(std::string n) : name(n),
-    						     otype('b'),
-    						     arity['f'](2),
-    						     arity['b'](0),
-    						     complexity(2) {}
-    		
+    		NodeLessThan(string n)
+    		{
+    			name = n;
+    			otype = 'b';
+    			arity['f'] = 2;
+    			arity['b'] = 0;
+    			complexity = 2;
+    		}
     		/*!
              * @brief Evaluates the node and updates the stack states. 
              */
@@ -41,3 +43,5 @@ namespace FT{
             }
     };
 }	
+
+#endif

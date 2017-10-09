@@ -8,22 +8,24 @@ license: GNU/GPL v3
 #include "node.h"
 
 namespace FT{
-	class NodeSquareRoot : public Node
+	class NodeRoot : public Node
     {
     	public:
     	
-    		NodeSquareRoot()
+    		NodeRoot()
     		{
-    			std::cerr << "error in node.h : invalid constructor called";
+    			std::cerr << "error in noderoot.h : invalid constructor called";
 				throw;
     		}
     	
-    		NodeSquareRoot(std::string n) : name(n),
-    						     otype('f'),
-    						     arity['f'](1),
-    						     arity['b'](0),
-    						     complexity(2) {}
-    		
+    		NodeRoot(string n)
+    		{
+    			name = n;
+    			otype = 'f';
+    			arity['f'] = 1;
+    			arity['b'] = 0;
+    			complexity = 2;
+    		}
     		/*!
              * @brief Evaluates the node and updates the stack states. 
              */
@@ -49,3 +51,5 @@ namespace FT{
             }
     };
 }	
+
+#endif

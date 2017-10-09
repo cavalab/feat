@@ -14,16 +14,18 @@ namespace FT{
     	
     		NodeSubtract()
     		{
-    			std::cerr << "error in node.h : invalid constructor called";
+    			std::cerr << "error in nodesubtract.h : invalid constructor called";
 				throw;
     		}
     	
-    		NodeSubtract(std::string n) : name(n),
-    							   otype('f'),
-    							   arity['f'](2),
-    							   arity['b'](0),
-    							   complexity(1) {}
-    		
+    		NodeSubtract(string n)
+    		{
+    			name = n;
+    			otype = 'f';
+    			arity['f'] = 2;
+    			arity['b'] = 0;
+    			complexity = 1;
+    		}
     		/*!
              * @brief Evaluates the node and updates the stack states. 
              */
@@ -51,3 +53,5 @@ namespace FT{
             }
     };
 }	
+
+#endif

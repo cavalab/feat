@@ -14,16 +14,18 @@ namespace FT{
     	
     		NodeEqual()
     		{
-    			std::cerr << "error in node.h : invalid constructor called";
+    			std::cerr << "error in nodeequal.h : invalid constructor called";
 				throw;
     		}
     	
-    		NodeEqual(std::string n) : name(n),
-    						     otype('b'),
-    						     arity['f'](2),
-    						     arity['b'](0),
-    						     complexity(1) {}
-    		
+    		NodeEqual(string n)
+    		{
+    			name = n;
+    			otype = 'b';
+    			arity['f'] = 2;
+    			arity['b'] = 0;
+    			complexity = 1;
+    		}
     		/*!
              * @brief Evaluates the node and updates the stack states. 
              */
@@ -41,3 +43,5 @@ namespace FT{
             }
     };
 }	
+
+#endif

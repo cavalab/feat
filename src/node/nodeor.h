@@ -8,22 +8,24 @@ license: GNU/GPL v3
 #include "node.h"
 
 namespace FT{
-	class NodeNot : public Node
+	class NodeOr : public Node
     {
     	public:
     	
-    		NodeNot()
+    		NodeOr()
     		{
-    			std::cerr << "error in node.h : invalid constructor called";
+    			std::cerr << "error in nodeor.h : invalid constructor called";
 				throw;
     		}
     	
-    		NodeNot(std::string n) : name(n),
-    						     otype('b'),
-    						     arity['f'](0),
-    						     arity['b'](1),
-    						     complexity(1) {}
-    		
+    		NodeOr(string n)
+    		{
+    			name = n;
+    			otype = 'b';
+    			arity['f'] = 0;
+    			arity['b'] = 2;
+    			complexity = 2;
+    		}
     		/*!
              * @brief Evaluates the node and updates the stack states. 
              */
@@ -42,3 +44,5 @@ namespace FT{
     };
     
 }	
+
+#endif

@@ -14,15 +14,18 @@ namespace FT{
     	
     		NodeThen()
     		{
-    			std::cerr << "error in node.h : invalid constructor called";
+    			std::cerr << "error in nodethen.h : invalid constructor called";
 				throw;
     		}
     	
-    		NodeThen(std::string n) : name(n),
-    						     otype('f'),
-    						     arity['f'](1),
-    						     arity['b'](2),
-    						     complexity(5) {}
+    		NodeThen(string n)
+    		{
+    			name = n;
+    			otype = 'f';
+    			arity['f'] = 1;
+    			arity['b'] = 2;
+    			complexity = 5;
+    		}
     		
     		/*!
              * @brief Evaluates the node and updates the stack states. 
@@ -41,3 +44,5 @@ namespace FT{
             }
     };
 }	
+
+#endif

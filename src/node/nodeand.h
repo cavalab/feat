@@ -14,16 +14,18 @@ namespace FT{
     	
     		NodeAnd()
     		{
-    			std::cerr << "error in node.h : invalid constructor called";
+    			std::cerr << "error in nodeand.h : invalid constructor called";
 				throw;
     		}
     	
-    		NodeAnd(char n) : name(n),
-    						     otype('b'),
-    						     arity['f'](0),
-    						     arity['b'](2),
-    						     complexity(2) {}
-    		
+    		NodeAnd(string n)
+    		{
+    			name = n;
+    			otype = 'b';
+    			arity['f'] = 0;
+    			arity['b'] = 2;
+    			complexity = 2;
+    		}
     		/*!
              * @brief Evaluates the node and updates the stack states. 
              */
@@ -41,3 +43,5 @@ namespace FT{
             }
     };
 }	
+
+#endif

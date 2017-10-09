@@ -15,16 +15,19 @@ namespace FT{
 		
 			NodeVariable()
 			{
-				std::cerr << "error in node.h : invalid constructor called";
+				std::cerr << "error in nodevariable.h : invalid constructor called";
 				throw;
 			}
 		
-			NodeVariable(string n, const size_t& l) : name(n),
-													otype('f'),
-													arity['f'](0),
-													arity['b'](0),
-													complexity(1),
-													loc(l) {}
+			NodeVariable(string n, const size_t& l)
+			{
+    			name = n;
+    			otype = 'f';
+    			arity['f'] = 0;
+    			arity['b'] = 0;
+    			complexity = 1;
+    			loc = l;
+    		}
 		
 			void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXi>& stack_b)
 		    {
@@ -50,5 +53,7 @@ namespace FT{
 		                stack_f.push_back("x_" + std::to_string(loc));
 		    	}
 		    }
-	}
-}	
+	};
+}
+
+#endif

@@ -5,9 +5,10 @@ license: GNU/GPL v3
 #ifndef NODE_H
 #define NODE_H
 
+#include<map>
 using std::vector;
 using std::string;
-using std::map
+using std::map;
 using Eigen::ArrayXd;
 using Eigen::ArrayXi;
 
@@ -22,15 +23,15 @@ namespace FT{
     class Node
     {       
         public:
-            std::string name;              				///< node type
+            string name;              				///< node type
             char otype;             				///< output type
             std::map<char, unsigned int> arity;		///< floating arity of the operator 
             int complexity;         ///< complexity of node
             
             Node()
             {
-            	std::cerr << "error in node.h : invalid constructor called";
-				throw;
+            	//std::cerr << "error in parent node.h : invalid constructor called";
+				//throw;
             }
             /*!
              * @brief Evaluates the node and updates the stack states. 

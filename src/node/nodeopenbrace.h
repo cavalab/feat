@@ -14,16 +14,18 @@ namespace FT{
     	
     		NodeOpenBrace()
     		{
-    			std::cerr << "error in node.h : invalid constructor called";
+    			std::cerr << "error in nodeopenbrace.h : invalid constructor called";
 				throw;
     		}
     	
-    		NodeOpenBrace(std::string n) : name(n),
-    						     otype('b'),
-    						     arity['f'](2),
-    						     arity['b'](0),
-    						     complexity(2) {}
-    		
+    		NodeOpenBrace(string n)
+    		{
+    			name = n;
+    			otype = 'b';
+    			arity['f'] = 2;
+    			arity['b'] = 0;
+    			complexity = 2;
+    		}
     		/*!
              * @brief Evaluates the node and updates the stack states. 
              */
@@ -41,3 +43,5 @@ namespace FT{
             }
     };
 }	
+
+#endif

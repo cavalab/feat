@@ -14,16 +14,18 @@ namespace FT{
     	
     		NodeCosine()
     		{
-    			std::cerr << "error in node.h : invalid constructor called";
+    			std::cerr << "error in nodecosine.h : invalid constructor called";
 				throw;
     		}
     	
-    		NodeCosine(char n) : name(n),
-    						     otype('f'),
-    						     arity['f'](1),
-    						     arity['b'](0),
-    						     complexity(3) {}
-    		
+    		NodeCosine(string n)
+    		{
+    			name = n;
+    			otype = 'f';
+    			arity['f'] = 1;
+    			arity['b'] = 0;
+    			complexity = 3;
+    		}
     		/*!
              * @brief Evaluates the node and updates the stack states. 
              */
@@ -49,3 +51,5 @@ namespace FT{
             }
     };
 }	
+
+#endif

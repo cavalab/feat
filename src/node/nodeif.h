@@ -14,16 +14,18 @@ namespace FT{
     	
     		NodeIf()
     		{
-    			std::cerr << "error in node.h : invalid constructor called";
+    			std::cerr << "error in nodeif.h : invalid constructor called";
 				throw;
     		}
     	
-    		NodeIf(std::string n) : name(n),
-    						     otype('f'),
-    						     arity['f'](1),
-    						     arity['b'](1),
-    						     complexity(5) {}
-    		
+    		NodeIf(string n)
+    		{
+    			name = n;
+    			otype = 'f';
+    			arity['f'] = 1;
+    			arity['b'] = 1;
+    			complexity = 5;
+    		}
     		/*!
              * @brief Evaluates the node and updates the stack states. 
              */
@@ -41,3 +43,5 @@ namespace FT{
             }
     };
 }	
+
+#endif

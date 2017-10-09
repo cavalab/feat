@@ -14,16 +14,18 @@ namespace FT{
     	
     		NodeNot()
     		{
-    			std::cerr << "error in node.h : invalid constructor called";
+    			std::cerr << "error in nodenot.h : invalid constructor called";
 				throw;
     		}
     	
-    		NodeNot(std::string n) : name(n),
-    						     otype('b'),
-    						     arity['f'](0),
-    						     arity['b'](1),
-    						     complexity(1) {}
-    		
+    		NodeNot(string n)
+    		{
+    			name = n;
+    			otype = 'b';
+    			arity['f'] = 0;
+    			arity['b'] = 1;
+    			complexity = 1;
+    		}
     		/*!
              * @brief Evaluates the node and updates the stack states. 
              */
@@ -42,3 +44,5 @@ namespace FT{
     };
     
 }	
+
+#endif

@@ -17,25 +17,30 @@ namespace FT{
     		
     		NodeConstant()
     		{
-    			std::cerr << "error in node.h : invalid constructor called";
+    			std::cerr << "error in nodeconstant.h : invalid constructor called";
 				throw;
     		}
     		
-    		NodeConstant(std::string n, bool& v) : name(n), 
-    												otype('b'),
-    												arity['f'](0), 
-    												arity['b'](0),
-    												complexity(1), 
-    												b_value(v) {}
+    		NodeConstant(string n, bool& v)
+    		{
+    			name = n;
+    			otype = 'b';
+    			arity['f'] = 0;
+    			arity['b'] = 0;
+    			complexity = 1;
+    			b_value = v;
+    		}
     		
     		
-    		NodeConstant(std::string n, const double& v) : name(n), 
-    												otype('f'),
-    												arity['f'](0), 
-    												arity['b'](0),
-    												complexity(1), 
-    												d_value(v) {}
-    		
+    		NodeConstant(string n, const double& v)
+    		{
+    			name = n;
+    			otype = 'f';
+    			arity['f'] = 0;
+    			arity['b'] = 0;
+    			complexity = 1;
+    			d_value = v;
+    		}
     		/*!
              * @brief Evaluates the node and updates the stack states. 
              */
@@ -66,3 +71,5 @@ namespace FT{
     		
     };
 }	
+
+#endif

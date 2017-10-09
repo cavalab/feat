@@ -14,16 +14,18 @@ namespace FT{
     	
     		NodeLog()
     		{
-    			std::cerr << "error in node.h : invalid constructor called";
+    			std::cerr << "error in nodelog.h : invalid constructor called";
 				throw;
     		}
     	
-    		NodeLog(std::string n) : name(n),
-    						  otype('f'),
-    						  arity['f'](1),
-    						  arity['b'](0),
-    						  complexity(4) {}
-    		
+    		NodeLog(string n)
+    		{
+    			name = n;
+    			otype = 'f';
+    			arity['f'] = 1;
+    			arity['b'] = 0;
+    			complexity = 4;
+    		}
     		/*!
              * @brief Evaluates the node and updates the stack states. 
              */
@@ -49,3 +51,5 @@ namespace FT{
             }
     };
 }	
+
+#endif

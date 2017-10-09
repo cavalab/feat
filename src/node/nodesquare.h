@@ -14,17 +14,18 @@ namespace FT{
     	
     		NodeSquare()
     		{
-    			std::cerr << "error in node.h : invalid constructor called";
+    			std::cerr << "error in nodesquare.h : invalid constructor called";
 				throw;
     		}
     	
-    		NodeSquare(std::string n) : name(n),
-    						     otype('f'),
-    						     arity['f'](1),
-    						     arity['b'](0),
-    						     complexity(0) {}
-    		
-    		
+    		NodeSquare(string n)    		
+    		{
+    			name = n;
+    			otype = 'f';
+    			arity['f'] = 1;
+    			arity['b'] = 0;
+    			complexity = 1;
+    		}
     		/*!
              * @brief Evaluates the node and updates the stack states. 
              */
@@ -50,3 +51,5 @@ namespace FT{
             }
     };
 }	
+
+#endif
