@@ -2,25 +2,19 @@
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
-#ifndef NODE_SUBTRACT
-#define NODE_SUBTRACT
+#ifndef NODE_SUB
+#define NODE_SUB
 
 #include "node.h"
 
 namespace FT{
-	class NodeSubtract : public Node
+	class NodeSub : public Node
     {
     	public:
     	
-    		NodeSubtract()
+    		NodeSub()
     		{
-    			std::cerr << "error in nodesubtract.h : invalid constructor called";
-				throw;
-    		}
-    	
-    		NodeSubtract(string n)
-    		{
-    			name = n;
+    			name = "-";
     			otype = 'f';
     			arity['f'] = 2;
     			arity['b'] = 0;
@@ -29,7 +23,7 @@ namespace FT{
     		/*!
              * @brief Evaluates the node and updates the stack states. 
              */
-            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXi>& stack_b)
+            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b)
             {
             	if (stack_f.size() >= arity['f'] && stack_b.size() >= arity['b'])
             	{

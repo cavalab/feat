@@ -10,7 +10,7 @@ using std::vector;
 using std::string;
 using std::map;
 using Eigen::ArrayXd;
-using Eigen::ArrayXi;
+using Eigen::ArrayXb;
 
 
 namespace FT{
@@ -28,15 +28,12 @@ namespace FT{
             std::map<char, unsigned int> arity;		///< floating arity of the operator 
             int complexity;         ///< complexity of node
             
-            Node()
-            {
-            	//std::cerr << "error in parent node.h : invalid constructor called";
-				//throw;
-            }
+            virtual ~Node(){}
             /*!
              * @brief Evaluates the node and updates the stack states. 
              */            
-            virtual void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXi>& stack_b) = 0;
+            virtual void evaluate(const MatrixXd& X, const VectorXd& y,vector<ArrayXd>& stack_f, 
+                    vector<ArrayXb>& stack_b) = 0;
 
             /*!
              * @brief evaluates the node symbolically

@@ -2,25 +2,19 @@
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
-#ifndef NODE_SINE
-#define NODE_SINE
+#ifndef NODE_SIN
+#define NODE_SIN
 
 #include "node.h"
 
 namespace FT{
-	class NodeSine : public Node
+	class NodeSin : public Node
     {
     	public:
     	
-    		NodeSine()
-    		{
-    			std::cerr << "error in nodesine.h : invalid constructor called";
-				throw;
-    		}
-    	
-    		NodeSine(string n)
-    		{
-    			name = n;
+    		NodeSin()
+       		{
+    			name = "sin";
     			otype = 'f';
     			arity['f'] = 1;
     			arity['b'] = 0;
@@ -29,7 +23,7 @@ namespace FT{
     		/*!
              * @brief Evaluates the node and updates the stack states. 
              */
-            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXi>& stack_b)
+            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b)
             {
             	if (stack_f.size() >= arity['f'] && stack_b.size() >= arity['b'])
             	{

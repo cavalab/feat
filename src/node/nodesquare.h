@@ -14,13 +14,7 @@ namespace FT{
     	
     		NodeSquare()
     		{
-    			std::cerr << "error in nodesquare.h : invalid constructor called";
-				throw;
-    		}
-    	
-    		NodeSquare(string n)    		
-    		{
-    			name = n;
+    			name = "^2";
     			otype = 'f';
     			arity['f'] = 1;
     			arity['b'] = 0;
@@ -29,7 +23,8 @@ namespace FT{
     		/*!
              * @brief Evaluates the node and updates the stack states. 
              */
-            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXi>& stack_b)
+            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
+                    vector<ArrayXb>& stack_b)
             {
             	if (stack_f.size() >= arity['f'] && stack_b.size() >= arity['b'])
             	{

@@ -12,24 +12,18 @@ namespace FT{
 	{
 		public:
 			size_t loc;             ///< column location in X, for x types
-		
-			NodeVariable()
+			
+			NodeVariable(const size_t& l, char ntype = 'f')
 			{
-				std::cerr << "error in nodevariable.h : invalid constructor called";
-				throw;
-			}
-		
-			NodeVariable(string n, const size_t& l)
-			{
-    			name = n;
-    			otype = 'f';
+    			name = "x";
+    			otype = ntype;
     			arity['f'] = 0;
     			arity['b'] = 0;
     			complexity = 1;
     			loc = l;
     		}
 		
-			void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXi>& stack_b)
+			void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b)
 		    {
 		    	if (stack_f.size() >= arity['f'] && stack_b.size() >= arity['b'])
 		    	{

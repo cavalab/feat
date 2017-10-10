@@ -2,25 +2,19 @@
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
-#ifndef NODE_ROOT
-#define NODE_ROOT
+#ifndef NODE_SQRT
+#define NODE_SQRT
 
 #include "node.h"
 
 namespace FT{
-	class NodeRoot : public Node
+	class NodeSqrt : public Node
     {
     	public:
     	
-    		NodeRoot()
-    		{
-    			std::cerr << "error in noderoot.h : invalid constructor called";
-				throw;
-    		}
-    	
-    		NodeRoot(string n)
-    		{
-    			name = n;
+    		NodeSqrt()
+            {
+                name = "sqrt";
     			otype = 'f';
     			arity['f'] = 1;
     			arity['b'] = 0;
@@ -29,7 +23,7 @@ namespace FT{
     		/*!
              * @brief Evaluates the node and updates the stack states. 
              */
-            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXi>& stack_b)
+            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b)
             {
             	if (stack_f.size() >= arity['f'] && stack_b.size() >= arity['b'])
             	{

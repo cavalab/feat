@@ -92,7 +92,7 @@ namespace FT{
          */
 
         vector<ArrayXd> stack_f; 
-        vector<ArrayXi> stack_b;
+        vector<ArrayXb> stack_b;
 
         // evaluate each node in program
         for (auto n : program) 

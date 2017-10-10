@@ -11,16 +11,10 @@ namespace FT{
 	class NodeGreaterThan : public Node
     {
     	public:
-    	
+    	   	
     		NodeGreaterThan()
     		{
-    			std::cerr << "error in nodegreaterthan.h : invalid constructor called";
-				throw;
-    		}
-    	
-    		NodeGreaterThan(string n)
-    		{
-    			name = n;
+    			name = ">";
     			otype = 'b';
     			arity['f'] = 2;
     			arity['b'] = 0;
@@ -29,9 +23,12 @@ namespace FT{
     		/*!
              * @brief Evaluates the node and updates the stack states. 
              */
-            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXi>& stack_b)
+            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
+                    vector<ArrayXb>& stack_b)
             {
-            	std::cerr << "invalid operator name\n";
+                ArrayXf x = stack_f.back(); stack_f.pop_back();
+                ArrayXf y = stack_f.back(); stack_f.pop_back();
+                stack_b.push_back(x > y);
             }
 
             /*!
@@ -39,7 +36,9 @@ namespace FT{
              */
             void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
             {
-            	std::cerr << "invalid operator name\n";
+            	string x = stack_f.back(); stack_f.pop_back();
+                string y = stack_f.back(); stack_f.pop_back();
+                stack_b.push_back("(" + x + ">" + y + ")");
             }
     };
 }	

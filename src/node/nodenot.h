@@ -13,14 +13,8 @@ namespace FT{
     	public:
     	
     		NodeNot()
-    		{
-    			std::cerr << "error in nodenot.h : invalid constructor called";
-				throw;
-    		}
-    	
-    		NodeNot(string n)
-    		{
-    			name = n;
+       		{
+    			name = "not";
     			otype = 'b';
     			arity['f'] = 0;
     			arity['b'] = 1;
@@ -29,9 +23,11 @@ namespace FT{
     		/*!
              * @brief Evaluates the node and updates the stack states. 
              */
-            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXi>& stack_b)
+            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
+                    vector<ArrayXb>& stack_b)
             {
-            	std::cerr << "invalid operator name\n";
+            	ArrayXb x = stack_b.back(); stack_b.pop_back();
+                stack_b.push_back(!x);
             }
 
             /*!
@@ -39,7 +35,8 @@ namespace FT{
              */
             void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
             {
-            	std::cerr << "invalid operator name\n";
+            	string x = stack_b.back(); stack_b.pop_back();
+                stack_b.push_back("NOT(" + x + ")");
             }
     };
     

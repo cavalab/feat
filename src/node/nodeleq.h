@@ -2,22 +2,22 @@
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
-#ifndef NODE_OR
-#define NODE_OR
+#ifndef NODE_OPENBRACE
+#define NODE_OPENBRACE
 
 #include "node.h"
 
 namespace FT{
-	class NodeOr : public Node
+	class NodeLEQ : public Node
     {
     	public:
     	
-    		NodeOr()
-            {
-                name = "or";
+    		NodeLEQ()
+    		{
+    			name = "<=";
     			otype = 'b';
-    			arity['f'] = 0;
-    			arity['b'] = 2;
+    			arity['f'] = 2;
+    			arity['b'] = 0;
     			complexity = 2;
     		}
     		/*!
@@ -26,11 +26,9 @@ namespace FT{
             void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
                     vector<ArrayXb>& stack_b)
             {
-                ArrayXb x = stack_b.back(); stack_b.pop_back();
-                ArrayXb y = stack_b.back(); stack_b.pop_back();
-
-                stack_b.push_back(x || y);
-
+              	ArrayXf x = stack_f.back(); stack_f.pop_back();
+                ArrayXf y = stack_f.back(); stack_f.pop_back();
+                stack_b.push_back(x <= y);
             }
 
             /*!
@@ -38,13 +36,11 @@ namespace FT{
              */
             void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
             {
-                string x = stack_b.back(); stack_b.pop_back();
-                string y = stack_b.back(); stack_b.pop_back();
-
-                stack_b.push_back("(" + x + " || " + y + ")");
+            	string x = stack_f.back(); stack_f.pop_back();
+                string y = stack_f.back(); stack_f.pop_back();
+                stack_b.push_back("(" + x + "<=" + y + ")");
             }
-    };
-    
+      };
 }	
 
 #endif
