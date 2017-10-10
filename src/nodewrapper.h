@@ -12,7 +12,7 @@ license: GNU/GPL v3
 #include "./node/nodeand.h"
 #include "./node/nodegeq.h"
 #include "./node/nodeconstant.h"
-#include "./node/nodecosine.h"
+#include "./node/nodecos.h"
 #include "./node/nodecube.h"
 #include "./node/nodedivide.h"
 #include "./node/nodeequal.h"
@@ -26,11 +26,11 @@ license: GNU/GPL v3
 #include "./node/nodenot.h"
 #include "./node/nodeleq.h"
 #include "./node/nodeor.h"
-#include "./node/noderoot.h"
-#include "./node/nodesine.h"
+#include "./node/nodesqrt.h"
+#include "./node/nodesin.h"
 #include "./node/nodesquare.h"
 #include "./node/nodesubtract.h"
-#include "./node/nodethen.h"
+#include "./node/nodeifthenelse.h"
 #include "./node/nodevariable.h"
 
 #endif
