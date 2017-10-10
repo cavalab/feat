@@ -1,23 +1,23 @@
-/home/tilak/fewtwo/node/src/rnd.h:21: warning: Compound FT::Rnd is not documented.
-/home/tilak/fewtwo/node/src/selection.h:70: warning: Compound FT::Pareto is not documented.
-/home/tilak/fewtwo/node/src/selection.h:40: warning: Compound FT::Lexicase is not documented.
-/home/tilak/fewtwo/node/src/selection.h:19: warning: Compound FT::SelectionOperator is not documented.
-/home/tilak/fewtwo/node/src/variation.h:18: warning: Compound FT::Variation is not documented.
-/home/tilak/fewtwo/node/src/individual.h:43: warning: Member operator[](int i) (function) of class FT::Individual is not documented.
-/home/tilak/fewtwo/node/src/ml.h:74: warning: Member p_est (variable) of class FT::ML is not documented.
-/home/tilak/fewtwo/node/src/ml.h:75: warning: Member type (variable) of class FT::ML is not documented.
-/home/tilak/fewtwo/node/src/params.h:33: warning: Member Parameters(int pop_size, int gens, string &ml, bool classification, int max_stall, char otype, int vebosity, string functions, unsigned int max_depth, unsigned int max_dim) (function) of class FT::Parameters is not documented.
-/home/tilak/fewtwo/node/src/selection.h:30: warning: Member select(const MatrixXd &F, const Parameters &p) (function) of class FT::SelectionOperator is not documented.
-/home/tilak/fewtwo/node/src/population.h:27: warning: Member Population(int p) (function) of class FT::Population is not documented.
-/home/tilak/fewtwo/node/src/population.h:64: warning: Member operator[](int i) (function) of class FT::Population is not documented.
-/home/tilak/fewtwo/node/src/rnd.h:58: warning: Member rnd_int(int lowerLimit, int upperLimit) (function) of class FT::Rnd is not documented.
-/home/tilak/fewtwo/node/src/rnd.h:64: warning: Member rnd_flt(float min=0.0, float max=1.0) (function) of class FT::Rnd is not documented.
-/home/tilak/fewtwo/node/src/rnd.h:70: warning: Member rnd_dbl(double min=0.0, double max=1.0) (function) of class FT::Rnd is not documented.
-/home/tilak/fewtwo/node/src/rnd.h:76: warning: Member operator()(unsigned i) (function) of class FT::Rnd is not documented.
-/home/tilak/fewtwo/node/src/rnd.h:80: warning: Member operator()() (function) of class FT::Rnd is not documented.
-/home/tilak/fewtwo/node/src/rnd.h:83: warning: Member shuffle(RandomAccessIterator first, RandomAccessIterator last) (function) of class FT::Rnd is not documented.
-/home/tilak/fewtwo/node/src/rnd.h:93: warning: Member select_randomly(Iter start, Iter end) (function) of class FT::Rnd is not documented.
-/home/tilak/fewtwo/node/src/rnd.h:124: warning: Member rg (variable) of class FT::Rnd is not documented.
-/home/tilak/fewtwo/node/src/selection.h:85: warning: Member pselector (variable) of class FT::Selection is not documented.
-/home/tilak/fewtwo/node/src/selection.h:30: warning: Member select(const MatrixXd &F, const Parameters &p) (function) of class FT::SelectionOperator is not documented.
-/home/tilak/fewtwo/node/src/selection.h:30: warning: Member select(const MatrixXd &F, const Parameters &p) (function) of class FT::SelectionOperator is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/rnd.h:21: warning: Compound FT::Rnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection.h:70: warning: Compound FT::Pareto is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection.h:40: warning: Compound FT::Lexicase is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection.h:19: warning: Compound FT::SelectionOperator is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/variation.h:18: warning: Compound FT::Variation is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/individual.h:43: warning: Member operator[](int i) (function) of class FT::Individual is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/ml.h:74: warning: Member p_est (variable) of class FT::ML is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/ml.h:75: warning: Member type (variable) of class FT::ML is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/params.h:33: warning: Member Parameters(int pop_size, int gens, string &ml, bool classification, int max_stall, char otype, int vebosity, string functions, unsigned int max_depth, unsigned int max_dim) (function) of class FT::Parameters is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection.h:30: warning: Member select(const MatrixXd &F, const Parameters &p) (function) of class FT::SelectionOperator is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:27: warning: Member Population(int p) (function) of class FT::Population is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:64: warning: Member operator[](int i) (function) of class FT::Population is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/rnd.h:58: warning: Member rnd_int(int lowerLimit, int upperLimit) (function) of class FT::Rnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/rnd.h:64: warning: Member rnd_flt(float min=0.0, float max=1.0) (function) of class FT::Rnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/rnd.h:70: warning: Member rnd_dbl(double min=0.0, double max=1.0) (function) of class FT::Rnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/rnd.h:76: warning: Member operator()(unsigned i) (function) of class FT::Rnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/rnd.h:80: warning: Member operator()() (function) of class FT::Rnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/rnd.h:83: warning: Member shuffle(RandomAccessIterator first, RandomAccessIterator last) (function) of class FT::Rnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/rnd.h:93: warning: Member select_randomly(Iter start, Iter end) (function) of class FT::Rnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/rnd.h:124: warning: Member rg (variable) of class FT::Rnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection.h:85: warning: Member pselector (variable) of class FT::Selection is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection.h:30: warning: Member select(const MatrixXd &F, const Parameters &p) (function) of class FT::SelectionOperator is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection.h:30: warning: Member select(const MatrixXd &F, const Parameters &p) (function) of class FT::SelectionOperator is not documented.
