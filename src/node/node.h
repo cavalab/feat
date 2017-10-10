@@ -10,7 +10,7 @@ using std::vector;
 using std::string;
 using std::map;
 using Eigen::ArrayXd;
-using Eigen::ArrayXb;
+//using Eigen::ArrayXb;
 
 
 namespace FT{

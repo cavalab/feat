@@ -16,7 +16,7 @@ license: GNU/GPL v3
 // stuff being used
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
-typedef Eigen::Array<bool,Dynamic,1> ArrayXb;
+typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
 using std::vector;
 using std::string;
 using std::shared_ptr;
