@@ -94,79 +94,79 @@ namespace FT{
     {
     	if (str.compare("+") == 0)
     	{
-    		return std::shared_ptr<Node>(new NodeAdd(str));
+    		return std::shared_ptr<Node>(new NodeAdd());
     	}
-    	if (str.compare("and") == 0)
-    		return std::shared_ptr<Node>(new NodeAnd(str));
+    	else if (str.compare("and") == 0)
+    		return std::shared_ptr<Node>(new NodeAnd());
     		
-    	if (str.compare("}") == 0)
-    		return std::shared_ptr<Node>(new NodeCloseBrace(str));
+    	else if (str.compare(">=") == 0)
+    		return std::shared_ptr<Node>(new NodeGEQ());
     		
-    	if (str.compare("doubleConst") == 0)
-    		return std::shared_ptr<Node>(new NodeConstant(str, d_val));
+    	else if (str.compare("doubleConst") == 0)
+    		return std::shared_ptr<Node>(new NodeConstant(d_val));
     		
-    	if (str.compare("boolConst") == 0)
-    		return std::shared_ptr<Node>(new NodeConstant(str, b_val));
+    	else if (str.compare("boolConst") == 0)
+    		return std::shared_ptr<Node>(new NodeConstant(b_val));
     		
-    	if (str.compare("cos") == 0)
-    		return std::shared_ptr<Node>(new NodeCosine(str));
+    	else if (str.compare("cos") == 0)
+    		return std::shared_ptr<Node>(new NodeCos());
     		
-    	if (str.compare("cube") == 0)
-    		return std::shared_ptr<Node>(new NodeCube(str));
+    	else if (str.compare("^3") == 0)
+    		return std::shared_ptr<Node>(new NodeCube());
     		
-    	if (str.compare("/") == 0)
-    		return std::shared_ptr<Node>(new NodeDivide(str));
+    	else if (str.compare("/") == 0)
+    		return std::shared_ptr<Node>(new NodeDivide());
     		
-    	if (str.compare("=") == 0)
-    		return std::shared_ptr<Node>(new NodeEqual(str));
+    	else if (str.compare("=") == 0)
+    		return std::shared_ptr<Node>(new NodeEqual());
     		
-    	if (str.compare("^") == 0)
-    		return std::shared_ptr<Node>(new NodeExponent(str));
+    	else if (str.compare("^") == 0)
+    		return std::shared_ptr<Node>(new NodeExponent());
     		
-    	if (str.compare("exp") == 0)
-    		return std::shared_ptr<Node>(new NodeExponential(str));
+    	else if (str.compare("exp") == 0)
+    		return std::shared_ptr<Node>(new NodeExponential());
     		
-    	if (str.compare(">") == 0)
-    		return std::shared_ptr<Node>(new NodeGreaterThan(str));
+    	else if (str.compare(">") == 0)
+    		return std::shared_ptr<Node>(new NodeGreaterThan());
     		
-    	if (str.compare("if") == 0)
-    		return std::shared_ptr<Node>(new NodeIf(str));
+    	else if (str.compare("else if") == 0)
+    		return std::shared_ptr<Node>(new NodeIf());
     		
-    	if (str.compare("<") == 0)
-    		return std::shared_ptr<Node>(new NodeLessThan(str));
+    	else if (str.compare("<") == 0)
+    		return std::shared_ptr<Node>(new NodeLessThan());
     		
-    	if (str.compare("log") == 0)
-    		return std::shared_ptr<Node>(new NodeLog(str));
+    	else if (str.compare("log") == 0)
+    		return std::shared_ptr<Node>(new NodeLog());
     		
-    	if (str.compare("*") == 0)
-    		return std::shared_ptr<Node>(new NodeMultiply(str));
+    	else if (str.compare("*") == 0)
+    		return std::shared_ptr<Node>(new NodeMultiply());
     		
-    	if (str.compare("!") == 0)
-    		return std::shared_ptr<Node>(new NodeNot(str));
+    	else if (str.compare("not") == 0)
+    		return std::shared_ptr<Node>(new NodeNot());
     	
-    	if (str.compare("{") == 0)
-    		return std::shared_ptr<Node>(new NodeOpenBrace(str));
+    	else if (str.compare("<=") == 0)
+    		return std::shared_ptr<Node>(new NodeLEQ());
     	
-    	if (str.compare("|") == 0)
-    		return std::shared_ptr<Node>(new NodeOr(str));
+    	else if (str.compare("|") == 0)
+    		return std::shared_ptr<Node>(new NodeOr());
     		
-    	if (str.compare("sqroot") == 0)
-    		return std::shared_ptr<Node>(new NodeRoot(str));
+    	else if (str.compare("sqrt") == 0)
+    		return std::shared_ptr<Node>(new NodeSqrt());
     	
-    	if (str.compare("sin") == 0)
-    		return std::shared_ptr<Node>(new NodeSine(str));
+    	else if (str.compare("sin") == 0)
+    		return std::shared_ptr<Node>(new NodeSin());
     		
-    	if (str.compare("square") == 0)
-    		return std::shared_ptr<Node>(new NodeSquare(str));
+    	else if (str.compare("^2") == 0)
+    		return std::shared_ptr<Node>(new NodeSquare());
     	
-    	if (str.compare("-") == 0)
-    		return std::shared_ptr<Node>(new NodeSubtract(str));
+    	else if (str.compare("-") == 0)
+    		return std::shared_ptr<Node>(new NodeSubtract());
     	
-    	if (str.compare("then") == 0)
-    		return std::shared_ptr<Node>(new NodeThen(str));
+    	else if (str.compare("then") == 0)
+    		return std::shared_ptr<Node>(new NodeThen());
     	
-    	if (str.compare("variable") == 0)
-    		return std::shared_ptr<Node>(new NodeVariable(str, loc));
+    //	if (str.compare("variable") == 0)
+    //		return std::shared_ptr<Node>(new NodeVariable(str, loc));
     }
 
     void Parameters::set_functions(string fs)
