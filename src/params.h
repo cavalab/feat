@@ -92,81 +92,88 @@ namespace FT{
     
     std::shared_ptr<Node> Parameters::createNode(string str, double d_val, bool b_val, size_t loc)
     {
-    	if (str.compare("+") == 0)
-    	{
+        // algebraic operators
+    	if (str.compare("+") == 0) 
     		return std::shared_ptr<Node>(new NodeAdd());
-    	}
-    	else if (str.compare("and") == 0)
-    		return std::shared_ptr<Node>(new NodeAnd());
-    		
-    	else if (str.compare(">=") == 0)
-    		return std::shared_ptr<Node>(new NodeGEQ());
-    		
-    	else if (str.compare("doubleConst") == 0)
-    		return std::shared_ptr<Node>(new NodeConstant(d_val));
-    		
-    	else if (str.compare("boolConst") == 0)
-    		return std::shared_ptr<Node>(new NodeConstant(b_val));
-    		
-    	else if (str.compare("cos") == 0)
-    		return std::shared_ptr<Node>(new NodeCos());
-    		
-    	else if (str.compare("^3") == 0)
-    		return std::shared_ptr<Node>(new NodeCube());
-    		
-    	else if (str.compare("/") == 0)
-    		return std::shared_ptr<Node>(new NodeDivide());
-    		
-    	else if (str.compare("=") == 0)
-    		return std::shared_ptr<Node>(new NodeEqual());
-    		
-    	else if (str.compare("^") == 0)
-    		return std::shared_ptr<Node>(new NodeExponent());
-    		
-    	else if (str.compare("exp") == 0)
-    		return std::shared_ptr<Node>(new NodeExponential());
-    		
-    	else if (str.compare(">") == 0)
-    		return std::shared_ptr<Node>(new NodeGreaterThan());
-    		
-    	else if (str.compare("else if") == 0)
-    		return std::shared_ptr<Node>(new NodeIf());
-    		
-    	else if (str.compare("<") == 0)
-    		return std::shared_ptr<Node>(new NodeLessThan());
-    		
-    	else if (str.compare("log") == 0)
-    		return std::shared_ptr<Node>(new NodeLog());
-    		
-    	else if (str.compare("*") == 0)
+        
+        else if (str.compare("-") == 0)
+    		return std::shared_ptr<Node>(new NodeSubtract());
+
+        else if (str.compare("*") == 0)
     		return std::shared_ptr<Node>(new NodeMultiply());
-    		
-    	else if (str.compare("not") == 0)
-    		return std::shared_ptr<Node>(new NodeNot());
-    	
-    	else if (str.compare("<=") == 0)
-    		return std::shared_ptr<Node>(new NodeLEQ());
-    	
-    	else if (str.compare("|") == 0)
-    		return std::shared_ptr<Node>(new NodeOr());
-    		
-    	else if (str.compare("sqrt") == 0)
+
+     	else if (str.compare("/") == 0)
+    		return std::shared_ptr<Node>(new NodeDivide());
+
+        else if (str.compare("sqrt") == 0)
     		return std::shared_ptr<Node>(new NodeSqrt());
     	
     	else if (str.compare("sin") == 0)
     		return std::shared_ptr<Node>(new NodeSin());
     		
-    	else if (str.compare("^2") == 0)
+    	else if (str.compare("cos") == 0)
+    		return std::shared_ptr<Node>(new NodeCos());
+    	   
+        else if (str.compare("^2") == 0)
     		return std::shared_ptr<Node>(new NodeSquare());
+ 	
+        else if (str.compare("^3") == 0)
+    		return std::shared_ptr<Node>(new NodeCube());
     	
-    	else if (str.compare("-") == 0)
-    		return std::shared_ptr<Node>(new NodeSubtract());
+        else if (str.compare("^") == 0)
+    		return std::shared_ptr<Node>(new NodeExponent());
+
+        else if (str.compare("exp") == 0)
+    		return std::shared_ptr<Node>(new NodeExponential());
+
+        else if (str.compare("log") == 0)
+    		return std::shared_ptr<Node>(new NodeLog());   
+
+        // logical operators
+        else if (str.compare("and") == 0)
+    		return std::shared_ptr<Node>(new NodeAnd());
+       
+    	else if (str.compare("or") == 0)
+    		return std::shared_ptr<Node>(new NodeOr());
+   		
+     	else if (str.compare("not") == 0)
+    		return std::shared_ptr<Node>(new NodeNot());
+   		
+    	else if (str.compare("=") == 0)
+    		return std::shared_ptr<Node>(new NodeEqual());
+    		
+        else if (str.compare(">") == 0)
+    		return std::shared_ptr<Node>(new NodeGreaterThan());
+
+    	else if (str.compare(">=") == 0)
+    		return std::shared_ptr<Node>(new NodeGEQ());        
+
+    	else if (str.compare("<") == 0)
+    		return std::shared_ptr<Node>(new NodeLessThan());
     	
-    	else if (str.compare("then") == 0)
-    		return std::shared_ptr<Node>(new NodeThen());
+    	else if (str.compare("<=") == 0)
+    		return std::shared_ptr<Node>(new NodeLEQ());
     	
-    //	if (str.compare("variable") == 0)
-    //		return std::shared_ptr<Node>(new NodeVariable(str, loc));
+     	else if (str.compare("if") == 0)
+    		return std::shared_ptr<Node>(new NodeIf());   	    		
+        	
+    	else if (str.compare("ite") == 0)
+    		return std::shared_ptr<Node>(new NodeIfThenElse());
+
+        // variables and constants
+        else if (str.compare("x") == 0)
+            return std::shared_ptr<Node>(new NodeVariable(loc));
+        else if (str.compare("kb")==0)
+            return std::shared_ptr<Node>(new NodeConstant(b_val));
+        else if (str.compare("kd")==0)
+            return std::shared_ptr<Node>(new NodeConstant(d_val));
+        else
+        {
+            std::cerr << "Error: no node named " << str << " exists.\n"; 
+            throw;
+        }
+        //TODO: add squashing functions, time delay functions, and stats functions
+    	
     }
 
     void Parameters::set_functions(string fs)
@@ -198,7 +205,10 @@ namespace FT{
          * based on number of features.
          */
         for (size_t i = 0; i < num_features; ++i) 
-            terminals.push_back(createNode(string("variable"), 0, 0, i)); 
+            terminals.push_back(createNode(string("x"), 0, 0, i));
+        
+        //TODO: if constants (bool or double), add to terminals 
+                
     }
 }
 #endif

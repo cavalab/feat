@@ -2,17 +2,17 @@
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
-#ifndef NODE_SUB
-#define NODE_SUB
+#ifndef NODE_SUBTRACT
+#define NODE_SUBTRACT
 
 #include "node.h"
 
 namespace FT{
-	class NodeSub : public Node
+	class NodeSubtract : public Node
     {
     	public:
     	
-    		NodeSub()
+    		NodeSubtract()
     		{
     			name = "-";
     			otype = 'f';
@@ -27,9 +27,9 @@ namespace FT{
             {
             	if (stack_f.size() >= arity['f'] && stack_b.size() >= arity['b'])
             	{
-            		ArrayXd x = stack_f.back(); stack_f.pop_back();
-                    ArrayXd y = stack_f.back(); stack_f.pop_back();
-                    stack_f.push_back(x - y);
+            		ArrayXd x2 = stack_f.back(); stack_f.pop_back();
+                    ArrayXd x1 = stack_f.back(); stack_f.pop_back();
+                    stack_f.push_back(x1 - x2);
             	}
             }
 
@@ -40,9 +40,9 @@ namespace FT{
             {
             	if (stack_f.size() >= arity['f'] && stack_b.size() >= arity['b'])
             	{
-            		string x = stack_f.back(); stack_f.pop_back();
-                    string y = stack_f.back(); stack_f.pop_back();
-                    stack_f.push_back("(" + x + "-" + y + ")");
+            		string x2 = stack_f.back(); stack_f.pop_back();
+                    string x1 = stack_f.back(); stack_f.pop_back();
+                    stack_f.push_back("(" + x1 + "-" + x2 + ")");
             	}
             }
     };

@@ -13,14 +13,8 @@ namespace FT{
     	public:
     	
     		NodeAnd()
-    		{
-    			std::cerr << "error in nodeand.h : invalid constructor called";
-				throw;
-    		}
-    	
-    		NodeAnd(string n)
-    		{
-    			name = n;
+       		{
+    			name = "and";
     			otype = 'b';
     			arity['f'] = 0;
     			arity['b'] = 2;
@@ -32,7 +26,11 @@ namespace FT{
             void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
                     vector<ArrayXb>& stack_b)
             {
-            	std::cerr << "invalid operator name\n";
+                ArrayXb x2 = stack_b.back(); stack_b.pop_back();
+                ArrayXb x1 = stack_b.back(); stack_b.pop_back();
+
+                stack_b.push_back(x1 && x2);
+
             }
 
             /*!
@@ -40,7 +38,10 @@ namespace FT{
              */
             void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
             {
-            	std::cerr << "invalid operator name\n";
+                string x2 = stack_b.back(); stack_b.pop_back();
+                string x1 = stack_b.back(); stack_b.pop_back();
+
+                stack_b.push_back("(" + x1 + " AND  " + x2 + ")");
             }
     };
 }	

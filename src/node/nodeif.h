@@ -27,7 +27,7 @@ namespace FT{
                     vector<ArrayXb>& stack_b)
             {
             	ArrayXb b = stack_b.back(); stack_b.pop_back();
-                ArrayXf f = stack_f.back(); stack_f.pop_back();
+                ArrayXd f = stack_f.back(); stack_f.pop_back();
                 stack_f.push_back(b.select(f,0));
             }
 

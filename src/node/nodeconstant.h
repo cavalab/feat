@@ -20,21 +20,26 @@ namespace FT{
     			std::cerr << "error in nodeconstant.h : invalid constructor called";
 				throw;
     		}
-    		
-    		NodeConstant(string n, bool& v)
+
+    		/*
+             * @brief declares a boolean constant.
+             */
+    		NodeConstant(bool& v)
     		{
-    			name = n;
+    			name = "k_b";
     			otype = 'b';
     			arity['f'] = 0;
     			arity['b'] = 0;
     			complexity = 1;
     			b_value = v;
     		}
-    		
-    		
-    		NodeConstant(string n, const double& v)
+
+    		/*
+             * @brief declares a double constant.
+             */
+    		NodeConstant(const double& v)
     		{
-    			name = n;
+    			name = "k_d";
     			otype = 'f';
     			arity['f'] = 0;
     			arity['b'] = 0;

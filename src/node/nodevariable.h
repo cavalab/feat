@@ -23,12 +23,13 @@ namespace FT{
     			loc = l;
     		}
 		
-			void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b)
+			void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
+                    vector<ArrayXb>& stack_b)
 		    {
 		    	if (stack_f.size() >= arity['f'] && stack_b.size() >= arity['b'])
 		    	{
 		    		if (otype == 'b')
-		                stack_b.push_back(X.row(loc).cast<int>());
+		                stack_b.push_back(X.row(loc).cast<bool>());
 		            else
 		                stack_f.push_back(X.row(loc));
 		    	}
