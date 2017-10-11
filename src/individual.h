@@ -15,12 +15,12 @@ namespace FT{
      */
     struct Individual{
         
-        vector<Node> program;       ///< executable data structure
-        double fitness;             ///< aggregate fitness score
-        size_t loc;                 ///< index of individual in semantic matrix F
-        string eqn;                 ///< symbolic representation of program
-        vector<double> weights;     ///< weights from ML training on program output
-        unsigned int dim;           ///< dimensionality of individual
+        vector<std::shared_ptr<Node>> program;      ///< executable data structure
+        double fitness;             				///< aggregate fitness score
+        size_t loc;                 				///< index of individual in semantic matrix F
+        string eqn;                 				///< symbolic representation of program
+        vector<double> weights;     				///< weights from ML training on program output
+        unsigned int dim;           				///< dimensionality of individual
 
         Individual(){}
 
@@ -39,8 +39,8 @@ namespace FT{
         /*!
          * @brief setting and getting from individuals vector
          */
-        const Node operator [](int i) const {return program[i];}
-        const Node & operator [](int i) {return program[i];}
+        const std::shared_ptr<Node> operator [](int i) const {return program[i];}
+        const std::shared_ptr<Node> & operator [](int i) {return program[i];}
 
         /*!
          * @brief overload = to copy just the program
@@ -92,11 +92,11 @@ namespace FT{
          */
 
         vector<ArrayXd> stack_f; 
-        vector<ArrayXi> stack_b;
+        vector<ArrayXb> stack_b;
 
         // evaluate each node in program
-        for (auto& n : program) 
-            n.evaluate(X, y, stack_f, stack_b); 
+        for (auto n : program) 
+            n->evaluate(X, y, stack_f, stack_b); 
         
         // convert stack_f to Phi
         int cols = stack_f[0].size();
@@ -116,7 +116,7 @@ namespace FT{
             vector<string> stack_b;     // symbolic boolean stack
 
             for (auto n : program)
-                n.eval_eqn(stack_f,stack_b);
+                n->eval_eqn(stack_f,stack_b);
 
             // tie stack outputs together to return representation
             if (otype=='b'){
@@ -150,11 +150,11 @@ namespace FT{
         
        size_t i2 = i;                              // index for second recursion
 
-       if (program[i].otype == otype || otype=='0')     // if this node is a subtree argument
+       if (program[i]->otype == otype || otype=='0')     // if this node is a subtree argument
        {
-           for (unsigned int j = 0; j<program[i].arity_f; ++j)
+           for (unsigned int j = 0; j<program[i]->arity['f']; ++j)
                i = subtree(--i,'f');                  // recurse for floating arguments
-           for (unsigned int j = 0; j<program[i2].arity_b; ++j)
+           for (unsigned int j = 0; j<program[i2]->arity['b']; ++j)
                i2 = subtree(--i2,'b');                 // recurse for boolean arguments
        }
        return std::min(i,i2);
@@ -176,7 +176,7 @@ namespace FT{
             unsigned int ca=0;     // current arity
             for (unsigned int i = program.size()-1; i>=0; --i)
             {
-                ca += program[i].total_arity() - 1;
+                ca += program[i]->total_arity() - 1;
                 if (ca == 0) ++dim;
             }
         }  

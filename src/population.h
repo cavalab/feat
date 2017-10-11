@@ -71,8 +71,8 @@ namespace FT{
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
     
-    void make_program(vector<Node>& program, const vector<Node>& functions, 
-                                  const vector<Node>& terminals, int max_d, char otype, 
+    void make_program(vector<std::shared_ptr<Node>>& program, const vector<std::shared_ptr<Node>>& functions, 
+                                  const vector<std::shared_ptr<Node>>& terminals, int max_d, char otype, 
                                   const vector<double>& term_weights)
     {
         /*!
@@ -84,7 +84,7 @@ namespace FT{
             vector<size_t> ti, tw;  // indices of valid terminals 
             for (size_t i = 0; i<terminals.size(); ++i)
             {
-                if (terminals[i].otype == otype) // grab terminals matching output type
+                if (terminals[i]->otype == otype) // grab terminals matching output type
                 {
                     ti.push_back(i);
                     tw.push_back(term_weights[i]);
@@ -99,17 +99,17 @@ namespace FT{
             vector<size_t> fi;
             for (size_t i = 0; i<functions.size(); ++i)
             {
-                if (functions[i].otype == otype && (max_d>1 || functions[i].arity_b==0))
+                if (functions[i]->otype == otype && (max_d>1 || functions[i]->arity['b']==0))
                     fi.push_back(i);
             }
             // append a random choice from fs            
             program.push_back(functions[r.random_choice(fi)]);
             
-            Node chosen = program.back();
+            std::shared_ptr<Node> chosen = program.back();
             // recurse to fulfill the arity of the chosen function
-            for (size_t i = 0; i < chosen.arity_f; ++i)
+            for (size_t i = 0; i < chosen->arity['f']; ++i)
                 make_program(program, functions, terminals, max_d-1, 'f', term_weights);
-            for (size_t i = 0; i < chosen.arity_b; ++i)
+            for (size_t i = 0; i < chosen->arity['b']; ++i)
                 make_program(program, functions, terminals, max_d-1, 'b', term_weights);
 
         }

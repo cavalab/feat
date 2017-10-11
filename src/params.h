@@ -5,7 +5,7 @@ license: GNU/GPL v3
 #ifndef PARAMS_H
 #define PARAMS_H
 // internal includes
-#include "node.h"
+#include "nodewrapper.h"
 
 namespace FT{
 
@@ -16,19 +16,19 @@ namespace FT{
      */
     struct Parameters
     {
-        int pop_size;                   ///< population size
-        int gens;                       ///< max generations
-        string ml;                      ///< machine learner with which Fewtwo is paired
-        bool classification;            ///< flag to conduct classification rather than regression
-        int max_stall;                  ///< maximum stall in learning, in generations
-        char otype;                     ///< output type of the programs ('f': float, 'b': boolean)
-        int verbosity;                  ///< amount of printing. 0: none, 1: minimal, 2: all
-        vector<double> term_weights;    ///< probability weighting of terminals
-        vector<Node> functions;         ///< function nodes available in programs
-        vector<Node> terminals;         ///< terminal nodes available in programs
-        unsigned int max_depth;         ///< max depth of programs
-        unsigned int max_size;          ///< max size of programs (length)
-        unsigned int max_dim;           ///< maximum dimensionality of programs 
+        int pop_size;                   			///< population size
+        int gens;                       			///< max generations
+        string ml;                      			///< machine learner with which Fewtwo is paired
+        bool classification;            			///< flag to conduct classification rather than regression
+        int max_stall;                  			///< maximum stall in learning, in generations
+        char otype;                     			///< output type of the programs ('f': float, 'b': boolean)
+        int verbosity;                  			///< amount of printing. 0: none, 1: minimal, 2: all
+        vector<double> term_weights;    			///< probability weighting of terminals
+        vector<std::shared_ptr<Node>> functions;    ///< function nodes available in programs
+        vector<std::shared_ptr<Node>> terminals;    ///< terminal nodes available in programs
+        unsigned int max_depth;         			///< max depth of programs
+        unsigned int max_size;          			///< max size of programs (length)
+        unsigned int max_dim;           			///< maximum dimensionality of programs 
 
         Parameters(int pop_size, int gens, string& ml, bool classification, int max_stall, 
                    char otype, int vebosity, string functions, unsigned int max_depth, 
@@ -73,6 +73,11 @@ namespace FT{
         }
         
         /*!
+         * @brief return shared pointer to a node based on the string passed
+         */
+        std::shared_ptr<Node> createNode(std::string str, double d_val = 0, bool b_val = false, size_t loc = 0);
+        
+        /*!
          * @brief sets available functions based on comma-separated list.
          */
         void set_functions(string fs);
@@ -84,6 +89,92 @@ namespace FT{
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
+    
+    std::shared_ptr<Node> Parameters::createNode(string str, double d_val, bool b_val, size_t loc)
+    {
+        // algebraic operators
+    	if (str.compare("+") == 0) 
+    		return std::shared_ptr<Node>(new NodeAdd());
+        
+        else if (str.compare("-") == 0)
+    		return std::shared_ptr<Node>(new NodeSubtract());
+
+        else if (str.compare("*") == 0)
+    		return std::shared_ptr<Node>(new NodeMultiply());
+
+     	else if (str.compare("/") == 0)
+    		return std::shared_ptr<Node>(new NodeDivide());
+
+        else if (str.compare("sqrt") == 0)
+    		return std::shared_ptr<Node>(new NodeSqrt());
+    	
+    	else if (str.compare("sin") == 0)
+    		return std::shared_ptr<Node>(new NodeSin());
+    		
+    	else if (str.compare("cos") == 0)
+    		return std::shared_ptr<Node>(new NodeCos());
+    	   
+        else if (str.compare("^2") == 0)
+    		return std::shared_ptr<Node>(new NodeSquare());
+ 	
+        else if (str.compare("^3") == 0)
+    		return std::shared_ptr<Node>(new NodeCube());
+    	
+        else if (str.compare("^") == 0)
+    		return std::shared_ptr<Node>(new NodeExponent());
+
+        else if (str.compare("exp") == 0)
+    		return std::shared_ptr<Node>(new NodeExponential());
+
+        else if (str.compare("log") == 0)
+    		return std::shared_ptr<Node>(new NodeLog());   
+
+        // logical operators
+        else if (str.compare("and") == 0)
+    		return std::shared_ptr<Node>(new NodeAnd());
+       
+    	else if (str.compare("or") == 0)
+    		return std::shared_ptr<Node>(new NodeOr());
+   		
+     	else if (str.compare("not") == 0)
+    		return std::shared_ptr<Node>(new NodeNot());
+   		
+    	else if (str.compare("=") == 0)
+    		return std::shared_ptr<Node>(new NodeEqual());
+    		
+        else if (str.compare(">") == 0)
+    		return std::shared_ptr<Node>(new NodeGreaterThan());
+
+    	else if (str.compare(">=") == 0)
+    		return std::shared_ptr<Node>(new NodeGEQ());        
+
+    	else if (str.compare("<") == 0)
+    		return std::shared_ptr<Node>(new NodeLessThan());
+    	
+    	else if (str.compare("<=") == 0)
+    		return std::shared_ptr<Node>(new NodeLEQ());
+    	
+     	else if (str.compare("if") == 0)
+    		return std::shared_ptr<Node>(new NodeIf());   	    		
+        	
+    	else if (str.compare("ite") == 0)
+    		return std::shared_ptr<Node>(new NodeIfThenElse());
+
+        // variables and constants
+        else if (str.compare("x") == 0)
+            return std::shared_ptr<Node>(new NodeVariable(loc));
+        else if (str.compare("kb")==0)
+            return std::shared_ptr<Node>(new NodeConstant(b_val));
+        else if (str.compare("kd")==0)
+            return std::shared_ptr<Node>(new NodeConstant(d_val));
+        else
+        {
+            std::cerr << "Error: no node named " << str << " exists.\n"; 
+            throw;
+        }
+        //TODO: add squashing functions, time delay functions, and stats functions
+    	
+    }
 
     void Parameters::set_functions(string fs)
     {
@@ -103,7 +194,7 @@ namespace FT{
         while ((pos = fs.find(delim)) != string::npos) 
         {
             token = fs.substr(0, pos);
-            functions.push_back(Node((*token.c_str())));
+            functions.push_back(createNode(token));
             fs.erase(0, pos + delim.length());
         } 
     }
@@ -114,7 +205,10 @@ namespace FT{
          * based on number of features.
          */
         for (size_t i = 0; i < num_features; ++i) 
-            terminals.push_back(Node('x',i)); 
+            terminals.push_back(createNode(string("x"), 0, 0, i));
+        
+        //TODO: if constants (bool or double), add to terminals 
+                
     }
 }
 #endif

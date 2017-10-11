@@ -51,8 +51,8 @@ namespace FT{
             /*!
              * @brief splice two programs together
              */
-            vector<Node> splice_programs(const vector<Node>& v1, size_t i1, size_t j1, 
-                                                 const vector<Node>& v2, size_t i2, size_t j2);
+            vector<std::shared_ptr<Node>> splice_programs(const vector<std::shared_ptr<Node>>& v1, size_t i1, size_t j1, 
+                                                 const vector<std::shared_ptr<Node>>& v2, size_t i2, size_t j2);
        
             float cross_rate;     ///< fraction of crossover in total variation
     };
@@ -131,14 +131,14 @@ namespace FT{
         {
             if (r() < 1/n)  // mutate p. WIP: change '1' to node weighted probability
             {
-                vector<Node> replacements;  // potential replacements for p
+                vector<std::shared_ptr<Node>> replacements;  // potential replacements for p
 
-                if (p.total_arity() > 0) // then it is an instruction
+                if (p->total_arity() > 0) // then it is an instruction
                 {
                     // find instructions with matching in/out types and arities
                     for (const auto& f: params.functions)
                     {
-                        if (f.otype == p.otype && f.arity_f==p.arity_f && f.arity_b==p.arity_b)
+                        if (f->otype == p->otype && f->arity['f']==p->arity['f'] && f->arity['b']==p->arity['b'])
                             replacements.push_back(f);
                     }
                 }
@@ -146,10 +146,10 @@ namespace FT{
                 {
                     // WIP: add terminal weights here
                     // find terminals with matching output types
-                    vector<Node> replacements;
+                    vector<std::shared_ptr<Node>> replacements;
                     for (const auto& t : params.terminals)
                     {
-                        if (t.otype == p.otype)
+                        if (t->otype == p->otype)
                             replacements.push_back(t);
                     }                   
                     
@@ -182,13 +182,13 @@ namespace FT{
        // we must limit ourselves to matching output types in the programs. 
        vector<char> otypes;
        for (const auto& p : mom.program)
-           if (not_in(otypes,p.otype)) otypes.push_back(p.otype);
+           if (not_in(otypes,p->otype)) otypes.push_back(p->otype);
        for (const auto& p : dad.program)
-           if (not_in(otypes,p.otype)) otypes.push_back(p.otype); 
+           if (not_in(otypes,p->otype)) otypes.push_back(p->otype); 
 
        // get valid subtree locations
        vector<size_t> locs;
-       for (size_t i =0; i<mom.size(); ++i) if (in(otypes,mom[i].otype)) locs.push_back(i);
+       for (size_t i =0; i<mom.size(); ++i) if (in(otypes,mom[i]->otype)) locs.push_back(i);
        //std::iota(locs.begin(),locs.end());
 
        // get subtree
@@ -198,7 +198,7 @@ namespace FT{
 
        // get locations in dad's program that match the subtree type picked from mom
        vector<size_t> dlocs;
-       for (size_t i =0; i<dad.size(); ++i) if (dad[i].otype == mom[j1].otype) dlocs.push_back(i);
+       for (size_t i =0; i<dad.size(); ++i) if (dad[i]->otype == mom[j1]->otype) dlocs.push_back(i);
        //std::iota(dlocs.begin(),dlocs.end());
        
        // get dad subtree
@@ -213,8 +213,8 @@ namespace FT{
     }
     
     // swap vector subsets with different sizes. 
-    vector<Node> Variation::splice_programs(const vector<Node>& v1, size_t i1, size_t j1, 
-                                         const vector<Node>& v2, size_t i2, size_t j2)
+    vector<std::shared_ptr<Node>> Variation::splice_programs(const vector<std::shared_ptr<Node>>& v1, size_t i1, size_t j1, 
+                                         const vector<std::shared_ptr<Node>>& v2, size_t i2, size_t j2)
     {
         /*!
          * @brief swap vector subsets with different sizes. 
@@ -235,7 +235,7 @@ namespace FT{
          */
 
         // size difference between subtrees  
-        vector<Node> vnew;
+        vector<std::shared_ptr<Node>> vnew;
         vnew.insert(vnew.end(),v1.begin(),v1.begin()+i1+1);     // beginning of v1
         vnew.insert(vnew.end(),v2.begin()+i2,v2.begin()+j2+1);  // spliced in v2 portion
         vnew.insert(vnew.end(),v1.begin()+j1+1,v1.end());       // end of v1
