@@ -107,7 +107,12 @@ $(document).ready(function(){initNavTree('index.html','');});
 <li>FEW-two is pure c++</li>
 <li>FEw-two uses the Shogun C++ ML toolbox instead of Scikit-learn</li>
 </ul>
-<p>## Build </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;mkdir build</div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;cd build</div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;cmake ..</div></div><!-- fragment --><h2>Contributing</h2>
+<h2>Install</h2>
+<p>Few-two depends on the <a href="http://eigen.tuxfamily.org">Eigen</a> matrix library for C++ as well as the <a href="http://shogun.ml">Shogun</a> ML library.</p>
+<h3>Ubuntu</h3>
+<p>It's easy to install the Eigen deb package:</p>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;sudo apt-get install libeigen3-dev</div></div><!-- fragment --><p>And the shogun package: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;sudo add-apt-repository ppa:shogun-toolbox/stable</div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;sudo apt-get update</div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;sudo apt-get install libshogun18</div></div><!-- fragment --><p>Few-two uses cmake to build. So clone the repo, create a build directory, go into it and use cmake to generate the make file. Then you can build by calling <code>make</code>.</p>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;git clone https://github.com/lacava/fewtwo</div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;cd fewtwo</div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;mkdir build</div><div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;cd build</div><div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;cmake ..</div><div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;make</div></div><!-- fragment --><h2>Contributing</h2>
 <p>Please follow the <a href="https://guides.github.com/introduction/flow/">Github flow</a> guidelines for contributing to this project.</p>
 <h2>Acknowledgments</h2>
 <p>This method is being developed to study the genetic causes of human disease in the <a href="http://epistasis.org">Epistasis Lab at UPenn</a>. Work is partially supported by the <a href="http://warrencenter.upenn.edu">Warren Center for Network and Data Science</a>. </p>
