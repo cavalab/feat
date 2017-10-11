@@ -4,7 +4,7 @@ var files =
     [ "fewtwo.h", "d7/d68/fewtwo_8h_source.html", null ],
     [ "individual.h", "d5/d1f/individual_8h_source.html", null ],
     [ "ml.h", "d7/d60/ml_8h_source.html", null ],
-    [ "node.h", "d1/d77/node_8h_source.html", null ],
+    [ "nodewrapper.h", "d1/dc6/nodewrapper_8h_source.html", null ],
     [ "params.h", "da/d33/params_8h_source.html", null ],
     [ "population.h", "d2/d76/population_8h_source.html", null ],
     [ "rnd.h", "d2/da9/rnd_8h_source.html", null ],

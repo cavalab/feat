@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['update',['update',['../d9/ddc/structFT_1_1Population.html#a7163b0d1cf3d706e3da213042ed37111',1,'FT::Population']]],
-  ['update_5fopen_5floc',['update_open_loc',['../d9/ddc/structFT_1_1Population.html#a4d05c192693912a36626e89797d46516',1,'FT::Population']]]
+  ['_7efewtwo',['~Fewtwo',['../dc/d9e/classFT_1_1Fewtwo.html#a5a9b58b81cb2c5b2d3e3b3764b0b8e7d',1,'FT::Fewtwo']]],
+  ['_7evariation',['~Variation',['../d3/d01/classFT_1_1Variation.html#a27960762b51461b2af543b2999e4f012',1,'FT::Variation']]]
 ];

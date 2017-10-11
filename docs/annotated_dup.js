@@ -6,7 +6,6 @@ var annotated_dup =
       [ "Individual", "df/d8a/structFT_1_1Individual.html", "df/d8a/structFT_1_1Individual" ],
       [ "Lexicase", "d8/d78/structFT_1_1Lexicase.html", "d8/d78/structFT_1_1Lexicase" ],
       [ "ML", "df/dfa/classFT_1_1ML.html", "df/dfa/classFT_1_1ML" ],
-      [ "Node", "d3/daf/classFT_1_1Node.html", "d3/daf/classFT_1_1Node" ],
       [ "Parameters", "de/d2c/structFT_1_1Parameters.html", "de/d2c/structFT_1_1Parameters" ],
       [ "Pareto", "de/d2e/structFT_1_1Pareto.html", "de/d2e/structFT_1_1Pareto" ],
       [ "Population", "d9/ddc/structFT_1_1Population.html", "d9/ddc/structFT_1_1Population" ],

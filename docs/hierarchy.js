@@ -4,7 +4,6 @@ var hierarchy =
     [ "FT::Fewtwo", "dc/d9e/classFT_1_1Fewtwo.html", null ],
     [ "FT::Individual", "df/d8a/structFT_1_1Individual.html", null ],
     [ "FT::ML", "df/dfa/classFT_1_1ML.html", null ],
-    [ "FT::Node", "d3/daf/classFT_1_1Node.html", null ],
     [ "FT::Parameters", "de/d2c/structFT_1_1Parameters.html", null ],
     [ "FT::Population", "d9/ddc/structFT_1_1Population.html", null ],
     [ "FT::Rnd", "dd/d2d/classFT_1_1Rnd.html", null ],

@@ -7,6 +7,6 @@ var searchData=
   ['fit_5fpredict',['fit_predict',['../dc/d9e/classFT_1_1Fewtwo.html#ab4464093d6a900464819d7c98e778712',1,'FT::Fewtwo']]],
   ['fit_5ftransform',['fit_transform',['../dc/d9e/classFT_1_1Fewtwo.html#ab4fbeb79d69fb7dd9806f5c9e30414de',1,'FT::Fewtwo']]],
   ['fitness',['fitness',['../df/d8a/structFT_1_1Individual.html#a4af553c06f662e1a53cba465247a63c3',1,'FT::Individual::fitness()'],['../df/db3/classFT_1_1Evaluation.html#a0f5d76d42486505f0e084fe79c177dcc',1,'FT::Evaluation::fitness()']]],
-  ['functions',['functions',['../de/d2c/structFT_1_1Parameters.html#a859a9977881ea03c176fa78ae8695d41',1,'FT::Parameters']]],
+  ['functions',['functions',['../de/d2c/structFT_1_1Parameters.html#a7ef68e78453bbe1fd4d4d685494bcb6b',1,'FT::Parameters']]],
   ['few_2dtwo',['FEW-two',['../index.html',1,'']]]
 ];

@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['get_5fdim',['get_dim',['../df/d8a/structFT_1_1Individual.html#a22bf1f1016d87a21c8f21da1a59ef11e',1,'FT::Individual']]],
-  ['get_5feqn',['get_eqn',['../df/d8a/structFT_1_1Individual.html#acaa7e7ba9d13b7cab99d5439dc08ca81',1,'FT::Individual']]],
-  ['get_5fopen_5floc',['get_open_loc',['../d9/ddc/structFT_1_1Population.html#af54b9e6895c8fff0ea2c12b892d84eab',1,'FT::Population']]],
-  ['get_5fweights',['get_weights',['../df/dfa/classFT_1_1ML.html#a27fa984d19c8826c2fcbe81edb6a3417',1,'FT::ML']]]
+  ['init',['init',['../d9/ddc/structFT_1_1Population.html#a3c0a7a4c1b643a18d537bbe1f12fbb50',1,'FT::Population']]],
+  ['initial_5fmodel',['initial_model',['../dc/d9e/classFT_1_1Fewtwo.html#ae68a1e0fe53da8d441e95cfaccfbe1c0',1,'FT::Fewtwo']]]
 ];

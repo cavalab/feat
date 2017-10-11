@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['node',['Node',['../d3/daf/classFT_1_1Node.html#ae645b6c18337cfc4f285c0b63205ca28',1,'FT::Node::Node(char n)'],['../d3/daf/classFT_1_1Node.html#acaa7676b6b8baa3440012ee2e5829193',1,'FT::Node::Node(char n, const size_t &amp;l)'],['../d3/daf/classFT_1_1Node.html#a9f197f165ac97dc9b0ad7bad70245f25',1,'FT::Node::Node(char n, const double &amp;v)'],['../d3/daf/classFT_1_1Node.html#aecc524da785f811ecd3284498e516abe',1,'FT::Node::Node()']]]
+  ['pareto',['Pareto',['../de/d2e/structFT_1_1Pareto.html#a88069fd3f28240b8a5c53607f74ffae8',1,'FT::Pareto']]],
+  ['predict',['predict',['../dc/d9e/classFT_1_1Fewtwo.html#aa25eac7cf7eb0c9205d62531d8776886',1,'FT::Fewtwo']]]
 ];

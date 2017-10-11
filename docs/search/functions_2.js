@@ -1,5 +1,8 @@
 var searchData=
 [
-  ['eval_5feqn',['eval_eqn',['../d3/daf/classFT_1_1Node.html#a980f18fc5257aea31d21e6c95ed406a4',1,'FT::Node']]],
-  ['evaluate',['evaluate',['../d3/daf/classFT_1_1Node.html#a3f68d3bdfe086f4f1ad7913124d24fb5',1,'FT::Node']]]
+  ['fewtwo',['Fewtwo',['../dc/d9e/classFT_1_1Fewtwo.html#ab2e7dd707600a991902c4047fdf74f36',1,'FT::Fewtwo']]],
+  ['fit',['fit',['../dc/d9e/classFT_1_1Fewtwo.html#a652a785ec32021c8b0f93e27389547fa',1,'FT::Fewtwo']]],
+  ['fit_5fpredict',['fit_predict',['../dc/d9e/classFT_1_1Fewtwo.html#ab4464093d6a900464819d7c98e778712',1,'FT::Fewtwo']]],
+  ['fit_5ftransform',['fit_transform',['../dc/d9e/classFT_1_1Fewtwo.html#ab4fbeb79d69fb7dd9806f5c9e30414de',1,'FT::Fewtwo']]],
+  ['fitness',['fitness',['../df/db3/classFT_1_1Evaluation.html#a0f5d76d42486505f0e084fe79c177dcc',1,'FT::Evaluation']]]
 ];
