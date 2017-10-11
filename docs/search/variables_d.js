@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['weights',['weights',['../df/d8a/structFT_1_1Individual.html#af33ef39449ce30a95e0874967044b10c',1,'FT::Individual']]]
+  ['term_5fweights',['term_weights',['../de/d2c/structFT_1_1Parameters.html#a9ce3967947412217110573e04828b040',1,'FT::Parameters']]],
+  ['terminals',['terminals',['../de/d2c/structFT_1_1Parameters.html#acf762563fcbd26b464cf6145012dde1c',1,'FT::Parameters']]]
 ];

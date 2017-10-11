@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['random_5fchoice',['random_choice',['../dd/d2d/classFT_1_1Rnd.html#ad5cf251594becd52f32e4ca2479a71dd',1,'FT::Rnd::random_choice(const vector&lt; T &gt; &amp;v)'],['../dd/d2d/classFT_1_1Rnd.html#a9b2d69b06615ee9f799038c736048e6d',1,'FT::Rnd::random_choice(const vector&lt; T &gt; &amp;v, const vector&lt; D &gt; &amp;w)']]],
-  ['rnd',['Rnd',['../dd/d2d/classFT_1_1Rnd.html#a1e6e78753f30e39667e4f6397582cea8',1,'FT::Rnd']]]
+  ['pareto',['Pareto',['../de/d2e/structFT_1_1Pareto.html#a88069fd3f28240b8a5c53607f74ffae8',1,'FT::Pareto']]],
+  ['predict',['predict',['../dc/d9e/classFT_1_1Fewtwo.html#aa25eac7cf7eb0c9205d62531d8776886',1,'FT::Fewtwo']]]
 ];

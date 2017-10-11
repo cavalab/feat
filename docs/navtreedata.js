@@ -19,7 +19,8 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-".html"
+".html",
+"df/d8a/structFT_1_1Individual.html#ad92f0737bd7eaf4bd1734508c1d084fd"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
