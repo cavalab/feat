@@ -102,7 +102,7 @@ namespace FT{
         int cols = stack_f[0].size();
         int rows = stack_f.size();
         double * p = stack_f[0].data();
-        // WIP: need to conditional this on the output type parameter
+        // TODO: need to conditional this on the output type parameter
         Map<MatrixXd> Phi (p, rows, cols);       
         return Phi;
     }

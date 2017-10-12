@@ -30,8 +30,8 @@ namespace FT{
             	{
             		ArrayXd x2 = stack_f.back(); stack_f.pop_back();
                     ArrayXd x1 = stack_f.back(); stack_f.pop_back();
-
-                    stack_f.push_back(x1 / x2);
+                    // safe division returns x1/x2 if x2 != 0, and MAX_DBL otherwise               
+                    stack_f.push_back( (abs(x2) > NEAR_ZERO ).select(x1 / x2, MAX_DBL) );
             	}
             }
 

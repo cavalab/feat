@@ -149,7 +149,7 @@ namespace FT{
         
         // define terminals based on size of X
         params.set_terminals(X.rows()); 
-
+        
         // initial model on raw input
         params.msg("Fitting initial model", 1);
         initial_model(X,y);

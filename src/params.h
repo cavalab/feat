@@ -19,10 +19,11 @@ namespace FT{
         int pop_size;                   			///< population size
         int gens;                       			///< max generations
         string ml;                      			///< machine learner with which Fewtwo is paired
-        bool classification;            			///< flag to conduct classification rather than regression
+        bool classification;            			///< flag to conduct classification rather than 
         int max_stall;                  			///< maximum stall in learning, in generations
-        char otype;                     			///< output type of the programs ('f': float, 'b': boolean)
-        int verbosity;                  			///< amount of printing. 0: none, 1: minimal, 2: all
+        char otype;                     			///< program output type ('f', 'b')
+        int verbosity;                  			///< amount of printing. 0: none, 1: minimal, 
+                                                    // 2: all
         vector<double> term_weights;    			///< probability weighting of terminals
         vector<std::shared_ptr<Node>> functions;    ///< function nodes available in programs
         vector<std::shared_ptr<Node>> terminals;    ///< terminal nodes available in programs
@@ -53,7 +54,7 @@ namespace FT{
         /*!
          * @brief print message with verbosity control. 
          */
-        void msg(string m, int v)
+        void msg(string m, int v) const
         {
             /* prints messages based on verbosity level. */
 
@@ -75,7 +76,8 @@ namespace FT{
         /*!
          * @brief return shared pointer to a node based on the string passed
          */
-        std::shared_ptr<Node> createNode(std::string str, double d_val = 0, bool b_val = false, size_t loc = 0);
+        std::shared_ptr<Node> createNode(std::string str, double d_val = 0, bool b_val = false, 
+                                         size_t loc = 0);
         
         /*!
          * @brief sets available functions based on comma-separated list.
@@ -188,15 +190,22 @@ namespace FT{
          *		modifies functions 
          *
          */
+        fs += ',';          // add delimiter to end 
         string delim = ",";
         size_t pos = 0;
         string token;
         while ((pos = fs.find(delim)) != string::npos) 
         {
             token = fs.substr(0, pos);
+            msg("setting function with token "+token,0);
             functions.push_back(createNode(token));
             fs.erase(0, pos + delim.length());
         } 
+        // print    
+        string toprint = "functions: ";
+        for (const auto& f : functions)
+            toprint += f->name + ' ';
+        msg(toprint,0);
     }
 
     void Parameters::set_terminals(int num_features)

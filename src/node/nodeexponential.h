@@ -29,7 +29,7 @@ namespace FT{
             	if (stack_f.size() >= arity['f'] && stack_b.size() >= arity['b'])
             	{
             		ArrayXd x = stack_f.back(); stack_f.pop_back();
-                    stack_f.push_back(exp(x));
+                    stack_f.push_back(limited(exp(x)));
             	}
             }
 

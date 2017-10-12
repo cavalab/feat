@@ -10,12 +10,15 @@ using std::vector;
 using std::string;
 using std::map;
 using Eigen::ArrayXd;
-//using Eigen::ArrayXb;
+#define MAX_DBL std::numeric_limits<double>::max()
+#define MIN_DBL std::numeric_limits<double>::min()
+
 
 
 namespace FT{
 
     //////////////////////////////////////////////////////////////////////////////// Declarations
+   double NEAR_ZERO = 0.0000001;
     /*!
      * @class Node
      * @brief Represents nodes in a program.
@@ -42,6 +45,15 @@ namespace FT{
 
             // total arity
             unsigned int total_arity(){ return arity['f'] + arity['b']; };
+
+            /// limits node output to be between MIN_DBL and MAX_DBL
+            ArrayXd limited(ArrayXd x)
+            {
+                x = (x > MAX_DBL).select(MAX_DBL,x);
+                x = (x < MIN_DBL).select(MIN_DBL,x);
+                return x;
+            };
+             
     };
 }
 #endif
