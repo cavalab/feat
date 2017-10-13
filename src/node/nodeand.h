@@ -28,7 +28,6 @@ namespace FT{
             {
                 ArrayXb x2 = stack_b.back(); stack_b.pop_back();
                 ArrayXb x1 = stack_b.back(); stack_b.pop_back();
-
                 stack_b.push_back(x1 && x2);
 
             }
@@ -40,7 +39,6 @@ namespace FT{
             {
                 string x2 = stack_b.back(); stack_b.pop_back();
                 string x1 = stack_b.back(); stack_b.pop_back();
-
                 stack_b.push_back("(" + x1 + " AND  " + x2 + ")");
             }
     };

@@ -95,8 +95,11 @@ namespace FT{
         vector<ArrayXb> stack_b;
 
         // evaluate each node in program
-        for (auto n : program) 
-            n->evaluate(X, y, stack_f, stack_b); 
+        for (auto n : program)
+        {
+        	if(stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
+	            n->evaluate(X, y, stack_f, stack_b); 
+        }
         
         // convert stack_f to Phi
         int cols = stack_f[0].size();
@@ -116,7 +119,8 @@ namespace FT{
             vector<string> stack_b;     // symbolic boolean stack
 
             for (auto n : program)
-                n->eval_eqn(stack_f,stack_b);
+            	if(stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
+                	n->eval_eqn(stack_f,stack_b);
 
             // tie stack outputs together to return representation
             if (otype=='b'){
