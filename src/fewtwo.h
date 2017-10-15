@@ -57,10 +57,10 @@ namespace FT{
                    bool classification = false, int verbosity = 1, int max_stall = 0,
                    string sel ="lexicase", string surv="pareto", float cross_rate = 0.5,
                    char otype='f', string functions = "+,-,*,/,exp,log", 
-                   unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, bool constants = false):
+                   unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, bool erc = false):
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
-                             functions, max_depth, max_dim, constants),
+                             functions, max_depth, max_dim, erc),
                       p_pop( make_shared<Population>(pop_size) ),
                       p_sel( make_shared<Selection>(sel) ),
                       p_surv( make_shared<Selection>(surv, true) ),

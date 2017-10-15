@@ -29,11 +29,11 @@ namespace FT{
         unsigned int max_depth;         			///< max depth of programs
         unsigned int max_size;          			///< max size of programs (length)
         unsigned int max_dim;           			///< maximum dimensionality of programs
-        bool constants;								///<whether to use variable or constants fo terminals 
+        bool erc;								///<whether to use variable or constants fo terminals 
 
         Parameters(int pop_size, int gens, string& ml, bool classification, int max_stall, 
                    char otype, int vebosity, string functions, unsigned int max_depth, 
-                   unsigned int max_dim, bool cons):    
+                   unsigned int max_dim, bool constant):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
@@ -43,7 +43,7 @@ namespace FT{
             verbosity(verbosity),
             max_depth(max_depth),
             max_dim(max_dim),
-            constants(cons)
+            erc(constant)
         {
             set_functions(functions);
             max_size = pow(2,max_depth)*max_dim; // max_size is max_dim binary trees of max_depth
@@ -209,7 +209,7 @@ namespace FT{
         /*!
          * based on number of features.
          */
-        if(!constants)
+        if(!erc)
 	        for (size_t i = 0; i < num_features; ++i)
     	        terminals.push_back(createNode(string("x"), 0, 0, i));
     	else
