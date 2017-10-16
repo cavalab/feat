@@ -30,36 +30,36 @@
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/individual.h:43: warning: Member operator[](int i) (function) of class FT::Individual is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/ml.h:74: warning: Member p_est (variable) of class FT::ML is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/ml.h:75: warning: Member type (variable) of class FT::ML is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodeconstant.h:27: warning: Member NodeConstant(bool &v) (function) of class FT::NodeConstant is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodeconstant.h:40: warning: Member NodeConstant(const double &v) (function) of class FT::NodeConstant is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodeconstant.h:16: warning: Member b_value (variable) of class FT::NodeConstant is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodevariable.h:16: warning: Member NodeVariable(const size_t &l, char ntype= 'f') (function) of class FT::NodeVariable is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/params.h:33: warning: Member Parameters(int pop_size, int gens, string &ml, bool classification, int max_stall, char otype, int vebosity, string functions, unsigned int max_depth, unsigned int max_dim) (function) of class FT::Parameters is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/params.h:35: warning: Member Parameters(int pop_size, int gens, string &ml, bool classification, int max_stall, char otype, int vebosity, string functions, unsigned int max_depth, unsigned int max_dim, bool constant) (function) of class FT::Parameters is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection.h:30: warning: Member select(const MatrixXd &F, const Parameters &p) (function) of class FT::SelectionOperator is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:27: warning: Member Population(int p) (function) of class FT::Population is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:64: warning: Member operator[](int i) (function) of class FT::Population is not documented.

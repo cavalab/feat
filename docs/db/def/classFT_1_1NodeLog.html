@@ -134,7 +134,7 @@ Collaboration diagram for FT::NodeLog:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ae3ea80f10eac661540ac5573efd79d73"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae3ea80f10eac661540ac5573efd79d73"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/def/classFT_1_1NodeLog.html#ae3ea80f10eac661540ac5573efd79d73">evaluate</a> (const MatrixXd &amp;X, const VectorXd &amp;y, vector&lt; ArrayXd &gt; &amp;stack_f, vector&lt; ArrayXb &gt; &amp;stack_b)</td></tr>
-<tr class="memdesc:ae3ea80f10eac661540ac5573efd79d73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the node and updates the stack states. <br /></td></tr>
+<tr class="memdesc:ae3ea80f10eac661540ac5573efd79d73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe log: pushes log(abs(x)) or MIN_DBL if x is near zero. <br /></td></tr>
 <tr class="separator:ae3ea80f10eac661540ac5573efd79d73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2fe2e56b252dc2d0458f512c1f17151f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2fe2e56b252dc2d0458f512c1f17151f"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/def/classFT_1_1NodeLog.html#a2fe2e56b252dc2d0458f512c1f17151f">eval_eqn</a> (vector&lt; string &gt; &amp;stack_f, vector&lt; string &gt; &amp;stack_b)</td></tr>
@@ -144,6 +144,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../.
 <tr class="memitem:a3c25f017fe0e31985293be28d7aae946 inherit pub_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3c25f017fe0e31985293be28d7aae946"></a>
 unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>total_arity</b> ()</td></tr>
 <tr class="separator:a3c25f017fe0e31985293be28d7aae946 inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fcbaac7477521ce9ce56a85ef535db6 inherit pub_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6fcbaac7477521ce9ce56a85ef535db6"></a>
+ArrayXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/daf/classFT_1_1Node.html#a6fcbaac7477521ce9ce56a85ef535db6">limited</a> (ArrayXd x)</td></tr>
+<tr class="memdesc:a6fcbaac7477521ce9ce56a85ef535db6 inherit pub_methods_classFT_1_1Node"><td class="mdescLeft">&#160;</td><td class="mdescRight">limits node output to be between MIN_DBL and MAX_DBL <br /></td></tr>
+<tr class="separator:a6fcbaac7477521ce9ce56a85ef535db6 inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>

@@ -1,13 +1,14 @@
 var structFT_1_1Parameters =
 [
-    [ "Parameters", "de/d2c/structFT_1_1Parameters.html#a2afae869ff9663f3fb3968b0834ecc6d", null ],
+    [ "Parameters", "de/d2c/structFT_1_1Parameters.html#a27bc884fc2c17fa18b02c3d6b5adba62", null ],
     [ "~Parameters", "de/d2c/structFT_1_1Parameters.html#a076962362db14b59e1b6c8df0eac62df", null ],
     [ "createNode", "de/d2c/structFT_1_1Parameters.html#ace7871af82efcc6df9fe201df224402b", null ],
-    [ "msg", "de/d2c/structFT_1_1Parameters.html#adcf75b1da2c3c769e66e8c1ebb43e98e", null ],
+    [ "msg", "de/d2c/structFT_1_1Parameters.html#aa0cfef5cee717950b68ed468e536aa3a", null ],
     [ "set_functions", "de/d2c/structFT_1_1Parameters.html#ad45a4360e251bad1f81789fdcf382f38", null ],
     [ "set_term_weights", "de/d2c/structFT_1_1Parameters.html#ad3d7bb01d53f1187490d282bf5068be5", null ],
     [ "set_terminals", "de/d2c/structFT_1_1Parameters.html#a6c59766af6bfd6092df2498ae51f322d", null ],
     [ "classification", "de/d2c/structFT_1_1Parameters.html#a206ae40d847bc59f26332a8de5b86114", null ],
+    [ "erc", "de/d2c/structFT_1_1Parameters.html#a6e7a360a64a2968a13f7ae8bdb51b9fd", null ],
     [ "functions", "de/d2c/structFT_1_1Parameters.html#a7ef68e78453bbe1fd4d4d685494bcb6b", null ],
     [ "gens", "de/d2c/structFT_1_1Parameters.html#a7b17dbd6ccc8cbac4f38bde7b51629ce", null ],
     [ "max_depth", "de/d2c/structFT_1_1Parameters.html#a7a9f2ad48ee7d68da04915e65c04dca4", null ],

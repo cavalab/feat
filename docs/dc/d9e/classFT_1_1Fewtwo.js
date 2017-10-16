@@ -1,6 +1,6 @@
 var classFT_1_1Fewtwo =
 [
-    [ "Fewtwo", "dc/d9e/classFT_1_1Fewtwo.html#ab2e7dd707600a991902c4047fdf74f36", null ],
+    [ "Fewtwo", "dc/d9e/classFT_1_1Fewtwo.html#ac04426fbb34e756ab6fae9d8aa362230", null ],
     [ "~Fewtwo", "dc/d9e/classFT_1_1Fewtwo.html#a5a9b58b81cb2c5b2d3e3b3764b0b8e7d", null ],
     [ "fit", "dc/d9e/classFT_1_1Fewtwo.html#a652a785ec32021c8b0f93e27389547fa", null ],
     [ "fit_predict", "dc/d9e/classFT_1_1Fewtwo.html#ab4464093d6a900464819d7c98e778712", null ],
