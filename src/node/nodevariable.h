@@ -26,13 +26,10 @@ namespace FT{
 			void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
                     vector<ArrayXb>& stack_b)
 		    {
-		    	if (stack_f.size() >= arity['f'] && stack_b.size() >= arity['b'])
-		    	{
-		    		if (otype == 'b')
-		                stack_b.push_back(X.row(loc).cast<bool>());
-		            else
-		                stack_f.push_back(X.row(loc));
-		    	}
+	    		if (otype == 'b')
+	                stack_b.push_back(X.row(loc).cast<bool>());
+	            else
+	                stack_f.push_back(X.row(loc));
 		    }
 
 		    /*!
@@ -40,13 +37,10 @@ namespace FT{
 		     */
 		    void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
 		    {
-		    	if (stack_f.size() >= arity['f'] && stack_b.size() >= arity['b'])
-		    	{
-		    		if (otype == 'b')
-		                stack_b.push_back("x_" + std::to_string(loc));
-		            else
-		                stack_f.push_back("x_" + std::to_string(loc));
-		    	}
+	    		if (otype == 'b')
+	                stack_b.push_back("x_" + std::to_string(loc));
+	            else
+	                stack_f.push_back("x_" + std::to_string(loc));
 		    }
 	};
 }

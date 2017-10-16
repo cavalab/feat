@@ -25,11 +25,8 @@ namespace FT{
              */
             void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b)
             {
-            	if (stack_f.size() >= arity['f'] && stack_b.size() >= arity['b'])
-            	{
-            		ArrayXd x = stack_f.back(); stack_f.pop_back();
-                    stack_f.push_back(sqrt(abs(x)));
-            	}
+        		ArrayXd x = stack_f.back(); stack_f.pop_back();
+                stack_f.push_back(sqrt(abs(x)));
             }
 
             /*!
@@ -37,11 +34,8 @@ namespace FT{
              */
             void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
             {
-            	if (stack_f.size() >= arity['f'] && stack_b.size() >= arity['b'])
-            	{
-            		string x = stack_f.back(); stack_f.pop_back();
-                    stack_f.push_back("sqrt(|" + x + "|)");
-            	}
+        		string x = stack_f.back(); stack_f.pop_back();
+                stack_f.push_back("sqrt(|" + x + "|)");
             }
     };
 }	
