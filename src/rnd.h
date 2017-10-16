@@ -8,6 +8,7 @@ license: GNU/GPL v3
 //external includes
 #include <random>
 #include <limits>
+using std::swap;
 
 namespace FT {
     

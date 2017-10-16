@@ -61,4 +61,39 @@ namespace FT{
         return true;
     }
 
+    /*!
+     * median 
+     */
+    double median(const ArrayXd& v) 
+    {
+        // instantiate a vector
+        vector<double> x(v.size());
+        x.assign(v.data(),v.data()+v.size());
+        // middle element
+        size_t n = x.size()/2;
+        // sort nth element of array
+        nth_element(x.begin(),x.begin()+n,x.end());
+        // if evenly sized, return average of middle two elements
+        if (x.size() % 2 == 0) {
+            nth_element(x.begin(),x.begin()+n-1,x.end());
+            return (x[n] + x[n-1]) / 2;
+        }
+        // otherwise return middle element
+        else
+            return x[n];
+    }
+
+    //! median absolute deviation
+    double mad(const ArrayXd& x) 
+    {
+        // returns median absolute deviation (MAD)
+        // get median of x
+        double x_median = median(x);
+        //calculate absolute deviation from median
+        ArrayXd dev(x.size());
+        for (int i =0; i < x.size(); ++i)
+            dev(i) = abs(x(i) - x_median);
+        // return median of the absolute deviation
+        return median(dev);
+    }
 } 

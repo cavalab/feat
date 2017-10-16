@@ -175,7 +175,7 @@ namespace FT{
 
             // select parents
             params.msg("selection", 1);
-            vector<size_t> parents = p_sel->select(F, params);
+            vector<size_t> parents = p_sel->select(F, params, r);
 
             // variation to produce offspring
             params.msg("variation", 1);
@@ -187,7 +187,7 @@ namespace FT{
 
             // select survivors from combined pool of parents and offspring
             params.msg("survival", 1);
-            survivors = p_surv->select(F, params);
+            survivors = p_surv->select(F, params, r);
 
             // reduce population to survivors
             p_pop->update(survivors);
