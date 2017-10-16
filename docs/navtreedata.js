@@ -1,6 +1,8 @@
 var NAVTREE =
 [
   [ "FEW-two", "index.html", [
+    [ "Install", "md_INSTALL.html", null ],
+    [ "Contributing", "md_CONTRIBUTING.html", null ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
