@@ -62,7 +62,7 @@ namespace FT{
     
     // fitness of population
     void Evaluation::fitness(Population& pop, const MatrixXd& X, VectorXd& y, MatrixXd& F, 
-                 const Parameters& p)
+                 const Parameters& params)
     {
     	/*!
          * Input:
@@ -79,19 +79,22 @@ namespace FT{
          *      pop[:].fitness is modified
          */
         
-        
+        char otype = params.otype;        
         // loop through individuals
         for (auto& ind : pop.individuals)
         {
             // calculate program output matrix Phi
-            MatrixXd Phi = ind.out(X, y, p);
+            params.msg("Generating output for " + ind.get_eqn(otype), 0);
+            MatrixXd Phi = ind.out(X, y, params);
             
 
             // calculate ML model from Phi
-            VectorXd yhat = out_ml(Phi,y,p);
+            params.msg("ML trainnig on " + ind.get_eqn(otype), 0);
+            VectorXd yhat = out_ml(Phi,y,params);
             
             // assign F and aggregate fitness
-            assign_fit(ind,F,yhat,y,p);
+            params.msg("Assigning fitness to " + ind.get_eqn(otype), 0);
+            assign_fit(ind,F,yhat,y,params);
             
             
         }
@@ -127,15 +130,15 @@ namespace FT{
         // define shogun data
         
         //X.transposeInPlace();
-        std::cout << "X:\n";
-        std::cout << X;
+        std::cout << "Phi:\n";
+        std::cout << X << "\n";
 
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
         auto labels = some<CRegressionLabels>(SGVector<float64_t>(y));
         std::cout << "features and labels defined\n";
         
-        std::cout << "loaded features:\n";
-        (*features).get_feature_matrix().display_matrix();
+        //std::cout << "loaded features:\n";
+        //(*features).get_feature_matrix().display_matrix();
 
         cout << "number of samples:" <<  (*features).get_num_vectors() <<"\n"; 
         cout << "number of features:" << (*features).get_num_features() <<"\n";
