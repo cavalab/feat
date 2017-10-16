@@ -3,6 +3,7 @@ var files =
     [ "evaluation.h", "d3/df9/evaluation_8h_source.html", null ],
     [ "fewtwo.h", "d7/d68/fewtwo_8h_source.html", null ],
     [ "individual.h", "d5/d1f/individual_8h_source.html", null ],
+    [ "lexicase.h", "d3/d12/lexicase_8h_source.html", null ],
     [ "ml.h", "d7/d60/ml_8h_source.html", null ],
     [ "node.h", "d1/d77/node_8h_source.html", null ],
     [ "nodeadd.h", "d7/d7a/nodeadd_8h_source.html", null ],
@@ -31,9 +32,11 @@ var files =
     [ "nodevariable.h", "d0/d3d/nodevariable_8h_source.html", null ],
     [ "nodewrapper.h", "d1/dc6/nodewrapper_8h_source.html", null ],
     [ "params.h", "da/d33/params_8h_source.html", null ],
+    [ "pareto.h", "d9/d2e/pareto_8h_source.html", null ],
     [ "population.h", "d2/d76/population_8h_source.html", null ],
     [ "rnd.h", "d2/da9/rnd_8h_source.html", null ],
     [ "selection.h", "df/d48/selection_8h_source.html", null ],
+    [ "selection_operator.h", "dd/d5d/selection__operator_8h_source.html", null ],
     [ "utils.h", "d5/d60/utils_8h_source.html", null ],
     [ "variation.h", "d4/d1f/variation_8h_source.html", null ]
 ];
