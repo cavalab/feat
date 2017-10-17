@@ -125,12 +125,18 @@ namespace FT{
         {
             ml = std::make_shared<ML>(params.ml,params.classification);
         }
-               
-
+        
+        
         // define shogun data
         
         //X.transposeInPlace();
         std::cout << "Phi:\n";
+        std::cout << X << "\n";
+
+        // normalize features
+        for (unsigned int i=0; i<X.rows(); ++i)
+            X.row(i).normalize();
+        std::cout << "normalized Phi:\n";
         std::cout << X << "\n";
 
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
@@ -142,19 +148,9 @@ namespace FT{
 
         cout << "number of samples:" <<  (*features).get_num_vectors() <<"\n"; 
         cout << "number of features:" << (*features).get_num_features() <<"\n";
-        cout << "number of labels:" << (*labels).get_labels().size() << "\n";     
-
-        // preprocess features
-        auto Normalize = some<CNormOne>();
-        Normalize->init(features);
-        auto feat_returned = Normalize->apply_to_feature_matrix(features);
-        std::cout << "features normalized\n";
+        cout << "number of labels:" << (*labels).get_labels().size() << "\n";   
+       
     
-        std::cout << "norm features:\n";
-        (*features).get_feature_matrix().display_matrix();
-        
-        feat_returned.display_matrix();
-
         std::cout << "labels:\n";
         (*labels).get_labels().display_vector();
 
@@ -216,10 +212,15 @@ namespace FT{
          
          *       modifies F and ind.fitness
         */
-        
-        F.col(ind.loc) = (yhat - y).array().pow(2);
+        std::cout << "F: " << F.rows() << " x " << F.cols() << "\n";
+        std::cout << "ind.loc: " << ind.loc << "\n";
+        std::cout << "yhat " << yhat.size() << "\n";
+        std::cout << "y: " << y.size() << "\n";
 
+        F.col(ind.loc) = (yhat - y).array().pow(2);
+        
         ind.fitness = F.col(ind.loc).mean();
+        params.msg("ind " + std::to_string(ind.loc) + " fitnes: " + std::to_string(ind.fitness),0);
     }
 }
 #endif
