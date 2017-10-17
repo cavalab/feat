@@ -33,7 +33,7 @@ namespace FT{
             else if (!type.compare("pareto"))
                 pselector = std::make_shared<Pareto>(survival);
             else
-                std::cerr << "Undefined Selection Operator" + type + "\n";
+                std::cerr << "Undefined Selection Operator " + type + "\n";
                 
         };
 

@@ -17,6 +17,9 @@ namespace FT{
         Pareto(bool surv){ survival = surv; };
         
         ~Pareto(){}
+
+        vector<size_t> select(const MatrixXd& F, const Parameters& p, Rnd& r){};
+
     };
 }
 #endif

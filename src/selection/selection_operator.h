@@ -16,11 +16,11 @@ namespace FT{
 
         bool survival; 
 
-        SelectionOperator(){}
+        //SelectionOperator(){}
 
         virtual ~SelectionOperator(){}
         
-        virtual vector<size_t> select(const MatrixXd& F, const Parameters& p, const Rnd& r) = 0;
+        virtual vector<size_t> select(const MatrixXd& F, const Parameters& p, Rnd& r) = 0;
         
     };
 	

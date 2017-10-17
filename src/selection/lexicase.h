@@ -3,8 +3,8 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 
-#ifndef LEXICASE_SELECTION_H
-#define LEXICASE_SELECTION_H
+#ifndef LEXICASE_H
+#define LEXICASE_H
 
 namespace FT{
     ////////////////////////////////////////////////////////////////////////////////// Declarations
