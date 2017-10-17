@@ -160,7 +160,7 @@ namespace FT{
         p_pop->init(params);
 
         // resize F to be twice the pop-size x number of samples
-        F.resize(int(2*params.pop_size),X.cols());
+        F.resize(X.cols(),int(2*params.pop_size));
         
         // evaluate initial population
         params.msg("Evaluating initial population",1);

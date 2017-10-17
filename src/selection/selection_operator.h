@@ -20,21 +20,11 @@ namespace FT{
 
         virtual ~SelectionOperator(){}
         
-        virtual vector<size_t> select(const MatrixXd& F, const Parameters& p, const Rnd& r)
-        {
-            std::cerr << "Error. No selection implementation for base SelectionOperator.\n";
-        }
+        virtual vector<size_t> select(const MatrixXd& F, const Parameters& p, const Rnd& r) = 0;
+        
     };
 	
-	/*!
-     * @class Tournament
-     */
-    struct Tournament: SelectionOperator
-    {
-        /*!
-         * tournament selection operator.
-         */
-    };
+	
 	
 	
 }
