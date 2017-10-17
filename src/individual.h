@@ -21,6 +21,7 @@ namespace FT{
         string eqn;                 				///< symbolic representation of program
         vector<double> weights;     				///< weights from ML training on program output
         unsigned int dim;           				///< dimensionality of individual
+        vector<double> obj;                         ///< objectives for use with Pareto selection
 
         Individual(){}
 
@@ -68,7 +69,7 @@ namespace FT{
          * @brief get program dimensionality
          */
         unsigned int get_dim();
-
+        int check_dominance(const individual& b) const; 
         private:
             
     };
@@ -185,6 +186,40 @@ namespace FT{
             }
         }  
         return dim;   
+    }
+    int individual::check_dominance(const individual& b)
+    {
+        /* Check whether this individual dominates b. 
+         *
+         * Input:
+         *
+         *      b: another individual
+         *
+         * Output:
+         *
+         *      1: this individual domintes b; -1: b dominates this; 0: neither dominates
+         */
+
+        int flag1 = 0, // to check if this has a smaller objective
+            flag2 = 0; // to check if b    has a smaller objective
+
+        for (int i=0; i<obj.size(); ++i) {
+            if (obj[i] < b.obj[i]) 
+                flag1 = 1;
+            else if (obj[i] > b.obj[i]) 
+                flag2 = 1;                        
+        }
+
+        if (flag1==1 && flag2==0)   
+            // there is at least one smaller objective for this and none for b
+            return 1;               
+        else if (flag1==0 && flag2==1) 
+            // there is at least one smaller objective for b and none for this
+            return -1;
+        else             
+            // no smaller objective or both have one smaller
+            return 0;
+
     }
 }
 
