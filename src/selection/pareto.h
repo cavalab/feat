@@ -13,16 +13,16 @@ namespace FT{
     struct Pareto : SelectionOperator
     {
         /*!
-         * Pareto selection operator.
+         * @brief Selection using the survival scheme of NSGA-II.
          */
         Pareto(bool surv){ survival = surv; };
         
         ~Pareto(){}
 
-        vector<size_t> select(const MatrixXd& F, const Parameters& p, Rnd& r){};
+        vector<size_t> select(Population& pop, const Parameters& p, Rnd& r);
 
         private:
-            vector<vector<int>> front;                      //< the Pareto fronts
+            vector<vector<int>> front;                //< the Pareto fronts
             void fast_nds(Population&);               //< Fast non-dominated sorting 
             void crowding_distance(Population&, int); //< crowding distance of a front 
     };
@@ -35,12 +35,14 @@ namespace FT{
          *
          * Input: 
          *
-         *      F: n_samples X popsize matrix of model outputs.
+         *      pop: population of programs.
          *      params: parameters.
+         *      r: random number generator
          *
          * Output:
          *
          *      selected: vector of indices corresponding to columns of F that are selected.
+         *      modifies individual ranks, objectives and dominations.
          */
         
         // set objectives
