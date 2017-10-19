@@ -22,8 +22,12 @@ namespace FT{
         vector<double> weights;     				///< weights from ML training on program output
         unsigned int dim;           				///< dimensionality of individual
         vector<double> obj;                         ///< objectives for use with Pareto selection
-
-        Individual(){}
+        unsigned int dcounter;                      ///< number of individuals this dominates
+        vector<unsigned int> dominated              ///< individual indices this dominates
+        unsigned int rank;                          ///< pareto front rank
+        float crowd_dist;                           ///< crowding distance on the Pareto front
+        
+        Individual(){c = 0;}
 
         ~Individual(){}
 
@@ -69,9 +73,15 @@ namespace FT{
          * @brief get program dimensionality
          */
         unsigned int get_dim();
-        int check_dominance(const individual& b) const; 
+        /// check whether this dominates b. 
+        int check_dominance(const Individual& b) const;
+        /// set obj vector given a string of objective names
+        void set_obj(const vector<string>&); 
+        /// calculate program complexity. 
+        unsigned int complexity();
+
         private:
-            
+            unsigned int c;            ///< the complexity of the program.    
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
@@ -187,7 +197,8 @@ namespace FT{
         }  
         return dim;   
     }
-    int individual::check_dominance(const individual& b)
+
+    int Individual::check_dominance(const Individual& b) const
     {
         /* Check whether this individual dominates b. 
          *
@@ -220,6 +231,37 @@ namespace FT{
             // no smaller objective or both have one smaller
             return 0;
 
+    }
+
+    void Individual::set_obj(const vector<string>& objectives)
+    {
+        /*! Input:
+         *      objectives: vector of strings naming objectives.
+         */
+        if (obj.empty())
+        {
+            for (const auto& n : objectives)
+            {
+                if (n.compare("fitness")==0)
+                    obj.push_back(fitness);
+                else if (n.compare("complexity")==0)
+                    obj.push_back(c);
+            }
+        }
+    }
+
+    unsigned int Individual::complexity()
+    {
+        if (c==0)
+        {
+            vector<unsigned int> stack_c; 
+
+            for (const auto& n : program)
+                n.eval_complexity(stack_c);
+        
+            c = stack_c.back();
+        }
+        return complexity;
     }
 }
 

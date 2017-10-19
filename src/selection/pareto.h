@@ -46,8 +46,9 @@ namespace FT{
          */
         
         // set objectives
+        #pragma omp paralell for
         for (const auto& p : pop)
-            p.set_objectives(params.objectives);
+            p.set_obj(params.objectives);
 
         // fast non-dominated sort
         fast_nds(pop);
@@ -86,13 +87,13 @@ namespace FT{
             std::vector<int> dom;
             int dcount = 0;
         
-            individual& p = pop[i];
+            Individual& p = pop[i];
             // p.dcounter  = 0;
             // p.dominated.clear();
         
             for (int j = 0; j < pop.size(); ++j) {
             
-                individual& q = pop[j];
+                Individual& q = pop[j];
             
                 int compare = p.check_dominance(q);
                 if (compare == 1) { // p dominates q
@@ -131,11 +132,11 @@ namespace FT{
             std::vector<int> Q;
             for (int i = 0; i < fronti.size(); ++i) {
 
-                individual& p = pop[fronti[i]];
+                Individual& p = pop[fronti[i]];
 
                 for (int j = 0; j < p.dominated.size() ; ++j) {
 
-                    individual& q = pop[p.dominated[j]];
+                    Individual& q = pop[p.dominated[j]];
                     q.dcounter -= 1;
 
                     if (q.dcounter == 0) {
@@ -185,12 +186,14 @@ namespace FT{
         }        
     }
     
-    struct sort_n {
-        const population& pop;
+    /// sort based on rank, breaking ties with crowding distance
+    struct sort_n 
+    {
+        const Population& pop;          ///< population address
         sort_n(const population& population) : pop(population) {};
         bool operator() (int i, int j) {
-            const individual& ind1 = pop.ind[i];
-            const individual& ind2 = pop.ind[j];
+            const Individual& ind1 = pop[i];
+            const Individual& ind2 = pop[j];
             if (ind1.rank < ind2.rank)
                 return true;
             else if (ind1.rank == ind2.rank &&
@@ -200,12 +203,12 @@ namespace FT{
         };
     };
 
+    /// sort based on objective m
     struct comparator_obj 
     {
-        comparator_obj(const Population& population, int index) :
-            pop(population), m(index) {};
-        const population& pop;
-        int m;
+        const Population& pop;      ///< population address
+        int m;                      ///< objective index 
+        comparator_obj(const Population& population, int index) : pop(population), m(index) {};
         bool operator() (int i, int j) { return pop[i].obj[m] < pop[j].obj[m]; };
     };
 }

@@ -53,7 +53,12 @@ namespace FT{
                 x = (x < MIN_DBL).select(MIN_DBL,x);
                 return x;
             };
-             
+
+            void eval_complexity(map<char, vector<unsigned int>>& cstack)
+            {
+                
+
+            }
     };
 }
 #endif
