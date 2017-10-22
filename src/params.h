@@ -30,7 +30,7 @@ namespace FT{
         unsigned int max_depth;         			///< max depth of programs
         unsigned int max_size;          			///< max size of programs (length)
         unsigned int max_dim;           			///< maximum dimensionality of programs
-        bool erc;								///<whether to use variable or constants fo terminals 
+        bool erc;								    ///< whether to use variable or constants for terminals 
 
         Parameters(int pop_size, int gens, string& ml, bool classification, int max_stall, 
                    char otype, int vebosity, string functions, unsigned int max_depth, 
@@ -49,7 +49,6 @@ namespace FT{
             set_functions(functions);
             max_size = pow(2,max_depth)*max_dim; // max_size is max_dim binary trees of max_depth
         }
-        
         
         ~Parameters(){}
 
@@ -85,6 +84,32 @@ namespace FT{
          * @brief sets available functions based on comma-separated list.
          */
         void set_functions(string fs);
+        
+        /*!
+         * @brief update max size of programs (length)
+         */
+        void updateSize()
+        {
+        	max_size = pow(2,max_depth)*max_dim;
+        }
+        
+        /*!
+         * @brief set max depth of programs
+         */
+        void set_max_depth(unsigned int &max_depth)
+        {
+        	this->max_depth = max_depth;
+        	updateSize();
+        }
+        
+        /*!
+         * @brief set maximum dimensionality of programs
+         */
+        void set_max_dim(unsigned int &max_dim)
+        {
+        	this->max_dim = max_dim;
+        	updateSize();
+        }
         
         /*!
          * @brief set the terminals
@@ -199,6 +224,7 @@ namespace FT{
         string delim = ",";
         size_t pos = 0;
         string token;
+        functions.clear();
         while ((pos = fs.find(delim)) != string::npos) 
         {
             token = fs.substr(0, pos);
