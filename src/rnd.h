@@ -78,6 +78,7 @@ namespace FT {
             {
                 return rnd_dbl(0.0,i);
             }
+            
             float operator()() { return rnd_flt(0.0,1.0); }
 
 			template <class RandomAccessIterator>

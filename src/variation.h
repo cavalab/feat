@@ -27,6 +27,14 @@ namespace FT{
             Variation(float cr): cross_rate(cr) {}
             
             /*!
+             * @brief update cross rate
+             */            
+            void set_cross_rate(float &cr)
+            {
+            	cross_rate = cr;
+            }
+            
+            /*!
              * @brief destructor
              */
             ~Variation(){}

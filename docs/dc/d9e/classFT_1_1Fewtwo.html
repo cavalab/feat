@@ -124,9 +124,9 @@ Collaboration diagram for FT::Fewtwo:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../d3/d63/classFT_1_1Fewtwo__coll__graph.png" border="0" usemap="#FT_1_1Fewtwo_coll__map" alt="Collaboration graph"/></div>
 <map name="FT_1_1Fewtwo_coll__map" id="FT_1_1Fewtwo_coll__map">
-<area shape="rect" id="node4" href="../../de/d2c/structFT_1_1Parameters.html" title="holds the hyperparameters for Fewtwo. " alt="" coords="698,107,811,133"/>
-<area shape="rect" id="node7" title="STL class. " alt="" coords="181,113,261,140"/>
-<area shape="rect" id="node8" title="STL class. " alt="" coords="5,106,132,147"/>
+<area shape="rect" id="node4" href="../../de/d2c/structFT_1_1Parameters.html" title="holds the hyperparameters for Fewtwo. " alt="" coords="513,107,626,133"/>
+<area shape="rect" id="node6" title="STL class. " alt="" coords="222,107,302,133"/>
+<area shape="rect" id="node7" title="STL class. " alt="" coords="5,99,132,141"/>
 </map>
 <center><span class="legend">[<a target="top" href="../../graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -136,6 +136,66 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a31050da37064a3b1fc3b32524338472e">Fewtwo</a> (int pop_size=100, int gens=100, string ml=&quot;LinearRidgeRegression&quot;, bool classification=false, int verbosity=1, int max_stall=0, string sel=&quot;lexicase&quot;, string surv=&quot;pareto&quot;, float cross_rate=0.5, char otype='f', string functions=&quot;+,-,*,/,exp,log&quot;, unsigned int max_depth=3, unsigned int max_dim=10, int random_state=0, bool erc=false, string obj=&quot;fitness,complexity&quot;)</td></tr>
 <tr class="memdesc:a31050da37064a3b1fc3b32524338472e"><td class="mdescLeft">&#160;</td><td class="mdescRight">member initializer list constructor <br /></td></tr>
 <tr class="separator:a31050da37064a3b1fc3b32524338472e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7106d3f810fde51692d5a203df5dac3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa7106d3f810fde51692d5a203df5dac3"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#aa7106d3f810fde51692d5a203df5dac3">set_pop_size</a> (int &amp;pop_size)</td></tr>
+<tr class="memdesc:aa7106d3f810fde51692d5a203df5dac3"><td class="mdescLeft">&#160;</td><td class="mdescRight">set size of population <br /></td></tr>
+<tr class="separator:aa7106d3f810fde51692d5a203df5dac3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1aadc622cd4e1dcd99b945175e4be15"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af1aadc622cd4e1dcd99b945175e4be15"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#af1aadc622cd4e1dcd99b945175e4be15">set_generations</a> (int &amp;gens)</td></tr>
+<tr class="memdesc:af1aadc622cd4e1dcd99b945175e4be15"><td class="mdescLeft">&#160;</td><td class="mdescRight">set size of max generations <br /></td></tr>
+<tr class="separator:af1aadc622cd4e1dcd99b945175e4be15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af108775ed965032b711951881d8c3981"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af108775ed965032b711951881d8c3981"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#af108775ed965032b711951881d8c3981">set_ml</a> (string &amp;ml)</td></tr>
+<tr class="memdesc:af108775ed965032b711951881d8c3981"><td class="mdescLeft">&#160;</td><td class="mdescRight">set <a class="el" href="../../df/dfa/classFT_1_1ML.html" title="class that specifies the machine learning algorithm to pair with Fewtwo. ">ML</a> algorithm to use <br /></td></tr>
+<tr class="separator:af108775ed965032b711951881d8c3981"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f3bbb65c0f865434279fdcea2b744fd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3f3bbb65c0f865434279fdcea2b744fd"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a3f3bbb65c0f865434279fdcea2b744fd">set_classification</a> (bool &amp;classification)</td></tr>
+<tr class="memdesc:a3f3bbb65c0f865434279fdcea2b744fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">set EProblemType for shogun <br /></td></tr>
+<tr class="separator:a3f3bbb65c0f865434279fdcea2b744fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff5faaeed36ba72fe9d94e86de8179ad"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aff5faaeed36ba72fe9d94e86de8179ad"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#aff5faaeed36ba72fe9d94e86de8179ad">set_verbosity</a> (int &amp;verbosity)</td></tr>
+<tr class="memdesc:aff5faaeed36ba72fe9d94e86de8179ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">set level of debug info <br /></td></tr>
+<tr class="separator:aff5faaeed36ba72fe9d94e86de8179ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa0bd11a07c25b602c7fb9e7681750c6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaa0bd11a07c25b602c7fb9e7681750c6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#aaa0bd11a07c25b602c7fb9e7681750c6">set_max_stall</a> (int &amp;max_stall)</td></tr>
+<tr class="memdesc:aaa0bd11a07c25b602c7fb9e7681750c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">set maximum stall in learning, in generations <br /></td></tr>
+<tr class="separator:aaa0bd11a07c25b602c7fb9e7681750c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a495b3c8dec67e0346f8b2d75ee1441a4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a495b3c8dec67e0346f8b2d75ee1441a4"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a495b3c8dec67e0346f8b2d75ee1441a4">set_selection</a> (string &amp;sel)</td></tr>
+<tr class="memdesc:a495b3c8dec67e0346f8b2d75ee1441a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">set selection method <br /></td></tr>
+<tr class="separator:a495b3c8dec67e0346f8b2d75ee1441a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fe2623c7b20b2cf867e61970598e599"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5fe2623c7b20b2cf867e61970598e599"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a5fe2623c7b20b2cf867e61970598e599">set_surv</a> (string &amp;surv)</td></tr>
+<tr class="memdesc:a5fe2623c7b20b2cf867e61970598e599"><td class="mdescLeft">&#160;</td><td class="mdescRight">set survivability <br /></td></tr>
+<tr class="separator:a5fe2623c7b20b2cf867e61970598e599"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8947ced0470e2599298e33879a0cc34"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad8947ced0470e2599298e33879a0cc34"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#ad8947ced0470e2599298e33879a0cc34">set_cross_rate</a> (float &amp;cross_rate)</td></tr>
+<tr class="memdesc:ad8947ced0470e2599298e33879a0cc34"><td class="mdescLeft">&#160;</td><td class="mdescRight">set cross rate in variation <br /></td></tr>
+<tr class="separator:ad8947ced0470e2599298e33879a0cc34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ee8a51c8c018722cb9c8ec06f2f7cc6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4ee8a51c8c018722cb9c8ec06f2f7cc6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a4ee8a51c8c018722cb9c8ec06f2f7cc6">set_otype</a> (char o_type)</td></tr>
+<tr class="memdesc:a4ee8a51c8c018722cb9c8ec06f2f7cc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">set program output type ('f', 'b') <br /></td></tr>
+<tr class="separator:a4ee8a51c8c018722cb9c8ec06f2f7cc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af331259918e888cd4287cb0cc2705dfc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af331259918e888cd4287cb0cc2705dfc"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#af331259918e888cd4287cb0cc2705dfc">set_functions</a> (string &amp;functions)</td></tr>
+<tr class="memdesc:af331259918e888cd4287cb0cc2705dfc"><td class="mdescLeft">&#160;</td><td class="mdescRight">sets available functions based on comma-separated list. <br /></td></tr>
+<tr class="separator:af331259918e888cd4287cb0cc2705dfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d984fc5df5c366e83318f81f8dad787"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8d984fc5df5c366e83318f81f8dad787"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a8d984fc5df5c366e83318f81f8dad787">set_max_depth</a> (unsigned int &amp;max_depth)</td></tr>
+<tr class="memdesc:a8d984fc5df5c366e83318f81f8dad787"><td class="mdescLeft">&#160;</td><td class="mdescRight">set max depth of programs <br /></td></tr>
+<tr class="separator:a8d984fc5df5c366e83318f81f8dad787"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94ccd39f7ca60f1887bc8ae9e4f07772"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a94ccd39f7ca60f1887bc8ae9e4f07772"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a94ccd39f7ca60f1887bc8ae9e4f07772">set_max_dim</a> (unsigned int &amp;max_dim)</td></tr>
+<tr class="memdesc:a94ccd39f7ca60f1887bc8ae9e4f07772"><td class="mdescLeft">&#160;</td><td class="mdescRight">set maximum dimensionality of programs <br /></td></tr>
+<tr class="separator:a94ccd39f7ca60f1887bc8ae9e4f07772"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae103e51be81f734683494d4ae8b8c749"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae103e51be81f734683494d4ae8b8c749"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#ae103e51be81f734683494d4ae8b8c749">set_random_state</a> (int &amp;random_state)</td></tr>
+<tr class="memdesc:ae103e51be81f734683494d4ae8b8c749"><td class="mdescLeft">&#160;</td><td class="mdescRight">set seeds for each core's random number generator <br /></td></tr>
+<tr class="separator:ae103e51be81f734683494d4ae8b8c749"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a165cf25c48f126198859442e72f35c4f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a165cf25c48f126198859442e72f35c4f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a165cf25c48f126198859442e72f35c4f">set_erc</a> (bool &amp;erc)</td></tr>
+<tr class="memdesc:a165cf25c48f126198859442e72f35c4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">flag to set whether to use variable or constants for terminals <br /></td></tr>
+<tr class="separator:a165cf25c48f126198859442e72f35c4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a9b58b81cb2c5b2d3e3b3764b0b8e7d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5a9b58b81cb2c5b2d3e3b3764b0b8e7d"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a5a9b58b81cb2c5b2d3e3b3764b0b8e7d">~Fewtwo</a> ()</td></tr>
 <tr class="memdesc:a5a9b58b81cb2c5b2d3e3b3764b0b8e7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">destructor <br /></td></tr>

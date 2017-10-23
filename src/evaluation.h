@@ -134,8 +134,11 @@ namespace FT{
         std::cout << X << "\n";
 
         // normalize features
-        for (unsigned int i=0; i<X.rows(); ++i)
-            X.row(i).normalize();
+        for (unsigned int i=0; i<X.rows(); ++i){
+            X.row(i) = X.row(i).array() - X.row(i).mean();
+            if (X.row(i).norm() > NEAR_ZERO)
+                X.row(i).normalize();
+        }
         std::cout << "normalized Phi:\n";
         std::cout << X << "\n";
 
