@@ -172,7 +172,7 @@ namespace FT{
             /*!
               * @brief set max depth of programs
               */
-            void set_max_depth(unsigned int &max_depth)
+            void set_max_depth(unsigned int max_depth)
             {
             	params.set_max_depth(max_depth);
             }
