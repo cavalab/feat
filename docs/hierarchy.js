@@ -36,8 +36,7 @@ var hierarchy =
     [ "FT::Selection", "de/d87/structFT_1_1Selection.html", null ],
     [ "FT::SelectionOperator", "d2/d3a/structFT_1_1SelectionOperator.html", [
       [ "FT::Lexicase", "d8/d78/structFT_1_1Lexicase.html", null ],
-      [ "FT::Pareto", "de/d2e/structFT_1_1Pareto.html", null ],
-      [ "FT::Tournament", "dc/d8d/structFT_1_1Tournament.html", null ]
+      [ "FT::Pareto", "de/d2e/structFT_1_1Pareto.html", null ]
     ] ],
     [ "FT::Variation", "d3/d01/classFT_1_1Variation.html", null ]
 ];

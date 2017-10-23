@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['tournament',['Tournament',['../dc/d8d/structFT_1_1Tournament.html',1,'FT']]]
+  ['variation',['Variation',['../d3/d01/classFT_1_1Variation.html',1,'FT']]]
 ];

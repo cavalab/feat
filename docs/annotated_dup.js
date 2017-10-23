@@ -37,7 +37,6 @@ var annotated_dup =
       [ "Rnd", "dd/d2d/classFT_1_1Rnd.html", "dd/d2d/classFT_1_1Rnd" ],
       [ "Selection", "de/d87/structFT_1_1Selection.html", "de/d87/structFT_1_1Selection" ],
       [ "SelectionOperator", "d2/d3a/structFT_1_1SelectionOperator.html", "d2/d3a/structFT_1_1SelectionOperator" ],
-      [ "Tournament", "dc/d8d/structFT_1_1Tournament.html", null ],
       [ "Variation", "d3/d01/classFT_1_1Variation.html", "d3/d01/classFT_1_1Variation" ]
     ] ]
 ];
