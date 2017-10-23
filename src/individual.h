@@ -23,7 +23,7 @@ namespace FT{
         unsigned int dim;           				///< dimensionality of individual
         vector<double> obj;                         ///< objectives for use with Pareto selection
         unsigned int dcounter;                      ///< number of individuals this dominates
-        vector<unsigned int> dominated              ///< individual indices this dominates
+        vector<unsigned int> dominated;             ///< individual indices this dominates
         unsigned int rank;                          ///< pareto front rank
         float crowd_dist;                           ///< crowding distance on the Pareto front
         

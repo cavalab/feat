@@ -30,11 +30,12 @@ namespace FT{
         unsigned int max_depth;         			///< max depth of programs
         unsigned int max_size;          			///< max size of programs (length)
         unsigned int max_dim;           			///< maximum dimensionality of programs
-        bool erc;								///<whether to use variable or constants fo terminals 
+        bool erc;								    ///<whether to include constants for terminals 
+        vector<string> objectives;                  ///< Pareto objectives 
 
         Parameters(int pop_size, int gens, string& ml, bool classification, int max_stall, 
                    char otype, int vebosity, string functions, unsigned int max_depth, 
-                   unsigned int max_dim, bool constant):    
+                   unsigned int max_dim, bool constant, string obj):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
@@ -47,6 +48,7 @@ namespace FT{
             erc(constant)
         {
             set_functions(functions);
+            set_objectives(obj);
             max_size = pow(2,max_depth)*max_dim; // max_size is max_dim binary trees of max_depth
         }
         
@@ -90,6 +92,10 @@ namespace FT{
          * @brief set the terminals
          */
         void set_terminals(int num_features);
+
+        /// set the objectives
+        void set_objectives(string obj);
+
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
@@ -218,10 +224,11 @@ namespace FT{
         /*!
          * based on number of features.
          */
-        if(!erc)
-	        for (size_t i = 0; i < num_features; ++i)
-    	        terminals.push_back(createNode(string("x"), 0, 0, i));
-    	else
+        
+        for (size_t i = 0; i < num_features; ++i)
+            terminals.push_back(createNode(string("x"), 0, 0, i));
+    	
+        if(erc)
     		for (int i = 0; i < num_features; ++i)
     		{
     			if(r() < 0.5)
@@ -229,6 +236,23 @@ namespace FT{
     	       	else
     	       		terminals.push_back(createNode(string("kd"), r(), 0, 0));
     	    }                
+    }
+
+    void Parameters::set_objectives(string obj)
+    {
+        /*! Input: obj, a comma-separated list of objectives
+         */
+
+        fs += ',';          // add delimiter to end 
+        string delim = ",";
+        size_t pos = 0;
+        string token;
+        while ((pos = fs.find(delim)) != string::npos) 
+        {
+            token = fs.substr(0, pos);
+            objectives.push_back(token);
+            fs.erase(0, pos + delim.length());
+        }
     }
 }
 #endif
