@@ -32,6 +32,7 @@ int main(int argc, char** argv){
     std::cout<< "initializing model...\n";
     
     Fewtwo fewtwo(10); 
+    fewtwo.set_functions(string("+,-"));
     std::cout << "fitting model...\n";
 
     fewtwo.fit(X,y);

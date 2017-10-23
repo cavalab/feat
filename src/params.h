@@ -30,12 +30,9 @@ namespace FT{
         unsigned int max_depth;         			///< max depth of programs
         unsigned int max_size;          			///< max size of programs (length)
         unsigned int max_dim;           			///< maximum dimensionality of programs
-<<<<<<< HEAD
-        bool erc;								    ///< whether to use variable or constants for terminals 
-=======
         bool erc;								    ///<whether to include constants for terminals 
         vector<string> objectives;                  ///< Pareto objectives 
->>>>>>> master
+
 
         Parameters(int pop_size, int gens, string& ml, bool classification, int max_stall, 
                    char otype, int vebosity, string functions, unsigned int max_depth, 

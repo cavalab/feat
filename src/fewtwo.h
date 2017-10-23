@@ -164,7 +164,7 @@ namespace FT{
             /*!
               * @brief sets available functions based on comma-separated list.
               */
-            void set_functions(string &functions)
+            void set_functions(string functions)
             {
             	params.set_functions(functions);
             }

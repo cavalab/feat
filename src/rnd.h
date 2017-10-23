@@ -74,7 +74,7 @@ namespace FT {
                 return dist(rg[omp_get_thread_num()]);
             }
             
-            double operator()(unsigned i = 1.0) 
+            double operator()(unsigned i) 
             {
                 return rnd_dbl(0.0,i);
             }
