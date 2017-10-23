@@ -218,7 +218,7 @@ namespace FT{
             if (obj[i] < b.obj[i]) 
                 flag1 = 1;
             else if (obj[i] > b.obj[i]) 
-                flag2 = 1;                        
+                flag2 = 1;                       
         }
 
         if (flag1==1 && flag2==0)   
@@ -254,14 +254,15 @@ namespace FT{
     {
         if (c==0)
         {
-            vector<unsigned int> stack_c; 
+            std::map<char, vector<unsigned int>> stack_c; 
 
             for (const auto& n : program)
-                n.eval_complexity(stack_c);
+                n->eval_complexity(stack_c);
         
-            c = stack_c.back();
+            for (const auto& s : stack_c)
+                c += s.second.back();
         }
-        return complexity;
+        return c;
     }
 }
 

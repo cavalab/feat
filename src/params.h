@@ -243,15 +243,15 @@ namespace FT{
         /*! Input: obj, a comma-separated list of objectives
          */
 
-        fs += ',';          // add delimiter to end 
+        obj += ',';          // add delimiter to end 
         string delim = ",";
         size_t pos = 0;
         string token;
-        while ((pos = fs.find(delim)) != string::npos) 
+        while ((pos = obj.find(delim)) != string::npos) 
         {
-            token = fs.substr(0, pos);
+            token = obj.substr(0, pos);
             objectives.push_back(token);
-            fs.erase(0, pos + delim.length());
+            obj.erase(0, pos + delim.length());
         }
     }
 }

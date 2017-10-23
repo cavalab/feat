@@ -24,12 +24,39 @@ namespace FT{
         private:
             vector<vector<int>> front;                //< the Pareto fronts
             void fast_nds(Population&);               //< Fast non-dominated sorting 
-            void crowding_distance(Population&, int); //< crowding distance of a front 
+            void crowding_distance(Population&, int); //< crowding distance of a front i
+           // struct sort_n; 
+           // struct comparator_obj;
     };
     
     /////////////////////////////////////////////////////////////////////////////////// Definitions
 
-    vector<size_t> select(Population& pop, const Parameters& params, Rnd& r)
+    /// sort based on rank, breaking ties with crowding distance
+    struct sort_n 
+    {
+        const Population& pop;          ///< population address
+        sort_n(const Population& population) : pop(population) {};
+        bool operator() (int i, int j) {
+            const Individual& ind1 = pop.individuals[i];
+            const Individual& ind2 = pop.individuals[j];
+            if (ind1.rank < ind2.rank)
+                return true;
+            else if (ind1.rank == ind2.rank &&
+                     ind1.crowd_dist > ind2.crowd_dist)
+                return true;
+            return false;
+        };
+    };
+
+    /// sort based on objective m
+    struct comparator_obj 
+    {
+        const Population& pop;      ///< population address
+        int m;                      ///< objective index 
+        comparator_obj(const Population& population, int index) : pop(population), m(index) {};
+        bool operator() (int i, int j) { return pop[i].obj[m] < pop[j].obj[m]; };
+    };
+    vector<size_t> Pareto::select(Population& pop, const Parameters& params, Rnd& r)
     {
         /* Selection using the survival scheme of NSGA-II. 
          *
@@ -46,16 +73,17 @@ namespace FT{
          */
         
         // set objectives
-        #pragma omp paralell for
-        for (const auto& p : pop)
-            p.set_obj(params.objectives);
+        #pragma omp parallel for
+        for (unsigned int i=0; i<pop.size(); ++i)
+            pop.individuals[i].set_obj(params.objectives);
 
         // fast non-dominated sort
         fast_nds(pop);
         
         // Push back selected individuals until full
         vector<size_t> selected;
-        while ( selected.size() + front[i].size() < params.popsize)
+        int i = 0;
+        while ( selected.size() + front[i].size() < params.pop_size)
         {
             std::vector<int>& Fi = front[i];        // indices in front i
             //crowding_distance(i);                   // calculate crowding in Fi
@@ -66,10 +94,10 @@ namespace FT{
             ++i;
         }
 
-        crowding_distance(i);   // calculate crowding in final front to include
-        std::sort(front[i].begin(),front[i].end(),sort_n());
+        crowding_distance(pop,i);   // calculate crowding in final front to include
+        std::sort(front[i].begin(),front[i].end(),sort_n(pop));
 
-        const int extra = popsize - selected.size();
+        const int extra = params.pop_size - selected.size();
         for (int j = 0; j < extra; ++j) // Pt+1 = Pt+1 U Fi[1:N-|Pt+1|]
             selected.push_back(front[i][j]);
 
@@ -84,16 +112,16 @@ namespace FT{
         #pragma omp parallel for
         for (int i = 0; i < pop.size(); ++i) {
         
-            std::vector<int> dom;
+            std::vector<unsigned int> dom;
             int dcount = 0;
         
-            Individual& p = pop[i];
+            Individual& p = pop.individuals[i];
             // p.dcounter  = 0;
             // p.dominated.clear();
         
             for (int j = 0; j < pop.size(); ++j) {
             
-                Individual& q = pop[j];
+                Individual& q = pop.individuals[j];
             
                 int compare = p.check_dominance(q);
                 if (compare == 1) { // p dominates q
@@ -132,11 +160,11 @@ namespace FT{
             std::vector<int> Q;
             for (int i = 0; i < fronti.size(); ++i) {
 
-                Individual& p = pop[fronti[i]];
+                Individual& p = pop.individuals[fronti[i]];
 
                 for (int j = 0; j < p.dominated.size() ; ++j) {
 
-                    Individual& q = pop[p.dominated[j]];
+                    Individual& q = pop.individuals[p.dominated[j]];
                     q.dcounter -= 1;
 
                     if (q.dcounter == 0) {
@@ -152,7 +180,7 @@ namespace FT{
 
     }
 
-    void Pareto::crowding_distance(const Population& pop, int fronti)
+    void Pareto::crowding_distance(Population& pop, int fronti)
     {
         std::vector<int> F = front[fronti];
         if (F.size() == 0 ) return;
@@ -160,56 +188,32 @@ namespace FT{
         const int fsize = F.size();
 
         for (int i = 0; i < fsize; ++i)
-            pop[F[i]].crowd_dist = 0;
+            pop.individuals[F[i]].crowd_dist = 0;
    
 
         const int limit = pop[0].obj.size();
         for (int m = 0; m < limit; ++m) {
 
-            std::sort(F.begin(), F.end(), comparator_obj(*this,m));
+            std::sort(F.begin(), F.end(), comparator_obj(pop,m));
 
             // in the paper dist=INF for the first and last, in the code
             // this is only done to the first one or to the two first when size=2
-            pop[F[0]].crowd_dist = INF;
+            pop.individuals[F[0]].crowd_dist = std::numeric_limits<double>::max();
             if (fsize > 1)
-                pop[F[fsize-1]].crowd_dist = INF;
+                pop.individuals[F[fsize-1]].crowd_dist = std::numeric_limits<double>::max();
         
             for (int i = 1; i < fsize-1; ++i) 
             {
-                if (pop[F[i]].crowd_dist != INF) 
-                {
-                    pop[F[i]].crowd_dist +=
-                        (pop[F[i+1]].obj[m] - pop[F[i-1]].obj[m]) // crowd over obj
-                        / (pop[F[fsize-1]].obj[m] - pop[F[0]].obj[m]);
+                if (pop.individuals[F[i]].crowd_dist != std::numeric_limits<double>::max()) 
+                {   // crowd over obj
+                    pop.individuals[F[i]].crowd_dist +=
+                        (pop.individuals[F[i+1]].obj[m] - pop.individuals[F[i-1]].obj[m]) 
+                        / (pop.individuals[F[fsize-1]].obj[m] - pop.individuals[F[0]].obj[m]);
                 }
             }
         }        
     }
     
-    /// sort based on rank, breaking ties with crowding distance
-    struct sort_n 
-    {
-        const Population& pop;          ///< population address
-        sort_n(const population& population) : pop(population) {};
-        bool operator() (int i, int j) {
-            const Individual& ind1 = pop[i];
-            const Individual& ind2 = pop[j];
-            if (ind1.rank < ind2.rank)
-                return true;
-            else if (ind1.rank == ind2.rank &&
-                     ind1.crowd_dist > ind2.crowd_dist)
-                return true;
-            return false;
-        };
-    };
-
-    /// sort based on objective m
-    struct comparator_obj 
-    {
-        const Population& pop;      ///< population address
-        int m;                      ///< objective index 
-        comparator_obj(const Population& population, int index) : pop(population), m(index) {};
-        bool operator() (int i, int j) { return pop[i].obj[m] < pop[j].obj[m]; };
-    };
+    
 }
 #endif
