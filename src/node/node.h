@@ -53,7 +53,30 @@ namespace FT{
                 x = (x < MIN_DBL).select(MIN_DBL,x);
                 return x;
             };
-             
+
+            /// evaluates complexity of this node in the context of its child nodes.
+            void eval_complexity(map<char, vector<unsigned int>>& cstack)
+            {
+                /*! Complexity of a node \f$ n \f$ with \f$ k \f$ arguments is defined as 
+                 *  
+                 *  \f$ C(n) = c_n * (\sum_{a=1}^k C(a)) \f$
+                 *
+                 *  The complexity of a program is the complexity of its root/head node. 
+                 */
+
+                int c_args;                         // sum complexity of the arguments 
+                for (const auto& a: arity)
+                {
+                    for (unsigned int i = 0; i< a.second; ++i)
+                    {
+                        c_args + cstack[a.first].back();
+                        cstack[a.first].pop_back();
+
+                    }
+                }
+
+                cstack[otype].push_back(complexity*c_args);
+            }
     };
 }
 #endif

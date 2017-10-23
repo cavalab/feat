@@ -21,8 +21,13 @@ namespace FT{
         string eqn;                 				///< symbolic representation of program
         vector<double> weights;     				///< weights from ML training on program output
         unsigned int dim;           				///< dimensionality of individual
-
-        Individual(){}
+        vector<double> obj;                         ///< objectives for use with Pareto selection
+        unsigned int dcounter;                      ///< number of individuals this dominates
+        vector<unsigned int> dominated;             ///< individual indices this dominates
+        unsigned int rank;                          ///< pareto front rank
+        float crowd_dist;                           ///< crowding distance on the Pareto front
+        
+        Individual(){c = 0;}
 
         ~Individual(){}
 
@@ -68,9 +73,15 @@ namespace FT{
          * @brief get program dimensionality
          */
         unsigned int get_dim();
+        /// check whether this dominates b. 
+        int check_dominance(const Individual& b) const;
+        /// set obj vector given a string of objective names
+        void set_obj(const vector<string>&); 
+        /// calculate program complexity. 
+        unsigned int complexity();
 
         private:
-            
+            unsigned int c;            ///< the complexity of the program.    
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
@@ -185,6 +196,73 @@ namespace FT{
             }
         }  
         return dim;   
+    }
+
+    int Individual::check_dominance(const Individual& b) const
+    {
+        /* Check whether this individual dominates b. 
+         *
+         * Input:
+         *
+         *      b: another individual
+         *
+         * Output:
+         *
+         *      1: this individual domintes b; -1: b dominates this; 0: neither dominates
+         */
+
+        int flag1 = 0, // to check if this has a smaller objective
+            flag2 = 0; // to check if b    has a smaller objective
+
+        for (int i=0; i<obj.size(); ++i) {
+            if (obj[i] < b.obj[i]) 
+                flag1 = 1;
+            else if (obj[i] > b.obj[i]) 
+                flag2 = 1;                       
+        }
+
+        if (flag1==1 && flag2==0)   
+            // there is at least one smaller objective for this and none for b
+            return 1;               
+        else if (flag1==0 && flag2==1) 
+            // there is at least one smaller objective for b and none for this
+            return -1;
+        else             
+            // no smaller objective or both have one smaller
+            return 0;
+
+    }
+
+    void Individual::set_obj(const vector<string>& objectives)
+    {
+        /*! Input:
+         *      objectives: vector of strings naming objectives.
+         */
+        if (obj.empty())
+        {
+            for (const auto& n : objectives)
+            {
+                if (n.compare("fitness")==0)
+                    obj.push_back(fitness);
+                else if (n.compare("complexity")==0)
+                    obj.push_back(c);
+            }
+        }
+    }
+
+    unsigned int Individual::complexity()
+    {
+        if (c==0)
+        {
+            std::map<char, vector<unsigned int>> stack_c; 
+
+            for (const auto& n : program)
+                n->eval_complexity(stack_c);
+        
+            for (const auto& s : stack_c)
+                c += s.second.back();
+        }
+        return c;
     }
 }
 

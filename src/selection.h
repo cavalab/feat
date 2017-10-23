@@ -16,7 +16,7 @@ namespace FT{
     
     /*!
      * @class Selection
-     * @brief implements selection methods. 
+     * @brief interfaces with selection operators. 
      */
     struct Selection
     {
@@ -39,12 +39,15 @@ namespace FT{
 
         ~Selection(){}
         
-        /*!
-         * perform selection by pointing to the select command for the SelectionOperator
-         */
+        //! perform selection by pointing to the select command for the SelectionOperator
         vector<size_t> select(const MatrixXd& F, const Parameters& params, Rnd& r)
         {       
             return pselector->select(F, params, r);
+        }
+        //! perform selection with population input instead of F
+        vector<size_t> select(Population& pop, const Parameters& params, Rnd& r)
+        {       
+            return pselector->select(pop, params, r);
         }
     };
 
