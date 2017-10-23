@@ -74,10 +74,11 @@ namespace FT {
                 return dist(rg[omp_get_thread_num()]);
             }
             
-            double operator()(unsigned i) 
+            double operator()(unsigned i = 1.0) 
             {
                 return rnd_dbl(0.0,i);
             }
+            
             float operator()() { return rnd_flt(0.0,1.0); }
 
 			template <class RandomAccessIterator>

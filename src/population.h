@@ -33,6 +33,14 @@ namespace FT{
         void init(const Parameters& params);
         
         /*!
+         * @brief update individual vector size 
+         */
+        void resize(int &pop_size)
+        {
+        	individuals.resize(pop_size);
+        }
+        
+        /*!
          * @brief reduce programs to the indices in survivors.
          */
         void update(vector<size_t> survivors);
