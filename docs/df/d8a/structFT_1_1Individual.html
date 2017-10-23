@@ -108,6 +108,7 @@ $(document).ready(function(){initNavTree('df/d8a/structFT_1_1Individual.html','.
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="../../d9/d0b/classFT_1_1Individual-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">FT::Individual Class Reference</div>  </div>
@@ -122,6 +123,8 @@ $(document).ready(function(){initNavTree('df/d8a/structFT_1_1Individual.html','.
 Collaboration diagram for FT::Individual:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../df/de8/structFT_1_1Individual__coll__graph.png" border="0" usemap="#FT_1_1Individual_coll__map" alt="Collaboration graph"/></div>
+<map name="FT_1_1Individual_coll__map" id="FT_1_1Individual_coll__map">
+</map>
 <center><span class="legend">[<a target="top" href="../../graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -154,6 +157,17 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../..
 <tr class="memitem:a22bf1f1016d87a21c8f21da1a59ef11e"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d8a/structFT_1_1Individual.html#a22bf1f1016d87a21c8f21da1a59ef11e">get_dim</a> ()</td></tr>
 <tr class="memdesc:a22bf1f1016d87a21c8f21da1a59ef11e"><td class="mdescLeft">&#160;</td><td class="mdescRight">get program dimensionality  <a href="#a22bf1f1016d87a21c8f21da1a59ef11e">More...</a><br /></td></tr>
 <tr class="separator:a22bf1f1016d87a21c8f21da1a59ef11e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5ac74778b83724565615c6a2ed7f13a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae5ac74778b83724565615c6a2ed7f13a"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d8a/structFT_1_1Individual.html#ae5ac74778b83724565615c6a2ed7f13a">check_dominance</a> (const <a class="el" href="../../df/d8a/structFT_1_1Individual.html">Individual</a> &amp;b) const </td></tr>
+<tr class="memdesc:ae5ac74778b83724565615c6a2ed7f13a"><td class="mdescLeft">&#160;</td><td class="mdescRight">check whether this dominates b. <br /></td></tr>
+<tr class="separator:ae5ac74778b83724565615c6a2ed7f13a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8bcc47e023c2f552bfaa9e7916acec20"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d8a/structFT_1_1Individual.html#a8bcc47e023c2f552bfaa9e7916acec20">set_obj</a> (const vector&lt; string &gt; &amp;)</td></tr>
+<tr class="memdesc:a8bcc47e023c2f552bfaa9e7916acec20"><td class="mdescLeft">&#160;</td><td class="mdescRight">set obj vector given a string of objective names  <a href="#a8bcc47e023c2f552bfaa9e7916acec20">More...</a><br /></td></tr>
+<tr class="separator:a8bcc47e023c2f552bfaa9e7916acec20"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2629cc2ed230acb3d819bb068026d437"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2629cc2ed230acb3d819bb068026d437"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d8a/structFT_1_1Individual.html#a2629cc2ed230acb3d819bb068026d437">complexity</a> ()</td></tr>
+<tr class="memdesc:a2629cc2ed230acb3d819bb068026d437"><td class="mdescLeft">&#160;</td><td class="mdescRight">calculate program complexity. <br /></td></tr>
+<tr class="separator:a2629cc2ed230acb3d819bb068026d437"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -181,6 +195,33 @@ vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a cla
 unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d8a/structFT_1_1Individual.html#a69c0b64218cdf44d9e134192acd1e8a5">dim</a></td></tr>
 <tr class="memdesc:a69c0b64218cdf44d9e134192acd1e8a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">dimensionality of individual <br /></td></tr>
 <tr class="separator:a69c0b64218cdf44d9e134192acd1e8a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a621f4a2b42f5d6b4f45e6cac4911e818"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a621f4a2b42f5d6b4f45e6cac4911e818"></a>
+vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d8a/structFT_1_1Individual.html#a621f4a2b42f5d6b4f45e6cac4911e818">obj</a></td></tr>
+<tr class="memdesc:a621f4a2b42f5d6b4f45e6cac4911e818"><td class="mdescLeft">&#160;</td><td class="mdescRight">objectives for use with <a class="el" href="../../de/d2e/structFT_1_1Pareto.html">Pareto</a> selection <br /></td></tr>
+<tr class="separator:a621f4a2b42f5d6b4f45e6cac4911e818"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a817beb35bab98210707436bf541c8839"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a817beb35bab98210707436bf541c8839"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d8a/structFT_1_1Individual.html#a817beb35bab98210707436bf541c8839">dcounter</a></td></tr>
+<tr class="memdesc:a817beb35bab98210707436bf541c8839"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of individuals this dominates <br /></td></tr>
+<tr class="separator:a817beb35bab98210707436bf541c8839"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a615c7282145cd91eb534442ca40a8134"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a615c7282145cd91eb534442ca40a8134"></a>
+vector&lt; unsigned int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d8a/structFT_1_1Individual.html#a615c7282145cd91eb534442ca40a8134">dominated</a></td></tr>
+<tr class="memdesc:a615c7282145cd91eb534442ca40a8134"><td class="mdescLeft">&#160;</td><td class="mdescRight">individual indices this dominates <br /></td></tr>
+<tr class="separator:a615c7282145cd91eb534442ca40a8134"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2489fd4b74262ccb09f517723b088d84"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2489fd4b74262ccb09f517723b088d84"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d8a/structFT_1_1Individual.html#a2489fd4b74262ccb09f517723b088d84">rank</a></td></tr>
+<tr class="memdesc:a2489fd4b74262ccb09f517723b088d84"><td class="mdescLeft">&#160;</td><td class="mdescRight">pareto front rank <br /></td></tr>
+<tr class="separator:a2489fd4b74262ccb09f517723b088d84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0fe40d91c2f011c0b167bb4e8e9868da"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0fe40d91c2f011c0b167bb4e8e9868da"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d8a/structFT_1_1Individual.html#a0fe40d91c2f011c0b167bb4e8e9868da">crowd_dist</a></td></tr>
+<tr class="memdesc:a0fe40d91c2f011c0b167bb4e8e9868da"><td class="mdescLeft">&#160;</td><td class="mdescRight">crowding distance on the <a class="el" href="../../de/d2e/structFT_1_1Pareto.html">Pareto</a> front <br /></td></tr>
+<tr class="separator:a0fe40d91c2f011c0b167bb4e8e9868da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:ae4485290e0d8bd8565e8abc2a18c4bed"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae4485290e0d8bd8565e8abc2a18c4bed"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d8a/structFT_1_1Individual.html#ae4485290e0d8bd8565e8abc2a18c4bed">c</a></td></tr>
+<tr class="memdesc:ae4485290e0d8bd8565e8abc2a18c4bed"><td class="mdescLeft">&#160;</td><td class="mdescRight">the complexity of the program. <br /></td></tr>
+<tr class="separator:ae4485290e0d8bd8565e8abc2a18c4bed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>individual programs in the population </p>
@@ -241,6 +282,25 @@ satisfied.
  params: Fewtwo parameters
 </pre><p>Output: </p><pre class="fragment"> Phi: n_samples x n_features transformation
 </pre>
+</div>
+</div>
+<a class="anchor" id="a8bcc47e023c2f552bfaa9e7916acec20"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void FT::Individual::set_obj </td>
+          <td>(</td>
+          <td class="paramtype">const vector&lt; string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>objectives</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>set obj vector given a string of objective names </p>
+<p>Input: objectives: vector of strings naming objectives.</p>
+
 </div>
 </div>
 <a class="anchor" id="aeeee46e0eac53327837b5b01dbfe9924"></a>

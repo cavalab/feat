@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['individual',['Individual',['../df/d8a/structFT_1_1Individual.html',1,'FT']]]
+  ['fewtwo',['Fewtwo',['../dc/d9e/classFT_1_1Fewtwo.html',1,'FT']]]
 ];

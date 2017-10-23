@@ -1,5 +1,6 @@
 var hierarchy =
 [
+    [ "FT::comparator_obj", "df/dae/structFT_1_1comparator__obj.html", null ],
     [ "FT::Evaluation", "df/db3/classFT_1_1Evaluation.html", null ],
     [ "FT::Fewtwo", "dc/d9e/classFT_1_1Fewtwo.html", null ],
     [ "FT::Individual", "df/d8a/structFT_1_1Individual.html", null ],
@@ -36,8 +37,8 @@ var hierarchy =
     [ "FT::Selection", "de/d87/structFT_1_1Selection.html", null ],
     [ "FT::SelectionOperator", "d2/d3a/structFT_1_1SelectionOperator.html", [
       [ "FT::Lexicase", "d8/d78/structFT_1_1Lexicase.html", null ],
-      [ "FT::Pareto", "de/d2e/structFT_1_1Pareto.html", null ],
-      [ "FT::Tournament", "dc/d8d/structFT_1_1Tournament.html", null ]
+      [ "FT::Pareto", "de/d2e/structFT_1_1Pareto.html", null ]
     ] ],
+    [ "FT::sort_n", "df/d63/structFT_1_1sort__n.html", null ],
     [ "FT::Variation", "d3/d01/classFT_1_1Variation.html", null ]
 ];

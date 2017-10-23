@@ -114,7 +114,7 @@ $(document).ready(function(){initNavTree('de/d87/structFT_1_1Selection.html','..
 </div><!--header-->
 <div class="contents">
 
-<p>implements selection methods.  
+<p>interfaces with selection operators.  
  <a href="../../de/d87/structFT_1_1Selection.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="../../df/d48/selection_8h_source.html">selection.h</a>&gt;</code></p>
@@ -128,8 +128,14 @@ Collaboration diagram for FT::Selection:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a9aa439e08bd51f53e251e1ecd414386d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d87/structFT_1_1Selection.html#a9aa439e08bd51f53e251e1ecd414386d">Selection</a> (string type=&quot;lexicase&quot;, bool survival=false)</td></tr>
 <tr class="separator:a9aa439e08bd51f53e251e1ecd414386d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac76e0992622022bd8c41c0b3e7545377"><td class="memItemLeft" align="right" valign="top">vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d87/structFT_1_1Selection.html#ac76e0992622022bd8c41c0b3e7545377">select</a> (const MatrixXd &amp;F, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params, <a class="el" href="../../dd/d2d/classFT_1_1Rnd.html">Rnd</a> &amp;r)</td></tr>
+<tr class="memitem:ac76e0992622022bd8c41c0b3e7545377"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac76e0992622022bd8c41c0b3e7545377"></a>
+vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d87/structFT_1_1Selection.html#ac76e0992622022bd8c41c0b3e7545377">select</a> (const MatrixXd &amp;F, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params, <a class="el" href="../../dd/d2d/classFT_1_1Rnd.html">Rnd</a> &amp;r)</td></tr>
+<tr class="memdesc:ac76e0992622022bd8c41c0b3e7545377"><td class="mdescLeft">&#160;</td><td class="mdescRight">perform selection by pointing to the select command for the <a class="el" href="../../d2/d3a/structFT_1_1SelectionOperator.html">SelectionOperator</a> <br /></td></tr>
 <tr class="separator:ac76e0992622022bd8c41c0b3e7545377"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a128f74c9d4dd942b174626874da44917"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a128f74c9d4dd942b174626874da44917"></a>
+vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d87/structFT_1_1Selection.html#a128f74c9d4dd942b174626874da44917">select</a> (<a class="el" href="../../d9/ddc/structFT_1_1Population.html">Population</a> &amp;pop, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params, <a class="el" href="../../dd/d2d/classFT_1_1Rnd.html">Rnd</a> &amp;r)</td></tr>
+<tr class="memdesc:a128f74c9d4dd942b174626874da44917"><td class="mdescLeft">&#160;</td><td class="mdescRight">perform selection with population input instead of F <br /></td></tr>
+<tr class="separator:a128f74c9d4dd942b174626874da44917"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -138,7 +144,7 @@ shared_ptr&lt; <a class="el" href="../../d2/d3a/structFT_1_1SelectionOperator.ht
 <tr class="separator:a2420141138cbffe4f0a8af9b802b4fa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>implements selection methods. </p>
+<div class="textblock"><p>interfaces with selection operators. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a9aa439e08bd51f53e251e1ecd414386d"></a>
 <div class="memitem">
@@ -172,48 +178,6 @@ shared_ptr&lt; <a class="el" href="../../d2/d3a/structFT_1_1SelectionOperator.ht
 </table>
 </div><div class="memdoc">
 <p>set type of selection operator.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="ac76e0992622022bd8c41c0b3e7545377"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">vector&lt;size_t&gt; FT::Selection::select </td>
-          <td>(</td>
-          <td class="paramtype">const MatrixXd &amp;&#160;</td>
-          <td class="paramname"><em>F</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;&#160;</td>
-          <td class="paramname"><em>params</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="../../dd/d2d/classFT_1_1Rnd.html">Rnd</a> &amp;&#160;</td>
-          <td class="paramname"><em>r</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>perform selection by pointing to the select command for the <a class="el" href="../../d2/d3a/structFT_1_1SelectionOperator.html">SelectionOperator</a> </p>
 
 </div>
 </div>

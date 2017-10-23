@@ -1,8 +1,10 @@
 var searchData=
 [
-  ['select',['select',['../d8/d78/structFT_1_1Lexicase.html#a86436b9c1c451e6292318c4abcef0af5',1,'FT::Lexicase::select()'],['../de/d87/structFT_1_1Selection.html#ac76e0992622022bd8c41c0b3e7545377',1,'FT::Selection::select()']]],
+  ['select',['select',['../d8/d78/structFT_1_1Lexicase.html#af03f2effb130d37187a0094de1b033e3',1,'FT::Lexicase::select()'],['../de/d87/structFT_1_1Selection.html#ac76e0992622022bd8c41c0b3e7545377',1,'FT::Selection::select(const MatrixXd &amp;F, const Parameters &amp;params, Rnd &amp;r)'],['../de/d87/structFT_1_1Selection.html#a128f74c9d4dd942b174626874da44917',1,'FT::Selection::select(Population &amp;pop, const Parameters &amp;params, Rnd &amp;r)']]],
   ['selection',['Selection',['../de/d87/structFT_1_1Selection.html#a9aa439e08bd51f53e251e1ecd414386d',1,'FT::Selection']]],
   ['set_5ffunctions',['set_functions',['../de/d2c/structFT_1_1Parameters.html#ad45a4360e251bad1f81789fdcf382f38',1,'FT::Parameters']]],
+  ['set_5fobj',['set_obj',['../df/d8a/structFT_1_1Individual.html#a8bcc47e023c2f552bfaa9e7916acec20',1,'FT::Individual']]],
+  ['set_5fobjectives',['set_objectives',['../de/d2c/structFT_1_1Parameters.html#a8dd349f093773eaa0a13d3bf8dc3a7eb',1,'FT::Parameters']]],
   ['set_5fseed',['set_seed',['../dd/d2d/classFT_1_1Rnd.html#a4f282bd01ffc273b0f74e0db490eab13',1,'FT::Rnd']]],
   ['set_5fterm_5fweights',['set_term_weights',['../de/d2c/structFT_1_1Parameters.html#ad3d7bb01d53f1187490d282bf5068be5',1,'FT::Parameters']]],
   ['set_5fterminals',['set_terminals',['../de/d2c/structFT_1_1Parameters.html#a6c59766af6bfd6092df2498ae51f322d',1,'FT::Parameters']]],

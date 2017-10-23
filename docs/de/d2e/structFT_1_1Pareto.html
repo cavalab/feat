@@ -107,6 +107,8 @@ $(document).ready(function(){initNavTree('de/d2e/structFT_1_1Pareto.html','../..
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="../../d2/df6/classFT_1_1Pareto-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">FT::Pareto Class Reference</div>  </div>
@@ -131,45 +133,41 @@ Collaboration diagram for FT::Pareto:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a88069fd3f28240b8a5c53607f74ffae8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d2e/structFT_1_1Pareto.html#a88069fd3f28240b8a5c53607f74ffae8">Pareto</a> (bool surv)</td></tr>
+<tr class="memitem:a88069fd3f28240b8a5c53607f74ffae8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a88069fd3f28240b8a5c53607f74ffae8"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d2e/structFT_1_1Pareto.html#a88069fd3f28240b8a5c53607f74ffae8">Pareto</a> (bool surv)</td></tr>
+<tr class="memdesc:a88069fd3f28240b8a5c53607f74ffae8"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="../../de/d87/structFT_1_1Selection.html" title="interfaces with selection operators. ">Selection</a> using the survival scheme of NSGA-II. <br /></td></tr>
 <tr class="separator:a88069fd3f28240b8a5c53607f74ffae8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf5af6a966aabc31993d6ed1fc992a5f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaf5af6a966aabc31993d6ed1fc992a5f"></a>
+vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>select</b> (<a class="el" href="../../d9/ddc/structFT_1_1Population.html">Population</a> &amp;pop, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;p, <a class="el" href="../../dd/d2d/classFT_1_1Rnd.html">Rnd</a> &amp;r)</td></tr>
+<tr class="separator:aaf5af6a966aabc31993d6ed1fc992a5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_structFT_1_1SelectionOperator"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_structFT_1_1SelectionOperator')"><img src="../../closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="../../d2/d3a/structFT_1_1SelectionOperator.html">FT::SelectionOperator</a></td></tr>
-<tr class="memitem:af5d52e5b2b21550e34042d77abbf1c7e inherit pub_methods_structFT_1_1SelectionOperator"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af5d52e5b2b21550e34042d77abbf1c7e"></a>
-virtual vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>select</b> (const MatrixXd &amp;F, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;p, const <a class="el" href="../../dd/d2d/classFT_1_1Rnd.html">Rnd</a> &amp;r)</td></tr>
-<tr class="separator:af5d52e5b2b21550e34042d77abbf1c7e inherit pub_methods_structFT_1_1SelectionOperator"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28f99f8a4ea1754ac82331156ffc0126 inherit pub_methods_structFT_1_1SelectionOperator"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a28f99f8a4ea1754ac82331156ffc0126"></a>
+virtual vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>select</b> (const MatrixXd &amp;F, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;p, <a class="el" href="../../dd/d2d/classFT_1_1Rnd.html">Rnd</a> &amp;r)</td></tr>
+<tr class="separator:a28f99f8a4ea1754ac82331156ffc0126 inherit pub_methods_structFT_1_1SelectionOperator"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:ac6451544d426d1cb476c573f7c24162c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac6451544d426d1cb476c573f7c24162c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>fast_nds</b> (<a class="el" href="../../d9/ddc/structFT_1_1Population.html">Population</a> &amp;)</td></tr>
+<tr class="separator:ac6451544d426d1cb476c573f7c24162c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a598fc5fb99a53d34d37e1392c1ed2440"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a598fc5fb99a53d34d37e1392c1ed2440"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>crowding_distance</b> (<a class="el" href="../../d9/ddc/structFT_1_1Population.html">Population</a> &amp;, int)</td></tr>
+<tr class="separator:a598fc5fb99a53d34d37e1392c1ed2440"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:aa55bdbe8e80ec818500c46f9022e0d6b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa55bdbe8e80ec818500c46f9022e0d6b"></a>
+vector&lt; vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>front</b></td></tr>
+<tr class="separator:aa55bdbe8e80ec818500c46f9022e0d6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_attribs_structFT_1_1SelectionOperator"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_structFT_1_1SelectionOperator')"><img src="../../closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="../../d2/d3a/structFT_1_1SelectionOperator.html">FT::SelectionOperator</a></td></tr>
-<tr class="memitem:a1bf532fb56df68486f121a59b1c3b78c inherit pub_attribs_structFT_1_1SelectionOperator"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d3a/structFT_1_1SelectionOperator.html#a1bf532fb56df68486f121a59b1c3b78c">survival</a></td></tr>
+<tr class="memitem:a1bf532fb56df68486f121a59b1c3b78c inherit pub_attribs_structFT_1_1SelectionOperator"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1bf532fb56df68486f121a59b1c3b78c"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d3a/structFT_1_1SelectionOperator.html#a1bf532fb56df68486f121a59b1c3b78c">survival</a></td></tr>
+<tr class="memdesc:a1bf532fb56df68486f121a59b1c3b78c inherit pub_attribs_structFT_1_1SelectionOperator"><td class="mdescLeft">&#160;</td><td class="mdescRight">base class for selection operators. <br /></td></tr>
 <tr class="separator:a1bf532fb56df68486f121a59b1c3b78c inherit pub_attribs_structFT_1_1SelectionOperator"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a88069fd3f28240b8a5c53607f74ffae8"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">FT::Pareto::Pareto </td>
-          <td>(</td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>surv</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p><a class="el" href="../../de/d2e/structFT_1_1Pareto.html">Pareto</a> selection operator. </p>
-
-</div>
-</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="../../d9/d2e/pareto_8h_source.html">pareto.h</a></li>
 </ul>

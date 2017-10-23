@@ -1,6 +1,7 @@
 var annotated_dup =
 [
     [ "FT", null, [
+      [ "comparator_obj", "df/dae/structFT_1_1comparator__obj.html", "df/dae/structFT_1_1comparator__obj" ],
       [ "Evaluation", "df/db3/classFT_1_1Evaluation.html", "df/db3/classFT_1_1Evaluation" ],
       [ "Fewtwo", "dc/d9e/classFT_1_1Fewtwo.html", "dc/d9e/classFT_1_1Fewtwo" ],
       [ "Individual", "df/d8a/structFT_1_1Individual.html", "df/d8a/structFT_1_1Individual" ],
@@ -37,7 +38,7 @@ var annotated_dup =
       [ "Rnd", "dd/d2d/classFT_1_1Rnd.html", "dd/d2d/classFT_1_1Rnd" ],
       [ "Selection", "de/d87/structFT_1_1Selection.html", "de/d87/structFT_1_1Selection" ],
       [ "SelectionOperator", "d2/d3a/structFT_1_1SelectionOperator.html", "d2/d3a/structFT_1_1SelectionOperator" ],
-      [ "Tournament", "dc/d8d/structFT_1_1Tournament.html", null ],
+      [ "sort_n", "df/d63/structFT_1_1sort__n.html", "df/d63/structFT_1_1sort__n" ],
       [ "Variation", "d3/d01/classFT_1_1Variation.html", "d3/d01/classFT_1_1Variation" ]
     ] ]
 ];
