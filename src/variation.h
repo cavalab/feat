@@ -105,6 +105,10 @@ namespace FT{
                 // create child
                 pass = mutate(pop[mom],child,params);
             }
+            string ce = child.get_eqn('f');
+            params.msg("child:"+ce,0);
+            params.msg("pass: " + std::to_string(pass),0);
+
             if (pass)                   // congrats! you produced a viable child.
             {
                 // give child an open location in F
@@ -137,7 +141,7 @@ namespace FT{
         // loop thru child's program
         for (auto& p : child.program)
         {
-            if (r() < 1/n)  // mutate p. WIP: change '1' to node weighted probability
+            if (r() < 1/n)  // mutate p. TODO: change '1' to node weighted probability
             {
                 vector<std::shared_ptr<Node>> replacements;  // potential replacements for p
 
@@ -146,13 +150,14 @@ namespace FT{
                     // find instructions with matching in/out types and arities
                     for (const auto& f: params.functions)
                     {
-                        if (f->otype == p->otype && f->arity['f']==p->arity['f'] && f->arity['b']==p->arity['b'])
+                        if (f->otype == p->otype && f->arity['f']==p->arity['f'] && 
+                                f->arity['b']==p->arity['b'])
                             replacements.push_back(f);
                     }
                 }
                 else                    // otherwise it is a terminal
                 {
-                    // WIP: add terminal weights here
+                    // TODO: add terminal weights here
                     // find terminals with matching output types
                     vector<std::shared_ptr<Node>> replacements;
                     for (const auto& t : params.terminals)

@@ -117,7 +117,26 @@ namespace FT{
         int rows = stack_f.size();
         double * p = stack_f[0].data();
         // TODO: need to conditional this on the output type parameter
-        Map<MatrixXd> Phi (p, rows, cols);       
+        Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows, cols);
+        for (unsigned int i=0; i<rows; ++i)
+            Phi.row(i) = VectorXd::Map(stack_f[i].data(),cols);
+        //check Phi
+        for (int i =0; i<rows; ++i){
+            std::cout <<"stack_f["<< i <<"]: " << stack_f[i].transpose() << "\n";
+        }
+        for (int i=0; i<rows; ++i){
+            std::cout <<"  Phi("<<i<<",:): " << Phi.row(i) << "\n";  
+        }
+        // print actual pointer values
+        std::cout <<  "pointer values\n";
+        for (int i=0; i<rows*cols; ++i){
+           // for (int j = 0; j<cols; ++j)
+           std::cout << *(p+i) << " ";
+        }          
+        std::cout <<"\n";
+
+
+        //Phi.transposeInPlace();
         return Phi;
     }
 
@@ -174,7 +193,6 @@ namespace FT{
        }
        return std::min(i,i2);
     }
-   
    
     // get program dimensionality
     unsigned int Individual::get_dim()
