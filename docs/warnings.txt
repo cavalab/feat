@@ -71,18 +71,17 @@
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodevariable.h:16: warning: Member NodeVariable(const size_t &l, char ntype= 'f') (function) of class FT::NodeVariable is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:47: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/params.h:40: warning: Member Parameters(int pop_size, int gens, string &ml, bool classification, int max_stall, char otype, int vebosity, string functions, unsigned int max_depth, unsigned int max_dim, bool constant, string obj) (function) of class FT::Parameters is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/pareto.h:22: warning: Member select(Population &pop, const Parameters &p, Rnd &r) (function) of class FT::Pareto is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/params.h:37: warning: Member Parameters(int pop_size, int gens, string &ml, bool classification, int max_stall, char otype, int vebosity, string functions, unsigned int max_depth, unsigned int max_dim, bool constant, string obj) (function) of class FT::Parameters is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/selection_operator.h:23: warning: Member select(const MatrixXd &F, const Parameters &p, Rnd &r) (function) of class FT::SelectionOperator is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/pareto.h:26: warning: Member fast_nds(Population &) (function) of class FT::Pareto is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/pareto.h:27: warning: Member crowding_distance(Population &, int) (function) of class FT::Pareto is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/pareto.h:25: warning: Member front (variable) of class FT::Pareto is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:27: warning: Member Population(int p) (function) of class FT::Population is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:72: warning: Member operator[](int i) (function) of class FT::Population is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:72: warning: Member operator[](size_t i) (function) of class FT::Population is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/rnd.h:59: warning: Member rnd_int(int lowerLimit, int upperLimit) (function) of class FT::Rnd is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/rnd.h:65: warning: Member rnd_flt(float min=0.0, float max=1.0) (function) of class FT::Rnd is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/rnd.h:71: warning: Member rnd_dbl(double min=0.0, double max=1.0) (function) of class FT::Rnd is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/rnd.h:77: warning: Member operator()(unsigned i=1.0) (function) of class FT::Rnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/rnd.h:77: warning: Member operator()(unsigned i) (function) of class FT::Rnd is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/rnd.h:82: warning: Member operator()() (function) of class FT::Rnd is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/rnd.h:85: warning: Member shuffle(RandomAccessIterator first, RandomAccessIterator last) (function) of class FT::Rnd is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/rnd.h:95: warning: Member select_randomly(Iter start, Iter end) (function) of class FT::Rnd is not documented.

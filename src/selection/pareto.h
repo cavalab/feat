@@ -12,13 +12,13 @@ namespace FT{
      */
     struct Pareto : SelectionOperator
     {
-        /*!
-         * @brief Selection using the survival scheme of NSGA-II.
-         */
+        /** NSGA-II based selection and survival methods. */
+
         Pareto(bool surv){ survival = surv; };
         
         ~Pareto(){}
 
+        /// selection according to the survival scheme of NSGA-II
         vector<size_t> select(Population& pop, const Parameters& p, Rnd& r);
 
         private:

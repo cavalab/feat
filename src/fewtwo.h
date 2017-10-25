@@ -50,9 +50,9 @@ namespace FT{
         public : 
                         
             // Methods 
-            /*!
-              * @brief member initializer list constructor
-              */
+            
+            /// member initializer list constructor
+              
             Fewtwo(int pop_size=100, int gens = 100, string ml = "LinearRidgeRegression", 
                    bool classification = false, int verbosity = 1, int max_stall = 0,
                    string sel ="lexicase", string surv="pareto", float cross_rate = 0.5,
@@ -72,44 +72,38 @@ namespace FT{
                 r.set_seed(random_state);                    
             }
             
-            /*!
-              * @brief set size of population
-              */
+            /// set size of population 
             void set_pop_size(int &pop_size)
             {
             	params.pop_size = pop_size;
             	p_pop->resize(params.pop_size);
             }
             
-            /*!
-              * @brief set size of max generations
-              */
+            
+            /// set size of max generations              
             void set_generations(int &gens)
             {
             	params.gens = gens;
             }         
             
-            /*!
-              * @brief set ML algorithm to use
-              */
+            
+            /// set ML algorithm to use              
             void set_ml(string &ml)
             {
             	params.ml = ml;
             	p_ml = make_shared<ML>(params.ml, params.classification);
             }
             
-            /*!
-              * @brief set EProblemType for shogun
-              */
+            
+            /// set EProblemType for shogun              
             void set_classification(bool &classification)
             {
             	params.classification = classification;
             	p_ml = make_shared<ML>(params.ml, params.classification);
             }
             
-            /*!
-              * @brief set level of debug info
-              */
+            
+            /// set level of debug info              
             void set_verbosity(int &verbosity)
             {
             	if(verbosity <=2 && verbosity >=0)
@@ -121,115 +115,100 @@ namespace FT{
 	            }
             }
             
-            /*!
-              * @brief set maximum stall in learning, in generations
-              */
+            
+            /// set maximum stall in learning, in generations
             void set_max_stall(int &max_stall)
             {
             	params.max_stall = max_stall;
             }
             
-            /*!
-              * @brief set selection method
-              */
+            
+            /// set selection method              
             void set_selection(string &sel)
             {
             	p_sel = make_shared<Selection>(sel);
             }
             
-            /*!
-              * @brief set survivability
-              */
+            
+            /// set survivability              
             void set_surv(string &surv)
             {
             	p_surv = make_shared<Selection>(surv, true);
             }
             
-            /*!
-              * @brief set cross rate in variation
-              */
+            
+            /// set cross rate in variation              
             void set_cross_rate(float &cross_rate)
             {
             	p_variation->set_cross_rate(cross_rate);
             }
             
-            /*!
-              * @brief set program output type ('f', 'b')
-              */
+            
+            /// set program output type ('f', 'b')              
             void set_otype(char o_type)
             {
             	params.otype = o_type;
             }
             
-            /*!
-              * @brief sets available functions based on comma-separated list.
-              */
+            
+            /// sets available functions based on comma-separated list.
             void set_functions(string functions)
             {
             	params.set_functions(functions);
             }
             
-            /*!
-              * @brief set max depth of programs
-              */
+            
+            /// set max depth of programs              
             void set_max_depth(unsigned int max_depth)
             {
             	params.set_max_depth(max_depth);
             }
             
-            /*!
-              * @brief set maximum dimensionality of programs
-              */
+            
+            /// set maximum dimensionality of programs              
             void set_max_dim(unsigned int max_dim)
             {
             	params.set_max_dim(max_dim);
             }
             
-            /*!
-              * @brief set seeds for each core's random number generator
-              */
+            
+            /// set seeds for each core's random number generator              
             void set_random_state(int &random_state)
             {
             	r.set_seed(random_state);
             }
             
-            /*!
-              * @brief flag to set whether to use variable or constants for terminals
-              */
+            
+            /// flag to set whether to use variable or constants for terminals              
             void set_erc(bool &erc)
             {
             	params.erc = erc;
             }
             
-            /*!
-             * @brief destructor
-             */
+            
+            /// destructor             
             ~Fewtwo(){} 
             
-            /*!
-             * @brief train a model.
-             */
+            
+            /// train a model.             
             void fit(MatrixXd& X, VectorXd& y);
 
-            /*!
-             * @brief predict on unseen data.
-             */
+            
+            /// predict on unseen data.             
             VectorXd predict(const MatrixXd& X);
              
-            /*!
-             * @brief transform an input matrix using a program.             
-             */
+            
+            /// transform an input matrix using a program.                          
             MatrixXd transform(const MatrixXd& X, const Individual ind = Individual());
 
-            /*!
-             * @brief convenience function calls fit then predict.           
-             */
+            
+            /// convenience function calls fit then predict.            
             VectorXd fit_predict(MatrixXd& X, VectorXd& y)
             { fit(X,y); return predict(X); };
         
-            /*!
-             * @brief convenience function calls fit then transform. 
-             */
+            
+            /// convenience function calls fit then transform. 
+             
             MatrixXd fit_transform(MatrixXd& X, VectorXd& y)
             { fit(X,y); return transform(X); };
                   
@@ -247,9 +226,8 @@ namespace FT{
             shared_ptr<ML> p_ml;                	///< pointer to machine learning class
             // private methods
             
-            /*!
-             * @brief method to finit inital ml model
-             */
+            
+            /// method to finit inital ml model            
             void initial_model(MatrixXd& X, VectorXd& y);
     };
 
