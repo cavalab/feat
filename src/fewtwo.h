@@ -320,7 +320,7 @@ namespace FT{
 
             // select survivors from combined pool of parents and offspring
             params.msg("survival", 1);
-            survivors = p_surv->select(F, params, r);
+            survivors = p_surv->select(*p_pop, params, r);
 
             // reduce population to survivors
             p_pop->update(survivors);

@@ -31,10 +31,10 @@ int main(int argc, char** argv){
 
     std::cout<< "initializing model...\n";
     
-    Fewtwo fewtwo(10); 
-    fewtwo.set_functions("+,-");
+    Fewtwo fewtwo(100); 
+    //fewtwo.set_functions("+,-");
     fewtwo.set_max_depth(2);
-    fewtwo.set_max_dim(1);
+    fewtwo.set_max_dim(3);
     std::cout << "fitting model...\n";
 
     fewtwo.fit(X,y);
