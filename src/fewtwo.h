@@ -180,7 +180,7 @@ namespace FT{
             /*!
               * @brief set maximum dimensionality of programs
               */
-            void set_max_dim(unsigned int &max_dim)
+            void set_max_dim(unsigned int max_dim)
             {
             	params.set_max_dim(max_dim);
             }
@@ -306,7 +306,10 @@ namespace FT{
             // select parents
             params.msg("selection", 1);
             vector<size_t> parents = p_sel->select(F, params, r);
-
+            std::cout <<"parents:\n";
+            for (const auto& p : parents)
+                std::cout << p << ",";
+            std::cout<<"\n";
             // variation to produce offspring
             params.msg("variation", 1);
             p_variation->vary(*p_pop, parents, params);

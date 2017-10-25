@@ -33,7 +33,8 @@ int main(int argc, char** argv){
     
     Fewtwo fewtwo(10); 
     fewtwo.set_functions("+,-");
-    fewtwo.set_max_depth(1);
+    fewtwo.set_max_depth(2);
+    fewtwo.set_max_dim(1);
     std::cout << "fitting model...\n";
 
     fewtwo.fit(X,y);

@@ -27,7 +27,7 @@ namespace FT{
         unsigned int rank;                          ///< pareto front rank
         float crowd_dist;                           ///< crowding distance on the Pareto front
         
-        Individual(){c = 0;}
+        Individual(){c = 0; dim = 0;}
 
         ~Individual(){}
 
@@ -64,7 +64,7 @@ namespace FT{
         /*!
          * @brief grab sub-tree locations given starting point.
          */
-        size_t subtree(size_t i, char otype='0') const;
+        size_t subtree(size_t i, char otype) const;
 
        // // get program depth.
        // unsigned int depth();
@@ -141,7 +141,7 @@ namespace FT{
     }
 
     // return symbolic representation of program 
-    string Individual::get_eqn(char otype)
+    string Individual::get_eqn(char otype='f')
     {
         if (eqn.empty())               // calculate eqn if it doesn't exist yet 
         {
@@ -165,11 +165,11 @@ namespace FT{
         return eqn;
     }
     
-    size_t Individual::subtree(size_t i, char otype) const 
+    size_t Individual::subtree(size_t i, char otype='0') const 
     {
 
        /*!
-        * finds indices of subtree in program with root i.
+        * finds index of the end of subtree in program with root i.
         
         * Input:
         
@@ -177,20 +177,28 @@ namespace FT{
         
         * Output:
         
-        *		k, last index in subtree
+        *		last index in subtree, <= i
         
         * note that this function assumes a subtree's arguments to be contiguous in the program.
         */
         
-       size_t i2 = i;                              // index for second recursion
+       if (program[i]->total_arity()==0) return i;
 
-       if (program[i]->otype == otype || otype=='0')     // if this node is a subtree argument
+       std::map<char, unsigned int> arity = program[i]->arity;
+
+       if (otype!='0')  // otype=0 means we are at the root. if we are recursing, we need to find 
+                        // where the nodes to recurse are.  
        {
-           for (unsigned int j = 0; j<program[i]->arity['f']; ++j)
-               i = subtree(--i,'f');                  // recurse for floating arguments
-           for (unsigned int j = 0; j<program[i2]->arity['b']; ++j)
-               i2 = subtree(--i2,'b');                 // recurse for boolean arguments
+           while (program[i-1]->otype != otype && i > 0) --i;
+           assert(program[i]->otype == otype && "invalid subtree arguments");
        }
+       size_t i2 = i;                              // index for second recursion
+       
+       for (unsigned int j = 0; j<arity['f']; ++j)
+           i = subtree(--i,'f');                  // recurse for floating arguments
+       for (unsigned int j = 0; j<arity['b']; ++j)
+           i2 = subtree(--i2,'b');                 // recurse for boolean arguments
+      
        return std::min(i,i2);
     }
    
@@ -205,14 +213,17 @@ namespace FT{
          *   	satisfied. 
          */
         if (dim == 0)        // only calculate if dim hasn't been assigned
-        {
+        {           
             unsigned int ca=0;     // current arity
-            for (unsigned int i = program.size()-1; i>=0; --i)
+            
+            for (unsigned int i = program.size(); i>0; --i)
             {
-                ca += program[i]->total_arity() - 1;
+                ca += program[i-1]->total_arity();
                 if (ca == 0) ++dim;
+                else --ca;
             }
-        }  
+        }
+        std::cout << "dimensionality: " <<  dim << "\n";
         return dim;   
     }
 
@@ -226,7 +237,7 @@ namespace FT{
          *
          * Output:
          *
-         *      1: this individual domintes b; -1: b dominates this; 0: neither dominates
+         *      1: this individual dominates b; -1: b dominates this; 0: neither dominates
          */
 
         int flag1 = 0, // to check if this has a smaller objective

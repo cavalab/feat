@@ -25,6 +25,9 @@ namespace FT{
          * select function returns a set of selected indices from F. 
          */
         vector<size_t> select(const MatrixXd& F, const Parameters& params, Rnd& r); 
+        
+        /// lexicase survival
+        vector<size_t> survive(const MatrixXd& F, const Parameters& params, Rnd& r); 
 
     };
     
@@ -37,16 +40,21 @@ namespace FT{
          *
          * Input: 
          *
-         *      F: n_samples X popsize matrix of model outputs.
+         *      F: n_samples X popsize matrix of model outputs. 
          *      params: parameters.
          *
          * Output:
          *
          *      selected: vector of indices corresponding to columns of F that are selected.
+         *      In selection mode, parents are selected among the first half of columns of F since
+         *      it is assumed that we are selecting for offspring to fill the remaining columns. 
          */            
+        
+        if (survival)               // if survival is on, run lexicase survival.
+            return survive(F,params,r);
 
         unsigned int N = F.rows(); //< number of samples
-        unsigned int P = F.cols(); //< number of individuals
+        unsigned int P = F.cols()/2; //< number of individuals
 
         // define epsilon
         ArrayXd epsilon = ArrayXd::Zero(N);
@@ -107,5 +115,11 @@ namespace FT{
 
         return selected;
     }
+
+    vector<size_t> Lexicase::survive(const MatrixXd& F, const Parameters& params, Rnd& r)
+    {
+        /* Lexicase survival */
+    }
+
 }
 #endif

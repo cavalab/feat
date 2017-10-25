@@ -68,8 +68,9 @@ namespace FT{
         /*!
          * @brief setting and getting from individuals vector
          */
-        const Individual operator [](int i) const {return individuals[i];}
-        const Individual & operator [](int i) {return individuals[i];}
+        const Individual operator [](size_t i) const {return individuals.at(i);}
+        const Individual & operator [](size_t i) {return individuals.at(i);}
+
         // make a program.
         //void make_program(vector<Node>& program, const vector<Node>& functions, 
         //                          const vector<Node>& terminals, int max_d, char otype, 

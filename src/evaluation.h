@@ -89,7 +89,7 @@ namespace FT{
             
 
             // calculate ML model from Phi
-            params.msg("ML trainnig on " + ind.get_eqn(otype), 0);
+            params.msg("ML training on " + ind.get_eqn(otype), 0);
             VectorXd yhat = out_ml(Phi,y,params);
             
             // assign F and aggregate fitness

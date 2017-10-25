@@ -50,7 +50,7 @@ namespace FT{
         {
             set_functions(functions);
             set_objectives(obj);
-            max_size = pow(2,max_depth)*max_dim; // max_size is max_dim binary trees of max_depth
+            updateSize();         
         }
         
         ~Parameters(){}
@@ -89,11 +89,11 @@ namespace FT{
         void set_functions(string fs);
         
         /*!
-         * @brief update max size of programs (length)
+         * @brief max_size is max_dim binary trees of max_depth
          */
         void updateSize()
         {
-        	max_size = pow(2,max_depth)*max_dim;
+        	max_size = (pow(2,max_depth+1)-1)*max_dim;
         }
         
         /*!
