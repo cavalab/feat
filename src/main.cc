@@ -31,6 +31,7 @@ int main(int argc, char** argv){
 
     std::cout<< "initializing model...\n";
     
+
     Fewtwo fewtwo(100); 
     //fewtwo.set_functions("+,-");
     fewtwo.set_max_depth(2);
