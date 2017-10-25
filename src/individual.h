@@ -126,15 +126,7 @@ namespace FT{
         }
         for (int i=0; i<rows; ++i){
             std::cout <<"  Phi("<<i<<",:): " << Phi.row(i) << "\n";  
-        }
-        // print actual pointer values
-        std::cout <<  "pointer values\n";
-        for (int i=0; i<rows*cols; ++i){
-           // for (int j = 0; j<cols; ++j)
-           std::cout << *(p+i) << " ";
-        }          
-        std::cout <<"\n";
-
+        } 
 
         //Phi.transposeInPlace();
         return Phi;
