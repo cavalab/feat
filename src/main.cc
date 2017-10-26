@@ -36,6 +36,7 @@ int main(int argc, char** argv){
     //fewtwo.set_functions("+,-");
     fewtwo.set_max_depth(2);
     fewtwo.set_max_dim(3);
+    fewtwo.set_verbosity(1);
     std::cout << "fitting model...\n";
 
     fewtwo.fit(X,y);

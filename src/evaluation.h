@@ -84,16 +84,16 @@ namespace FT{
         for (auto& ind : pop.individuals)
         {
             // calculate program output matrix Phi
-            params.msg("Generating output for " + ind.get_eqn(otype), 0);
+            params.msg("Generating output for " + ind.get_eqn(otype), 2);
             MatrixXd Phi = ind.out(X, y, params);
             
 
             // calculate ML model from Phi
-            params.msg("ML training on " + ind.get_eqn(otype), 0);
+            params.msg("ML training on " + ind.get_eqn(otype), 2);
             VectorXd yhat = out_ml(Phi,y,params);
             
             // assign F and aggregate fitness
-            params.msg("Assigning fitness to " + ind.get_eqn(otype), 0);
+            params.msg("Assigning fitness to " + ind.get_eqn(otype), 2);
             assign_fit(ind,F,yhat,y,params);
             
             
@@ -127,70 +127,35 @@ namespace FT{
         }
         
         
-        // define shogun data
-        
-        //X.transposeInPlace();
-        std::cout << "Phi:\n";
-        std::cout << X << "\n";
+        // define shogun data 
 
         // normalize features
-        for (unsigned int i=0; i<X.rows(); ++i){
-            X.row(i) = X.row(i).array() - X.row(i).mean();
-            if (X.row(i).norm() > NEAR_ZERO)
-                X.row(i).normalize();
-        }
-        std::cout << "normalized Phi:\n";
-        std::cout << X << "\n";
+        //for (unsigned int i=0; i<X.rows(); ++i){
+        //    X.row(i) = X.row(i).array() - X.row(i).mean();
+        //    if (X.row(i).norm() > NEAR_ZERO)
+        //        X.row(i).normalize();
+        //}
+        X.rowwise().normalize();
 
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
         auto labels = some<CRegressionLabels>(SGVector<float64_t>(y));
-        std::cout << "features and labels defined\n";
-        
-        //std::cout << "loaded features:\n";
-        //(*features).get_feature_matrix().display_matrix();
-
-        cout << "number of samples:" <<  (*features).get_num_vectors() <<"\n"; 
-        cout << "number of features:" << (*features).get_num_features() <<"\n";
-        cout << "number of labels:" << (*labels).get_labels().size() << "\n";   
-       
-    
-        std::cout << "labels:\n";
-        (*labels).get_labels().display_vector();
-
+     
         // pass data to ml
         //ml->p_est->set_features(features);
         ml->p_est->set_labels(labels);
-        std::cout << "ml labels set\n";
 
         // train ml
         ml->p_est->train(features);
-        std::cout << "ml model trained\n";
 
         //get output
         auto y_pred = ml->p_est->apply_regression(features)->get_labels();
-        std::cout << "prediction generated\n";
 
         // weights
         vector<double> w = ml->get_weights();
-        std::cout << "weights: ";
-        for (int i =0; i < w.size(); ++i) std::cout << w[i] << ", ";
-        std::cout << "\n";
 
         // map to Eigen vector
         Map<VectorXd> yhat(y_pred.data(),y_pred.size());
-        std::cout << "mapped to eigen matrix\n";
         
-        // exit shogun
-        //exit_shogun();
-
-        cout << "y true: ";
-        for (size_t i = 0; i<y.size(); ++i) cout << y(i) << " ";
-        cout << "\n";
-
-        cout << "y_pred: ";
-        for (size_t i = 0; i<y_pred.size(); ++i) cout << y_pred[i] << " ";
-        cout << "\n";
-
         // return
         return yhat;
     }
@@ -214,16 +179,12 @@ namespace FT{
          *  Output:
          
          *       modifies F and ind.fitness
-        */
-        std::cout << "F: " << F.rows() << " x " << F.cols() << "\n";
-        std::cout << "ind.loc: " << ind.loc << "\n";
-        std::cout << "yhat " << yhat.size() << "\n";
-        std::cout << "y: " << y.size() << "\n";
+        */ 
 
         F.col(ind.loc) = (yhat - y).array().pow(2);
         
         ind.fitness = F.col(ind.loc).mean();
-        params.msg("ind " + std::to_string(ind.loc) + " fitnes: " + std::to_string(ind.fitness),0);
+        params.msg("ind " + std::to_string(ind.loc) + " fitnes: " + std::to_string(ind.fitness),2);
     }
 }
 #endif

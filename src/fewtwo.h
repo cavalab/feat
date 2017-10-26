@@ -97,7 +97,7 @@ namespace FT{
             }
                         
             /// set level of debug info              
-            void set_verbosity(int &verbosity)
+            void set_verbosity(int verbosity)
             {
             	if(verbosity <=2 && verbosity >=0)
 	            	params.verbosity = verbosity;
@@ -161,7 +161,7 @@ namespace FT{
             // Parameters
             Parameters params;    					///< hyperparameters of Fewtwo 
             MatrixXd F;                 			///< matrix of fitness values for population
-            
+                        
             // subclasses for main steps of the evolutionary computation routine
             shared_ptr<Population> p_pop;       	///< population of programs
             shared_ptr<Selection> p_sel;        	///< selection algorithm
@@ -169,9 +169,11 @@ namespace FT{
             shared_ptr<Variation> p_variation;  	///< variation operators
             shared_ptr<Selection> p_surv;       	///< survival algorithm
             shared_ptr<ML> p_ml;                	///< pointer to machine learning class
-            // private methods
-            
-            
+            // performance tracking
+            double best_score;                      ///< current best score 
+            void update_score();                    ///< updates best score   
+            void print_stats(unsigned int);         ///< prints stats
+
             /// method to finit inital ml model            
             void initial_model(MatrixXd& X, VectorXd& y);
     };
@@ -206,8 +208,7 @@ namespace FT{
         // initial model on raw input
         params.msg("Fitting initial model", 1);
         initial_model(X,y);
-        
-                
+                      
         // initialize population 
         params.msg("Initializing population", 1);
         p_pop->init(params);
@@ -222,31 +223,33 @@ namespace FT{
         vector<size_t> survivors;
 
         // main generational loop
-        for (size_t g = 0; g<params.gens; ++g)
+        for (unsigned int g = 0; g<params.gens; ++g)
         {
-            params.msg("g " + std::to_string(g),1);
 
             // select parents
-            params.msg("selection", 1);
+            params.msg("selection..", 2);
             vector<size_t> parents = p_sel->select(F, params, r);
-            std::cout <<"parents:\n";
-            for (const auto& p : parents)
-                std::cout << p << ",";
-            std::cout<<"\n";
+            params.msg("parents:\n"+p_pop->print_eqns(","), 2);          
+            
             // variation to produce offspring
-            params.msg("variation", 1);
+            params.msg("variation...", 2);
             p_variation->vary(*p_pop, parents, params);
+            params.msg("offspring:\n" + p_pop->print_eqns(true), 2);
 
             // evaluate offspring
-            params.msg("evaluation", 1);
+            params.msg("evaluating offspring...", 2);
             p_eval->fitness(*p_pop, X, y, F, params);
 
             // select survivors from combined pool of parents and offspring
-            params.msg("survival", 1);
+            params.msg("survival", 2);
             survivors = p_surv->select(*p_pop, params, r);
 
             // reduce population to survivors
             p_pop->update(survivors);
+            params.msg("survivors:\n" + p_pop->print_eqns(), 2);
+
+            update_score();
+            print_stats(g);
         }
     }
 
@@ -260,8 +263,41 @@ namespace FT{
 
         // set terminal weights based on model
         params.set_term_weights(p_ml->get_weights());
+
+        // assign best score as MSE
+        best_score = (yhat-y).array().pow(2).mean();
     }
 
-   
+   void Fewtwo::update_score()
+   {
+       for (const auto& i: p_pop->individuals){
+           if (i.fitness < best_score)
+               best_score = i.fitness;
+       }
+
+   }
+
+   void Fewtwo::print_stats(unsigned int g)
+   {
+       vector<size_t> pf = p_pop->sorted_front();
+       double med_score = median(F.colwise().mean().array());
+       double elapsed_time = 0;
+       string bar, space = "";
+       for (unsigned int i = 0; i<50; ++i){
+           if (i <= 50*g/params.gens) bar += "/";
+           else space += " ";
+       }
+       std::cout << "Generation " << g << "/" << params.gens << " [" + bar + space + "]\n";
+       std::cout << "Min Loss\tMedian Loss\tTime\n"
+                 <<  best_score << med_score << elapsed_time << "\n";
+       std::cout << "Representation Pareto Front--------------------------------------\n";
+       std::cout << "Complexity\tLoss\tRepresentation\n";
+       for (const auto& i : pf){
+           std::cout << p_pop->individuals[i].complexity() << "\t" << (*p_pop)[i].fitness 
+                     << "\t" << p_pop->individuals[i].get_eqn() << "\n";
+       }
+       std::cout << "\n\n";
+       
+   }
 }
 #endif

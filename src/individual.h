@@ -40,7 +40,7 @@ namespace FT{
          * @brief return symbolic representation of program
          */
         string get_eqn(char otype);
-
+        
         /*!
          * @brief setting and getting from individuals vector
          */
@@ -79,9 +79,9 @@ namespace FT{
         void set_obj(const vector<string>&); 
         /// calculate program complexity. 
         unsigned int complexity();
-
-        private:
-            unsigned int c;            ///< the complexity of the program.    
+       
+       
+        unsigned int c;            ///< the complexity of the program.    
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
@@ -120,13 +120,13 @@ namespace FT{
         Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows, cols);
         for (unsigned int i=0; i<rows; ++i)
             Phi.row(i) = VectorXd::Map(stack_f[i].data(),cols);
-        //check Phi
-        for (int i =0; i<rows; ++i){
-            std::cout <<"stack_f["<< i <<"]: " << stack_f[i].transpose() << "\n";
-        }
-        for (int i=0; i<rows; ++i){
-            std::cout <<"  Phi("<<i<<",:): " << Phi.row(i) << "\n";  
-        } 
+        ////check Phi
+        //for (int i =0; i<rows; ++i){
+        //    std::cout <<"stack_f["<< i <<"]: " << stack_f[i].transpose() << "\n";
+        //}
+        //for (int i=0; i<rows; ++i){
+        //    std::cout <<"  Phi("<<i<<",:): " << Phi.row(i) << "\n";  
+        //} 
 
         //Phi.transposeInPlace();
         return Phi;
@@ -215,7 +215,6 @@ namespace FT{
                 else --ca;
             }
         }
-        std::cout << "dimensionality: " <<  dim << "\n";
         return dim;   
     }
 
@@ -281,7 +280,8 @@ namespace FT{
                 n->eval_complexity(stack_c);
         
             for (const auto& s : stack_c)
-                c += s.second.back();
+                for (const auto& t : s.second)
+                    c += t;
         }
         return c;
     }

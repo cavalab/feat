@@ -56,14 +56,14 @@ namespace FT{
              */
             bool mutate(Individual& mom, Individual& child, const Parameters& params);
         
-            /*!
-             * @brief splice two programs together
-             */
+            /// splice two programs together
             vector<std::shared_ptr<Node>> splice_programs(vector<std::shared_ptr<Node>>& v1, 
                                                           size_t i1, size_t j1, 
                                                           vector<std::shared_ptr<Node>>& v2,
                                                           size_t i2, size_t j2);
-       
+            /// debugging printout of crossover operation.
+            void print_cross(Individual&,size_t,size_t,Individual&, size_t, size_t, Individual&);       
+            
             float cross_rate;     ///< fraction of crossover in total variation
     };
 
@@ -99,9 +99,8 @@ namespace FT{
             //    other_parents.insert(other_parents.end();parents.begin()+mom+1,parents.end());
                 int dad = r.random_choice(parents);
                 // create child
-                std::cout << "crossing parents " << mom << " and " << dad << "\n";
-                std::cout << "crossing " << pop.individuals[mom].get_eqn() << " with " 
-                    << pop.individuals[dad].get_eqn() << "\n";
+                params.msg("crossing " + pop.individuals[mom].get_eqn() + " with " + 
+                           pop.individuals[dad].get_eqn(), 2);
                 pass = cross(pop.individuals[mom],pop.individuals[dad],child,params);
                 
             }
@@ -109,15 +108,13 @@ namespace FT{
             {
                 // get random mom
                 int mom = r.random_choice(parents);                
-                std::cout << "mutating " << mom << ": ";
-                std::cout << pop.individuals[mom].get_eqn() << "\n";
+                params.msg("mutating " + pop.individuals[mom].get_eqn(), 2);
                 // create child
                 pass = mutate(pop.individuals[mom],child,params);
             }
-            string ce = child.get_eqn('f');
-            params.msg("child:"+ce,0);
-            params.msg("pass: " + std::to_string(pass),0);
-
+            
+            params.msg("child: " + child.get_eqn() + ", pass: " + std::to_string(pass),2);
+            
             if (pass)                   // congrats! you produced a viable child.
             {
                 // give child an open location in F
@@ -144,7 +141,6 @@ namespace FT{
 
         // make child a copy of mom
         child = mom; 
-
         float n = child.size();
 
         // loop thru child's program
@@ -153,7 +149,7 @@ namespace FT{
 
             if (r() < 1/n)  // mutate p. TODO: change '1' to node weighted probability
             {
-                std::cout << "mutating node " << p->name << "\n";
+                params.msg("mutating node " + p->name, 2);
                 vector<std::shared_ptr<Node>> replacements;  // potential replacements for p
 
                 if (p->total_arity() > 0) // then it is an instruction
@@ -170,49 +166,17 @@ namespace FT{
                 {
                     // TODO: add terminal weights here
                     // find terminals with matching output types
-                    
-                    std::cout << "available terminals: ";
-                    for (const auto& t : params.terminals)
-                        std::cout << t->name << "_" << std::dynamic_pointer_cast<NodeVariable>(t)->loc << " ";
-                    std::cout << "\n";
+                                      
                     for (const auto& t : params.terminals)
                     {
-                        if (t->otype == p->otype){
-                            std::cout << "type match, pushing back..\n";
+                        if (t->otype == p->otype)
                             replacements.push_back(t);
-                        }
-                    }                   
-                    
+                    }                                       
                 }
-                std::cout << replacements.size() << " potential replacements: ";
-                for (auto& t : replacements)
-                    std::cout << t->name << " ";
-                std::cout << "\n";
                 // replace p with a random one
-                auto tmp = r.random_choice(replacements);
-                std::cout << "replacing " << p->name << " in child with " << tmp->name << "\n";
-                //p = r.random_choice(replacements);
-                p = tmp;
+                p = r.random_choice(replacements);  
             }
         }
-      
-        std::cout << "mom program: ";
-        for (auto& p : mom.program)
-            std::cout << p->name << " ";
-        std::cout << "\n";
-
-        std::cout << "child program: ";
-        for (auto& p : child.program)
-            std::cout << p->name << " ";
-        std::cout << "\n";
-        if (child.size() > params.max_size)
-            std::cout << "child size (" << child.size() << ") > max_size (" << params.max_size 
-                      << ")\n";
-        
-        if (child.get_dim() > params.max_dim)
-            std::cout << "child dim (" << child.get_dim() << ") > max_dim (" << params.max_dim 
-                      << ")\n";
-
         // check child depth and dimensionality
         return child.size() <= params.max_size && child.get_dim() <= params.max_dim;
     }
@@ -243,8 +207,7 @@ namespace FT{
        // get valid subtree locations
        vector<size_t> locs;
        for (size_t i =0; i<mom.size(); ++i) 
-           if (in(otypes,mom[i]->otype)) locs.push_back(i);
-       //std::iota(locs.begin(),locs.end());
+           if (in(otypes,mom[i]->otype)) locs.push_back(i);       
 
        // get subtree
        size_t j1 = r.random_choice(locs);
@@ -259,47 +222,13 @@ namespace FT{
        size_t j2 = r.random_choice(dlocs);
        size_t i2 = dad.subtree(j2);
        
-       std::cout << "attempting the following crossover:\n";
-       for (int i =0; i<mom.program.size(); ++i){
-           if (i>= i1 && i<= j1) 
-               std::cout << "*";
-           std::cout << mom.program[i]->name << " ";
-       }
-       std::cout << "\n";
        
-       for (int i =0; i<dad.program.size(); ++i){
-           if (i>= i2 && i<= j2) 
-               std::cout << "*";
-           std::cout << dad.program[i]->name << " ";
-       }
-       std::cout << "\n";
-       for (size_t z = 0; z<i1; ++z )
-           std::cout << mom.program[z]->name << " ";
-       std::cout << "| ";      
-       for (size_t z = i2; z<j2+1; ++z )
-           std::cout << dad.program[z]->name << " ";
-       std::cout << "| "; 
-       for (size_t z = j1+1; z<mom.program.size(); ++z)
-           std::cout << mom.program[z]->name << " ";
-       std::cout << "\n"; 
-
        // make child program by splicing mom and dad
        child.program = splice_programs(mom.program, i1, j1, dad.program, i2, j2);
-       
-       std::cout << "child after cross:\n";
-       std::cout << "size: " << child.size() <<"\n";
-       std::cout << "child program: ";
-       for (auto& p : child.program)
-           std::cout << p->name << " ";
-       std::cout << "\n";
-       
-       if (child.size() > params.max_size)
-            std::cout << "child size (" << child.size() << ") > max_size (" << params.max_size 
-                      << ")\n";
-        
-       if (child.get_dim() > params.max_dim)
-           std::cout << "child dim (" << child.get_dim() << ") > max_dim (" << params.max_dim 
-                     << ")\n";      
+                    
+       if (params.verbosity >= 2) 
+           print_cross(mom,i1,j1,dad,i2,j2,child);     
+      
        // check child depth and dimensionality
        return child.size() <= params.max_size && child.get_dim() <= params.max_dim;
     }
@@ -333,6 +262,29 @@ namespace FT{
         vnew.insert(vnew.end(),v2.begin()+i2,v2.begin()+j2+1);  // spliced in v2 portion
         vnew.insert(vnew.end(),v1.begin()+j1+1,v1.end());       // end of v1
         return vnew;
+    }
+    
+    void Variation::print_cross(Individual& mom, size_t i1, size_t j1, Individual& dad, size_t i2, 
+                                size_t j2, Individual& child)
+    {
+        std::cout << "attempting the following crossover:\n";
+           for (int i =0; i<mom.program.size(); ++i){
+               if (i>= i1 && i<= j1) 
+                   std::cout << "*";
+               std::cout << mom.program[i]->name << " ";
+           }
+           std::cout << "\n";
+           
+           for (int i =0; i<dad.program.size(); ++i){
+               if (i>= i2 && i<= j2) 
+                   std::cout << "*";
+               std::cout << dad.program[i]->name << " ";
+           }
+           std::cout << "\n";
+           std::cout << "child after cross:\n";
+           for (auto& p : child.program)
+                std::cout << p->name << " "; 
+           std::cout << "\n";
     }
 }
 #endif

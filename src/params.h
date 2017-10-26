@@ -58,12 +58,12 @@ namespace FT{
         /*!
          * @brief print message with verbosity control. 
          */
-        void msg(string m, int v) const
+        void msg(string m, int v, string sep="\n") const
         {
             /* prints messages based on verbosity level. */
 
             if (verbosity >= v)
-                std::cout << m << "...\n";
+                std::cout << m << sep;
         }
         
         /*!
@@ -120,7 +120,7 @@ namespace FT{
         void set_terminals(int num_features);
 
         /// set the objectives
-        void set_objectives(string obj);
+        void set_objectives(string obj);   
 
     };
 

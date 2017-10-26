@@ -35,10 +35,7 @@ namespace FT{
         /*!
          * @brief update individual vector size 
          */
-        void resize(int &pop_size)
-        {
-        	individuals.resize(pop_size);
-        }
+        void resize(int &pop_size){	individuals.resize(pop_size); }
         
         /*!
          * @brief reduce programs to the indices in survivors.
@@ -48,7 +45,7 @@ namespace FT{
         /*!
          * @brief returns population size
          */
-        int size(){return individuals.size();}
+        int size(){ return individuals.size(); }
 
         /*!
          * @brief returns an open location 
@@ -71,6 +68,22 @@ namespace FT{
         const Individual operator [](size_t i) const {return individuals.at(i);}
         const Individual & operator [](size_t i) {return individuals.at(i);}
 
+        /// return population equations. 
+        string print_eqns(bool,string);
+
+        /// return complexity-sorted Pareto front indices. 
+        vector<size_t> sorted_front();
+        
+        /// Sort population in increasing complexity.
+        struct SortComplexity
+        {
+            Population& pop;
+            SortComplexity(Population& p): pop(p){}
+            bool operator()(size_t i, size_t j)
+            { 
+                return pop.individuals[i].complexity() < pop.individuals[j].complexity();
+            }
+        };
         // make a program.
         //void make_program(vector<Node>& program, const vector<Node>& functions, 
         //                          const vector<Node>& terminals, int max_d, char otype, 
@@ -80,9 +93,10 @@ namespace FT{
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
     
-    void make_program(vector<std::shared_ptr<Node>>& program, const vector<std::shared_ptr<Node>>& functions, 
-                                  const vector<std::shared_ptr<Node>>& terminals, int max_d, char otype, 
-                                  const vector<double>& term_weights)
+    void make_program(vector<std::shared_ptr<Node>>& program, 
+                      const vector<std::shared_ptr<Node>>& functions, 
+                      const vector<std::shared_ptr<Node>>& terminals, int max_d, char otype, 
+                      const vector<double>& term_weights)
     {
         /*!
          * recursively builds a program with complete arguments.
@@ -122,9 +136,7 @@ namespace FT{
                 make_program(program, functions, terminals, max_d-1, 'b', term_weights);
 
         }
-    }
-
-    
+    }    
 
     void Population::init(const Parameters& params)
     {
@@ -220,6 +232,33 @@ namespace FT{
        individuals.push_back(ind);
    }
 
+   string Population::print_eqns(bool just_offspring=false, string sep="\n")
+   {
+       string output = "";
+       int start = 0;
+       
+       if (just_offspring)
+           start = individuals.size()/2;
 
-}
+       for (unsigned int i=start; i< individuals.size(); ++i)
+           output += individuals[i].get_eqn() + sep;
+       
+       return output;
+   }
+
+    vector<size_t> Population::sorted_front()
+    {
+        /* Returns individuals on the Pareto front, sorted by increasign complexity. */
+        vector<size_t> pf;
+        for (unsigned int i =0; i<individuals.size(); ++i)
+        {
+            if (individuals[i].rank == 1)
+                pf.push_back(i);
+        }
+        std::sort(pf.begin(),pf.end(),SortComplexity(*this)); 
+        //[](size_t i, size_t j){ return individuals[i].complexity < individuals[j].complexity;});
+        return pf;
+    }
+    
+}//FT    
 #endif
