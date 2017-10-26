@@ -40,10 +40,10 @@ namespace FT{
     /*!
      * @class Fewtwo
      * @brief main class for the Fewtwo learner.
-     
-     * @details Fewtwo optimizes feature represenations for a given machine learning algorithm. It does so
-     *			by using evolutionary computation to optimize a population of programs. Each program 
-     *			represents a set of feature transformations. 
+     *   
+     * @details Fewtwo optimizes feature represenations for a given machine learning algorithm. It 
+     *			does so by using evolutionary computation to optimize a population of programs. 
+     *			Each program represents a set of feature transformations. 
      */
     class Fewtwo 
     {
@@ -77,23 +77,17 @@ namespace FT{
             {
             	params.pop_size = pop_size;
             	p_pop->resize(params.pop_size);
-            }
-            
+            }            
             
             /// set size of max generations              
-            void set_generations(int &gens)
-            {
-            	params.gens = gens;
-            }         
-            
-            
+            void set_generations(int &gens){ params.gens = gens; }         
+                        
             /// set ML algorithm to use              
             void set_ml(string &ml)
             {
             	params.ml = ml;
             	p_ml = make_shared<ML>(params.ml, params.classification);
-            }
-            
+            }            
             
             /// set EProblemType for shogun              
             void set_classification(bool &classification)
@@ -101,8 +95,7 @@ namespace FT{
             	params.classification = classification;
             	p_ml = make_shared<ML>(params.ml, params.classification);
             }
-            
-            
+                        
             /// set level of debug info              
             void set_verbosity(int &verbosity)
             {
@@ -110,107 +103,59 @@ namespace FT{
 	            	params.verbosity = verbosity;
 	            else
 	            {
-	            	std::cerr << "'" + std::to_string(verbosity) + "' is not a valid verbosity value.\n";
+	            	std::cerr << "'" + std::to_string(verbosity) + "' is not a valid verbosity.\n";
 	            	std::cerr << "Valid Values :\n\t0 - none\n\t1 - minimal\n\t2 - all\n";
 	            }
             }
-            
-            
+                        
             /// set maximum stall in learning, in generations
-            void set_max_stall(int &max_stall)
-            {
-            	params.max_stall = max_stall;
-            }
-            
-            
+            void set_max_stall(int &max_stall){	params.max_stall = max_stall; }
+                        
             /// set selection method              
-            void set_selection(string &sel)
-            {
-            	p_sel = make_shared<Selection>(sel);
-            }
-            
-            
+            void set_selection(string &sel){ p_sel = make_shared<Selection>(sel); }
+                        
             /// set survivability              
-            void set_surv(string &surv)
-            {
-            	p_surv = make_shared<Selection>(surv, true);
-            }
-            
-            
+            void set_surv(string &surv){ p_surv = make_shared<Selection>(surv, true); }
+                        
             /// set cross rate in variation              
-            void set_cross_rate(float &cross_rate)
-            {
-            	p_variation->set_cross_rate(cross_rate);
-            }
-            
-            
+            void set_cross_rate(float &cross_rate){	p_variation->set_cross_rate(cross_rate); }
+                        
             /// set program output type ('f', 'b')              
-            void set_otype(char o_type)
-            {
-            	params.otype = o_type;
-            }
-            
-            
+            void set_otype(char o_type){ params.otype = o_type; }
+                        
             /// sets available functions based on comma-separated list.
-            void set_functions(string functions)
-            {
-            	params.set_functions(functions);
-            }
-            
-            
+            void set_functions(string functions){ params.set_functions(functions); }
+                        
             /// set max depth of programs              
-            void set_max_depth(unsigned int max_depth)
-            {
-            	params.set_max_depth(max_depth);
-            }
-            
+            void set_max_depth(unsigned int max_depth){ params.set_max_depth(max_depth); }
             
             /// set maximum dimensionality of programs              
-            void set_max_dim(unsigned int max_dim)
-            {
-            	params.set_max_dim(max_dim);
-            }
-            
-            
+            void set_max_dim(unsigned int max_dim){	params.set_max_dim(max_dim); }
+                        
             /// set seeds for each core's random number generator              
-            void set_random_state(int &random_state)
-            {
-            	r.set_seed(random_state);
-            }
-            
-            
+            void set_random_state(int &random_state){ r.set_seed(random_state); }
+                        
             /// flag to set whether to use variable or constants for terminals              
-            void set_erc(bool &erc)
-            {
-            	params.erc = erc;
-            }
-            
-            
+            void set_erc(bool &erc){ params.erc = erc; }
+                        
             /// destructor             
             ~Fewtwo(){} 
-            
-            
+                        
             /// train a model.             
             void fit(MatrixXd& X, VectorXd& y);
-
             
             /// predict on unseen data.             
-            VectorXd predict(const MatrixXd& X);
-             
+            VectorXd predict(const MatrixXd& X);           
             
             /// transform an input matrix using a program.                          
             MatrixXd transform(const MatrixXd& X, const Individual ind = Individual());
-
             
             /// convenience function calls fit then predict.            
-            VectorXd fit_predict(MatrixXd& X, VectorXd& y)
-            { fit(X,y); return predict(X); };
+            VectorXd fit_predict(MatrixXd& X, VectorXd& y){ fit(X,y); return predict(X); }
         
             
             /// convenience function calls fit then transform. 
-             
-            MatrixXd fit_transform(MatrixXd& X, VectorXd& y)
-            { fit(X,y); return transform(X); };
+            MatrixXd fit_transform(MatrixXd& X, VectorXd& y){ fit(X,y); return transform(X); }
                   
         private:
             // Parameters
