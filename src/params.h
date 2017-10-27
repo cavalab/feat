@@ -235,15 +235,9 @@ namespace FT{
         while ((pos = fs.find(delim)) != string::npos) 
         {
             token = fs.substr(0, pos);
-            msg("setting function with token "+token,0);
             functions.push_back(createNode(token));
             fs.erase(0, pos + delim.length());
         } 
-        // print    
-        string toprint = "functions: ";
-        for (const auto& f : functions)
-            toprint += f->name + ' ';
-        msg(toprint,0);
     }
 
     void Parameters::set_terminals(int num_features)

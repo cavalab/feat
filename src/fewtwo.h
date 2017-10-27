@@ -73,24 +73,24 @@ namespace FT{
             }
             
             /// set size of population 
-            void set_pop_size(int &pop_size)
+            void set_pop_size(int pop_size)
             {
             	params.pop_size = pop_size;
             	p_pop->resize(params.pop_size);
             }            
             
             /// set size of max generations              
-            void set_generations(int &gens){ params.gens = gens; }         
+            void set_generations(int gens){ params.gens = gens; }         
                         
             /// set ML algorithm to use              
-            void set_ml(string &ml)
+            void set_ml(string ml)
             {
             	params.ml = ml;
             	p_ml = make_shared<ML>(params.ml, params.classification);
             }            
             
             /// set EProblemType for shogun              
-            void set_classification(bool &classification)
+            void set_classification(bool classification)
             {
             	params.classification = classification;
             	p_ml = make_shared<ML>(params.ml, params.classification);
@@ -109,16 +109,16 @@ namespace FT{
             }
                         
             /// set maximum stall in learning, in generations
-            void set_max_stall(int &max_stall){	params.max_stall = max_stall; }
+            void set_max_stall(int max_stall){	params.max_stall = max_stall; }
                         
             /// set selection method              
-            void set_selection(string &sel){ p_sel = make_shared<Selection>(sel); }
+            void set_selection(string sel){ p_sel = make_shared<Selection>(sel); }
                         
             /// set survivability              
-            void set_surv(string &surv){ p_surv = make_shared<Selection>(surv, true); }
+            void set_survival(string surv){ p_surv = make_shared<Selection>(surv, true); }
                         
             /// set cross rate in variation              
-            void set_cross_rate(float &cross_rate){	p_variation->set_cross_rate(cross_rate); }
+            void set_cross_rate(float cross_rate){	p_variation->set_cross_rate(cross_rate); }
                         
             /// set program output type ('f', 'b')              
             void set_otype(char o_type){ params.otype = o_type; }
@@ -133,10 +133,10 @@ namespace FT{
             void set_max_dim(unsigned int max_dim){	params.set_max_dim(max_dim); }
                         
             /// set seeds for each core's random number generator              
-            void set_random_state(int &random_state){ r.set_seed(random_state); }
+            void set_random_state(int random_state){ r.set_seed(random_state); }
                         
             /// flag to set whether to use variable or constants for terminals              
-            void set_erc(bool &erc){ params.erc = erc; }
+            void set_erc(bool erc){ params.erc = erc; }
                         
             /// destructor             
             ~Fewtwo(){} 
@@ -249,7 +249,7 @@ namespace FT{
             params.msg("survivors:\n" + p_pop->print_eqns(), 2);
 
             update_score();
-            print_stats(g);
+            if (params.verbosity>0) print_stats(g);
         }
     }
 
