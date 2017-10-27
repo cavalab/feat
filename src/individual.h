@@ -118,6 +118,7 @@ namespace FT{
         double * p = stack_f[0].data();
         // TODO: need to conditional this on the output type parameter
         Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows, cols);
+        
         for (unsigned int i=0; i<rows; ++i)
             Phi.row(i) = VectorXd::Map(stack_f[i].data(),cols);
         ////check Phi
@@ -265,7 +266,7 @@ namespace FT{
                 if (n.compare("fitness")==0)
                     obj.push_back(fitness);
                 else if (n.compare("complexity")==0)
-                    obj.push_back(c);
+                    obj.push_back(complexity());
             }
         }
     }
@@ -275,13 +276,24 @@ namespace FT{
         if (c==0)
         {
             std::map<char, vector<unsigned int>> stack_c; 
-
+            
             for (const auto& n : program)
                 n->eval_complexity(stack_c);
         
             for (const auto& s : stack_c)
                 for (const auto& t : s.second)
                     c += t;
+            //// debug
+            //std::map<char, vector<string>> stack_cs; 
+            //string complex_eqn;
+            //for (const auto& n : program)
+            //    n->eval_complexity_db(stack_cs);
+            //
+            //for (const auto& s : stack_cs)
+            //    for (const auto& t : s.second)
+            //        complex_eqn += "+" + t;
+
+            //std::cout << "eqn: " + eqn + ", complexity: " + complex_eqn +"=" +std::to_string(c) + "\n";
         }
         return c;
     }

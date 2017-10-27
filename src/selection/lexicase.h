@@ -76,7 +76,7 @@ namespace FT{
         iota(cases.begin(),cases.end(),0);
 
         vector<size_t> selected; // selected individuals
-
+//TODO:  #pragma omp parallel for
         for (unsigned int i = 0; i<P; ++i)  // selection loop
         {
             vector<size_t> pool = starting_pool;    // initial pool   

@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <GetOpt.h>
 #include "fewtwo.h"
 using FT::Fewtwo;
 #include <Eigen/Dense>
@@ -7,6 +9,8 @@ using Eigen::VectorXd;
 int main(int argc, char** argv){
     // runs FEWTWO from the command line. 
         
+    GetOpt getopt(argc,argv,"dcs:");
+
     std::cout << "hello i'm FEWTWO!\n";
     
     // x1 = sin(t), x2 = cos(t), t = 0, 0.5, 1, 1.5, 2, 2.5, 3
@@ -35,7 +39,7 @@ int main(int argc, char** argv){
     Fewtwo fewtwo(100); 
     //fewtwo.set_functions("+,-");
     fewtwo.set_max_depth(2);
-    fewtwo.set_max_dim(3);
+    fewtwo.set_max_dim(10);
     fewtwo.set_verbosity(1);
     std::cout << "fitting model...\n";
 

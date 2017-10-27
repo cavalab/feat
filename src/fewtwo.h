@@ -238,7 +238,7 @@ namespace FT{
 
             // evaluate offspring
             params.msg("evaluating offspring...", 2);
-            p_eval->fitness(*p_pop, X, y, F, params);
+            p_eval->fitness(*p_pop, X, y, F, params, true);
 
             // select survivors from combined pool of parents and offspring
             params.msg("survival", 2);
@@ -287,9 +287,11 @@ namespace FT{
            if (i <= 50*g/params.gens) bar += "/";
            else space += " ";
        }
+       std::cout.precision(3);
+       std::cout << std::scientific;
        std::cout << "Generation " << g << "/" << params.gens << " [" + bar + space + "]\n";
        std::cout << "Min Loss\tMedian Loss\tTime\n"
-                 <<  best_score << med_score << elapsed_time << "\n";
+                 <<  best_score << "\t" << med_score << "\t" << elapsed_time << "\n";
        std::cout << "Representation Pareto Front--------------------------------------\n";
        std::cout << "Complexity\tLoss\tRepresentation\n";
        for (const auto& i : pf){

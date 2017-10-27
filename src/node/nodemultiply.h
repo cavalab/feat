@@ -18,7 +18,7 @@ namespace FT{
     			otype = 'f';
     			arity['f'] = 2;
     			arity['b'] = 0;
-    			complexity = 1;
+    			complexity = 2;
     		}
     		/*!
              * @brief Evaluates the node and updates the stack states. 

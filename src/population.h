@@ -143,7 +143,7 @@ namespace FT{
         /*!
          *create random programs in the population, seeded by initial model weights 
          */
-        std::cout << "population size: " << individuals.size() << "\n";
+        
         size_t count = 0;
         for (auto& ind : individuals){
             // make a program for each individual
@@ -162,8 +162,7 @@ namespace FT{
             }
             // reverse program so that it is post-fix notation
             std::reverse(ind.program.begin(),ind.program.end());
-            std::cout << ind.get_eqn(params.otype) << "\n"; // test output
-            
+                        
             // set location of individual and increment counter
             ind.loc = count;         
             ++count;               

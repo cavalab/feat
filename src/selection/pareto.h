@@ -25,37 +25,39 @@ namespace FT{
             vector<vector<int>> front;                //< the Pareto fronts
             void fast_nds(Population&);               //< Fast non-dominated sorting 
             void crowding_distance(Population&, int); //< crowding distance of a front i
-           // struct sort_n; 
-           // struct comparator_obj;
+            
+           
+            /// sort based on rank, breaking ties with crowding distance
+            struct sort_n 
+            {
+                const Population& pop;          ///< population address
+                sort_n(const Population& population) : pop(population) {};
+                bool operator() (int i, int j) {
+                    const Individual& ind1 = pop.individuals[i];
+                    const Individual& ind2 = pop.individuals[j];
+                    if (ind1.rank < ind2.rank)
+                        return true;
+                    else if (ind1.rank == ind2.rank &&
+                             ind1.crowd_dist > ind2.crowd_dist)
+                        return true;
+                    return false;
+                };
+            };
+
+            /// sort based on objective m
+            struct comparator_obj 
+            {
+                const Population& pop;      ///< population address
+                int m;                      ///< objective index 
+                comparator_obj(const Population& population, int index) 
+                    : pop(population), m(index) {};
+                bool operator() (int i, int j) { return pop[i].obj[m] < pop[j].obj[m]; };
+            };
     };
     
     /////////////////////////////////////////////////////////////////////////////////// Definitions
 
-    /// sort based on rank, breaking ties with crowding distance
-    struct sort_n 
-    {
-        const Population& pop;          ///< population address
-        sort_n(const Population& population) : pop(population) {};
-        bool operator() (int i, int j) {
-            const Individual& ind1 = pop.individuals[i];
-            const Individual& ind2 = pop.individuals[j];
-            if (ind1.rank < ind2.rank)
-                return true;
-            else if (ind1.rank == ind2.rank &&
-                     ind1.crowd_dist > ind2.crowd_dist)
-                return true;
-            return false;
-        };
-    };
-
-    /// sort based on objective m
-    struct comparator_obj 
-    {
-        const Population& pop;      ///< population address
-        int m;                      ///< objective index 
-        comparator_obj(const Population& population, int index) : pop(population), m(index) {};
-        bool operator() (int i, int j) { return pop[i].obj[m] < pop[j].obj[m]; };
-    };
+    
     vector<size_t> Pareto::select(Population& pop, const Parameters& params, Rnd& r)
     {
         /* Selection using the survival scheme of NSGA-II. 

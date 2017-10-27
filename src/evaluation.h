@@ -41,7 +41,7 @@ namespace FT{
              * @brief fitness of population.
              */
             void fitness(Population& pop, const MatrixXd& X, VectorXd& y, MatrixXd& F, 
-                         const Parameters& params);
+                         const Parameters& params, bool offspring);
 
             /*!
              * @brief output of an ml model. 
@@ -62,7 +62,7 @@ namespace FT{
     
     // fitness of population
     void Evaluation::fitness(Population& pop, const MatrixXd& X, VectorXd& y, MatrixXd& F, 
-                 const Parameters& params)
+                 const Parameters& params, bool offspring=false)
     {
     	/*!
          * Input:
@@ -79,24 +79,26 @@ namespace FT{
          *      pop[:].fitness is modified
          */
         
-        char otype = params.otype;        
+        
+        unsigned start =0;
+        if (offspring) start = F.cols()/2;
         // loop through individuals
-        for (auto& ind : pop.individuals)
+//TODO:        #pragma omp parallel for
+        for (unsigned i = start; i<pop.size(); ++i)
         {
             // calculate program output matrix Phi
-            params.msg("Generating output for " + ind.get_eqn(otype), 2);
-            MatrixXd Phi = ind.out(X, y, params);
+            params.msg("Generating output for " + pop.individuals[i].get_eqn(), 2);
+            MatrixXd Phi = pop.individuals[i].out(X, y, params);
             
 
             // calculate ML model from Phi
-            params.msg("ML training on " + ind.get_eqn(otype), 2);
+            params.msg("ML training on " + pop.individuals[i].get_eqn(), 2);
             VectorXd yhat = out_ml(Phi,y,params);
             
             // assign F and aggregate fitness
-            params.msg("Assigning fitness to " + ind.get_eqn(otype), 2);
-            assign_fit(ind,F,yhat,y,params);
-            
-            
+            params.msg("Assigning fitness to " + pop.individuals[i].get_eqn(), 2);
+            assign_fit(pop.individuals[i],F,yhat,y,params);
+                        
         }
 
      
