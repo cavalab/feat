@@ -21,39 +21,29 @@ namespace FT{
          */
 
         public:
-            /*!
-             * @brief constructor
-             */
+        
+            /// constructor
             Variation(float cr): cross_rate(cr) {}
-            
-            /*!
-             * @brief update cross rate
-             */            
-            void set_cross_rate(float &cr)
+                       
+            /// update cross rate
+            void set_cross_rate(float cr)
             {
             	cross_rate = cr;
             }
             
-            /*!
-             * @brief destructor
-             */
+             /// destructor
             ~Variation(){}
 
-            /*!
-             * @brief method to handle variation of population
-             */
+            /// method to handle variation of population
             void vary(Population& pop, const vector<size_t>& parents, const Parameters& params);
             
         private:
-            /*!
-             * @brief crossover 
-             */
+        
+            /// crossover
             bool cross(Individual& mom, Individual& dad, Individual& child,
                        const Parameters& params);
 
-            /*!
-             * @brief mutation
-             */
+            /// mutation
             bool mutate(Individual& mom, Individual& child, const Parameters& params);
         
             /// splice two programs together
@@ -239,7 +229,7 @@ namespace FT{
                                      vector<std::shared_ptr<Node>>& v2, size_t i2, size_t j2)
     {
         /*!
-         * @brief swap vector subsets with different sizes. 
+         * swap vector subsets with different sizes. 
          * constructs a vector made of v1[0:i1], v2[i2:j2], v1[i1:end].
          *
          * Input:

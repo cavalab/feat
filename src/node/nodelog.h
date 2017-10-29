@@ -20,9 +20,8 @@ namespace FT{
     			arity['b'] = 0;
     			complexity = 4;
     		}
-    		/*!
-             * @brief Safe log: pushes log(abs(x)) or MIN_DBL if x is near zero. 
-             */
+
+            /// Safe log: pushes log(abs(x)) or MIN_DBL if x is near zero. 
             void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
                     vector<ArrayXb>& stack_b)
             {
@@ -30,9 +29,7 @@ namespace FT{
                 stack_f.push_back( (abs(x) > NEAR_ZERO).select(log(abs(x)),MIN_DBL) );
             }
 
-            /*!
-             * @brief evaluates the node symbolically
-             */
+            /// Evaluates the node symbolically
             void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
             {
         		string x = stack_f.back(); stack_f.pop_back();

@@ -21,9 +21,7 @@ namespace FT{
 				throw;
     		}
 
-    		/*
-             * @brief declares a boolean constant.
-             */
+            /// declares a boolean constant
     		NodeConstant(bool& v)
     		{
     			name = "k_b";
@@ -34,9 +32,7 @@ namespace FT{
     			b_value = v;
     		}
 
-    		/*
-             * @brief declares a double constant.
-             */
+            /// declares a double constant
     		NodeConstant(const double& v)
     		{
     			name = "k_d";
@@ -46,9 +42,8 @@ namespace FT{
     			complexity = 1;
     			d_value = v;
     		}
-    		/*!
-             * @brief Evaluates the node and updates the stack states. 
-             */
+    		
+            /// Evaluates the node and updates the stack states. 
             void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
                     vector<ArrayXb>& stack_b)
             {
@@ -58,9 +53,7 @@ namespace FT{
                     stack_f.push_back(ArrayXd::Constant(X.cols(),d_value));
             }
 
-            /*!
-             * @brief evaluates the node symbolically
-             */
+            /// Evaluates the node symbolically
             void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
             {
         		if (otype == 'b')

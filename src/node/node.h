@@ -32,15 +32,12 @@ namespace FT{
             int complexity;         ///< complexity of node
             
             virtual ~Node(){}
-            /*!
-             * @brief Evaluates the node and updates the stack states. 
-             */            
+           
+            /// Evaluates the node and updates the stack states. 
             virtual void evaluate(const MatrixXd& X, const VectorXd& y,vector<ArrayXd>& stack_f, 
                     vector<ArrayXb>& stack_b) = 0; 
 
-            /*!
-             * @brief evaluates the node symbolically
-             */
+            /// evaluates the node symbolically
             virtual void eval_eqn(vector<string>& stack_f, vector<string>& stack_b) = 0;
 
             // total arity
@@ -76,6 +73,7 @@ namespace FT{
                 cstack[otype].push_back(complexity*c_args);
                
             }
+            
             /// evaluates complexity of this node in the context of its child nodes.
             void eval_complexity_db(map<char, vector<string>>& cstack)
             {

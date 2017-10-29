@@ -31,52 +31,41 @@ namespace FT{
 
         ~Individual(){}
 
-        /*!
-         * @brief calculate program output matrix Phi
-         */
+        /// calculate program output matrix Phi
         MatrixXd out(const MatrixXd& X, const VectorXd& y, const Parameters& params);
 
-        /*!
-         * @brief return symbolic representation of program
-         */
+        /// return symbolic representation of program
         string get_eqn(char otype);
         
-        /*!
-         * @brief setting and getting from individuals vector
-         */
+        /// setting and getting from individuals vector
         const std::shared_ptr<Node> operator [](int i) const {return program[i];}
         const std::shared_ptr<Node> & operator [](int i) {return program[i];}
 
-        /*!
-         * @brief overload = to copy just the program
-         */
+        /// overload = to copy just the program
         Individual& operator=(Individual rhs)   // note: pass-by-value for implicit copy of rhs
         {
             std::swap(this->program , rhs.program);
             return *this;            
         }
 
-        /*!
-         * @brief return size of program
-         */
+        /// return size of program
         int size() const { return program.size(); }
         
-        /*!
-         * @brief grab sub-tree locations given starting point.
-         */
+        /// grab sub-tree locations given starting point.
         size_t subtree(size_t i, char otype) const;
 
        // // get program depth.
        // unsigned int depth();
 
-        /*!
-         * @brief get program dimensionality
-         */
+        /// get program dimensionality
         unsigned int get_dim();
+        
         /// check whether this dominates b. 
         int check_dominance(const Individual& b) const;
+        
         /// set obj vector given a string of objective names
         void set_obj(const vector<string>&); 
+        
         /// calculate program complexity. 
         unsigned int complexity();
        

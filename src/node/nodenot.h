@@ -20,9 +20,8 @@ namespace FT{
     			arity['b'] = 1;
     			complexity = 1;
     		}
-    		/*!
-             * @brief Evaluates the node and updates the stack states. 
-             */
+    		
+            /// Evaluates the node and updates the stack states. 
             void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
                     vector<ArrayXb>& stack_b)
             {
@@ -30,9 +29,7 @@ namespace FT{
                 stack_b.push_back(!x);
             }
 
-            /*!
-             * @brief evaluates the node symbolically
-             */
+            /// Evaluates the node symbolically
             void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
             {
             	string x = stack_b.back(); stack_b.pop_back();

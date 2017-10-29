@@ -37,21 +37,16 @@ namespace FT{
 
             ~Evaluation(){}
                 
-            /*!
-             * @brief fitness of population.
-             */
+            
+            /// fitness of population.
             void fitness(Population& pop, const MatrixXd& X, VectorXd& y, MatrixXd& F, 
                          const Parameters& params, bool offspring);
 
-            /*!
-             * @brief output of an ml model. 
-             */
+            /// output of an ml model. 
             VectorXd out_ml(MatrixXd& Phi, VectorXd& y, const Parameters& params,
                             std::shared_ptr<ML> ml = nullptr);
 
-            /*! 
-             * @brief assign fitness to an individual and to F. 
-             */
+            /// assign fitness to an individual and to F.  
             void assign_fit(Individual& ind, MatrixXd& F, const VectorXd& yhat, const VectorXd& y,
                             const Parameters& params);       
             
@@ -177,9 +172,8 @@ namespace FT{
          *       y: true labels
          *       params: fewtwo parameters
          *
-        
          *  Output:
-         
+         *
          *       modifies F and ind.fitness
         */ 
 

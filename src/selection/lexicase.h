@@ -10,20 +10,15 @@ namespace FT{
     ////////////////////////////////////////////////////////////////////////////////// Declarations
     /*!
      * @class Lexicase
+     * @brief Lexicase selection operator.
      */
     struct Lexicase : SelectionOperator
     {
-        /*!
-         * Lexicase selection operator.
-         */
-
         Lexicase(bool surv){ survival = surv; }
         
         ~Lexicase(){}
 
-        /*!
-         * select function returns a set of selected indices from F. 
-         */
+        /// function returns a set of selected indices from F. 
         vector<size_t> select(const MatrixXd& F, const Parameters& params, Rnd& r); 
         
         /// lexicase survival
