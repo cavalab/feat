@@ -12,6 +12,7 @@ namespace FT{
     struct SelectionOperator 
     {
         bool survival; 
+        string name;
 
         //SelectionOperator(){}
 

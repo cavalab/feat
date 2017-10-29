@@ -14,7 +14,7 @@ namespace FT{
      */
     struct Lexicase : SelectionOperator
     {
-        Lexicase(bool surv){ survival = surv; }
+        Lexicase(bool surv){ name = "lexicase"; survival = surv; }
         
         ~Lexicase(){}
 

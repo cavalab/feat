@@ -39,6 +39,9 @@ namespace FT{
 
         ~Selection(){}
         
+        /// return type of selectionoperator
+        string get_type(){ return pselector->name; }
+        
         //! perform selection by pointing to the select command for the SelectionOperator
         vector<size_t> select(const MatrixXd& F, const Parameters& params, Rnd& r)
         {       

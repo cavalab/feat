@@ -31,6 +31,12 @@ namespace FT{
             	cross_rate = cr;
             }
             
+            /// return current cross rate
+            float get_cross_rate()
+            {
+            	return cross_rate;
+            }
+            
              /// destructor
             ~Variation(){}
 
