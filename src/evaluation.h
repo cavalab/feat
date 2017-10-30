@@ -83,7 +83,7 @@ namespace FT{
         {
             // calculate program output matrix Phi
             params.msg("Generating output for " + pop.individuals[i].get_eqn(), 2);
-            MatrixXd Phi = pop.individuals[i].out(X, y, params);
+            MatrixXd Phi = pop.individuals[i].out(X, params, y);
             
 
             // calculate ML model from Phi

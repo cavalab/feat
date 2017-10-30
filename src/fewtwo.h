@@ -145,10 +145,10 @@ namespace FT{
             void fit(MatrixXd& X, VectorXd& y);
             
             /// predict on unseen data.             
-            VectorXd predict(const MatrixXd& X){return predict(best_ind.transform(X));}           
+            VectorXd predict(const MatrixXd& X){return predict(transform(X));}           
             
             /// transform an input matrix using a program.                          
-            MatrixXd transform(const MatrixXd& X, const Individual ind = Individual());
+            MatrixXd transform(const MatrixXd& X,  Individual *ind = 0);
             
             /// convenience function calls fit then predict.            
             VectorXd fit_predict(MatrixXd& X, VectorXd& y){ fit(X,y); return predict(X); }
@@ -171,7 +171,7 @@ namespace FT{
             shared_ptr<ML> p_ml;                	///< pointer to machine learning class
             // performance tracking
             double best_score;                      ///< current best score 
-            void update_score();                    ///< updates best score   
+            void update_best();                    ///< updates best score   
             void print_stats(unsigned int);         ///< prints stats
             Individual best_ind;                    ///< highest scoring representation
             /// method to finit inital ml model            
@@ -248,7 +248,7 @@ namespace FT{
             p_pop->update(survivors);
             params.msg("survivors:\n" + p_pop->print_eqns(), 2);
 
-            update_score();
+            update_best();
             if (params.verbosity>0) print_stats(g);
         }
     }
@@ -268,12 +268,12 @@ namespace FT{
         best_score = (yhat-y).array().pow(2).mean();
     }
 
-    MatrixXd Fewtwo::transform(const MatrixXd& X, const Individual ind = Individual())
+    MatrixXd Fewtwo::transform(const MatrixXd& X, Individual *ind)
     {
         /*!
          * Transforms input data according to ind or best ind, if ind is undefined.
          */
-        if (ind.program.size() == 0)        // if ind is empty, predict with best_ind
+        if (ind == 0)        // if ind is empty, predict with best_ind
         {
             if (best_ind.program.size()==0){
                 std::cerr << "You need to train a model using fit() before making predictions.\n";
@@ -281,12 +281,14 @@ namespace FT{
             }
             return best_ind.out(X,params);
         }
+        return ind->out(X,params);
     }
-    void Fewtwo::update_score()
+    void Fewtwo::update_best()
     {
         for (const auto& i: p_pop->individuals){
             if (i.fitness < best_score)
                 best_score = i.fitness;
+                best_ind = i;
         }
  
     }

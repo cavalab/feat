@@ -32,7 +32,7 @@ namespace FT{
         ~Individual(){}
 
         /// calculate program output matrix Phi
-        MatrixXd out(const MatrixXd& X, const VectorXd& y, const Parameters& params);
+        MatrixXd out(const MatrixXd& X, const Parameters& params, const VectorXd& y);
 
         /// return symbolic representation of program
         string get_eqn(char otype);
@@ -76,8 +76,8 @@ namespace FT{
     /////////////////////////////////////////////////////////////////////////////////// Definitions
 
     // calculate program output matrix
-    MatrixXd Individual::out(const MatrixXd& X,  
-                                const Parameters& params, const VectorXd& y = VectorXd())
+    MatrixXd Individual::out(const MatrixXd& X, const Parameters& params, 
+                             const VectorXd& y = VectorXd())
     {
         /*!
          * Input:
