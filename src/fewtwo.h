@@ -251,6 +251,9 @@ namespace FT{
             update_best();
             if (params.verbosity>0) print_stats(g);
         }
+        params.msg("finished",1);
+        params.msg("best representation: " + best_ind.get_eqn(),1);
+        params.msg("score: " + std::to_string(best_score), 1);
     }
 
     void Fewtwo::initial_model(MatrixXd& X, VectorXd& y)
@@ -266,6 +269,12 @@ namespace FT{
 
         // assign best score as MSE
         best_score = (yhat-y).array().pow(2).mean();
+
+        // initialize best_ind to be all the features
+        best_ind = Individual();
+        for (unsigned i =0; i<X.rows(); ++i)
+            best_ind.program.push_back(params.terminals[i]);
+        best_ind.fitness = best_score;
     }
 
     MatrixXd Fewtwo::transform(const MatrixXd& X, Individual *ind)
@@ -309,9 +318,15 @@ namespace FT{
         std::cout << "Min Loss\tMedian Loss\tTime\n"
                   <<  best_score << "\t" << med_score << "\t" << elapsed_time << "\n";
         std::cout << "Representation Pareto Front--------------------------------------\n";
-        std::cout << "Complexity\tLoss\tRepresentation\n";
-        for (const auto& i : pf){
-            std::cout << p_pop->individuals[i].complexity() << "\t" << (*p_pop)[i].fitness 
+        std::cout << "Rank\tComplexity\tLoss\tRepresentation\n";
+       // for (const auto& i : pf){
+       //     std::cout << p_pop->individuals[i].complexity() << "\t" << (*p_pop)[i].fitness 
+       //               << "\t" << p_pop->individuals[i].get_eqn() << "\n";
+       // }
+        for (unsigned j =0; j<10; ++j ){
+			vector<size_t> f = p_pop->sorted_front(j);
+			for (const auto& i : f)
+            	std::cout << p_pop->individuals[i].rank << "\t" << p_pop->individuals[i].complexity() << "\t" << (*p_pop)[i].fitness 
                       << "\t" << p_pop->individuals[i].get_eqn() << "\n";
         }
         // debug: print ranks

@@ -56,7 +56,7 @@ namespace FT{
         string print_eqns(bool,string);
 
         /// return complexity-sorted Pareto front indices. 
-        vector<size_t> sorted_front();
+        vector<size_t> sorted_front(unsigned);
         
         /// Sort population in increasing complexity.
         struct SortComplexity
@@ -229,13 +229,13 @@ namespace FT{
        return output;
    }
 
-    vector<size_t> Population::sorted_front()
+    vector<size_t> Population::sorted_front(unsigned rank=1)
     {
         /* Returns individuals on the Pareto front, sorted by increasign complexity. */
         vector<size_t> pf;
         for (unsigned int i =0; i<individuals.size(); ++i)
         {
-            if (individuals[i].rank == 1)
+            if (individuals[i].rank == rank)
                 pf.push_back(i);
         }
         std::sort(pf.begin(),pf.end(),SortComplexity(*this)); 
