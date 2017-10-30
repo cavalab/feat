@@ -127,12 +127,12 @@ namespace FT{
         // define shogun data 
 
         // normalize features
-        //for (unsigned int i=0; i<X.rows(); ++i){
-        //    X.row(i) = X.row(i).array() - X.row(i).mean();
-        //    if (X.row(i).norm() > NEAR_ZERO)
-        //        X.row(i).normalize();
-        //}
-        X.rowwise().normalize();
+        for (unsigned int i=0; i<X.rows(); ++i){
+            X.row(i) = X.row(i).array() - X.row(i).mean();
+            if (X.row(i).norm() > NEAR_ZERO)
+                X.row(i).normalize();
+        }
+        //X.rowwise().normalize();
 
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
         auto labels = some<CRegressionLabels>(SGVector<float64_t>(y));
@@ -153,6 +153,10 @@ namespace FT{
         // map to Eigen vector
         Map<VectorXd> yhat(y_pred.data(),y_pred.size());
         
+        if (Eigen::isinf(yhat.array()).any() || Eigen::isnan(yhat.array()).any())
+        {
+            std::cout << "inf or nan values in model fit to: " << X << "\n";
+        }
         // return
         return yhat;
     }

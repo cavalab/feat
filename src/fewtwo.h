@@ -323,16 +323,18 @@ namespace FT{
        //     std::cout << p_pop->individuals[i].complexity() << "\t" << (*p_pop)[i].fitness 
        //               << "\t" << p_pop->individuals[i].get_eqn() << "\n";
        // }
-        for (unsigned j =0; j<10; ++j ){
-			vector<size_t> f = p_pop->sorted_front(j);
-			for (const auto& i : f)
-            	std::cout << p_pop->individuals[i].rank << "\t" << p_pop->individuals[i].complexity() << "\t" << (*p_pop)[i].fitness 
+        unsigned j =0;
+        unsigned n = 1;
+        while (j<100){            
+			vector<size_t> f = p_pop->sorted_front(n);
+            j+= f.size();
+            ++n;
+			for (const auto& i : f){
+            	std::cout << p_pop->individuals[i].rank << "\t" << 
+                    p_pop->individuals[i].complexity() << "\t" << (*p_pop)[i].fitness 
                       << "\t" << p_pop->individuals[i].get_eqn() << "\n";
+            }
         }
-        // debug: print ranks
-        std::cout << "\n";
-        for (const auto& p : p_pop->individuals)
-            std::cout << p.rank << " ";
         std::cout << "\n\n";
         
     }
