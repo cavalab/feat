@@ -145,7 +145,7 @@ namespace FT{
             void fit(MatrixXd& X, VectorXd& y);
             
             /// predict on unseen data.             
-            VectorXd predict(const MatrixXd& X);           
+            VectorXd predict(const MatrixXd& X){return predict(best_ind.transform(X));}           
             
             /// transform an input matrix using a program.                          
             MatrixXd transform(const MatrixXd& X, const Individual ind = Individual());
@@ -173,7 +173,7 @@ namespace FT{
             double best_score;                      ///< current best score 
             void update_score();                    ///< updates best score   
             void print_stats(unsigned int);         ///< prints stats
-
+            Individual best_ind;                    ///< highest scoring representation
             /// method to finit inital ml model            
             void initial_model(MatrixXd& X, VectorXd& y);
     };
@@ -268,38 +268,56 @@ namespace FT{
         best_score = (yhat-y).array().pow(2).mean();
     }
 
-   void Fewtwo::update_score()
-   {
-       for (const auto& i: p_pop->individuals){
-           if (i.fitness < best_score)
-               best_score = i.fitness;
-       }
-
-   }
-
-   void Fewtwo::print_stats(unsigned int g)
-   {
-       vector<size_t> pf = p_pop->sorted_front();
-       double med_score = median(F.colwise().mean().array());
-       double elapsed_time = 0;
-       string bar, space = "";
-       for (unsigned int i = 0; i<50; ++i){
-           if (i <= 50*g/params.gens) bar += "/";
-           else space += " ";
-       }
-       std::cout.precision(3);
-       std::cout << std::scientific;
-       std::cout << "Generation " << g << "/" << params.gens << " [" + bar + space + "]\n";
-       std::cout << "Min Loss\tMedian Loss\tTime\n"
-                 <<  best_score << "\t" << med_score << "\t" << elapsed_time << "\n";
-       std::cout << "Representation Pareto Front--------------------------------------\n";
-       std::cout << "Complexity\tLoss\tRepresentation\n";
-       for (const auto& i : pf){
-           std::cout << p_pop->individuals[i].complexity() << "\t" << (*p_pop)[i].fitness 
-                     << "\t" << p_pop->individuals[i].get_eqn() << "\n";
-       }
-       std::cout << "\n\n";
-       
-   }
+    MatrixXd Fewtwo::transform(const MatrixXd& X, const Individual ind = Individual())
+    {
+        /*!
+         * Transforms input data according to ind or best ind, if ind is undefined.
+         */
+        if (ind.program.size() == 0)        // if ind is empty, predict with best_ind
+        {
+            if (best_ind.program.size()==0){
+                std::cerr << "You need to train a model using fit() before making predictions.\n";
+                throw;
+            }
+            return best_ind.out(X,params);
+        }
+    }
+    void Fewtwo::update_score()
+    {
+        for (const auto& i: p_pop->individuals){
+            if (i.fitness < best_score)
+                best_score = i.fitness;
+        }
+ 
+    }
+ 
+    void Fewtwo::print_stats(unsigned int g)
+    {
+        vector<size_t> pf = p_pop->sorted_front();
+        double med_score = median(F.colwise().mean().array());
+        double elapsed_time = 0;
+        string bar, space = "";
+        for (unsigned int i = 0; i<50; ++i){
+            if (i <= 50*g/params.gens) bar += "/";
+            else space += " ";
+        }
+        std::cout.precision(3);
+        std::cout << std::scientific;
+        std::cout << "Generation " << g << "/" << params.gens << " [" + bar + space + "]\n";
+        std::cout << "Min Loss\tMedian Loss\tTime\n"
+                  <<  best_score << "\t" << med_score << "\t" << elapsed_time << "\n";
+        std::cout << "Representation Pareto Front--------------------------------------\n";
+        std::cout << "Complexity\tLoss\tRepresentation\n";
+        for (const auto& i : pf){
+            std::cout << p_pop->individuals[i].complexity() << "\t" << (*p_pop)[i].fitness 
+                      << "\t" << p_pop->individuals[i].get_eqn() << "\n";
+        }
+        // debug: print ranks
+        std::cout << "\n";
+        for (const auto& p : p_pop->individuals)
+            std::cout << p.rank << " ";
+        std::cout << "\n\n";
+        
+    }
 }
 #endif

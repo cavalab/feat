@@ -76,8 +76,8 @@ namespace FT{
     /////////////////////////////////////////////////////////////////////////////////// Definitions
 
     // calculate program output matrix
-    MatrixXd Individual::out(const MatrixXd& X, const VectorXd& y, 
-                                const Parameters& params)
+    MatrixXd Individual::out(const MatrixXd& X,  
+                                const Parameters& params, const VectorXd& y = VectorXd())
     {
         /*!
          * Input:
