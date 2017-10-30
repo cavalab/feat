@@ -27,44 +27,28 @@ namespace FT{
         Population(int p){individuals.resize(p);}
         ~Population(){}
         
-        /*!
-         * @brief initialize population of programs. 
-         */
+        /// initialize population of programs. 
         void init(const Parameters& params);
         
-        /*!
-         * @brief update individual vector size 
-         */
-        void resize(int &pop_size){	individuals.resize(pop_size); }
+        /// update individual vector size 
+        void resize(int pop_size){	individuals.resize(pop_size); }
         
-        /*!
-         * @brief reduce programs to the indices in survivors.
-         */
+        /// reduce programs to the indices in survivors. 
         void update(vector<size_t> survivors);
         
-        /*!
-         * @brief returns population size
-         */
+        /// returns population size
         int size(){ return individuals.size(); }
 
-        /*!
-         * @brief returns an open location 
-         */
+        /// returns an open location 
         size_t get_open_loc(); 
         
-        /*!
-         * @brief updates open locations to reflect population.
-         */
+        /// updates open locations to reflect population.
         void update_open_loc();
 
-        /*!
-         * @brief adds a program to the population. 
-         */
+        /// adds a program to the population. 
         void add(Individual&);
         
-        /*!
-         * @brief setting and getting from individuals vector
-         */
+        /// setting and getting from individuals vector
         const Individual operator [](size_t i) const {return individuals.at(i);}
         const Individual & operator [](size_t i) {return individuals.at(i);}
 

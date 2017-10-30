@@ -55,9 +55,7 @@ namespace FT{
         
         ~Parameters(){}
 
-        /*!
-         * @brief print message with verbosity control. 
-         */
+        /// print message with verbosity control. 
         void msg(string m, int v, string sep="\n") const
         {
             /* prints messages based on verbosity level. */
@@ -66,9 +64,7 @@ namespace FT{
                 std::cout << m << sep;
         }
         
-        /*!
-         * @brief sets weights for terminals. 
-         */
+        /// sets weights for terminals. 
         void set_term_weights(const vector<double>& w)
         {
             std::cout << "w size: " << w.size() << "\n";
@@ -77,46 +73,34 @@ namespace FT{
             term_weights = w; 
         }
         
-        /*!
-         * @brief return shared pointer to a node based on the string passed
-         */
+        /// return shared pointer to a node based on the string passed
         std::shared_ptr<Node> createNode(std::string str, double d_val = 0, bool b_val = false, 
                                          size_t loc = 0);
         
-        /*!
-         * @brief sets available functions based on comma-separated list.
-         */
+        /// sets available functions based on comma-separated list.
         void set_functions(string fs);
         
-        /*!
-         * @brief max_size is max_dim binary trees of max_depth
-         */
+        /// max_size is max_dim binary trees of max_depth
         void updateSize()
         {
         	max_size = (pow(2,max_depth+1)-1)*max_dim;
         }
         
-        /*!
-         * @brief set max depth of programs
-         */
-        void set_max_depth(unsigned int &max_depth)
+        /// set max depth of programs
+        void set_max_depth(unsigned int max_depth)
         {
         	this->max_depth = max_depth;
         	updateSize();
         }
         
-        /*!
-         * @brief set maximum dimensionality of programs
-         */
-        void set_max_dim(unsigned int &max_dim)
+        /// set maximum dimensionality of programs
+        void set_max_dim(unsigned int max_dim)
         {
         	this->max_dim = max_dim;
         	updateSize();
         }
         
-        /*!
-         * @brief set the terminals
-         */
+        /// set the terminals
         void set_terminals(int num_features);
 
         /// set the objectives

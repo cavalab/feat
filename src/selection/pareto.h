@@ -14,7 +14,7 @@ namespace FT{
     {
         /** NSGA-II based selection and survival methods. */
 
-        Pareto(bool surv){ survival = surv; };
+        Pareto(bool surv){ name = "pareto"; survival = surv; };
         
         ~Pareto(){}
 

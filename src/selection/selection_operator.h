@@ -7,14 +7,12 @@ namespace FT{
 
     /*!
      * @class SelectionOperator
+     * @brief base class for selection operators.
      */ 
     struct SelectionOperator 
     {
-        /*!
-         * @brief base class for selection operators.
-         */
-
         bool survival; 
+        string name;
 
         //SelectionOperator(){}
 
