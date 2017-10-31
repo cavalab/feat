@@ -78,7 +78,7 @@ namespace FT{
         unsigned start =0;
         if (offspring) start = F.cols()/2;
         // loop through individuals
-//TODO:        #pragma omp parallel for
+        #pragma omp parallel for
         for (unsigned i = start; i<pop.size(); ++i)
         {
             // calculate program output matrix Phi
@@ -119,13 +119,9 @@ namespace FT{
         */
 
         if (ml == nullptr)      // make new ML estimator if one is not provided 
-        {
-            ml = std::make_shared<ML>(params.ml,params.classification);
-        }
-        
-        
-        // define shogun data 
+            ml = std::make_shared<ML>(params.ml,params.classification);       
 
+        std::cout << "thread" + std::to_string(omp_get_thread_num()) + " normalize features\n";
         // normalize features
         for (unsigned int i=0; i<X.rows(); ++i){
             X.row(i) = X.row(i).array() - X.row(i).mean();
@@ -133,7 +129,8 @@ namespace FT{
                 X.row(i).normalize();
         }
         //X.rowwise().normalize();
-
+    
+        // define shogun data
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
         auto labels = some<CRegressionLabels>(SGVector<float64_t>(y));
      
@@ -142,20 +139,25 @@ namespace FT{
         ml->p_est->set_labels(labels);
 
         // train ml
+        std::cout << "thread" + std::to_string(omp_get_thread_num()) + " train\n";
         ml->p_est->train(features);
 
+        std::cout << "thread" + std::to_string(omp_get_thread_num()) + " get output\n";
         //get output
         auto y_pred = ml->p_est->apply_regression(features)->get_labels();
 
         // weights
         vector<double> w = ml->get_weights();
 
+        std::cout << "thread" + std::to_string(omp_get_thread_num()) + " map to vector\n";
+
         // map to Eigen vector
         Map<VectorXd> yhat(y_pred.data(),y_pred.size());
         
         if (Eigen::isinf(yhat.array()).any() || Eigen::isnan(yhat.array()).any())
         {
-            std::cout << "inf or nan values in model fit to: " << X << "\n";
+            std::cerr << "inf or nan values in model fit to: " << X << "\n";
+            throw;
         }
         // return
         return yhat;

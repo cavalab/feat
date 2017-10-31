@@ -66,26 +66,27 @@ namespace FT{
         vector<size_t> starting_pool(P);                    
         iota(starting_pool.begin(), starting_pool.end(), 0);
         
-        // cases 
-        vector<size_t> cases(N);
-        iota(cases.begin(),cases.end(),0);
-
-        vector<size_t> selected; // selected individuals
-//TODO:  #pragma omp parallel for
+        
+        vector<size_t> selected(P,0); // selected individuals
+        
+        #pragma omp parallel for 
         for (unsigned int i = 0; i<P; ++i)  // selection loop
         {
+ 
+            vector<size_t> cases(N);                // cases
+            iota(cases.begin(),cases.end(),0);
             vector<size_t> pool = starting_pool;    // initial pool   
             vector<size_t> winner;                  // winners
             r.shuffle(cases.begin(),cases.end());   // shuffle cases
-            
+    
             bool pass = true;     // checks pool size and number of cases
             unsigned int h = 0;   // case count
-            
+
             while(pass){    // main loop
 
               winner.resize(0);   // winners                  
               double minfit = std::numeric_limits<double>::max();   // minimum error on case
-                       
+            
               for (size_t j = 0; j<pool.size(); ++j)
               {
                   if (F(cases[h],pool[j]) < minfit+epsilon[cases[h]])
@@ -102,10 +103,11 @@ namespace FT{
               pass = (winner.size()>1 && h<cases.size()); // only keep going if needed
               pool = winner;    // reduce pool to remaining individuals
           
-            }
+            }       
+
             assert(winner.size()>0);
             //if more than one winner, pick randomly
-            selected.push_back(r.random_choice(winner));                            
+            selected[i] = r.random_choice(winner);                            
         }               
 
         return selected;
