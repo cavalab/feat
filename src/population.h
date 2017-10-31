@@ -28,7 +28,7 @@ namespace FT{
         ~Population(){}
         
         /// initialize population of programs. 
-        void init(const Parameters& params);
+        void init(const Individual& starting_model, const Parameters& params);
         
         /// update individual vector size 
         void resize(int pop_size){	individuals.resize(pop_size); }
@@ -122,14 +122,20 @@ namespace FT{
         }
     }    
 
-    void Population::init(const Parameters& params)
+    void Population::init(const Individual& starting_model, const Parameters& params)
     {
         /*!
          *create random programs in the population, seeded by initial model weights 
          */
         
-        size_t count = 0;
+        size_t count = -1;
         for (auto& ind : individuals){
+            // the first individual is the starting model (i.e., the raw features)
+            if (count == -1){
+                ind = starting_model;                
+                ind.loc = ++count;
+                continue;
+            }
             // make a program for each individual
             // pick a max depth for this program
             // pick a dimensionality for this individual
@@ -148,8 +154,7 @@ namespace FT{
             std::reverse(ind.program.begin(),ind.program.end());
                         
             // set location of individual and increment counter
-            ind.loc = count;         
-            ++count;               
+            ind.loc = ++count;                    
         }
         // define open locations
         update_open_loc(); 

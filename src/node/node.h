@@ -46,8 +46,9 @@ namespace FT{
             /// limits node output to be between MIN_DBL and MAX_DBL
             ArrayXd limited(ArrayXd x)
             {
-                x = (x > MAX_DBL).select(MAX_DBL,x);
-                x = (x < MIN_DBL).select(MIN_DBL,x);
+                
+                x = (Eigen::isinf(x)).select(MAX_DBL,x);
+                //x = (x < MIN_DBL).select(MIN_DBL,x);
                 return x;
             };
 

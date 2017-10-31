@@ -22,7 +22,7 @@ using std::string;
 using std::shared_ptr;
 using std::make_shared;
 using std::cout; 
-
+ 
 // internal includes
 #include "rnd.h"
 #include "utils.h"
@@ -145,7 +145,7 @@ namespace FT{
             void fit(MatrixXd& X, VectorXd& y);
             
             /// predict on unseen data.             
-            VectorXd predict(const MatrixXd& X){return predict(transform(X));}           
+            VectorXd predict(MatrixXd& X);        
             
             /// transform an input matrix using a program.                          
             MatrixXd transform(const MatrixXd& X,  Individual *ind = 0);
@@ -161,7 +161,7 @@ namespace FT{
             // Parameters
             Parameters params;    					///< hyperparameters of Fewtwo 
             MatrixXd F;                 			///< matrix of fitness values for population
-                        
+            Timer timer;                            ///< start time of training
             // subclasses for main steps of the evolutionary computation routine
             shared_ptr<Population> p_pop;       	///< population of programs
             shared_ptr<Selection> p_sel;        	///< selection algorithm
@@ -171,10 +171,10 @@ namespace FT{
             shared_ptr<ML> p_ml;                	///< pointer to machine learning class
             // performance tracking
             double best_score;                      ///< current best score 
-            void update_best();                    ///< updates best score   
-            void print_stats(unsigned int);         ///< prints stats
-            Individual best_ind;                    ///< highest scoring representation
-            /// method to finit inital ml model            
+            void update_best();                     ///< updates best score   
+            void print_stats(unsigned int);        ///< prints stats
+            Individual best_ind;                                            ///< best individual
+            /// method to fit inital ml model            
             void initial_model(MatrixXd& X, VectorXd& y);
     };
 
@@ -201,7 +201,9 @@ namespace FT{
          *	   6. produce offspring from parents via variation
          *	   7. select surviving individuals from parents and offspring
          */
-        
+        // start the clock
+        timer.Reset();
+
         // define terminals based on size of X
         params.set_terminals(X.rows()); 
         
@@ -211,7 +213,7 @@ namespace FT{
                       
         // initialize population 
         params.msg("Initializing population", 1);
-        p_pop->init(params);
+        p_pop->init(best_ind,params);
 
         // resize F to be twice the pop-size x number of samples
         F.resize(X.cols(),int(2*params.pop_size));
@@ -261,8 +263,8 @@ namespace FT{
         /*!
          * fits an ML model to the raw data as a starting point.
          */
-         
-        VectorXd yhat = p_eval->out_ml(X,y,params,p_ml);
+        bool pass = true;
+        VectorXd yhat = p_eval->out_ml(X,y,params,pass,p_ml);
 
         // set terminal weights based on model
         params.set_term_weights(p_ml->get_weights());
@@ -292,6 +294,15 @@ namespace FT{
         }
         return ind->out(X,params);
     }
+    
+    VectorXd Fewtwo::predict(MatrixXd& X)
+    {
+        MatrixXd Phi = transform(X);
+        auto PhiSG = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(Phi));
+        auto y_pred = p_ml->p_est->apply_regression(PhiSG)->get_labels();
+        return Eigen::Map<VectorXd>(y_pred.data(),y_pred.size());
+    }
+
     void Fewtwo::update_best()
     {
         for (const auto& i: p_pop->individuals){
@@ -306,7 +317,6 @@ namespace FT{
     {
         vector<size_t> pf = p_pop->sorted_front();
         double med_score = median(F.colwise().mean().array());
-        double elapsed_time = 0;
         string bar, space = "";
         for (unsigned int i = 0; i<50; ++i){
             if (i <= 50*g/params.gens) bar += "/";
@@ -315,8 +325,8 @@ namespace FT{
         std::cout.precision(3);
         std::cout << std::scientific;
         std::cout << "Generation " << g << "/" << params.gens << " [" + bar + space + "]\n";
-        std::cout << "Min Loss\tMedian Loss\tTime\n"
-                  <<  best_score << "\t" << med_score << "\t" << elapsed_time << "\n";
+        std::cout << "Min Loss\tMedian Loss\tTime (s)\n"
+                  <<  best_score << "\t" << med_score << "\t" << timer << "\n";
         std::cout << "Representation Pareto Front--------------------------------------\n";
         std::cout << "Rank\tComplexity\tLoss\tRepresentation\n";
        // for (const auto& i : pf){
@@ -325,7 +335,7 @@ namespace FT{
        // }
         unsigned j =0;
         unsigned n = 1;
-        while (j<100){            
+        while (j<std::min(10,params.pop_size)){            
 			vector<size_t> f = p_pop->sorted_front(n);
             j+= f.size();
             ++n;

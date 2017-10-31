@@ -7,6 +7,7 @@ license: GNU/GPL v3
 
 //external includes
 #include <shogun/base/init.h>
+#include <shogun/base/Parallel.h>
 #include <shogun/machine/Machine.h>
 #include <shogun/machine/LinearMachine.h>
 #include <shogun/regression/LeastAngleRegression.h>
@@ -37,7 +38,6 @@ namespace FT{
                  */
                 
                 sh::init_shogun_with_defaults();  // initialize shogun if needed
-        
                 type = ml;
                 auto prob_type = sh::EProblemType::PT_REGRESSION;
                 
