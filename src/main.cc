@@ -12,11 +12,19 @@ using std::cout;
 // Command line parser
 class InputParser{
     public:
+        std::string dataset;
+        
         InputParser (int &argc, char **argv){
-            for (int i=1; i < argc; ++i)
+            dataset = argv[1];
+            std::cout <<"dataset: " << dataset << "\n";
+            std::cout <<"tokens: ";
+            for (int i=2; i < argc; ++i){
                 this->tokens.push_back(std::string(argv[i]));
+                std::cout << tokens.back() << " ";
+            }
+            std::cout << "\n";
         }
-        /// @author iain
+        /// returns the value of a given command option 
         const std::string& getCmdOption(const std::string &option) const{
             std::vector<std::string>::const_iterator itr;
             itr =  std::find(this->tokens.begin(), this->tokens.end(), option);
@@ -26,13 +34,15 @@ class InputParser{
             static const std::string empty_string("");
             return empty_string;
         }
-        /// @author iain
+        /// checks whether a command option exists
         bool cmdOptionExists(const std::string &option) const{
             return std::find(this->tokens.begin(), this->tokens.end(), option)
                    != this->tokens.end();
         }
+        
     private:
         std::vector <std::string> tokens;
+         
 };
 
 //int main(int argc, char **argv){
@@ -115,24 +125,12 @@ int main(int argc, char** argv){
     cout << "hello i'm FEWTWO!\n";
     
     // x1 = sin(t), x2 = cos(t), t = 0, 0.5, 1, 1.5, 2, 2.5, 3
-    MatrixXd X(7,2); 
-    X << 0,1,  
-         0.47942554,0.87758256,  
-         0.84147098,  0.54030231,
-         0.99749499,  0.0707372,
-         0.90929743, -0.41614684,
-         0.59847214, -0.80114362,
-         0.14112001,-0.9899925;
+    MatrixXd X;
+    VectorXd y; 
+    vector<string> names;
+    FT::load_csv(input.dataset,X,y,names); 
 
-    X.transposeInPlace();
     
-    VectorXd y(7); 
-    // y = 2*x1 + 3.x2
-    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
-             -1.20648656, -2.68773747;
-
-    cout << "X shape: " << X.rows() << "x" << X.cols() << "\n";
-    cout << "y shape: " << y.size() << "\n";
 
     cout<< "initializing model...\n";
     
