@@ -1,5 +1,7 @@
-
-
+/* FEWTWO
+copyright 2017 William La Cava
+license: GNU/GPL v3
+*/
 
 #include <Eigen/Dense>
 #include <vector>
@@ -14,23 +16,50 @@ namespace FT{
     /*!
      * load csv file into matrix. 
      */
-    template<typename M>
-    M load_csv (const std::string & path) {
+    
+    void load_csv (const std::string & path, MatrixXd& X, VectorXd& y, vector<string> names, 
+                   char sep=',') 
+    {
         std::ifstream indata;
         indata.open(path);
+        if (!indata.good())
+        { 
+            std::cerr << "Invalid input file " + path + "\n"; 
+            exit(1);
+        }
         std::string line;
-        std::vector<double> values;
-        uint rows = 0;
-        while (std::getline(indata, line)) {
+        std::vector<double> values, targets;
+        unsigned rows=0, col=0, target_col = 0;
+        
+        while (std::getline(indata, line)) 
+        {
             std::stringstream lineStream(line);
             std::string cell;
-            while (std::getline(lineStream, cell, ',')) {
-                values.push_back(std::stod(cell));
+            
+            while (std::getline(lineStream, cell, sep)) 
+            {                
+                if (rows==0) // read in header
+                {
+                    if (!cell.compare("class") || !cell.compare("target") 
+                            || !cell.compare("label"))
+                        target_col = col;                    
+                    else
+                        names.push_back(cell);
+                }
+                else if (col != target_col) 
+                    values.push_back(std::stod(cell));
+                else
+                    targets.push_back(std::stod(cell));
+                ++col;
             }
             ++rows;
+            col=0;   
         }
-        return Map<const Matrix<typename M::Scalar, M::RowsAtCompileTime, M::ColsAtCompileTime, 
-                                RowMajor>>(values.data(), rows, values.size()/rows);
+        X = Map<MatrixXd>(values.data(), rows-1, values.size()/(rows-1));
+        X.transposeInPlace();
+        y = Map<VectorXd>(targets.data(), targets.size());
+        assert(X.cols() == y.size() && "different numbers of samples in X and y");
+        assert(X.rows() == names.size() && "header missing or incorrect number of feature names");
     }
     
     /*!

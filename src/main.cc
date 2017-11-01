@@ -12,11 +12,19 @@ using std::cout;
 // Command line parser
 class InputParser{
     public:
+        std::string dataset;
+        
         InputParser (int &argc, char **argv){
-            for (int i=1; i < argc; ++i)
-                this->tokens.push_back(std::string(argv[i]));
+            int start = 1;
+            if (std::string(argv[1]).compare("-h")) //unless help message is requested
+            {
+                dataset = argv[1];
+                start = 2;
+            }            
+            for (int i=start; i < argc; ++i)
+                this->tokens.push_back(std::string(argv[i]));            
         }
-        /// @author iain
+        /// returns the value of a given command option 
         const std::string& getCmdOption(const std::string &option) const{
             std::vector<std::string>::const_iterator itr;
             itr =  std::find(this->tokens.begin(), this->tokens.end(), option);
@@ -26,13 +34,15 @@ class InputParser{
             static const std::string empty_string("");
             return empty_string;
         }
-        /// @author iain
+        /// checks whether a command option exists
         bool cmdOptionExists(const std::string &option) const{
             return std::find(this->tokens.begin(), this->tokens.end(), option)
                    != this->tokens.end();
         }
+        
     private:
         std::vector <std::string> tokens;
+         
 };
 
 //int main(int argc, char **argv){
@@ -50,12 +60,8 @@ class InputParser{
 int main(int argc, char** argv){
     // runs FEWTWO from the command line.     
     
-    Fewtwo fewtwo(100); 
-    //fewtwo.set_functions("+,-");
-    fewtwo.set_max_depth(2);
-    fewtwo.set_max_dim(10);
-    fewtwo.set_verbosity(1);
-    
+    Fewtwo fewtwo;
+    std::string sep = ",";
     //////////////////////////////////////// parse arguments
     InputParser input(argc, argv);
     if(input.cmdOptionExists("-h")){
@@ -74,6 +80,7 @@ int main(int argc, char** argv){
         cout << "-depth\tMaximum feature depth.\n";
         cout << "-dim\tMaximum program dimensionality.\n";
         cout << "-r\tSet random seed.\n";
+        cout << "-s\tInput file separator / delimiter. Choices: , or ""\\t""\n";
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
     }
@@ -84,7 +91,7 @@ int main(int argc, char** argv){
     if(input.cmdOptionExists("-ml"))
         fewtwo.set_ml(input.getCmdOption("-ml"));
     if(input.cmdOptionExists("--c"))
-        fewtwo.set_classification(bool(stoi(input.getCmdOption("-class"))));
+        fewtwo.set_classification(true);
     if(input.cmdOptionExists("-v"))
         fewtwo.set_verbosity(stoi(input.getCmdOption("-v")));
     if(input.cmdOptionExists("-stall"))
@@ -105,37 +112,28 @@ int main(int argc, char** argv){
         fewtwo.set_max_dim(stoi(input.getCmdOption("-dim")));
     if(input.cmdOptionExists("-r"))
         fewtwo.set_random_state(stoi(input.getCmdOption("-r")));
-
-
-
-
-    
+    if(input.cmdOptionExists("-s")) // separator
+        sep = input.getCmdOption("-s");   
     
     ///////////////////////////////////////
-    cout << "hello i'm FEWTWO!\n";
-    
-    // x1 = sin(t), x2 = cos(t), t = 0, 0.5, 1, 1.5, 2, 2.5, 3
-    MatrixXd X(7,2); 
-    X << 0,1,  
-         0.47942554,0.87758256,  
-         0.84147098,  0.54030231,
-         0.99749499,  0.0707372,
-         0.90929743, -0.41614684,
-         0.59847214, -0.80114362,
-         0.14112001,-0.9899925;
+    cout << "\n" << 
+    "/////////////////////////////////////////////////////////////////////////////////////////////"
+    << "\n" << 
+    "                                        FEWTWO                                               "
+    << "\n" <<
+    "/////////////////////////////////////////////////////////////////////////////////////////////"
+    << "\n";
 
-    X.transposeInPlace();
-    
-    VectorXd y(7); 
-    // y = 2*x1 + 3.x2
-    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
-             -1.20648656, -2.68773747;
+    // read in dataset
+    char delim;
+    if (!sep.compare("\\t")) delim = '\t';
+    else if (!sep.compare(",")) delim = ',';
+    else delim = sep[0];
 
-    cout << "X shape: " << X.rows() << "x" << X.cols() << "\n";
-    cout << "y shape: " << y.size() << "\n";
-
-    cout<< "initializing model...\n";
-    
+    MatrixXd X;
+    VectorXd y; 
+    vector<string> names;
+    FT::load_csv(input.dataset,X,y,names,delim);    
 
     cout << "fitting model...\n";
 

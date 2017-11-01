@@ -69,7 +69,7 @@ namespace FT{
                       p_variation( make_shared<Variation>(cross_rate) ),
                       p_ml( make_shared<ML>(ml, classification) )
             {
-                r.set_seed(random_state);                    
+                r.set_seed(random_state);
             }
             
             /// set size of population 
@@ -305,10 +305,13 @@ namespace FT{
 
     void Fewtwo::update_best()
     {
-        for (const auto& i: p_pop->individuals){
+        for (const auto& i: p_pop->individuals)
+        {
             if (i.fitness < best_score)
+            {
                 best_score = i.fitness;
                 best_ind = i;
+            }
         }
  
     }

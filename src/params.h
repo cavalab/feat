@@ -35,7 +35,7 @@ namespace FT{
 
 
         Parameters(int pop_size, int gens, string& ml, bool classification, int max_stall, 
-                   char otype, int vebosity, string functions, unsigned int max_depth, 
+                   char otype, int verbosity, string functions, unsigned int max_depth, 
                    unsigned int max_dim, bool constant, string obj):    
             pop_size(pop_size),
             gens(gens),
@@ -50,7 +50,8 @@ namespace FT{
         {
             set_functions(functions);
             set_objectives(obj);
-            updateSize();         
+            updateSize();        
+            
         }
         
         ~Parameters(){}
