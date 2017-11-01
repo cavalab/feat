@@ -77,12 +77,11 @@ namespace FT{
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
     
-    void make_program(vector<std::shared_ptr<Node>>& program, 
+    void make_tree(vector<std::shared_ptr<Node>>& program, 
                       const vector<std::shared_ptr<Node>>& functions, 
                       const vector<std::shared_ptr<Node>>& terminals, int max_d, char otype, 
                       const vector<double>& term_weights)
-    {
-        /*!
+    {   /*!
          * recursively builds a program with complete arguments.
          */
         if (max_d == 0 || r.rnd_flt() < terminals.size()/(terminals.size()+functions.size())) 
@@ -115,12 +114,25 @@ namespace FT{
             std::shared_ptr<Node> chosen = program.back();
             // recurse to fulfill the arity of the chosen function
             for (size_t i = 0; i < chosen->arity['f']; ++i)
-                make_program(program, functions, terminals, max_d-1, 'f', term_weights);
+                make_tree(program, functions, terminals, max_d-1, 'f', term_weights);
             for (size_t i = 0; i < chosen->arity['b']; ++i)
-                make_program(program, functions, terminals, max_d-1, 'b', term_weights);
+                make_tree(program, functions, terminals, max_d-1, 'b', term_weights);
 
         }
-    }    
+    }
+
+    void make_program(vector<std::shared_ptr<Node>>& program, 
+                      const vector<std::shared_ptr<Node>>& functions, 
+                      const vector<std::shared_ptr<Node>>& terminals, int max_d, char otype, 
+                      const vector<double>& term_weights)
+    {
+        // build tree
+        make_tree(program, functions, terminals, max_d, otype, term_weights);
+        // reverse program so that it is post-fix notation
+        std::reverse(program.begin(),program.end());
+    }
+
+        
 
     void Population::init(const Individual& starting_model, const Parameters& params)
     {
@@ -150,9 +162,7 @@ namespace FT{
                              params.otype, params.term_weights);               
                 
             }
-            // reverse program so that it is post-fix notation
-            std::reverse(ind.program.begin(),ind.program.end());
-                        
+                                    
             // set location of individual and increment counter
             ind.loc = ++count;                    
         }

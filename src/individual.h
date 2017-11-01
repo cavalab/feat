@@ -68,7 +68,9 @@ namespace FT{
         
         /// calculate program complexity. 
         unsigned int complexity();
-       
+      
+        /// find root locations in program.
+        vector<size_t> roots();
        
         unsigned int c;            ///< the complexity of the program.    
     };
@@ -285,6 +287,28 @@ namespace FT{
             //std::cout << "eqn: " + eqn + ", complexity: " + complex_eqn +"=" +std::to_string(c) + "\n";
         }
         return c;
+    }
+
+    vector<size_t> Individual::roots()
+    {
+        // find "root" nodes of floating point program, where roots are final values that output 
+        // something directly to the stack
+        vector<size_t> indices;     // returned root indices
+        int total_arity = -1;       //end node is always a root
+        
+        for (size_t i = program.size(); i>0; --i)   // reverse loop thru program
+        {            
+            if (total_arity <= 0 ){ // root node
+                indices.push_back(i-1);
+                total_arity=0;
+            }
+            else
+                --total_arity;
+           
+            total_arity += program[i]->total_arity(); 
+           
+        }    
+        return indices;
     }
 }
 

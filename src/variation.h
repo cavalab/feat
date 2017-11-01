@@ -51,7 +51,10 @@ namespace FT{
 
             /// mutation
             bool mutate(Individual& mom, Individual& child, const Parameters& params);
-        
+            void point_mutate(Individual& child, const Parameters& params);
+            void insert_mutate(Individual& child, const Parameters& params);
+            void delete_mutate(Individual& child, const Parameters& params);
+ 
             /// splice two programs together
             vector<std::shared_ptr<Node>> splice_programs(vector<std::shared_ptr<Node>>& v1, 
                                                           size_t i1, size_t j1, 
@@ -124,7 +127,7 @@ namespace FT{
     bool Variation::mutate(Individual& mom, Individual& child, const Parameters& params)
     {
         /*!
-         * 1/n point mutation
+         * chooses uniformly between point mutation, insert mutation and delete mutation 
          * 
          * Input:
          *
@@ -137,12 +140,26 @@ namespace FT{
 
         // make child a copy of mom
         child = mom; 
-        float n = child.size();
+        
+        float rf = r();
+        if (rf < 1.0/3.0)
+            point_mutate(child,params);
+        else if (rf < 2.0/3.0)
+            insert_mutate(child,params);
+        else
+            delete_mutate(child,params);
+        
+        // check child depth and dimensionality
+        return child.size() <= params.max_size && child.get_dim() <= params.max_dim;
+    }
 
+    void Variation::point_mutate(Individual& child, const Parameters& params)
+    {
+        /* 1/n point mutation. */
+        float n = child.size(); 
         // loop thru child's program
         for (auto& p : child.program)
         {
-
             if (r() < 1/n)  // mutate p. TODO: change '1' to node weighted probability
             {
                 params.msg("mutating node " + p->name, 2);
@@ -173,8 +190,74 @@ namespace FT{
                 p = r.random_choice(replacements);  
             }
         }
-        // check child depth and dimensionality
-        return child.size() <= params.max_size && child.get_dim() <= params.max_dim;
+
+    }
+    void Variation::insert_mutate(Individual& child, const Parameters& params)
+    {
+        /* 1/n point mutation. */
+        float n = child.size(); 
+        if (r()<0.5 || child.get_dim() == params.max_dim)
+        {
+            // loop thru child's program
+            for (unsigned i = 0; i< child.program.size(); ++i)
+            {
+                if (r() < 1/n)  // mutate p. TODO: change '1' to node weighted probability
+                {
+                    params.msg("insert mutating node " + child.program[i]->name, 2);
+                    vector<std::shared_ptr<Node>> insertion;  // inserted segment
+                    vector<std::shared_ptr<Node>> fns;  // potential fns 
+                    
+                    // find instructions with matching in/out types and arities
+                    for (const auto& f: params.functions)
+                    {
+                        if (f->arity[child.program[i]->otype] > 0)
+                            fns.push_back(f);                        
+                    }
+                    make_program(insertion, fns, params.terminals, 1, child.program[i]->otype, 
+                                 params.term_weights);
+                    
+                    for (auto& ins : insertion){    // replace first argument in insertion
+                        if (ins->otype == child.program[i]->otype 
+                                && ins->arity['f']==child.program[i]->arity['f'] 
+                                && ins->arity['b']==child.program[i]->arity['b'])
+                        {
+                            ins = child.program[i];
+                            continue;
+                        }
+
+                    }
+                    child.program.erase(child.program.begin()+i);
+                    child.program.insert(child.program.begin()+i, insertion.begin(), 
+                                         insertion.end());
+                    i += insertion.size()-1;
+               }
+                
+            }
+        }
+        else    // add a dimension
+        {
+            vector<std::shared_ptr<Node>> insertion; // new dimension
+            make_program(insertion, params.functions, params.terminals, 1, params.otype, 
+                         params.term_weights);
+            child.program.insert(child.program.end(),insertion.begin(),insertion.end());
+        }
+    }
+
+    void Variation::delete_mutate(Individual& child, const Parameters& params)
+    {
+        /* 1/n deletion mutation. deletes dimensions. */
+        
+        vector<size_t> roots = child.roots();
+        size_t end = r.random_choice(roots); // TODO: weight with node probabilities
+        size_t start = child.subtree(end);  
+        if (params.verbosity >=2)
+        { 
+            std::string s="";
+            for (unsigned i = start; i<end; ++i) s+= child.program[i]->name;
+            params.msg("delete mutating " + s, 2);
+        }    
+        child.program.erase(child.program.begin()+start,child.program.begin()+end);
+         
     }
 
     bool Variation::cross(Individual& mom, Individual& dad, Individual& child, 
