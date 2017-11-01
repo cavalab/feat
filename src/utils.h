@@ -22,28 +22,27 @@ namespace FT{
     {
         std::ifstream indata;
         indata.open(path);
+        if (!indata.good())
+        { 
+            std::cerr << "Invalid input file " + path + "\n"; 
+            exit(1);
+        }
         std::string line;
         std::vector<double> values, targets;
         unsigned rows=0, col=0, target_col = 0;
-
+        
         while (std::getline(indata, line)) 
         {
             std::stringstream lineStream(line);
             std::string cell;
             
             while (std::getline(lineStream, cell, sep)) 
-            {
-                std::cout << "cell: " + cell + "\n";
-                std::cout << "row: " << rows << "\n";
-                std::cout << "col: " << col << "\n";
-                std::cout << "target_col: " << target_col << "\n";
+            {                
                 if (rows==0) // read in header
                 {
                     if (!cell.compare("class") || !cell.compare("target") 
-                            || !cell.compare("label")){
-                        std::cout << "target_col set to " << col << "\n";
-                        target_col = col;
-                    }
+                            || !cell.compare("label"))
+                        target_col = col;                    
                     else
                         names.push_back(cell);
                 }
@@ -59,13 +58,8 @@ namespace FT{
         X = Map<MatrixXd>(values.data(), rows-1, values.size()/(rows-1));
         X.transposeInPlace();
         y = Map<VectorXd>(targets.data(), targets.size());
-        std::cout << "names: ";
-        for (auto n: names) std::cout << n << " ";
-        std::cout << "\n";
-        std::cout << "X shape: " << X.rows() << "x" << X.cols() << "\n";
-        std::cout << "y shape: " << y.size() << "\n";
-        assert(X.cols() == y.size());
-        assert(X.rows() == names.size());
+        assert(X.cols() == y.size() && "different numbers of samples in X and y");
+        assert(X.rows() == names.size() && "header missing or incorrect number of feature names");
     }
     
     /*!
