@@ -79,16 +79,16 @@ namespace FT{
  
     bool is_valid_program(vector<std::shared_ptr<Node>>& program)
     {
-        std::cout << "checking program validity. size " <<  program.size() << "\n";
-        std::cout << "setting up data..\n";
+//        std::cout << "checking program validity. size " <<  program.size() << "\n";
+//        std::cout << "setting up data..\n";
         vector<ArrayXd> stack_f; 
         vector<ArrayXb> stack_b;
         MatrixXd X = MatrixXd::Zero(100,2); 
-        VectorXd y = VectorXd::Zero(1,2); 
+        VectorXd y = VectorXd::Zero(2); 
        
-        std::cout << "evaluating program...\n";
+//        std::cout << "evaluating program...\n";
         for (const auto& n : program){
-            std::cout << "evaluating node " << n->name; 
+//            std::cout << "evaluating node " << n->name; 
             if ( stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
                 n->evaluate(X, y, stack_f, stack_b);
             else

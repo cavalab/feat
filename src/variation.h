@@ -155,7 +155,7 @@ namespace FT{
             insert_mutate(child,params);
         else
             point_mutate(child,params);
-        
+        assert(is_valid_program(child.program)); 
         // check child depth and dimensionality
         return child.size() <= params.max_size && child.get_dim() <= params.max_dim;
     }
@@ -265,11 +265,11 @@ namespace FT{
         if (params.verbosity >=2)
         { 
             std::string s="";
-            for (unsigned i = start; i<end; ++i) s+= child.program[i]->name;
+            for (unsigned i = start; i<end; ++i) s+= child.program[i]->name + " ";
             params.msg("deleting " + s, 2);
         }    
-        child.program.erase(child.program.begin()+start,child.program.begin()+end);
-         
+        child.program.erase(child.program.begin()+start,child.program.begin()+end+1);
+        std::cout << "result of delete mutation: " + child.program_str() + "\n"; 
     }
 
     bool Variation::cross(Individual& mom, Individual& dad, Individual& child, 
@@ -341,7 +341,8 @@ namespace FT{
                      
         if (params.verbosity >= 2) 
             print_cross(mom,i1,j1,dad,i2,j2,child);     
-       
+
+        assert(is_valid_program(child.program));
         // check child depth and dimensionality
         return child.size() <= params.max_size && child.get_dim() <= params.max_dim;
     }

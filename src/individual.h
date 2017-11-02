@@ -176,12 +176,9 @@ namespace FT{
        
 
        assert(i>=0 && "attempting to grab subtree with index < 0");
-       std::cout << "in subtree. i = " << i <<"= " << program[i]-> name << 
-           ", total arity: " << program[i]->total_arity() << "\n";
-       
+              
        if (program[i]->total_arity()==0)
        {
-           std::cout << "returning i = " << i << "for 0 arity op " << program[i]->name << "\n";
            return i;
        }
 
@@ -195,17 +192,10 @@ namespace FT{
        }
        size_t i2 = i;                              // index for second recursion
        
-       for (unsigned int j = 0; j<arity['f']; ++j)
-       {
-           std::cout << "float recursion " << j << " of " << arity['f'] << 
-               " for " << program[i2]->name << " with i-1 = " << i-1 << "\n";
+       for (unsigned int j = 0; j<arity['f']; ++j)  
            i = subtree(--i,'f');                  // recurse for floating arguments
-           std::cout << "float recursion " << j << "of " << arity['f'] << 
-               " for " << program[i2]->name << " gives new i= " << i << "\n";
-       }
        for (unsigned int j = 0; j<arity['b']; ++j)
            i2 = subtree(--i2,'b');                 // recurse for boolean arguments
-       std::cout << "returning min of " << i << " and " << i2 << "\n"; 
        return std::min(i,i2);
     }
    
@@ -314,17 +304,13 @@ namespace FT{
 
     vector<size_t> Individual::roots()
     {
-        std::cout << "in roots() function\n";
-        std::cout << "program size: " << program.size() << "\n";
-        //std::cout << " getting roots of " + get_eqn() << ": ";
         // find "root" nodes of floating point program, where roots are final values that output 
         // something directly to the stack
         vector<size_t> indices;     // returned root indices
         int total_arity = -1;       //end node is always a root
         
         for (size_t i = program.size(); i>0; --i)   // reverse loop thru program
-        {   
-            std::cout << "i: " << i << ", total_arity: " << total_arity << "\n";
+        {    
             if (total_arity <= 0 ){ // root node
                 indices.push_back(i-1);
                 total_arity=0;
@@ -336,8 +322,6 @@ namespace FT{
            
         }
         
-        for (auto i: indices) std::cout << i << " ";
-        std::cout << "\n";
         return indices; 
     }
 
