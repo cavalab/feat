@@ -76,7 +76,27 @@ namespace FT{
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
-    
+ 
+    bool is_valid_program(vector<std::shared_ptr<Node>>& program)
+    {
+        std::cout << "checking program validity. size " <<  program.size() << "\n";
+        std::cout << "setting up data..\n";
+        vector<ArrayXd> stack_f; 
+        vector<ArrayXb> stack_b;
+        MatrixXd X = MatrixXd::Zero(100,2); 
+        VectorXd y = VectorXd::Zero(1,2); 
+       
+        std::cout << "evaluating program...\n";
+        for (const auto& n : program){
+            std::cout << "evaluating node " << n->name; 
+            if ( stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
+                n->evaluate(X, y, stack_f, stack_b);
+            else
+                return false; 
+        }
+        return true;
+    }
+   
     void make_tree(vector<std::shared_ptr<Node>>& program, 
                       const vector<std::shared_ptr<Node>>& functions, 
                       const vector<std::shared_ptr<Node>>& terminals, int max_d, char otype, 
@@ -124,15 +144,16 @@ namespace FT{
     void make_program(vector<std::shared_ptr<Node>>& program, 
                       const vector<std::shared_ptr<Node>>& functions, 
                       const vector<std::shared_ptr<Node>>& terminals, int max_d, char otype, 
-                      const vector<double>& term_weights)
+                      const vector<double>& term_weights, int dim)
     {
-        // build tree
-        make_tree(program, functions, terminals, max_d, otype, term_weights);
+        for (unsigned i = 0; i<dim; ++i)    // build trees
+            make_tree(program, functions, terminals, max_d, otype, term_weights);
+        
         // reverse program so that it is post-fix notation
         std::reverse(program.begin(),program.end());
+        assert(is_valid_program(program));
     }
 
-        
 
     void Population::init(const Individual& starting_model, const Parameters& params)
     {
@@ -141,9 +162,11 @@ namespace FT{
          */
         
         size_t count = -1;
-        for (auto& ind : individuals){
+        for (auto& ind : individuals)
+        {
             // the first individual is the starting model (i.e., the raw features)
-            if (count == -1){
+            if (count == -1)
+            {
                 ind = starting_model;                
                 ind.loc = ++count;
                 continue;
@@ -151,18 +174,12 @@ namespace FT{
             // make a program for each individual
             // pick a max depth for this program
             // pick a dimensionality for this individual
-            int dim = r.rnd_int(1,params.max_dim);
-
-            for (unsigned int i = 0; i<dim; ++i)
-            {
-                // pick depth from [params.min_depth, params.max_depth]
-                int depth =  r.rnd_int(1, params.max_depth);
-                
-                make_program(ind.program, params.functions, params.terminals, depth,
-                             params.otype, params.term_weights);               
-                
-            }
-                                    
+            int dim = r.rnd_int(1,params.max_dim);      
+            // pick depth from [params.min_depth, params.max_depth]
+            int depth =  r.rnd_int(1, params.max_depth);
+            
+            make_program(ind.program, params.functions, params.terminals, depth,
+                         params.otype, params.term_weights,dim);                                                 
             // set location of individual and increment counter
             ind.loc = ++count;                    
         }
