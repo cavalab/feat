@@ -95,8 +95,6 @@ namespace FT{
             {
                 // get random mom and dad 
                 int mom = r.random_choice(parents);
-          //      other_parents.assign(parents.begin(),parents.begin()+mom);
-            //    other_parents.insert(other_parents.end();parents.begin()+mom+1,parents.end());
                 int dad = r.random_choice(parents);
                 // create child
                 params.msg("crossing " + pop.individuals[mom].get_eqn() + " with " + 
@@ -162,9 +160,14 @@ namespace FT{
 
     void Variation::point_mutate(Individual& child, const Parameters& params)
     {
-        std::cout << "point mutation\n";
-        /* 1/n point mutation. */
+        /* 1/n point mutation. 
+         * @params child: individual to be mutated
+         * @params params: parameters 
+         * @returns modified child
+         * */
+        params.msg("point mutation",2);
         float n = child.size(); 
+        
         // loop thru child's program
         for (auto& p : child.program)
         {
@@ -201,9 +204,13 @@ namespace FT{
 
     }
     void Variation::insert_mutate(Individual& child, const Parameters& params)
-    {
-        std::cout << "insert mutation\n";
-        /* 1/n point mutation. */
+    {        
+        /*! insertion mutation. 
+         * @params child: indiviudal to be mutated
+         * @params params: parameters
+         * @returns modified child
+         * */
+        params.msg("insert mutation",2);
         float n = child.size(); 
         if (r()<0.5 || child.get_dim() == params.max_dim)
         {
@@ -254,13 +261,16 @@ namespace FT{
 
     void Variation::delete_mutate(Individual& child, const Parameters& params)
     {
-        std::cout << "deletion mutation\n";
-        /* 1/n deletion mutation. deletes dimensions. */
-        std::cout << "program: " + child.program_str() + "\n";
+
+        /* deletion mutation. 
+         * @returns child with a dimension deleted. 
+         * @params child: individual to be mutated
+         * @params params: parameters
+         * */
+        params.msg("deletion mutation",2);
+        params.msg("program: " + child.program_str(),2);
         vector<size_t> roots = child.roots();
-        std::cout << "# roots: " << roots.size() << "\n";
-        size_t end = r.random_choice(roots); // TODO: weight with node probabilities
-        std::cout << "root chosen: " << end << "\n";
+        size_t end = r.random_choice(roots); // TODO: weight with node weights
         size_t start = child.subtree(end);  
         if (params.verbosity >=2)
         { 
@@ -269,7 +279,7 @@ namespace FT{
             params.msg("deleting " + s, 2);
         }    
         child.program.erase(child.program.begin()+start,child.program.begin()+end+1);
-        std::cout << "result of delete mutation: " + child.program_str() + "\n"; 
+        params.msg("result of delete mutation: " + child.program_str(), 2);
     }
 
     bool Variation::cross(Individual& mom, Individual& dad, Individual& child, 
@@ -295,7 +305,7 @@ namespace FT{
         
         if (subtree) 
         {
-            std::cout << "subtree xo\n";
+            params.msg("subtree xo",2);
             // limit xo choices to matching output types in the programs. 
             vector<char> otypes;
             for (const auto& p : mom.program)
@@ -317,25 +327,19 @@ namespace FT{
         } 
         else             // half the time, pick a root node
         {
-            std::cout << "root xo\n";
+            params.msg("root xo",2);
             mlocs = mom.roots();
             dlocs = dad.roots();
-            std::cout << "random choice mlocs\n";
+            params.msg("random choice mlocs",2);
             j1 = r.random_choice(mlocs);    
         }
-        // get subtree        
-        std::cout << "get subtree (j1 = " << j1 << ")";
-        std::cout << "of program " + mom.program_str() + "\n";
+        // get subtree              
         i1 = mom.subtree(j1);
                              
         // get dad subtree
         j2 = r.random_choice(dlocs);
-        i2 = dad.subtree(j2);
-        std::cout << "i1: " << i1 << ", j1: " << j1 << ", i2: " << i2 << ", j2: " << j2 << "\n";
-
-        if (params.verbosity >= 2) 
-            print_cross(mom,i1,j1,dad,i2,j2,child, false);
-        
+        i2 = dad.subtree(j2); 
+               
         // make child program by splicing mom and dad
         child.program = splice_programs(mom.program, i1, j1, dad.program, i2, j2);
                      

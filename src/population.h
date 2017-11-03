@@ -68,27 +68,19 @@ namespace FT{
                 return pop.individuals[i].complexity() < pop.individuals[j].complexity();
             }
         };
-        // make a program.
-        //void make_program(vector<Node>& program, const vector<Node>& functions, 
-        //                          const vector<Node>& terminals, int max_d, char otype, 
-        //                          const vector<double>& term_weights);
-
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
  
-    bool is_valid_program(vector<std::shared_ptr<Node>>& program)
+    bool is_valid_program(vector<std::shared_ptr<Node>>& program, unsigned num_features)
     {
-//        std::cout << "checking program validity. size " <<  program.size() << "\n";
-//        std::cout << "setting up data..\n";
+        /*! checks whether program fulfills all its arities. */
         vector<ArrayXd> stack_f; 
         vector<ArrayXb> stack_b;
-        MatrixXd X = MatrixXd::Zero(100,2); 
+        MatrixXd X = MatrixXd::Zero(num_features,2); 
         VectorXd y = VectorXd::Zero(2); 
        
-//        std::cout << "evaluating program...\n";
         for (const auto& n : program){
-//            std::cout << "evaluating node " << n->name; 
             if ( stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
                 n->evaluate(X, y, stack_f, stack_b);
             else
@@ -151,7 +143,7 @@ namespace FT{
         
         // reverse program so that it is post-fix notation
         std::reverse(program.begin(),program.end());
-        assert(is_valid_program(program));
+        assert(is_valid_program(program,terminals.size()));
     }
 
 
