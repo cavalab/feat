@@ -251,7 +251,7 @@ namespace FT{
             params.msg("survivors:\n" + p_pop->print_eqns(), 2);
 
             update_best();
-            if (params.verbosity>0) print_stats(g);
+            if (params.verbosity>0) print_stats(g+1);
         }
         params.msg("finished",1);
         params.msg("best representation: " + best_ind.get_eqn(),1);

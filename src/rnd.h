@@ -105,6 +105,7 @@ namespace FT {
                /*!
                 * return a random element of a vector.
                 */          
+                assert(v.size()>0 && " attemping to return random choice from empty vector");
                 return *select_randomly(v.begin(),v.end());
             }
             

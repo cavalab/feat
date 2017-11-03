@@ -29,6 +29,9 @@ endif()
 # autocomplete for YouCompleteMe needs commands to be exported
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# enable optimization flags
+set(CMAKE_BUILD_TYPE Release)
+
 # gather list of source files
 file(GLOB src_files "src/*.cc")
 

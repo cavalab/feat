@@ -31,6 +31,7 @@ namespace FT{
         unsigned int max_size;          			///< max size of programs (length)
         unsigned int max_dim;           			///< maximum dimensionality of programs
         bool erc;								    ///<whether to include constants for terminals 
+        unsigned num_features;                      ///< number of features
         vector<string> objectives;                  ///< Pareto objectives 
 
 
@@ -102,7 +103,7 @@ namespace FT{
         }
         
         /// set the terminals
-        void set_terminals(int num_features);
+        void set_terminals(int nf);
 
         /// set the objectives
         void set_objectives(string obj);   
@@ -225,17 +226,17 @@ namespace FT{
         } 
     }
 
-    void Parameters::set_terminals(int num_features)
+    void Parameters::set_terminals(int nf)
     {
         /*!
          * based on number of features.
          */
-        
-        for (size_t i = 0; i < num_features; ++i)
+        num_features = nf; 
+        for (size_t i = 0; i < nf; ++i)
             terminals.push_back(createNode(string("x"), 0, 0, i));
     	
         if(erc)
-    		for (int i = 0; i < num_features; ++i)
+    		for (int i = 0; i < nf; ++i)
     		{
     			if(r() < 0.5)
     	       		terminals.push_back(createNode(string("kb"), 0, r(), 0));

@@ -36,7 +36,10 @@ namespace FT{
 
         /// return symbolic representation of program
         string get_eqn(char otype);
-        
+
+        /// return program name list 
+        string program_str();
+
         /// setting and getting from individuals vector
         const std::shared_ptr<Node> operator [](int i) const {return program[i];}
         const std::shared_ptr<Node> & operator [](int i) {return program[i];}
@@ -68,7 +71,9 @@ namespace FT{
         
         /// calculate program complexity. 
         unsigned int complexity();
-       
+      
+        /// find root locations in program.
+        vector<size_t> roots();
        
         unsigned int c;            ///< the complexity of the program.    
     };
@@ -95,10 +100,15 @@ namespace FT{
         vector<ArrayXb> stack_b;
 
         // evaluate each node in program
-        for (auto n : program)
+        for (const auto& n : program)
         {
         	if(stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
-	            n->evaluate(X, y, stack_f, stack_b); 
+	            n->evaluate(X, y, stack_f, stack_b);
+            else
+            {
+                std::cout << "node " << n->name << " in " + program_str() + " is invalid\n";
+                exit(1);
+            }
         }
         
         // convert stack_f to Phi
@@ -163,8 +173,14 @@ namespace FT{
         
         * note that this function assumes a subtree's arguments to be contiguous in the program.
         */
-        
-       if (program[i]->total_arity()==0) return i;
+       
+
+       assert(i>=0 && "attempting to grab subtree with index < 0");
+              
+       if (program[i]->total_arity()==0)
+       {
+           return i;
+       }
 
        std::map<char, unsigned int> arity = program[i]->arity;
 
@@ -176,11 +192,10 @@ namespace FT{
        }
        size_t i2 = i;                              // index for second recursion
        
-       for (unsigned int j = 0; j<arity['f']; ++j)
+       for (unsigned int j = 0; j<arity['f']; ++j)  
            i = subtree(--i,'f');                  // recurse for floating arguments
        for (unsigned int j = 0; j<arity['b']; ++j)
            i2 = subtree(--i2,'b');                 // recurse for boolean arguments
-      
        return std::min(i,i2);
     }
    
@@ -286,6 +301,47 @@ namespace FT{
         }
         return c;
     }
+
+    vector<size_t> Individual::roots()
+    {
+        // find "root" nodes of floating point program, where roots are final values that output 
+        // something directly to the stack
+        vector<size_t> indices;     // returned root indices
+        int total_arity = -1;       //end node is always a root
+        
+        for (size_t i = program.size(); i>0; --i)   // reverse loop thru program
+        {    
+            if (total_arity <= 0 ){ // root node
+                indices.push_back(i-1);
+                total_arity=0;
+            }
+            else
+                --total_arity;
+           
+            total_arity += program[i-1]->total_arity(); 
+           
+        }
+        
+        return indices; 
+    }
+
+    string Individual::program_str()
+    {
+        /* returns a string of program names. */
+        string s = "";
+        for (const auto& p : program)
+        {
+            if (!p->name.compare("x"))   // if a variable, include the location data
+            {
+                s += p->name+"_"+std::to_string(std::dynamic_pointer_cast<NodeVariable>(p)->loc); 
+            }
+            else
+                s+= p->name;
+            s+=" ";
+        }
+        return s;
+    }
+
 }
 
 #endif

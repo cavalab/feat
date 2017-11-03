@@ -68,21 +68,32 @@ namespace FT{
                 return pop.individuals[i].complexity() < pop.individuals[j].complexity();
             }
         };
-        // make a program.
-        //void make_program(vector<Node>& program, const vector<Node>& functions, 
-        //                          const vector<Node>& terminals, int max_d, char otype, 
-        //                          const vector<double>& term_weights);
-
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
-    
-    void make_program(vector<std::shared_ptr<Node>>& program, 
+ 
+    bool is_valid_program(vector<std::shared_ptr<Node>>& program, unsigned num_features)
+    {
+        /*! checks whether program fulfills all its arities. */
+        vector<ArrayXd> stack_f; 
+        vector<ArrayXb> stack_b;
+        MatrixXd X = MatrixXd::Zero(num_features,2); 
+        VectorXd y = VectorXd::Zero(2); 
+       
+        for (const auto& n : program){
+            if ( stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
+                n->evaluate(X, y, stack_f, stack_b);
+            else
+                return false; 
+        }
+        return true;
+    }
+   
+    void make_tree(vector<std::shared_ptr<Node>>& program, 
                       const vector<std::shared_ptr<Node>>& functions, 
                       const vector<std::shared_ptr<Node>>& terminals, int max_d, char otype, 
                       const vector<double>& term_weights)
-    {
-        /*!
+    {   /*!
          * recursively builds a program with complete arguments.
          */
         if (max_d == 0 || r.rnd_flt() < terminals.size()/(terminals.size()+functions.size())) 
@@ -115,12 +126,26 @@ namespace FT{
             std::shared_ptr<Node> chosen = program.back();
             // recurse to fulfill the arity of the chosen function
             for (size_t i = 0; i < chosen->arity['f']; ++i)
-                make_program(program, functions, terminals, max_d-1, 'f', term_weights);
+                make_tree(program, functions, terminals, max_d-1, 'f', term_weights);
             for (size_t i = 0; i < chosen->arity['b']; ++i)
-                make_program(program, functions, terminals, max_d-1, 'b', term_weights);
+                make_tree(program, functions, terminals, max_d-1, 'b', term_weights);
 
         }
-    }    
+    }
+
+    void make_program(vector<std::shared_ptr<Node>>& program, 
+                      const vector<std::shared_ptr<Node>>& functions, 
+                      const vector<std::shared_ptr<Node>>& terminals, int max_d, char otype, 
+                      const vector<double>& term_weights, int dim)
+    {
+        for (unsigned i = 0; i<dim; ++i)    // build trees
+            make_tree(program, functions, terminals, max_d, otype, term_weights);
+        
+        // reverse program so that it is post-fix notation
+        std::reverse(program.begin(),program.end());
+        assert(is_valid_program(program,terminals.size()));
+    }
+
 
     void Population::init(const Individual& starting_model, const Parameters& params)
     {
@@ -129,9 +154,11 @@ namespace FT{
          */
         
         size_t count = -1;
-        for (auto& ind : individuals){
+        for (auto& ind : individuals)
+        {
             // the first individual is the starting model (i.e., the raw features)
-            if (count == -1){
+            if (count == -1)
+            {
                 ind = starting_model;                
                 ind.loc = ++count;
                 continue;
@@ -139,20 +166,12 @@ namespace FT{
             // make a program for each individual
             // pick a max depth for this program
             // pick a dimensionality for this individual
-            int dim = r.rnd_int(1,params.max_dim);
-
-            for (unsigned int i = 0; i<dim; ++i)
-            {
-                // pick depth from [params.min_depth, params.max_depth]
-                int depth =  r.rnd_int(1, params.max_depth);
-                
-                make_program(ind.program, params.functions, params.terminals, depth,
-                             params.otype, params.term_weights);               
-                
-            }
-            // reverse program so that it is post-fix notation
-            std::reverse(ind.program.begin(),ind.program.end());
-                        
+            int dim = r.rnd_int(1,params.max_dim);      
+            // pick depth from [params.min_depth, params.max_depth]
+            int depth =  r.rnd_int(1, params.max_depth);
+            
+            make_program(ind.program, params.functions, params.terminals, depth,
+                         params.otype, params.term_weights,dim);                                                 
             // set location of individual and increment counter
             ind.loc = ++count;                    
         }
