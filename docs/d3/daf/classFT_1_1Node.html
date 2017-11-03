@@ -182,6 +182,9 @@ ArrayXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=".
 <tr class="memitem:a85f5dc8e63804703fb5b1cc7c297c0e8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/daf/classFT_1_1Node.html#a85f5dc8e63804703fb5b1cc7c297c0e8">eval_complexity</a> (map&lt; char, vector&lt; unsigned int &gt;&gt; &amp;cstack)</td></tr>
 <tr class="memdesc:a85f5dc8e63804703fb5b1cc7c297c0e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">evaluates complexity of this node in the context of its child nodes.  <a href="#a85f5dc8e63804703fb5b1cc7c297c0e8">More...</a><br /></td></tr>
 <tr class="separator:a85f5dc8e63804703fb5b1cc7c297c0e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace750fe7282a1d7e6bae7b7e8c16fc99"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/daf/classFT_1_1Node.html#ace750fe7282a1d7e6bae7b7e8c16fc99">eval_complexity_db</a> (map&lt; char, vector&lt; string &gt;&gt; &amp;cstack)</td></tr>
+<tr class="memdesc:ace750fe7282a1d7e6bae7b7e8c16fc99"><td class="mdescLeft">&#160;</td><td class="mdescRight">evaluates complexity of this node in the context of its child nodes.  <a href="#ace750fe7282a1d7e6bae7b7e8c16fc99">More...</a><br /></td></tr>
+<tr class="separator:ace750fe7282a1d7e6bae7b7e8c16fc99"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -216,6 +219,35 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../..
           <td class="memname">void FT::Node::eval_complexity </td>
           <td>(</td>
           <td class="paramtype">map&lt; char, vector&lt; unsigned int &gt;&gt; &amp;&#160;</td>
+          <td class="paramname"><em>cstack</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>evaluates complexity of this node in the context of its child nodes. </p>
+<p>Complexity of a node <img class="formulaInl" alt="$ n $" src="../../form_0.png"/> with <img class="formulaInl" alt="$ k $" src="../../form_1.png"/> arguments is defined as</p>
+<p><img class="formulaInl" alt="$ C(n) = c_n * (\sum_{a=1}^k C(a)) $" src="../../form_2.png"/></p>
+<p>The complexity of a program is the complexity of its root/head node.</p>
+
+</div>
+</div>
+<a class="anchor" id="ace750fe7282a1d7e6bae7b7e8c16fc99"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void FT::Node::eval_complexity_db </td>
+          <td>(</td>
+          <td class="paramtype">map&lt; char, vector&lt; string &gt;&gt; &amp;&#160;</td>
           <td class="paramname"><em>cstack</em></td><td>)</td>
           <td></td>
         </tr>

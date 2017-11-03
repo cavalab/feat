@@ -75,17 +75,12 @@ namespace FT{
         /*!
          * performs variation on the current population. 
          *
-         * Input:
+         * @param   pop: current population
+         * @param  	parents: indices of population to use for variation
+         * @param  	params: fewtwo parameters
          *
-         *      	pop: current population
-         *      	parents: indices of population to use for variation
-         *      	params: fewtwo parameters
-         *
-         * Output:
-         *
-         *      	pop: appends params.pop_size offspring derived from parent variation
+         * @return  appends params.pop_size offspring derived from parent variation
          */
-        // vector<size_t> other_parents;    // parents other than one chosen for crossover
         bool pass;                      // pass check for children undergoing variation       
         while (pop.size() < 2*params.pop_size)
         {
@@ -134,13 +129,11 @@ namespace FT{
         /*!
          * chooses uniformly between point mutation, insert mutation and delete mutation 
          * 
-         * Input:
-         *
-         *      	mom: root parent
-         *
-         * Output:
-         *
-         *      	child: copy of mom with some mutations
+         * @param   mom: parent
+         * @param   child: offspring produced by mutating mom 
+         * @param   params: parameters
+         * 
+         * @return  true if valid child, false if not 
          */    
 
         // make child a copy of mom
@@ -160,9 +153,9 @@ namespace FT{
 
     void Variation::point_mutate(Individual& child, const Parameters& params)
     {
-        /* 1/n point mutation. 
-         * @params child: individual to be mutated
-         * @params params: parameters 
+        /*! 1/n point mutation. 
+         * @param child: individual to be mutated
+         * @param params: parameters 
          * @returns modified child
          * */
         params.msg("point mutation",2);
@@ -206,8 +199,8 @@ namespace FT{
     void Variation::insert_mutate(Individual& child, const Parameters& params)
     {        
         /*! insertion mutation. 
-         * @params child: indiviudal to be mutated
-         * @params params: parameters
+         * @param child: indiviudal to be mutated
+         * @param params: parameters
          * @returns modified child
          * */
         params.msg("insert mutation",2);
@@ -262,10 +255,10 @@ namespace FT{
     void Variation::delete_mutate(Individual& child, const Parameters& params)
     {
 
-        /* deletion mutation. 
-         * @returns child with a dimension deleted. 
-         * @params child: individual to be mutated
-         * @params params: parameters
+        /*! deletion mutation. works by pruning a dimension. 
+         * @param child: individual to be mutated
+         * @param params: parameters  
+         * @return mutated child
          * */
         params.msg("deletion mutation",2);
         params.msg("program: " + child.program_str(),2);
@@ -286,16 +279,14 @@ namespace FT{
                           const Parameters& params)
     {
         /*!
-         * subtree crossover
+         * crossover by either subtree crossover or swapping of dimensions. 
          *
-         * Input:
+         * @param   mom: root parent
+         * @param   dad: parent from which subtree is chosen
+         * @param   child: result of cross
+         * @param   params: parameters
          *
-         *      	mom: root parent
-         *      	dad: parent from which subtree is chosen
-         *
-         * Output:
-         *
-         *      	child: mom with dad subtree graft
+         * @return  child: mom with dad subtree graft
          */
                     
         bool subtree = r() <0.5;     // half the time, do subtree xo. 
@@ -360,18 +351,14 @@ namespace FT{
          * swap vector subsets with different sizes. 
          * constructs a vector made of v1[0:i1], v2[i2:j2], v1[i1:end].
          *
-         * Input:
+         * @param   v1: root parent 
+         * @param       i1: start of splicing segment 
+         * @param       j1: end of splicing segment
+         * @param   v2: donating parent
+         * @param       i2: start of donation
+         * @param       j2: end of donation
          *
-         *      v1: root parent 
-         *          i1: start of splicing segment 
-         *          j1: end of splicing segment
-         *      v2: donating parent
-         *          i2: start of donation
-         *          j2: end of donation
-         *
-         * Output: 
-         *
-         *      vnew: new vector 
+         * @return  vnew: new vector 
          */
 
         // size difference between subtrees  

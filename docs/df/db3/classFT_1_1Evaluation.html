@@ -120,12 +120,12 @@ $(document).ready(function(){initNavTree('df/db3/classFT_1_1Evaluation.html','..
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a0f5d76d42486505f0e084fe79c177dcc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/db3/classFT_1_1Evaluation.html#a0f5d76d42486505f0e084fe79c177dcc">fitness</a> (<a class="el" href="../../d9/ddc/structFT_1_1Population.html">Population</a> &amp;pop, const MatrixXd &amp;X, VectorXd &amp;y, MatrixXd &amp;F, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params)</td></tr>
-<tr class="memdesc:a0f5d76d42486505f0e084fe79c177dcc"><td class="mdescLeft">&#160;</td><td class="mdescRight">fitness of population.  <a href="#a0f5d76d42486505f0e084fe79c177dcc">More...</a><br /></td></tr>
-<tr class="separator:a0f5d76d42486505f0e084fe79c177dcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5b2b80a046ee6c946024770b81bfb9fc"><td class="memItemLeft" align="right" valign="top">VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/db3/classFT_1_1Evaluation.html#a5b2b80a046ee6c946024770b81bfb9fc">out_ml</a> (MatrixXd &amp;Phi, VectorXd &amp;y, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params, std::shared_ptr&lt; <a class="el" href="../../df/dfa/classFT_1_1ML.html">ML</a> &gt; ml=nullptr)</td></tr>
-<tr class="memdesc:a5b2b80a046ee6c946024770b81bfb9fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">output of an ml model.  <a href="#a5b2b80a046ee6c946024770b81bfb9fc">More...</a><br /></td></tr>
-<tr class="separator:a5b2b80a046ee6c946024770b81bfb9fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2271be027127d34cb1595dcfe3a381c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/db3/classFT_1_1Evaluation.html#ae2271be027127d34cb1595dcfe3a381c">fitness</a> (<a class="el" href="../../d9/ddc/structFT_1_1Population.html">Population</a> &amp;pop, const MatrixXd &amp;X, VectorXd &amp;y, MatrixXd &amp;F, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params, bool offspring)</td></tr>
+<tr class="memdesc:ae2271be027127d34cb1595dcfe3a381c"><td class="mdescLeft">&#160;</td><td class="mdescRight">fitness of population.  <a href="#ae2271be027127d34cb1595dcfe3a381c">More...</a><br /></td></tr>
+<tr class="separator:ae2271be027127d34cb1595dcfe3a381c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb33acb4df9152400fa617353eda7f93"><td class="memItemLeft" align="right" valign="top">VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/db3/classFT_1_1Evaluation.html#abb33acb4df9152400fa617353eda7f93">out_ml</a> (MatrixXd &amp;Phi, VectorXd &amp;y, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params, bool &amp;pass, std::shared_ptr&lt; <a class="el" href="../../df/dfa/classFT_1_1ML.html">ML</a> &gt; ml=nullptr)</td></tr>
+<tr class="memdesc:abb33acb4df9152400fa617353eda7f93"><td class="mdescLeft">&#160;</td><td class="mdescRight">output of an ml model.  <a href="#abb33acb4df9152400fa617353eda7f93">More...</a><br /></td></tr>
+<tr class="separator:abb33acb4df9152400fa617353eda7f93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a728ff705e6a720e09eee6c102ea87b9b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/db3/classFT_1_1Evaluation.html#a728ff705e6a720e09eee6c102ea87b9b">assign_fit</a> (<a class="el" href="../../df/d8a/structFT_1_1Individual.html">Individual</a> &amp;ind, MatrixXd &amp;F, const VectorXd &amp;yhat, const VectorXd &amp;y, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params)</td></tr>
 <tr class="memdesc:a728ff705e6a720e09eee6c102ea87b9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">assign fitness to an individual and to F.  <a href="#a728ff705e6a720e09eee6c102ea87b9b">More...</a><br /></td></tr>
 <tr class="separator:a728ff705e6a720e09eee6c102ea87b9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -186,7 +186,7 @@ Public Member Functions</h2></td></tr>
 </pre>
 </div>
 </div>
-<a class="anchor" id="a0f5d76d42486505f0e084fe79c177dcc"></a>
+<a class="anchor" id="ae2271be027127d34cb1595dcfe3a381c"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -218,7 +218,13 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;&#160;</td>
-          <td class="paramname"><em>params</em>&#160;</td>
+          <td class="paramname"><em>params</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>offspring</em> = <code>false</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -239,7 +245,7 @@ Public Member Functions</h2></td></tr>
 </pre>
 </div>
 </div>
-<a class="anchor" id="a5b2b80a046ee6c946024770b81bfb9fc"></a>
+<a class="anchor" id="abb33acb4df9152400fa617353eda7f93"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -260,6 +266,12 @@ Public Member Functions</h2></td></tr>
           <td></td>
           <td class="paramtype">const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;&#160;</td>
           <td class="paramname"><em>params</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool &amp;&#160;</td>
+          <td class="paramname"><em>pass</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

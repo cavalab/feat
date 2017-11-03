@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['individuals',['individuals',['../d9/ddc/structFT_1_1Population.html#a3c049edb8cea90f79fe7c7613584879e',1,'FT::Population']]]
+  ['gens',['gens',['../de/d2c/structFT_1_1Parameters.html#a7b17dbd6ccc8cbac4f38bde7b51629ce',1,'FT::Parameters']]]
 ];

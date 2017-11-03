@@ -1,5 +1,7 @@
 var structFT_1_1Pareto =
 [
+    [ "comparator_obj", "d5/d3d/structFT_1_1Pareto_1_1comparator__obj.html", "d5/d3d/structFT_1_1Pareto_1_1comparator__obj" ],
+    [ "sort_n", "d2/dbc/structFT_1_1Pareto_1_1sort__n.html", "d2/dbc/structFT_1_1Pareto_1_1sort__n" ],
     [ "Pareto", "de/d2e/structFT_1_1Pareto.html#a88069fd3f28240b8a5c53607f74ffae8", null ],
     [ "~Pareto", "de/d2e/structFT_1_1Pareto.html#af59fa4f15ba84599b7b3555b94cac17f", null ],
     [ "crowding_distance", "de/d2e/structFT_1_1Pareto.html#a598fc5fb99a53d34d37e1392c1ed2440", null ],

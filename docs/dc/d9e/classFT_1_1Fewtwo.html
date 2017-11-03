@@ -124,9 +124,11 @@ Collaboration diagram for FT::Fewtwo:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../d3/d63/classFT_1_1Fewtwo__coll__graph.png" border="0" usemap="#FT_1_1Fewtwo_coll__map" alt="Collaboration graph"/></div>
 <map name="FT_1_1Fewtwo_coll__map" id="FT_1_1Fewtwo_coll__map">
-<area shape="rect" id="node4" href="../../de/d2c/structFT_1_1Parameters.html" title="holds the hyperparameters for Fewtwo. " alt="" coords="698,107,811,133"/>
-<area shape="rect" id="node7" title="STL class. " alt="" coords="181,113,261,140"/>
-<area shape="rect" id="node8" title="STL class. " alt="" coords="5,106,132,147"/>
+<area shape="rect" id="node4" href="../../de/d2c/structFT_1_1Parameters.html" title="holds the hyperparameters for Fewtwo. " alt="" coords="698,360,811,387"/>
+<area shape="rect" id="node14" href="../../df/d8a/structFT_1_1Individual.html" title="individual programs in the population " alt="" coords="704,107,805,133"/>
+<area shape="rect" id="node7" title="STL class. " alt="" coords="181,383,261,409"/>
+<area shape="rect" id="node8" title="STL class. " alt="" coords="5,375,132,417"/>
+<area shape="rect" id="node12" href="../../d3/d4e/classFT_1_1Timer.html" title="class for timing things. " alt="" coords="715,259,794,285"/>
 </map>
 <center><span class="legend">[<a target="top" href="../../graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -136,42 +138,42 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a31050da37064a3b1fc3b32524338472e">Fewtwo</a> (int pop_size=100, int gens=100, string ml=&quot;LinearRidgeRegression&quot;, bool classification=false, int verbosity=1, int max_stall=0, string sel=&quot;lexicase&quot;, string surv=&quot;pareto&quot;, float cross_rate=0.5, char otype='f', string functions=&quot;+,-,*,/,exp,log&quot;, unsigned int max_depth=3, unsigned int max_dim=10, int random_state=0, bool erc=false, string obj=&quot;fitness,complexity&quot;)</td></tr>
 <tr class="memdesc:a31050da37064a3b1fc3b32524338472e"><td class="mdescLeft">&#160;</td><td class="mdescRight">member initializer list constructor <br /></td></tr>
 <tr class="separator:a31050da37064a3b1fc3b32524338472e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa7106d3f810fde51692d5a203df5dac3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa7106d3f810fde51692d5a203df5dac3"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#aa7106d3f810fde51692d5a203df5dac3">set_pop_size</a> (int &amp;pop_size)</td></tr>
-<tr class="memdesc:aa7106d3f810fde51692d5a203df5dac3"><td class="mdescLeft">&#160;</td><td class="mdescRight">set size of population <br /></td></tr>
-<tr class="separator:aa7106d3f810fde51692d5a203df5dac3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af1aadc622cd4e1dcd99b945175e4be15"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af1aadc622cd4e1dcd99b945175e4be15"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#af1aadc622cd4e1dcd99b945175e4be15">set_generations</a> (int &amp;gens)</td></tr>
-<tr class="memdesc:af1aadc622cd4e1dcd99b945175e4be15"><td class="mdescLeft">&#160;</td><td class="mdescRight">set size of max generations <br /></td></tr>
-<tr class="separator:af1aadc622cd4e1dcd99b945175e4be15"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af108775ed965032b711951881d8c3981"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af108775ed965032b711951881d8c3981"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#af108775ed965032b711951881d8c3981">set_ml</a> (string &amp;ml)</td></tr>
-<tr class="memdesc:af108775ed965032b711951881d8c3981"><td class="mdescLeft">&#160;</td><td class="mdescRight">set <a class="el" href="../../df/dfa/classFT_1_1ML.html" title="class that specifies the machine learning algorithm to pair with Fewtwo. ">ML</a> algorithm to use <br /></td></tr>
-<tr class="separator:af108775ed965032b711951881d8c3981"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f3bbb65c0f865434279fdcea2b744fd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3f3bbb65c0f865434279fdcea2b744fd"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a3f3bbb65c0f865434279fdcea2b744fd">set_classification</a> (bool &amp;classification)</td></tr>
-<tr class="memdesc:a3f3bbb65c0f865434279fdcea2b744fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">set EProblemType for shogun <br /></td></tr>
-<tr class="separator:a3f3bbb65c0f865434279fdcea2b744fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aff5faaeed36ba72fe9d94e86de8179ad"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aff5faaeed36ba72fe9d94e86de8179ad"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#aff5faaeed36ba72fe9d94e86de8179ad">set_verbosity</a> (int &amp;verbosity)</td></tr>
-<tr class="memdesc:aff5faaeed36ba72fe9d94e86de8179ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">set level of debug info <br /></td></tr>
-<tr class="separator:aff5faaeed36ba72fe9d94e86de8179ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaa0bd11a07c25b602c7fb9e7681750c6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaa0bd11a07c25b602c7fb9e7681750c6"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#aaa0bd11a07c25b602c7fb9e7681750c6">set_max_stall</a> (int &amp;max_stall)</td></tr>
-<tr class="memdesc:aaa0bd11a07c25b602c7fb9e7681750c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">set maximum stall in learning, in generations <br /></td></tr>
-<tr class="separator:aaa0bd11a07c25b602c7fb9e7681750c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a495b3c8dec67e0346f8b2d75ee1441a4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a495b3c8dec67e0346f8b2d75ee1441a4"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a495b3c8dec67e0346f8b2d75ee1441a4">set_selection</a> (string &amp;sel)</td></tr>
-<tr class="memdesc:a495b3c8dec67e0346f8b2d75ee1441a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">set selection method <br /></td></tr>
-<tr class="separator:a495b3c8dec67e0346f8b2d75ee1441a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5fe2623c7b20b2cf867e61970598e599"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5fe2623c7b20b2cf867e61970598e599"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a5fe2623c7b20b2cf867e61970598e599">set_surv</a> (string &amp;surv)</td></tr>
-<tr class="memdesc:a5fe2623c7b20b2cf867e61970598e599"><td class="mdescLeft">&#160;</td><td class="mdescRight">set survivability <br /></td></tr>
-<tr class="separator:a5fe2623c7b20b2cf867e61970598e599"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad8947ced0470e2599298e33879a0cc34"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad8947ced0470e2599298e33879a0cc34"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#ad8947ced0470e2599298e33879a0cc34">set_cross_rate</a> (float &amp;cross_rate)</td></tr>
-<tr class="memdesc:ad8947ced0470e2599298e33879a0cc34"><td class="mdescLeft">&#160;</td><td class="mdescRight">set cross rate in variation <br /></td></tr>
-<tr class="separator:ad8947ced0470e2599298e33879a0cc34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b02fd5d45bd414d0018c39d05e017e4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0b02fd5d45bd414d0018c39d05e017e4"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a0b02fd5d45bd414d0018c39d05e017e4">set_pop_size</a> (int pop_size)</td></tr>
+<tr class="memdesc:a0b02fd5d45bd414d0018c39d05e017e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">set size of population <br /></td></tr>
+<tr class="separator:a0b02fd5d45bd414d0018c39d05e017e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5b57ec49fafbefaf16025b5de07c1e6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad5b57ec49fafbefaf16025b5de07c1e6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#ad5b57ec49fafbefaf16025b5de07c1e6">set_generations</a> (int gens)</td></tr>
+<tr class="memdesc:ad5b57ec49fafbefaf16025b5de07c1e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">set size of max generations <br /></td></tr>
+<tr class="separator:ad5b57ec49fafbefaf16025b5de07c1e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5f8ae3092b093979b4491663e4e066b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac5f8ae3092b093979b4491663e4e066b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#ac5f8ae3092b093979b4491663e4e066b">set_ml</a> (string ml)</td></tr>
+<tr class="memdesc:ac5f8ae3092b093979b4491663e4e066b"><td class="mdescLeft">&#160;</td><td class="mdescRight">set <a class="el" href="../../df/dfa/classFT_1_1ML.html" title="class that specifies the machine learning algorithm to pair with Fewtwo. ">ML</a> algorithm to use <br /></td></tr>
+<tr class="separator:ac5f8ae3092b093979b4491663e4e066b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2d75c1c01a7b42ebba0bacfd8152dad"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af2d75c1c01a7b42ebba0bacfd8152dad"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#af2d75c1c01a7b42ebba0bacfd8152dad">set_classification</a> (bool classification)</td></tr>
+<tr class="memdesc:af2d75c1c01a7b42ebba0bacfd8152dad"><td class="mdescLeft">&#160;</td><td class="mdescRight">set EProblemType for shogun <br /></td></tr>
+<tr class="separator:af2d75c1c01a7b42ebba0bacfd8152dad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a11d259bcddf4b3471bb61b99830ea5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6a11d259bcddf4b3471bb61b99830ea5"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a6a11d259bcddf4b3471bb61b99830ea5">set_verbosity</a> (int verbosity)</td></tr>
+<tr class="memdesc:a6a11d259bcddf4b3471bb61b99830ea5"><td class="mdescLeft">&#160;</td><td class="mdescRight">set level of debug info <br /></td></tr>
+<tr class="separator:a6a11d259bcddf4b3471bb61b99830ea5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b51406d80ff33510482ddbc90a7cbc8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1b51406d80ff33510482ddbc90a7cbc8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a1b51406d80ff33510482ddbc90a7cbc8">set_max_stall</a> (int max_stall)</td></tr>
+<tr class="memdesc:a1b51406d80ff33510482ddbc90a7cbc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">set maximum stall in learning, in generations <br /></td></tr>
+<tr class="separator:a1b51406d80ff33510482ddbc90a7cbc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42775afda868d1dea3ab37f410f7a0db"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a42775afda868d1dea3ab37f410f7a0db"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a42775afda868d1dea3ab37f410f7a0db">set_selection</a> (string sel)</td></tr>
+<tr class="memdesc:a42775afda868d1dea3ab37f410f7a0db"><td class="mdescLeft">&#160;</td><td class="mdescRight">set selection method <br /></td></tr>
+<tr class="separator:a42775afda868d1dea3ab37f410f7a0db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab79bb5fb7edc32579a95580bed048ba7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab79bb5fb7edc32579a95580bed048ba7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#ab79bb5fb7edc32579a95580bed048ba7">set_survival</a> (string surv)</td></tr>
+<tr class="memdesc:ab79bb5fb7edc32579a95580bed048ba7"><td class="mdescLeft">&#160;</td><td class="mdescRight">set survivability <br /></td></tr>
+<tr class="separator:ab79bb5fb7edc32579a95580bed048ba7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50ff9bc73a574e178cbebb721c768de1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a50ff9bc73a574e178cbebb721c768de1"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a50ff9bc73a574e178cbebb721c768de1">set_cross_rate</a> (float cross_rate)</td></tr>
+<tr class="memdesc:a50ff9bc73a574e178cbebb721c768de1"><td class="mdescLeft">&#160;</td><td class="mdescRight">set cross rate in variation <br /></td></tr>
+<tr class="separator:a50ff9bc73a574e178cbebb721c768de1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ee8a51c8c018722cb9c8ec06f2f7cc6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4ee8a51c8c018722cb9c8ec06f2f7cc6"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a4ee8a51c8c018722cb9c8ec06f2f7cc6">set_otype</a> (char o_type)</td></tr>
 <tr class="memdesc:a4ee8a51c8c018722cb9c8ec06f2f7cc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">set program output type ('f', 'b') <br /></td></tr>
@@ -188,14 +190,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../.
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a9310bb3c36caaf0b658b319b7d27b97d">set_max_dim</a> (unsigned int max_dim)</td></tr>
 <tr class="memdesc:a9310bb3c36caaf0b658b319b7d27b97d"><td class="mdescLeft">&#160;</td><td class="mdescRight">set maximum dimensionality of programs <br /></td></tr>
 <tr class="separator:a9310bb3c36caaf0b658b319b7d27b97d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae103e51be81f734683494d4ae8b8c749"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae103e51be81f734683494d4ae8b8c749"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#ae103e51be81f734683494d4ae8b8c749">set_random_state</a> (int &amp;random_state)</td></tr>
-<tr class="memdesc:ae103e51be81f734683494d4ae8b8c749"><td class="mdescLeft">&#160;</td><td class="mdescRight">set seeds for each core's random number generator <br /></td></tr>
-<tr class="separator:ae103e51be81f734683494d4ae8b8c749"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a165cf25c48f126198859442e72f35c4f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a165cf25c48f126198859442e72f35c4f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a165cf25c48f126198859442e72f35c4f">set_erc</a> (bool &amp;erc)</td></tr>
-<tr class="memdesc:a165cf25c48f126198859442e72f35c4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">flag to set whether to use variable or constants for terminals <br /></td></tr>
-<tr class="separator:a165cf25c48f126198859442e72f35c4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a447cd76dae5babf35fa2176bf1a2bfce"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a447cd76dae5babf35fa2176bf1a2bfce"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a447cd76dae5babf35fa2176bf1a2bfce">set_random_state</a> (int random_state)</td></tr>
+<tr class="memdesc:a447cd76dae5babf35fa2176bf1a2bfce"><td class="mdescLeft">&#160;</td><td class="mdescRight">set seeds for each core's random number generator <br /></td></tr>
+<tr class="separator:a447cd76dae5babf35fa2176bf1a2bfce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0cb287ff07aa86ebded494a7a018090"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab0cb287ff07aa86ebded494a7a018090"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#ab0cb287ff07aa86ebded494a7a018090">set_erc</a> (bool erc)</td></tr>
+<tr class="memdesc:ab0cb287ff07aa86ebded494a7a018090"><td class="mdescLeft">&#160;</td><td class="mdescRight">flag to set whether to use variable or constants for terminals <br /></td></tr>
+<tr class="separator:ab0cb287ff07aa86ebded494a7a018090"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a9b58b81cb2c5b2d3e3b3764b0b8e7d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5a9b58b81cb2c5b2d3e3b3764b0b8e7d"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a5a9b58b81cb2c5b2d3e3b3764b0b8e7d">~Fewtwo</a> ()</td></tr>
 <tr class="memdesc:a5a9b58b81cb2c5b2d3e3b3764b0b8e7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">destructor <br /></td></tr>
@@ -203,14 +205,13 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../.
 <tr class="memitem:a652a785ec32021c8b0f93e27389547fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a652a785ec32021c8b0f93e27389547fa">fit</a> (MatrixXd &amp;X, VectorXd &amp;y)</td></tr>
 <tr class="memdesc:a652a785ec32021c8b0f93e27389547fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">train a model.  <a href="#a652a785ec32021c8b0f93e27389547fa">More...</a><br /></td></tr>
 <tr class="separator:a652a785ec32021c8b0f93e27389547fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa25eac7cf7eb0c9205d62531d8776886"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa25eac7cf7eb0c9205d62531d8776886"></a>
-VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#aa25eac7cf7eb0c9205d62531d8776886">predict</a> (const MatrixXd &amp;X)</td></tr>
-<tr class="memdesc:aa25eac7cf7eb0c9205d62531d8776886"><td class="mdescLeft">&#160;</td><td class="mdescRight">predict on unseen data. <br /></td></tr>
-<tr class="separator:aa25eac7cf7eb0c9205d62531d8776886"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5100f8f65f2fa3ba942049b0491aef1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad5100f8f65f2fa3ba942049b0491aef1"></a>
-MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#ad5100f8f65f2fa3ba942049b0491aef1">transform</a> (const MatrixXd &amp;X, const <a class="el" href="../../df/d8a/structFT_1_1Individual.html">Individual</a> ind=<a class="el" href="../../df/d8a/structFT_1_1Individual.html">Individual</a>())</td></tr>
-<tr class="memdesc:ad5100f8f65f2fa3ba942049b0491aef1"><td class="mdescLeft">&#160;</td><td class="mdescRight">transform an input matrix using a program. <br /></td></tr>
-<tr class="separator:ad5100f8f65f2fa3ba942049b0491aef1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00cda839564436135c583c355399a925"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a00cda839564436135c583c355399a925"></a>
+VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a00cda839564436135c583c355399a925">predict</a> (MatrixXd &amp;X)</td></tr>
+<tr class="memdesc:a00cda839564436135c583c355399a925"><td class="mdescLeft">&#160;</td><td class="mdescRight">predict on unseen data. <br /></td></tr>
+<tr class="separator:a00cda839564436135c583c355399a925"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c7b8c282582ea3c6acdacd769db1671"><td class="memItemLeft" align="right" valign="top">MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a8c7b8c282582ea3c6acdacd769db1671">transform</a> (const MatrixXd &amp;X, <a class="el" href="../../df/d8a/structFT_1_1Individual.html">Individual</a> *ind=0)</td></tr>
+<tr class="memdesc:a8c7b8c282582ea3c6acdacd769db1671"><td class="mdescLeft">&#160;</td><td class="mdescRight">transform an input matrix using a program.  <a href="#a8c7b8c282582ea3c6acdacd769db1671">More...</a><br /></td></tr>
+<tr class="separator:a8c7b8c282582ea3c6acdacd769db1671"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab4464093d6a900464819d7c98e778712"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab4464093d6a900464819d7c98e778712"></a>
 VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#ab4464093d6a900464819d7c98e778712">fit_predict</a> (MatrixXd &amp;X, VectorXd &amp;y)</td></tr>
 <tr class="memdesc:ab4464093d6a900464819d7c98e778712"><td class="mdescLeft">&#160;</td><td class="mdescRight">convenience function calls fit then predict. <br /></td></tr>
@@ -222,8 +223,15 @@ MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
+<tr class="memitem:a293ec15bb15141a14a04a7b39a3fbd7e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a293ec15bb15141a14a04a7b39a3fbd7e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a293ec15bb15141a14a04a7b39a3fbd7e">update_best</a> ()</td></tr>
+<tr class="memdesc:a293ec15bb15141a14a04a7b39a3fbd7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">updates best score <br /></td></tr>
+<tr class="separator:a293ec15bb15141a14a04a7b39a3fbd7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec54f5e5e5c48e02802b937591860446"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aec54f5e5e5c48e02802b937591860446"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#aec54f5e5e5c48e02802b937591860446">print_stats</a> (unsigned int)</td></tr>
+<tr class="memdesc:aec54f5e5e5c48e02802b937591860446"><td class="mdescLeft">&#160;</td><td class="mdescRight">prints stats <br /></td></tr>
+<tr class="separator:aec54f5e5e5c48e02802b937591860446"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae68a1e0fe53da8d441e95cfaccfbe1c0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#ae68a1e0fe53da8d441e95cfaccfbe1c0">initial_model</a> (MatrixXd &amp;X, VectorXd &amp;y)</td></tr>
-<tr class="memdesc:ae68a1e0fe53da8d441e95cfaccfbe1c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">method to finit inital ml model  <a href="#ae68a1e0fe53da8d441e95cfaccfbe1c0">More...</a><br /></td></tr>
 <tr class="separator:ae68a1e0fe53da8d441e95cfaccfbe1c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
@@ -236,6 +244,10 @@ Private Attributes</h2></td></tr>
 MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#abb74a39226acd92bc818f231f3ea469b">F</a></td></tr>
 <tr class="memdesc:abb74a39226acd92bc818f231f3ea469b"><td class="mdescLeft">&#160;</td><td class="mdescRight">matrix of fitness values for population <br /></td></tr>
 <tr class="separator:abb74a39226acd92bc818f231f3ea469b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13c69c8970b666b42bbe65a65ff71465"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a13c69c8970b666b42bbe65a65ff71465"></a>
+<a class="el" href="../../d3/d4e/classFT_1_1Timer.html">Timer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a13c69c8970b666b42bbe65a65ff71465">timer</a></td></tr>
+<tr class="memdesc:a13c69c8970b666b42bbe65a65ff71465"><td class="mdescLeft">&#160;</td><td class="mdescRight">start time of training <br /></td></tr>
+<tr class="separator:a13c69c8970b666b42bbe65a65ff71465"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a22d87a526ac7542e8dbbc5af13eb0b6f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a22d87a526ac7542e8dbbc5af13eb0b6f"></a>
 shared_ptr&lt; <a class="el" href="../../d9/ddc/structFT_1_1Population.html">Population</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a22d87a526ac7542e8dbbc5af13eb0b6f">p_pop</a></td></tr>
 <tr class="memdesc:a22d87a526ac7542e8dbbc5af13eb0b6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">population of programs <br /></td></tr>
@@ -260,6 +272,14 @@ shared_ptr&lt; <a class="el" href="../../de/d87/structFT_1_1Selection.html">Sele
 shared_ptr&lt; <a class="el" href="../../df/dfa/classFT_1_1ML.html">ML</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#af6252d2a3b8093c636bc90fc64033266">p_ml</a></td></tr>
 <tr class="memdesc:af6252d2a3b8093c636bc90fc64033266"><td class="mdescLeft">&#160;</td><td class="mdescRight">pointer to machine learning class <br /></td></tr>
 <tr class="separator:af6252d2a3b8093c636bc90fc64033266"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae61ea6bb23e531dcf96cf267d70ceb26"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae61ea6bb23e531dcf96cf267d70ceb26"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#ae61ea6bb23e531dcf96cf267d70ceb26">best_score</a></td></tr>
+<tr class="memdesc:ae61ea6bb23e531dcf96cf267d70ceb26"><td class="mdescLeft">&#160;</td><td class="mdescRight">current best score <br /></td></tr>
+<tr class="separator:ae61ea6bb23e531dcf96cf267d70ceb26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4541eea7d96bff008722bc68b3631342"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4541eea7d96bff008722bc68b3631342"></a>
+<a class="el" href="../../df/d8a/structFT_1_1Individual.html">Individual</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a4541eea7d96bff008722bc68b3631342">best_ind</a></td></tr>
+<tr class="memdesc:a4541eea7d96bff008722bc68b3631342"><td class="mdescLeft">&#160;</td><td class="mdescRight">best individual method to fit inital ml model <br /></td></tr>
+<tr class="separator:a4541eea7d96bff008722bc68b3631342"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>main class for the <a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html" title="main class for the Fewtwo learner. ">Fewtwo</a> learner. </p>
@@ -336,9 +356,36 @@ shared_ptr&lt; <a class="el" href="../../df/dfa/classFT_1_1ML.html">ML</a> &gt;&
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>method to finit inital ml model </p>
 <p>fits an <a class="el" href="../../df/dfa/classFT_1_1ML.html" title="class that specifies the machine learning algorithm to pair with Fewtwo. ">ML</a> model to the raw data as a starting point.</p>
+
+</div>
+</div>
+<a class="anchor" id="a8c7b8c282582ea3c6acdacd769db1671"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">MatrixXd FT::Fewtwo::transform </td>
+          <td>(</td>
+          <td class="paramtype">const MatrixXd &amp;&#160;</td>
+          <td class="paramname"><em>X</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../df/d8a/structFT_1_1Individual.html">Individual</a> *&#160;</td>
+          <td class="paramname"><em>ind</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>transform an input matrix using a program. </p>
+<p>Transforms input data according to ind or best ind, if ind is undefined.</p>
 
 </div>
 </div>

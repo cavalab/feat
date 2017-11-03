@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['pareto',['Pareto',['../de/d2e/structFT_1_1Pareto.html#a88069fd3f28240b8a5c53607f74ffae8',1,'FT::Pareto']]],
-  ['predict',['predict',['../dc/d9e/classFT_1_1Fewtwo.html#aa25eac7cf7eb0c9205d62531d8776886',1,'FT::Fewtwo']]]
+  ['nodeconstant',['NodeConstant',['../da/d77/classFT_1_1NodeConstant.html#aef2438111ac12fba619c9709e4470161',1,'FT::NodeConstant::NodeConstant(bool &amp;v)'],['../da/d77/classFT_1_1NodeConstant.html#abb123d64eb73270a73218ad7b30d49e9',1,'FT::NodeConstant::NodeConstant(const double &amp;v)']]]
 ];

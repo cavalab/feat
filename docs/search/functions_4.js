@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['get_5fdim',['get_dim',['../df/d8a/structFT_1_1Individual.html#a22bf1f1016d87a21c8f21da1a59ef11e',1,'FT::Individual']]],
-  ['get_5feqn',['get_eqn',['../df/d8a/structFT_1_1Individual.html#acaa7e7ba9d13b7cab99d5439dc08ca81',1,'FT::Individual']]],
-  ['get_5fopen_5floc',['get_open_loc',['../d9/ddc/structFT_1_1Population.html#af54b9e6895c8fff0ea2c12b892d84eab',1,'FT::Population']]],
-  ['get_5fweights',['get_weights',['../df/dfa/classFT_1_1ML.html#a27fa984d19c8826c2fcbe81edb6a3417',1,'FT::ML']]]
+  ['fewtwo',['Fewtwo',['../dc/d9e/classFT_1_1Fewtwo.html#a31050da37064a3b1fc3b32524338472e',1,'FT::Fewtwo']]],
+  ['fit',['fit',['../dc/d9e/classFT_1_1Fewtwo.html#a652a785ec32021c8b0f93e27389547fa',1,'FT::Fewtwo']]],
+  ['fit_5fpredict',['fit_predict',['../dc/d9e/classFT_1_1Fewtwo.html#ab4464093d6a900464819d7c98e778712',1,'FT::Fewtwo']]],
+  ['fit_5ftransform',['fit_transform',['../dc/d9e/classFT_1_1Fewtwo.html#ab4fbeb79d69fb7dd9806f5c9e30414de',1,'FT::Fewtwo']]],
+  ['fitness',['fitness',['../df/db3/classFT_1_1Evaluation.html#ae2271be027127d34cb1595dcfe3a381c',1,'FT::Evaluation']]]
 ];

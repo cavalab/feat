@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['lexicase',['Lexicase',['../d8/d78/structFT_1_1Lexicase.html#ab950d0913901711b9e9885a91467ca05',1,'FT::Lexicase']]],
-  ['limited',['limited',['../d3/daf/classFT_1_1Node.html#a6fcbaac7477521ce9ce56a85ef535db6',1,'FT::Node']]]
+  ['init',['init',['../d9/ddc/structFT_1_1Population.html#a15021af496aefb86f570ffcb5ba30eb3',1,'FT::Population']]],
+  ['initial_5fmodel',['initial_model',['../dc/d9e/classFT_1_1Fewtwo.html#ae68a1e0fe53da8d441e95cfaccfbe1c0',1,'FT::Fewtwo']]],
+  ['insert_5fmutate',['insert_mutate',['../d3/d01/classFT_1_1Variation.html#add2977e805db89e32d222f4c0e9741bf',1,'FT::Variation']]]
 ];

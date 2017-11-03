@@ -1,30 +1,3 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$d3/daf/classFT_1_1Node.html" title="Represents nodes in a program. " alt="" coords="5,664,83,691"/>
-<area shape="rect" id="node2" href="$dd/dec/classFT_1_1NodeAdd.html" title="FT::NodeAdd" alt="" coords="155,5,255,32"/>
-<area shape="rect" id="node3" href="$dc/da3/classFT_1_1NodeAnd.html" title="FT::NodeAnd" alt="" coords="155,56,255,83"/>
-<area shape="rect" id="node4" href="$da/d77/classFT_1_1NodeConstant.html" title="FT::NodeConstant" alt="" coords="140,107,271,133"/>
-<area shape="rect" id="node5" href="$d6/da2/classFT_1_1NodeCos.html" title="FT::NodeCos" alt="" coords="155,157,256,184"/>
-<area shape="rect" id="node6" href="$db/d3b/classFT_1_1NodeCosine.html" title="FT::NodeCosine" alt="" coords="146,208,265,235"/>
-<area shape="rect" id="node7" href="$d1/d36/classFT_1_1NodeCube.html" title="FT::NodeCube" alt="" coords="151,259,259,285"/>
-<area shape="rect" id="node8" href="$d7/d5c/classFT_1_1NodeDivide.html" title="FT::NodeDivide" alt="" coords="148,309,263,336"/>
-<area shape="rect" id="node9" href="$d9/d69/classFT_1_1NodeEqual.html" title="FT::NodeEqual" alt="" coords="150,360,261,387"/>
-<area shape="rect" id="node10" href="$d8/dbf/classFT_1_1NodeExponent.html" title="FT::NodeExponent" alt="" coords="139,411,271,437"/>
-<area shape="rect" id="node11" href="$df/dfa/classFT_1_1NodeExponential.html" title="FT::NodeExponential" alt="" coords="133,461,278,488"/>
-<area shape="rect" id="node12" href="$d6/df3/classFT_1_1NodeGEQ.html" title="FT::NodeGEQ" alt="" coords="152,512,259,539"/>
-<area shape="rect" id="node13" href="$db/dff/classFT_1_1NodeGreaterThan.html" title="FT::NodeGreaterThan" alt="" coords="131,563,280,589"/>
-<area shape="rect" id="node14" href="$d2/d99/classFT_1_1NodeIf.html" title="FT::NodeIf" alt="" coords="163,613,248,640"/>
-<area shape="rect" id="node15" href="$d9/d5e/classFT_1_1NodeIfThenElse.html" title="FT::NodeIfThenElse" alt="" coords="135,664,275,691"/>
-<area shape="rect" id="node16" href="$d0/da3/classFT_1_1NodeLEQ.html" title="FT::NodeLEQ" alt="" coords="154,715,257,741"/>
-<area shape="rect" id="node17" href="$db/d85/classFT_1_1NodeLessThan.html" title="FT::NodeLessThan" alt="" coords="138,765,273,792"/>
-<area shape="rect" id="node18" href="$db/def/classFT_1_1NodeLog.html" title="FT::NodeLog" alt="" coords="156,816,255,843"/>
-<area shape="rect" id="node19" href="$d8/d7d/classFT_1_1NodeMultiply.html" title="FT::NodeMultiply" alt="" coords="144,867,267,893"/>
-<area shape="rect" id="node20" href="$dd/d56/classFT_1_1NodeNot.html" title="FT::NodeNot" alt="" coords="156,917,255,944"/>
-<area shape="rect" id="node21" href="$d7/d13/classFT_1_1NodeOr.html" title="FT::NodeOr" alt="" coords="160,968,251,995"/>
-<area shape="rect" id="node22" href="$db/da6/classFT_1_1NodeRoot.html" title="FT::NodeRoot" alt="" coords="153,1019,258,1045"/>
-<area shape="rect" id="node23" href="$da/d1c/classFT_1_1NodeSin.html" title="FT::NodeSin" alt="" coords="157,1069,253,1096"/>
-<area shape="rect" id="node24" href="$d6/d0e/classFT_1_1NodeSine.html" title="FT::NodeSine" alt="" coords="154,1120,257,1147"/>
-<area shape="rect" id="node25" href="$d7/d49/classFT_1_1NodeSqrt.html" title="FT::NodeSqrt" alt="" coords="155,1171,256,1197"/>
-<area shape="rect" id="node26" href="$d4/da1/classFT_1_1NodeSquare.html" title="FT::NodeSquare" alt="" coords="146,1221,265,1248"/>
-<area shape="rect" id="node27" href="$d1/d46/classFT_1_1NodeSubtract.html" title="FT::NodeSubtract" alt="" coords="142,1272,269,1299"/>
-<area shape="rect" id="node28" href="$d5/d06/classFT_1_1NodeVariable.html" title="FT::NodeVariable" alt="" coords="143,1323,267,1349"/>
+<area shape="rect" id="node1" href="$de/d2c/structFT_1_1Parameters.html" title="holds the hyperparameters for Fewtwo. " alt="" coords="5,5,119,32"/>
 </map>
