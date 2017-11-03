@@ -132,7 +132,7 @@ var NAVTREEINDEX1 =
 "hierarchy.html":[3,2],
 "index.html":[],
 "md_CONTRIBUTING.html":[1],
-"md_EXAMPLES.html":[2],
 "md_INSTALL.html":[0],
+"md_examples_EXAMPLES.html":[2],
 "pages.html":[]
 };

@@ -80,7 +80,7 @@ int main(int argc, char** argv){
         cout << "-depth\tMaximum feature depth.\n";
         cout << "-dim\tMaximum program dimensionality.\n";
         cout << "-r\tSet random seed.\n";
-        cout << "-s\tInput file separator / delimiter. Choices: , or ""\\t""\n";
+        cout << "-sep\tInput file separator / delimiter. Choices: , or ""\\\\t"" for tab\n";
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
     }
@@ -112,8 +112,8 @@ int main(int argc, char** argv){
         fewtwo.set_max_dim(stoi(input.getCmdOption("-dim")));
     if(input.cmdOptionExists("-r"))
         fewtwo.set_random_state(stoi(input.getCmdOption("-r")));
-    if(input.cmdOptionExists("-s")) // separator
-        sep = input.getCmdOption("-s");   
+    if(input.cmdOptionExists("-sep")) // separator
+        sep = input.getCmdOption("-sep");   
     
     ///////////////////////////////////////
     cout << "\n" << 
