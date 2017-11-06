@@ -214,6 +214,7 @@ namespace FT{
         // initialize population 
         params.msg("Initializing population", 1);
         p_pop->init(best_ind,params);
+        params.msg("Initial population:\n"+p_pop->print_eqns(","),2);
 
         // resize F to be twice the pop-size x number of samples
         F.resize(X.cols(),int(2*params.pop_size));

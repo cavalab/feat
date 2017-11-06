@@ -145,15 +145,16 @@ namespace FT{
         auto labels = some<CRegressionLabels>(SGVector<float64_t>(y));
      
         // pass data to ml
-        //ml->p_est->set_features(features);
         ml->p_est->set_labels(labels);
 
         // train ml
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " train\n";
+        params.msg("ML training...",2," ");
         #pragma omp critical
         {
             ml->p_est->train(features);
         }
+        params.msg("done.",2);
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " get output\n";
         //get output
         auto y_pred = ml->p_est->apply_regression(features)->get_labels();

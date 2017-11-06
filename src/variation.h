@@ -146,7 +146,7 @@ namespace FT{
             insert_mutate(child,params);
         else
             point_mutate(child,params);
-        assert(is_valid_program(child.program)); 
+        assert(is_valid_program(child.program,params.num_features)); 
         // check child depth and dimensionality
         return child.size() <= params.max_size && child.get_dim() <= params.max_dim;
     }
@@ -338,7 +338,7 @@ namespace FT{
         if (params.verbosity >= 2) 
             print_cross(mom,i1,j1,dad,i2,j2,child);     
 
-        assert(is_valid_program(child.program));
+        assert(is_valid_program(child.program,params.num_features));
         // check child depth and dimensionality
         return child.size() <= params.max_size && child.get_dim() <= params.max_dim;
     }

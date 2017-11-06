@@ -30,7 +30,9 @@ endif()
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # enable optimization flags
-set(CMAKE_BUILD_TYPE Release)
+#if (CMAKE_BUILD_TYPE MATCHES DEBUG)
+#set(CMAKE_BUILD_TYPE Release)
+#endif()
 
 # gather list of source files
 file(GLOB src_files "src/*.cc")

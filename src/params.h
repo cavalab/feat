@@ -229,6 +229,11 @@ namespace FT{
             functions.push_back(createNode(token));
             fs.erase(0, pos + delim.length());
         } 
+        if (verbosity > 1){
+            std::cout << "functions set to [";
+            for (auto f: functions) std::cout << f->name << ", "; 
+            std::cout << "]\n";
+        }
     }
 
     void Parameters::set_terminals(int nf)
