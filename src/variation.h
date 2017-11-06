@@ -222,8 +222,8 @@ namespace FT{
                         if (f->arity[child.program[i]->otype] > 0)
                             fns.push_back(f);                        
                     }
-                    make_program(insertion, fns, params.terminals, 1, child.program[i]->otype, 
-                                 params.term_weights,1);
+                    make_program(insertion, fns, params.terminals, 1,  
+                                 params.term_weights,1, child.program[i]->otype);
                     
                     for (auto& ins : insertion){    // replace first argument in insertion
                         if (ins->otype == child.program[i]->otype 
@@ -245,9 +245,10 @@ namespace FT{
         }
         else    // add a dimension
         {
+            
             vector<std::shared_ptr<Node>> insertion; // new dimension
-            make_program(insertion, params.functions, params.terminals, 1, params.otype, 
-                         params.term_weights,1);
+            make_program(insertion, params.functions, params.terminals, 1,  
+                         params.term_weights,1,r.random_choice(params.otypes));
             child.program.insert(child.program.end(),insertion.begin(),insertion.end());
         }
     }

@@ -56,7 +56,7 @@ namespace FT{
             Fewtwo(int pop_size=100, int gens = 100, string ml = "LinearRidgeRegression", 
                    bool classification = false, int verbosity = 1, int max_stall = 0,
                    string sel ="lexicase", string surv="pareto", float cross_rate = 0.5,
-                   char otype='f', string functions = "+,-,*,/,exp,log", 
+                   char otype='a', string functions = "+,-,*,/,exp,log", 
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
                    bool erc = false, string obj="fitness,complexity"):
                       // construct subclasses
@@ -121,7 +121,7 @@ namespace FT{
             void set_cross_rate(float cross_rate){	p_variation->set_cross_rate(cross_rate); }
                         
             /// set program output type ('f', 'b')              
-            void set_otype(char o_type){ params.otype = o_type; }
+            void set_otype(char o_type){ params.otypes.clear(); params.otypes.push_back(o_type); }
                         
             /// sets available functions based on comma-separated list.
             void set_functions(string functions){ params.set_functions(functions); }

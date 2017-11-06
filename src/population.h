@@ -91,8 +91,8 @@ namespace FT{
    
     void make_tree(vector<std::shared_ptr<Node>>& program, 
                       const vector<std::shared_ptr<Node>>& functions, 
-                      const vector<std::shared_ptr<Node>>& terminals, int max_d, char otype, 
-                      const vector<double>& term_weights)
+                      const vector<std::shared_ptr<Node>>& terminals, int max_d,  
+                      const vector<double>& term_weights, char otype)
     {   /*!
          * recursively builds a program with complete arguments.
          */
@@ -116,30 +116,29 @@ namespace FT{
             // type of float if max_d > 1 (assuming all input data is continouous) 
             vector<size_t> fi;
             for (size_t i = 0; i<functions.size(); ++i)
-            {
-                if (functions[i]->otype == otype && (max_d>1 || functions[i]->arity['b']==0))
+                if (functions[i]->otype==otype && (max_d>1 || functions[i]->arity['b']==0))
                     fi.push_back(i);
-            }
+            
             // append a random choice from fs            
             program.push_back(functions[r.random_choice(fi)]);
             
             std::shared_ptr<Node> chosen = program.back();
             // recurse to fulfill the arity of the chosen function
             for (size_t i = 0; i < chosen->arity['f']; ++i)
-                make_tree(program, functions, terminals, max_d-1, 'f', term_weights);
+                make_tree(program, functions, terminals, max_d-1, term_weights,'f');
             for (size_t i = 0; i < chosen->arity['b']; ++i)
-                make_tree(program, functions, terminals, max_d-1, 'b', term_weights);
+                make_tree(program, functions, terminals, max_d-1, term_weights, 'b');
 
         }
     }
 
     void make_program(vector<std::shared_ptr<Node>>& program, 
                       const vector<std::shared_ptr<Node>>& functions, 
-                      const vector<std::shared_ptr<Node>>& terminals, int max_d, char otype, 
-                      const vector<double>& term_weights, int dim)
+                      const vector<std::shared_ptr<Node>>& terminals, int max_d, 
+                      const vector<double>& term_weights, int dim, char otype)
     {
         for (unsigned i = 0; i<dim; ++i)    // build trees
-            make_tree(program, functions, terminals, max_d, otype, term_weights);
+            make_tree(program, functions, terminals, max_d, term_weights, otype);
         
         // reverse program so that it is post-fix notation
         std::reverse(program.begin(),program.end());
@@ -154,6 +153,7 @@ namespace FT{
          */
         
         size_t count = -1;
+        vector<char> otypes = {'b','f'};
         for (auto& ind : individuals)
         {
             // the first individual is the starting model (i.e., the raw features)
@@ -171,7 +171,7 @@ namespace FT{
             int depth =  r.rnd_int(1, params.max_depth);
             
             make_program(ind.program, params.functions, params.terminals, depth,
-                         params.otype, params.term_weights,dim);                                                 
+                         params.term_weights,dim,r.random_choice(params.otypes));                                                 
             // set location of individual and increment counter
             ind.loc = ++count;                    
         }

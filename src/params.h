@@ -21,7 +21,7 @@ namespace FT{
         string ml;                      			///< machine learner with which Fewtwo is paired
         bool classification;            			///< flag to conduct classification rather than 
         int max_stall;                  			///< maximum stall in learning, in generations
-        char otype;                     			///< program output type ('f', 'b')
+        vector<char> otypes;                     	///< program output types ('f', 'b')
         int verbosity;                  			///< amount of printing. 0: none, 1: minimal, 
                                                     // 2: all
         vector<double> term_weights;    			///< probability weighting of terminals
@@ -42,8 +42,7 @@ namespace FT{
             gens(gens),
             ml(ml),
             classification(classification),
-            max_stall(max_stall),
-            otype(otype), 
+            max_stall(max_stall), 
             verbosity(verbosity),
             max_depth(max_depth),
             max_dim(max_dim),
@@ -52,7 +51,13 @@ namespace FT{
             set_functions(functions);
             set_objectives(obj);
             updateSize();        
-            
+            switch (otype)
+            { 
+                case 'b': otypes.push_back('b'); break;
+                case 'f': otypes.push_back('f'); break;
+                default: otypes.push_back('f'); otypes.push_back('b'); break;
+            }
+
         }
         
         ~Parameters(){}

@@ -113,13 +113,18 @@ namespace FT{
         
         // convert stack_f to Phi
         int cols = stack_f[0].size();
-        int rows = stack_f.size();
-        double * p = stack_f[0].data();
-        // TODO: need to conditional this on the output type parameter
-        Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows, cols);
+        int rows_f = stack_f.size();
+        int rows_b = stack_b.size();
+        Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
         
-        for (unsigned int i=0; i<rows; ++i)
+        // add stack_f to Phi
+        for (unsigned int i=0; i<rows_f; ++i)
             Phi.row(i) = VectorXd::Map(stack_f[i].data(),cols);
+        // convert stack_b to Phi       
+        for (unsigned int i=rows_f; i<rows_f+rows_b; ++i)
+            Phi.row(i) = ArrayXb::Map(stack_b[i].data(),cols).cast<double>();
+        
+        
         ////check Phi
         //for (int i =0; i<rows; ++i){
         //    std::cout <<"stack_f["<< i <<"]: " << stack_f[i].transpose() << "\n";
