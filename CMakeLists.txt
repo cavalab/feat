@@ -29,10 +29,12 @@ endif()
 # autocomplete for YouCompleteMe needs commands to be exported
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# enable optimization flags
-#if (CMAKE_BUILD_TYPE MATCHES DEBUG)
-#set(CMAKE_BUILD_TYPE Release)
-#endif()
+# set a default build type if none was specified
+set(default_build_type "Release")
+if (NOT CMAKE_BUILD_TYPE)
+    message(STATUS "Setting build type to '${default_build_type}' since none was specified.")
+    set(CMAKE_BUILD_TYPE "${default_build_type}")
+endif()
 
 # gather list of source files
 file(GLOB src_files "src/*.cc")

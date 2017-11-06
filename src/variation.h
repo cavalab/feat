@@ -146,7 +146,9 @@ namespace FT{
             insert_mutate(child,params);
         else
             point_mutate(child,params);
-        assert(is_valid_program(child.program,params.num_features)); 
+
+        assert(is_valid_program(child.program, params.num_features)); 
+
         // check child depth and dimensionality
         return child.size() <= params.max_size && child.get_dim() <= params.max_dim;
     }
