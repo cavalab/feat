@@ -137,6 +137,39 @@ namespace FT{
                         
             /// flag to set whether to use variable or constants for terminals              
             void set_erc(bool erc){ params.erc = erc; }
+            
+            /// returns fewtwo parameters used to initialize Fewtwo
+            Paramaters getParams(){ return params; }
+            
+            /// returns fitness matrix
+            MatrixXd getFitnessMatrix(){ return F; }
+            
+            /// returns the start time of training
+            Timer getTimer() { return timer; }
+            
+            /// returns shared pointer to population of programs
+            shared_ptr<Population> getPopulation() { return p_pop; }
+            
+            /// returns shared pointer to selection algorithm object
+            shared_ptr<Selection> getSelection() { return p_sel; }
+            
+            /// returns shared pointer to evaluation object
+            shared_ptr<Evaluation> getEvaluation() { return p_eval; }
+            
+            /// returns shared pointer to variation operators
+            shared_ptr<Variation> getVariation() { return p_variation; }
+            
+            /// returns shared pointer to survival algorithm object
+            shared_ptr<Selection> getSelection() { return p_surv; }
+            
+            /// returns a shared pointer to machine learning class
+            shared_ptr<ML> getML() { return p_ml; }
+            
+            /// returns the current best_score
+            double getBestScore() { return best_score; }
+            
+            /// returns the current best individual
+            Individual getBestIndividual() { return best_ind; }
                         
             /// destructor             
             ~Fewtwo(){} 
