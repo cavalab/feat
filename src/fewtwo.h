@@ -139,7 +139,7 @@ namespace FT{
             void set_erc(bool erc){ params.erc = erc; }
             
             /// returns fewtwo parameters used to initialize Fewtwo
-            Paramaters getParams(){ return params; }
+            Parameters getParams(){ return params; }
             
             /// returns fitness matrix
             MatrixXd getFitnessMatrix(){ return F; }
@@ -160,7 +160,7 @@ namespace FT{
             shared_ptr<Variation> getVariation() { return p_variation; }
             
             /// returns shared pointer to survival algorithm object
-            shared_ptr<Selection> getSelection() { return p_surv; }
+            shared_ptr<Selection> getSurvivability() { return p_surv; }
             
             /// returns a shared pointer to machine learning class
             shared_ptr<ML> getML() { return p_ml; }
