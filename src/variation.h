@@ -147,17 +147,15 @@ namespace FT{
         }
         else if (rf < 2.0/3.0 && child.size() < params.max_size)
         {
-            //insert_mutate(child,params);
-            //assert(is_valid_program(child.program, params.num_features));
-
+            insert_mutate(child,params);
+            assert(is_valid_program(child.program, params.num_features));
         }
-        else{        
+        else
+        {        
             point_mutate(child,params);
             assert(is_valid_program(child.program, params.num_features));
         }
-        
  
-
         // check child depth and dimensionality
         return child.size() <= params.max_size && child.get_dim() <= params.max_dim;
     }
@@ -214,6 +212,7 @@ namespace FT{
          * @param params: parameters
          * @returns modified child
          * */
+        //TODO: make adding a new dimension one of the insertion mutation options
         params.msg("\tinsert mutation",2);
         float n = child.size(); 
         if (r()<0.5 || child.get_dim() == params.max_dim)
@@ -227,32 +226,60 @@ namespace FT{
                     vector<std::shared_ptr<Node>> insertion;  // inserted segment
                     vector<std::shared_ptr<Node>> fns;  // potential fns 
                     
-                    // find instructions with matching in/out types and arities
+                    // find instructions with matching output types and a matching arity to i
                     for (const auto& f: params.functions)
-                    {
-                        if (f->arity[child.program[i]->otype] > 0)
-                            fns.push_back(f);                        
+                    {                         
+                        if (f->arity[child.program[i]->otype] > 0 && 
+                                f->otype==child.program[i]->otype )
+                        { // assuming no boolean terminals, the function's boolean arity 
+                          // must be fully satisfied by the child 
+                          // program node
+                            if (child.program[i]->otype=='b' && f->arity['b']==1 ||
+                                    child.program[i]->otype=='f' && f->arity['b']==0)
+                                fns.push_back(f);                        
+                        }
                     }
                     // if fns all have positive boolean arities, assuming inputs are continuous,
                     // just continue
-                    int bfs=0;
-                    for (const auto& f: fns)
-                        if (f->arity['b']>0) ++bfs;
-                    if (bfs == fns.size()) 
+                    //int bfs=0;
+                    //for (const auto& f: fns)
+                    //    if (f->arity['b']>0) ++bfs;
+                    //if (bfs == fns.size()) 
+                    //    continue;
+                    if (fns.size()==0)  // if no insertion functions match, skip
                         continue;
+                    // if doing insert mutation with a boolean node, hand construct insertion since
+                    // there are no boolean terminals 
+                    if (child.program[i]->otype=='b')
+                    {
+                        insertion.push_back(r.random_choice(fns));
+                        unsigned fa = insertion.back()->arity['f'];
+                        for (unsigned j = 0; j< fa; ++j)
+                            insertion.push_back(r.random_choice(params.terminals));
+                        insertion.push_back(child.program[i]);
+                        std::reverse(insertion.begin(),insertion.end());
+                    }
+                    else
+                    {
+                        insertion.push_back(r.random_choice(fns));
+                        unsigned fa = insertion.back()->arity['f']-1;
+                        for (unsigned j = 0; j< fa; ++j)
+                            insertion.push_back(r.random_choice(params.terminals));
+                        insertion.push_back(child.program[i]);
+                        std::reverse(insertion.begin(),insertion.end());
+                       // make_program(insertion, fns, params.terminals, 1,  
+                       //              params.term_weights,1, child.program[i]->otype);
+                       // 
+                       // for (auto& ins : insertion){    // replace first argument in insertion
+                       //     if (ins->otype == child.program[i]->otype 
+                       //             && ins->arity['f']==child.program[i]->arity['f'] 
+                       //             && ins->arity['b']==child.program[i]->arity['b'])
+                       //     {
+                       //         ins = child.program[i];
+                       //         continue;
+                       //     }
 
-                    make_program(insertion, fns, params.terminals, 1,  
-                                 params.term_weights,1, child.program[i]->otype);
-                    
-                    for (auto& ins : insertion){    // replace first argument in insertion
-                        if (ins->otype == child.program[i]->otype 
-                                && ins->arity['f']==child.program[i]->arity['f'] 
-                                && ins->arity['b']==child.program[i]->arity['b'])
-                        {
-                            ins = child.program[i];
-                            continue;
-                        }
-
+                       // }
                     }
                     child.program.erase(child.program.begin()+i);
                     child.program.insert(child.program.begin()+i, insertion.begin(), 
@@ -263,8 +290,7 @@ namespace FT{
             }
         }
         else    // add a dimension
-        {
-            
+        {            
             vector<std::shared_ptr<Node>> insertion; // new dimension
             make_program(insertion, params.functions, params.terminals, 1,  
                          params.term_weights,1,r.random_choice(params.otypes));

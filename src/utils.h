@@ -80,17 +80,17 @@ namespace FT{
     /*!
      * check if element is not in vector.
      */
-    template<typename T>
-    bool not_in(const vector<T>& v, const T& i )
-    {
-        /* true if i is in v, else false. */
-        for (const auto& el : v)
-        {
-            if (i == el)
-                return false;
-        }
-        return true;
-    }
+   // template<typename T>
+   // bool not_in(const vector<T>& v, const T& i )
+   // {
+   //     /* true if i is in v, else false. */
+   //     for (const auto& el : v)
+   //     {
+   //         if (i == el)
+   //             return false;
+   //     }
+   //     return true;
+   // }
 
     /*!
      * median 

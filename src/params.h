@@ -36,7 +36,7 @@ namespace FT{
 
 
         Parameters(int pop_size, int gens, string& ml, bool classification, int max_stall, 
-                   char otype, int verbosity, string functions, unsigned int max_depth, 
+                   char otype, int verbosity, string fs, unsigned int max_depth, 
                    unsigned int max_dim, bool constant, string obj):    
             pop_size(pop_size),
             gens(gens),
@@ -48,14 +48,24 @@ namespace FT{
             max_dim(max_dim),
             erc(constant)
         {
-            set_functions(functions);
+            set_functions(fs);
             set_objectives(obj);
             updateSize();        
             switch (otype)
             { 
                 case 'b': otypes.push_back('b'); break;
                 case 'f': otypes.push_back('f'); break;
-                default: otypes.push_back('f'); otypes.push_back('b'); break;
+                default: 
+                {
+                    for (const auto& f: functions)
+                        if (!in(otypes,f->otype)) 
+                            otypes.push_back(f->otype);
+                    for (const auto& t: terminals)
+                        if (!in(otypes,t->otype)) 
+                            otypes.push_back(t->otype);
+
+                    break;
+                }
             }
 
         }

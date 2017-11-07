@@ -204,7 +204,7 @@ namespace FT{
             make_program(ind.program, params.functions, params.terminals, depth,
                          params.term_weights,dim,r.random_choice(params.otypes));
 
-            std::cout << ind.get_eqn() + "\n";
+            //std::cout << ind.get_eqn() + "\n";
            
             // set location of individual and increment counter
             ind.loc = ++count;                    
@@ -220,7 +220,7 @@ namespace FT{
         */
        
       individuals.erase(std::remove_if(individuals.begin(), individuals.end(), 
-                        [&survivors](const Individual& ind){ return not_in(survivors,ind.loc);}),
+                        [&survivors](const Individual& ind){ return !in(survivors,ind.loc);}),
                         individuals.end());
 
       // reset the open locations in F matrix 
@@ -253,7 +253,7 @@ namespace FT{
        size_t i = 0;
        while (i < 2* individuals.size())
        {
-           if (not_in(current_locs,i))
+           if (!in(current_locs,i))
                new_open_locs.push_back(i);
            ++i;
        }

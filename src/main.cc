@@ -79,9 +79,10 @@ int main(int argc, char** argv){
     //////////////////////////////////////// parse arguments
     InputParser input(argc, argv);
     if(input.cmdOptionExists("-h") || input.dataset.empty()){
-        if (input.dataset.empty()) std::cerr << "No dataset specified.\n---\n";
+        if (input.dataset.empty()) std::cerr << "Error: no dataset specified.\n---\n";
         // Print help and exit. 
         cout << "Fewtwo is a feature engineering wrapper for learning intelligible models.\n";
+        cout << "Usage:\tfewtwo path/to/dataset [options]\n";
         cout << "-p\tpopulation size\n";
         cout << "-g\tgenerations (iterations)\n";
         cout << "-ml\tMachine learning model pairing\n";
