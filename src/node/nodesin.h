@@ -26,7 +26,7 @@ namespace FT{
             {
 
         		ArrayXd x = stack_f.back(); stack_f.pop_back();
-                stack_f.push_back(sin(x));
+                stack_f.push_back(limited(sin(x)));
             }
 
             /// Evaluates the node symbolically

@@ -26,7 +26,7 @@ namespace FT{
                     vector<ArrayXb>& stack_b)
             {
         		ArrayXd x = stack_f.back(); stack_f.pop_back();
-                stack_f.push_back(cos(x));
+                stack_f.push_back(limited(cos(x)));
             }
 
             /// Evaluates the node symbolically

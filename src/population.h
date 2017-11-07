@@ -79,21 +79,29 @@ namespace FT{
         vector<ArrayXb> stack_b;
         MatrixXd X = MatrixXd::Zero(num_features,2); 
         VectorXd y = VectorXd::Zero(2); 
-       
+        unsigned i = 0; 
         for (const auto& n : program){
             if ( stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
                 n->evaluate(X, y, stack_f, stack_b);
-            else
+            else{
+                std::cout << "Error: ";
+                for (const auto& p: program) std::cout << p->name << " ";
+                std::cout << "is not a valid program because ";
+                std::cout << n->name << " at pos " << i << "is not satisfied\n";
                 return false; 
+            }
+            ++i;
         }
         return true;
     }
    
     void make_tree(vector<std::shared_ptr<Node>>& program, 
                       const vector<std::shared_ptr<Node>>& functions, 
-                      const vector<std::shared_ptr<Node>>& terminals, int max_d, char otype, 
-                      const vector<double>& term_weights)
-    {   /*!
+                      const vector<std::shared_ptr<Node>>& terminals, int max_d,  
+                      const vector<double>& term_weights, char otype)
+    {  
+                
+        /*!
          * recursively builds a program with complete arguments.
          */
         if (max_d == 0 || r.rnd_flt() < terminals.size()/(terminals.size()+functions.size())) 
@@ -108,38 +116,58 @@ namespace FT{
                     tw.push_back(term_weights[i]);
                 }
             }
-            program.push_back(terminals[r.random_choice(ti,tw)]);
+            auto t = terminals[r.random_choice(ti,tw)];
+            //std::cout << t->name << " ";
+            program.push_back(t);
         }
         else
         {
-            // let fs be an index of functions whose output type matches ntype and with an input   
-            // type of float if max_d > 1 (assuming all input data is continouous) 
+            // let fi be indices of functions whose output type matches otype and, if max_d==1,
+            // with no boolean inputs (assuming all input data is floating point) 
             vector<size_t> fi;
             for (size_t i = 0; i<functions.size(); ++i)
-            {
-                if (functions[i]->otype == otype && (max_d>1 || functions[i]->arity['b']==0))
+                if (functions[i]->otype==otype && (max_d>1 || functions[i]->arity['b']==0))
                     fi.push_back(i);
+            //std::cout << "fi size: " << fi.size() << "\n";
+            if (fi.size()==0){
+                std::cout << "---\n";
+                std::cout << "f1.size()=0. current program: ";
+                for (auto p : program) std::cout << p->name << " ";
+                std::cout << "\n";
+                std::cout << "otype: " << otype << "\n";
+                std::cout << "max_d: " << max_d << "\n";
+                std::cout << "functions: ";
+                for (auto f: functions) std::cout << f->name << " ";
+                std::cout << "\n";
+                std::cout << "---\n";
             }
+            assert(fi.size() > 0 && "The operator set specified results in incomplete programs.");
+            
             // append a random choice from fs            
-            program.push_back(functions[r.random_choice(fi)]);
+            auto t = functions[r.random_choice(fi)];
+            //std::cout << t->name << " ";
+            program.push_back(t);
             
             std::shared_ptr<Node> chosen = program.back();
             // recurse to fulfill the arity of the chosen function
             for (size_t i = 0; i < chosen->arity['f']; ++i)
-                make_tree(program, functions, terminals, max_d-1, 'f', term_weights);
+                make_tree(program, functions, terminals, max_d-1, term_weights,'f');
             for (size_t i = 0; i < chosen->arity['b']; ++i)
-                make_tree(program, functions, terminals, max_d-1, 'b', term_weights);
+                make_tree(program, functions, terminals, max_d-1, term_weights, 'b');
 
         }
+
     }
 
     void make_program(vector<std::shared_ptr<Node>>& program, 
                       const vector<std::shared_ptr<Node>>& functions, 
-                      const vector<std::shared_ptr<Node>>& terminals, int max_d, char otype, 
-                      const vector<double>& term_weights, int dim)
+                      const vector<std::shared_ptr<Node>>& terminals, int max_d, 
+                      const vector<double>& term_weights, int dim, char otype)
     {
+  
+         
         for (unsigned i = 0; i<dim; ++i)    // build trees
-            make_tree(program, functions, terminals, max_d, otype, term_weights);
+            make_tree(program, functions, terminals, max_d, term_weights, otype);
         
         // reverse program so that it is post-fix notation
         std::reverse(program.begin(),program.end());
@@ -152,15 +180,18 @@ namespace FT{
         /*!
          *create random programs in the population, seeded by initial model weights 
          */
-        
+        int i = 0;        
         size_t count = -1;
+        vector<char> otypes = {'b','f'};
         for (auto& ind : individuals)
         {
+            //std::cout << "i: " <<  i << "\n";
             // the first individual is the starting model (i.e., the raw features)
             if (count == -1)
             {
                 ind = starting_model;                
                 ind.loc = ++count;
+                std::cout << ind.get_eqn() + "\n";
                 continue;
             }
             // make a program for each individual
@@ -171,7 +202,10 @@ namespace FT{
             int depth =  r.rnd_int(1, params.max_depth);
             
             make_program(ind.program, params.functions, params.terminals, depth,
-                         params.otype, params.term_weights,dim);                                                 
+                         params.term_weights,dim,r.random_choice(params.otypes));
+
+            //std::cout << ind.get_eqn() + "\n";
+           
             // set location of individual and increment counter
             ind.loc = ++count;                    
         }
@@ -186,7 +220,7 @@ namespace FT{
         */
        
       individuals.erase(std::remove_if(individuals.begin(), individuals.end(), 
-                        [&survivors](const Individual& ind){ return not_in(survivors,ind.loc);}),
+                        [&survivors](const Individual& ind){ return !in(survivors,ind.loc);}),
                         individuals.end());
 
       // reset the open locations in F matrix 
@@ -219,7 +253,7 @@ namespace FT{
        size_t i = 0;
        while (i < 2* individuals.size())
        {
-           if (not_in(current_locs,i))
+           if (!in(current_locs,i))
                new_open_locs.push_back(i);
            ++i;
        }

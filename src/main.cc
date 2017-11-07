@@ -16,13 +16,18 @@ class InputParser{
         
         InputParser (int &argc, char **argv){
             int start = 1;
-            if (std::string(argv[1]).compare("-h")) //unless help message is requested
-            {
-                dataset = argv[1];
-                start = 2;
-            }            
-            for (int i=start; i < argc; ++i)
-                this->tokens.push_back(std::string(argv[i]));            
+            if (argc < 2){
+                dataset="";
+            }
+            else{
+                if (std::string(argv[1]).compare("-h")) //unless help message is requested
+                {
+                    dataset = argv[1];
+                    start = 2;
+                }            
+                for (int i=start; i < argc; ++i)
+                    this->tokens.push_back(std::string(argv[i]));            
+            }
         }
         /// returns the value of a given command option 
         const std::string& getCmdOption(const std::string &option) const{
@@ -62,11 +67,22 @@ int main(int argc, char** argv){
     
     Fewtwo fewtwo;
     std::string sep = ",";
+    
+    cout << "\n" << 
+    "/////////////////////////////////////////////////////////////////////////////////////////////"
+    << "\n" << 
+    "                                        FEWTWO                                               "
+    << "\n" <<
+    "/////////////////////////////////////////////////////////////////////////////////////////////"
+    << "\n";
+ 
     //////////////////////////////////////// parse arguments
     InputParser input(argc, argv);
-    if(input.cmdOptionExists("-h")){
+    if(input.cmdOptionExists("-h") || input.dataset.empty()){
+        if (input.dataset.empty()) std::cerr << "Error: no dataset specified.\n---\n";
         // Print help and exit. 
         cout << "Fewtwo is a feature engineering wrapper for learning intelligible models.\n";
+        cout << "Usage:\tfewtwo path/to/dataset [options]\n";
         cout << "-p\tpopulation size\n";
         cout << "-g\tgenerations (iterations)\n";
         cout << "-ml\tMachine learning model pairing\n";
@@ -116,13 +132,6 @@ int main(int argc, char** argv){
         sep = input.getCmdOption("-sep");   
     
     ///////////////////////////////////////
-    cout << "\n" << 
-    "/////////////////////////////////////////////////////////////////////////////////////////////"
-    << "\n" << 
-    "                                        FEWTWO                                               "
-    << "\n" <<
-    "/////////////////////////////////////////////////////////////////////////////////////////////"
-    << "\n";
 
     // read in dataset
     char delim;

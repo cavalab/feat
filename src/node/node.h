@@ -48,6 +48,7 @@ namespace FT{
             {
                 
                 x = (Eigen::isinf(x)).select(MAX_DBL,x);
+                x = (Eigen::isnan(x)).select(0,x);
                 //x = (x < MIN_DBL).select(MIN_DBL,x);
                 return x;
             };

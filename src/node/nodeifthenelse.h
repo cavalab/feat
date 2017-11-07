@@ -16,8 +16,8 @@ namespace FT{
     	    {
     			name = "ite";
     			otype = 'f';
-    			arity['f'] = 1;
-    			arity['b'] = 2;
+    			arity['f'] = 2;
+    			arity['b'] = 1;
     			complexity = 5;
     		}
     		

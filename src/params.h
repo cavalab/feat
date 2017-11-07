@@ -21,7 +21,7 @@ namespace FT{
         string ml;                      			///< machine learner with which Fewtwo is paired
         bool classification;            			///< flag to conduct classification rather than 
         int max_stall;                  			///< maximum stall in learning, in generations
-        char otype;                     			///< program output type ('f', 'b')
+        vector<char> otypes;                     	///< program output types ('f', 'b')
         int verbosity;                  			///< amount of printing. 0: none, 1: minimal, 
                                                     // 2: all
         vector<double> term_weights;    			///< probability weighting of terminals
@@ -36,23 +36,38 @@ namespace FT{
 
 
         Parameters(int pop_size, int gens, string& ml, bool classification, int max_stall, 
-                   char otype, int verbosity, string functions, unsigned int max_depth, 
+                   char otype, int verbosity, string fs, unsigned int max_depth, 
                    unsigned int max_dim, bool constant, string obj):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
             classification(classification),
-            max_stall(max_stall),
-            otype(otype), 
+            max_stall(max_stall), 
             verbosity(verbosity),
             max_depth(max_depth),
             max_dim(max_dim),
             erc(constant)
         {
-            set_functions(functions);
+            set_functions(fs);
             set_objectives(obj);
             updateSize();        
-            
+            switch (otype)
+            { 
+                case 'b': otypes.push_back('b'); break;
+                case 'f': otypes.push_back('f'); break;
+                default: 
+                {
+                    for (const auto& f: functions)
+                        if (!in(otypes,f->otype)) 
+                            otypes.push_back(f->otype);
+                    for (const auto& t: terminals)
+                        if (!in(otypes,t->otype)) 
+                            otypes.push_back(t->otype);
+
+                    break;
+                }
+            }
+
         }
         
         ~Parameters(){}
@@ -224,6 +239,11 @@ namespace FT{
             functions.push_back(createNode(token));
             fs.erase(0, pos + delim.length());
         } 
+        if (verbosity > 1){
+            std::cout << "functions set to [";
+            for (auto f: functions) std::cout << f->name << ", "; 
+            std::cout << "]\n";
+        }
     }
 
     void Parameters::set_terminals(int nf)
