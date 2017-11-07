@@ -79,12 +79,18 @@ namespace FT{
         vector<ArrayXb> stack_b;
         MatrixXd X = MatrixXd::Zero(num_features,2); 
         VectorXd y = VectorXd::Zero(2); 
-       
+        unsigned i = 0; 
         for (const auto& n : program){
             if ( stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
                 n->evaluate(X, y, stack_f, stack_b);
-            else
+            else{
+                std::cout << "Error: ";
+                for (const auto& p: program) std::cout << p->name << " ";
+                std::cout << "is not a valid program because ";
+                std::cout << n->name << " at pos " << i << "is not satisfied\n";
                 return false; 
+            }
+            ++i;
         }
         return true;
     }
@@ -94,9 +100,7 @@ namespace FT{
                       const vector<std::shared_ptr<Node>>& terminals, int max_d,  
                       const vector<double>& term_weights, char otype)
     {  
-        std::cout << "otype: " << otype << "\n";
-        std::cout << "max_d: " << max_d << "\n";
-        
+                
         /*!
          * recursively builds a program with complete arguments.
          */
@@ -113,7 +117,7 @@ namespace FT{
                 }
             }
             auto t = terminals[r.random_choice(ti,tw)];
-            std::cout << "pushing back " << t->name << "\n";
+            //std::cout << t->name << " ";
             program.push_back(t);
         }
         else
@@ -124,12 +128,24 @@ namespace FT{
             for (size_t i = 0; i<functions.size(); ++i)
                 if (functions[i]->otype==otype && (max_d>1 || functions[i]->arity['b']==0))
                     fi.push_back(i);
-            std::cout << "fi size: " << fi.size() << "\n"; 
-            assert(fi.size() > 0 ); //&& "The operator set specified results in incomplete programs.");
-            std::cout << "no assertion error...\n"; 
+            //std::cout << "fi size: " << fi.size() << "\n";
+            if (fi.size()==0){
+                std::cout << "---\n";
+                std::cout << "f1.size()=0. current program: ";
+                for (auto p : program) std::cout << p->name << " ";
+                std::cout << "\n";
+                std::cout << "otype: " << otype << "\n";
+                std::cout << "max_d: " << max_d << "\n";
+                std::cout << "functions: ";
+                for (auto f: functions) std::cout << f->name << " ";
+                std::cout << "\n";
+                std::cout << "---\n";
+            }
+            assert(fi.size() > 0 && "The operator set specified results in incomplete programs.");
+            
             // append a random choice from fs            
             auto t = functions[r.random_choice(fi)];
-            std::cout << "pushing back " << t->name << "\n";
+            //std::cout << t->name << " ";
             program.push_back(t);
             
             std::shared_ptr<Node> chosen = program.back();
@@ -169,7 +185,7 @@ namespace FT{
         vector<char> otypes = {'b','f'};
         for (auto& ind : individuals)
         {
-            std::cout << "i: " <<  i << "\n";
+            //std::cout << "i: " <<  i << "\n";
             // the first individual is the starting model (i.e., the raw features)
             if (count == -1)
             {

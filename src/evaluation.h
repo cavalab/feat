@@ -125,6 +125,9 @@ namespace FT{
 
         if (ml == nullptr)      // make new ML estimator if one is not provided 
             ml = std::make_shared<ML>(params.ml,params.classification);       
+        
+        if (params.verbosity >2) 
+            std::cout << "thread " + std::to_string(omp_get_thread_num()) + " X: " << X << "\n"; 
 
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " normalize features\n";
         // normalize features
@@ -139,8 +142,7 @@ namespace FT{
                 X.row(i).normalize();
         }
         //X.rowwise().normalize();
-    
-        // define shogun data
+                // define shogun data
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
         auto labels = some<CRegressionLabels>(SGVector<float64_t>(y));
      
@@ -149,7 +151,7 @@ namespace FT{
 
         // train ml
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " train\n";
-        params.msg("ML training...",2," ");
+        params.msg("ML training on thread" + std::to_string(omp_get_thread_num()) + "...",2," ");
         #pragma omp critical
         {
             ml->p_est->train(features);

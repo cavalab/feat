@@ -104,7 +104,8 @@ namespace FT{
             {
                 // get random mom
                 int mom = r.random_choice(parents);                
-                params.msg("mutating " + pop.individuals[mom].get_eqn(), 2);
+                params.msg("mutating " + pop.individuals[mom].get_eqn() + "(" + 
+                        pop.individuals[mom].program_str() + ")", 2);
                 // create child
                 pass = mutate(pop.individuals[mom],child,params);
                 
@@ -140,14 +141,22 @@ namespace FT{
         child = mom; 
         
         float rf = r();
-        if (rf < 1.0/3.0 && child.get_dim() > 1)
-           delete_mutate(child,params); 
+        if (rf < 1.0/3.0 && child.get_dim() > 1){
+            delete_mutate(child,params); 
+            assert(is_valid_program(child.program, params.num_features));
+        }
         else if (rf < 2.0/3.0 && child.size() < params.max_size)
-            insert_mutate(child,params);
-        else
-            point_mutate(child,params);
+        {
+            //insert_mutate(child,params);
+            //assert(is_valid_program(child.program, params.num_features));
 
-        assert(is_valid_program(child.program, params.num_features)); 
+        }
+        else{        
+            point_mutate(child,params);
+            assert(is_valid_program(child.program, params.num_features));
+        }
+        
+ 
 
         // check child depth and dimensionality
         return child.size() <= params.max_size && child.get_dim() <= params.max_dim;
@@ -160,7 +169,7 @@ namespace FT{
          * @param params: parameters 
          * @returns modified child
          * */
-        params.msg("point mutation",2);
+        params.msg("\tpoint mutation",2);
         float n = child.size(); 
         
         // loop thru child's program
@@ -168,7 +177,7 @@ namespace FT{
         {
             if (r() < 1/n)  // mutate p. TODO: change '1' to node weighted probability
             {
-                params.msg("mutating node " + p->name, 2);
+                params.msg("\t\tmutating node " + p->name, 2);
                 vector<std::shared_ptr<Node>> replacements;  // potential replacements for p
 
                 if (p->total_arity() > 0) // then it is an instruction
@@ -205,7 +214,7 @@ namespace FT{
          * @param params: parameters
          * @returns modified child
          * */
-        params.msg("insert mutation",2);
+        params.msg("\tinsert mutation",2);
         float n = child.size(); 
         if (r()<0.5 || child.get_dim() == params.max_dim)
         {
@@ -214,7 +223,7 @@ namespace FT{
             {
                 if (r() < 1/n)  // mutate p. TODO: change '1' to node weighted probability
                 {
-                    params.msg("insert mutating node " + child.program[i]->name, 2);
+                    params.msg("\t\tinsert mutating node " + child.program[i]->name, 2);
                     vector<std::shared_ptr<Node>> insertion;  // inserted segment
                     vector<std::shared_ptr<Node>> fns;  // potential fns 
                     
@@ -224,6 +233,14 @@ namespace FT{
                         if (f->arity[child.program[i]->otype] > 0)
                             fns.push_back(f);                        
                     }
+                    // if fns all have positive boolean arities, assuming inputs are continuous,
+                    // just continue
+                    int bfs=0;
+                    for (const auto& f: fns)
+                        if (f->arity['b']>0) ++bfs;
+                    if (bfs == fns.size()) 
+                        continue;
+
                     make_program(insertion, fns, params.terminals, 1,  
                                  params.term_weights,1, child.program[i]->otype);
                     
@@ -263,8 +280,8 @@ namespace FT{
          * @param params: parameters  
          * @return mutated child
          * */
-        params.msg("deletion mutation",2);
-        params.msg("program: " + child.program_str(),2);
+        params.msg("\tdeletion mutation",2);
+        params.msg("\t\tprogram: " + child.program_str(),2);
         vector<size_t> roots = child.roots();
         size_t end = r.random_choice(roots); // TODO: weight with node weights
         size_t start = child.subtree(end);  
@@ -272,10 +289,11 @@ namespace FT{
         { 
             std::string s="";
             for (unsigned i = start; i<end; ++i) s+= child.program[i]->name + " ";
-            params.msg("deleting " + s, 2);
+            params.msg("\t\tdeleting " + std::to_string(start) + " to " + std::to_string(end) 
+                       + ": " + s, 2);
         }    
         child.program.erase(child.program.begin()+start,child.program.begin()+end+1);
-        params.msg("result of delete mutation: " + child.program_str(), 2);
+        params.msg("\t\tresult of delete mutation: " + child.program_str(), 2);
     }
 
     bool Variation::cross(Individual& mom, Individual& dad, Individual& child, 
@@ -299,20 +317,23 @@ namespace FT{
         
         if (subtree) 
         {
-            params.msg("subtree xo",2);
+            params.msg("\tsubtree xo",2);
             // limit xo choices to matching output types in the programs. 
-            vector<char> otypes;
-            for (const auto& p : mom.program)
-                otypes.push_back(p->otype);
+            vector<char> d_otypes;
             for (const auto& p : dad.program)
-                if (!in(otypes,p->otype))    // if dad doesn't have this otype, remove it 
-                    otypes.erase(std::remove(otypes.begin(),otypes.end(),p->otype),otypes.end()); 
-
+                if(!in(d_otypes,p->otype))
+                    d_otypes.push_back(p->otype);
+            
             // get valid subtree locations
             for (size_t i =0; i<mom.size(); ++i) 
-                if (in(otypes,mom[i]->otype)) 
+                if (in(d_otypes,mom[i]->otype)) 
                     mlocs.push_back(i);       
-            
+            if (mlocs.size()==0)        // mom and dad have no overlapping types, can't cross
+            {
+                std::cout << "\tno overlapping types between " + mom.program_str() + "," 
+                             + dad.program_str() + "\n";
+                return 0;               
+            }
             j1 = r.random_choice(mlocs);    
 
             // get locations in dad's program that match the subtree type picked from mom
@@ -321,10 +342,10 @@ namespace FT{
         } 
         else             // half the time, pick a root node
         {
-            params.msg("root xo",2);
+            params.msg("\troot xo",2);
             mlocs = mom.roots();
             dlocs = dad.roots();
-            params.msg("random choice mlocs",2);
+            params.msg("\t\trandom choice mlocs (size "+std::to_string(mlocs.size())+")",2);
             j1 = r.random_choice(mlocs);    
         }
         // get subtree              
@@ -375,25 +396,32 @@ namespace FT{
     void Variation::print_cross(Individual& mom, size_t i1, size_t j1, Individual& dad, size_t i2, 
                                 size_t j2, Individual& child, bool after)
     {
-        std::cout << "attempting the following crossover:\n";
+        std::cout << "\t\tattempting the following crossover:\n\t\t";
         for (int i =0; i<mom.program.size(); ++i){
-           if (i>= i1 && i<= j1) 
-               std::cout << "_";
+           if (i== i1) 
+               std::cout << "[";
            std::cout << mom.program[i]->name << " ";
+           if (i==j1)
+               std::cout <<"]";
         }
-        std::cout << "\n";
+        std::cout << "\n\t\t";
        
         for (int i =0; i<dad.program.size(); ++i){
-            if (i>= i2 && i<= j2) 
-                std::cout << "_";
+            if (i== i2) 
+                std::cout << "[";
             std::cout << dad.program[i]->name << " ";
+            if (i==j2)
+                std::cout <<"]";
         }
-        std::cout << "\n";
+        std::cout << "\n\t\t";
         if (after)
         {
-            std::cout << "child after cross:\n";
-            for (auto& p : child.program)
-                std::cout << p->name << " "; 
+            std::cout << "child after cross: ";
+            for (unsigned i = 0; i< child.program.size(); ++i){
+                if (i==i1) std::cout << "[";
+                std::cout << child.program[i]->name << " ";
+                if (i==i1+j2-i2) std::cout << "]";
+            }
             std::cout << "\n";
         }
     }
