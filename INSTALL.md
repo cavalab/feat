@@ -30,3 +30,16 @@ cmake ..
 make
 ```
 
+# Running the tests
+If you want to run the tests, you need to install [Google
+Test](https://github.com/google/googletest). A useful guide to doing so is available
+[here](https://www.eriksmistad.no/getting-started-with-google-test-on-ubuntu/). Then you can use
+cmake to build the tests. From the repo root,
+
+```
+cd tests
+mkdir build
+cd build
+cmake ..
+make 
+```
