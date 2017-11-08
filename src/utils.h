@@ -62,9 +62,8 @@ namespace FT{
         assert(X.rows() == names.size() && "header missing or incorrect number of feature names");
     }
     
-    /*!
-     * check if element is in vector.
-     */
+    
+    /// check if element is in vector.
     template<typename T>
     bool in(const vector<T> v, const T& i)
     {
@@ -76,25 +75,8 @@ namespace FT{
         }
         return false;
     }
-    
-    /*!
-     * check if element is not in vector.
-     */
-   // template<typename T>
-   // bool not_in(const vector<T>& v, const T& i )
-   // {
-   //     /* true if i is in v, else false. */
-   //     for (const auto& el : v)
-   //     {
-   //         if (i == el)
-   //             return false;
-   //     }
-   //     return true;
-   // }
-
-    /*!
-     * median 
-     */
+   
+    /// calculate median
     double median(const ArrayXd& v) 
     {
         // instantiate a vector
@@ -114,7 +96,7 @@ namespace FT{
             return x[n];
     }
 
-    //! median absolute deviation
+    /// median absolute deviation
     double mad(const ArrayXd& x) 
     {
         // returns median absolute deviation (MAD)
@@ -128,6 +110,7 @@ namespace FT{
         return median(dev);
     }
 
+    /// return indices that sort a vector
 	template <typename T>
 	vector<size_t> argsort(const vector<T> &v) {
 
