@@ -44,14 +44,8 @@ namespace FT{
         const std::shared_ptr<Node> operator [](int i) const {return program[i];}
         const std::shared_ptr<Node> & operator [](int i) {return program[i];}
 
-        /// overload = to copy just the program
-        Individual& operator=(Individual rhs)   // note: pass-by-value for implicit copy of rhs
-        {
-            std::swap(this->program , rhs.program);
-            c=0; dim=0; eqn="";
-            return *this;            
-        }
-
+        /// set rank
+        void set_rank(unsigned r){rank=r;}
         /// return size of program
         int size() const { return program.size(); }
         
@@ -186,9 +180,7 @@ namespace FT{
        if (otype!='0')  // if we are recursing (otype!='0'), we need to find 
                         // where the nodes to recurse are.  
        {
-           while (i>0 && program[i]->otype != otype) --i;
-           if (program[i]->otype != otype) 
-               std::cout << program_str() << ",tmp= " << tmp << ",i=" << i <<",otype: " << otype << ",program otype: " << program[i]->otype << "\n";
+           while (i>0 && program[i]->otype != otype) --i;    
            assert(program[i]->otype == otype && "invalid subtree arguments");
        }
               
@@ -264,16 +256,16 @@ namespace FT{
         /*! Input:
          *      objectives: vector of strings naming objectives.
          */
-        if (obj.empty())
+        obj.clear();
+        
+        for (const auto& n : objectives)
         {
-            for (const auto& n : objectives)
-            {
-                if (n.compare("fitness")==0)
-                    obj.push_back(fitness);
-                else if (n.compare("complexity")==0)
-                    obj.push_back(complexity());
-            }
+            if (n.compare("fitness")==0)
+                obj.push_back(fitness);
+            else if (n.compare("complexity")==0)
+                obj.push_back(complexity());
         }
+    
     }
 
     unsigned int Individual::complexity()

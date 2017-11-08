@@ -118,9 +118,9 @@ namespace FT{
             if (pass)                   // congrats! you produced a viable child.
             {
                 // give child an open location in F
-                child.loc = pop.get_open_loc(); 
+                //child.loc = pop.get_open_loc(); 
                 //push child into pop
-                pop.individuals.push_back(child);
+                pop.add(child);
             }
         }
     }
@@ -138,7 +138,7 @@ namespace FT{
          */    
 
         // make child a copy of mom
-        child = mom; 
+        child.program = mom.program; 
         
         float rf = r();
         if (rf < 1.0/3.0 && child.get_dim() > 1){

@@ -18,12 +18,12 @@ namespace FT{
 
         virtual ~SelectionOperator(){}
         
-        virtual vector<size_t> select(const MatrixXd& F, const Parameters& p, Rnd& r) 
+        virtual vector<size_t> select(Population& pop, const MatrixXd& F, const Parameters& p) 
         {   
             std::cerr << "Undefined select() operation\n";
             throw;
         }
-        virtual vector<size_t> select(Population& pop, const Parameters& p, Rnd& r)
+        virtual vector<size_t> survive(Population& pop, const MatrixXd& F, const Parameters& p)
         {
             std::cerr << "Undefined select() operation\n";
             throw;

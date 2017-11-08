@@ -197,8 +197,10 @@ namespace FT{
          *
          *       modifies F and ind.fitness
         */ 
-
-        F.col(ind.loc) = (yhat - y).array().pow(2);
+        if (params.classification)  // use classification accuracy
+            F.col(ind.loc) = (yhat.cast<int>().array() != y.cast<int>().array()).cast<double>();
+        else                        // use mean squared error
+            F.col(ind.loc) = (yhat - y).array().pow(2);
         
         ind.fitness = F.col(ind.loc).mean();
         params.msg("ind " + std::to_string(ind.loc) + " fitnes: " + std::to_string(ind.fitness),2);

@@ -42,15 +42,15 @@ namespace FT{
         /// return type of selectionoperator
         string get_type(){ return pselector->name; }
         
-        //! perform selection by pointing to the select command for the SelectionOperator
-        vector<size_t> select(const MatrixXd& F, const Parameters& params, Rnd& r)
+        /// perform selection 
+        vector<size_t> select(Population& pop, const MatrixXd& F, const Parameters& params)
         {       
-            return pselector->select(F, params, r);
+            return pselector->select(pop, F, params);
         }
-        //! perform selection with population input instead of F
-        vector<size_t> select(Population& pop, const Parameters& params, Rnd& r)
+        /// perform survival
+        vector<size_t> survive(Population& pop, const MatrixXd& F,  const Parameters& params)
         {       
-            return pselector->select(pop, params, r);
+            return pselector->survive(pop, F, params);
         }
     };
 
