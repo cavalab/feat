@@ -11,7 +11,6 @@ var hierarchy =
       [ "FT::NodeAnd", "dc/da3/classFT_1_1NodeAnd.html", null ],
       [ "FT::NodeConstant", "da/d77/classFT_1_1NodeConstant.html", null ],
       [ "FT::NodeCos", "d6/da2/classFT_1_1NodeCos.html", null ],
-      [ "FT::NodeCosine", "db/d3b/classFT_1_1NodeCosine.html", null ],
       [ "FT::NodeCube", "d1/d36/classFT_1_1NodeCube.html", null ],
       [ "FT::NodeDivide", "d7/d5c/classFT_1_1NodeDivide.html", null ],
       [ "FT::NodeEqual", "d9/d69/classFT_1_1NodeEqual.html", null ],
@@ -29,7 +28,6 @@ var hierarchy =
       [ "FT::NodeOr", "d7/d13/classFT_1_1NodeOr.html", null ],
       [ "FT::NodeRoot", "db/da6/classFT_1_1NodeRoot.html", null ],
       [ "FT::NodeSin", "da/d1c/classFT_1_1NodeSin.html", null ],
-      [ "FT::NodeSine", "d6/d0e/classFT_1_1NodeSine.html", null ],
       [ "FT::NodeSqrt", "d7/d49/classFT_1_1NodeSqrt.html", null ],
       [ "FT::NodeSquare", "d4/da1/classFT_1_1NodeSquare.html", null ],
       [ "FT::NodeSubtract", "d1/d46/classFT_1_1NodeSubtract.html", null ],
@@ -38,6 +36,7 @@ var hierarchy =
     [ "FT::Parameters", "de/d2c/structFT_1_1Parameters.html", null ],
     [ "FT::Population", "d9/ddc/structFT_1_1Population.html", null ],
     [ "FT::Rnd", "dd/d2d/classFT_1_1Rnd.html", null ],
+    [ "FT::Population::SameFitComplexity", "dd/d4c/structFT_1_1Population_1_1SameFitComplexity.html", null ],
     [ "FT::Selection", "de/d87/structFT_1_1Selection.html", null ],
     [ "FT::SelectionOperator", "d2/d3a/structFT_1_1SelectionOperator.html", [
       [ "FT::Lexicase", "d8/d78/structFT_1_1Lexicase.html", null ],

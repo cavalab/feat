@@ -1,3 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$d3/d4e/classFT_1_1Timer.html" title="class for timing things. " alt="" coords="5,5,84,32"/>
+<area shape="rect" id="node1" href="$d2/d3a/structFT_1_1SelectionOperator.html" title="base class for selection operators. " alt="" coords="5,31,156,57"/>
+<area shape="rect" id="node2" href="$d8/d78/structFT_1_1Lexicase.html" title="Lexicase selection operator. " alt="" coords="204,5,303,32"/>
+<area shape="rect" id="node3" href="$de/d2e/structFT_1_1Pareto.html" title="FT::Pareto" alt="" coords="211,56,295,83"/>
 </map>

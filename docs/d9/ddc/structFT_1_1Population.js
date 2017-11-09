@@ -1,5 +1,6 @@
 var structFT_1_1Population =
 [
+    [ "SameFitComplexity", "dd/d4c/structFT_1_1Population_1_1SameFitComplexity.html", "dd/d4c/structFT_1_1Population_1_1SameFitComplexity" ],
     [ "SortComplexity", "db/df6/structFT_1_1Population_1_1SortComplexity.html", "db/df6/structFT_1_1Population_1_1SortComplexity" ],
     [ "Population", "d9/ddc/structFT_1_1Population.html#a52303c7a16f3305dbc722473e6939b82", null ],
     [ "Population", "d9/ddc/structFT_1_1Population.html#a6707e5721e938318a7a7a46dd5daa511", null ],

@@ -1,6 +1,5 @@
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodevariable.h:12: warning: Compound FT::NodeVariable is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodelog.h:12: warning: Compound FT::NodeLog is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodecosine.h:12: warning: Compound FT::NodeCosine is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodeif.h:12: warning: Compound FT::NodeIf is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodecos.h:12: warning: Compound FT::NodeCos is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodedivide.h:12: warning: Compound FT::NodeDivide is not documented.
@@ -19,7 +18,6 @@
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodeor.h:12: warning: Compound FT::NodeOr is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/main.cc:13: warning: Compound InputParser is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodelessthan.h:12: warning: Compound FT::NodeLessThan is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodesine.h:12: warning: Compound FT::NodeSine is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/variation.h:18: warning: Compound FT::Variation is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodeequal.h:12: warning: Compound FT::NodeEqual is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodesubtract.h:12: warning: Compound FT::NodeSubtract is not documented.
@@ -31,10 +29,9 @@
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodeconstant.h:12: warning: Compound FT::NodeConstant is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/main.cc:17: warning: Member InputParser(int &argc, char **argv) (function) of class InputParser is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/main.cc:15: warning: Member dataset (variable) of class InputParser is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/main.cc:44: warning: Member tokens (variable) of class InputParser is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/main.cc:49: warning: Member tokens (variable) of class InputParser is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/individual.h:45: warning: Member operator[](int i) (function) of class FT::Individual is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/lexicase.h:17: warning: Member Lexicase(bool surv) (function) of class FT::Lexicase is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/selection_operator.h:26: warning: Member select(Population &pop, const Parameters &p, Rnd &r) (function) of class FT::SelectionOperator is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/selection_operator.h:14: warning: Member survival (variable) of class FT::SelectionOperator is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/selection_operator.h:15: warning: Member name (variable) of class FT::SelectionOperator is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/ml.h:74: warning: Member p_est (variable) of class FT::ML is not documented.
@@ -44,8 +41,6 @@
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodeconstant.h:16: warning: Member b_value (variable) of class FT::NodeConstant is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodecosine.h:21: warning: Member NodeCosine(string n) (function) of class FT::NodeCosine is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
@@ -65,15 +60,13 @@
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/noderoot.h:21: warning: Member NodeRoot(string n) (function) of class FT::NodeRoot is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodesine.h:21: warning: Member NodeSine(string n) (function) of class FT::NodeSine is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodevariable.h:16: warning: Member NodeVariable(const size_t &l, char ntype= 'f') (function) of class FT::NodeVariable is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/params.h:38: warning: Member Parameters(int pop_size, int gens, string &ml, bool classification, int max_stall, char otype, int verbosity, string functions, unsigned int max_depth, unsigned int max_dim, bool constant, string obj) (function) of class FT::Parameters is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/selection_operator.h:21: warning: Member select(const MatrixXd &F, const Parameters &p, Rnd &r) (function) of class FT::SelectionOperator is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/params.h:38: warning: Member Parameters(int pop_size, int gens, string &ml, bool classification, int max_stall, char otype, int verbosity, string fs, unsigned int max_depth, unsigned int max_dim, bool constant, string obj) (function) of class FT::Parameters is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/selection_operator.h:21: warning: Member select(Population &pop, const MatrixXd &F, const Parameters &p) (function) of class FT::SelectionOperator is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/pareto.h:26: warning: Member fast_nds(Population &) (function) of class FT::Pareto is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/pareto.h:27: warning: Member crowding_distance(Population &, int) (function) of class FT::Pareto is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/pareto.h:25: warning: Member front (variable) of class FT::Pareto is not documented.
@@ -85,6 +78,9 @@
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/pareto.h:35: warning: Member operator()(int i, int j) (function) of class FT::Pareto::sort_n is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:27: warning: Member Population(int p) (function) of class FT::Population is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:53: warning: Member operator[](size_t i) (function) of class FT::Population is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:75: warning: Member SameFitComplexity(Population &p) (function) of class FT::Population::SameFitComplexity is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:76: warning: Member operator()(size_t i, size_t j) (function) of class FT::Population::SameFitComplexity is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:74: warning: Member pop (variable) of class FT::Population::SameFitComplexity is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:65: warning: Member SortComplexity(Population &p) (function) of class FT::Population::SortComplexity is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:66: warning: Member operator()(size_t i, size_t j) (function) of class FT::Population::SortComplexity is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:64: warning: Member pop (variable) of class FT::Population::SortComplexity is not documented.
@@ -97,14 +93,14 @@
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/rnd.h:95: warning: Member select_randomly(Iter start, Iter end) (function) of class FT::Rnd is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/rnd.h:127: warning: Member rg (variable) of class FT::Rnd is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection.h:23: warning: Member pselector (variable) of class FT::Selection is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/selection_operator.h:21: warning: Member select(const MatrixXd &F, const Parameters &p, Rnd &r) (function) of class FT::SelectionOperator is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/selection_operator.h:26: warning: Member select(Population &pop, const Parameters &p, Rnd &r) (function) of class FT::SelectionOperator is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/selection_operator.h:21: warning: Member select(Population &pop, const MatrixXd &F, const Parameters &p) (function) of class FT::SelectionOperator is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/selection_operator.h:26: warning: Member survive(Population &pop, const MatrixXd &F, const Parameters &p) (function) of class FT::SelectionOperator is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/selection_operator.h:14: warning: Member survival (variable) of class FT::SelectionOperator is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/selection_operator.h:15: warning: Member name (variable) of class FT::SelectionOperator is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/utils.h:151: warning: Member Timer(bool run=false) (function) of class FT::Timer is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/utils.h:156: warning: Member Reset() (function) of class FT::Timer is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/utils.h:160: warning: Member Elapsed() const  (function) of class FT::Timer is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/utils.h:148: warning: Member high_resolution_clock (typedef) of class FT::Timer is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/utils.h:149: warning: Member seconds (typedef) of class FT::Timer is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/utils.h:171: warning: Member _start (variable) of class FT::Timer is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/utils.h:165: warning: Member operator<<(std::basic_ostream< T, Traits > &out, const Timer &timer) (friend) of class FT::Timer is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/utils.h:134: warning: Member Timer(bool run=false) (function) of class FT::Timer is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/utils.h:139: warning: Member Reset() (function) of class FT::Timer is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/utils.h:143: warning: Member Elapsed() const  (function) of class FT::Timer is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/utils.h:131: warning: Member high_resolution_clock (typedef) of class FT::Timer is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/utils.h:132: warning: Member seconds (typedef) of class FT::Timer is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/utils.h:154: warning: Member _start (variable) of class FT::Timer is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/utils.h:148: warning: Member operator<<(std::basic_ostream< T, Traits > &out, const Timer &timer) (friend) of class FT::Timer is not documented.

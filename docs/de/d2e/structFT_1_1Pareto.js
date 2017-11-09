@@ -6,6 +6,6 @@ var structFT_1_1Pareto =
     [ "~Pareto", "de/d2e/structFT_1_1Pareto.html#af59fa4f15ba84599b7b3555b94cac17f", null ],
     [ "crowding_distance", "de/d2e/structFT_1_1Pareto.html#a598fc5fb99a53d34d37e1392c1ed2440", null ],
     [ "fast_nds", "de/d2e/structFT_1_1Pareto.html#ac6451544d426d1cb476c573f7c24162c", null ],
-    [ "select", "de/d2e/structFT_1_1Pareto.html#aaf5af6a966aabc31993d6ed1fc992a5f", null ],
+    [ "survive", "de/d2e/structFT_1_1Pareto.html#a1ffd9e3f5dbe7dfe11a5e8242d8fe345", null ],
     [ "front", "de/d2e/structFT_1_1Pareto.html#aa55bdbe8e80ec818500c46f9022e0d6b", null ]
 ];

@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['select',['select',['../d8/d78/structFT_1_1Lexicase.html#af03f2effb130d37187a0094de1b033e3',1,'FT::Lexicase::select()'],['../de/d2e/structFT_1_1Pareto.html#aaf5af6a966aabc31993d6ed1fc992a5f',1,'FT::Pareto::select()'],['../de/d87/structFT_1_1Selection.html#ac76e0992622022bd8c41c0b3e7545377',1,'FT::Selection::select(const MatrixXd &amp;F, const Parameters &amp;params, Rnd &amp;r)'],['../de/d87/structFT_1_1Selection.html#a128f74c9d4dd942b174626874da44917',1,'FT::Selection::select(Population &amp;pop, const Parameters &amp;params, Rnd &amp;r)']]],
+  ['select',['select',['../d8/d78/structFT_1_1Lexicase.html#ae04dccacbe8d486faa9435006548da3e',1,'FT::Lexicase::select()'],['../de/d87/structFT_1_1Selection.html#ad2f4dbf1b7f818df0d96be6f7704b727',1,'FT::Selection::select()']]],
   ['selection',['Selection',['../de/d87/structFT_1_1Selection.html#a9aa439e08bd51f53e251e1ecd414386d',1,'FT::Selection']]],
   ['set_5fclassification',['set_classification',['../dc/d9e/classFT_1_1Fewtwo.html#af2d75c1c01a7b42ebba0bacfd8152dad',1,'FT::Fewtwo']]],
   ['set_5fcross_5frate',['set_cross_rate',['../dc/d9e/classFT_1_1Fewtwo.html#a50ff9bc73a574e178cbebb721c768de1',1,'FT::Fewtwo::set_cross_rate()'],['../d3/d01/classFT_1_1Variation.html#a1674e4345a50be74158763426b80e928',1,'FT::Variation::set_cross_rate()']]],
@@ -16,6 +16,7 @@ var searchData=
   ['set_5fotype',['set_otype',['../dc/d9e/classFT_1_1Fewtwo.html#a4ee8a51c8c018722cb9c8ec06f2f7cc6',1,'FT::Fewtwo']]],
   ['set_5fpop_5fsize',['set_pop_size',['../dc/d9e/classFT_1_1Fewtwo.html#a0b02fd5d45bd414d0018c39d05e017e4',1,'FT::Fewtwo']]],
   ['set_5frandom_5fstate',['set_random_state',['../dc/d9e/classFT_1_1Fewtwo.html#a447cd76dae5babf35fa2176bf1a2bfce',1,'FT::Fewtwo']]],
+  ['set_5frank',['set_rank',['../df/d8a/structFT_1_1Individual.html#a9666a8a42ba35a5c26d8fdd1233578b2',1,'FT::Individual']]],
   ['set_5fseed',['set_seed',['../dd/d2d/classFT_1_1Rnd.html#a4f282bd01ffc273b0f74e0db490eab13',1,'FT::Rnd']]],
   ['set_5fselection',['set_selection',['../dc/d9e/classFT_1_1Fewtwo.html#a42775afda868d1dea3ab37f410f7a0db',1,'FT::Fewtwo']]],
   ['set_5fsurvival',['set_survival',['../dc/d9e/classFT_1_1Fewtwo.html#ab79bb5fb7edc32579a95580bed048ba7',1,'FT::Fewtwo']]],
@@ -26,5 +27,5 @@ var searchData=
   ['sorted_5ffront',['sorted_front',['../d9/ddc/structFT_1_1Population.html#aa608d061652e05c3041fd64c85c61bb2',1,'FT::Population']]],
   ['splice_5fprograms',['splice_programs',['../d3/d01/classFT_1_1Variation.html#a83e2b69916ec78bd5502e92f89172f1c',1,'FT::Variation']]],
   ['subtree',['subtree',['../df/d8a/structFT_1_1Individual.html#ae2c51e7460dc1671a42187b533390482',1,'FT::Individual']]],
-  ['survive',['survive',['../d8/d78/structFT_1_1Lexicase.html#a5e315433bd6f7f12c7d750ec6189bb60',1,'FT::Lexicase']]]
+  ['survive',['survive',['../d8/d78/structFT_1_1Lexicase.html#ae5c310f20fa9018f7798633cda38054b',1,'FT::Lexicase::survive()'],['../de/d2e/structFT_1_1Pareto.html#a1ffd9e3f5dbe7dfe11a5e8242d8fe345',1,'FT::Pareto::survive()'],['../de/d87/structFT_1_1Selection.html#a971880399c93bc29237e60442c0d1c6a',1,'FT::Selection::survive()']]]
 ];

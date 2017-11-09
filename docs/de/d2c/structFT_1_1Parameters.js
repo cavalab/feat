@@ -1,6 +1,6 @@
 var structFT_1_1Parameters =
 [
-    [ "Parameters", "de/d2c/structFT_1_1Parameters.html#ade3e233c131479b5fbfa83051d63f4fa", null ],
+    [ "Parameters", "de/d2c/structFT_1_1Parameters.html#a35b48593344437e87d8db2ffa04fa1d7", null ],
     [ "~Parameters", "de/d2c/structFT_1_1Parameters.html#a076962362db14b59e1b6c8df0eac62df", null ],
     [ "createNode", "de/d2c/structFT_1_1Parameters.html#ace7871af82efcc6df9fe201df224402b", null ],
     [ "msg", "de/d2c/structFT_1_1Parameters.html#ae52c9de576e1747b8828a38473478647", null ],
@@ -22,7 +22,7 @@ var structFT_1_1Parameters =
     [ "ml", "de/d2c/structFT_1_1Parameters.html#a7e11bd6f94c1474b695cc9c823e8ea46", null ],
     [ "num_features", "de/d2c/structFT_1_1Parameters.html#a8983b68ffc67ff7368fae48058c3b077", null ],
     [ "objectives", "de/d2c/structFT_1_1Parameters.html#aace18d360f786428143860deb1531a86", null ],
-    [ "otype", "de/d2c/structFT_1_1Parameters.html#acdaaa6057aa153b78b20b1acd81c1721", null ],
+    [ "otypes", "de/d2c/structFT_1_1Parameters.html#ac8e4d5d39bff92013ca641aac8fea03f", null ],
     [ "pop_size", "de/d2c/structFT_1_1Parameters.html#a8253360dc4ad47b3f94f813daa13867a", null ],
     [ "term_weights", "de/d2c/structFT_1_1Parameters.html#a9ce3967947412217110573e04828b040", null ],
     [ "terminals", "de/d2c/structFT_1_1Parameters.html#acf762563fcbd26b464cf6145012dde1c", null ],
