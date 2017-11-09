@@ -68,6 +68,18 @@ namespace FT{
                 return pop.individuals[i].complexity() < pop.individuals[j].complexity();
             }
         };
+        /// check for same fitness and complexity to filter uniqueness. 
+        struct SameFitComplexity
+        {
+            Population & pop;
+            SameFitComplexity(Population& p): pop(p){}
+            bool operator()(size_t i, size_t j)
+            {
+                return (pop.individuals[i].fitness == pop.individuals[j].fitness &&
+                       pop.individuals[i].complexity() == pop.individuals[j].complexity());
+            }
+        };
+
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
@@ -215,16 +227,23 @@ namespace FT{
    
    void Population::update(vector<size_t> survivors)
    {
+
        /*!
         * cull population down to survivor indices.
         */
-       
-      individuals.erase(std::remove_if(individuals.begin(), individuals.end(), 
-                        [&survivors](const Individual& ind){ return !in(survivors,ind.loc);}),
-                        individuals.end());
+       vector<size_t> pop_idx(individuals.size());
+       std::iota(pop_idx.begin(),pop_idx.end(),0);
+       std::reverse(pop_idx.begin(),pop_idx.end());
+       for (const auto& i : pop_idx)
+           if (!in(survivors,i))
+               individuals.erase(individuals.begin()+i);                         
+          
+       //individuals.erase(std::remove_if(individuals.begin(), individuals.end(), 
+       //                  [&survivors](const Individual& ind){ return !in(survivors,ind.loc);}),
+       //                  individuals.end());
 
-      // reset the open locations in F matrix 
-      update_open_loc();
+       // reset the open locations in F matrix 
+       update_open_loc();
    
    }
 
@@ -297,7 +316,8 @@ namespace FT{
                 pf.push_back(i);
         }
         std::sort(pf.begin(),pf.end(),SortComplexity(*this)); 
-        //[](size_t i, size_t j){ return individuals[i].complexity < individuals[j].complexity;});
+        auto it = std::unique(pf.begin(),pf.end(),SameFitComplexity(*this));
+        pf.resize(std::distance(pf.begin(),it));
         return pf;
     }
     
