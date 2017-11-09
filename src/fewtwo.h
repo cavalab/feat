@@ -210,7 +210,8 @@ namespace FT{
         // initial model on raw input
         params.msg("Fitting initial model", 1);
         initial_model(X,y);
-                      
+        params.msg("Initial score: " + std::to_string(best_score), 1);
+
         // initialize population 
         params.msg("Initializing population", 1);
         p_pop->init(best_ind,params);
@@ -271,9 +272,11 @@ namespace FT{
         // set terminal weights based on model
         params.set_term_weights(p_ml->get_weights());
 
-        // assign best score as MSE
-        best_score = (yhat-y).array().pow(2).mean();
-
+        if (params.classification)  // assign best score as mean accuracy
+            best_score = (yhat.cast<int>().array() != y.cast<int>().array()).cast<double>().mean();
+        else                        // assign best score as MSE
+            best_score = (yhat-y).array().pow(2).mean();
+        
         // initialize best_ind to be all the features
         best_ind = Individual();
         for (unsigned i =0; i<X.rows(); ++i)
@@ -320,9 +323,12 @@ namespace FT{
  
     void Fewtwo::print_stats(unsigned int g)
     {
-        vector<size_t> pf = p_pop->sorted_front();
-        double med_score = median(F.colwise().mean().array());
-        string bar, space = "";
+        unsigned num_models = std::min(20,p_pop->size());
+        double med_score = median(F.colwise().mean().array());  // median loss
+        ArrayXd Sizes(p_pop->size()); unsigned i = 0;           // collect program sizes
+        for (const auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;}
+        double med_size = median(Sizes);                        // median program size
+        string bar, space = "";                                 // progress bar
         for (unsigned int i = 0; i<50; ++i){
             if (i <= 50*g/params.gens) bar += "/";
             else space += " ";
@@ -330,25 +336,26 @@ namespace FT{
         std::cout.precision(3);
         std::cout << std::scientific;
         std::cout << "Generation " << g << "/" << params.gens << " [" + bar + space + "]\n";
-        std::cout << "Min Loss\tMedian Loss\tTime (s)\n"
-                  <<  best_score << "\t" << med_score << "\t" << timer << "\n";
+        std::cout << "Min Loss\tMedian Loss\tMedian Program Size\tTime (s)\n"
+                  <<  best_score << "\t" << med_score << "\t" << med_size << "\t" << timer << "\n";
         std::cout << "Representation Pareto Front--------------------------------------\n";
         std::cout << "Rank\tComplexity\tLoss\tRepresentation\n";
-       // for (const auto& i : pf){
-       //     std::cout << p_pop->individuals[i].complexity() << "\t" << (*p_pop)[i].fitness 
-       //               << "\t" << p_pop->individuals[i].get_eqn() << "\n";
-       // }
-        unsigned j =0;
+       
+        // printing 10 individuals from the pareto front
         unsigned n = 1;
-        while (j<std::min(10,params.pop_size)){            
-			vector<size_t> f = p_pop->sorted_front(n);
-            j+= f.size();
-            ++n;
-			for (const auto& i : f){
-            	std::cout << p_pop->individuals[i].rank << "\t" << 
-                    p_pop->individuals[i].complexity() << "\t" << (*p_pop)[i].fitness 
-                      << "\t" << p_pop->individuals[i].get_eqn() << "\n";
-            }
+        vector<size_t> f = p_pop->sorted_front(n);
+        vector<size_t> fnew(2,0);
+        while (f.size() < num_models && fnew.size()>1)
+        {
+            fnew = p_pop->sorted_front(++n);                
+            f.insert(f.end(),fnew.begin(),fnew.end());
+        }
+        
+        for (unsigned j = 0; j < std::min(num_models,unsigned(f.size())); ++j)
+        {          
+            std::cout << p_pop->individuals[f[j]].rank << "\t" 
+                      <<  p_pop->individuals[f[j]].complexity() << "\t" << (*p_pop)[f[j]].fitness 
+                      << "\t" << p_pop->individuals[f[j]].get_eqn() << "\n";  
         }
         std::cout << "\n\n";
         
