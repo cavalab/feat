@@ -33,11 +33,12 @@ namespace FT{
         bool erc;								    ///<whether to include constants for terminals 
         unsigned num_features;                      ///< number of features
         vector<string> objectives;                  ///< Pareto objectives 
-
+        bool shuffle;                               ///< option to shuffle the data
+        double split;                               ///< fraction of data to use for training
 
         Parameters(int pop_size, int gens, string& ml, bool classification, int max_stall, 
                    char otype, int verbosity, string fs, unsigned int max_depth, 
-                   unsigned int max_dim, bool constant, string obj):    
+                   unsigned int max_dim, bool constant, string obj, bool sh, double sp):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
@@ -46,7 +47,9 @@ namespace FT{
             verbosity(verbosity),
             max_depth(max_depth),
             max_dim(max_dim),
-            erc(constant)
+            erc(constant),
+            shuffle(sh),
+            split(sp)
         {
             set_functions(fs);
             set_objectives(obj);

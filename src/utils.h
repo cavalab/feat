@@ -157,16 +157,29 @@ namespace FT{
 
     /// split input data into training and validation sets. 
     void train_test_split(MatrixXd& X, VectorXd& y, MatrixXd& X_t, MatrixXd& X_v, VectorXd& y_t, 
-                          VectorXd& y_v, Parameters& params)
+                          VectorXd& y_v, bool shuffle)
     {
         /* @params X: n_features x n_samples matrix of training data
          * @params Y: n_samples vector of training labels
+         * @params shuffle: whether or not to shuffle X and y
          * @returns X_t, X_v, y_t, y_v: training and validation matrices
          */
-        if (params.shuffle)     // generate shuffle index for the split
+        if (shuffle)     // generate shuffle index for the split
         {
-
+            Eigen::PermutationMatrix<Dynamic,Dynamic> perm(X.cols());
+            perm.setIdentity();
+            r.shuffle(perm.indices().data(), perm.indices().data()+perm.indices().size());
+            X = X * perm;       // shuffles columns of X
+            y = perm * y;       // shuffle y too  
         }
         
+        // map training and test sets  
+        X_t = MatrixXd::Map(X.data(),X_t.rows(),X_t.cols());
+        X_v = MatrixXd::Map(X.data()+X_t.rows()*X_t.cols(),X_v.rows(),X_v.cols());
+
+        y_t = VectorXd::Map(y.data(),y_t.size());
+        y_v = VectorXd::Map(y.data()+y_t.size(),y_v.size());
+
+    
     }
 } 

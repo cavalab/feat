@@ -97,6 +97,8 @@ int main(int argc, char** argv){
         cout << "-dim\tMaximum program dimensionality.\n";
         cout << "-r\tSet random seed.\n";
         cout << "-sep\tInput file separator / delimiter. Choices: , or ""\\\\t"" for tab\n";
+        cout << "--shuffle\tShuffle data before splitting into train/validate sets.\n";
+        cout << "-split\tFraction of data to use for training (default: .75)\n";
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
     }
@@ -130,7 +132,12 @@ int main(int argc, char** argv){
         fewtwo.set_random_state(stoi(input.getCmdOption("-r")));
     if(input.cmdOptionExists("-sep")) // separator
         sep = input.getCmdOption("-sep");   
-    
+    if(input.cmdOptionExists("--shuffle"))
+        fewtwo.set_shuffle(true);
+    if(input.cmdOptionExists("-split"))
+        fewtwo.set_split(std::stod(input.getCmdOption("-split")));
+
+
     ///////////////////////////////////////
 
     // read in dataset
