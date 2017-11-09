@@ -151,8 +151,7 @@ namespace FT{
             MatrixXd transform(const MatrixXd& X,  Individual *ind = 0);
             
             /// convenience function calls fit then predict.            
-            VectorXd fit_predict(MatrixXd& X, VectorXd& y){ fit(X,y); return predict(X); }
-        
+            VectorXd fit_predict(MatrixXd& X, VectorXd& y){ fit(X,y); return predict(X); } 
             
             /// convenience function calls fit then transform. 
             MatrixXd fit_transform(MatrixXd& X, VectorXd& y){ fit(X,y); return transform(X); }
@@ -172,8 +171,8 @@ namespace FT{
             // performance tracking
             double best_score;                      ///< current best score 
             void update_best();                     ///< updates best score   
-            void print_stats(unsigned int);        ///< prints stats
-            Individual best_ind;                                            ///< best individual
+            void print_stats(unsigned int);         ///< prints stats
+            Individual best_ind;                    ///< best individual
             /// method to fit inital ml model            
             void initial_model(MatrixXd& X, VectorXd& y);
     };
@@ -204,6 +203,12 @@ namespace FT{
         // start the clock
         timer.Reset();
 
+        // split data into training and test sets
+        MatrixXd X_t(X.rows(),X.cols*params.split);
+        MatrixXd X_v(X.rows(),X.cols*(1-params.split));
+        VectorXd y_t(y.size()*params.split), y_v(y.size()*(1-params.split));
+        train_test_split(X,y,X_t,X_v,y_t,y_v,params.split);
+        
         // define terminals based on size of X
         params.set_terminals(X.rows()); 
         
@@ -257,6 +262,10 @@ namespace FT{
             if (params.verbosity>0) print_stats(g+1);
         }
         params.msg("finished",1);
+        // evaluate population on validation set
+        p_eval->fitness(*p_pop, X_v, y_v, F_v, params); 
+        initial_model(X_v, y_v);
+        update_best();
         params.msg("best representation: " + best_ind.get_eqn(),1);
         params.msg("score: " + std::to_string(best_score), 1);
     }

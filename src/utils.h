@@ -154,5 +154,19 @@ namespace FT{
 			    high_resolution_clock::time_point _start;
 			
     };
-		
+
+    /// split input data into training and validation sets. 
+    void train_test_split(MatrixXd& X, VectorXd& y, MatrixXd& X_t, MatrixXd& X_v, VectorXd& y_t, 
+                          VectorXd& y_v, Parameters& params)
+    {
+        /* @params X: n_features x n_samples matrix of training data
+         * @params Y: n_samples vector of training labels
+         * @returns X_t, X_v, y_t, y_v: training and validation matrices
+         */
+        if (params.shuffle)     // generate shuffle index for the split
+        {
+
+        }
+        
+    }
 } 
