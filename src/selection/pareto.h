@@ -57,28 +57,6 @@ namespace FT{
     
     /////////////////////////////////////////////////////////////////////////////////// Definitions
 
-    bool check_pareto(Population& pop, vector<size_t> survivors)
-    {
-        /// check to make sure nsga-ii is returning rank=1 candidates and never missing the front. 
-        
-        // get ranks of the population
-        vector<unsigned> ranks, s_ranks;
-        unsigned front_num=0, s_front_num=0;
-        for (const auto& p: pop.individuals)
-        {
-            ranks.push_back(p.rank);
-            if (p.rank==1) ++front_num;
-        }
-        for (const auto& s: survivors){
-            s_ranks.push_back(pop.individuals[s].rank);
-            if (pop.individuals[s].rank==1) ++ s_front_num;
-        }
-        // check that all individuals with rank=1 are in survivors, if there are less than popsize
-        //std::cout << "Pareto front count in pop+offspring: " << front_num << "\n";
-        //std::cout << "Pareto front count in survivors: " << s_front_num << "\n";
-        return s_front_num == front_num || front_num > survivors.size();
-    }
-
     vector<size_t> Pareto::survive(Population& pop, const MatrixXd& F, const Parameters& params)
     {
         /* Selection using the survival scheme of NSGA-II. 
@@ -123,8 +101,6 @@ namespace FT{
         const int extra = params.pop_size - selected.size();
         for (int j = 0; j < extra; ++j) // Pt+1 = Pt+1 U Fi[1:N-|Pt+1|]
             selected.push_back(front[i][j]);
-        
-        assert(check_pareto(pop,selected));
         
         return selected;
     }

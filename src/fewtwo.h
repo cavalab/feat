@@ -255,7 +255,7 @@ namespace FT{
         // initialize population 
         params.msg("Initializing population", 1);
         p_pop->init(best_ind,params);
-        params.msg("Initial population:\n"+p_pop->print_eqns(","),2);
+        params.msg("Initial population:\n"+p_pop->print_eqns(),2);
 
         // resize F to be twice the pop-size x number of samples
         F.resize(X_t.cols(),int(2*params.pop_size));
@@ -271,21 +271,21 @@ namespace FT{
         {
 
             // select parents
-            params.msg("selection..", 2);
+            params.msg("selection..", 1);
             vector<size_t> parents = p_sel->select(*p_pop, F, params);
-            params.msg("parents:\n"+p_pop->print_eqns(","), 2);          
+            params.msg("parents:\n"+p_pop->print_eqns(), 2);          
             
             // variation to produce offspring
-            params.msg("variation...", 2);
+            params.msg("variation...", 1);
             p_variation->vary(*p_pop, parents, params);
             params.msg("offspring:\n" + p_pop->print_eqns(true), 2);
 
             // evaluate offspring
-            params.msg("evaluating offspring...", 2);
+            params.msg("evaluating offspring...", 1);
             p_eval->fitness(*p_pop, X_t, y_t, F, params, true);
 
             // select survivors from combined pool of parents and offspring
-            params.msg("survival", 2);
+            params.msg("survival", 1);
             survivors = p_surv->survive(*p_pop, F, params);
            
             // reduce population to survivors
@@ -405,7 +405,14 @@ namespace FT{
                       << "\t" << p_pop->individuals[f[j]].get_eqn() << "\n";  
         }
         std::cout << "\n\n";
+       
+        // ref counting
+        for (const auto& t: params.terminals)
+            std::cout << t->name << "_" << std::dynamic_pointer_cast<NodeVariable>(t)->loc 
+                      << " use_count: " << t.use_count() << "\n";
         
+        for (const auto& f: params.functions)
+            std::cout << f->name << " use_count: " << f.use_count() << "\n";
     }
 }
 #endif
