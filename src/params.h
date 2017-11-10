@@ -90,7 +90,9 @@ namespace FT{
         {
             std::cout << "w size: " << w.size() << "\n";
             std::cout << "terminals size: " << terminals.size() << "\n";
+            bool zeros = std::all_of(w.begin(), w.end(), [](int i) { return i==0; });
             assert(w.size()==terminals.size());
+            assert(!zeros);
             term_weights = w; 
         }
         
@@ -268,6 +270,7 @@ namespace FT{
         /*!
          * based on number of features.
          */
+        terminals.clear();
         num_features = nf; 
         for (size_t i = 0; i < nf; ++i)
             terminals.push_back(createNode(string("x"), 0, 0, i));
@@ -291,6 +294,7 @@ namespace FT{
         string delim = ",";
         size_t pos = 0;
         string token;
+        objectives.clear();
         while ((pos = obj.find(delim)) != string::npos) 
         {
             token = obj.substr(0, pos);
