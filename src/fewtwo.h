@@ -129,38 +129,41 @@ namespace FT{
             /// flag to set whether to use variable or constants for terminals              
             void set_erc(bool erc){ params.erc = erc; }
             
-            /// returns fewtwo parameters used to initialize Fewtwo
-            Parameters getParams(){ return params; }
+            ///return population size
+            int get_pop_size(){ return params.pop_size; }
             
-            /// returns fitness matrix
-            MatrixXd getFitnessMatrix(){ return F; }
+            ///return size of max generations
+            int get_generations(){ return params.gens; }
             
-            /// returns the start time of training
-            Timer getTimer() { return timer; }
+            ///return ML algorithm string
+            string get_ml(){ return params.ml; }
             
-            /// returns shared pointer to population of programs
-            shared_ptr<Population> getPopulation() { return p_pop; }
+            ///return type of classification flag set
+            bool get_classification(){ return params.classification; }
             
-            /// returns shared pointer to selection algorithm object
-            shared_ptr<Selection> getSelection() { return p_sel; }
+            ///return maximum stall in learning, in generations
+            int get_max_stall() { return params.max_stall; }
             
-            /// returns shared pointer to evaluation object
-            shared_ptr<Evaluation> getEvaluation() { return p_eval; }
+            ///return program output type ('f', 'b')             
+            vector<char> get_otypes(){ return params.otypes; }
             
-            /// returns shared pointer to variation operators
-            shared_ptr<Variation> getVariation() { return p_variation; }
+            ///return current verbosity level set
+            int get_verbosity(){ return params.verbosity; }
             
-            /// returns shared pointer to survival algorithm object
-            shared_ptr<Selection> getSurvivability() { return p_surv; }
+            ///return max_depth of programs
+            int get_max_depth(){ return params.max_depth; }
             
-            /// returns a shared pointer to machine learning class
-            shared_ptr<ML> getML() { return p_ml; }
+            ///return max size of programs
+            int get_max_size(){ return params.max_size; }
             
-            /// returns the current best_score
-            double getBestScore() { return best_score; }
+            ///return max dimensionality of programs
+            int get_max_dim(){ return params.max_dim; }
             
-            /// returns the current best individual
-            Individual getBestIndividual() { return best_ind; }
+            ///return boolean value of erc flag
+            bool get_erc(){ return params.erc; }
+            
+            ///return number of features
+            int get_num_features(){ return params.num_features; }
                         
             /// destructor             
             ~Fewtwo(){} 
