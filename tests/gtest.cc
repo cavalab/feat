@@ -622,7 +622,9 @@ TEST(Parameters, ParamsTests)
 					  3,								//max_depth
 					  10,								//max_dim
 					  false,							//erc
-					  "fitness,complexity");			//obj
+					  "fitness,complexity",  			//obj
+                      false,                            //shuffle
+                      0.75);                             //train/test split
 					  
 	params.set_max_dim(12);
 	ASSERT_EQ(params.max_dim, 12);
