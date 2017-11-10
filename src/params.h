@@ -36,7 +36,7 @@ namespace FT{
         bool shuffle;                               ///< option to shuffle the data
         double split;                               ///< fraction of data to use for training
 
-        Parameters(int pop_size, int gens, string& ml, bool classification, int max_stall, 
+        Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
                    char otype, int verbosity, string fs, unsigned int max_depth, 
                    unsigned int max_dim, bool constant, string obj, bool sh, double sp):    
             pop_size(pop_size),
@@ -44,13 +44,13 @@ namespace FT{
             ml(ml),
             classification(classification),
             max_stall(max_stall), 
-            verbosity(verbosity),
             max_depth(max_depth),
             max_dim(max_dim),
             erc(constant),
             shuffle(sh),
             split(sp)
         {
+        	set_verbosity(verbosity);
             set_functions(fs);
             set_objectives(obj);
             updateSize();        
@@ -76,12 +76,16 @@ namespace FT{
         ~Parameters(){}
 
         /// print message with verbosity control. 
-        void msg(string m, int v, string sep="\n") const
+        string msg(string m, int v, string sep="\n") const
         {
             /* prints messages based on verbosity level. */
-
+			string msg = "";
             if (verbosity >= v)
+            {
                 std::cout << m << sep;
+                msg += m+sep;
+            }
+            return msg;
         }
         
         /// sets weights for terminals. 
@@ -89,7 +93,9 @@ namespace FT{
         {
             std::cout << "w size: " << w.size() << "\n";
             std::cout << "terminals size: " << terminals.size() << "\n";
+            bool zeros = std::all_of(w.begin(), w.end(), [](int i) { return i==0; });
             assert(w.size()==terminals.size());
+            assert(!zeros);
             term_weights = w; 
         }
         
@@ -124,7 +130,20 @@ namespace FT{
         void set_terminals(int nf);
 
         /// set the objectives
-        void set_objectives(string obj);   
+        void set_objectives(string obj);
+        
+        /// set level of debug info
+        void set_verbosity(int verbosity)
+            {
+            	if(verbosity <=2 && verbosity >=0)
+	            	this->verbosity = verbosity;
+	            else
+	            {
+	            	std::cerr << "'" + std::to_string(verbosity) + "' is not a valid verbosity. Setting to default 1\n";
+	            	std::cerr << "Valid Values :\n\t0 - none\n\t1 - minimal\n\t2 - all\n";
+	            	this->verbosity = 1;
+	            }
+            } 
 
     };
 
@@ -254,6 +273,7 @@ namespace FT{
         /*!
          * based on number of features.
          */
+        terminals.clear();
         num_features = nf; 
         for (size_t i = 0; i < nf; ++i)
             terminals.push_back(createNode(string("x"), 0, 0, i));
@@ -277,6 +297,7 @@ namespace FT{
         string delim = ",";
         size_t pos = 0;
         string token;
+        objectives.clear();
         while ((pos = obj.find(delim)) != string::npos) 
         {
             token = obj.substr(0, pos);

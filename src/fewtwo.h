@@ -98,16 +98,7 @@ namespace FT{
             }
                         
             /// set level of debug info              
-            void set_verbosity(int verbosity)
-            {
-            	if(verbosity <=2 && verbosity >=0)
-	            	params.verbosity = verbosity;
-	            else
-	            {
-	            	std::cerr << "'" + std::to_string(verbosity) + "' is not a valid verbosity.\n";
-	            	std::cerr << "Valid Values :\n\t0 - none\n\t1 - minimal\n\t2 - all\n";
-	            }
-            }
+            void set_verbosity(int verbosity){ params.set_verbosity(verbosity); }
                         
             /// set maximum stall in learning, in generations
             void set_max_stall(int max_stall){	params.max_stall = max_stall; }
@@ -138,6 +129,42 @@ namespace FT{
                         
             /// flag to set whether to use variable or constants for terminals              
             void set_erc(bool erc){ params.erc = erc; }
+            
+            ///return population size
+            int get_pop_size(){ return params.pop_size; }
+            
+            ///return size of max generations
+            int get_generations(){ return params.gens; }
+            
+            ///return ML algorithm string
+            string get_ml(){ return params.ml; }
+            
+            ///return type of classification flag set
+            bool get_classification(){ return params.classification; }
+            
+            ///return maximum stall in learning, in generations
+            int get_max_stall() { return params.max_stall; }
+            
+            ///return program output type ('f', 'b')             
+            vector<char> get_otypes(){ return params.otypes; }
+            
+            ///return current verbosity level set
+            int get_verbosity(){ return params.verbosity; }
+            
+            ///return max_depth of programs
+            int get_max_depth(){ return params.max_depth; }
+            
+            ///return max size of programs
+            int get_max_size(){ return params.max_size; }
+            
+            ///return max dimensionality of programs
+            int get_max_dim(){ return params.max_dim; }
+            
+            ///return boolean value of erc flag
+            bool get_erc(){ return params.erc; }
+            
+            ///return number of features
+            int get_num_features(){ return params.num_features; }
                         
             /// flag to shuffle the input samples for train/test splits
             void set_shuffle(bool sh){params.shuffle = sh;}
