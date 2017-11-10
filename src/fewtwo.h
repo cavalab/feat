@@ -97,16 +97,7 @@ namespace FT{
             }
                         
             /// set level of debug info              
-            void set_verbosity(int verbosity)
-            {
-            	if(verbosity <=2 && verbosity >=0)
-	            	params.verbosity = verbosity;
-	            else
-	            {
-	            	std::cerr << "'" + std::to_string(verbosity) + "' is not a valid verbosity.\n";
-	            	std::cerr << "Valid Values :\n\t0 - none\n\t1 - minimal\n\t2 - all\n";
-	            }
-            }
+            void set_verbosity(int verbosity){ params.set_verbosity(verbosity); }
                         
             /// set maximum stall in learning, in generations
             void set_max_stall(int max_stall){	params.max_stall = max_stall; }

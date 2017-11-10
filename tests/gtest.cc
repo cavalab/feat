@@ -4,7 +4,8 @@
 #include <memory>
 #include <shogun/base/init.h>
 #include <omp.h>
-#include <string>	
+#include <string>
+#include <gtest/gtest.h>	
 
 // stuff being used
 
@@ -22,10 +23,10 @@ using std::stoi;
 using std::to_string;
 using std::stof;
 
+#define private public
 
 #include <cstdio>
 #include "../src/fewtwo.h"
-#include <gtest/gtest.h>
 
 using namespace FT;
  
@@ -66,7 +67,7 @@ TEST(Fewtwo, SettingFunctions)
     EXPECT_EQ(0.6, fewtwo.p_variation->get_cross_rate());
     
     fewtwo.set_otype('b');
-    ASSERT_EQ('b', fewtwo.params.otype);
+    ASSERT_EQ('b', fewtwo.params.otypes[0]);
     
     fewtwo.set_functions("+,-");
     ASSERT_EQ(2, fewtwo.params.functions.size());
@@ -112,7 +113,7 @@ TEST(Individual, EvalEquation)
     fewtwo.initial_model(X,y);
                   
     // initialize population 
-    fewtwo.p_pop->init(fewtwo.params);
+    fewtwo.p_pop->init(fewtwo.best_ind, fewtwo.params);
     int i;
     for(i = 0; i < fewtwo.p_pop->individuals.size(); i++)
 	    EXPECT_STREQ("", fewtwo.p_pop->individuals[i].get_eqn().c_str()); //TODO evaluate if string correct or not
@@ -429,7 +430,254 @@ TEST(NodeTest, Evaluate)
 	ASSERT_FALSE((isnan(abs(x)).any()));
 	
 	//TODO for NodeIf, NodeIfThenElse, NodeVariable, NodeConstant(both types)
-} 
+}
+
+bool isValidProgram(vector<std::shared_ptr<Node>>& program, unsigned num_features)
+{
+    //checks whether program fulfills all its arities.
+    vector<ArrayXd> stack_f; 
+    vector<ArrayXb> stack_b;
+    MatrixXd X = MatrixXd::Zero(num_features,2); 
+    VectorXd y = VectorXd::Zero(2); 
+   
+    for (const auto& n : program){
+        if ( stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
+            n->evaluate(X, y, stack_f, stack_b);
+        else
+            return false; 
+    }
+    return true;
+}
+
+TEST(Variation, MutationTests)
+{
+	Fewtwo fewtwo(100);
+    MatrixXd X(7,2); 
+    X << 0,1,  
+         0.47942554,0.87758256,  
+         0.84147098,  0.54030231,
+         0.99749499,  0.0707372,
+         0.90929743, -0.41614684,
+         0.59847214, -0.80114362,
+         0.14112001,-0.9899925;
+
+    X.transposeInPlace();
+    
+    VectorXd y(7); 
+    // y = 2*x1 + 3.x2
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
+             -1.20648656, -2.68773747;
+
+	fewtwo.params.set_terminals(X.rows()); 
+        
+    // initial model on raw input
+    fewtwo.initial_model(X,y);
+                  
+    // initialize population 
+    fewtwo.p_pop->init(fewtwo.best_ind, fewtwo.params);
+    
+    
+    vector<size_t> parents;
+    parents.push_back(2);
+    parents.push_back(5);
+    parents.push_back(7);
+    
+    while (fewtwo.p_pop->size() < 2*fewtwo.params.pop_size)
+    {
+		Individual child;
+		
+		int mom = r.random_choice(parents);
+		int pass = fewtwo.p_variation->mutate(fewtwo.p_pop->individuals[mom],child,fewtwo.params);
+		
+		if (pass)                   // congrats! you produced a viable child.
+		{
+			// give child an open location in F
+			child.loc = fewtwo.p_pop->get_open_loc(); 
+			//push child into pop
+			fewtwo.p_pop->individuals.push_back(child);
+		}
+	}
+	
+	int i;
+	
+	for(i = 0; i < fewtwo.p_pop->individuals.size(); i++)
+		ASSERT_TRUE(isValidProgram(fewtwo.p_pop->individuals[i].program, fewtwo.params.terminals.size()));
+	
+}
+
+TEST(Variation, CrossOverTests)
+{
+	Fewtwo fewtwo(100);
+    MatrixXd X(7,2); 
+    X << 0,1,  
+         0.47942554,0.87758256,  
+         0.84147098,  0.54030231,
+         0.99749499,  0.0707372,
+         0.90929743, -0.41614684,
+         0.59847214, -0.80114362,
+         0.14112001,-0.9899925;
+
+    X.transposeInPlace();
+    
+    VectorXd y(7); 
+    // y = 2*x1 + 3.x2
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
+             -1.20648656, -2.68773747;
+
+	fewtwo.params.set_terminals(X.rows()); 
+        
+    // initial model on raw input
+    fewtwo.initial_model(X,y);
+                  
+    // initialize population 
+    fewtwo.p_pop->init(fewtwo.best_ind, fewtwo.params);
+    vector<size_t> parents;
+    parents.push_back(2);
+    parents.push_back(5);
+    parents.push_back(7);
+    
+    while (fewtwo.p_pop->size() < 2*fewtwo.params.pop_size)
+    {
+		Individual child;
+		
+		int mom = r.random_choice(parents);
+        int dad = r.random_choice(parents);
+        
+		int pass = fewtwo.p_variation->cross(fewtwo.p_pop->individuals[mom],fewtwo.p_pop->individuals[dad],child,fewtwo.params);
+		
+		if (pass)                   // congrats! you produced a viable child.
+		{
+			// give child an open location in F
+			child.loc = fewtwo.p_pop->get_open_loc(); 
+			//push child into pop
+			fewtwo.p_pop->individuals.push_back(child);
+		}
+	}
+	
+	int i;
+	
+	for(i = 0; i < fewtwo.p_pop->individuals.size(); i++)
+		ASSERT_TRUE(isValidProgram(fewtwo.p_pop->individuals[i].program, fewtwo.params.terminals.size()));
+}
+
+
+TEST(Population, PopulationTests)
+{
+	Fewtwo fewtwo(100);
+    MatrixXd X(7,2); 
+    X << 0,1,  
+         0.47942554,0.87758256,  
+         0.84147098,  0.54030231,
+         0.99749499,  0.0707372,
+         0.90929743, -0.41614684,
+         0.59847214, -0.80114362,
+         0.14112001,-0.9899925;
+
+    X.transposeInPlace();
+    
+    VectorXd y(7); 
+    // y = 2*x1 + 3.x2
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
+             -1.20648656, -2.68773747;
+
+	fewtwo.timer.Reset();
+	fewtwo.params.set_terminals(X.rows()); 
+        
+    // initial model on raw input
+    fewtwo.initial_model(X,y);
+                  
+    // initialize population 
+    fewtwo.p_pop->init(fewtwo.best_ind, fewtwo.params);
+    
+    vector<size_t> current_locs; 
+    int i;
+    for(i = 0; i < fewtwo.p_pop->individuals.size(); i++)
+    {
+    	ASSERT_NO_THROW(fewtwo.p_pop->individuals[i]);
+	    current_locs.push_back(fewtwo.p_pop->individuals[i].loc);
+	}
+	    
+	size_t loc1 = fewtwo.p_pop->get_open_loc();
+	size_t loc2 = fewtwo.p_pop->get_open_loc();
+	size_t loc3 = fewtwo.p_pop->get_open_loc();
+	size_t loc4 = fewtwo.p_pop->get_open_loc();
+	
+	ASSERT_FALSE(std::find(current_locs.begin(), current_locs.end(), loc1) != current_locs.end());
+	ASSERT_FALSE(std::find(current_locs.begin(), current_locs.end(), loc2) != current_locs.end());
+	ASSERT_FALSE(std::find(current_locs.begin(), current_locs.end(), loc3) != current_locs.end());
+	ASSERT_FALSE(std::find(current_locs.begin(), current_locs.end(), loc4) != current_locs.end());
+	
+	//TODO put a check in get_open_loc()
+}
+
+TEST(Parameters, ParamsTests)
+{                   
+	Parameters params(100, 								//pop_size
+					  100,								//gens
+					  "LinearRidgeRegression",			//ml
+					  false,							//classification
+					  0,								//max_stall
+					  'f',								//otype
+					  1,								//verbosity
+					  "+,-,*,/,exp,log",				//functions
+					  3,								//max_depth
+					  10,								//max_dim
+					  false,							//erc
+					  "fitness,complexity");			//obj
+					  
+	params.set_max_dim(12);
+	ASSERT_EQ(params.max_dim, 12);
+	ASSERT_EQ(params.max_size, (pow(2,params.max_depth+1)-1)*params.max_dim);
+	
+	params.set_max_depth(4);
+	ASSERT_EQ(params.max_depth, 4);
+	ASSERT_EQ(params.max_size, (pow(2,params.max_depth+1)-1)*params.max_dim);
+	
+	params.set_terminals(10);
+	
+	ASSERT_EQ(params.terminals.size(), 10);			//TODO terminal a vecotr should be reset everytime
+	
+	vector<double> weights;
+	weights.resize(10);
+	ASSERT_ANY_THROW(params.set_term_weights(weights)); //TODO should throw error here as vector is empty just 
+	
+	params.set_functions("+,-,*,/");
+	ASSERT_EQ(params.functions.size(), 4);
+	
+	int i;
+	vector<string> function_names = {"+", "-", "*", "/"};
+	for(i = 0; i < 4; i ++)
+		ASSERT_STREQ(function_names[i].c_str(), params.functions[i]->name.c_str());
+		
+	params.set_objectives("fitness,complexity");
+	ASSERT_EQ(params.objectives.size(), 2);				//TODO clear objectives everytime before setting
+	
+	ASSERT_STREQ(params.objectives[0].c_str(), "fitness");
+	ASSERT_STREQ(params.objectives[0].c_str(), "complexity");
+	
+	params.set_verbosity(-1);
+	ASSERT_EQ(params.verbosity, 1);
+	
+	params.set_verbosity(10);
+	ASSERT_EQ(params.verbosity, 1);
+	
+	params.set_verbosity(2);
+	ASSERT_EQ(params.verbosity, 2);
+	
+	string str1 = "Hello\n";
+	string str2 = params.msg("Hello\n", 0);
+	ASSERT_STREQ(str1.c_str(), str2.c_str());
+	
+	str2 = params.msg("Hello\n", 1);
+	ASSERT_STREQ(str1.c_str(), str2.c_str());
+	
+	str2 = params.msg("Hello\n", 2);
+	ASSERT_STREQ(str1.c_str(), str2.c_str());
+	
+	params.set_verbosity(1);
+	ASSERT_EQ(params.verbosity, 1);
+	ASSERT_STREQ("", params.msg("Hello\n", 2).c_str());
+}
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
