@@ -202,6 +202,7 @@ namespace FT{
         else                        // use mean squared error
             F.col(ind.loc) = (yhat - y).array().pow(2);
         
+        // set fitness to average 
         ind.fitness = F.col(ind.loc).mean();
         params.msg("ind " + std::to_string(ind.loc) + " fitnes: " + std::to_string(ind.fitness),2);
     }

@@ -58,10 +58,11 @@ namespace FT{
                    string sel ="lexicase", string surv="pareto", float cross_rate = 0.5,
                    char otype='a', string functions = "+,-,*,/,exp,log", 
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
-                   bool erc = false, string obj="fitness,complexity"):
+                   bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
+                   double split=0.75):
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
-                             functions, max_depth, max_dim, erc, obj),
+                             functions, max_depth, max_dim, erc, obj, shuffle, split),
                       p_pop( make_shared<Population>(pop_size) ),
                       p_sel( make_shared<Selection>(sel) ),
                       p_surv( make_shared<Selection>(surv, true) ),
@@ -138,6 +139,12 @@ namespace FT{
             /// flag to set whether to use variable or constants for terminals              
             void set_erc(bool erc){ params.erc = erc; }
                         
+            /// flag to shuffle the input samples for train/test splits
+            void set_shuffle(bool sh){params.shuffle = sh;}
+
+            /// set train fraction of dataset
+            void set_split(double sp){params.split = sp;}
+
             /// destructor             
             ~Fewtwo(){} 
                         
@@ -151,8 +158,7 @@ namespace FT{
             MatrixXd transform(const MatrixXd& X,  Individual *ind = 0);
             
             /// convenience function calls fit then predict.            
-            VectorXd fit_predict(MatrixXd& X, VectorXd& y){ fit(X,y); return predict(X); }
-        
+            VectorXd fit_predict(MatrixXd& X, VectorXd& y){ fit(X,y); return predict(X); } 
             
             /// convenience function calls fit then transform. 
             MatrixXd fit_transform(MatrixXd& X, VectorXd& y){ fit(X,y); return transform(X); }
@@ -161,6 +167,7 @@ namespace FT{
             // Parameters
             Parameters params;    					///< hyperparameters of Fewtwo 
             MatrixXd F;                 			///< matrix of fitness values for population
+            MatrixXd F_v;                           ///< matrix of validation scores
             Timer timer;                            ///< start time of training
             // subclasses for main steps of the evolutionary computation routine
             shared_ptr<Population> p_pop;       	///< population of programs
@@ -172,8 +179,8 @@ namespace FT{
             // performance tracking
             double best_score;                      ///< current best score 
             void update_best();                     ///< updates best score   
-            void print_stats(unsigned int);        ///< prints stats
-            Individual best_ind;                                            ///< best individual
+            void print_stats(unsigned int);         ///< prints stats
+            Individual best_ind;                    ///< best individual
             /// method to fit inital ml model            
             void initial_model(MatrixXd& X, VectorXd& y);
     };
@@ -204,6 +211,12 @@ namespace FT{
         // start the clock
         timer.Reset();
 
+        // split data into training and test sets
+        MatrixXd X_t(X.rows(),int(X.cols()*params.split));
+        MatrixXd X_v(X.rows(),int(X.cols()*(1-params.split)));
+        VectorXd y_t(int(y.size()*params.split)), y_v(int(y.size()*(1-params.split)));
+        train_test_split(X,y,X_t,X_v,y_t,y_v,params.shuffle);
+        
         // define terminals based on size of X
         params.set_terminals(X.rows()); 
         
@@ -218,11 +231,11 @@ namespace FT{
         params.msg("Initial population:\n"+p_pop->print_eqns(","),2);
 
         // resize F to be twice the pop-size x number of samples
-        F.resize(X.cols(),int(2*params.pop_size));
-        
+        F.resize(X_t.cols(),int(2*params.pop_size));
+       
         // evaluate initial population
         params.msg("Evaluating initial population",1);
-        p_eval->fitness(*p_pop,X,y,F,params);
+        p_eval->fitness(*p_pop,X_t,y_t,F,params);
         
         vector<size_t> survivors;
 
@@ -242,7 +255,7 @@ namespace FT{
 
             // evaluate offspring
             params.msg("evaluating offspring...", 2);
-            p_eval->fitness(*p_pop, X, y, F, params, true);
+            p_eval->fitness(*p_pop, X_t, y_t, F, params, true);
 
             // select survivors from combined pool of parents and offspring
             params.msg("survival", 2);
@@ -257,8 +270,15 @@ namespace FT{
             if (params.verbosity>0) print_stats(g+1);
         }
         params.msg("finished",1);
-        params.msg("best representation: " + best_ind.get_eqn(),1);
-        params.msg("score: " + std::to_string(best_score), 1);
+        params.msg("best training representation: " + best_ind.get_eqn(),1);
+        params.msg("train score: " + std::to_string(best_score), 1);
+        // evaluate population on validation set
+        F_v.resize(X_v.cols(),int(2*params.pop_size)); 
+        p_eval->fitness(*p_pop, X_v, y_v, F_v, params);
+        initial_model(X_v, y_v);        // calculate baseline model validation score
+        update_best();                  // get the best validation model
+        params.msg("best validation representation: " + best_ind.get_eqn(),1);
+        params.msg("validation score: " + std::to_string(best_score), 1);
     }
 
     void Fewtwo::initial_model(MatrixXd& X, VectorXd& y)
