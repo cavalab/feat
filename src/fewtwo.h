@@ -130,6 +130,12 @@ namespace FT{
             /// flag to set whether to use variable or constants for terminals              
             void set_erc(bool erc){ params.erc = erc; }
             
+            /// flag to shuffle the input samples for train/test splits
+            void set_shuffle(bool sh){params.shuffle = sh;}
+
+            /// set train fraction of dataset
+            void set_split(double sp){params.split = sp;}
+            
             ///return population size
             int get_pop_size(){ return params.pop_size; }
             
@@ -165,12 +171,12 @@ namespace FT{
             
             ///return number of features
             int get_num_features(){ return params.num_features; }
-                        
-            /// flag to shuffle the input samples for train/test splits
-            void set_shuffle(bool sh){params.shuffle = sh;}
-
-            /// set train fraction of dataset
-            void set_split(double sp){params.split = sp;}
+            
+            ///return whether option to shuffle the data is set or not
+            bool get_shuffle(){ return params.shuffle; }
+            
+            ///return fraction of data to use for training
+            double get_split(){ return params.split; }
 
             /// destructor             
             ~Fewtwo(){} 
