@@ -137,7 +137,7 @@ TEST(NodeTest, Evaluate)
     Z2 << true, false, false;
     	 
     X.transposeInPlace();
-         
+    
     VectorXd Y(6); 
     Y << 3.0, 4.0, 5.0, 6.0, 7.0, 8.0;
     
@@ -334,8 +334,8 @@ TEST(NodeTest, Evaluate)
 	
 	stack_f.clear();
 	stack_b.clear();
-	stack_b.push_back(Z1);
-	stack_b.push_back(Z2);
+	stack_f.push_back(X.row(0));
+	stack_f.push_back(X.row(1));
 	
 	eqObj->evaluate(X, Y, stack_f, stack_b);	
 	
@@ -679,6 +679,202 @@ TEST(Parameters, ParamsTests)
 	params.set_verbosity(1);
 	ASSERT_EQ(params.verbosity, 1);
 	ASSERT_STREQ("", params.msg("Hello", 2).c_str());
+}
+
+TEST(Individual, Check_Dominance)
+{
+	Individual a, b, c;
+	a.obj.push_back(1.0);
+	a.obj.push_back(2.0);
+	
+	a.obj.push_back(1.0);
+	b.obj.push_back(3.0);
+	
+	c.obj.push_back(2.0);
+	c.obj.push_back(1.0);
+	
+	ASSERT_EQ(a.check_dominance(b), 1);			//TODO test fail should be greater than equal to
+	ASSERT_EQ(b.check_dominance(a), -1);
+	ASSERT_EQ(a.check_dominance(c), 0);
+}
+
+TEST(Individual, Subtree)
+{
+	Individual a;
+	
+	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(1)));
+	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(2)));
+	a.program.push_back(std::shared_ptr<Node>(new NodeAdd()));
+	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(3)));
+	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(4)));
+	a.program.push_back(std::shared_ptr<Node>(new NodeSubtract()));
+	a.program.push_back(std::shared_ptr<Node>(new NodeMultiply()));
+	
+	ASSERT_EQ(a.subtree(5), 3);
+	ASSERT_EQ(a.subtree(2), 0);
+	ASSERT_EQ(a.subtree(1), 1);
+	ASSERT_EQ(a.subtree(6), 0);
+	
+	a.program.clear();
+	
+	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(1)));
+	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(2)));
+	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(3)));
+	a.program.push_back(std::shared_ptr<Node>(new NodeConstant(true)));
+	a.program.push_back(std::shared_ptr<Node>(new NodeIfThenElse()));
+	a.program.push_back(std::shared_ptr<Node>(new NodeAdd()));
+	
+	ASSERT_EQ(a.subtree(4), 1);
+	ASSERT_EQ(a.subtree(5), 0);
+	ASSERT_EQ(a.subtree(2), 2);
+}
+
+TEST(Individual, Complexity)
+{
+	Individual a;
+	
+	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(1)));
+	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(2)));
+	a.program.push_back(std::shared_ptr<Node>(new NodeAdd()));
+	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(3)));
+	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(4)));
+	a.program.push_back(std::shared_ptr<Node>(new NodeSubtract()));
+	a.program.push_back(std::shared_ptr<Node>(new NodeMultiply()));
+	
+	ASSERT_EQ(a.complexity(), 14);
+	
+	a.program.clear();
+	a.c = 0;
+	
+	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(1)));
+	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(2)));
+	a.program.push_back(std::shared_ptr<Node>(new NodeMultiply()));
+	
+	ASSERT_EQ(a.complexity(), 6);
+	
+	a.program.clear();
+	a.c = 0;
+	
+	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(1)));
+	a.program.push_back(std::shared_ptr<Node>(new NodeSin()));
+	
+	ASSERT_EQ(a.complexity(), 6);
+	a.c = 0;
+}
+
+TEST(Evaluation, assign_fit)
+{
+	
+	Parameters params(100, 								//pop_size
+					  100,								//gens
+					  "LinearRidgeRegression",			//ml
+					  false,							//classification
+					  0,								//max_stall
+					  'f',								//otype
+					  1,								//verbosity
+					  "+,-,*,/,exp,log",				//functions
+					  3,								//max_depth
+					  10,								//max_dim
+					  false,							//erc
+					  "fitness,complexity",  			//obj
+                      false,                            //shuffle
+                      0.75);                             //train/test split
+                      
+	MatrixXd X(7,2); 
+    X << 0,1,  
+         0.47942554,0.87758256,  
+         0.84147098,  0.54030231,
+         0.99749499,  0.0707372,
+         0.90929743, -0.41614684,
+         0.59847214, -0.80114362,
+         0.14112001,-0.9899925;
+
+    X.transposeInPlace();
+    
+    VectorXd y(7); 
+    // y = 2*x1 + 3.x2
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
+             -1.20648656, -2.68773747;
+}
+
+TEST(Evaluation, fitness)
+{
+	Parameters params(100, 								//pop_size
+					  100,								//gens
+					  "LinearRidgeRegression",			//ml
+					  false,							//classification
+					  0,								//max_stall
+					  'f',								//otype
+					  1,								//verbosity
+					  "+,-,*,/,exp,log",				//functions
+					  3,								//max_depth
+					  10,								//max_dim
+					  false,							//erc
+					  "fitness,complexity",  			//obj
+                      false,                            //shuffle
+                      0.75);                             //train/test split
+                      
+	MatrixXd X(7,2); 
+    X << 0,1,  
+         0.47942554,0.87758256,  
+         0.84147098,  0.54030231,
+         0.99749499,  0.0707372,
+         0.90929743, -0.41614684,
+         0.59847214, -0.80114362,
+         0.14112001,-0.9899925;
+
+    X.transposeInPlace();
+    
+    VectorXd y(7); 
+    // y = 2*x1 + 3.x2
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
+             -1.20648656, -2.68773747;
+}
+
+TEST(Evaluation, out_ml)
+{
+	Parameters params(100, 								//pop_size
+					  100,								//gens
+					  "LinearRidgeRegression",			//ml
+					  false,							//classification
+					  0,								//max_stall
+					  'f',								//otype
+					  1,								//verbosity
+					  "+,-,*,/,exp,log",				//functions
+					  3,								//max_depth
+					  10,								//max_dim
+					  false,							//erc
+					  "fitness,complexity",  			//obj
+                      false,                            //shuffle
+                      0.75);                             //train/test split
+                      
+	MatrixXd X(7,2); 
+    X << 0,1,  
+         0.47942554,0.87758256,  
+         0.84147098,  0.54030231,
+         0.99749499,  0.0707372,
+         0.90929743, -0.41614684,
+         0.59847214, -0.80114362,
+         0.14112001,-0.9899925;
+
+    X.transposeInPlace();
+    
+    VectorXd y(7); 
+    // y = 2*x1 + 3.x2
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
+             -1.20648656, -2.68773747;
+             
+    shared_ptr<Evaluation> p_eval = make_shared<Evaluation>();
+    shared_ptr<ML> p_ml = make_shared<ML>("LinearRidgeRegression", false);
+             
+    bool pass = true;
+    VectorXd yhat = p_eval->out_ml(X, y, params, pass, p_ml);
+    
+    double mean = ((yhat - y).array().pow(2)).mean();
+    
+    cout << "MSE is " << mean;
+    
+    ASSERT_TRUE(mean < NEAR_ZERO);
 }
 
 int main(int argc, char **argv) {
