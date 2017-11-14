@@ -145,7 +145,7 @@ namespace FT{
                 // define shogun data
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
         auto labels = some<CRegressionLabels>(SGVector<float64_t>(y));
-     
+         
         // pass data to ml
         ml->p_est->set_labels(labels);
 
@@ -154,6 +154,7 @@ namespace FT{
         params.msg("ML training on thread" + std::to_string(omp_get_thread_num()) + "...",2," ");
         #pragma omp critical
         {
+            features->display_matrix();
             ml->p_est->train(features);
         }
         params.msg("done.",2);
@@ -197,6 +198,7 @@ namespace FT{
          *
          *       modifies F and ind.fitness
         */ 
+        assert(F.cols()>ind.loc);
         if (params.classification)  // use classification accuracy
             F.col(ind.loc) = (yhat.cast<int>().array() != y.cast<int>().array()).cast<double>();
         else                        // use mean squared error

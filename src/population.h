@@ -22,9 +22,15 @@ namespace FT{
     {
         vector<Individual> individuals;     ///< individual programs
         vector<size_t> open_loc;            ///< unfilled matrix positions
+        vector<size_t> locs; 
 
         Population(){}
-        Population(int p){individuals.resize(p);}
+        Population(int p)
+        {
+            individuals.resize(p); 
+            locs.resize(2*p); 
+            std::iota(locs.begin(),locs.end(),0);
+        }
         ~Population(){}
         
         /// initialize population of programs. 
@@ -250,21 +256,24 @@ namespace FT{
        /*!
         * updates open_loc to any locations in [0, 2*popsize-1] not in individuals.loc
         */
-      
+       std::cout << "update_open_loc\n"; 
        vector<size_t> current_locs, new_open_locs;
        
        // get vector of current locations       
        for (const auto& ind : individuals)
            current_locs.push_back(ind.loc);
        
+       std::cout << "current_locs: " ;
+       for (auto o : current_locs) std::cout << o << " "; std::cout << "\n";
+
        // find open locations
-       size_t i = 0;
-       while (i < 2* individuals.size())
-       {
-           if (!in(current_locs,i))
+       
+       for (const auto& i : locs)
+        if (!in(current_locs,i))
                new_open_locs.push_back(i);
-           ++i;
-       }
+       
+       std::cout << "new_open_locs: " ;
+       for (auto o : new_open_locs) std::cout << o << " "; std::cout << "\n";
 
        // re-assign open locations
        open_loc = new_open_locs;

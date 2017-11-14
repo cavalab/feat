@@ -84,7 +84,8 @@ namespace FT{
         bool pass=false;                      // pass check for children undergoing variation       
         unsigned start= pop.size();
         pop.resize(2*params.pop_size);
-        
+        std::cout << "pop.open_loc before variation: " ;
+        for (auto o : pop.open_loc) std::cout << o << " "; std::cout << "\n";
         #pragma omp parallel for
         for (unsigned i = start; i<pop.size(); ++i)
         {
@@ -103,8 +104,8 @@ namespace FT{
                     pass = cross(pop.individuals[mom],pop.individuals[dad],child,params);
                 
                     params.msg("crossing " + pop.individuals[mom].get_eqn() + " with " + 
-                           pop.individuals[dad].get_eqn() + " produced " + child.get_eqn() + ", pass: " 
-                           + std::to_string(pass),2);    
+                           pop.individuals[dad].get_eqn() + " produced " + child.get_eqn() + 
+                           ", pass: " + std::to_string(pass),2);    
                 }
                 else                        // mutation
                 {
@@ -121,26 +122,14 @@ namespace FT{
             }
             
             pop.individuals[i] = child;
-            pop.individuals[i].loc = pop.open_loc[i];
-            
-            //#pragma omp critical
-            //{
-            //    pop.individuals[i].loc = pop.get_open_loc();
-            //}
-            // if (pass)                   // congrats! you produced a viable child.
-           // {
-           //     // give child an open location in F
-           //     //child.loc = pop.get_open_loc(); 
-           //     //push child into pop
-           //     pop.add(child);
-           // }
-        }
-        pop.update_open_loc();
-        auto it = std::unique(pop.open_loc.begin(),pop.open_loc.end());
-        auto uniques = std::distance(pop.open_loc.begin(),it);
-        std::cout << "population locs:\n";
-        for (unsigned i=0; i<pop.size(); ++i) std::cout << pop.individuals[i].loc << " ";
-        std::cout << "unique locations: " << uniques << "\n";
+            pop.individuals[i].loc = pop.open_loc[i-start];
+       }
+       pop.update_open_loc();
+//       auto it = std::unique(pop.open_loc.begin(),pop.open_loc.end());
+//       auto uniques = std::distance(pop.open_loc.begin(),it);
+//       std::cout << "population locs:\n";
+//       for (unsigned i=0; i<pop.size(); ++i) std::cout << pop.individuals[i].loc << " ";
+//       std::cout << "unique locations: " << uniques << "\n";
     }
 
     bool Variation::mutate(Individual& mom, Individual& child, const Parameters& params)
