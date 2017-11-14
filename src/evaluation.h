@@ -83,8 +83,7 @@ namespace FT{
         {
             // calculate program output matrix Phi
             params.msg("Generating output for " + pop.individuals[i].get_eqn(), 2);
-            MatrixXd Phi = pop.individuals[i].out(X, params, y);
-            
+            MatrixXd Phi = pop.individuals[i].out(X, params, y);            
 
             // calculate ML model from Phi
             params.msg("ML training on " + pop.individuals[i].get_eqn(), 2);
@@ -126,9 +125,7 @@ namespace FT{
         if (ml == nullptr)      // make new ML estimator if one is not provided 
             ml = std::make_shared<ML>(params.ml,params.classification);       
         
-        if (params.verbosity >2) 
-            std::cout << "thread " + std::to_string(omp_get_thread_num()) + " X: " << X << "\n"; 
-
+        
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " normalize features\n";
         // normalize features
         for (unsigned int i=0; i<X.rows(); ++i){
@@ -143,6 +140,9 @@ namespace FT{
         }
         //X.rowwise().normalize();
                 // define shogun data
+        //if (params.verbosity > 1) 
+        //    std::cout << "thread " + std::to_string(omp_get_thread_num()) + " X: " << X << "\n"; 
+
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
         auto labels = some<CRegressionLabels>(SGVector<float64_t>(y));
          
@@ -152,9 +152,8 @@ namespace FT{
         // train ml
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " train\n";
         params.msg("ML training on thread" + std::to_string(omp_get_thread_num()) + "...",2," ");
-        #pragma omp critical
+       // #pragma omp critical
         {
-            features->display_matrix();
             ml->p_est->train(features);
         }
         params.msg("done.",2);

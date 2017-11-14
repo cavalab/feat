@@ -37,7 +37,15 @@ namespace FT{
         void init(const Individual& starting_model, const Parameters& params);
         
         /// update individual vector size 
-        void resize(int pop_size){	individuals.resize(pop_size); }
+        void resize(int pop_size, bool resize_locs=false)
+        {	
+            individuals.resize(pop_size); 
+            if (resize_locs)        // if this is an initial pop size, locs should be resized
+            {
+                locs.resize(2*pop_size); 
+                std::iota(locs.begin(),locs.end(),0);
+            }
+        }
         
         /// reduce programs to the indices in survivors. 
         void update(vector<size_t> survivors);
@@ -256,29 +264,20 @@ namespace FT{
        /*!
         * updates open_loc to any locations in [0, 2*popsize-1] not in individuals.loc
         */
-       std::cout << "update_open_loc\n"; 
        vector<size_t> current_locs, new_open_locs;
-       
-       // get vector of current locations       
-       for (const auto& ind : individuals)
+      
+       for (const auto& ind : individuals)  // get vector of current locations
            current_locs.push_back(ind.loc);
-       
-       std::cout << "current_locs: " ;
-       for (auto o : current_locs) std::cout << o << " "; std::cout << "\n";
 
-       // find open locations
-       
-       for (const auto& i : locs)
+       for (const auto& i : locs)           // find open locations       
         if (!in(current_locs,i))
-               new_open_locs.push_back(i);
+               new_open_locs.push_back(i); 
        
-       std::cout << "new_open_locs: " ;
-       for (auto o : new_open_locs) std::cout << o << " "; std::cout << "\n";
-
-       // re-assign open locations
-       open_loc = new_open_locs;
-              
+        open_loc = new_open_locs;      // re-assign open locations             
+        //std::cout << "updating open_loc to ";
+        //for (auto o: open_loc) std::cout << o << " "; std::cout << "\n";
    }
+
    void Population::add(Individual& ind)
    {
        /*!

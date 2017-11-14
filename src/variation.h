@@ -81,18 +81,17 @@ namespace FT{
          *
          * @return  appends params.pop_size offspring derived from parent variation
          */
-        bool pass=false;                      // pass check for children undergoing variation       
-        unsigned start= pop.size();
+              unsigned start= pop.size();
         pop.resize(2*params.pop_size);
-        std::cout << "pop.open_loc before variation: " ;
-        for (auto o : pop.open_loc) std::cout << o << " "; std::cout << "\n";
         #pragma omp parallel for
         for (unsigned i = start; i<pop.size(); ++i)
         {
-            Individual child;           // new individual
-            
+            bool pass=false;                      // pass check for children undergoing variation     
+   
             while (!pass)
             {
+                Individual child;           // new individual
+
                 if ( r() < cross_rate)      // crossover
                 {
                     // get random mom and dad 
@@ -119,17 +118,21 @@ namespace FT{
                     params.msg("mutating " + pop.individuals[mom].get_eqn() + " produced " + 
                             child.get_eqn() + ", pass: " + std::to_string(pass),2);
                 }
-            }
-            
-            pop.individuals[i] = child;
-            pop.individuals[i].loc = pop.open_loc[i-start];
+                if (pass)
+                {
+                    assert(child.size()>0);
+                    assert(pop.open_loc.size()>i-start);
+                    params.msg("assigning " + child.program_str() + " to pop.individuals[" + 
+                        std::to_string(i) + "] with pop.open_loc[" + std::to_string(i-start) + 
+                        "]=" + std::to_string(pop.open_loc[i-start]),2);
+
+                    pop.individuals[i] = child;
+                    pop.individuals[i].loc = pop.open_loc[i-start];                   
+                }
+            }    
        }
+      
        pop.update_open_loc();
-//       auto it = std::unique(pop.open_loc.begin(),pop.open_loc.end());
-//       auto uniques = std::distance(pop.open_loc.begin(),it);
-//       std::cout << "population locs:\n";
-//       for (unsigned i=0; i<pop.size(); ++i) std::cout << pop.individuals[i].loc << " ";
-//       std::cout << "unique locations: " << uniques << "\n";
     }
 
     bool Variation::mutate(Individual& mom, Individual& child, const Parameters& params)
@@ -164,7 +167,8 @@ namespace FT{
         }
  
         // check child depth and dimensionality
-        return child.size() <= params.max_size && child.get_dim() <= params.max_dim;
+        return child.size()>0 && child.size() <= params.max_size 
+                && child.get_dim() <= params.max_dim;
     }
 
     void Variation::point_mutate(Individual& child, const Parameters& params)
@@ -396,7 +400,8 @@ namespace FT{
 
         assert(is_valid_program(child.program,params.num_features));
         // check child depth and dimensionality
-        return child.size() <= params.max_size && child.get_dim() <= params.max_dim;
+        return child.size()>0 && child.size() <= params.max_size 
+                    && child.get_dim() <= params.max_dim;
     }
     
     // swap vector subsets with different sizes. 
