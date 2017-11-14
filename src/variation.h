@@ -135,6 +135,7 @@ namespace FT{
            //     pop.add(child);
            // }
         }
+        pop.update_open_loc();
         auto it = std::unique(pop.open_loc.begin(),pop.open_loc.end());
         auto uniques = std::distance(pop.open_loc.begin(),it);
         std::cout << "population locs:\n";

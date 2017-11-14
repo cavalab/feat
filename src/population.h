@@ -31,7 +31,7 @@ namespace FT{
         void init(const Individual& starting_model, const Parameters& params);
         
         /// update individual vector size 
-        void resize(int pop_size){	individuals.resize(pop_size); update_open_loc(); }
+        void resize(int pop_size){	individuals.resize(pop_size); }
         
         /// reduce programs to the indices in survivors. 
         void update(vector<size_t> survivors);
@@ -265,7 +265,6 @@ namespace FT{
                new_open_locs.push_back(i);
            ++i;
        }
-
 
        // re-assign open locations
        open_loc = new_open_locs;
