@@ -45,9 +45,6 @@ namespace FT{
          *      it is assumed that we are selecting for offspring to fill the remaining columns. 
          */            
         
-        if (survival)               // if survival is on, run lexicase survival.
-            return survive(pop,F,params);
-
         unsigned int N = F.rows(); //< number of samples
         unsigned int P = F.cols()/2; //< number of individuals
 

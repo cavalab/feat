@@ -77,7 +77,7 @@ namespace FT{
             void set_pop_size(int pop_size)
             {
             	params.pop_size = pop_size;
-            	p_pop->resize(params.pop_size);
+            	p_pop->resize(params.pop_size,true);
             }            
             
             /// set size of max generations              
@@ -261,7 +261,7 @@ namespace FT{
         // initialize population 
         params.msg("Initializing population", 1);
         p_pop->init(best_ind,params);
-        params.msg("Initial population:\n"+p_pop->print_eqns(","),2);
+        params.msg("Initial population:\n"+p_pop->print_eqns(),2);
 
         // resize F to be twice the pop-size x number of samples
         F.resize(X_t.cols(),int(2*params.pop_size));
@@ -279,7 +279,7 @@ namespace FT{
             // select parents
             params.msg("selection..", 2);
             vector<size_t> parents = p_sel->select(*p_pop, F, params);
-            params.msg("parents:\n"+p_pop->print_eqns(","), 2);          
+            params.msg("parents:\n"+p_pop->print_eqns(), 2);          
             
             // variation to produce offspring
             params.msg("variation...", 2);
@@ -291,7 +291,7 @@ namespace FT{
             p_eval->fitness(*p_pop, X_t, y_t, F, params, true);
 
             // select survivors from combined pool of parents and offspring
-            params.msg("survival", 2);
+            params.msg("survival...", 2);
             survivors = p_surv->survive(*p_pop, F, params);
            
             // reduce population to survivors
@@ -410,8 +410,30 @@ namespace FT{
                       <<  p_pop->individuals[f[j]].complexity() << "\t" << (*p_pop)[f[j]].fitness 
                       << "\t" << p_pop->individuals[f[j]].get_eqn() << "\n";  
         }
-        std::cout << "\n\n";
+       
+       
+        // ref counting
+        vector<float> use(params.terminals.size());
+        float use_sum=0;
+        for (unsigned i = 0; i< params.terminals.size(); ++i)
+        {    
+            use[i] = float(params.terminals[i].use_count());
+            use_sum += use[i];
+        }
+        vector<size_t> use_idx = argsort(use);
+        std::reverse(use_idx.begin(), use_idx.end());
+
+        std::cout << "Top 3 features (\% usage):\n";
+        std::cout.precision(1);
+        for (unsigned i = 0; i<3; ++i) 
+            std::cout << std::fixed << params.terminals[use_idx[i]]->name << "_" 
+                  << std::dynamic_pointer_cast<NodeVariable>(params.terminals[use_idx[i]])->loc 
+                  << " (" << use[use_idx[i]]/use_sum*100 << "\%)\t";
         
+       // for (const auto& f: params.functions)
+       //     std::cout << f->name << " use_count: " << f.use_count() << "\n"; 
+       
+        std::cout << "\n\n";
     }
 }
 #endif

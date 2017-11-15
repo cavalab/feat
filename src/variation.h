@@ -81,48 +81,58 @@ namespace FT{
          *
          * @return  appends params.pop_size offspring derived from parent variation
          */
-        bool pass;                      // pass check for children undergoing variation       
-        while (pop.size() < 2*params.pop_size)
+              unsigned start= pop.size();
+        pop.resize(2*params.pop_size);
+        #pragma omp parallel for
+        for (unsigned i = start; i<pop.size(); ++i)
         {
-            Individual child;           // new individual
+            bool pass=false;                      // pass check for children undergoing variation     
+   
+            while (!pass)
+            {
+                Individual child;           // new individual
 
-            if ( r() < cross_rate)      // crossover
-            {
-                // get random mom and dad 
-                int mom = r.random_choice(parents);
-                int dad = r.random_choice(parents);
-                // create child
-                params.msg("crossing " + pop.individuals[mom].get_eqn() + " with " + 
-                           pop.individuals[dad].get_eqn(), 2);
-                pass = cross(pop.individuals[mom],pop.individuals[dad],child,params);
-            
-                params.msg("crossing " + pop.individuals[mom].get_eqn() + " with " + 
-                       pop.individuals[dad].get_eqn() + " produced " + child.get_eqn() + ", pass: " 
-                       + std::to_string(pass),2);    
-            }
-            else                        // mutation
-            {
-                // get random mom
-                int mom = r.random_choice(parents);                
-                params.msg("mutating " + pop.individuals[mom].get_eqn() + "(" + 
-                        pop.individuals[mom].program_str() + ")", 2);
-                // create child
-                pass = mutate(pop.individuals[mom],child,params);
+                if ( r() < cross_rate)      // crossover
+                {
+                    // get random mom and dad 
+                    int mom = r.random_choice(parents);
+                    int dad = r.random_choice(parents);
+                    // create child
+                    params.msg("crossing " + pop.individuals[mom].get_eqn() + " with " + 
+                               pop.individuals[dad].get_eqn(), 2);
+                    pass = cross(pop.individuals[mom],pop.individuals[dad],child,params);
                 
-                params.msg("mutating " + pop.individuals[mom].get_eqn() + " produced " + 
-                        child.get_eqn() + ", pass: " + std::to_string(pass),2);
-            }
-            
-            
-            
-            if (pass)                   // congrats! you produced a viable child.
-            {
-                // give child an open location in F
-                //child.loc = pop.get_open_loc(); 
-                //push child into pop
-                pop.add(child);
-            }
-        }
+                    params.msg("crossing " + pop.individuals[mom].get_eqn() + " with " + 
+                           pop.individuals[dad].get_eqn() + " produced " + child.get_eqn() + 
+                           ", pass: " + std::to_string(pass),2);    
+                }
+                else                        // mutation
+                {
+                    // get random mom
+                    int mom = r.random_choice(parents);                
+                    params.msg("mutating " + pop.individuals[mom].get_eqn() + "(" + 
+                            pop.individuals[mom].program_str() + ")", 2);
+                    // create child
+                    pass = mutate(pop.individuals[mom],child,params);
+                    
+                    params.msg("mutating " + pop.individuals[mom].get_eqn() + " produced " + 
+                            child.get_eqn() + ", pass: " + std::to_string(pass),2);
+                }
+                if (pass)
+                {
+                    assert(child.size()>0);
+                    assert(pop.open_loc.size()>i-start);
+                    params.msg("assigning " + child.program_str() + " to pop.individuals[" + 
+                        std::to_string(i) + "] with pop.open_loc[" + std::to_string(i-start) + 
+                        "]=" + std::to_string(pop.open_loc[i-start]),2);
+
+                    pop.individuals[i] = child;
+                    pop.individuals[i].loc = pop.open_loc[i-start];                   
+                }
+            }    
+       }
+      
+       pop.update_open_loc();
     }
 
     bool Variation::mutate(Individual& mom, Individual& child, const Parameters& params)
@@ -157,7 +167,8 @@ namespace FT{
         }
  
         // check child depth and dimensionality
-        return child.size() <= params.max_size && child.get_dim() <= params.max_dim;
+        return child.size()>0 && child.size() <= params.max_size 
+                && child.get_dim() <= params.max_dim;
     }
 
     void Variation::point_mutate(Individual& child, const Parameters& params)
@@ -389,7 +400,8 @@ namespace FT{
 
         assert(is_valid_program(child.program,params.num_features));
         // check child depth and dimensionality
-        return child.size() <= params.max_size && child.get_dim() <= params.max_dim;
+        return child.size()>0 && child.size() <= params.max_size 
+                    && child.get_dim() <= params.max_dim;
     }
     
     // swap vector subsets with different sizes. 

@@ -22,16 +22,30 @@ namespace FT{
     {
         vector<Individual> individuals;     ///< individual programs
         vector<size_t> open_loc;            ///< unfilled matrix positions
+        vector<size_t> locs; 
 
         Population(){}
-        Population(int p){individuals.resize(p);}
+        Population(int p)
+        {
+            individuals.resize(p); 
+            locs.resize(2*p); 
+            std::iota(locs.begin(),locs.end(),0);
+        }
         ~Population(){}
         
         /// initialize population of programs. 
         void init(const Individual& starting_model, const Parameters& params);
         
         /// update individual vector size 
-        void resize(int pop_size){	individuals.resize(pop_size); }
+        void resize(int pop_size, bool resize_locs=false)
+        {	
+            individuals.resize(pop_size); 
+            if (resize_locs)        // if this is an initial pop size, locs should be resized
+            {
+                locs.resize(2*pop_size); 
+                std::iota(locs.begin(),locs.end(),0);
+            }
+        }
         
         /// reduce programs to the indices in survivors. 
         void update(vector<size_t> survivors);
@@ -192,34 +206,23 @@ namespace FT{
         /*!
          *create random programs in the population, seeded by initial model weights 
          */
-        int i = 0;        
-        size_t count = -1;
-        vector<char> otypes = {'b','f'};
-        for (auto& ind : individuals)
-        {
-            //std::cout << "i: " <<  i << "\n";
-            // the first individual is the starting model (i.e., the raw features)
-            if (count == -1)
-            {
-                ind = starting_model;                
-                ind.loc = ++count;
-                std::cout << ind.get_eqn() + "\n";
-                continue;
-            }
-            // make a program for each individual
-            // pick a max depth for this program
+        individuals[0] = starting_model;
+        individuals[0].loc = 0;
+        #pragma omp parallel for
+        for (unsigned i = 1; i< individuals.size(); ++i)
+        {           
             // pick a dimensionality for this individual
             int dim = r.rnd_int(1,params.max_dim);      
             // pick depth from [params.min_depth, params.max_depth]
             int depth =  r.rnd_int(1, params.max_depth);
-            
-            make_program(ind.program, params.functions, params.terminals, depth,
+            // make a program for each individual
+            make_program(individuals[i].program, params.functions, params.terminals, depth,
                          params.term_weights,dim,r.random_choice(params.otypes));
-
+            
             //std::cout << ind.get_eqn() + "\n";
            
-            // set location of individual and increment counter
-            ind.loc = ++count;                    
+            // set location of individual and increment counter             
+            individuals[i].loc = i;   
         }
         // define open locations
         update_open_loc(); 
@@ -261,27 +264,20 @@ namespace FT{
        /*!
         * updates open_loc to any locations in [0, 2*popsize-1] not in individuals.loc
         */
-      
        vector<size_t> current_locs, new_open_locs;
-       
-       // get vector of current locations       
-       for (const auto& ind : individuals)
+      
+       for (const auto& ind : individuals)  // get vector of current locations
            current_locs.push_back(ind.loc);
+
+       for (const auto& i : locs)           // find open locations       
+        if (!in(current_locs,i))
+               new_open_locs.push_back(i); 
        
-       // find open locations
-       size_t i = 0;
-       while (i < 2* individuals.size())
-       {
-           if (!in(current_locs,i))
-               new_open_locs.push_back(i);
-           ++i;
-       }
-
-
-       // re-assign open locations
-       open_loc = new_open_locs;
-              
+        open_loc = new_open_locs;      // re-assign open locations             
+        //std::cout << "updating open_loc to ";
+        //for (auto o: open_loc) std::cout << o << " "; std::cout << "\n";
    }
+
    void Population::add(Individual& ind)
    {
        /*!
