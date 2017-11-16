@@ -152,7 +152,7 @@ namespace FT{
         // train ml
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " train\n";
         params.msg("ML training on thread" + std::to_string(omp_get_thread_num()) + "...",2," ");
-       // #pragma omp critical
+        //#pragma omp critical
         {
             ml->p_est->train(features);
         }

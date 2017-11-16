@@ -1,6 +1,0 @@
-rm -rf build; mkdir build; cd build; cmake ..
-cd ..
-rm -rf debug; mkdir debug; cd debug; cmake -DCMAKE_BUILD_TYPE=Debug ..
-cd ..
-make -C build VERBOSE=1
-make -C debug VERBOSE=1
