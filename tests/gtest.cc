@@ -22,6 +22,7 @@ using std::cout;
 using std::stoi;
 using std::to_string;
 using std::stof;
+using namespace shogun;
 
 #define private public
 
@@ -878,6 +879,9 @@ TEST(Evaluation, out_ml)
 }
 
 int main(int argc, char **argv) {
+	int ret;
+	init_shogun_with_defaults();
     testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+    ret = RUN_ALL_TESTS();
+    exit_shogun();
 }

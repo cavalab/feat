@@ -2,6 +2,7 @@
 #include "fewtwo.h"
 using FT::Fewtwo;
 #include <Eigen/Dense>
+#include <shogun/base/init.h>
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 using std::string;
@@ -9,6 +10,7 @@ using std::stoi;
 using std::to_string;
 using std::stof;
 using std::cout;
+using namespace shogun;
 // Command line parser
 class InputParser{
     public:
@@ -64,6 +66,8 @@ class InputParser{
 
 int main(int argc, char** argv){
     // runs FEWTWO from the command line.     
+    
+    init_shogun_with_defaults();
     
     Fewtwo fewtwo;
     std::string sep = ",";
@@ -157,6 +161,8 @@ int main(int argc, char** argv){
 
     cout << "done!\n";
 
+	exit_shogun();
+	
     return 0;
 
 }
