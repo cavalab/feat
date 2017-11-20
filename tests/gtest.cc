@@ -5,6 +5,7 @@
 #include <shogun/base/init.h>
 #include <omp.h>
 #include <string>
+#include <stack>
 #include <gtest/gtest.h>	
 
 // stuff being used
@@ -30,7 +31,36 @@ using namespace shogun;
 #include "../src/fewtwo.h"
 
 using namespace FT;
- 
+
+
+bool checkBrackets(string str)
+{
+	stack<char> st;
+	int x;
+	for(x = 0; x <str.length(); x++)
+	{
+		if(str[x] == '[' || str[x] == '(')
+			st.push(str[x]);
+		if(str[x] == ')')
+		{
+			if(st.top() == '(')
+				st.pop();
+			else
+				return false;
+		}
+		if(str[x] == ']')
+		{
+			if(st.top() == '[')
+				st.pop();
+			else
+				return false;
+				
+			if(!st.empty())
+				return false;
+		}
+	}
+	return true;
+} 
 
 TEST(Fewtwo, SettingFunctions)
 {
@@ -117,7 +147,7 @@ TEST(Individual, EvalEquation)
     fewtwo.p_pop->init(fewtwo.best_ind, fewtwo.params);
     int i;
     for(i = 0; i < fewtwo.p_pop->individuals.size(); i++)
-	    EXPECT_STREQ("", fewtwo.p_pop->individuals[i].get_eqn().c_str()); //TODO evaluate if string correct or not
+	    ASSERT_TRUE(checkBrackets(fewtwo.p_pop->individuals[i].get_eqn())); //TODO evaluate if string correct or not
 }
 
 TEST(NodeTest, Evaluate)
