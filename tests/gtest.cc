@@ -5,6 +5,7 @@
 #include <shogun/base/init.h>
 #include <omp.h>
 #include <string>
+#include <stack>
 #include <gtest/gtest.h>	
 
 // stuff being used
@@ -22,6 +23,7 @@ using std::cout;
 using std::stoi;
 using std::to_string;
 using std::stof;
+using namespace shogun;
 
 #define private public
 
@@ -29,7 +31,36 @@ using std::stof;
 #include "../src/fewtwo.h"
 
 using namespace FT;
- 
+
+
+bool checkBrackets(string str)
+{
+	stack<char> st;
+	int x;
+	for(x = 0; x <str.length(); x++)
+	{
+		if(str[x] == '[' || str[x] == '(')
+			st.push(str[x]);
+		if(str[x] == ')')
+		{
+			if(st.top() == '(')
+				st.pop();
+			else
+				return false;
+		}
+		if(str[x] == ']')
+		{
+			if(st.top() == '[')
+				st.pop();
+			else
+				return false;
+				
+			if(!st.empty())
+				return false;
+		}
+	}
+	return true;
+} 
 
 TEST(Fewtwo, SettingFunctions)
 {
@@ -116,7 +147,7 @@ TEST(Individual, EvalEquation)
     fewtwo.p_pop->init(fewtwo.best_ind, fewtwo.params);
     int i;
     for(i = 0; i < fewtwo.p_pop->individuals.size(); i++)
-	    EXPECT_STREQ("", fewtwo.p_pop->individuals[i].get_eqn().c_str()); //TODO evaluate if string correct or not
+	    ASSERT_TRUE(checkBrackets(fewtwo.p_pop->individuals[i].get_eqn())); //TODO evaluate if string correct or not
 }
 
 TEST(NodeTest, Evaluate)
@@ -878,6 +909,9 @@ TEST(Evaluation, out_ml)
 }
 
 int main(int argc, char **argv) {
+	int ret;
+	init_shogun_with_defaults();
     testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+    ret = RUN_ALL_TESTS();
+    exit_shogun();
 }
