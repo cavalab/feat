@@ -718,7 +718,7 @@ TEST(Individual, Check_Dominance)
 	a.obj.push_back(1.0);
 	a.obj.push_back(2.0);
 	
-	a.obj.push_back(1.0);
+	b.obj.push_back(1.0);
 	b.obj.push_back(3.0);
 	
 	c.obj.push_back(2.0);
@@ -836,7 +836,7 @@ TEST(Evaluation, fitness)
 					  false,							//classification
 					  0,								//max_stall
 					  'f',								//otype
-					  1,								//verbosity
+					  2,								//verbosity
 					  "+,-,*,/,exp,log",				//functions
 					  3,								//max_depth
 					  10,								//max_dim
@@ -845,21 +845,47 @@ TEST(Evaluation, fitness)
                       false,                            //shuffle
                       0.75);                             //train/test split
                       
-	MatrixXd X(7,2); 
-    X << 0,1,  
-         0.47942554,0.87758256,  
-         0.84147098,  0.54030231,
-         0.99749499,  0.0707372,
-         0.90929743, -0.41614684,
-         0.59847214, -0.80114362,
-         0.14112001,-0.9899925;
+	MatrixXd X(10,1); 
+    X << 0.0,  
+         1.0,  
+         2.0,
+         3.0,
+         4.0,
+         5.0,
+         6.0,
+         7.0,
+         8.0,
+         9.0;
 
     X.transposeInPlace();
     
-    VectorXd y(7); 
-    // y = 2*x1 + 3.x2
-    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
-             -1.20648656, -2.68773747;
+    VectorXd y(10); 
+    // y = 2*sin(x0) + 3*cos(x0)
+    y << 3.0,  3.30384889,  0.57015434, -2.68773747, -3.47453585,
+             -1.06686199,  2.32167986,  3.57567996,  1.54221639, -1.90915382;
+
+    // make population 
+    Population pop(2);
+    // individual 0 = [sin(x0) cos(x0)]
+    pop.individuals[0].program.push_back(std::shared_ptr<Node>(new NodeVariable(0)));
+    pop.individuals[0].program.push_back(std::shared_ptr<Node>(new NodeSin()));
+    pop.individuals[0].program.push_back(std::shared_ptr<Node>(new NodeVariable(0)));
+    pop.individuals[0].program.push_back(std::shared_ptr<Node>(new NodeCos()));
+    pop.individuals[0].loc = 0;
+    std::cout << pop.individuals[0].get_eqn() + "\n";
+    // individual 1 = [x0] 
+    pop.individuals[1].program.push_back(std::shared_ptr<Node>(new NodeVariable(0)));
+    pop.individuals[1].loc = 1;
+    std::cout << pop.individuals[1].get_eqn() + "\n";    
+    MatrixXd F(10,2);   // output matrix
+
+    // get fitness
+    Evaluation eval; 
+    eval.fitness(pop, X, y, F, params);
+    // check results
+    ASSERT_TRUE(pop.individuals[0].fitness < NEAR_ZERO);
+    ASSERT_TRUE(pop.individuals[1].fitness - 60.442868924187906 < NEAR_ZERO);
+
 }
 
 TEST(Evaluation, out_ml)
