@@ -30,7 +30,7 @@ namespace FT{
     
     vector<size_t> Lexicase::select(Population& pop, const MatrixXd& F, const Parameters& params)
     {
-        /* Selection according to lexicase selection for classification and epsilon-lexicase
+        /*! Selection according to lexicase selection for classification and epsilon-lexicase
          * selection for regression. 
          *
          * Input: 
