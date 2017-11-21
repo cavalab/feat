@@ -15,7 +15,7 @@ namespace FT {
     ////////////////////////////////////////////////////////////////////////////////// Declarations
     
     /*!
-     * @class Population
+     * @class Rnd
      * @brief Defines a multi-core random number generator and its operators.
      */
     class Rnd

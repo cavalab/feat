@@ -1,15 +1,16 @@
 var structFT_1_1Parameters =
 [
-    [ "Parameters", "de/d2c/structFT_1_1Parameters.html#a35b48593344437e87d8db2ffa04fa1d7", null ],
+    [ "Parameters", "de/d2c/structFT_1_1Parameters.html#a36c624a716027559fa0ad3ff60e9cdf6", null ],
     [ "~Parameters", "de/d2c/structFT_1_1Parameters.html#a076962362db14b59e1b6c8df0eac62df", null ],
     [ "createNode", "de/d2c/structFT_1_1Parameters.html#ace7871af82efcc6df9fe201df224402b", null ],
-    [ "msg", "de/d2c/structFT_1_1Parameters.html#ae52c9de576e1747b8828a38473478647", null ],
+    [ "msg", "de/d2c/structFT_1_1Parameters.html#a9963ea635d851c94859b30f2f2586f3a", null ],
     [ "set_functions", "de/d2c/structFT_1_1Parameters.html#ad45a4360e251bad1f81789fdcf382f38", null ],
     [ "set_max_depth", "de/d2c/structFT_1_1Parameters.html#a81931e3274483d67c746f43343cbdbbd", null ],
     [ "set_max_dim", "de/d2c/structFT_1_1Parameters.html#a71d90f8320952d295fe834e36439f9e6", null ],
     [ "set_objectives", "de/d2c/structFT_1_1Parameters.html#a8dd349f093773eaa0a13d3bf8dc3a7eb", null ],
     [ "set_term_weights", "de/d2c/structFT_1_1Parameters.html#ad3d7bb01d53f1187490d282bf5068be5", null ],
     [ "set_terminals", "de/d2c/structFT_1_1Parameters.html#a8c1ac1d1d42cbc60b2238f2fd8ffed4c", null ],
+    [ "set_verbosity", "de/d2c/structFT_1_1Parameters.html#aae86ba97f5ed6c30472a6e88fdc9a7b4", null ],
     [ "updateSize", "de/d2c/structFT_1_1Parameters.html#ab7aff38ee6d0be5f3c75a8284a7b29e8", null ],
     [ "classification", "de/d2c/structFT_1_1Parameters.html#a206ae40d847bc59f26332a8de5b86114", null ],
     [ "erc", "de/d2c/structFT_1_1Parameters.html#a6e7a360a64a2968a13f7ae8bdb51b9fd", null ],
@@ -24,6 +25,8 @@ var structFT_1_1Parameters =
     [ "objectives", "de/d2c/structFT_1_1Parameters.html#aace18d360f786428143860deb1531a86", null ],
     [ "otypes", "de/d2c/structFT_1_1Parameters.html#ac8e4d5d39bff92013ca641aac8fea03f", null ],
     [ "pop_size", "de/d2c/structFT_1_1Parameters.html#a8253360dc4ad47b3f94f813daa13867a", null ],
+    [ "shuffle", "de/d2c/structFT_1_1Parameters.html#aca9f6951f7bb932f7d36abaabbc8bb23", null ],
+    [ "split", "de/d2c/structFT_1_1Parameters.html#aba5d0cd6fdeecbe77f560e202bbd1253", null ],
     [ "term_weights", "de/d2c/structFT_1_1Parameters.html#a9ce3967947412217110573e04828b040", null ],
     [ "terminals", "de/d2c/structFT_1_1Parameters.html#acf762563fcbd26b464cf6145012dde1c", null ],
     [ "verbosity", "de/d2c/structFT_1_1Parameters.html#a91f77c1dfe0d6254bc0dd083c05fd951", null ]

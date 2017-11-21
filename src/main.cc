@@ -65,6 +65,8 @@ class InputParser{
 int main(int argc, char** argv){
     // runs FEWTWO from the command line.     
     
+    sh::init_shogun_with_defaults();  // initialize shogun (TODO: wrap into Fewtwo)
+   
     Fewtwo fewtwo;
     std::string sep = ",";
     
@@ -157,6 +159,8 @@ int main(int argc, char** argv){
 
     cout << "done!\n";
 
+    sh::exit_shogun();
+    
     return 0;
 
 }

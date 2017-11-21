@@ -4,7 +4,6 @@
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodecos.h:12: warning: Compound FT::NodeCos is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodedivide.h:12: warning: Compound FT::NodeDivide is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodeleq.h:12: warning: Compound FT::NodeLEQ is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/rnd.h:22: warning: Compound FT::Rnd is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/noderoot.h:12: warning: Compound FT::NodeRoot is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodemultiply.h:12: warning: Compound FT::NodeMultiply is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/pareto.h:14: warning: Compound FT::Pareto is not documented.
@@ -27,6 +26,16 @@
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodeifthenelse.h:12: warning: Compound FT::NodeIfThenElse is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodesquare.h:12: warning: Compound FT::NodeSquare is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodeconstant.h:12: warning: Compound FT::NodeConstant is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/analysis.txt:128: warning: documented symbol `__gnu_cxx::__ops::_Iter_comp_iter< std::vector< unsigned long, std::allocator< unsigned long > > FT::argsort< float >std::vector< float, std::allocator< float > > const &)::{lambda(unsigned long, unsigned long)#1}> void std::__introsort_loop< __gnu_cxx::__normal_iterator< int *, std::vector< int, std::allocator< int > > >, long, __gnu_cxx::__ops::_Iter_comp_iter< FT::Pareto::sort_n > >' was not declared or defined.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/analysis.txt:141: warning: documented symbol `std::random_access_iterator_tag _GLOBAL__sub_I__ZN2FT8load_csvERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERN5Eigen6MatrixIdLin1ELin1ELi0ELin1ELin1EEERNS9_IdLin1ELi1ELi0ELin1ELi1EEESt6vectorIS5_SaIS5_EEc FT::NodeDivide::~NodeDivide' was not declared or defined.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/analysis.txt:255: warning: documented symbol `std::random_access_iterator_tag' was not declared or defined.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/analysis.txt:1205: warning: documented symbol `__gnu_cxx::__ops::_Iter_comp_iter< std::vector< unsigned long, std::allocator< unsigned long > > FT::argsort< float >std::vector< float, std::allocator< float > > const &)::{lambda(unsigned long, unsigned long)#1}>' was not declared or defined.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/analysis.txt:1213: warning: documented symbol `__gnu_cxx::__ops::_Iter_comp_iter< std::vector< unsigned long, std::allocator< unsigned long > > FT::argsort< float >std::vector< float, std::allocator< float > > const &)::{lambda(unsigned long, unsigned long)#1}>' was not declared or defined.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/analysis.txt:1218: warning: documented symbol `__gnu_cxx::__ops::_Iter_comp_iter< std::vector< unsigned long, std::allocator< unsigned long > > FT::argsort< float >std::vector< float, std::allocator< float > > const &)::{lambda(unsigned long, unsigned long)#1}>' was not declared or defined.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/analysis.txt:1221: warning: documented symbol `__gnu_cxx::__ops::_Iter_comp_iter< std::vector< unsigned long, std::allocator< unsigned long > > FT::argsort< float >std::vector< float, std::allocator< float > > const &)::{lambda(unsigned long, unsigned long)#1}>' was not declared or defined.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/analysis.txt:1252: warning: documented symbol `std::random_access_iterator_tag' was not declared or defined.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/analysis.txt:1503: warning: documented symbol `__gnu_cxx::__ops::_Iter_comp_iter< std::vector< unsigned long, std::allocator< unsigned long > > FT::argsort< float >std::vector< float, std::allocator< float > > const &)::{lambda(unsigned long, unsigned long)#1}>' was not declared or defined.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/analysis.txt:1507: warning: documented symbol `__gnu_cxx::__ops::_Iter_comp_iter< std::vector< unsigned long, std::allocator< unsigned long > > FT::argsort< float >std::vector< float, std::allocator< float > > const &)::{lambda(unsigned long, unsigned long)#1}>' was not declared or defined.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/main.cc:17: warning: Member InputParser(int &argc, char **argv) (function) of class InputParser is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/main.cc:15: warning: Member dataset (variable) of class InputParser is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/main.cc:49: warning: Member tokens (variable) of class InputParser is not documented.
@@ -34,8 +43,8 @@
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/lexicase.h:17: warning: Member Lexicase(bool surv) (function) of class FT::Lexicase is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/selection_operator.h:14: warning: Member survival (variable) of class FT::SelectionOperator is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/selection_operator.h:15: warning: Member name (variable) of class FT::SelectionOperator is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/ml.h:74: warning: Member p_est (variable) of class FT::ML is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/ml.h:75: warning: Member type (variable) of class FT::ML is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/ml.h:73: warning: Member p_est (variable) of class FT::ML is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/ml.h:74: warning: Member type (variable) of class FT::ML is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
@@ -65,7 +74,7 @@
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/nodevariable.h:16: warning: Member NodeVariable(const size_t &l, char ntype= 'f') (function) of class FT::NodeVariable is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/node/node.h:44: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/params.h:38: warning: Member Parameters(int pop_size, int gens, string &ml, bool classification, int max_stall, char otype, int verbosity, string fs, unsigned int max_depth, unsigned int max_dim, bool constant, string obj) (function) of class FT::Parameters is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/params.h:39: warning: Member Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, char otype, int verbosity, string fs, unsigned int max_depth, unsigned int max_dim, bool constant, string obj, bool sh, double sp) (function) of class FT::Parameters is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/selection_operator.h:21: warning: Member select(Population &pop, const MatrixXd &F, const Parameters &p) (function) of class FT::SelectionOperator is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/pareto.h:26: warning: Member fast_nds(Population &) (function) of class FT::Pareto is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/pareto.h:27: warning: Member crowding_distance(Population &, int) (function) of class FT::Pareto is not documented.
@@ -76,14 +85,15 @@
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/pareto.h:54: warning: Member operator()(int i, int j) (function) of class FT::Pareto::comparator_obj is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/pareto.h:34: warning: Member sort_n(const Population &population) (function) of class FT::Pareto::sort_n is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/selection/pareto.h:35: warning: Member operator()(int i, int j) (function) of class FT::Pareto::sort_n is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:27: warning: Member Population(int p) (function) of class FT::Population is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:53: warning: Member operator[](size_t i) (function) of class FT::Population is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:75: warning: Member SameFitComplexity(Population &p) (function) of class FT::Population::SameFitComplexity is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:76: warning: Member operator()(size_t i, size_t j) (function) of class FT::Population::SameFitComplexity is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:74: warning: Member pop (variable) of class FT::Population::SameFitComplexity is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:65: warning: Member SortComplexity(Population &p) (function) of class FT::Population::SortComplexity is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:66: warning: Member operator()(size_t i, size_t j) (function) of class FT::Population::SortComplexity is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:64: warning: Member pop (variable) of class FT::Population::SortComplexity is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:29: warning: Member Population(int p) (function) of class FT::Population is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:68: warning: Member operator[](size_t i) (function) of class FT::Population is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:26: warning: Member locs (variable) of class FT::Population is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:90: warning: Member SameFitComplexity(Population &p) (function) of class FT::Population::SameFitComplexity is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:91: warning: Member operator()(size_t i, size_t j) (function) of class FT::Population::SameFitComplexity is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:89: warning: Member pop (variable) of class FT::Population::SameFitComplexity is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:80: warning: Member SortComplexity(Population &p) (function) of class FT::Population::SortComplexity is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:81: warning: Member operator()(size_t i, size_t j) (function) of class FT::Population::SortComplexity is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/population.h:79: warning: Member pop (variable) of class FT::Population::SortComplexity is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/rnd.h:59: warning: Member rnd_int(int lowerLimit, int upperLimit) (function) of class FT::Rnd is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/rnd.h:65: warning: Member rnd_flt(float min=0.0, float max=1.0) (function) of class FT::Rnd is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/fewtwo/src/rnd.h:71: warning: Member rnd_dbl(double min=0.0, double max=1.0) (function) of class FT::Rnd is not documented.

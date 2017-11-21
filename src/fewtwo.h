@@ -56,7 +56,7 @@ namespace FT{
             Fewtwo(int pop_size=100, int gens = 100, string ml = "LinearRidgeRegression", 
                    bool classification = false, int verbosity = 1, int max_stall = 0,
                    string sel ="lexicase", string surv="pareto", float cross_rate = 0.5,
-                   char otype='a', string functions = "+,-,*,/,^2,^3,^,exp,log", 
+                   char otype='a', string functions = "+,-,*,/,^2,^3,exp,log", 
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
                    bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
                    double split=0.75):
@@ -271,21 +271,21 @@ namespace FT{
         {
 
             // select parents
-            params.msg("selection..", 1,"");
+            params.msg("selection..", 2);
             vector<size_t> parents = p_sel->select(*p_pop, F, params);
             params.msg("parents:\n"+p_pop->print_eqns(), 2);          
             
             // variation to produce offspring
-            params.msg("variation...", 1, "");
+            params.msg("variation...", 2);
             p_variation->vary(*p_pop, parents, params);
             params.msg("offspring:\n" + p_pop->print_eqns(true), 2);
 
             // evaluate offspring
-            params.msg("evaluating offspring...", 1,"");
+            params.msg("evaluating offspring...", 2);
             p_eval->fitness(*p_pop, X_t, y_t, F, params, true);
 
             // select survivors from combined pool of parents and offspring
-            params.msg("survival...", 1);
+            params.msg("survival...", 2);
             survivors = p_surv->survive(*p_pop, F, params);
            
             // reduce population to survivors
@@ -294,10 +294,7 @@ namespace FT{
             params.msg("survivors:\n" + p_pop->print_eqns(), 2);
 
             update_best();
-            if (params.verbosity>0) print_stats(g+1);
-            std::cout << "X size: " << X.size() << "\n";
-            std::cout << "y size: " << y.size() << "\n";
-
+            if (params.verbosity>0) print_stats(g+1);           
         }
         params.msg("finished",1);
         params.msg("best training representation: " + best_ind.get_eqn(),1);
@@ -377,7 +374,8 @@ namespace FT{
         double med_score = median(F.colwise().mean().array());  // median loss
         ArrayXd Sizes(p_pop->size()); unsigned i = 0;           // collect program sizes
         for (const auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;}
-        double med_size = median(Sizes);                        // median program size
+        unsigned med_size = median(Sizes);                        // median program size
+        unsigned max_size = Sizes.maxCoeff();
         string bar, space = "";                                 // progress bar
         for (unsigned int i = 0; i<50; ++i){
             if (i <= 50*g/params.gens) bar += "/";
@@ -386,11 +384,12 @@ namespace FT{
         std::cout.precision(5);
         std::cout << std::scientific;
         std::cout << "Generation " << g << "/" << params.gens << " [" + bar + space + "]\n";
-        std::cout << "Min Loss\tMedian Loss\tMedian Program Size\tTime (s)\n"
-                  <<  best_score << "\t" << med_score << "\t" << med_size << "\t" << timer << "\n";
+        std::cout << "Min Loss\tMedian Loss\tMedian (Max) Size\tTime (s)\n"
+                  <<  best_score << "\t" << med_score << "\t" ;
+        std::cout << std::fixed  << med_size << " (" << max_size << ") \t\t" << timer << "\n";
         std::cout << "Representation Pareto Front--------------------------------------\n";
         std::cout << "Rank\tComplexity\tLoss\tRepresentation\n";
-       
+        std::cout << std::scientific;
         // printing 10 individuals from the pareto front
         unsigned n = 1;
         vector<size_t> f = p_pop->sorted_front(n);
@@ -426,16 +425,9 @@ namespace FT{
         for (unsigned i = 0; i<nf; ++i) 
             std::cout << std::fixed << params.terminals[use_idx[i]]->name << "_" 
                   << std::dynamic_pointer_cast<NodeVariable>(params.terminals[use_idx[i]])->loc 
-                  << " (" << use[use_idx[i]]/use_sum*100 << "\%)\t";
+                  << " (" << use[use_idx[i]]/use_sum*100 << "\%)\t"; 
         
-        for (const auto& f: params.functions)
-             use_sum+= f.use_count();
-        std::cout << "\ntotal node usage: " << use_sum << "\n";
-        std::cout << "max program size: " << Sizes.maxCoeff() <<"(" 
-                  << float(Sizes.maxCoeff())/params.max_size << ")\n";
-        std::cout << "F size: " << F.size() << "\n";
-        std::cout << "F_v size: " << F_v.size() << "\n";
-        std::cout << "\n\n";
+        std::cout <<"\n\n";
     }
 }
 #endif

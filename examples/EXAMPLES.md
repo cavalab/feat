@@ -20,7 +20,7 @@ included in `examples/d_enc.txt`.
 To run Fewtwo with a population 1000 for 100 generations using a random seed of 42, type
 
 ```
-./build/fewtwo examples/d_enc.csv -p 1000 -g 100 -rs 42
+./build/fewtwo examples/d_enc.csv -p 1000 -g 100 -r 42
 ```
 
 The default verbosity=1, so you will get a printout of summary statistics each generation. The final

@@ -17,6 +17,7 @@ namespace FT{
 
     /*!
      * @class Population
+     * @brief Defines a population of programs and functions for constructing them. 
      */
     struct Population
     {

@@ -44,7 +44,7 @@ namespace FT{
 
             /// output of an ml model. 
             VectorXd out_ml(MatrixXd& Phi, VectorXd& y, const Parameters& params,
-                            bool& pass, std::shared_ptr<ML> ml = nullptr);
+                            bool& pass, std::shared_ptr<ML> ml);
 
             /// assign fitness to an individual and to F.  
             void assign_fit(Individual& ind, MatrixXd& F, const VectorXd& yhat, const VectorXd& y,
@@ -81,14 +81,15 @@ namespace FT{
         #pragma omp parallel for
         for (unsigned i = start; i<pop.size(); ++i)
         {
-            // calculate program output matrix Phi
+                        // calculate program output matrix Phi
             params.msg("Generating output for " + pop.individuals[i].get_eqn(), 2);
             MatrixXd Phi = pop.individuals[i].out(X, params, y);            
 
             // calculate ML model from Phi
             params.msg("ML training on " + pop.individuals[i].get_eqn(), 2);
             bool pass = true;
-            VectorXd yhat = out_ml(Phi,y,params,pass);
+            auto ml = std::make_shared<ML>(params.ml,params.classification);
+            VectorXd yhat = out_ml(Phi,y,params,pass,ml);
             if (!pass){
                 std::cerr << "Error training eqn " + pop.individuals[i].get_eqn() + "\n";
                 std::cerr << "with raw output " << pop.individuals[i].out(X,params,y) << "\n";
@@ -123,7 +124,10 @@ namespace FT{
         */
 
         if (ml == nullptr)      // make new ML estimator if one is not provided 
-            ml = std::make_shared<ML>(params.ml,params.classification);       
+        {
+            std::cerr << "ERROR: null pointer ml\n";
+            throw;
+        }
         
         
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " normalize features\n";
