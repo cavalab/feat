@@ -67,8 +67,6 @@ class InputParser{
 int main(int argc, char** argv){
     // runs FEWTWO from the command line.     
     
-    init_shogun_with_defaults();
-    
     Fewtwo fewtwo;
     std::string sep = ",";
     
@@ -160,8 +158,6 @@ int main(int argc, char** argv){
     fewtwo.fit(X,y);
 
     cout << "done!\n";
-
-	exit_shogun();
 	
     return 0;
 

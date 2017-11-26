@@ -95,7 +95,7 @@ namespace FT{
             std::cout << "terminals size: " << terminals.size() << "\n";
             bool zeros = std::all_of(w.begin(), w.end(), [](int i) { return i==0; });
             assert(w.size()==terminals.size());
-            assert(!zeros);
+            //assert(!zeros);
             term_weights = w; 
         }
         

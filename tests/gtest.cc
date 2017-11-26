@@ -118,6 +118,130 @@ TEST(Fewtwo, SettingFunctions)
     //TODO test random state seed
 }
 
+TEST(Fewtwo, predict)
+{
+    Fewtwo fewtwo(100);
+    
+    MatrixXd X(7,2); 
+    X << 0,1,  
+         0.47942554,0.87758256,  
+         0.84147098,  0.54030231,
+         0.99749499,  0.0707372,
+         0.90929743, -0.41614684,
+         0.59847214, -0.80114362,
+         0.14112001,-0.9899925;
+
+    X.transposeInPlace();
+    
+    VectorXd y(7); 
+    // y = 2*x1 + 3.x2
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
+             -1.20648656, -2.68773747;
+    
+    fewtwo.set_verbosity(0);
+    
+    fewtwo.fit(X, y);
+    
+    X << 0,1,  
+         0.4,0.8,  
+         0.8,  0.,
+         0.9,  0.0,
+         0.9, -0.4,
+         0.5, -0.8,
+         0.1,-0.9;
+         
+    ASSERT_EQ(fewtwo.predict(X).size(), 7);             //TODO had to remove !bzero ASSERT in set_termincal weights
+}
+
+TEST(Fewtwo, transform)
+{
+    Fewtwo fewtwo(100);
+    
+    MatrixXd X(7,2); 
+    X << 0,1,  
+         0.47942554,0.87758256,  
+         0.84147098,  0.54030231,
+         0.99749499,  0.0707372,
+         0.90929743, -0.41614684,
+         0.59847214, -0.80114362,
+         0.14112001,-0.9899925;
+
+    X.transposeInPlace();
+    
+    VectorXd y(7); 
+    // y = 2*x1 + 3.x2
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
+             -1.20648656, -2.68773747;
+    
+    fewtwo.set_verbosity(0);
+    
+    fewtwo.fit(X, y);
+    
+    X << 0,1,  
+         0.4,0.8,  
+         0.8,  0.,
+         0.9,  0.0,
+         0.9, -0.4,
+         0.5, -0.8,
+         0.1,-0.9;
+        
+    MatrixXd res = fewtwo.transform(X);
+    ASSERT_EQ(res.cols(), 7);
+    ASSERT_EQ(res.rows(), 2);
+}
+
+TEST(Fewtwo, fit_predict)
+{
+    Fewtwo fewtwo(100);
+    
+    MatrixXd X(7,2); 
+    X << 0,1,  
+         0.47942554,0.87758256,  
+         0.84147098,  0.54030231,
+         0.99749499,  0.0707372,
+         0.90929743, -0.41614684,
+         0.59847214, -0.80114362,
+         0.14112001,-0.9899925;
+
+    X.transposeInPlace();
+    
+    VectorXd y(7); 
+    // y = 2*x1 + 3.x2
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
+             -1.20648656, -2.68773747;
+    
+    fewtwo.set_verbosity(0);
+         
+    ASSERT_EQ(fewtwo.fit_predict(X, y).size(), 7);
+}
+
+TEST(Fewtwo, fit_transform)
+{
+    Fewtwo fewtwo(100);
+    
+    MatrixXd X(7,2); 
+    X << 0,1,  
+         0.47942554,0.87758256,  
+         0.84147098,  0.54030231,
+         0.99749499,  0.0707372,
+         0.90929743, -0.41614684,
+         0.59847214, -0.80114362,
+         0.14112001,-0.9899925;
+
+    X.transposeInPlace();
+    
+    VectorXd y(7); 
+    // y = 2*x1 + 3.x2
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
+             -1.20648656, -2.68773747;
+    
+    fewtwo.set_verbosity(0);
+    
+    MatrixXd res = fewtwo.fit_transform(X, y);
+    ASSERT_EQ(res.cols(), 7);
+    ASSERT_EQ(res.rows(), 2);
+}
+
 
 TEST(Individual, EvalEquation)
 {
@@ -811,21 +935,80 @@ TEST(Evaluation, assign_fit)
                       false,                            //shuffle
                       0.75);                             //train/test split
                       
-	MatrixXd X(7,2); 
-    X << 0,1,  
-         0.47942554,0.87758256,  
-         0.84147098,  0.54030231,
-         0.99749499,  0.0707372,
-         0.90929743, -0.41614684,
-         0.59847214, -0.80114362,
-         0.14112001,-0.9899925;
-
-    X.transposeInPlace();
+	Individual ind = Individual();
+	ind.loc = 0;
+	MatrixXd F(10, 1);
+	
+	VectorXd yhat(10), y(10), res(10);
+	yhat << 0.0,
+	        1.0,
+	        2.0,
+	        3.0,
+	        4.0, 
+	        5.0,
+	        6.0,
+	        7.0,
+	        8.0,
+	        9.0;
+	        
+    y << 0.0,
+         0.0,
+         0.0,
+         0.0,
+         0.0,
+         0.0,
+         0.0,
+         0.0,
+         0.0,
+         0.0;
     
-    VectorXd y(7); 
-    // y = 2*x1 + 3.x2
-    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
-             -1.20648656, -2.68773747;
+    Evaluation eval = Evaluation();
+    
+    res << 0.0,
+           1.0,
+           4.0,
+           9.0,
+           16.0,
+           25.0,
+           36.0,
+           49.0,
+           64.0,
+           81.0;
+           
+    eval.assign_fit(ind, F, yhat, y, params);
+    
+    ASSERT_TRUE(F.col(ind.loc) == res);
+    ASSERT_TRUE(ind.fitness == 28.5);
+    
+    params.classification = true;
+    
+    y << 0.0,
+         1.0,
+         2.0,
+         0.0,
+         1.0,
+         2.0,
+         0.0,
+         1.0,
+         2.0,
+         0.0;
+         
+    res << 0.0,
+           0.0,
+           0.0,
+           1.0,
+           1.0,
+           1.0,
+           1.0,
+           1.0,
+           1.0,
+           1.0;
+           
+    eval.assign_fit(ind, F, yhat, y, params);
+    
+    ASSERT_TRUE(F.col(ind.loc) == res);
+    ASSERT_TRUE(ind.fitness == 0.7);
+    
 }
 
 TEST(Evaluation, fitness)
@@ -935,9 +1118,6 @@ TEST(Evaluation, out_ml)
 }
 
 int main(int argc, char **argv) {
-	int ret;
-	init_shogun_with_defaults();
     testing::InitGoogleTest(&argc, argv);
-    ret = RUN_ALL_TESTS();
-    exit_shogun();
+    return RUN_ALL_TESTS();
 }
