@@ -68,7 +68,7 @@ namespace FT{
             Fewtwo(int pop_size=100, int gens = 100, string ml = "LinearRidgeRegression", 
                    bool classification = false, int verbosity = 1, int max_stall = 0,
                    string sel ="lexicase", string surv="pareto", float cross_rate = 0.5,
-                   char otype='a', string functions = "+,-,*,/,exp,log", 
+                   char otype='a', string functions = "+,-,*,/,^2,^3,exp,log", 
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
                    bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
                    double split=0.75):
@@ -312,7 +312,7 @@ namespace FT{
             params.msg("survivors:\n" + p_pop->print_eqns(), 2);
 
             update_best();
-            if (params.verbosity>0) print_stats(g+1);
+            if (params.verbosity>0) print_stats(g+1);           
         }
         params.msg("finished",1);
         params.msg("best training representation: " + best_ind.get_eqn(),1);
@@ -392,20 +392,22 @@ namespace FT{
         double med_score = median(F.colwise().mean().array());  // median loss
         ArrayXd Sizes(p_pop->size()); unsigned i = 0;           // collect program sizes
         for (const auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;}
-        double med_size = median(Sizes);                        // median program size
+        unsigned med_size = median(Sizes);                        // median program size
+        unsigned max_size = Sizes.maxCoeff();
         string bar, space = "";                                 // progress bar
         for (unsigned int i = 0; i<50; ++i){
             if (i <= 50*g/params.gens) bar += "/";
             else space += " ";
         }
-        std::cout.precision(3);
+        std::cout.precision(5);
         std::cout << std::scientific;
         std::cout << "Generation " << g << "/" << params.gens << " [" + bar + space + "]\n";
-        std::cout << "Min Loss\tMedian Loss\tMedian Program Size\tTime (s)\n"
-                  <<  best_score << "\t" << med_score << "\t" << med_size << "\t" << timer << "\n";
+        std::cout << "Min Loss\tMedian Loss\tMedian (Max) Size\tTime (s)\n"
+                  <<  best_score << "\t" << med_score << "\t" ;
+        std::cout << std::fixed  << med_size << " (" << max_size << ") \t\t" << timer << "\n";
         std::cout << "Representation Pareto Front--------------------------------------\n";
         std::cout << "Rank\tComplexity\tLoss\tRepresentation\n";
-       
+        std::cout << std::scientific;
         // printing 10 individuals from the pareto front
         unsigned n = 1;
         vector<size_t> f = p_pop->sorted_front(n);
@@ -435,17 +437,15 @@ namespace FT{
         vector<size_t> use_idx = argsort(use);
         std::reverse(use_idx.begin(), use_idx.end());
 
-        std::cout << "Top 3 features (\% usage):\n";
+        int nf = std::min(5,int(params.terminals.size()));
+        std::cout << "Top " << nf <<" features (\% usage):\n";
         std::cout.precision(1);
-        for (unsigned i = 0; i<3; ++i) 
+        for (unsigned i = 0; i<nf; ++i) 
             std::cout << std::fixed << params.terminals[use_idx[i]]->name << "_" 
                   << std::dynamic_pointer_cast<NodeVariable>(params.terminals[use_idx[i]])->loc 
-                  << " (" << use[use_idx[i]]/use_sum*100 << "\%)\t";
+                  << " (" << use[use_idx[i]]/use_sum*100 << "\%)\t"; 
         
-       // for (const auto& f: params.functions)
-       //     std::cout << f->name << " use_count: " << f.use_count() << "\n"; 
-       
-        std::cout << "\n\n";
+        std::cout <<"\n\n";
     }
 }
 #endif

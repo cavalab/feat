@@ -158,7 +158,7 @@ int main(int argc, char** argv){
     fewtwo.fit(X,y);
 
     cout << "done!\n";
-	
+
     return 0;
 
 }

@@ -115,10 +115,10 @@ $(document).ready(function(){initNavTree('d9/ddc/structFT_1_1Population.html','.
 </div><!--header-->
 <div class="contents">
 
-<p>Defines a multi-core random number generator and its operators.  
+<p>Defines a population of programs and functions for constructing them.  
  <a href="../../d9/ddc/structFT_1_1Population.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="../../d2/da9/rnd_8h_source.html">rnd.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="../../d2/d76/population_8h_source.html">population.h</a>&gt;</code></p>
 <div class="dynheader">
 Collaboration diagram for FT::Population:</div>
 <div class="dyncontent">
@@ -145,10 +145,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a15021af496aefb86f570ffcb5ba30eb3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/ddc/structFT_1_1Population.html#a15021af496aefb86f570ffcb5ba30eb3">init</a> (const <a class="el" href="../../df/d8a/structFT_1_1Individual.html">Individual</a> &amp;starting_model, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params)</td></tr>
 <tr class="memdesc:a15021af496aefb86f570ffcb5ba30eb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">initialize population of programs.  <a href="#a15021af496aefb86f570ffcb5ba30eb3">More...</a><br /></td></tr>
 <tr class="separator:a15021af496aefb86f570ffcb5ba30eb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac5c0694a2cb4725f1a101947bb0aee4d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac5c0694a2cb4725f1a101947bb0aee4d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/ddc/structFT_1_1Population.html#ac5c0694a2cb4725f1a101947bb0aee4d">resize</a> (int pop_size)</td></tr>
-<tr class="memdesc:ac5c0694a2cb4725f1a101947bb0aee4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">update individual vector size <br /></td></tr>
-<tr class="separator:ac5c0694a2cb4725f1a101947bb0aee4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a89d3ce05d158c5cbe5451d01912a0347"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a89d3ce05d158c5cbe5451d01912a0347"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/ddc/structFT_1_1Population.html#a89d3ce05d158c5cbe5451d01912a0347">resize</a> (int pop_size, bool resize_locs=false)</td></tr>
+<tr class="memdesc:a89d3ce05d158c5cbe5451d01912a0347"><td class="mdescLeft">&#160;</td><td class="mdescRight">update individual vector size <br /></td></tr>
+<tr class="separator:a89d3ce05d158c5cbe5451d01912a0347"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7163b0d1cf3d706e3da213042ed37111"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/ddc/structFT_1_1Population.html#a7163b0d1cf3d706e3da213042ed37111">update</a> (vector&lt; size_t &gt; survivors)</td></tr>
 <tr class="memdesc:a7163b0d1cf3d706e3da213042ed37111"><td class="mdescLeft">&#160;</td><td class="mdescRight">reduce programs to the indices in survivors.  <a href="#a7163b0d1cf3d706e3da213042ed37111">More...</a><br /></td></tr>
 <tr class="separator:a7163b0d1cf3d706e3da213042ed37111"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -191,9 +191,12 @@ vector&lt; <a class="el" href="../../df/d8a/structFT_1_1Individual.html">Individ
 vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/ddc/structFT_1_1Population.html#a52ce1fc5e71f8028241f935f80a77c6b">open_loc</a></td></tr>
 <tr class="memdesc:a52ce1fc5e71f8028241f935f80a77c6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">unfilled matrix positions <br /></td></tr>
 <tr class="separator:a52ce1fc5e71f8028241f935f80a77c6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0de1f8148ea62d657cc5ea9c876ab3d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac0de1f8148ea62d657cc5ea9c876ab3d"></a>
+vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>locs</b></td></tr>
+<tr class="separator:ac0de1f8148ea62d657cc5ea9c876ab3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Defines a multi-core random number generator and its operators. </p>
+<div class="textblock"><p>Defines a population of programs and functions for constructing them. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a7260d9262568c7d598923c8c2e638a70"></a>
 <div class="memitem">

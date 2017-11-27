@@ -37,7 +37,6 @@ namespace FT{
                  * use string to specify a desired ML algorithm from shogun.
                  */
                 
-                //sh::init_shogun_with_defaults();  // initialize shogun if needed
                 type = ml;
                 auto prob_type = sh::EProblemType::PT_REGRESSION;
                 
@@ -66,7 +65,7 @@ namespace FT{
                 
             }
         
-            ~ML(){ /*sh::exit_shogun();*/ }
+            ~ML(){}
 
             // return vector of weights for model. 
             vector<double> get_weights();

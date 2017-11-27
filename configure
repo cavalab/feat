@@ -1,0 +1,20 @@
+#!/bin/bash
+# ===
+# Configuration Options:
+# ./configure : builds a release version of fewtwo.
+# ./configure debug : builds a debug version of fewtwo.
+# ./configure profile: build a version of fewtwo use with profiling tools. 
+# ===
+if [ "$1" == "debug" ]; then
+    rm -rf debug; mkdir debug; cd debug; 
+    cmake -DCMAKE_BUILD_TYPE=Debug ..
+    cd ..
+elif [ "$1" == "profile" ]; then
+    rm -rf profile; mkdir profile; cd profile;    
+    cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS=-p -O2 ..
+    cd ..
+else
+    rm -rf build; mkdir build; cd build; 
+    cmake ..
+    cd ..
+fi

@@ -1,10 +1,22 @@
 var searchData=
 [
+  ['get_5fclassification',['get_classification',['../dc/d9e/classFT_1_1Fewtwo.html#a2ae6136c6fe0469bf53bd0f18c5fc1ec',1,'FT::Fewtwo']]],
   ['get_5fcross_5frate',['get_cross_rate',['../d3/d01/classFT_1_1Variation.html#a327a0ac0f9770fe1a87823d7f9bee14b',1,'FT::Variation']]],
   ['get_5fdim',['get_dim',['../df/d8a/structFT_1_1Individual.html#a22bf1f1016d87a21c8f21da1a59ef11e',1,'FT::Individual']]],
   ['get_5feqn',['get_eqn',['../df/d8a/structFT_1_1Individual.html#aa6c6aa88497a97a76679b2e58a5b0b72',1,'FT::Individual']]],
+  ['get_5ferc',['get_erc',['../dc/d9e/classFT_1_1Fewtwo.html#a9ca2678d3fbd025433b14bc06cce95d8',1,'FT::Fewtwo']]],
+  ['get_5fgenerations',['get_generations',['../dc/d9e/classFT_1_1Fewtwo.html#a0234c6e1427c889d9221c1f863e9f435',1,'FT::Fewtwo']]],
+  ['get_5fmax_5fdepth',['get_max_depth',['../dc/d9e/classFT_1_1Fewtwo.html#ad63f270de2fdb594ee78453cea47f5fd',1,'FT::Fewtwo']]],
+  ['get_5fmax_5fdim',['get_max_dim',['../dc/d9e/classFT_1_1Fewtwo.html#abdf5ee9735cb2673ad8b2f3225d01867',1,'FT::Fewtwo']]],
+  ['get_5fmax_5fsize',['get_max_size',['../dc/d9e/classFT_1_1Fewtwo.html#aea78c92647ff23b276d7456a1c816dcc',1,'FT::Fewtwo']]],
+  ['get_5fmax_5fstall',['get_max_stall',['../dc/d9e/classFT_1_1Fewtwo.html#a908618f8a2e76bcafae21df83c5e393d',1,'FT::Fewtwo']]],
+  ['get_5fml',['get_ml',['../dc/d9e/classFT_1_1Fewtwo.html#a1a00550d071d4710bd8094189dc0890d',1,'FT::Fewtwo']]],
+  ['get_5fnum_5ffeatures',['get_num_features',['../dc/d9e/classFT_1_1Fewtwo.html#addc35e8aa0b67b5ca9e8ab40a6329181',1,'FT::Fewtwo']]],
   ['get_5fopen_5floc',['get_open_loc',['../d9/ddc/structFT_1_1Population.html#af54b9e6895c8fff0ea2c12b892d84eab',1,'FT::Population']]],
+  ['get_5fotypes',['get_otypes',['../dc/d9e/classFT_1_1Fewtwo.html#a8c0c1d75e4d18eb852fadfd25e615f22',1,'FT::Fewtwo']]],
+  ['get_5fpop_5fsize',['get_pop_size',['../dc/d9e/classFT_1_1Fewtwo.html#ab54604a84ed06e760c0ebfd24d7f1d3b',1,'FT::Fewtwo']]],
   ['get_5ftype',['get_type',['../de/d87/structFT_1_1Selection.html#a15bffb5ec310fbcbbe793d26e510279c',1,'FT::Selection']]],
+  ['get_5fverbosity',['get_verbosity',['../dc/d9e/classFT_1_1Fewtwo.html#a98bb42d21fc4574f7ff9ef03f66f11a2',1,'FT::Fewtwo']]],
   ['get_5fweights',['get_weights',['../df/dfa/classFT_1_1ML.html#a27fa984d19c8826c2fcbe81edb6a3417',1,'FT::ML']]],
   ['getcmdoption',['getCmdOption',['../de/d16/classInputParser.html#a4948d2aa6303f543f604b4d2f71030bb',1,'InputParser']]]
 ];

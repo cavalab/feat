@@ -11,11 +11,12 @@ var structFT_1_1Population =
     [ "operator[]", "d9/ddc/structFT_1_1Population.html#a986732126b3f2d5616f03422bad1a21e", null ],
     [ "operator[]", "d9/ddc/structFT_1_1Population.html#aff87c134863931cb98d1ca7d83f5bee3", null ],
     [ "print_eqns", "d9/ddc/structFT_1_1Population.html#a436fe969119dd5dc8c1129df54360472", null ],
-    [ "resize", "d9/ddc/structFT_1_1Population.html#ac5c0694a2cb4725f1a101947bb0aee4d", null ],
+    [ "resize", "d9/ddc/structFT_1_1Population.html#a89d3ce05d158c5cbe5451d01912a0347", null ],
     [ "size", "d9/ddc/structFT_1_1Population.html#a8ec37c048a00ef43d5c6f8f327e1c608", null ],
     [ "sorted_front", "d9/ddc/structFT_1_1Population.html#aa608d061652e05c3041fd64c85c61bb2", null ],
     [ "update", "d9/ddc/structFT_1_1Population.html#a7163b0d1cf3d706e3da213042ed37111", null ],
     [ "update_open_loc", "d9/ddc/structFT_1_1Population.html#a4d05c192693912a36626e89797d46516", null ],
     [ "individuals", "d9/ddc/structFT_1_1Population.html#a3c049edb8cea90f79fe7c7613584879e", null ],
+    [ "locs", "d9/ddc/structFT_1_1Population.html#ac0de1f8148ea62d657cc5ea9c876ab3d", null ],
     [ "open_loc", "d9/ddc/structFT_1_1Population.html#a52ce1fc5e71f8028241f935f80a77c6b", null ]
 ];
