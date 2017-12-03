@@ -71,10 +71,10 @@ namespace FT{
                    char otype='a', string functions = "+,-,*,/,^2,^3,exp,log", 
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
                    bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
-                   double split=0.75):
+                   double split=0.75, vector<char> dtypes = vector<char>()):
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
-                             functions, max_depth, max_dim, erc, obj, shuffle, split),
+                             functions, max_depth, max_dim, erc, obj, shuffle, split, dtypes),
                       p_pop( make_shared<Population>(pop_size) ),
                       p_sel( make_shared<Selection>(sel) ),
                       p_surv( make_shared<Selection>(surv, true) ),
@@ -148,6 +148,9 @@ namespace FT{
             /// set train fraction of dataset
             void set_split(double sp){params.split = sp;}
             
+            ///set data types for input parameters
+            void set_dtypes(vector<char> dtypes){params.dtypes = dtypes;}
+            
             ///return population size
             int get_pop_size(){ return params.pop_size; }
             
@@ -189,6 +192,9 @@ namespace FT{
             
             ///return fraction of data to use for training
             double get_split(){ return params.split; }
+            
+            ///return data types for input parameters
+            vector<char> get_dtypes(){ return params.dtypes; }
 
             /// destructor             
             ~Fewtwo(){} 

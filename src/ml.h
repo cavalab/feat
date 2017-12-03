@@ -89,7 +89,7 @@ namespace FT{
             w.assign(tmp.data(), tmp.data()+tmp.size());          
                 
         } 
-        return w;
+        return softmax(w);
     }
 
 
