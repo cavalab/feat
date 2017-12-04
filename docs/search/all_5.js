@@ -3,7 +3,7 @@ var searchData=
   ['f',['F',['../dc/d9e/classFT_1_1Fewtwo.html#abb74a39226acd92bc818f231f3ea469b',1,'FT::Fewtwo']]],
   ['f_5fv',['F_v',['../dc/d9e/classFT_1_1Fewtwo.html#a435533647c2bb17ba787133c2f819bb8',1,'FT::Fewtwo']]],
   ['fewtwo',['Fewtwo',['../dc/d9e/classFT_1_1Fewtwo.html',1,'FT']]],
-  ['fewtwo',['Fewtwo',['../dc/d9e/classFT_1_1Fewtwo.html#a4b143e847e7776d623e3db6283145aa9',1,'FT::Fewtwo']]],
+  ['fewtwo',['Fewtwo',['../dc/d9e/classFT_1_1Fewtwo.html#ae2e46a8998e2fa230dac1a45ab7f0ed8',1,'FT::Fewtwo']]],
   ['fit',['fit',['../dc/d9e/classFT_1_1Fewtwo.html#a652a785ec32021c8b0f93e27389547fa',1,'FT::Fewtwo']]],
   ['fit_5fpredict',['fit_predict',['../dc/d9e/classFT_1_1Fewtwo.html#ab4464093d6a900464819d7c98e778712',1,'FT::Fewtwo']]],
   ['fit_5ftransform',['fit_transform',['../dc/d9e/classFT_1_1Fewtwo.html#ab4fbeb79d69fb7dd9806f5c9e30414de',1,'FT::Fewtwo']]],

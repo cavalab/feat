@@ -7,6 +7,7 @@ var searchData=
   ['selectionoperator',['SelectionOperator',['../d2/d3a/structFT_1_1SelectionOperator.html',1,'FT']]],
   ['set_5fclassification',['set_classification',['../dc/d9e/classFT_1_1Fewtwo.html#af2d75c1c01a7b42ebba0bacfd8152dad',1,'FT::Fewtwo']]],
   ['set_5fcross_5frate',['set_cross_rate',['../dc/d9e/classFT_1_1Fewtwo.html#a50ff9bc73a574e178cbebb721c768de1',1,'FT::Fewtwo::set_cross_rate()'],['../d3/d01/classFT_1_1Variation.html#a1674e4345a50be74158763426b80e928',1,'FT::Variation::set_cross_rate()']]],
+  ['set_5fdtypes',['set_dtypes',['../dc/d9e/classFT_1_1Fewtwo.html#a318811901a793bba79c578f2e1e97559',1,'FT::Fewtwo']]],
   ['set_5ferc',['set_erc',['../dc/d9e/classFT_1_1Fewtwo.html#ab0cb287ff07aa86ebded494a7a018090',1,'FT::Fewtwo']]],
   ['set_5ffunctions',['set_functions',['../dc/d9e/classFT_1_1Fewtwo.html#a3ec40779b4589efebf8c191c5812de2b',1,'FT::Fewtwo::set_functions()'],['../de/d2c/structFT_1_1Parameters.html#ad45a4360e251bad1f81789fdcf382f38',1,'FT::Parameters::set_functions()']]],
   ['set_5fgenerations',['set_generations',['../dc/d9e/classFT_1_1Fewtwo.html#ad5b57ec49fafbefaf16025b5de07c1e6',1,'FT::Fewtwo']]],

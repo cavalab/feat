@@ -101,7 +101,7 @@ namespace FT{
 	            n->evaluate(X, y, stack_f, stack_b);
             else
             {
-                std::cout << "node " << n->name << " in " + program_str() + " is invalid\n";
+                std::cout << "out() error: node " << n->name << " in " + program_str() + " is invalid\n";
                 exit(1);
             }
         }
@@ -137,7 +137,7 @@ namespace FT{
                 	n->eval_eqn(stack_f,stack_b);
                 else
                 {
-                    std::cout << "node " << n->name << " in " + program_str() + " is invalid\n";
+                    std::cout << "get_eqn() error: node " << n->name << " in " + program_str() + " is invalid\n";
                     exit(1);
                 }
 

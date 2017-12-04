@@ -126,18 +126,18 @@ Collaboration diagram for FT::Fewtwo:</div>
 <map name="FT_1_1Fewtwo_coll__map" id="FT_1_1Fewtwo_coll__map">
 <area shape="rect" id="node4" href="../../de/d2c/structFT_1_1Parameters.html" title="holds the hyperparameters for Fewtwo. " alt="" coords="698,360,811,387"/>
 <area shape="rect" id="node15" href="../../df/d8a/structFT_1_1Individual.html" title="individual programs in the population " alt="" coords="704,107,805,133"/>
-<area shape="rect" id="node8" title="STL class. " alt="" coords="181,388,261,415"/>
-<area shape="rect" id="node9" title="STL class. " alt="" coords="5,381,132,422"/>
+<area shape="rect" id="node8" title="STL class. " alt="" coords="181,395,261,421"/>
+<area shape="rect" id="node9" title="STL class. " alt="" coords="5,387,132,429"/>
 <area shape="rect" id="node13" href="../../d3/d4e/classFT_1_1Timer.html" title="class for timing things. " alt="" coords="715,259,794,285"/>
 </map>
 <center><span class="legend">[<a target="top" href="../../graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a4b143e847e7776d623e3db6283145aa9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4b143e847e7776d623e3db6283145aa9"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a4b143e847e7776d623e3db6283145aa9">Fewtwo</a> (int pop_size=100, int gens=100, string ml=&quot;LinearRidgeRegression&quot;, bool classification=false, int verbosity=1, int max_stall=0, string sel=&quot;lexicase&quot;, string surv=&quot;pareto&quot;, float cross_rate=0.5, char otype='a', string functions=&quot;+,-,*,/,^2,^3,exp,log&quot;, unsigned int max_depth=3, unsigned int max_dim=10, int random_state=0, bool erc=false, string obj=&quot;fitness,complexity&quot;, bool shuffle=false, double split=0.75)</td></tr>
-<tr class="memdesc:a4b143e847e7776d623e3db6283145aa9"><td class="mdescLeft">&#160;</td><td class="mdescRight">member initializer list constructor <br /></td></tr>
-<tr class="separator:a4b143e847e7776d623e3db6283145aa9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2e46a8998e2fa230dac1a45ab7f0ed8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae2e46a8998e2fa230dac1a45ab7f0ed8"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#ae2e46a8998e2fa230dac1a45ab7f0ed8">Fewtwo</a> (int pop_size=100, int gens=100, string ml=&quot;LinearRidgeRegression&quot;, bool classification=false, int verbosity=1, int max_stall=0, string sel=&quot;lexicase&quot;, string surv=&quot;pareto&quot;, float cross_rate=0.5, char otype='a', string functions=&quot;+,-,*,/,^2,^3,exp,log&quot;, unsigned int max_depth=3, unsigned int max_dim=10, int random_state=0, bool erc=false, string obj=&quot;fitness,complexity&quot;, bool shuffle=false, double split=0.75, vector&lt; char &gt; dtypes=vector&lt; char &gt;())</td></tr>
+<tr class="memdesc:ae2e46a8998e2fa230dac1a45ab7f0ed8"><td class="mdescLeft">&#160;</td><td class="mdescRight">member initializer list constructor <br /></td></tr>
+<tr class="separator:ae2e46a8998e2fa230dac1a45ab7f0ed8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b02fd5d45bd414d0018c39d05e017e4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0b02fd5d45bd414d0018c39d05e017e4"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a0b02fd5d45bd414d0018c39d05e017e4">set_pop_size</a> (int pop_size)</td></tr>
 <tr class="memdesc:a0b02fd5d45bd414d0018c39d05e017e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">set size of population <br /></td></tr>
@@ -198,6 +198,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../.
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#ab0cb287ff07aa86ebded494a7a018090">set_erc</a> (bool erc)</td></tr>
 <tr class="memdesc:ab0cb287ff07aa86ebded494a7a018090"><td class="mdescLeft">&#160;</td><td class="mdescRight">flag to set whether to use variable or constants for terminals <br /></td></tr>
 <tr class="separator:ab0cb287ff07aa86ebded494a7a018090"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1375358c8122e1e730c37a85257f991d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1375358c8122e1e730c37a85257f991d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a1375358c8122e1e730c37a85257f991d">set_shuffle</a> (bool sh)</td></tr>
+<tr class="memdesc:a1375358c8122e1e730c37a85257f991d"><td class="mdescLeft">&#160;</td><td class="mdescRight">flag to shuffle the input samples for train/test splits <br /></td></tr>
+<tr class="separator:a1375358c8122e1e730c37a85257f991d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a582f09a9662950c580ae9442c94e95e7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a582f09a9662950c580ae9442c94e95e7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a582f09a9662950c580ae9442c94e95e7">set_split</a> (double sp)</td></tr>
+<tr class="memdesc:a582f09a9662950c580ae9442c94e95e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">set train fraction of dataset <br /></td></tr>
+<tr class="separator:a582f09a9662950c580ae9442c94e95e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a318811901a793bba79c578f2e1e97559"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a318811901a793bba79c578f2e1e97559"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a318811901a793bba79c578f2e1e97559">set_dtypes</a> (vector&lt; char &gt; dtypes)</td></tr>
+<tr class="memdesc:a318811901a793bba79c578f2e1e97559"><td class="mdescLeft">&#160;</td><td class="mdescRight">set data types for input parameters <br /></td></tr>
+<tr class="separator:a318811901a793bba79c578f2e1e97559"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab54604a84ed06e760c0ebfd24d7f1d3b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab54604a84ed06e760c0ebfd24d7f1d3b"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#ab54604a84ed06e760c0ebfd24d7f1d3b">get_pop_size</a> ()</td></tr>
 <tr class="memdesc:ab54604a84ed06e760c0ebfd24d7f1d3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">return population size <br /></td></tr>
@@ -246,14 +258,18 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../.
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#addc35e8aa0b67b5ca9e8ab40a6329181">get_num_features</a> ()</td></tr>
 <tr class="memdesc:addc35e8aa0b67b5ca9e8ab40a6329181"><td class="mdescLeft">&#160;</td><td class="mdescRight">return number of features <br /></td></tr>
 <tr class="separator:addc35e8aa0b67b5ca9e8ab40a6329181"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1375358c8122e1e730c37a85257f991d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1375358c8122e1e730c37a85257f991d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a1375358c8122e1e730c37a85257f991d">set_shuffle</a> (bool sh)</td></tr>
-<tr class="memdesc:a1375358c8122e1e730c37a85257f991d"><td class="mdescLeft">&#160;</td><td class="mdescRight">flag to shuffle the input samples for train/test splits <br /></td></tr>
-<tr class="separator:a1375358c8122e1e730c37a85257f991d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a582f09a9662950c580ae9442c94e95e7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a582f09a9662950c580ae9442c94e95e7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a582f09a9662950c580ae9442c94e95e7">set_split</a> (double sp)</td></tr>
-<tr class="memdesc:a582f09a9662950c580ae9442c94e95e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">set train fraction of dataset <br /></td></tr>
-<tr class="separator:a582f09a9662950c580ae9442c94e95e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a599779cd06514a1f987137d4c496c3f5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a599779cd06514a1f987137d4c496c3f5"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a599779cd06514a1f987137d4c496c3f5">get_shuffle</a> ()</td></tr>
+<tr class="memdesc:a599779cd06514a1f987137d4c496c3f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether option to shuffle the data is set or not <br /></td></tr>
+<tr class="separator:a599779cd06514a1f987137d4c496c3f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a908fb470d5fb32226fcd701da6f10cfd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a908fb470d5fb32226fcd701da6f10cfd"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a908fb470d5fb32226fcd701da6f10cfd">get_split</a> ()</td></tr>
+<tr class="memdesc:a908fb470d5fb32226fcd701da6f10cfd"><td class="mdescLeft">&#160;</td><td class="mdescRight">return fraction of data to use for training <br /></td></tr>
+<tr class="separator:a908fb470d5fb32226fcd701da6f10cfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab659ad226c3b96df121ba0fb20e10b4b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab659ad226c3b96df121ba0fb20e10b4b"></a>
+vector&lt; char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#ab659ad226c3b96df121ba0fb20e10b4b">get_dtypes</a> ()</td></tr>
+<tr class="memdesc:ab659ad226c3b96df121ba0fb20e10b4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">return data types for input parameters <br /></td></tr>
+<tr class="separator:ab659ad226c3b96df121ba0fb20e10b4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a9b58b81cb2c5b2d3e3b3764b0b8e7d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5a9b58b81cb2c5b2d3e3b3764b0b8e7d"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html#a5a9b58b81cb2c5b2d3e3b3764b0b8e7d">~Fewtwo</a> ()</td></tr>
 <tr class="memdesc:a5a9b58b81cb2c5b2d3e3b3764b0b8e7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">destructor <br /></td></tr>
