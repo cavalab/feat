@@ -18,7 +18,7 @@ namespace FT{
      */
     
     void load_csv (const std::string & path, MatrixXd& X, VectorXd& y, vector<string> names, 
-                   char sep=',') 
+                   vector<char> &dtypes, char sep=',') 
     {
         std::ifstream indata;
         indata.open(path);
@@ -55,11 +55,42 @@ namespace FT{
             ++rows;
             col=0;   
         }
-        X = Map<MatrixXd>(values.data(), rows-1, values.size()/(rows-1));
-        X.transposeInPlace();
+        //cout<<"Rows read are "<<rows<<std::endl;
+        //cout<<"Data size is "<<values.size()<<std::endl;
+        
+        /*cout<<"Values are\n";
+        int x;
+        for(x = 0; x < values.size(); x++)
+            cout<<values[x]<<std::endl;
+        */
+        
+        //X = Map<MatrixXd>(values.data(), rows-1, values.size()/(rows-1));
+        X = Map<MatrixXd>(values.data(), values.size()/(rows-1), rows-1);
+        //cout<<"X is\n"<<X<<std::endl;
+        //X.transposeInPlace();
         y = Map<VectorXd>(targets.data(), targets.size());
         assert(X.cols() == y.size() && "different numbers of samples in X and y");
         assert(X.rows() == names.size() && "header missing or incorrect number of feature names");
+        
+        //cout<<"After transpose X is\n"<<X<<std::endl;
+        //cout<<"Y is\n"<<y<<std::endl;
+        int i, j;
+        bool isBinary;
+        for(i = 0; i < X.rows(); i++)
+        {
+            isBinary = true;
+            //cout<<"Checking for column "<<i<<std::endl;
+            for(j = 0; j < X.cols(); j++)
+            {
+                //cout<<"Value is "<<X(i, j)<<std::endl;
+                if(X(i, j) != 0 && X(i, j) != 1)
+                    isBinary = false;
+            }
+            if(isBinary)
+                dtypes.push_back('b');
+            else
+                dtypes.push_back('f');
+        }
     }
     
     
@@ -181,5 +212,21 @@ namespace FT{
         y_v = VectorXd::Map(y.data()+y_t.size(),y_v.size());
 
     
+    }
+    
+    template <class T>
+    vector<T> softmax(vector<T> w)
+    {
+        int x;
+        T sum = 0;
+        vector<T> w_new;
+        
+        for(x = 0; x < w.size(); x++)
+            sum += exp(w[x]);
+            
+        for(x = 0; x < w.size(); x++)
+            w_new.push_back(exp(w[x])/sum);
+            
+        return w_new;
     }
 } 

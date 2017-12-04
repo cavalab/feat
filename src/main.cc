@@ -151,14 +151,31 @@ int main(int argc, char** argv){
     MatrixXd X;
     VectorXd y; 
     vector<string> names;
-    FT::load_csv(input.dataset,X,y,names,delim);    
+    vector<char> dtypes;
+    FT::load_csv(input.dataset,X,y,names,dtypes,delim);
 
+    /*cout<<"Names are\n";
+    int x;
+    for(x = 0; x < names.size(); x++)
+        cout<<names[x]<<std::endl;
+        
+    cout <<"Number of columns are "<<X.cols()<<std::endl;
+    cout <<"Number of rows are "<<X.rows()<<std::endl;
+    
+    cout<<"Dtypes are\n";
+    
+    for(x = 0; x < dtypes.size(); x++)
+        cout<<dtypes[x]<<std::endl;
+     */   
+     
+    fewtwo.set_dtypes(dtypes);
+    
     cout << "fitting model...\n";
-
+    
     fewtwo.fit(X,y);
 
     cout << "done!\n";
-
+	
     return 0;
 
 }

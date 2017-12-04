@@ -1117,6 +1117,47 @@ TEST(Evaluation, out_ml)
     ASSERT_TRUE(mean < NEAR_ZERO);
 }
 
+TEST(Selection, SelectionOperator)
+{
+    Fewtwo fewtwo(100);
+    MatrixXd X(7,2); 
+    X << 0,1,  
+         0.47942554,0.87758256,  
+         0.84147098,  0.54030231,
+         0.99749499,  0.0707372,
+         0.90929743, -0.41614684,
+         0.59847214, -0.80114362,
+         0.14112001,-0.9899925;
+
+    X.transposeInPlace();
+    
+    VectorXd y(7); 
+    // y = 2*x1 + 3.x2
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
+             -1.20648656, -2.68773747;
+
+	fewtwo.timer.Reset();
+	
+	MatrixXd X_t(X.rows(),int(X.cols()*fewtwo.params.split));
+    MatrixXd X_v(X.rows(),int(X.cols()*(1-fewtwo.params.split)));
+    VectorXd y_t(int(y.size()*fewtwo.params.split)), y_v(int(y.size()*(1-fewtwo.params.split)));
+    train_test_split(X,y,X_t,X_v,y_t,y_v,fewtwo.params.shuffle);
+        
+	fewtwo.params.set_terminals(X.rows()); 
+        
+    // initial model on raw input
+    fewtwo.initial_model(X,y);
+                  
+    // initialize population 
+    fewtwo.p_pop->init(fewtwo.best_ind, fewtwo.params);
+    
+    fewtwo.F.resize(    X_t.cols(),int(2*fewtwo.params.pop_size));
+    fewtwo.p_eval->fitness(*(fewtwo.p_pop), X_t, y_t, fewtwo.F, fewtwo.params);
+    vector<size_t> parents = fewtwo.p_sel->select(*(fewtwo.p_pop), fewtwo.F, fewtwo.params);
+    
+    ASSERT_EQ(parents.size(), fewtwo.get_pop_size());
+}
+
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

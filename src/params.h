@@ -35,10 +35,11 @@ namespace FT{
         vector<string> objectives;                  ///< Pareto objectives 
         bool shuffle;                               ///< option to shuffle the data
         double split;                               ///< fraction of data to use for training
+        vector<char> dtypes;                        ///< data types of input parameters
 
         Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
                    char otype, int verbosity, string fs, unsigned int max_depth, 
-                   unsigned int max_dim, bool constant, string obj, bool sh, double sp):    
+                   unsigned int max_dim, bool constant, string obj, bool sh, double sp, vector<char> datatypes = vector<char>()):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
@@ -48,7 +49,8 @@ namespace FT{
             max_dim(max_dim),
             erc(constant),
             shuffle(sh),
-            split(sp)
+            split(sp),
+            dtypes(datatypes)
         {
         	set_verbosity(verbosity);
             set_functions(fs);
@@ -220,8 +222,13 @@ namespace FT{
     		return std::shared_ptr<Node>(new NodeIfThenElse());
 
         // variables and constants
-        else if (str.compare("x") == 0)
-            return std::shared_ptr<Node>(new NodeVariable(loc));
+         else if (str.compare("x") == 0)
+        {
+            if(dtypes.size() == 0)
+                return std::shared_ptr<Node>(new NodeVariable(loc));
+            else
+                return std::shared_ptr<Node>(new NodeVariable(loc, dtypes[loc]));
+        }
             
         else if (str.compare("kb")==0)
             return std::shared_ptr<Node>(new NodeConstant(b_val));
