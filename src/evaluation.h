@@ -83,7 +83,7 @@ namespace FT{
         {
                         // calculate program output matrix Phi
             params.msg("Generating output for " + pop.individuals[i].get_eqn(), 2);
-            MatrixXd Phi = pop.individuals[i].out(X, params, y);            
+            MatrixXd Phi = pop.individuals.at(i).out(X, params, y);            
 
             // calculate ML model from Phi
             params.msg("ML training on " + pop.individuals[i].get_eqn(), 2);
@@ -163,8 +163,9 @@ namespace FT{
         params.msg("done.",2);
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " get output\n";
         //get output
-        auto y_pred = ml->p_est->apply_regression(features)->get_labels();
-
+        auto reg = ml->p_est->apply_regression(features);
+        auto y_pred = reg->get_labels();
+        delete reg; 
         // weights
         vector<double> w = ml->get_weights();
 
@@ -178,6 +179,7 @@ namespace FT{
             std::cerr << "inf or nan values in model fit to: " << X << "\n";
             pass = false;
         }
+        //std::cout << "yhat is " << yhat.transpose() << std::endl; 
         // return
         return yhat;
     }

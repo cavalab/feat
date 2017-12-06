@@ -22,6 +22,7 @@ namespace FT{
         bool classification;            			///< flag to conduct classification rather than 
         int max_stall;                  			///< maximum stall in learning, in generations
         vector<char> otypes;                     	///< program output types ('f', 'b')
+        char otype;                                 ///< user parameter for output type setup
         int verbosity;                  			///< amount of printing. 0: none, 1: minimal, 
                                                     // 2: all
         vector<double> term_weights;    			///< probability weighting of terminals
@@ -38,7 +39,7 @@ namespace FT{
         vector<char> dtypes;                        ///< data types of input parameters
 
         Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
-                   char otype, int verbosity, string fs, unsigned int max_depth, 
+                   char ot, int verbosity, string fs, unsigned int max_depth, 
                    unsigned int max_dim, bool constant, string obj, bool sh, double sp, vector<char> datatypes = vector<char>()):    
             pop_size(pop_size),
             gens(gens),
@@ -50,29 +51,14 @@ namespace FT{
             erc(constant),
             shuffle(sh),
             split(sp),
-            dtypes(datatypes)
+            dtypes(datatypes),
+            otype(ot)
         {
         	set_verbosity(verbosity);
             set_functions(fs);
             set_objectives(obj);
-            updateSize();        
-            switch (otype)
-            { 
-                case 'b': otypes.push_back('b'); break;
-                case 'f': otypes.push_back('f'); break;
-                default: 
-                {
-                    for (const auto& f: functions)
-                        if (!in(otypes,f->otype)) 
-                            otypes.push_back(f->otype);
-                    for (const auto& t: terminals)
-                        if (!in(otypes,t->otype)) 
-                            otypes.push_back(t->otype);
-
-                    break;
-                }
-            }
-
+            updateSize();     
+            set_otypes();
         }
         
         ~Parameters(){}
@@ -92,13 +78,15 @@ namespace FT{
         
         /// sets weights for terminals. 
         void set_term_weights(const vector<double>& w)
-        {
-            std::cout << "w size: " << w.size() << "\n";
-            std::cout << "terminals size: " << terminals.size() << "\n";
+        {           
             bool zeros = std::all_of(w.begin(), w.end(), [](int i) { return i==0; });
             assert(w.size()==terminals.size());
             //assert(!zeros);
-            term_weights = w; 
+            term_weights = w;
+            std::cout << "term weights: ";
+            for (auto tw : term_weights)
+                std::cout << tw << " ";
+            std::cout << "\n";
         }
         
         /// return shared pointer to a node based on the string passed
@@ -136,17 +124,41 @@ namespace FT{
         
         /// set level of debug info
         void set_verbosity(int verbosity)
+        {
+            if(verbosity <=2 && verbosity >=0)
+                this->verbosity = verbosity;
+            else
             {
-            	if(verbosity <=2 && verbosity >=0)
-	            	this->verbosity = verbosity;
-	            else
-	            {
-	            	std::cerr << "'" + std::to_string(verbosity) + "' is not a valid verbosity. Setting to default 1\n";
-	            	std::cerr << "Valid Values :\n\t0 - none\n\t1 - minimal\n\t2 - all\n";
-	            	this->verbosity = 1;
-	            }
-            } 
+                std::cerr << "'" + std::to_string(verbosity) + "' is not a valid verbosity. Setting to default 1\n";
+                std::cerr << "Valid Values :\n\t0 - none\n\t1 - minimal\n\t2 - all\n";
+                this->verbosity = 1;
+            }
+        } 
 
+        void set_otype(char ot){ otype = ot; set_otypes();}
+
+        /// set the output types of programs
+        void set_otypes()
+        {
+            otypes.clear();
+            switch (otype)
+            { 
+                case 'b': otypes.push_back('b'); break;
+                case 'f': otypes.push_back('f'); break;
+                default: 
+                {
+                    for (const auto& f: functions)
+                        if (!in(otypes,f->otype)) 
+                            otypes.push_back(f->otype);
+                    for (const auto& t: terminals)
+                        if (!in(otypes,t->otype)) 
+                            otypes.push_back(t->otype);
+
+                    break;
+                }
+            }
+
+        }
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
@@ -273,6 +285,8 @@ namespace FT{
             for (auto f: functions) std::cout << f->name << ", "; 
             std::cout << "]\n";
         }
+        // reset output types
+        set_otypes();
     }
 
     void Parameters::set_terminals(int nf)
@@ -292,7 +306,9 @@ namespace FT{
     	       		terminals.push_back(createNode(string("kb"), 0, r(), 0));
     	       	else
     	       		terminals.push_back(createNode(string("kd"), r(), 0, 0));
-    	    }                
+    	    }        
+        // reset output types
+        set_otypes();
     }
 
     void Parameters::set_objectives(string obj)

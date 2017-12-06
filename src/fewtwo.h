@@ -68,13 +68,13 @@ namespace FT{
             Fewtwo(int pop_size=100, int gens = 100, string ml = "LinearRidgeRegression", 
                    bool classification = false, int verbosity = 1, int max_stall = 0,
                    string sel ="lexicase", string surv="pareto", float cross_rate = 0.5,
-                   char otype='a', string functions = "+,-,*,/,^2,^3,exp,log", 
+                   char otype='a', string functions = "+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite", 
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
                    bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
                    double split=0.75, vector<char> dtypes = vector<char>()):
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
-                             functions, max_depth, max_dim, erc, obj, shuffle, split, dtypes),
+                             functions, max_depth, max_dim, erc, obj, shuffle, split, dtypes), 
                       p_pop( make_shared<Population>(pop_size) ),
                       p_sel( make_shared<Selection>(sel) ),
                       p_surv( make_shared<Selection>(surv, true) ),
@@ -125,7 +125,7 @@ namespace FT{
             void set_cross_rate(float cross_rate){	p_variation->set_cross_rate(cross_rate); }
                         
             /// set program output type ('f', 'b')              
-            void set_otype(char o_type){ params.otypes.clear(); params.otypes.push_back(o_type); }
+            void set_otype(char ot){ params.set_otype(ot); }
                         
             /// sets available functions based on comma-separated list.
             void set_functions(string functions){ params.set_functions(functions); }
@@ -269,8 +269,8 @@ namespace FT{
         train_test_split(X,y,X_t,X_v,y_t,y_v,params.shuffle);
         
         // define terminals based on size of X
-        params.set_terminals(X.rows()); 
-        
+        params.set_terminals(X.rows());        
+
         // initial model on raw input
         params.msg("Fitting initial model", 1);
         initial_model(X,y);
@@ -447,9 +447,8 @@ namespace FT{
         std::cout << "Top " << nf <<" features (\% usage):\n";
         std::cout.precision(1);
         for (unsigned i = 0; i<nf; ++i) 
-            std::cout << std::fixed << params.terminals[use_idx[i]]->name << "_" 
-                  << std::dynamic_pointer_cast<NodeVariable>(params.terminals[use_idx[i]])->loc 
-                  << " (" << use[use_idx[i]]/use_sum*100 << "\%)\t"; 
+            std::cout << std::fixed << params.terminals[use_idx[i]]->name  
+                      << " (" << use[use_idx[i]]/use_sum*100 << "\%)\t"; 
         
         std::cout <<"\n\n";
     }
