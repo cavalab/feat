@@ -72,8 +72,6 @@ namespace FT{
         assert(X.cols() == y.size() && "different numbers of samples in X and y");
         assert(X.rows() == names.size() && "header missing or incorrect number of feature names");
         
-        //cout<<"After transpose X is\n"<<X<<std::endl;
-        //cout<<"Y is\n"<<y<<std::endl;
         int i, j;
         bool isBinary;
         for(i = 0; i < X.rows(); i++)
@@ -91,6 +89,13 @@ namespace FT{
             else
                 dtypes.push_back('f');
         }
+        
+       // cout<<"X^T is\n";
+       // for (unsigned i=0; i< dtypes.size(); ++i)
+       //     cout << names[i] << "[" << dtypes[i] << "] ";
+       // cout << "\n" << X.transpose()<<std::endl;
+       // cout<<"Y is\n"<<y<<std::endl;
+
     }
     
     

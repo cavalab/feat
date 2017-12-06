@@ -131,10 +131,12 @@ namespace FT{
         /*!
          * recursively builds a program with complete arguments.
          */
+        
         if (max_d == 0 || r.rnd_flt() < terminals.size()/(terminals.size()+functions.size())) 
         {
             // append terminal 
-            vector<size_t> ti, tw;  // indices of valid terminals 
+            vector<size_t> ti;  // indices of valid terminals 
+            vector<double> tw;  // weights of valid terminals
             for (size_t i = 0; i<terminals.size(); ++i)
             {
                 if (terminals[i]->otype == otype) // grab terminals matching output type
@@ -155,7 +157,7 @@ namespace FT{
             for (size_t i = 0; i<functions.size(); ++i)
                 if (functions[i]->otype==otype && (max_d>1 || functions[i]->arity['b']==0))
                     fi.push_back(i);
-            //std::cout << "fi size: " << fi.size() << "\n";
+            
             if (fi.size()==0){
                 std::cout << "---\n";
                 std::cout << "f1.size()=0. current program: ";
@@ -191,8 +193,7 @@ namespace FT{
                       const vector<std::shared_ptr<Node>>& terminals, int max_d, 
                       const vector<double>& term_weights, int dim, char otype)
     {
-  
-         
+
         for (unsigned i = 0; i<dim; ++i)    // build trees
             make_tree(program, functions, terminals, max_d, term_weights, otype);
         
@@ -209,6 +210,7 @@ namespace FT{
          */
         individuals[0] = starting_model;
         individuals[0].loc = 0;
+        
         #pragma omp parallel for
         for (unsigned i = 1; i< individuals.size(); ++i)
         {           

@@ -660,7 +660,7 @@ TEST(Variation, MutationTests)
 	
 }
 
-TEST(Variation, CrossOverTests)
+TEST(Variation, CrossoverTests)
 {
 	Fewtwo fewtwo(100);
     MatrixXd X(7,2); 

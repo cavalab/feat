@@ -41,8 +41,8 @@ namespace FT{
         string program_str() const;
 
         /// setting and getting from individuals vector
-        const std::shared_ptr<Node> operator [](int i) const {return program[i];}
-        const std::shared_ptr<Node> & operator [](int i) {return program[i];}
+        const std::shared_ptr<Node> operator [](int i) const {return program.at(i);}
+        const std::shared_ptr<Node> & operator [](int i) {return program.at(i);}
 
         /// set rank
         void set_rank(unsigned r){rank=r;}
@@ -93,7 +93,7 @@ namespace FT{
 
         vector<ArrayXd> stack_f; 
         vector<ArrayXb> stack_b;
-
+        params.msg("evaluating program " + get_eqn(),2);
         // evaluate each node in program
         for (const auto& n : program)
         {
@@ -101,24 +101,34 @@ namespace FT{
 	            n->evaluate(X, y, stack_f, stack_b);
             else
             {
-                std::cout << "out() error: node " << n->name << " in " + program_str() + " is invalid\n";
+                std::cout << "out() error: node " << n->name << " in " + program_str() + 
+                             " is invalid\n";
                 exit(1);
             }
         }
         
         // convert stack_f to Phi
-        int cols = stack_f[0].size();
+        params.msg("converting stacks to Phi",2);
+        int cols;
+        if (stack_f.size()==0)
+        {
+            if (stack_b.size() == 0)
+            {std::cout << "Error: no outputs in stacks\n"; throw;}
+            
+            cols = stack_b.at(0).size();
+        }
+        else
+            cols = stack_f.at(0).size();
+               
         int rows_f = stack_f.size();
         int rows_b = stack_b.size();
         Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
-              
         // add stack_f to Phi
         for (unsigned int i=0; i<rows_f; ++i)
-            Phi.row(i) = VectorXd::Map(stack_f[i].data(),cols);
-
+            Phi.row(i) = VectorXd::Map(stack_f.at(i).data(),cols);
         // convert stack_b to Phi       
         for (unsigned int i=0; i<rows_b; ++i)
-            Phi.row(i+rows_f) = ArrayXb::Map(stack_b[i].data(),cols).cast<double>();
+            Phi.row(i+rows_f) = ArrayXb::Map(stack_b.at(i).data(),cols).cast<double>();
                 
         //Phi.transposeInPlace();
         return Phi;
@@ -324,12 +334,13 @@ namespace FT{
         string s = "";
         for (const auto& p : program)
         {
-            if (!p->name.compare("x"))   // if a variable, include the location data
-            {
-                s += p->name+"_"+std::to_string(std::dynamic_pointer_cast<NodeVariable>(p)->loc); 
-            }
-            else
-                s+= p->name;
+           // if (!p->name.compare("x"))   // if a variable, include the location data
+           // {
+           //     s += p->name+"_"+std::to_string(std::dynamic_pointer_cast<NodeVariable>(p)->loc); 
+           // }
+           // else
+
+            s+= p->name;
             s+=" ";
         }
         return s;

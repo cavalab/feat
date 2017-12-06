@@ -13,9 +13,12 @@ namespace FT{
 		public:
 			size_t loc;             ///< column location in X, for x types
 			
-			NodeVariable(const size_t& l, char ntype = 'f')
+			NodeVariable(const size_t& l, char ntype = 'f', std::string n="")
 			{
-    			name = "x";
+                if (n.empty())
+    			    name = "x_" + std::to_string(l);
+                else
+                    name = n;
     			otype = ntype;
     			arity['f'] = 0;
     			arity['b'] = 0;
@@ -37,9 +40,9 @@ namespace FT{
 		    void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
 		    {
 	    		if (otype == 'b')
-	                stack_b.push_back("x_" + std::to_string(loc));
+	                stack_b.push_back(name);
 	            else
-	                stack_f.push_back("x_" + std::to_string(loc));
+	                stack_f.push_back(name);
 		    }
 	};
 }
