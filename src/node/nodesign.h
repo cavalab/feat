@@ -1,0 +1,49 @@
+/* FEWTWO
+copyright 2017 William La Cava
+license: GNU/GPL v3
+*/
+#ifndef NODE_SIGN
+#define NODE_SIGN
+
+#include "node.h"
+
+namespace FT{
+	class NodeSign : public Node
+    {
+    	public:
+    	
+    		NodeSign()
+            {
+                name = "sign";
+    			otype = 'f';
+    			arity['f'] = 1;
+    			arity['b'] = 0;
+    			complexity = 1;
+    		}
+    		
+            /// Evaluates the node and updates the stack states. 
+            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b)
+            {
+        		ArrayXd x = stack_f.back(); stack_f.pop_back();
+        		ArrayXd res(x.size());
+        		int i;
+        		
+        		for(i = 0; i < x.size(); i++)
+        		{
+        		    res[i] = x[i] > 0 ? 1 : (x[i] == 0 ? 0 : -1 ); 
+        		}
+                stack_f.push_back(res);
+                
+                //stack_f.push_back(x > 0 ? 1 : (x == 0 ? 0 : -1 ));
+            }
+
+            /// Evaluates the node symbolically
+            void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
+            {
+        		string x = stack_f.back(); stack_f.pop_back();
+                stack_f.push_back("sign("+ x +")");
+            }
+    };
+}	
+
+#endif

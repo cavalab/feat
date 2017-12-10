@@ -169,7 +169,7 @@ int main(int argc, char** argv){
      */   
      
     fewtwo.set_dtypes(dtypes);
-    
+    fewtwo.set_dim("0.3X");
     cout << "fitting model...\n";
     
     fewtwo.fit(X,y);

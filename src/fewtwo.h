@@ -83,6 +83,7 @@ namespace FT{
                       p_ml( make_shared<ML>(ml, classification) )
             {
                 r.set_seed(random_state);
+                str_dim = "";
             }
             
             /// set size of population 
@@ -150,6 +151,9 @@ namespace FT{
             
             ///set data types for input parameters
             void set_dtypes(vector<char> dtypes){params.dtypes = dtypes;}
+            
+            ///set dimensionality as multiple of the number of columns
+            void set_dim(string str) { str_dim = str; }
             
             ///return population size
             int get_pop_size(){ return params.pop_size; }
@@ -228,7 +232,8 @@ namespace FT{
             shared_ptr<Selection> p_surv;       	///< survival algorithm
             shared_ptr<ML> p_ml;                	///< pointer to machine learning class
             // performance tracking
-            double best_score;                      ///< current best score 
+            double best_score;                      ///< current best score
+            string str_dim;                         ///< dimensionality as multiple of number of columns 
             void update_best();                     ///< updates best score   
             void print_stats(unsigned int);         ///< prints stats
             Individual best_ind;                    ///< best individual
@@ -261,7 +266,18 @@ namespace FT{
          */
         // start the clock
         timer.Reset();
-
+        
+        if(str_dim.compare("") != 0)
+        {
+            string digits = "0123456789";
+            int index = str_dim.find_last_of(digits);
+            str_dim = str_dim.substr(0, index + 1);
+            cout<<"STR DIM IS "<<str_dim<<"\n";
+            cout<<"Cols are "<<X.cols()<<"\n";
+            cout<<"Setting dimensionality as "<<ceil(stod(str_dim)*X.cols())<<"\n";
+            set_max_dim(ceil(stod(str_dim)*X.cols()));
+        }
+        
         // split data into training and test sets
         MatrixXd X_t(X.rows(),int(X.cols()*params.split));
         MatrixXd X_v(X.rows(),int(X.cols()*(1-params.split)));
@@ -452,5 +468,6 @@ namespace FT{
         
         std::cout <<"\n\n";
     }
+    
 }
 #endif
