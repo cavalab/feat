@@ -26,15 +26,10 @@ namespace FT{
             {
         		ArrayXd x = stack_f.back(); stack_f.pop_back();
         		ArrayXd res(x.size());
-        		int i;
         		
-        		for(i = 0; i < x.size(); i++)
-        		{
-        		    res[i] = x[i] > 0 ? 1 : 0; 
-        		}
+        		res = (x > 0).select(ArrayXd::Ones(x.size()), ArrayXd::Zero(x.size())); 
                 stack_f.push_back(res);
                 
-                //stack_f.push_back((x.array().real() > 0).select( 1 , 0));
             }
 
             /// Evaluates the node symbolically

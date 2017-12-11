@@ -35,7 +35,6 @@ namespace FT{
                 }
                 stack_b.push_back(res);
                 
-                //stack_b.push_back(x1 ^ x2);
             }
 
             /// Evaluates the node symbolically
