@@ -272,9 +272,9 @@ namespace FT{
             string digits = "0123456789";
             int index = str_dim.find_last_of(digits);
             str_dim = str_dim.substr(0, index + 1);
-            cout<<"STR DIM IS "<<str_dim<<"\n";
-            cout<<"Cols are "<<X.cols()<<"\n";
-            cout<<"Setting dimensionality as "<<ceil(stod(str_dim)*X.cols())<<"\n";
+            params.msg("STR DIM IS "+ str_dim, 1);
+            params.msg("Cols are " + X.cols(), 1);
+            params.msg("Setting dimensionality as " + (int)(ceil(stod(str_dim)*X.cols())), 1);
             set_max_dim(ceil(stod(str_dim)*X.cols()));
         }
         
