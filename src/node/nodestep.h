@@ -25,9 +25,8 @@ namespace FT{
             void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b)
             {
         		ArrayXd x = stack_f.back(); stack_f.pop_back();
-        		ArrayXd res(x.size());
         		
-        		res = (x > 0).select(ArrayXd::Ones(x.size()), ArrayXd::Zero(x.size())); 
+        		ArrayXd res = (x > 0).select(ArrayXd::Ones(x.size()), ArrayXd::Zero(x.size())); 
                 stack_f.push_back(res);
                 
             }

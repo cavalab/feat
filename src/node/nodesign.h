@@ -25,12 +25,9 @@ namespace FT{
             void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b)
             {
         		ArrayXd x = stack_f.back(); stack_f.pop_back();
-        		ArrayXd res(x.size());
         		
-        		res = (x > 0).select(ArrayXd::Ones(x.size()), (x == 0).select(ArrayXd::Zero(x.size()), -1*ArrayXd::Ones(1))); 
+        		ArrayXd res = (x > 0).select(ArrayXd::Ones(x.size()), (x == 0).select(ArrayXd::Zero(x.size()), -1*ArrayXd::Ones(1))); 
                 stack_f.push_back(res);
-                
-                //stack_f.push_back(x > 0 ? 1 : (x == 0 ? 0 : -1 ));
             }
 
             /// Evaluates the node symbolically

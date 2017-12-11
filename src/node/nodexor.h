@@ -26,13 +26,9 @@ namespace FT{
             {
         		ArrayXb x2 = stack_b.back(); stack_b.pop_back();
                 ArrayXb x1 = stack_b.back(); stack_b.pop_back();
-                ArrayXb res(x1.size());
-                int i;
-                
-                for(i = 0; i < res.size(); i++)
-                {
-                    res[i] = x1[i] ^ x2[i];
-                }
+
+                ArrayXb res = (x1 != x2).select(ArrayXb::Ones(x1.size()), ArrayXb::Zero(x1.size()));
+
                 stack_b.push_back(res);
                 
             }
