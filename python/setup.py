@@ -1,4 +1,8 @@
-from distutils.core import setup
+#from distutils.core import setup
+from setuptools import setup, find_packages
+from setuptools.extension import Extension
+from Cython.Build import cythonize
+
 from Cython.Build import cythonize
 
 # the setup file relies on eigency to import its include paths for the
@@ -20,20 +24,20 @@ finally:
 package_version = '0.0'
 
 setup(
-        name="Fewtwo",
-        author='William La Cava',
-        author_email='williamlacava@gmail.com',
-        url = 'https://lacava.github.io/fewtwo',
-        download_url='https://github.com/lacava/fewtwo/releases/tag/'+package_version,
-        license='GNU/GPLv3',
-        description='Another feature engineering wrapper for ML.',
-        zip_safe=True,
-        ext_modules = cythonize(
-           "fewtwo.pyx",                 # our Cython source
-           sources=["../src/fewtwo.h"],  # additional source file(s)
-           language="c++",             # generate C++ code
-           include_dirs = eigency.get_includes(),
-           extra_compile_args = ['-std=c++0x','-fopenomp'],
-           extra_link_args = ['-lshogun'],      
-           )
-        )
+    name="Fewtwo",
+    author='William La Cava',
+    author_email='williamlacava@gmail.com',
+    url = 'https://lacava.github.io/fewtwo',
+    download_url='https://github.com/lacava/fewtwo/releases/tag/'+package_version,
+    license='GNU/GPLv3',
+    description='Another feature engineering wrapper for ML.',
+    zip_safe=True,
+    ext_modules = cythonize([Extension(name='fewtwo',
+       sources = ["fewtwo.pyx"],                 # our Cython source
+       include_dirs = ['../src/','/usr/include/eigen3/']+eigency.get_includes(include_eigen=False),
+       extra_compile_args = ['-std=c++0x','-fopenmp'],
+       extra_link_args = ['-lshogun'],      
+       language='c++'
+       )],
+       language="c++")
+    )
