@@ -12,9 +12,9 @@ from ._version import __version__
 from sklearn.base import BaseEstimator
 import numpy as np
 import pandas as pd
+from fewtwo import PyFewtwo
 
-
-class FewTwo(BaseEstimator):
+class Fewtwo(BaseEstimator):
     """Fewtwo uses GP to find a data representation that improves the performance of a given ML
     method."""
     def __init__(self):
