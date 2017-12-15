@@ -32,6 +32,7 @@ using std::cout;
 #include "evaluation.h"
 #include "variation.h"
 #include "ml.h"
+#include "node/node.h"
 
 void __attribute__ ((constructor)) ctor()
 {
@@ -197,6 +198,9 @@ namespace FT{
             ///return fraction of data to use for training
             double get_split(){ return params.split; }
             
+            ///add custom node into fewtwo
+            void add_function(shared_ptr<Node> N){ params.functions.push_back(N); }
+            
             ///return data types for input parameters
             vector<char> get_dtypes(){ return params.dtypes; }
 
@@ -269,15 +273,14 @@ namespace FT{
         
         if(str_dim.compare("") != 0)
         {
-            string digits = "0123456789";
-            int index = str_dim.find_last_of(digits);
-            str_dim = str_dim.substr(0, index + 1);
-            params.msg("STR DIM IS "+ str_dim, 1);
-            params.msg("Cols are " + X.cols(), 1);
-            params.msg("Setting dimensionality as " + (int)(ceil(stod(str_dim)*X.cols())), 1);
-            set_max_dim(ceil(stod(str_dim)*X.cols()));
+            string dimension;
+            dimension = str_dim.substr(0, str_dim.length() - 1);
+            params.msg("STR DIM IS "+ dimension, 1);
+            params.msg("Cols are " + std::to_string(X.cols()), 1);
+            params.msg("Setting dimensionality as " + std::to_string((int)(ceil(stod(dimension)*X.cols()))), 1);
+            set_max_dim(ceil(stod(dimension)*X.cols()));
         }
-        
+
         // split data into training and test sets
         MatrixXd X_t(X.rows(),int(X.cols()*params.split));
         MatrixXd X_v(X.rows(),int(X.cols()*(1-params.split)));

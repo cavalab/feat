@@ -36,7 +36,7 @@ namespace FT{
             {
         		string x2 = stack_f.back(); stack_f.pop_back();
                 string x1 = stack_f.back(); stack_f.pop_back();
-                stack_f.push_back("exp(-((" + x1 + "-mean(" + x1 + "))^2/(2*var(" + x1 + ")) + (" + x1 + "-mean(" + x1 + "))^2/var(" + x1 + ")))");
+                stack_f.push_back("gauss2d(" + x1 + "," + x2 + ")");
             }
             
             private:
