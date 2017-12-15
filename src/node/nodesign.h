@@ -26,7 +26,7 @@ namespace FT{
             {
         		ArrayXd x = stack_f.back(); stack_f.pop_back();
         		
-        		ArrayXd res = (x > 0).select(ArrayXd::Ones(x.size()), (x == 0).select(ArrayXd::Zero(x.size()), -1*ArrayXd::Ones(1))); 
+        		ArrayXd res = (x > 0).select(ArrayXd::Ones(x.size()), (x == 0).select(ArrayXd::Zero(x.size()), -1*ArrayXd::Ones(x.size()))); 
                 stack_f.push_back(res);
             }
 

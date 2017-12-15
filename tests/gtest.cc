@@ -46,17 +46,29 @@ bool checkBrackets(string str)
 			if(st.top() == '(')
 				st.pop();
 			else
+			{
+			    cout<<str<<std::endl;
+			    cout<<") mismatcha at index "<< x << std::endl; 
 				return false;
+			}
 		}
 		if(str[x] == ']')
 		{
 			if(st.top() == '[')
 				st.pop();
 			else
+			{
+			    cout<<str<<std::endl;
+			    cout<<"] mismatcha at index "<< x << std::endl;
 				return false;
+			}
 				
 			if(!st.empty())
+			{
+			    cout<<str<<std::endl;
+			    cout<<"stack not empty at "<< x << std::endl;
 				return false;
+			}
 		}
 	}
 	return true;
@@ -296,7 +308,7 @@ TEST(NodeTest, Evaluate)
     VectorXd Y(6); 
     Y << 3.0, 4.0, 5.0, 6.0, 7.0, 8.0;
     
-	std::shared_ptr<Node> addObj = std::shared_ptr<Node>(new NodeAdd());
+	/*std::shared_ptr<Node> addObj = std::shared_ptr<Node>(new NodeAdd());
 	
 	stack_f.clear();
 	stack_b.clear();
@@ -584,8 +596,105 @@ TEST(NodeTest, Evaluate)
 	ASSERT_FALSE((isinf(x)).any());
 	ASSERT_FALSE((isnan(abs(x)).any()));
 	
-	//TODO for NodeIf, NodeIfThenElse, NodeVariable, NodeConstant(both types)
+	
+	std::shared_ptr<Node> tanObj = std::shared_ptr<Node>(new NodeTanh());
+	
+	stack_f.clear();
+	stack_b.clear();
+	stack_f.push_back(X.row(0));
+	
+	tanObj->evaluate(X, Y, stack_f, stack_b);	
+	
+	x = stack_f.back(); stack_f.pop_back();
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::shared_ptr<Node> logitObj = std::shared_ptr<Node>(new NodeLogit());
+	
+	stack_f.clear();
+	stack_b.clear();
+	stack_f.push_back(X.row(0));
+	
+	logitObj->evaluate(X, Y, stack_f, stack_b);	
+	
+	x = stack_f.back(); stack_f.pop_back();
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::shared_ptr<Node> stepObj = std::shared_ptr<Node>(new NodeStep());
+	
+	stack_f.clear();
+	stack_b.clear();
+	stack_f.push_back(X.row(0));
+	
+	stepObj->evaluate(X, Y, stack_f, stack_b);	
+	
+	x = stack_f.back(); stack_f.pop_back();
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	*/
+	
+	std::shared_ptr<Node> signObj = std::shared_ptr<Node>(new NodeSign());
+	
+	stack_f.clear();
+	stack_b.clear();
+	stack_f.push_back(X.row(0));
+	
+	signObj->evaluate(X, Y, stack_f, stack_b);	
+	
+	x = stack_f.back(); stack_f.pop_back();
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	
+	std::shared_ptr<Node> xorObj = std::shared_ptr<Node>(new NodeXor());
+	
+	stack_f.clear();
+	stack_b.clear();
+	stack_b.push_back(Z1);
+	stack_b.push_back(Z2);
+	
+	xorObj->evaluate(X, Y, stack_f, stack_b);	
+	
+	z = stack_b.back(); stack_b.pop_back();
+	
+	ASSERT_FALSE((isinf(z)).any());
+	ASSERT_FALSE((isnan(abs(z)).any()));
+	
+	std::shared_ptr<Node> gausObj = std::shared_ptr<Node>(new NodeGaussian());
+	
+	stack_f.clear();
+	stack_b.clear();
+	stack_f.push_back(X.row(0));
+	
+	gausObj->evaluate(X, Y, stack_f, stack_b);	
+	
+	x = stack_f.back(); stack_f.pop_back();
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::shared_ptr<Node> gaus2dObj = std::shared_ptr<Node>(new Node2dGaussian());
+	
+	stack_f.clear();
+	stack_b.clear();
+	stack_f.push_back(X.row(0));
+	stack_f.push_back(X.row(1));
+	
+	gaus2dObj->evaluate(X, Y, stack_f, stack_b);	
+	
+	x = stack_f.back(); stack_f.pop_back();
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	//TODO NodeVariable, NodeConstant(both types)
 }
+
 
 bool isValidProgram(vector<std::shared_ptr<Node>>& program, unsigned num_features)
 {
