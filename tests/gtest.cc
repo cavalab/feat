@@ -46,29 +46,17 @@ bool checkBrackets(string str)
 			if(st.top() == '(')
 				st.pop();
 			else
-			{
-			    cout<<str<<std::endl;
-			    cout<<") mismatcha at index "<< x << std::endl; 
 				return false;
-			}
 		}
 		if(str[x] == ']')
 		{
 			if(st.top() == '[')
 				st.pop();
 			else
-			{
-			    cout<<str<<std::endl;
-			    cout<<"] mismatcha at index "<< x << std::endl;
 				return false;
-			}
 				
 			if(!st.empty())
-			{
-			    cout<<str<<std::endl;
-			    cout<<"stack not empty at "<< x << std::endl;
 				return false;
-			}
 		}
 	}
 	return true;
@@ -199,7 +187,7 @@ TEST(Fewtwo, transform)
         
     MatrixXd res = fewtwo.transform(X);
     ASSERT_EQ(res.cols(), 7);
-    ASSERT_EQ(res.rows(), 2);
+    ASSERT_TRUE(res.rows() <= fewtwo.params.max_dim);
 }
 
 TEST(Fewtwo, fit_predict)
@@ -251,7 +239,7 @@ TEST(Fewtwo, fit_transform)
     
     MatrixXd res = fewtwo.fit_transform(X, y);
     ASSERT_EQ(res.cols(), 7);
-    ASSERT_EQ(res.rows(), 2);
+    ASSERT_TRUE(res.rows() <= fewtwo.params.max_dim);
 }
 
 
@@ -308,7 +296,7 @@ TEST(NodeTest, Evaluate)
     VectorXd Y(6); 
     Y << 3.0, 4.0, 5.0, 6.0, 7.0, 8.0;
     
-	/*std::shared_ptr<Node> addObj = std::shared_ptr<Node>(new NodeAdd());
+	std::shared_ptr<Node> addObj = std::shared_ptr<Node>(new NodeAdd());
 	
 	stack_f.clear();
 	stack_b.clear();
@@ -635,7 +623,6 @@ TEST(NodeTest, Evaluate)
 	
 	ASSERT_FALSE((isinf(x)).any());
 	ASSERT_FALSE((isnan(abs(x)).any()));
-	*/
 	
 	std::shared_ptr<Node> signObj = std::shared_ptr<Node>(new NodeSign());
 	

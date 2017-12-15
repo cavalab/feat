@@ -35,7 +35,7 @@ namespace FT{
             {
             	string b = stack_b.back(); stack_b.pop_back();
                 string f = stack_f.back(); stack_f.pop_back();
-                stack_f.push_back("(if-then-else(" + b + "," + f + "," + "0)");
+                stack_f.push_back("(if-then-else(" + b + "," + f + "," + "0))");
             }
     };
 }	
