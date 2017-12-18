@@ -64,7 +64,7 @@ install:
 #building and installing google tests
   - sudo apt-get install libgtest-dev
   - cd /usr/src/gtest
-  - sudo cmake CMakeLists.txt
+  - sudo cmake .
   - sudo make
   - sudo cp *.a /usr/lib
   - cd /home/travis/build/lacava/fewtwo 
