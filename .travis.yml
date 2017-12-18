@@ -1,0 +1,50 @@
+dist: trusty
+sudo: required
+language: cpp
+compiler:
+  - gcc
+  
+before_install:
+
+#installing base dependencies
+  - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test -y
+  - sudo apt-get update && sudo apt-get install -qq software-properties-common lsb-release
+  - sudo apt-get update -qq
+  - sudo apt-get upgrade -y
+install:
+
+#installing gcc and g++ version 5 and setting them as default
+  - sudo apt-get install -qq g++-5
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 1
+  - sudo rm /usr/bin/g++
+  - sudo ln -s /usr/bin/g++-5 /usr/bin/g++  
+  
+#installing cmake
+  - sudo apt-get install cmake
+  
+#installing eigen 3
+  - sudo apt-get install libeigen3-dev
+  
+#installing shogun library
+  - sudo add-apt-repository ppa:shogun-toolbox/stable -y
+  - sudo apt-get update -y
+  - sudo apt-get install libshogun-dev
+  - sudo apt-get install libshogun18 -y
+  - sudo dpkg-query -l '*shogun*'
+  
+  
+#building and installing google tests
+  - sudo apt-get install libgtest-dev
+  - cd /usr/src/gtest
+  - sudo cmake CMakeLists.txt
+  - sudo make
+  - sudo cp *.a /usr/lib
+  - cd /home/travis/build/lacava/fewtwo 
+  
+script:
+  - gcc --version
+  - g++ --version
+  - cd ./tests
+  - cmake .
+  - make
+  - ./runTests
