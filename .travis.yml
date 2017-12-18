@@ -8,9 +8,9 @@ before_install:
 
 #installing base dependencies
   - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test -y
-  - sudo apt-get update && sudo apt-get install -qq software-properties-common lsb-release
-  - sudo apt-get update -qq
-  - sudo apt-get upgrade -y
+  #- sudo apt-get update && sudo apt-get install -qq software-properties-common lsb-release
+  #- sudo apt-get update -qq
+  #- sudo apt-get upgrade -y
 install:
 
 #installing gcc and g++ version 5 and setting them as default
@@ -24,15 +24,26 @@ install:
   
 #installing eigen 3
   - sudo apt-get install libeigen3-dev
+  - dpkg-query -l '*eigen*'
   
 #installing shogun library
-  - sudo add-apt-repository ppa:shogun-toolbox/stable -y
-  - sudo apt-get update -y
-  - sudo apt-get install libshogun-dev
-  - sudo apt-get install libshogun18 -y
+  #- sudo add-apt-repository ppa:shogun-toolbox/stable -y
+  #- sudo apt-get update -y
+  #- sudo apt-get install libshogun-dev
+  #- sudo apt-get install libshogun18 -y
   #- sudo apt-get install libshogun16 -y
-  - sudo apt-get install python2.7-shogun
+  #- sudo apt-get install python2.7-shogun
+  #- sudo dpkg-query -l '*shogun*'
+  - sudo apt-get update
+  - sudo apt-get install -qq software-properties-common lsb-release
+  - sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) multiverse"
+  - sudo add-apt-repository ppa:shogun-toolbox/nightly
+  - sudo apt-get update -qq
+  - sudo apt-get upgrade -y
   - sudo dpkg-query -l '*shogun*'
+
+# install shogun
+RUN apt-get install -qq --force-yes --no-install-recommends libshogun18
   
   
 #building and installing google tests
