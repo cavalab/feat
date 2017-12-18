@@ -24,7 +24,7 @@ env:
     # test three different compilers
     - OUR_CXX='g++-5' OUR_CC='gcc-5' BUILD_TYPE='release'
     
-#install:
+install:
 
 #   - g++-5 --version
 #installing gcc and g++ version 5 and setting them as default
