@@ -41,9 +41,7 @@ install:
   - sudo apt-get update -qq
   - sudo apt-get upgrade -y
   - sudo dpkg-query -l '*shogun*'
-
-# install shogun
-RUN apt-get install -qq --force-yes --no-install-recommends libshogun18
+  - sudo apt-get install -qq --force-yes --no-install-recommends libshogun18
   
   
 #building and installing google tests
