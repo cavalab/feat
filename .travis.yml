@@ -17,7 +17,7 @@ install:
   #- sudo ln -s /usr/bin/g++-5 /usr/bin/g++  
   
 #installing cmake
-  - sudo apt-get install cmake
+  #- sudo apt-get install cmake
   
 #installing eigen 3
   - sudo apt-get install libeigen3-dev
