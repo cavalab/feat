@@ -38,6 +38,8 @@ install:
   - sudo apt-get update -qq
   - sudo apt-get upgrade -y
   - sudo apt-get install -qq --force-yes --no-install-recommends libshogun18
+  - sudo apt-get install -qq --force-yes --no-install-recommends libshogun-dev
+  - sudo apt-get install -qq --force-yes --no-install-recommends python-shogun
   - sudo dpkg-query -l '*shogun*'
   
   
