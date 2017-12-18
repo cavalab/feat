@@ -7,7 +7,7 @@ set (CMAKE_CXX_STANDARD 11)
 project(FewtwoTests)
 
 #set CMAKE_MODULE_PATH to find Eigen3
-#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR})
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR})
 # add Eigen include paths
 find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})
