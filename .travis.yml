@@ -24,9 +24,9 @@ env:
     # test three different compilers
     - OUR_CXX='g++-5' OUR_CC='gcc-5' BUILD_TYPE='release'
     
-install:
+#install:
 
-   - g++-5 --version
+#   - g++-5 --version
 #installing gcc and g++ version 5 and setting them as default
   #- sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test -y
   #- sudo apt-get update
@@ -39,6 +39,7 @@ install:
   
 #installing cmake
   #- sudo apt-get install cmake
+  - g++-5 --version
   - cmake --version
   - sudo apt-get install cmake
   - sudo apt-get install cmake-data
