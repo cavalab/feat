@@ -39,6 +39,7 @@ install:
 #installing cmake
   #- sudo apt-get install cmake
   - cmake --version
+  - sudo apt-get install cmake
   - sudo apt-get install cmake-data
   
 #installing eigen 3
