@@ -54,7 +54,7 @@ install:
   - sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) multiverse"
   - sudo add-apt-repository ppa:shogun-toolbox/nightly -y
   - sudo apt-get update -qq
-  - sudo apt-get upgrade -y
+  #- sudo apt-get upgrade -y
   - sudo apt-get install -qq --force-yes --no-install-recommends libshogun18
   - sudo apt-get install -qq --force-yes --no-install-recommends libshogun-dev
   - sudo apt-get install -qq --force-yes --no-install-recommends python-shogun
@@ -62,13 +62,13 @@ install:
   
   
 #building and installing google tests
-  #- sudo apt-get install libgtest-dev
-  #- cd /usr/src/gtest
-  #- cmake --version
-  #- cmake .
-  #- sudo make
-  #- sudo cp *.a /usr/lib
-  #- cd /home/travis/build/lacava/fewtwo 
+  - sudo apt-get install libgtest-dev
+  - cd /usr/src/gtest
+  - cmake --version
+  - cmake .
+  - sudo make
+  - sudo cp *.a /usr/lib
+  - cd /home/travis/build/lacava/fewtwo 
   
 #script:
   - gcc --version
