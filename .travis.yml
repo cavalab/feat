@@ -33,7 +33,7 @@ install:
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
   - sudo apt-get install -qq g++-5
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 1
-  - sudo rm /usr/bin/g++
+  #- sudo rm /usr/bin/g++
   - sudo ln -s /usr/bin/g++-5 /usr/bin/g++  
   
 #installing cmake
