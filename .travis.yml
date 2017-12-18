@@ -38,19 +38,19 @@ install:
   
 #installing cmake
   #- sudo apt-get install cmake
-  - g++-5 --version
-  - cmake --version
-  - sudo apt-get install build-essential
-  - wget http://www.cmake.org/files/v3.2/cmake-3.2.2.tar.gz
-  - tar xf cmake-3.2.2.tar.gz
-  - cd cmake-3.2.2
-  - ./configure
-  - make
-  - sudo apt-get install checkinstall
-  - sudo checkinstall -y
-  - dpkg-query -l '*cmake*'
-  #- sudo apt-get install cmake
-  #- sudo apt-get install cmake-data
+  #- g++-5 --version
+  #- cmake --version
+  #- sudo apt-get install build-essential
+  #- wget http://www.cmake.org/files/v3.2/cmake-3.2.2.tar.gz
+  #- tar xf cmake-3.2.2.tar.gz
+  #- cd cmake-3.2.2
+  #- ./configure
+  #- make
+  #- sudo apt-get install checkinstall
+  #- sudo checkinstall -y
+  #- dpkg-query -l '*cmake*'
+  - sudo apt-get install cmake
+  - sudo apt-get install cmake-data
   
 #installing eigen 3
   - sudo apt-get install libeigen3-dev
