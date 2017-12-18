@@ -22,27 +22,35 @@ env:
     #- VERBOSE=1
     matrix:
     # test three different compilers
-    - OUR_CXX='g++-5' OUR_CC='gcc-5' BUILD_TYPE='release'
+    #- OUR_CXX='g++-5' OUR_CC='gcc-5' BUILD_TYPE='release'
     
 install:
 
-#   - g++-5 --version
 #installing gcc and g++ version 5 and setting them as default
-  #- sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test -y
-  #- sudo apt-get update
-  #- sudo apt-get install gcc-5 g++-5
-  #- sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
-  #- sudo apt-get install -qq g++-5
-  #- sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 1
-  #- sudo rm /usr/bin/g++
-  #- sudo ln -s /usr/bin/g++-5 /usr/bin/g++  
+  - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test -y
+  - sudo apt-get update
+  - sudo apt-get install gcc-5 g++-5
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
+  - sudo apt-get install -qq g++-5
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 1
+  - sudo rm /usr/bin/g++
+  - sudo ln -s /usr/bin/g++-5 /usr/bin/g++  
   
 #installing cmake
   #- sudo apt-get install cmake
   - g++-5 --version
   - cmake --version
-  - sudo apt-get install cmake
-  - sudo apt-get install cmake-data
+  - sudo apt-get install build-essential
+  - wget http://www.cmake.org/files/v3.2/cmake-3.2.2.tar.gz
+  - tar xf cmake-3.2.2.tar.gz
+  - cd cmake-3.2.2
+  - ./configure
+  - make
+  - sudo apt-get install checkinstall
+  - sudo checkinstall
+  - dpkg-query -l '*cmake*'
+  #- sudo apt-get install cmake
+  #- sudo apt-get install cmake-data
   
 #installing eigen 3
   - sudo apt-get install libeigen3-dev
