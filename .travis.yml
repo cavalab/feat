@@ -47,7 +47,7 @@ install:
   - ./configure
   - make
   - sudo apt-get install checkinstall
-  - sudo checkinstall
+  - sudo checkinstall -y
   - dpkg-query -l '*cmake*'
   #- sudo apt-get install cmake
   #- sudo apt-get install cmake-data
