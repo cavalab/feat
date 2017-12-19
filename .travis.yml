@@ -49,9 +49,15 @@ install:
   #- sudo apt-get install checkinstall
   #- sudo checkinstall -y
   #- dpkg-query -l '*cmake*'
+  #- sudo apt-get install cmake
+    #  - sudo apt-get install cmake-data
+  - sudo apt-get install software-properties-common
+  - sudo add-apt-repository ppa:george-edison55/cmake-3.x
+  - sudo apt-get update
   - sudo apt-get install cmake
-  - sudo apt-get install cmake-data
-  
+  - sudo apt-get install cmake-data 
+  - dpkg-query -l '*cmake*
+    '
 #installing eigen 3
   - sudo apt-get install libeigen3-dev
   - dpkg-query -l '*eigen*'
