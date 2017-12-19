@@ -58,7 +58,7 @@ install:
   - sudo apt-get install cmake-data 
   - dpkg-query -l '*cmake*'
 #installing eigen 3
-  - sudo apt-get install libeigen3-dev
+  - wget -c "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz" -O - | tar -xvf -C /usr/include/
   - dpkg-query -l '*eigen*'
   
 #installing shogun library

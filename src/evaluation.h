@@ -174,7 +174,7 @@ namespace FT{
         // map to Eigen vector
         Map<VectorXd> yhat(y_pred.data(),y_pred.size());
         
-        if (Eigen::isinf(yhat.array()).any() || Eigen::isnan(yhat.array()).any())
+        if (std::isinf(yhat.array()).any() || std::isnan(yhat.array()).any())
         {
             std::cerr << "inf or nan values in model fit to: " << X << "\n";
             pass = false;
