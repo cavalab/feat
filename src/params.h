@@ -186,6 +186,9 @@ namespace FT{
     		
     	else if (str.compare("cos") == 0)
     		return std::shared_ptr<Node>(new NodeCos());
+    		
+    	else if (str.compare("tanh")==0)
+            return std::shared_ptr<Node>(new NodeTanh());
     	   
         else if (str.compare("^2") == 0)
     		return std::shared_ptr<Node>(new NodeSquare());
@@ -198,9 +201,18 @@ namespace FT{
 
         else if (str.compare("exp") == 0)
     		return std::shared_ptr<Node>(new NodeExponential());
+    		
+    	else if (str.compare("gaussian")==0)
+            return std::shared_ptr<Node>(new NodeGaussian());
+        
+        else if (str.compare("2dgaussian")==0)
+            return std::shared_ptr<Node>(new Node2dGaussian());
 
         else if (str.compare("log") == 0)
     		return std::shared_ptr<Node>(new NodeLog());   
+    		
+    	else if (str.compare("logit")==0)
+            return std::shared_ptr<Node>(new NodeLogit());
 
         // logical operators
         else if (str.compare("and") == 0)
@@ -211,6 +223,9 @@ namespace FT{
    		
      	else if (str.compare("not") == 0)
     		return std::shared_ptr<Node>(new NodeNot());
+    		
+    	else if (str.compare("xor")==0)
+            return std::shared_ptr<Node>(new NodeXor());
    		
     	else if (str.compare("=") == 0)
     		return std::shared_ptr<Node>(new NodeEqual());
@@ -232,6 +247,12 @@ namespace FT{
         	
     	else if (str.compare("ite") == 0)
     		return std::shared_ptr<Node>(new NodeIfThenElse());
+    		
+    	else if (str.compare("step")==0)
+            return std::shared_ptr<Node>(new NodeStep());
+            
+        else if (str.compare("sign")==0)
+            return std::shared_ptr<Node>(new NodeSign());
 
         // variables and constants
          else if (str.compare("x") == 0)
