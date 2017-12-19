@@ -56,8 +56,7 @@ install:
   - sudo apt-get update
   - sudo apt-get install cmake
   - sudo apt-get install cmake-data 
-  - dpkg-query -l '*cmake*
-    '
+  - dpkg-query -l '*cmake*'
 #installing eigen 3
   - sudo apt-get install libeigen3-dev
   - dpkg-query -l '*eigen*'
