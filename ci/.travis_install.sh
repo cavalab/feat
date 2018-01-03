@@ -59,6 +59,7 @@
 #_________________________________________________________
   
 #building and installing google tests
+ sudo apt-get install cmake
  sudo apt-get install libgtest-dev
  
  cmake --version
