@@ -71,5 +71,6 @@
  sudo cmake CMakeLists.txt
  sudo make
  sudo cp *.a /usr/lib
- cd /home/travis
+ cd /home/travis/build/lacava/fewtwo
+ pwd
 
