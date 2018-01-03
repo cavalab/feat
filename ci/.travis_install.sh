@@ -32,7 +32,7 @@
  #sudo apt-get install --only-upgrade cmake
  #dpkg-query -l '*cmake*'
 #installing eigen 3
- #sudo wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz" -O- | sudo tar xvz -C /usr/include/
+ sudo wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz" -O- | sudo tar xvz -C /usr/include/
  #dpkg-query -l '*eigen*'
 #_______________________________________________
   
@@ -47,15 +47,15 @@
 # sudo apt-get update
 
 #______________________________________________________
-# sudo apt-get install -qq software-properties-common lsb-release
-# sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) multiverse"
- #sudo add-apt-repository ppa:shogun-toolbox/nightly -y
- #sudo apt-get update -y
+ sudo apt-get install -qq software-properties-common lsb-release
+ sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) multiverse"
+ sudo add-apt-repository ppa:shogun-toolbox/nightly -y
+ sudo apt-get update -y
   #- sudo apt-get upgrade -y
- #sudo apt-get install -qq --force-yes --no-install-recommends libshogun18
- #sudo apt-get install -qq --force-yes --no-install-recommends libshogun-dev
- #sudo apt-get install -qq --force-yes --no-install-recommends python-shogun
- #sudo dpkg-query -l '*shogun*'
+ sudo apt-get install -qq --force-yes --no-install-recommends libshogun18
+ sudo apt-get install -qq --force-yes --no-install-recommends libshogun-dev
+ sudo apt-get install -qq --force-yes --no-install-recommends python-shogun
+ sudo dpkg-query -l '*shogun*'
 #_________________________________________________________
   
 #building and installing google tests
@@ -63,14 +63,14 @@
  sudo apt-get install libgtest-dev
  
  cmake --version
- #sudo cmake /usr/src/gtest/
- #sudo make -C /usr/src/gtest/
- #sudo cp /usr/src/gtest/*.a /usr/lib
- cd /usr/src/gtest/
+ sudo cmake /usr/src/gtest/
+ sudo make -C /usr/src/gtest/
+ sudo cp /usr/src/gtest/*.a /usr/lib
+ #cd /usr/src/gtest/
  #ls
  #whereis cmake
- cmake .    
+ #sudo cmake .    
  #ls
- sudo make
+ #sudo make
  
  
