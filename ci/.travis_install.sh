@@ -57,7 +57,10 @@
  sudo apt-get install libgtest-dev
  
  cmake --version
- sudo cmake /usr/src/gtest/
- sudo make -C /usr/src/gtest/
- sudo cp /usr/src/gtest/*.a /usr/lib
+ #sudo cmake /usr/src/gtest/
+ #sudo make -C /usr/src/gtest/
+ #sudo cp /usr/src/gtest/*.a /usr/lib
+ cd /usr/src/gtest/
+ sudo make
+ 
  
