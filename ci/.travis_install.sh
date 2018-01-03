@@ -62,6 +62,8 @@
  #sudo cp /usr/src/gtest/*.a /usr/lib
  cd /usr/src/gtest/
  ls
+ sudo cmake
+ ls
  sudo make
  
  
