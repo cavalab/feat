@@ -66,6 +66,7 @@
  #sudo cmake /usr/src/gtest/
  #sudo make -C /usr/src/gtest/
  #sudo cp /usr/src/gtest/*.a /usr/lib
+ pwd
  cd /usr/src/gtest
  sudo cmake CMakeLists.txt
  sudo make
