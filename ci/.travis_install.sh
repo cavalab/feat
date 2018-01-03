@@ -67,8 +67,8 @@
  #sudo cp /usr/src/gtest/*.a /usr/lib
  cd /usr/src/gtest/
  #ls
- whereis cmake
- sudo cmake .    
+ #whereis cmake
+ cmake .    
  #ls
  sudo make
  
