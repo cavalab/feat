@@ -62,7 +62,7 @@
  #sudo cp /usr/src/gtest/*.a /usr/lib
  cd /usr/src/gtest/
  ls
- sudo cmake
+ sudo /usr/bin/cmake
  ls
  sudo make
  
