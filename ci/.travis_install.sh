@@ -30,7 +30,7 @@
  sudo apt-get install --only-upgrade cmake
  dpkg-query -l '*cmake*'
 #installing eigen 3
- wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz" -O- | tar xvz -C /usr/include/
+ sudo wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz" -O- | sudo tar xvz -C /usr/include/
  dpkg-query -l '*eigen*'
   
 #installing shogun library
