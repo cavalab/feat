@@ -63,7 +63,7 @@
  cd /usr/src/gtest/
  ls
  whereis cmake
- #sudo /usr/bin/cmake
+ sudo /usr/local/cmake
  ls
  sudo make
  
