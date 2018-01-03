@@ -25,9 +25,9 @@
   #- sudo apt-get install cmake
     # sudo apt-get install cmake-data
  sudo apt-get install software-properties-common
- sudo add-apt-repository ppa:george-edison55/cmake-3.x -y
+ #sudo add-apt-repository ppa:george-edison55/cmake-3.x -y
  sudo apt-get update
- sudo apt-get install --only-upgrade cmake
+ #sudo apt-get install --only-upgrade cmake
  dpkg-query -l '*cmake*'
 #installing eigen 3
  sudo wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz" -O- | sudo tar xvz -C /usr/include/
@@ -57,14 +57,14 @@
  sudo apt-get install libgtest-dev
  
  cmake --version
- #sudo cmake /usr/src/gtest/
- #sudo make -C /usr/src/gtest/
- #sudo cp /usr/src/gtest/*.a /usr/lib
- cd /usr/src/gtest/
- ls
+ sudo cmake /usr/src/gtest/
+ sudo make -C /usr/src/gtest/
+ sudo cp /usr/src/gtest/*.a /usr/lib
+ #cd /usr/src/gtest/
+ #ls
  whereis cmake
- sudo /usr/local/cmake .
- ls
+ #sudo cmake .    
+ #ls
  sudo make
  
  
