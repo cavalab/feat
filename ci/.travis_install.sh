@@ -89,11 +89,10 @@
  ls
  pwd
  cd eigen*
+ sudo mkdir build
  pwd
  ls
- sudo mkdir build_dir
- pwd
- cd build_dir
+ cd build
  pwd
  sudo cmake ../CMakeLists.txt
  sudo make install
