@@ -45,7 +45,7 @@
  pwd
  cd build_dir
  pwd
- sudo cmake ../CMakeLists.txt
+ sudo cmake CMakeLists.txt
  sudo make install
  #dpkg-query -l '*eigen*'
 #_______________________________________________
@@ -61,26 +61,41 @@
 # sudo apt-get update
 
 #______________________________________________________
-# sudo apt-get install -qq software-properties-common lsb-release
-# sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) multiverse"
-# sudo add-apt-repository ppa:shogun-toolbox/nightly -y
-# sudo apt-get update -y
-# sudo apt-get install -qq --force-yes --no-install-recommends libshogun18
-# sudo apt-get install -qq --force-yes --no-install-recommends libshogun-dev
-# sudo apt-get install -qq --force-yes --no-install-recommends python-shogun
-# sudo dpkg-query -l '*shogun*'
+ sudo apt-get install -qq software-properties-common lsb-release
+ sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) multiverse"
+ sudo add-apt-repository ppa:shogun-toolbox/nightly -y
+ sudo apt-get update -y
+ sudo apt-get install -qq --force-yes --no-install-recommends libshogun18
+ sudo apt-get install -qq --force-yes --no-install-recommends libshogun-dev
+ sudo apt-get install -qq --force-yes --no-install-recommends python-shogun
+ sudo dpkg-query -l '*shogun*'
   
 #building and installing google tests
-# sudo apt-get install cmake
-# sudo apt-get install libgtest-dev
+ sudo apt-get install cmake
+ sudo apt-get install libgtest-dev
  
-# cmake --version
-# pwd
-# cd /usr/src/gtest
-# sudo cmake CMakeLists.txt
-# sudo make
-# sudo cp *.a /usr/lib
-# cd /home/travis/build/lacava/fewtwo
-# pwd
+ cmake --version
+ pwd
+ cd /usr/src/gtest
+ sudo cmake CMakeLists.txt
+ sudo make
+ sudo cp *.a /usr/lib
+ cd /home/travis/build/lacava/fewtwo
+ pwd
+
+ sudo wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"
+ sudo tar xvzf 3.3.4.tar.gz
+ cd 3.3.4
+ ls
+ pwd
+ cd eigen*
+ pwd
+ ls
+ sudo mkdir build_dir
+ pwd
+ cd build_dir
+ pwd
+ sudo cmake CMakeLists.txt
+ sudo make install
 #_________________________________________________________
 
