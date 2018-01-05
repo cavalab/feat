@@ -32,7 +32,14 @@
  #sudo apt-get install --only-upgrade cmake
  #dpkg-query -l '*cmake*'
 #installing eigen 3
- sudo wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz" -O- | sudo tar xvz -C /usr/include/
+ #sudo wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz" -O- | sudo tar xvz -C /usr/include/
+ sudo wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"
+ sudo tar xvzf eigen-eigen*.tar.gz
+ cd eigen*
+ mkdir build_dir
+ cd build_dir
+ cmake ../CMakeLists.txt
+ make install
  #dpkg-query -l '*eigen*'
 #_______________________________________________
   
