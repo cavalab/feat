@@ -94,7 +94,7 @@
  ls
  cd build
  pwd
- sudo cmake ../CMakeLists.txt
+ sudo cmake ..
  sudo make install
 #_________________________________________________________
 
