@@ -95,6 +95,8 @@
  cd build
  pwd
  sudo cmake ..
+ ls
+ cat Makefile
  sudo make install
 #_________________________________________________________
 
