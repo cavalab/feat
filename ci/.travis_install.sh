@@ -34,8 +34,8 @@
 #installing eigen 3
  #sudo wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz" -O- | sudo tar xvz -C /usr/include/
  sudo wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"
- sudo tar xvzf eigen-eigen*.tar.gz
- cd eigen*
+ sudo tar xvzf 3.3.4.tar.gz
+ cd 3.3.4
  mkdir build_dir
  cd build_dir
  cmake ../CMakeLists.txt
