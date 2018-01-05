@@ -36,10 +36,13 @@
  sudo wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"
  sudo tar xvzf 3.3.4.tar.gz
  cd 3.3.4
- mkdir build_dir
+ ls
+ cd eigen*
+ ls
+ sudo mkdir build_dir
  cd build_dir
- cmake ../CMakeLists.txt
- make install
+ sudo cmake ../CMakeLists.txt
+ sudo make install
  #dpkg-query -l '*eigen*'
 #_______________________________________________
   
