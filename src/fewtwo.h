@@ -80,7 +80,7 @@ namespace FT{
                       p_surv( make_shared<Selection>(surv, true) ),
                       p_eval( make_shared<Evaluation>() ),
                       p_variation( make_shared<Variation>(cross_rate) ),
-                      p_ml( make_shared<ML>(ml, classification) )
+                      p_ml( make_shared<ML>(params.ml, classification) )
             {
                 r.set_seed(random_state);
             }
