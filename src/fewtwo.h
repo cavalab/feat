@@ -66,7 +66,7 @@ namespace FT{
             
             /// member initializer list constructor
               
-            Fewtwo(int pop_size=100, int gens = 100, string ml = "LinearRidgeRegression", 
+            Fewtwo(int pop_size=100, int gens = 100, string ml = "LeastAngleRegression", 
                    bool classification = false, int verbosity = 1, int max_stall = 0,
                    string sel ="lexicase", string surv="pareto", float cross_rate = 0.5,
                    char otype='a', string functions = "+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite", 
