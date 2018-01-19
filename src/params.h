@@ -37,10 +37,11 @@ namespace FT{
         bool shuffle;                               ///< option to shuffle the data
         double split;                               ///< fraction of data to use for training
         vector<char> dtypes;                        ///< data types of input parameters
+        string libLinearType;						///< type of LibLinear Machine used
 
         Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
                    char ot, int verbosity, string fs, unsigned int max_depth, 
-                   unsigned int max_dim, bool constant, string obj, bool sh, double sp, vector<char> datatypes = vector<char>()):    
+                   unsigned int max_dim, bool constant, string obj, bool sh, double sp,  string llType, vector<char> datatypes = vector<char>()):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
@@ -52,7 +53,9 @@ namespace FT{
             shuffle(sh),
             split(sp),
             dtypes(datatypes),
-            otype(ot)
+            otype(ot),
+            libLinearType(llType)
+            
         {
         	set_verbosity(verbosity);
             set_functions(fs);

@@ -88,7 +88,7 @@ namespace FT{
             // calculate ML model from Phi
             params.msg("ML training on " + pop.individuals[i].get_eqn(), 2);
             bool pass = true;
-            auto ml = std::make_shared<ML>(params.ml,params.classification);
+            auto ml = std::make_shared<ML>(params.ml,params.classification, params.libLinearType);
             VectorXd yhat = out_ml(Phi,y,params,pass,ml);
             if (!pass){
                 std::cerr << "Error training eqn " + pop.individuals[i].get_eqn() + "\n";

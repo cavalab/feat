@@ -72,16 +72,16 @@ namespace FT{
                    char otype='a', string functions = "+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite", 
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
                    bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
-                   double split=0.75, vector<char> dtypes = vector<char>()):
+                   double split=0.75, string libLinearType = "SVM", vector<char> dtypes = vector<char>()):
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
-                             functions, max_depth, max_dim, erc, obj, shuffle, split, dtypes), 
+                             functions, max_depth, max_dim, erc, obj, shuffle, split, libLinearType, dtypes), 
                       p_pop( make_shared<Population>(pop_size) ),
                       p_sel( make_shared<Selection>(sel) ),
                       p_surv( make_shared<Selection>(surv, true) ),
                       p_eval( make_shared<Evaluation>() ),
                       p_variation( make_shared<Variation>(cross_rate) ),
-                      p_ml( make_shared<ML>(ml, classification) )
+                      p_ml( make_shared<ML>(ml, classification, libLinearType) )
             {
                 r.set_seed(random_state);
                 str_dim = "";
@@ -101,16 +101,23 @@ namespace FT{
             void set_ml(string ml)
             {
             	params.ml = ml;
-            	p_ml = make_shared<ML>(params.ml, params.classification);
+            	p_ml = make_shared<ML>(params.ml, params.classification, params.libLinearType);
             }            
             
             /// set EProblemType for shogun              
             void set_classification(bool classification)
             {
             	params.classification = classification;
-            	p_ml = make_shared<ML>(params.ml, params.classification);
+            	p_ml = make_shared<ML>(params.ml, params.classification, params.libLinearType);
             }
-                        
+                
+            ///set LibLinear type
+            void set_libLinearType(string lltype)
+            {
+            	params.libLinearType = lltype;
+            	p_ml = make_shared<ML>(params.ml, params.classification, params.libLinearType);
+            }
+                 
             /// set level of debug info              
             void set_verbosity(int verbosity){ params.set_verbosity(verbosity); }
                         
@@ -167,6 +174,9 @@ namespace FT{
             
             ///return type of classification flag set
             bool get_classification(){ return params.classification; }
+            
+            ///return type of lib linear type if used
+            string get_libLinearType(){ return params.libLinearType; }
             
             ///return maximum stall in learning, in generations
             int get_max_stall() { return params.max_stall; }
