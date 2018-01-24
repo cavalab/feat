@@ -7,8 +7,13 @@ license: GNU/GPL v3
 #define DecisionTree_H
 
 //external includes
-
+#include <shogun/multiclass/tree/TreeMachine.h>
 #include <shogun/multiclass/tree/CARTree.h>
+
+// stuff being used
+using std::cout; 
+namespace sh = shogun;
+
 namespace FT{
     namespace ml {
         
@@ -16,28 +21,44 @@ namespace FT{
          * @class DecisionTree
          * @brief a wrapper class for CART trees that gets feature importance scores.
          */
-        class DecisionTree : sh::CC45ClassifierTree
+        class DecisionTree : public sh::CCARTree
         {
+        public:
+            typedef sh::CBinaryTreeMachineNode<sh::CARTreeNodeData> bnode_t;
             // method to return importance scores. 
-            vector<double> feature_importance()
+            vector<double> feature_importances()
             {
                 /*! Importance is defined as the sum across all splits in the tree of the
                  * information criterion brought about by each feature. 
                  */
+                 // need to get feature sizes
+                 sh::SGVector<bool> dt = get_feature_types();
+                 vector<double> importances(dt.size(),0.0);    //set to zero for all attributes
 
-                 vector<double> importances;
+                 bnode_t* node = dynamic_cast<bnode_t*>(m_root);
+                 get_importance(node, importances); 
+                 
+                 return importances;
+            }
 
-                 auto node = m_root;
-                 // make this recursive! 
-                 //
-                 while (node->num_leaves > 0 )
-                 {
-                     importances[node->attribute_id] += impurity(node) 
-                                                        - impurity(node->m_children[0])
-                                                        - impurity(node->m_children[1])
-                     // traverse all nodes
-                     ++node;
+            void get_importance(bnode_t* node, vector<double> importances)
+            {
+
+                 if (node->data.num_leaves!=1)
+                 {              
+                     bnode_t* left=node->left();
+                     bnode_t* right=node->right();
+                    
+                     importances[node->data.attribute_id] += impurity(node) - impurity(left)
+                                                            - impurity(right); 
+                     get_importance(left,importances);
+                     get_importance(right,importances);
+
+                     SG_UNREF(left);
+                     SG_UNREF(right);
                  }
+            }
+                 
                  // while node != end node
                  //     if not a leaf:
                  //     importances[node.feature ] += node.impurity - left.impurity - right.impurity
@@ -48,14 +69,15 @@ namespace FT{
                  //     node.impurity = total_weight of training samples passing thru this node
                  //     float64_t weight_minus_node : total weight of misclassified samples in node
                  //     weight_minus_branch: total weight of misclassified samples in subtree
+            
+            /// compute the impurity of a node.  
+            double impurity ( bnode_t * n )
+            {
+                n->data.print_data(n->data);
+             
+                return n->data.total_weight * n->data.weight_minus_node;
             }
-        }
-        double impurity ( CtreeMachineNode * n )
-        {
-            /*! computes the impurity of a node. 
-             */
-            return n->total_weight * (1 - weight_minus_node);
-        }
+        };
     }
-
+}
 #endif

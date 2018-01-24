@@ -80,7 +80,7 @@ namespace FT{
                       p_surv( make_shared<Selection>(surv, true) ),
                       p_eval( make_shared<Evaluation>() ),
                       p_variation( make_shared<Variation>(cross_rate) ),
-                      p_ml( make_shared<ML>(params.ml, classification) )
+                      p_ml( make_shared<ML>(params.ml, classification, params.dtypes) )
             {
                 r.set_seed(random_state);
             }
@@ -149,7 +149,7 @@ namespace FT{
             void set_split(double sp){params.split = sp;}
             
             ///set data types for input parameters
-            void set_dtypes(vector<char> dtypes){params.dtypes = dtypes;}
+            void set_dtypes(vector<char> dtypes){params.dtypes = dtypes; p_ml->set_dtypes(dtypes);}
             
             ///return population size
             int get_pop_size(){ return params.pop_size; }
