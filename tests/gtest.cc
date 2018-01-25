@@ -1111,7 +1111,7 @@ TEST(Evaluation, out_ml)
     shared_ptr<ML> p_ml = make_shared<ML>("LinearRidgeRegression", false);
              
     bool pass = true;
-    VectorXd yhat = p_eval->out_ml(X, y, params, pass, p_ml);
+    VectorXd yhat = p_ml->out(X, y, params, pass);
     
     double mean = ((yhat - y).array().pow(2)).mean();
     
