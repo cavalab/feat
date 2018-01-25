@@ -18,7 +18,7 @@ namespace FT{
     {
         int pop_size;                   			///< population size
         int gens;                       			///< max generations
-        string ml;                      			///< machine learner with which Fewtwo is paired
+        string ml;                      			///< machine learner used with Fewtwo
         bool classification;            			///< flag to conduct classification rather than 
         int max_stall;                  			///< maximum stall in learning, in generations
         vector<char> otypes;                     	///< program output types ('f', 'b')
@@ -40,7 +40,8 @@ namespace FT{
 
         Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
                    char ot, int verbosity, string fs, unsigned int max_depth, 
-                   unsigned int max_dim, bool constant, string obj, bool sh, double sp, vector<char> datatypes = vector<char>()):    
+                   unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
+                   vector<char> datatypes = vector<char>()):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
@@ -54,6 +55,8 @@ namespace FT{
             dtypes(datatypes),
             otype(ot)
         {
+            if (!ml.compare("LinearRidgeRegression") && classification)
+                ml = "LogisticRegression";
         	set_verbosity(verbosity);
             set_functions(fs);
             set_objectives(obj);
