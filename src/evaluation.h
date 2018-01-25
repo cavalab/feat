@@ -88,7 +88,7 @@ namespace FT{
             // calculate ML model from Phi
             params.msg("ML training on " + pop.individuals[i].get_eqn(), 2);
             bool pass = true;
-            auto ml = std::make_shared<ML>(params.ml,params.classification, params.libLinearType);
+            auto ml = std::make_shared<ML>(params.ml,params.classification);
             VectorXd yhat = out_ml(Phi,y,params,pass,ml);
             if (!pass){
                 std::cerr << "Error training eqn " + pop.individuals[i].get_eqn() + "\n";
@@ -148,11 +148,23 @@ namespace FT{
         //    std::cout << "thread " + std::to_string(omp_get_thread_num()) + " X: " << X << "\n"; 
 
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
-        auto labels = some<CRegressionLabels>(SGVector<float64_t>(y));
+        
+        //CLabels *labels;
+        
+        if((!params.ml.compare("SVM") && params.classification) || !params.ml.compare("LR"))
+        {
+        	auto labels = some<CBinaryLabels>(SGVector<float64_t>(y), 0.5);
+        	ml->p_est->set_labels(labels);
+       	}
+        else
+        {
+        	auto labels = some<CRegressionLabels>(SGVector<float64_t>(y));
+        	ml->p_est->set_labels(labels);
+        }
          
         // pass data to ml
-        ml->p_est->set_labels(labels);
-
+        //ml->p_est->set_labels(labels);
+        
         // train ml
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " train\n";
         params.msg("ML training on thread" + std::to_string(omp_get_thread_num()) + "...",2," ");

@@ -33,14 +33,13 @@ namespace FT{
     {
         public:
         	
-            ML(string ml, bool classification, string _subtype)
+            ML(string ml, bool classification)
             {
                 /*!
                  * use string to specify a desired ML algorithm from shogun.
                  */
                 
                 type = ml;
-                subtype = _subtype;
                 
                 auto prob_type = sh::EProblemType::PT_REGRESSION;
                 
@@ -67,23 +66,21 @@ namespace FT{
                 else if (!ml.compare("LinearLogisticRegression"))
                     p_est = make_shared<sh::CLibLinearRegression>();
                 
-                else if (!ml.compare("LibLinear"))
+                else if (!ml.compare("SVM"))
                 {
-                	if(!subtype.compare("SVM"))
-	                {
-	                    p_est = make_shared<sh::CLibLinear>(sh::L2R_L2LOSS_SVC_DUAL);
-	                }
-	                else if(!subtype.compare("LR"))
-	                {
-	                    p_est = make_shared<sh::CLibLinear>(sh::L2R_LR);
-	                }
+                
+                	if(classification)
+                		p_est = make_shared<sh::CLibLinear>(sh::L2R_L2LOSS_SVC_DUAL);
+	                    
 	                else
-                    	std::cerr << "'" + ml + "' is not a valid ml choice\n";
-                }
-                
-                
-                else
-                    std::cerr << "'" + ml + "' is not a valid ml choice\n";
+	                	p_est = make_shared<sh::CLibLinearRegression>();
+	            }
+	            
+	            else if (!ml.compare("LR"))
+	            	p_est = make_shared<sh::CLibLinear>(sh::L2R_LR);
+	            
+	            else
+                	std::cerr << "'" + ml + "' is not a valid ml choice\n";
                 
             }
         
@@ -106,10 +103,10 @@ namespace FT{
         vector<double> w;
         
         if (!type.compare("LeastAngleRegression") || !type.compare("LinearRidgeRegression")||
-        	!type.compare("LinearLogisticRegression") || (!type.compare("LibLinear") && !type.compare("LR")))
+        	!type.compare("SVM") || (!type.compare("LR")))
         {
             auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_w();
-            w.assign(tmp.data(), tmp.data()+tmp.size());          
+            w.assign(tmp.data(), tmp.data()+tmp.size());       
         }
         
         return softmax(w);
