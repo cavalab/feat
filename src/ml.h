@@ -163,7 +163,7 @@ namespace FT{
 
         if (!type.compare("RandomForest"))
         {
-            std::cout << "setting max_feates\n";
+            //std::cout << "setting max_feates\n";
             // set max features to sqrt(n_features)
             int max_feats = std::sqrt(X.rows());
             dynamic_pointer_cast<sh::CRandomForest>(p_est)->set_num_random_features(max_feats);
@@ -171,7 +171,7 @@ namespace FT{
         // for tree-based methods we need to specify data types 
         if (!type.compare("RandomForest") || !type.compare("CART"))
         {            
-            std::cout << "setting dtypes\n";
+            //std::cout << "setting dtypes\n";
             if (dtypes.empty())
                 set_dtypes(params.dtypes);
             else
@@ -236,10 +236,10 @@ namespace FT{
             y_pred = reg->get_labels();
             delete reg;
         }
-        y_pred.display_vector();
+        //y_pred.display_vector();
         // map to Eigen vector
         Map<VectorXd> yhat(y_pred.data(),y_pred.size());
-        std::cout << "weights\n";
+        //std::cout << "weights\n";
         // weights
         vector<double> w = get_weights();
 
@@ -250,7 +250,7 @@ namespace FT{
             std::cerr << "inf or nan values in model fit to: " << X << "\n";
             pass = false;
         }
-        std::cout << "yhat is " << yhat.transpose() << std::endl; 
+        //std::cout << "yhat is " << yhat.transpose() << std::endl; 
         // return
         return yhat;
     }
