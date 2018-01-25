@@ -32,5 +32,12 @@ license: GNU/GPL v3
 #include "./node/nodesubtract.h"
 #include "./node/nodeifthenelse.h"
 #include "./node/nodevariable.h"
+#include "./node/nodexor.h"
+#include "./node/nodegaussian.h"
+#include "./node/node2dgaussian.h"
+#include "./node/nodelogit.h"
+#include "./node/nodestep.h"
+#include "./node/nodesign.h"
+#include "./node/nodetanh.h"
 
 #endif
