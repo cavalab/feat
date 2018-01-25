@@ -11,9 +11,11 @@ license: GNU/GPL v3
 #include <shogun/machine/LinearMachine.h>
 #include <shogun/regression/LeastAngleRegression.h>
 #include <shogun/regression/LinearRidgeRegression.h>
-#include <shogun/multiclass/tree/CARTree.h>
+//#include <shogun/multiclass/tree/MyCARTree.h>
 #include <shogun/machine/RandomForest.h>
-#include "ml/DecisionTree.h"
+// internal includes
+#include "ml/MyCARTree.h"
+
 // stuff being used
 using std::string;
 using std::dynamic_pointer_cast;
@@ -40,9 +42,8 @@ namespace FT{
                 auto prob_type = sh::EProblemType::PT_REGRESSION;
                 
                 if (classification)
-                    prob_type = sh::EProblemType::PT_MULTICLASS;                        
-                
-                
+                     prob_type = sh::EProblemType::PT_MULTICLASS;               
+
                 if (!ml.compare("LeastAngleRegression"))
                     p_est = make_shared<sh::CLeastAngleRegression>();
                 
@@ -53,16 +54,16 @@ namespace FT{
                     dynamic_pointer_cast<sh::CRandomForest>(p_est)->set_bag_size(100);
                 }
                 else if (!ml.compare("CART")){
-                    p_est = make_shared<ml::DecisionTree>();
-                    dynamic_pointer_cast<ml::DecisionTree>(p_est)->
+                    p_est = make_shared<sh::CMyCARTree>();
+                    dynamic_pointer_cast<sh::CMyCARTree>(p_est)->
                                                                set_machine_problem_type(prob_type);
-                    dynamic_pointer_cast<ml::DecisionTree>(p_est)->
+                    dynamic_pointer_cast<sh::CMyCARTree>(p_est)->
                                                                set_max_depth(4);
                     // set attribute types
                     sh::SGVector<bool> dt(dtypes.size());
                     for (unsigned i = 0; i< dtypes.size(); ++i)
                         dt[i] = dtypes[i] == 'b';
-                    dynamic_pointer_cast<ml::DecisionTree>(p_est)->set_feature_types(dt);
+                    dynamic_pointer_cast<sh::CMyCARTree>(p_est)->set_feature_types(dt);
                 }
 
                 else if (!ml.compare("LinearRidgeRegression"))
@@ -85,7 +86,7 @@ namespace FT{
                     sh::SGVector<bool> dt(dtypes.size());
                     for (unsigned i = 0; i< dtypes.size(); ++i)
                         dt[i] = dtypes[i] == 'b';
-                    dynamic_pointer_cast<ml::DecisionTree>(p_est)->set_feature_types(dt);
+                    dynamic_pointer_cast<sh::CMyCARTree>(p_est)->set_feature_types(dt);
                 }
             }
             shared_ptr<sh::CMachine> p_est;
@@ -109,7 +110,7 @@ namespace FT{
         }
         else if (!type.compare("CART"))
         {
-            w = dynamic_pointer_cast<ml::DecisionTree>(p_est)->feature_importances();
+            w = dynamic_pointer_cast<sh::CMyCARTree>(p_est)->feature_importances();
         }
 
         return softmax(w);

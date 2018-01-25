@@ -37,7 +37,7 @@ if (OPENMP_FOUND)
 endif()
 
 # gather list of source files
-file(GLOB src_files "src/*.cc")
+file(GLOB_RECURSE src_files "src/*.cc")
 
 # executable
 add_executable(fewtwo ${src_files})

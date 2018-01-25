@@ -59,23 +59,29 @@ namespace FT{
                  }
             }
                  
-                 // while node != end node
-                 //     if not a leaf:
-                 //     importances[node.feature ] += node.impurity - left.impurity - right.impurity
-                 // normalize weights
-                 //
-                 // shogun names:
-                 //     node.feature = attribute_id (int32_t)
-                 //     node.impurity = total_weight of training samples passing thru this node
-                 //     float64_t weight_minus_node : total weight of misclassified samples in node
-                 //     weight_minus_branch: total weight of misclassified samples in subtree
+            // while node != end node
+            //     if not a leaf:
+            //     importances[node.feature ] += node.impurity - left.impurity - right.impurity
+            // normalize weights
+            //
+            // shogun names:
+            //     node.feature = attribute_id (int32_t)
+            //     node.impurity = total_weight of training samples passing thru this node
+            //     float64_t weight_minus_node : total weight of misclassified samples in node
+            //     weight_minus_branch: total weight of misclassified samples in subtree
             
             /// compute the impurity of a node.  
             double impurity ( bnode_t * n )
             {
-                n->data.print_data(n->data);
-             
-                return n->data.total_weight * n->data.weight_minus_node;
+                //n->data.print_data(n->data);
+                double p0 = (1-n->data.weight_minus_node)/ n->data.total_weight;
+                double p1 = n->data.weight_minus_node / n->data.total_weight;
+                cout << "node num_leaves: " << n->data.num_leaves << "\n";
+                cout << "node label: " << n->data.node_label << "\n";
+                cout << "node p0: " << p0 << "\n";
+                cout << "node p1: " << p1 << "\n";
+                cout << "impurity: " << 1 - (pow(p0,2)+pow(p1,2)) << "\n---\n";
+                return 1 - (pow(p0,2)+pow(p1,2));
             }
         };
     }

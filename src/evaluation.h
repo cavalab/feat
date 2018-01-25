@@ -11,6 +11,7 @@ license: GNU/GPL v3
 #include <shogun/base/init.h>                                                                       
 #include <shogun/lib/common.h>                                                                      
 #include <shogun/labels/RegressionLabels.h>                                                         
+#include <shogun/labels/MulticlassLabels.h>
 #include <shogun/features/Features.h>                                                               
 //#include <shogun/preprocessor/PruneVarSubMean.h>        
 #include <shogun/preprocessor/NormOne.h>        
@@ -88,7 +89,8 @@ namespace FT{
             // calculate ML model from Phi
             params.msg("ML training on " + pop.individuals[i].get_eqn(), 2);
             bool pass = true;
-            auto ml = std::make_shared<ML>(params.ml,params.classification,params.dtypes);
+            auto ml = std::make_shared<ML>(params.ml,params.classification,
+                                            pop.individuals[i].dtypes);
             VectorXd yhat = out_ml(Phi,y,params,pass,ml);
             if (!pass){
                 std::cerr << "Error training eqn " + pop.individuals[i].get_eqn() + "\n";
@@ -148,10 +150,21 @@ namespace FT{
         //    std::cout << "thread " + std::to_string(omp_get_thread_num()) + " X: " << X << "\n"; 
 
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
-        auto labels = some<CRegressionLabels>(SGVector<float64_t>(y));
-         
-        // pass data to ml
-        ml->p_est->set_labels(labels);
+        
+        if (params.classification)
+        {
+            //auto labels = some<CMulticlassLabels>(SGVector<float64_t>(y));
+            // pass data to ml
+            ml->p_est->set_labels(some<CMulticlassLabels>(SGVector<float64_t>(y)));
+        }
+        else
+        {
+            // auto labels = some<CRegressionLabels>(SGVector<float64_t>(y));
+            // pass data to ml
+            ml->p_est->set_labels(some<CRegressionLabels>(SGVector<float64_t>(y)));
+        }
+        //ml->p_est->set_labels(some<CDenseLabels>(SGVector<float64_t>(y)));
+        //std::cout << "past set labels\n"; 
 
         // train ml
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " train\n";
@@ -163,16 +176,29 @@ namespace FT{
         params.msg("done.",2);
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " get output\n";
         //get output
-        auto reg = ml->p_est->apply_regression(features);
-        auto y_pred = reg->get_labels();
-        delete reg; 
+        SGVector<double> y_pred; 
+
+        if (params.classification)
+        {
+            auto clf = ml->p_est->apply_multiclass(features);
+            y_pred = clf->get_labels();
+            delete clf;
+            
+        }
+        else
+        {
+            auto reg = ml->p_est->apply_regression(features);
+            y_pred = reg->get_labels();
+            delete reg;
+        }
+        // map to Eigen vector
+        Map<VectorXd> yhat(y_pred.data(),y_pred.size());
         // weights
         vector<double> w = ml->get_weights();
 
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " map to vector\n";
 
-        // map to Eigen vector
-        Map<VectorXd> yhat(y_pred.data(),y_pred.size());
+        
         
         if (Eigen::isinf(yhat.array()).any() || Eigen::isnan(yhat.array()).any())
         {

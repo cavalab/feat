@@ -324,10 +324,13 @@ namespace FT{
         params.msg("best training representation: " + best_ind.get_eqn(),1);
         params.msg("train score: " + std::to_string(best_score), 1);
         // evaluate population on validation set
-        F_v.resize(X_v.cols(),int(2*params.pop_size)); 
-        p_eval->fitness(*p_pop, X_v, y_v, F_v, params);
-        initial_model(X_v, y_v);        // calculate baseline model validation score
-        update_best();                  // get the best validation model
+        if (params.split < 1.0)
+        {
+            F_v.resize(X_v.cols(),int(2*params.pop_size)); 
+            p_eval->fitness(*p_pop, X_v, y_v, F_v, params);
+            initial_model(X_v, y_v);        // calculate baseline model validation score
+            update_best();                  // get the best validation model
+        }
         params.msg("best validation representation: " + best_ind.get_eqn(),1);
         params.msg("validation score: " + std::to_string(best_score), 1);
     }

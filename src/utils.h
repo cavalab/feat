@@ -218,7 +218,8 @@ namespace FT{
 
     
     }
-    
+
+    /// return the softmax transformation of a vector.
     template <class T>
     vector<T> softmax(vector<T> w)
     {
