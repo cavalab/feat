@@ -80,7 +80,7 @@ namespace FT{
                       p_surv( make_shared<Selection>(surv, true) ),
                       p_eval( make_shared<Evaluation>() ),
                       p_variation( make_shared<Variation>(cross_rate) ),
-                      p_ml( make_shared<ML>(params.ml, classification, params.dtypes) )
+                      p_ml( make_shared<ML>(params.ml, classification) )
             {
                 r.set_seed(random_state);
             }
@@ -341,7 +341,7 @@ namespace FT{
          * fits an ML model to the raw data as a starting point.
          */
         bool pass = true;
-        VectorXd yhat = p_eval->out_ml(X,y,params,pass,p_ml);
+        VectorXd yhat = p_ml->out(X,y,params,pass);
 
         // set terminal weights based on model
         params.set_term_weights(p_ml->get_weights());
