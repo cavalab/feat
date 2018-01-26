@@ -110,7 +110,7 @@ namespace FT{
             	params.classification = classification;
             	p_ml = make_shared<ML>(params.ml, params.classification);
             }
-                        
+                 
             /// set level of debug info              
             void set_verbosity(int verbosity){ params.set_verbosity(verbosity); }
                         

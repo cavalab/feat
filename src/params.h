@@ -56,6 +56,7 @@ namespace FT{
             dtypes(datatypes),
             otype(ot),
             feedback(fb)
+
         {
             if (!ml.compare("LinearRidgeRegression") && classification)
                 ml = "LogisticRegression";

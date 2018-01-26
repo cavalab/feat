@@ -91,9 +91,7 @@ namespace FT{
         }
 
      
-    }
-    
-    
+    }    
     
     // assign fitness to program
     void Evaluation::assign_fit(Individual& ind, MatrixXd& F, const VectorXd& yhat, 
