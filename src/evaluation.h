@@ -82,9 +82,8 @@ namespace FT{
                 throw;
             }
             // assign weights to individual
-            vector<double> w = ml->get_weights();
-            
-            pop.individuals[i].set_w(w);
+           //vector<double> w = ml->get_weights() 
+            pop.individuals[i].set_p(ml->get_weights(),params.feedback);
             // assign F and aggregate fitness
             params.msg("Assigning fitness to " + pop.individuals[i].get_eqn(), 2);
             assign_fit(pop.individuals[i],F,yhat,y,params);

@@ -71,12 +71,12 @@ namespace FT{
         /// find root locations in program.
         vector<size_t> roots();
         
-        /// get weighted probabilities
-        vector<double> get_w(){ return w;}
-        /// get weight probability for program location i 
-        double get_w(const size_t i);
-        /// set weighted probabilities
-        void set_w(vector<double>& weights);
+        ///// get weighted probabilities
+        //vector<double> get_w(){ return w;}
+        ///// get weight probability for program location i 
+        //double get_w(const size_t i);
+        ///// set weighted probabilities
+        //void set_w(vector<double>& weights);
 
         /// get probabilities of variation
         vector<double> get_p(){ return p; }     
@@ -87,52 +87,55 @@ namespace FT{
 
         unsigned int c;            ///< the complexity of the program.    
         vector<char> dtypes;       ///< the data types of each column of the program output
-    private:
+    
         /// set probabilities
-        void set_p();
+        void set_p(const vector<double>& weights, const double& fb);
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
 
-    void Individual::set_w(vector<double>& weights)
-    {
-        // w should have an element corresponding to each root node. 
-        if (roots().size() != weights.size())
-            std::cout << "roots size: " << roots().size() << ", w size: " << w.size() << "\n";
-        
-        assert(roots().size() == weights.size());
-        w = weights; 
-        set_p();
-    }
-    double Individual::get_w(const size_t i)
-    {
-        /*! @param i index in program 
-         * @returns weight associated with node */
-        vector<size_t> rts = roots();
-        
-        size_t j = 0;
-        double size = rts[0];
-        while ( j < rts.size())
-        {
-            if (j > 1) 
-                size = rts[j] - rts[j-1];
-            if (i == rts[j])
-                return w.at(j)/size;    
-            else if (i > rts[j])
-                ++j;
-            
-        }
-        // normalize weight by size of subtree
-        double norm_weight = w.at(j)/size;
-        return norm_weight;
-    }
-    void Individual::set_p()
-    {        
-        p = w;
+    //void Individual::set_w(vector<double>& weights)
+    //{
+    //    // w should have an element corresponding to each root node. 
+    //    if (roots().size() != weights.size())
+    //        std::cout << "roots size: " << roots().size() << ", w size: " << w.size() << "\n";
+    //    
+    //    assert(roots().size() == weights.size());
+    //    w = weights; 
+    //    set_p();
+    //}
+    //double Individual::get_w(const size_t i)
+    //{
+    //    /*! @param i index in program 
+    //     * @returns weight associated with node */
+    //    vector<size_t> rts = roots();
+    //    
+    //    size_t j = 0;
+    //    double size = rts[0];
+    //    while ( j < rts.size())
+    //    {
+    //        if (j > 1) 
+    //            size = rts[j] - rts[j-1];
+    //        if (i == rts[j])
+    //            return w.at(j)/size;    
+    //        else if (i > rts[j])
+    //            ++j;
+    //        
+    //    }
+    //    // normalize weight by size of subtree
+    //    double norm_weight = w.at(j)/size;
+    //    return norm_weight;
+    //}
+    void Individual::set_p(const vector<double>& weights, const double& fb)
+    {   
+        assert(weights.size() == roots().size());     
+        p = weights;
         for (unsigned i=0; i<p.size(); ++i)
-            p[i] = (1-p[i]);
+            p[i] = 1-p[i];
+        double u = 1.0/p.size();    // uniform probability
         p = softmax(p);
-        assert(p.size() == roots().size());
+        for (unsigned i=0; i<p.size(); ++i)
+            p[i] = u + fb*(u-p[i]);
     }
     double Individual::get_p(const size_t i)
     {

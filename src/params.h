@@ -37,11 +37,12 @@ namespace FT{
         bool shuffle;                               ///< option to shuffle the data
         double split;                               ///< fraction of data to use for training
         vector<char> dtypes;                        ///< data types of input parameters
+        double feedback;                            ///< strength of ml feedback on probabilities
 
         Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
                    char ot, int verbosity, string fs, unsigned int max_depth, 
                    unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
-                   vector<char> datatypes = vector<char>()):    
+                   double fb, vector<char> datatypes = vector<char>()):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
@@ -53,7 +54,8 @@ namespace FT{
             shuffle(sh),
             split(sp),
             dtypes(datatypes),
-            otype(ot)
+            otype(ot),
+            feedback(fb)
         {
             if (!ml.compare("LinearRidgeRegression") && classification)
                 ml = "LogisticRegression";
@@ -82,10 +84,12 @@ namespace FT{
         /// sets weights for terminals. 
         void set_term_weights(const vector<double>& w)
         {           
-            bool zeros = std::all_of(w.begin(), w.end(), [](int i) { return i==0; });
-            assert(w.size()==terminals.size());
-            //assert(!zeros);
-            term_weights = w;
+            assert(w.size()==terminals.size()); 
+            double u = 1/w.size();
+            term_weights.clear();
+            vector<double> sw = softmax(w);
+            for (unsigned i = 0; i<sw.size(); ++i)
+                term_weights.push_back(u + feedback*(sw[i]-u));
             std::cout << "term weights: ";
             for (auto tw : term_weights)
                 std::cout << tw << " ";
