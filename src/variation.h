@@ -83,7 +83,7 @@ namespace FT{
          */
               unsigned start= pop.size();
         pop.resize(2*params.pop_size);
-        //#pragma omp parallel for
+        #pragma omp parallel for
         for (unsigned i = start; i<pop.size(); ++i)
         {
             bool pass=false;                      // pass check for children undergoing variation     
