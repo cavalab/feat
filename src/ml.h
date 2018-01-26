@@ -218,7 +218,7 @@ namespace FT{
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
         
         if((!params.ml.compare("SVM") && params.classification) || !params.ml.compare("LR"))           	
-        	ml->p_est->set_labels(some<CBinaryLabels>(SGVector<float64_t>(y), 0.5));       	
+        	p_est->set_labels(some<CBinaryLabels>(SGVector<float64_t>(y), 0.5));       	
         else if (params.classification)       
             p_est->set_labels(some<CMulticlassLabels>(SGVector<float64_t>(y)));
         else
