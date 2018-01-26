@@ -17,12 +17,14 @@ license: GNU/GPL v3
 #include <shogun/regression/LeastAngleRegression.h>
 #include <shogun/regression/LinearRidgeRegression.h>
 #include <shogun/machine/RandomForest.h>
-#include <shogun/ensemble/CombinationRule.h>
+#include <shogun/regression/svr/LibLinearRegression.h>
+#include <shogun/classifier/svm/LibLinear.h>
 #include <shogun/ensemble/MeanRule.h>
 #include <shogun/ensemble/MajorityVote.h>
 #include <cmath>
 // internal includes
 #include "ml/MyCARTree.h"
+
 
 // stuff being used
 using std::string;
@@ -47,6 +49,7 @@ namespace FT{
                  */
                 
                 type = ml;
+                
                 auto prob_type = sh::EProblemType::PT_REGRESSION;
                 
                 if (classification)
@@ -82,10 +85,26 @@ namespace FT{
                 }
 
                 else if (!ml.compare("LinearRidgeRegression"))
-                    p_est = make_shared<sh::CLinearRidgeRegression>();                   
+                    p_est = make_shared<sh::CLinearRidgeRegression>();
+                    
+                else if (!ml.compare("LinearLogisticRegression"))
+                    p_est = make_shared<sh::CLibLinearRegression>();
                 
-                else
-                    std::cerr << "'" + ml + "' is not a valid ml choice\n";
+                else if (!ml.compare("SVM"))
+                {
+                
+                	if(classification)
+                		p_est = make_shared<sh::CLibLinear>(sh::L2R_L2LOSS_SVC_DUAL);
+	                    
+	                else
+	                	p_est = make_shared<sh::CLibLinearRegression>();
+	            }
+	            
+	            else if (!ml.compare("LR"))
+	            	p_est = make_shared<sh::CLibLinear>(sh::L2R_LR);
+	            
+	            else
+                	std::cerr << "'" + ml + "' is not a valid ml choice\n";
                 
             }
         
@@ -114,8 +133,6 @@ namespace FT{
             }
             shared_ptr<sh::CMachine> p_est;
             string type;
-        private:
-            sh::CCombinationRule* CR = nullptr;
     };
 /////////////////////////////////////////////////////////////////////////////////////// Definitions
 
@@ -126,7 +143,8 @@ namespace FT{
          */
         vector<double> w;
         
-        if (!type.compare("LeastAngleRegression") || !type.compare("LinearRidgeRegression"))
+        if (!type.compare("LeastAngleRegression") || !type.compare("LinearRidgeRegression")||
+        	!type.compare("SVM") || (!type.compare("LR")))
         {
             auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_w();
             
@@ -196,19 +214,12 @@ namespace FT{
 
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
         
-        if (params.classification)
-        {
-            //auto labels = some<CMulticlassLabels>(SGVector<float64_t>(y));
-            // pass data to ml
+        if((!params.ml.compare("SVM") && params.classification) || !params.ml.compare("LR"))           	
+        	ml->p_est->set_labels(some<CBinaryLabels>(SGVector<float64_t>(y), 0.5));       	
+        else if (params.classification)       
             p_est->set_labels(some<CMulticlassLabels>(SGVector<float64_t>(y)));
-        }
         else
-        {
-            // auto labels = some<CRegressionLabels>(SGVector<float64_t>(y));
-            // pass data to ml
             p_est->set_labels(some<CRegressionLabels>(SGVector<float64_t>(y)));
-        }
-        //p_est->set_labels(some<CDenseLabels>(SGVector<float64_t>(y)));
         //std::cout << "past set labels\n"; 
 
         // train ml

@@ -37,7 +37,7 @@ namespace FT{
         bool shuffle;                               ///< option to shuffle the data
         double split;                               ///< fraction of data to use for training
         vector<char> dtypes;                        ///< data types of input parameters
-
+        
         Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
                    char ot, int verbosity, string fs, unsigned int max_depth, 
                    unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
@@ -54,6 +54,7 @@ namespace FT{
             split(sp),
             dtypes(datatypes),
             otype(ot)
+            
         {
             if (!ml.compare("LinearRidgeRegression") && classification)
                 ml = "LogisticRegression";
