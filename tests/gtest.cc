@@ -270,8 +270,11 @@ TEST(Individual, EvalEquation)
     // initialize population 
     fewtwo.p_pop->init(fewtwo.best_ind, fewtwo.params);
     int i;
-    for(i = 0; i < fewtwo.p_pop->individuals.size(); i++)
-	    ASSERT_TRUE(checkBrackets(fewtwo.p_pop->individuals[i].get_eqn())); //TODO evaluate if string correct or not
+    for(i = 0; i < fewtwo.p_pop->individuals.size(); i++){
+	    if (!checkBrackets(fewtwo.p_pop->individuals[i].get_eqn()))
+            std::cout << "check brackets failed on eqn " << fewtwo.p_pop->individuals[i].get_eqn() << "\n";
+        ASSERT_TRUE(checkBrackets(fewtwo.p_pop->individuals[i].get_eqn())); //TODO evaluate if string correct or not
+    }
 }
 
 TEST(NodeTest, Evaluate)
@@ -1204,7 +1207,7 @@ TEST(Evaluation, out_ml)
     shared_ptr<ML> p_ml = make_shared<ML>("LinearRidgeRegression", false);
              
     bool pass = true;
-    VectorXd yhat = p_eval->out_ml(X, y, params, pass, p_ml);
+    VectorXd yhat = p_ml->out(X, y, params, pass);
     
     double mean = ((yhat - y).array().pow(2)).mean();
     

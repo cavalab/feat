@@ -81,7 +81,7 @@ namespace FT{
                       p_surv( make_shared<Selection>(surv, true) ),
                       p_eval( make_shared<Evaluation>() ),
                       p_variation( make_shared<Variation>(cross_rate) ),
-                      p_ml( make_shared<ML>(ml, classification) )
+                      p_ml( make_shared<ML>(params.ml, classification) )
             {
                 r.set_seed(random_state);
                 str_dim = "";
@@ -151,7 +151,7 @@ namespace FT{
             void set_split(double sp){params.split = sp;}
             
             ///set data types for input parameters
-            void set_dtypes(vector<char> dtypes){params.dtypes = dtypes;}
+            void set_dtypes(vector<char> dtypes){params.dtypes = dtypes; p_ml->set_dtypes(dtypes);}
             
             ///set dimensionality as multiple of the number of columns
             void set_dim(string str) { str_dim = str; }
@@ -343,10 +343,13 @@ namespace FT{
         params.msg("best training representation: " + best_ind.get_eqn(),1);
         params.msg("train score: " + std::to_string(best_score), 1);
         // evaluate population on validation set
-        F_v.resize(X_v.cols(),int(2*params.pop_size)); 
-        p_eval->fitness(*p_pop, X_v, y_v, F_v, params);
-        initial_model(X_v, y_v);        // calculate baseline model validation score
-        update_best();                  // get the best validation model
+        if (params.split < 1.0)
+        {
+            F_v.resize(X_v.cols(),int(2*params.pop_size)); 
+            p_eval->fitness(*p_pop, X_v, y_v, F_v, params);
+            initial_model(X_v, y_v);        // calculate baseline model validation score
+            update_best();                  // get the best validation model
+        }
         params.msg("best validation representation: " + best_ind.get_eqn(),1);
         params.msg("validation score: " + std::to_string(best_score), 1);
     }
@@ -357,7 +360,7 @@ namespace FT{
          * fits an ML model to the raw data as a starting point.
          */
         bool pass = true;
-        VectorXd yhat = p_eval->out_ml(X,y,params,pass,p_ml);
+        VectorXd yhat = p_ml->out(X,y,params,pass);
 
         // set terminal weights based on model
         params.set_term_weights(p_ml->get_weights());

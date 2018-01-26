@@ -71,6 +71,7 @@ namespace FT{
         vector<size_t> roots();
        
         unsigned int c;            ///< the complexity of the program.    
+        vector<char> dtypes;       ///< the data types of each column of the program output
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
@@ -122,14 +123,19 @@ namespace FT{
                
         int rows_f = stack_f.size();
         int rows_b = stack_b.size();
+        dtypes.clear();        
         Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
         // add stack_f to Phi
         for (unsigned int i=0; i<rows_f; ++i)
-            Phi.row(i) = VectorXd::Map(stack_f.at(i).data(),cols);
+        {    Phi.row(i) = VectorXd::Map(stack_f.at(i).data(),cols);
+             dtypes.push_back('f'); 
+        }
         // convert stack_b to Phi       
         for (unsigned int i=0; i<rows_b; ++i)
+        {
             Phi.row(i+rows_f) = ArrayXb::Map(stack_b.at(i).data(),cols).cast<double>();
-                
+            dtypes.push_back('b');
+        }       
         //Phi.transposeInPlace();
         return Phi;
     }

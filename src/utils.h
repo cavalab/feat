@@ -141,7 +141,7 @@ namespace FT{
         //calculate absolute deviation from median
         ArrayXd dev(x.size());
         for (int i =0; i < x.size(); ++i)
-            dev(i) = abs(x(i) - x_median);
+            dev(i) = fabs(x(i) - x_median);
         // return median of the absolute deviation
         return median(dev);
     }
@@ -218,7 +218,8 @@ namespace FT{
 
     
     }
-    
+
+    /// return the softmax transformation of a vector.
     template <class T>
     vector<T> softmax(vector<T> w)
     {
