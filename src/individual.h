@@ -13,13 +13,14 @@ namespace FT{
      * @class Individual
      * @brief individual programs in the population
      */
-    struct Individual{
-        
+    class Individual{
+    public:        
         vector<std::shared_ptr<Node>> program;      ///< executable data structure
         double fitness;             				///< aggregate fitness score
         size_t loc;                 				///< index of individual in semantic matrix F
         string eqn;                 				///< symbolic representation of program
-        vector<double> weights;     				///< weights from ML training on program output
+        vector<double> w;            				///< weights from ML training on program output
+        vector<double> p;                           ///< probability of variation of subprograms
         unsigned int dim;           				///< dimensionality of individual
         vector<double> obj;                         ///< objectives for use with Pareto selection
         unsigned int dcounter;                      ///< number of individuals this dominates
@@ -52,8 +53,8 @@ namespace FT{
         /// grab sub-tree locations given starting point.
         size_t subtree(size_t i, char otype) const;
 
-       // // get program depth.
-       // unsigned int depth();
+        // // get program depth.
+        // unsigned int depth();
 
         /// get program dimensionality
         unsigned int get_dim();
@@ -69,27 +70,113 @@ namespace FT{
       
         /// find root locations in program.
         vector<size_t> roots();
-       
+        
+        ///// get weighted probabilities
+        //vector<double> get_w(){ return w;}
+        ///// get weight probability for program location i 
+        //double get_w(const size_t i);
+        ///// set weighted probabilities
+        //void set_w(vector<double>& weights);
+
+        /// get probabilities of variation
+        vector<double> get_p(){ return p; }     
+        /// get inverted weight probability for pogram location i
+        double get_p(const size_t i);
+        /// get probability of variation for program locations locs
+        vector<double> get_p(const vector<size_t>& locs); 
+
         unsigned int c;            ///< the complexity of the program.    
         vector<char> dtypes;       ///< the data types of each column of the program output
+    
+        /// set probabilities
+        void set_p(const vector<double>& weights, const double& fb);
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
 
+    //void Individual::set_w(vector<double>& weights)
+    //{
+    //    // w should have an element corresponding to each root node. 
+    //    if (roots().size() != weights.size())
+    //        std::cout << "roots size: " << roots().size() << ", w size: " << w.size() << "\n";
+    //    
+    //    assert(roots().size() == weights.size());
+    //    w = weights; 
+    //    set_p();
+    //}
+    //double Individual::get_w(const size_t i)
+    //{
+    //    /*! @param i index in program 
+    //     * @returns weight associated with node */
+    //    vector<size_t> rts = roots();
+    //    
+    //    size_t j = 0;
+    //    double size = rts[0];
+    //    while ( j < rts.size())
+    //    {
+    //        if (j > 1) 
+    //            size = rts[j] - rts[j-1];
+    //        if (i == rts[j])
+    //            return w.at(j)/size;    
+    //        else if (i > rts[j])
+    //            ++j;
+    //        
+    //    }
+    //    // normalize weight by size of subtree
+    //    double norm_weight = w.at(j)/size;
+    //    return norm_weight;
+    //}
+    void Individual::set_p(const vector<double>& weights, const double& fb)
+    {   
+        assert(weights.size() == roots().size());     
+        p = weights;
+        for (unsigned i=0; i<p.size(); ++i)
+            p[i] = 1-p[i];
+        double u = 1.0/double(p.size());    // uniform probability
+        p = softmax(p);
+        for (unsigned i=0; i<p.size(); ++i)
+            p[i] = u + fb*(u-p[i]);
+    }
+    double Individual::get_p(const size_t i)
+    {
+        /*! @param i index in program 
+         * @returns weight associated with node */
+        vector<size_t> rts = roots();
+        std::reverse(rts.begin(),rts.end()); 
+        size_t j = 0;
+        double size = rts[0];
+        
+        while ( j < rts.size())
+        {
+            if (j > 1) 
+                size = rts.at(j) - rts.at(j-1);
+            
+            if (i <= rts.at(j))
+                return p.at(j)/size;    
+            else
+                ++j;
+        }
+        
+        // normalize weight by size of subtree
+        double norm_weight = p.at(j)/size;
+        return norm_weight;
+
+    }
+    vector<double> Individual::get_p(const vector<size_t>& locs)
+    {
+        vector<double> ps;
+        for (const auto& el : locs) ps.push_back(get_p(el));
+        return ps;
+    }
     // calculate program output matrix
     MatrixXd Individual::out(const MatrixXd& X, const Parameters& params, 
                              const VectorXd& y = VectorXd())
     {
         /*!
-         * Input:
-         
-         *      X: n_features x n_samples data
-         *      y: target data
-         *      params: Fewtwo parameters
-         
-         * Output:
-         
-         *      Phi: n_samples x n_features transformation
+         * @params X: n_features x n_samples data
+         * @params y: target data
+         * @params: Fewtwo parameters
+         * @returns Phi: n_samples x n_features transformation
          */
 
         vector<ArrayXd> stack_f; 
@@ -114,7 +201,7 @@ namespace FT{
         if (stack_f.size()==0)
         {
             if (stack_b.size() == 0)
-            {std::cout << "Error: no outputs in stacks\n"; throw;}
+            {   std::cout << "Error: no outputs in stacks\n"; throw;}
             
             cols = stack_b.at(0).size();
         }
@@ -313,11 +400,15 @@ namespace FT{
 
     vector<size_t> Individual::roots()
     {
-        // find "root" nodes of floating point program, where roots are final values that output 
+        // find "root" nodes of program, where roots are final values that output 
         // something directly to the stack
+        // assumes a program's subtrees to be contiguous
+         
         vector<size_t> indices;     // returned root indices
         int total_arity = -1;       //end node is always a root
-        
+       // map<char,int> total_arity; 
+       // total_arity['b'] = -1;
+       // total_arity['f']=-1;
         for (size_t i = program.size(); i>0; --i)   // reverse loop thru program
         {    
             if (total_arity <= 0 ){ // root node
@@ -330,7 +421,12 @@ namespace FT{
             total_arity += program[i-1]->total_arity(); 
            
         }
-        
+       // while (i >= 0 )
+       // {
+       //     indices.push_back(i-1);
+       //     int j = subtree(i);
+       //     i = j-1;
+       // }
         return indices; 
     }
 

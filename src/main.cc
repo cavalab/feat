@@ -85,22 +85,24 @@ int main(int argc, char** argv){
         // Print help and exit. 
         cout << "Fewtwo is a feature engineering wrapper for learning intelligible models.\n";
         cout << "Usage:\tfewtwo path/to/dataset [options]\n";
-        cout << "-p\tpopulation size\n";
-        cout << "-g\tgenerations (iterations)\n";
-        cout << "-ml\tMachine learning model pairing\n";
-        cout << "--c\tDo classification instead of regression.\n";
-        cout << "-v\tVerbosity. 0: none; 1: stats; 2: debugging\n";
-        cout << "-stall\tMaximum generations with no improvements to best score.\n";
-        cout << "-sel\tSelection method.\n";
-        cout << "-surv\tSurvival method.\n";
-        cout << "-xr\tCrossover rate in [0, 1]\n";
-        cout << "-ops\tComma-separated list of functions to use.\n";
-        cout << "-depth\tMaximum feature depth.\n";
-        cout << "-dim\tMaximum program dimensionality.\n";
-        cout << "-r\tSet random seed.\n";
-        cout << "-sep\tInput file separator / delimiter. Choices: , or ""\\\\t"" for tab\n";
-        cout << "--shuffle\tShuffle data before splitting into train/validate sets.\n";
-        cout << "-split\tFraction of data to use for training (default: .75)\n";
+        cout << "Options\tDescription (default value)\n";
+        cout << "-p\tpopulation size (100)\n";
+        cout << "-g\tgenerations (100)\n";
+        cout << "-ml\tMachine learning model pairing (LinearRidgeRegression or LogisticRegression)\n";
+        cout << "--c\tDo classification instead of regression. (false)\n";
+        cout << "-v\tVerbosity. 0: none; 1: stats; 2: debugging (1)\n";
+        cout << "-stall\tMaximum generations with no improvements to best score. (off)\n";
+        cout << "-sel\tSelection method. (lexicase)\n";
+        cout << "-surv\tSurvival method. (nsga2)\n";
+        cout << "-xr\tCrossover rate in [0, 1]. Mutation is the reciprocal. (0.5)\n";
+        cout << "-ops\tComma-separated list of functions to use. (all)\n";
+        cout << "-depth\tMaximum feature depth. (3)\n";
+        cout << "-dim\tMaximum program dimensionality. (10)\n";
+        cout << "-r\tSet random seed. (set randomly)\n";
+        cout << "-sep\tInput file separator / delimiter. Choices: , or ""\\\\t"" for tab (,)\n";
+        cout << "--shuffle\tShuffle data before splitting into train/validate sets. (false)\n";
+        cout << "-split\tFraction of data to use for training (0.75)\n";
+        cout << "-f\tfeedback strength of ML on variation probabilities (0.5)\n";
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
     }
@@ -138,7 +140,8 @@ int main(int argc, char** argv){
         fewtwo.set_shuffle(true);
     if(input.cmdOptionExists("-split"))
         fewtwo.set_split(std::stod(input.getCmdOption("-split")));
-
+    if(input.cmdOptionExists("-f"))
+        fewtwo.set_feedback(std::stod(input.getCmdOption("-f")));
 
     ///////////////////////////////////////
 
@@ -153,23 +156,9 @@ int main(int argc, char** argv){
     vector<string> names;
     vector<char> dtypes;
     FT::load_csv(input.dataset,X,y,names,dtypes,delim);
-
-    /*cout<<"Names are\n";
-    int x;
-    for(x = 0; x < names.size(); x++)
-        cout<<names[x]<<std::endl;
-        
-    cout <<"Number of columns are "<<X.cols()<<std::endl;
-    cout <<"Number of rows are "<<X.rows()<<std::endl;
-    
-    cout<<"Dtypes are\n";
-    
-    for(x = 0; x < dtypes.size(); x++)
-        cout<<dtypes[x]<<std::endl;
-     */   
      
     fewtwo.set_dtypes(dtypes);
-    fewtwo.set_dim("1.0X");
+    
     cout << "fitting model...\n";
     
     fewtwo.fit(X,y);

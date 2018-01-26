@@ -72,10 +72,10 @@ namespace FT{
                    char otype='a', string functions = "+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite", 
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
                    bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
-                   double split=0.75, vector<char> dtypes = vector<char>()):
+                   double split=0.75, double fb=0.5, vector<char> dtypes = vector<char>()):
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
-                             functions, max_depth, max_dim, erc, obj, shuffle, split, dtypes), 
+                             functions, max_depth, max_dim, erc, obj, shuffle, split, fb, dtypes), 
                       p_pop( make_shared<Population>(pop_size) ),
                       p_sel( make_shared<Selection>(sel) ),
                       p_surv( make_shared<Selection>(surv, true) ),
@@ -156,6 +156,9 @@ namespace FT{
             ///set dimensionality as multiple of the number of columns
             void set_dim(string str) { str_dim = str; }
             
+            ///set feedback
+            void set_feedback(double fb){ params.feedback = fb;}
+
             ///return population size
             int get_pop_size(){ return params.pop_size; }
             
@@ -204,6 +207,7 @@ namespace FT{
             ///return data types for input parameters
             vector<char> get_dtypes(){ return params.dtypes; }
 
+            double get_feedback(){ return params.feedback; }
             /// destructor             
             ~Fewtwo(){} 
                         

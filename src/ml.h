@@ -149,14 +149,17 @@ namespace FT{
             auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_w();
             
             w.assign(tmp.data(), tmp.data()+tmp.size());          
-                
+            for (unsigned i =0; i<w.size(); ++i)    // take absolute value of weights
+                w[i] = fabs(w[i]);
         }
-        else if (!type.compare("CART"))
-        {
+        else if (!type.compare("CART"))           
             w = dynamic_pointer_cast<sh::CMyCARTree>(p_est)->feature_importances();
+        else
+        {
+            std::cerr << "ERROR: ML::get_weights not implemented for " + type << "\n";
         }
-
-        return softmax(w);
+        
+        return w;
     }
 
     VectorXd ML::out(MatrixXd& X, VectorXd& y, const Parameters& params, bool& pass,
@@ -252,7 +255,7 @@ namespace FT{
         Map<VectorXd> yhat(y_pred.data(),y_pred.size());
         //std::cout << "weights\n";
         // weights
-        vector<double> w = get_weights();
+        //vector<double> w = get_weights();
 
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " map to vector\n";
         
