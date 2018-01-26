@@ -85,7 +85,7 @@ namespace FT{
         void set_term_weights(const vector<double>& w)
         {           
             assert(w.size()==terminals.size()); 
-            double u = 1/w.size();
+            double u = 1.0/double(w.size());
             term_weights.clear();
             vector<double> sw = softmax(w);
             for (unsigned i = 0; i<sw.size(); ++i)

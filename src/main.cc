@@ -141,7 +141,7 @@ int main(int argc, char** argv){
     if(input.cmdOptionExists("-split"))
         fewtwo.set_split(std::stod(input.getCmdOption("-split")));
     if(input.cmdOptionExists("-f"))
-        fewtwo.set_split(std::stod(input.getCmdOption("-f")));
+        fewtwo.set_feedback(std::stod(input.getCmdOption("-f")));
 
     ///////////////////////////////////////
 

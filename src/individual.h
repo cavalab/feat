@@ -132,7 +132,7 @@ namespace FT{
         p = weights;
         for (unsigned i=0; i<p.size(); ++i)
             p[i] = 1-p[i];
-        double u = 1.0/p.size();    // uniform probability
+        double u = 1.0/double(p.size());    // uniform probability
         p = softmax(p);
         for (unsigned i=0; i<p.size(); ++i)
             p[i] = u + fb*(u-p[i]);
