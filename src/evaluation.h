@@ -64,7 +64,7 @@ namespace FT{
         unsigned start =0;
         if (offspring) start = F.cols()/2;
         // loop through individuals
-        #pragma omp parallel for
+        //#pragma omp parallel for
         for (unsigned i = start; i<pop.size(); ++i)
         {
                         // calculate program output matrix Phi
@@ -81,6 +81,10 @@ namespace FT{
                 std::cerr << "with raw output " << pop.individuals[i].out(X,params,y) << "\n";
                 throw;
             }
+            // assign weights to individual
+            vector<double> w = ml->get_weights();
+            
+            pop.individuals[i].set_w(w);
             // assign F and aggregate fitness
             params.msg("Assigning fitness to " + pop.individuals[i].get_eqn(), 2);
             assign_fit(pop.individuals[i],F,yhat,y,params);

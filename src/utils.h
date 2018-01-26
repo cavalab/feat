@@ -221,7 +221,7 @@ namespace FT{
 
     /// return the softmax transformation of a vector.
     template <class T>
-    vector<T> softmax(vector<T> w)
+    vector<T> softmax(const vector<T>& w)
     {
         int x;
         T sum = 0;

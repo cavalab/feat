@@ -83,7 +83,7 @@ namespace FT{
          */
               unsigned start= pop.size();
         pop.resize(2*params.pop_size);
-        #pragma omp parallel for
+        //#pragma omp parallel for
         for (unsigned i = start; i<pop.size(); ++i)
         {
             bool pass=false;                      // pass check for children undergoing variation     
@@ -149,7 +149,8 @@ namespace FT{
 
         // make child a copy of mom
         child.program = mom.program; 
-        
+        child.p = mom.p; 
+
         float rf = r();
         if (rf < 1.0/3.0 && child.get_dim() > 1){
             delete_mutate(child,params); 
@@ -180,11 +181,11 @@ namespace FT{
          * */
         params.msg("\tpoint mutation",2);
         float n = child.size(); 
-        
+        unsigned i = 0;
         // loop thru child's program
         for (auto& p : child.program)
         {
-            if (r() < 1/n)  // mutate p. TODO: change '1' to node weighted probability
+            if (r() < child.get_p(i)/n)  // mutate p. 
             {
                 params.msg("\t\tmutating node " + p->name, 2);
                 vector<std::shared_ptr<Node>> replacements;  // potential replacements for p
@@ -213,6 +214,7 @@ namespace FT{
                 // replace p with a random one
                 p = r.random_choice(replacements);  
             }
+            ++i; 
         }
 
     }
@@ -223,15 +225,17 @@ namespace FT{
          * @param params: parameters
          * @returns modified child
          * */
-        //TODO: make adding a new dimension one of the insertion mutation options
+        
         params.msg("\tinsert mutation",2);
         float n = child.size(); 
+        
         if (r()<0.5 || child.get_dim() == params.max_dim)
         {
             // loop thru child's program
             for (unsigned i = 0; i< child.program.size(); ++i)
             {
-                if (r() < 1/n)  // mutate p. TODO: change '1' to node weighted probability
+                
+                if (r() < child.get_p(i)/n)  // mutate with weighted probability
                 {
                     params.msg("\t\tinsert mutating node " + child.program[i]->name, 2);
                     vector<std::shared_ptr<Node>> insertion;  // inserted segment
@@ -309,7 +313,8 @@ namespace FT{
         params.msg("\tdeletion mutation",2);
         params.msg("\t\tprogram: " + child.program_str(),2);
         vector<size_t> roots = child.roots();
-        size_t end = r.random_choice(roots); // TODO: weight with node weights
+        
+        size_t end = r.random_choice(roots,child.p); 
         size_t start = child.subtree(end);  
         if (params.verbosity >=2)
         { 
@@ -360,7 +365,7 @@ namespace FT{
                              + dad.program_str() + "\n";
                 return 0;               
             }
-            j1 = r.random_choice(mlocs);    
+            j1 = r.random_choice(mlocs,mom.get_p(mlocs));    
 
             // get locations in dad's program that match the subtree type picked from mom
             for (size_t i =0; i<dad.size(); ++i) 
@@ -372,7 +377,7 @@ namespace FT{
             mlocs = mom.roots();
             dlocs = dad.roots();
             params.msg("\t\trandom choice mlocs (size "+std::to_string(mlocs.size())+")",2);
-            j1 = r.random_choice(mlocs);    
+            j1 = r.random_choice(mlocs,mom.get_p(mlocs));   // weighted probability choice    
         }
         // get subtree              
         i1 = mom.subtree(j1);

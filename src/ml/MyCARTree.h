@@ -1982,12 +1982,10 @@ vector<double> CMyCARTree::feature_importances()
    // need to get feature sizes
    SGVector<bool> dt = get_feature_types();
    vector<double> importances(dt.size(),0.0);    //set to zero for all attributes
-
+   
    bnode_t* node = dynamic_cast<bnode_t*>(m_root);
    get_importance(node, importances); 
-   std::cout << "importances: ";
-   for (auto i : importances) std::cout << i << " ";
-   std::cout << "\n";
+   
    return importances;
 }
 
