@@ -80,8 +80,8 @@ namespace FT{
                       p_sel( make_shared<Selection>(sel) ),
                       p_surv( make_shared<Selection>(surv, true) ),
                       p_eval( make_shared<Evaluation>() ),
-                      p_variation( make_shared<Variation>(cross_rate) ),
-                      p_ml( make_shared<ML>(params.ml, classification) )
+                      p_variation( make_shared<Variation>(cross_rate) )
+                      
             {
                 r.set_seed(random_state);
                 str_dim = "";
@@ -101,14 +101,14 @@ namespace FT{
             void set_ml(string ml)
             {
             	params.ml = ml;
-            	p_ml = make_shared<ML>(params.ml, params.classification);
+            	p_ml = make_shared<ML>(params);
             }            
             
             /// set EProblemType for shogun              
             void set_classification(bool classification)
             {
             	params.classification = classification;
-            	p_ml = make_shared<ML>(params.ml, params.classification);
+            	p_ml = make_shared<ML>(params);
             }
                  
             /// set level of debug info              
@@ -137,7 +137,10 @@ namespace FT{
             
             /// set maximum dimensionality of programs              
             void set_max_dim(unsigned int max_dim){	params.set_max_dim(max_dim); }
-                        
+            
+            ///set dimensionality as multiple of the number of columns
+            void set_max_dim(string str) { str_dim = str; }            
+            
             /// set seeds for each core's random number generator              
             void set_random_state(int random_state){ r.set_seed(random_state); }
                         
@@ -152,10 +155,7 @@ namespace FT{
             
             ///set data types for input parameters
             void set_dtypes(vector<char> dtypes){params.dtypes = dtypes; p_ml->set_dtypes(dtypes);}
-            
-            ///set dimensionality as multiple of the number of columns
-            void set_dim(string str) { str_dim = str; }
-            
+
             ///set feedback
             void set_feedback(double fb){ params.feedback = fb;}
 
@@ -281,9 +281,15 @@ namespace FT{
             dimension = str_dim.substr(0, str_dim.length() - 1);
             params.msg("STR DIM IS "+ dimension, 1);
             params.msg("Cols are " + std::to_string(X.cols()), 1);
-            params.msg("Setting dimensionality as " + std::to_string((int)(ceil(stod(dimension)*X.cols()))), 1);
+            params.msg("Setting dimensionality as " + 
+                       std::to_string((int)(ceil(stod(dimension)*X.cols()))), 1);
             set_max_dim(ceil(stod(dimension)*X.cols()));
         }
+        
+        if (params.classification)  // setup classification endpoint
+            params.set_n_classes(y);
+         
+        p_ml = make_shared<ML>(params); // intialize ML
 
         // split data into training and test sets
         MatrixXd X_t(X.rows(),int(X.cols()*params.split));
@@ -401,7 +407,25 @@ namespace FT{
     {
         MatrixXd Phi = transform(X);
         auto PhiSG = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(Phi));
-        auto y_pred = p_ml->p_est->apply_regression(PhiSG)->get_labels();
+        SGVector<double> y_pred;
+        if (params.classification && params.n_classes == 2)
+        {
+            auto tmp = p_ml->p_est->apply_binary(PhiSG);
+            y_pred = tmp->get_labels();
+            delete tmp;
+        }
+        else if (params.classification)
+        {
+            auto tmp = p_ml->p_est->apply_multiclass(PhiSG);
+            y_pred = tmp->get_labels();
+            delete tmp;
+        }
+        else
+        {
+            auto tmp = p_ml->p_est->apply_regression(PhiSG);
+            y_pred = tmp->get_labels();
+            delete tmp;
+        }
         return Eigen::Map<VectorXd>(y_pred.data(),y_pred.size());
     }
 

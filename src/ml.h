@@ -21,10 +21,11 @@ license: GNU/GPL v3
 #include <shogun/classifier/svm/LibLinear.h>
 #include <shogun/ensemble/MeanRule.h>
 #include <shogun/ensemble/MajorityVote.h>
+#include <shogun/multiclass/MulticlassLibLinear.h>
 #include <cmath>
 // internal includes
 #include "ml/MyCARTree.h"
-
+#include "ml/MulticlassLogisticRegression.h"
 
 // stuff being used
 using std::string;
@@ -42,29 +43,37 @@ namespace FT{
     {
         public:
         	
-            ML(string ml, bool classification)
+            ML(const Parameters& params)
             {
                 /*!
                  * use string to specify a desired ML algorithm from shogun.
                  */
                 
-                type = ml;
+                type = params.ml;
                 
                 auto prob_type = sh::EProblemType::PT_REGRESSION;
                 
-                if (classification)
-                     prob_type = sh::EProblemType::PT_MULTICLASS;               
+                if (params.classification)
+                { 
+                    if (params.n_classes==2)
+                        prob_type = sh::EProblemType::PT_BINARY;
+                    else
+                        prob_type = sh::EProblemType::PT_MULTICLASS;               
+                }
 
-                if (!ml.compare("LeastAngleRegression"))
+                // set up ML based on type
+                if (!type.compare("LeastAngleRegression"))
                     p_est = make_shared<sh::CLeastAngleRegression>();
-                
-                else if (!ml.compare("RandomForest")){
+                else if (!type.compare("LinearRidgeRegression"))
+                    p_est = make_shared<sh::CLinearRidgeRegression>();
+                else if (!type.compare("RandomForest"))
+                {
                     p_est = make_shared<sh::CRandomForest>();
                     dynamic_pointer_cast<sh::CRandomForest>(p_est)->
                                                                set_machine_problem_type(prob_type);
                     dynamic_pointer_cast<sh::CRandomForest>(p_est)->set_num_bags(100);
                                        
-                    if (classification)
+                    if (params.classification)
                     {
                         auto CR = some<sh::CMajorityVote>();                        
                         dynamic_pointer_cast<sh::CRandomForest>(p_est)->set_combination_rule(CR);
@@ -76,35 +85,42 @@ namespace FT{
                     }
                     
                 }
-                else if (!ml.compare("CART")){
+                else if (!type.compare("CART")){
                     p_est = make_shared<sh::CMyCARTree>();
                     dynamic_pointer_cast<sh::CMyCARTree>(p_est)->
                                                                set_machine_problem_type(prob_type);
                     dynamic_pointer_cast<sh::CMyCARTree>(p_est)->
-                                                               set_max_depth(4);                
+                                                               set_max_depth(6);                
                 }
-
-                else if (!ml.compare("LinearRidgeRegression"))
-                    p_est = make_shared<sh::CLinearRidgeRegression>();
-                    
-                else if (!ml.compare("LinearLogisticRegression"))
-                    p_est = make_shared<sh::CLibLinearRegression>();
-                
-                else if (!ml.compare("SVM"))
-                {
-                
-                	if(classification)
-                		p_est = make_shared<sh::CLibLinear>(sh::L2R_L2LOSS_SVC_DUAL);
-	                    
-	                else
+                               
+                else if (!type.compare("SVM"))
+                {               
+                	if(params.classification)
+                    {
+                        if (params.n_classes==2)  // SVC
+                		    p_est = make_shared<sh::CLibLinear>(sh::L2R_L2LOSS_SVC_DUAL);       
+                        else    // multiclass
+                            p_est = make_shared<sh::CMulticlassLibLinear>();
+                    }
+	                else                // SVR
 	                	p_est = make_shared<sh::CLibLinearRegression>();
 	            }
-	            
-	            else if (!ml.compare("LR"))
-	            	p_est = make_shared<sh::CLibLinear>(sh::L2R_LR);
-	            
+	            else if (!type.compare("LR"))
+                {
+                    assert(params.classification && "LR only works with classification. Use --c flag");
+                    //cout << "params.n_classes: " << params.n_classes << "\n";
+                    if (params.n_classes == 2){
+	            	    p_est = make_shared<sh::CLibLinear>(sh::L2R_LR);
+                        //cout << "set ml type to CLibLinear\n";
+                    }
+                    else    // multiclass 
+                    {
+                        p_est = make_shared<sh::CMulticlassLogisticRegression>();
+                        //cout << "set ml type to CMulticlassLogisticRegression\n";
+                    }
+                }
 	            else
-                	std::cerr << "'" + ml + "' is not a valid ml choice\n";
+                	std::cerr << "'" + type + "' is not a valid ml choice\n";
                 
             }
         
@@ -131,8 +147,9 @@ namespace FT{
                 else if (!type.compare("RandomForest"))
                     dynamic_pointer_cast<sh::CRandomForest>(p_est)->set_feature_types(dt);
             }
-            shared_ptr<sh::CMachine> p_est;
-            string type;
+
+            shared_ptr<sh::CMachine> p_est;     ///< pointer to the ML object
+            string type;                        ///< user specified ML type
     };
 /////////////////////////////////////////////////////////////////////////////////////// Definitions
 
@@ -216,15 +233,18 @@ namespace FT{
         //    std::cout << "thread " + std::to_string(omp_get_thread_num()) + " X: " << X << "\n"; 
 
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
-        
-        if((!params.ml.compare("SVM") && params.classification) || !params.ml.compare("LR"))           	
+        //std::cout << "setting labels (n_classes = " << params.n_classes << ")\n"; 
+        //cout << "y is " << y.transpose() << "\n";
+        if(params.classification && params.n_classes == 2 && 
+                (!type.compare("LR") || !type.compare("SVM")))  // binary classification           	
         	p_est->set_labels(some<CBinaryLabels>(SGVector<float64_t>(y), 0.5));       	
-        else if (params.classification)       
+        else if (params.classification)                         // multiclass classification       
             p_est->set_labels(some<CMulticlassLabels>(SGVector<float64_t>(y)));
-        else
+        else                                                    // regression
             p_est->set_labels(some<CRegressionLabels>(SGVector<float64_t>(y)));
         //std::cout << "past set labels\n"; 
-
+        //std::cout << "labels are ";
+        //p_est->get_labels()->get_values().display_vector();
         // train ml
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " train\n";
         params.msg("ML training on thread" + std::to_string(omp_get_thread_num()) + "...",2," ");
@@ -237,14 +257,21 @@ namespace FT{
         //get output
         SGVector<double> y_pred; 
 
-        if (params.classification)
+        if (params.classification && params.n_classes == 2 && 
+             (!type.compare("LR") || !type.compare("SVM")))     // binary classification
+        {
+            auto clf = p_est->apply_binary(features);
+            y_pred = clf->get_labels();
+            delete clf;
+        }
+        else if (params.classification)                         // multiclass classification
         {
             auto clf = p_est->apply_multiclass(features);
             y_pred = clf->get_labels();
             delete clf;
             
         }
-        else
+        else                                                    // regression
         {
             auto reg = p_est->apply_regression(features);
             y_pred = reg->get_labels();
