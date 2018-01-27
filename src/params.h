@@ -38,6 +38,7 @@ namespace FT{
         double split;                               ///< fraction of data to use for training
         vector<char> dtypes;                        ///< data types of input parameters
         double feedback;                            ///< strength of ml feedback on probabilities
+        unsigned int n_classes;                     ///< number of classes for classification 
 
         Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
                    char ot, int verbosity, string fs, unsigned int max_depth, 
@@ -65,6 +66,7 @@ namespace FT{
             set_objectives(obj);
             updateSize();     
             set_otypes();
+            n_classes = 2;
         }
         
         ~Parameters(){}
@@ -167,6 +169,8 @@ namespace FT{
             }
 
         }
+        /// sets the number of classes based on target vector y.
+        void set_n_classes(VectorXd& y);
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
@@ -356,6 +360,30 @@ namespace FT{
             objectives.push_back(token);
             obj.erase(0, pos + delim.length());
         }
+    }
+
+    void Parameters::set_n_classes(VectorXd& y)
+    {
+        if ((y.array()==0 || y.array()==1).all()) 
+        {
+            n_classes = 2; 
+            if (!ml.compare("LR") || !ml.compare("SVM"))  // re-format y to have labels -1, 1
+                y = (y.cast<int>().array() == 0).select(-1.0,y);
+        }
+        else 
+        {
+            n_classes = 0;
+            vector<double> unique_values;
+            for (unsigned i =0; i<y.size(); ++i)
+            {
+                if (!in(unique_values,y(i)))
+                {
+                    unique_values.push_back(y(i));
+                    ++n_classes;
+                }
+            }
+        }
+        std::cout << "number of classes: " << n_classes << "\n";
     }
 }
 #endif

@@ -18,7 +18,7 @@ namespace FT{
      */
     
     void load_csv (const std::string & path, MatrixXd& X, VectorXd& y, vector<string> names, 
-                   vector<char> &dtypes, char sep=',') 
+                   vector<char> &dtypes, bool& binary_endpoint, char sep=',') 
     {
         std::ifstream indata;
         indata.open(path);
@@ -72,6 +72,7 @@ namespace FT{
         assert(X.cols() == y.size() && "different numbers of samples in X and y");
         assert(X.rows() == names.size() && "header missing or incorrect number of feature names");
         
+        // get feature types (binary or continuous/categorical)
         int i, j;
         bool isBinary;
         for(i = 0; i < X.rows(); i++)
@@ -89,6 +90,8 @@ namespace FT{
             else
                 dtypes.push_back('f');
         }
+        // check if endpoint is binary
+        binary_endpoint = (y.array() == 0 || y.array() == 1).all();
         
        // cout<<"X^T is\n";
        // for (unsigned i=0; i< dtypes.size(); ++i)

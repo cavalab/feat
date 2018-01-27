@@ -155,8 +155,16 @@ int main(int argc, char** argv){
     VectorXd y; 
     vector<string> names;
     vector<char> dtypes;
-    FT::load_csv(input.dataset,X,y,names,dtypes,delim);
-     
+    bool binary_endpoint=false;
+    FT::load_csv(input.dataset,X,y,names,dtypes,binary_endpoint,delim);
+    if (binary_endpoint)
+    {
+        if (!fewtwo.get_classification())
+            std::cerr << "WARNING: binary endpoint detected. Fewtwo is set for regression.";
+        else
+            std::cout << "setting binary endpoint\n";
+                      
+    }
     fewtwo.set_dtypes(dtypes);
     
     cout << "fitting model...\n";
