@@ -103,7 +103,11 @@ namespace FT{
                             p_est = make_shared<sh::CMulticlassLibLinear>();
                     }
 	                else                // SVR
+                    {
 	                	p_est = make_shared<sh::CLibLinearRegression>();
+                        dynamic_pointer_cast<sh::CLibLinearRegression>(p_est)->
+                            set_liblinear_regression_type(sh::L2R_L2LOSS_SVR);
+                    }
 	            }
 	            else if (!type.compare("LR"))
                 {
@@ -136,16 +140,17 @@ namespace FT{
             // set data types (for tree-based methods)            
             void set_dtypes(const vector<char>& dtypes)
             {
-                assert (!type.compare("CART") || !type.compare("RandomForest"));
-
-                // set attribute types True if boolean, False if continuous/ordinal
-                sh::SGVector<bool> dt(dtypes.size());
-                for (unsigned i = 0; i< dtypes.size(); ++i)
-                    dt[i] = dtypes[i] == 'b';
-                if (!type.compare("CART"))
-                    dynamic_pointer_cast<sh::CMyCARTree>(p_est)->set_feature_types(dt);
-                else if (!type.compare("RandomForest"))
-                    dynamic_pointer_cast<sh::CRandomForest>(p_est)->set_feature_types(dt);
+                if (!type.compare("CART") || !type.compare("RandomForest"))
+                {
+                    // set attribute types True if boolean, False if continuous/ordinal
+                    sh::SGVector<bool> dt(dtypes.size());
+                    for (unsigned i = 0; i< dtypes.size(); ++i)
+                        dt[i] = dtypes[i] == 'b';
+                    if (!type.compare("CART"))
+                        dynamic_pointer_cast<sh::CMyCARTree>(p_est)->set_feature_types(dt);
+                    else if (!type.compare("RandomForest"))
+                        dynamic_pointer_cast<sh::CRandomForest>(p_est)->set_feature_types(dt);
+                }
             }
 
             shared_ptr<sh::CMachine> p_est;     ///< pointer to the ML object
@@ -226,10 +231,7 @@ namespace FT{
             X.row(i) = X.row(i).array() - X.row(i).mean();
             if (X.row(i).norm() > NEAR_ZERO)
                 X.row(i).normalize();
-        }
-        //X.rowwise().normalize();
-                // define shogun data
-        //if (params.verbosity > 1) 
+        } 
         //    std::cout << "thread " + std::to_string(omp_get_thread_num()) + " X: " << X << "\n"; 
 
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
@@ -248,10 +250,11 @@ namespace FT{
         // train ml
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " train\n";
         params.msg("ML training on thread" + std::to_string(omp_get_thread_num()) + "...",2," ");
-        //#pragma omp critical
-        {
-            p_est->train(features);
-        }
+        
+        // *** Train the model ***  
+        p_est->train(features);
+        // *** Train the model ***
+        
         params.msg("done.",2);
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " get output\n";
         //get output

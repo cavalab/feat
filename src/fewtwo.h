@@ -11,8 +11,12 @@ license: GNU/GPL v3
 #include <Eigen/Dense>
 #include <memory>
 #include <shogun/base/init.h>
-#include <omp.h>
-
+#ifdef _OPENMP
+    #include <omp.h>
+#else
+    #define omp_get_thread_num() 0
+    #define omp_get_max_threads() 1
+#endif
 // stuff being used
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -33,7 +37,9 @@ using std::cout;
 #include "variation.h"
 #include "ml.h"
 #include "node/node.h"
+ 
 
+//shogun initialization
 void __attribute__ ((constructor)) ctor()
 {
     cout<< "INITIALIZING SHOGUN\n";
