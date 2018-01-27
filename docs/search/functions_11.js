@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['_7efewtwo',['~Fewtwo',['../dc/d9e/classFT_1_1Fewtwo.html#a5a9b58b81cb2c5b2d3e3b3764b0b8e7d',1,'FT::Fewtwo']]],
-  ['_7evariation',['~Variation',['../d3/d01/classFT_1_1Variation.html#a27960762b51461b2af543b2999e4f012',1,'FT::Variation']]]
+  ['variation',['Variation',['../d3/d01/classFT_1_1Variation.html#ad81d8325097f5ed678f8d65ab114953b',1,'FT::Variation']]],
+  ['vary',['vary',['../d3/d01/classFT_1_1Variation.html#a9817723b22bac5a1b27dbf68bb652e22',1,'FT::Variation']]]
 ];
