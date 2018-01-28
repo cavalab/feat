@@ -111,7 +111,7 @@ namespace FT{
 	            }
 	            else if (!type.compare("LR"))
                 {
-                    assert(params.classification && "LR only works with classification. Use --c flag");
+                    assert(params.classification && "LR only works with classification.");
                     //cout << "params.n_classes: " << params.n_classes << "\n";
                     if (params.n_classes == 2){
 	            	    p_est = make_shared<sh::CLibLinear>(sh::L2R_LR);
@@ -179,6 +179,7 @@ namespace FT{
         else
         {
             std::cerr << "ERROR: ML::get_weights not implemented for " + type << "\n";
+            
         }
         
         return w;
@@ -250,7 +251,10 @@ namespace FT{
         // train ml
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " train\n";
         params.msg("ML training on thread" + std::to_string(omp_get_thread_num()) + "...",2," ");
+        cout << "X is " << X.rows() << " by " << X.cols() << "\n";
+        cout << "y is " << y.size() << "\n";
         
+
         // *** Train the model ***  
         p_est->train(features);
         // *** Train the model ***
