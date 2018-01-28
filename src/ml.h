@@ -104,9 +104,7 @@ namespace FT{
                     }
 	                else                // SVR
                     {
-	                	p_est = make_shared<sh::CLibLinearRegression>();
-                        dynamic_pointer_cast<sh::CLibLinearRegression>(p_est)->
-                            set_liblinear_regression_type(sh::L2R_L2LOSS_SVR);
+	                	p_est = make_shared<sh::CLibLinearRegression>(); 
                     }
 	            }
 	            else if (!type.compare("LR"))
@@ -250,10 +248,7 @@ namespace FT{
         //p_est->get_labels()->get_values().display_vector();
         // train ml
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " train\n";
-        params.msg("ML training on thread" + std::to_string(omp_get_thread_num()) + "...",2," ");
-        cout << "X is " << X.rows() << " by " << X.cols() << "\n";
-        cout << "y is " << y.size() << "\n";
-        
+        params.msg("ML training on thread" + std::to_string(omp_get_thread_num()) + "...",2," ");       
 
         // *** Train the model ***  
         p_est->train(features);
