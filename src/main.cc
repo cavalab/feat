@@ -108,6 +108,7 @@ int main(int argc, char** argv){
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
     }
+    cout << "reading inputs ...";
     if(input.cmdOptionExists("-p"))
         fewtwo.set_pop_size(stoi(input.getCmdOption("-p")));
     if(input.cmdOptionExists("-g"))
@@ -144,20 +145,23 @@ int main(int argc, char** argv){
         fewtwo.set_split(std::stod(input.getCmdOption("-split")));
     if(input.cmdOptionExists("-f"))
         fewtwo.set_feedback(std::stod(input.getCmdOption("-f")));
-
+    cout << "done.\n";
     ///////////////////////////////////////
 
     // read in dataset
+    cout << "sep: " << sep << "\n";
     char delim;
     if (!sep.compare("\\t")) delim = '\t';
     else if (!sep.compare(",")) delim = ',';
     else delim = sep[0];
-
+    
     MatrixXd X;
     VectorXd y; 
     vector<string> names;
     vector<char> dtypes;
     bool binary_endpoint=false;
+    
+    cout << "load_csv...";
     FT::load_csv(input.dataset,X,y,names,dtypes,binary_endpoint,delim);
     if (binary_endpoint)
     {
@@ -185,7 +189,7 @@ int main(int argc, char** argv){
     fewtwo.fit(X,y);
     */
 
-    cout << "done!\n";
+    //cout << "done!\n";
 	
 	
     return 0;

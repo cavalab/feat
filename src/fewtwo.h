@@ -11,8 +11,12 @@ license: GNU/GPL v3
 #include <Eigen/Dense>
 #include <memory>
 #include <shogun/base/init.h>
-#include <omp.h>
-
+#ifdef _OPENMP
+    #include <omp.h>
+#else
+    #define omp_get_thread_num() 0
+    #define omp_get_max_threads() 1
+#endif
 // stuff being used
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -33,7 +37,9 @@ using std::cout;
 #include "variation.h"
 #include "ml.h"
 #include "node/node.h"
+ 
 
+//shogun initialization
 void __attribute__ ((constructor)) ctor()
 {
     cout<< "INITIALIZING SHOGUN\n";
@@ -72,10 +78,10 @@ namespace FT{
                    char otype='a', string functions = "+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite", 
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
                    bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
-                   double split=0.75, double fb=0.5, vector<char> dtypes = vector<char>()):
+                   double split=0.75, double fb=0.5):
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
-                             functions, max_depth, max_dim, erc, obj, shuffle, split, fb, dtypes), 
+                             functions, max_depth, max_dim, erc, obj, shuffle, split, fb), 
                       p_pop( make_shared<Population>(pop_size) ),
                       p_sel( make_shared<Selection>(sel) ),
                       p_surv( make_shared<Selection>(surv, true) ),

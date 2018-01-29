@@ -103,11 +103,13 @@ namespace FT{
                             p_est = make_shared<sh::CMulticlassLibLinear>();
                     }
 	                else                // SVR
-	                	p_est = make_shared<sh::CLibLinearRegression>();
+                    {
+	                	p_est = make_shared<sh::CLibLinearRegression>(); 
+                    }
 	            }
 	            else if (!type.compare("LR"))
                 {
-                    assert(params.classification && "LR only works with classification. Use --c flag");
+                    assert(params.classification && "LR only works with classification.");
                     //cout << "params.n_classes: " << params.n_classes << "\n";
                     if (params.n_classes == 2){
 	            	    p_est = make_shared<sh::CLibLinear>(sh::L2R_LR);
@@ -136,16 +138,17 @@ namespace FT{
             // set data types (for tree-based methods)            
             void set_dtypes(const vector<char>& dtypes)
             {
-                assert (!type.compare("CART") || !type.compare("RandomForest"));
-
-                // set attribute types True if boolean, False if continuous/ordinal
-                sh::SGVector<bool> dt(dtypes.size());
-                for (unsigned i = 0; i< dtypes.size(); ++i)
-                    dt[i] = dtypes[i] == 'b';
-                if (!type.compare("CART"))
-                    dynamic_pointer_cast<sh::CMyCARTree>(p_est)->set_feature_types(dt);
-                else if (!type.compare("RandomForest"))
-                    dynamic_pointer_cast<sh::CRandomForest>(p_est)->set_feature_types(dt);
+                if (!type.compare("CART") || !type.compare("RandomForest"))
+                {
+                    // set attribute types True if boolean, False if continuous/ordinal
+                    sh::SGVector<bool> dt(dtypes.size());
+                    for (unsigned i = 0; i< dtypes.size(); ++i)
+                        dt[i] = dtypes[i] == 'b';
+                    if (!type.compare("CART"))
+                        dynamic_pointer_cast<sh::CMyCARTree>(p_est)->set_feature_types(dt);
+                    else if (!type.compare("RandomForest"))
+                        dynamic_pointer_cast<sh::CRandomForest>(p_est)->set_feature_types(dt);
+                }
             }
 
             shared_ptr<sh::CMachine> p_est;     ///< pointer to the ML object
@@ -174,6 +177,7 @@ namespace FT{
         else
         {
             std::cerr << "ERROR: ML::get_weights not implemented for " + type << "\n";
+            
         }
         
         return w;
@@ -220,6 +224,7 @@ namespace FT{
         //X.rowwise().normalize();
                 // define shogun data
         //if (params.verbosity > 1) 
+
         //    std::cout << "thread " + std::to_string(omp_get_thread_num()) + " X: " << X << "\n"; 
 
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
@@ -237,11 +242,12 @@ namespace FT{
         //p_est->get_labels()->get_values().display_vector();
         // train ml
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " train\n";
-        params.msg("ML training on thread" + std::to_string(omp_get_thread_num()) + "...",2," ");
-        //#pragma omp critical
-        {
-            p_est->train(features);
-        }
+        params.msg("ML training on thread" + std::to_string(omp_get_thread_num()) + "...",2," ");       
+
+        // *** Train the model ***  
+        p_est->train(features);
+        // *** Train the model ***
+        
         params.msg("done.",2);
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " get output\n";
         //get output
@@ -276,7 +282,7 @@ namespace FT{
 
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " map to vector\n";
         
-        if (Eigen::isinf(yhat.array()).any() || Eigen::isnan(yhat.array()).any())
+        if (isinf(yhat.array()).any() || isnan(yhat.array()).any())
         {
             std::cerr << "inf or nan values in model fit to: " << X << "\n";
             pass = false;

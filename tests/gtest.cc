@@ -75,12 +75,12 @@ TEST(Fewtwo, SettingFunctions)
     
     fewtwo.set_ml("RandomForest");
     ASSERT_STREQ("RandomForest", fewtwo.params.ml.c_str());
-    ASSERT_STREQ("RandomForest", fewtwo.p_ml->type.c_str());
-    ASSERT_EQ(sh::EMachineType::CT_BAGGING, fewtwo.p_ml->p_est->get_classifier_type());
-    ASSERT_EQ(sh::EProblemType::PT_REGRESSION, fewtwo.p_ml->p_est->get_machine_problem_type());
+    //ASSERT_STREQ("RandomForest", fewtwo.p_ml->type.c_str());
+    //ASSERT_EQ(sh::EMachineType::CT_BAGGING, fewtwo.p_ml->p_est->get_classifier_type());
+    //ASSERT_EQ(sh::EProblemType::PT_REGRESSION, fewtwo.p_ml->p_est->get_machine_problem_type());
     
-    fewtwo.set_classification(true);
-    ASSERT_EQ(sh::EProblemType::PT_MULTICLASS, fewtwo.p_ml->p_est->get_machine_problem_type());
+    //fewtwo.set_classification(true);
+    //ASSERT_EQ(sh::EProblemType::PT_MULTICLASS, fewtwo.p_ml->p_est->get_machine_problem_type());
     
     fewtwo.set_verbosity(2);
     ASSERT_EQ(2, fewtwo.params.verbosity);
@@ -878,7 +878,8 @@ TEST(Parameters, ParamsTests)
 					  false,							//erc
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
-                      0.75);								//train/test split
+                      0.75,								//train/test split
+                      0.5);                             // feedback
 					  
 	params.set_max_dim(12);
 	ASSERT_EQ(params.max_dim, 12);
@@ -1032,8 +1033,8 @@ TEST(Evaluation, assign_fit)
 					  false,							//erc
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
-                      0.75);								//train/test split
-                      
+                      0.75,								//train/test split
+                      0.5);                             // feedback
 	Individual ind = Individual();
 	ind.loc = 0;
 	MatrixXd F(10, 1);
@@ -1125,8 +1126,8 @@ TEST(Evaluation, fitness)
 					  false,							//erc
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
-                      0.75);								//train/test split
-                      
+                      0.75,								//train/test split
+                      0.5);                             // feedback                 
 	MatrixXd X(10,1); 
     X << 0.0,  
          1.0,  
@@ -1185,8 +1186,8 @@ TEST(Evaluation, out_ml)
 					  false,							//erc
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
-                      0.75);								//train/test split
-                      
+                      0.75,								//train/test split
+                      0.5);                             // feedback                 
 	MatrixXd X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
@@ -1204,7 +1205,7 @@ TEST(Evaluation, out_ml)
              -1.20648656, -2.68773747;
              
     shared_ptr<Evaluation> p_eval = make_shared<Evaluation>();
-    shared_ptr<ML> p_ml = make_shared<ML>("LinearRidgeRegression", false);
+    shared_ptr<ML> p_ml = make_shared<ML>(params);
              
     bool pass = true;
     VectorXd yhat = p_ml->out(X, y, params, pass);
