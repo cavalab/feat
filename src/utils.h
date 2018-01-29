@@ -13,6 +13,8 @@ using namespace Eigen;
 
 namespace FT{
  
+    double NEAR_ZERO = 0.0000001;
+
     /*!
      * load csv file into matrix. 
      */
@@ -237,5 +239,20 @@ namespace FT{
             w_new.push_back(exp(w[x])/sum);
             
         return w_new;
+    }
+    /// normalize matrix.
+    void normalize(MatrixXd& X)
+    {   
+        // normalize features
+        for (unsigned int i=0; i<X.rows(); ++i){
+            if (std::isinf(X.row(i).norm()))
+            {
+                X.row(i) = VectorXd::Zero(X.row(i).size());
+                continue;
+            }
+            X.row(i) = X.row(i).array() - X.row(i).mean();
+            if (X.row(i).norm() > NEAR_ZERO)
+                X.row(i).normalize();
+        }
     }
 } 

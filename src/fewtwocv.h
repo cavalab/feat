@@ -223,7 +223,7 @@ namespace FT{
 	    				  100,		//generations
 	    				  "LinearRidgeRegression",	//ml string
 	    				  false,		//classification
-	    				  0,			//verbosity
+	    				  1,			//verbosity
 	    				  0,			//max_stall
 	    				  "lexicase",	//selection
 	    				  "pareto", 	//survivability

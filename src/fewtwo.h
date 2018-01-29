@@ -363,8 +363,8 @@ namespace FT{
     {
         // fits final model to best tranformation found.
         bool pass = true;
-        MatrixXd Phi = best_ind.out(X,params,y);
-        VectorXd yhat = p_ml->out(Phi,y,params,pass);
+        MatrixXd Phi = transform(X);
+        VectorXd yhat = p_ml->out(Phi,y,params,pass,best_ind.dtypes);
     }
     void Fewtwo::initial_model(MatrixXd& X, VectorXd& y)
     {
@@ -407,7 +407,9 @@ namespace FT{
     
     VectorXd Fewtwo::predict(MatrixXd& X)
     {
+        normalize(X);
         MatrixXd Phi = transform(X);
+        normalize(Phi);
         auto PhiSG = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(Phi));
         SGVector<double> y_pred;
         if (params.classification && params.n_classes == 2)

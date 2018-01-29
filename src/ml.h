@@ -216,17 +216,7 @@ namespace FT{
                 set_dtypes(dtypes);
         }
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " normalize features\n";
-        // normalize features
-        for (unsigned int i=0; i<X.rows(); ++i){
-            if (std::isinf(X.row(i).norm()))
-            {
-                X.row(i) = VectorXd::Zero(X.row(i).size());
-                continue;
-            }
-            X.row(i) = X.row(i).array() - X.row(i).mean();
-            if (X.row(i).norm() > NEAR_ZERO)
-                X.row(i).normalize();
-        }
+        normalize(X); 
         //X.rowwise().normalize();
                 // define shogun data
         //if (params.verbosity > 1) 

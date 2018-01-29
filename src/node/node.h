@@ -18,8 +18,7 @@ using Eigen::ArrayXd;
 namespace FT{
 
     //////////////////////////////////////////////////////////////////////////////// Declarations
-   double NEAR_ZERO = 0.0000001;
-    /*!
+     /*!
      * @class Node
      * @brief Represents nodes in a program.
      */
