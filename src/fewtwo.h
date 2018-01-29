@@ -239,6 +239,7 @@ namespace FT{
             Individual best_ind;                    ///< best individual
             /// method to fit inital ml model            
             void initial_model(MatrixXd& X, VectorXd& y);
+            void final_model(MatrixXd& X, VectorXd& y);
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
@@ -352,10 +353,19 @@ namespace FT{
             initial_model(X_v, y_v);        // calculate baseline model validation score
             update_best();                  // get the best validation model
         }
+        // fit final model to best model
+        final_model(X,y);
         params.msg("best validation representation: " + best_ind.get_eqn(),1);
         params.msg("validation score: " + std::to_string(best_score), 1);
     }
 
+    void Fewtwo::final_model(MatrixXd& X, VectorXd& y)
+    {
+        // fits final model to best tranformation found.
+        bool pass = true;
+        MatrixXd Phi = best_ind.out(X,params,y);
+        VectorXd yhat = p_ml->out(Phi,y,params,pass);
+    }
     void Fewtwo::initial_model(MatrixXd& X, VectorXd& y)
     {
         /*!
