@@ -878,7 +878,8 @@ TEST(Parameters, ParamsTests)
 					  false,							//erc
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
-                      0.75);								//train/test split
+                      0.75,								//train/test split
+                      0.5);                             // feedback
 					  
 	params.set_max_dim(12);
 	ASSERT_EQ(params.max_dim, 12);
@@ -1032,8 +1033,8 @@ TEST(Evaluation, assign_fit)
 					  false,							//erc
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
-                      0.75);								//train/test split
-                      
+                      0.75,								//train/test split
+                      0.5);                             // feedback
 	Individual ind = Individual();
 	ind.loc = 0;
 	MatrixXd F(10, 1);
@@ -1125,8 +1126,8 @@ TEST(Evaluation, fitness)
 					  false,							//erc
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
-                      0.75);								//train/test split
-                      
+                      0.75,								//train/test split
+                      0.5);                             // feedback                 
 	MatrixXd X(10,1); 
     X << 0.0,  
          1.0,  
@@ -1185,8 +1186,8 @@ TEST(Evaluation, out_ml)
 					  false,							//erc
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
-                      0.75);								//train/test split
-                      
+                      0.75,								//train/test split
+                      0.5);                             // feedback                 
 	MatrixXd X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
@@ -1204,7 +1205,7 @@ TEST(Evaluation, out_ml)
              -1.20648656, -2.68773747;
              
     shared_ptr<Evaluation> p_eval = make_shared<Evaluation>();
-    shared_ptr<ML> p_ml = make_shared<ML>("LinearRidgeRegression", false);
+    shared_ptr<ML> p_ml = make_shared<ML>(params);
              
     bool pass = true;
     VectorXd yhat = p_ml->out(X, y, params, pass);
