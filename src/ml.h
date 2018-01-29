@@ -288,7 +288,7 @@ namespace FT{
 
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " map to vector\n";
         
-        if (Eigen::isinf(yhat.array()).any() || Eigen::isnan(yhat.array()).any())
+        if (isinf(yhat.array()).any() || isnan(yhat.array()).any())
         {
             std::cerr << "inf or nan values in model fit to: " << X << "\n";
             pass = false;

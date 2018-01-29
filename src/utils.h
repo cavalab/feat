@@ -238,4 +238,22 @@ namespace FT{
             
         return w_new;
     }
+
+    /// returns true for elements of x that are infinite
+    ArrayXb isinf(const ArrayXd& x)
+    {
+        ArrayXb infs(x.size());
+        for (unsigned i =0; i < infs.size(); ++i)
+            infs(i) = std::isinf(x(i));
+        return infs;
+    }
+    
+    /// returns true for elements of x that are NaN
+    ArrayXb isnan(const ArrayXd& x)
+    {
+        ArrayXb nans(x.size());
+        for (unsigned i =0; i < nans.size(); ++i)
+            nans(i) = std::isnan(x(i));
+        return nans;
+    }
 } 
