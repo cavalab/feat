@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "fewtwo.h"
+#include "fewtwocv.h"
 using FT::Fewtwo;
+using FT::FewtwoCV;
 #include <Eigen/Dense>
 #include <shogun/base/init.h>
 using Eigen::MatrixXd;
@@ -165,13 +167,26 @@ int main(int argc, char** argv){
             std::cout << "setting binary endpoint\n";
                       
     }
+    
+    
+    vector<string> ml;
+    ml.push_back("LinearRidgeRegression");
+    
+    FewtwoCV validator(ml);
+    
+    validator.validate_data(X, y);
+    
+    
+    /*
     fewtwo.set_dtypes(dtypes);
     
     cout << "fitting model...\n";
     
     fewtwo.fit(X,y);
+    */
 
     cout << "done!\n";
+	
 	
     return 0;
 

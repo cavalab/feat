@@ -149,7 +149,7 @@ TEST(Fewtwo, predict)
          0.9, -0.4,
          0.5, -0.8,
          0.1,-0.9;
-         
+    
     ASSERT_EQ(fewtwo.predict(X).size(), 7);             //TODO had to remove !bzero ASSERT in set_termincal weights
 }
 

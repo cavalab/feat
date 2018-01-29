@@ -98,18 +98,10 @@ namespace FT{
             void set_generations(int gens){ params.gens = gens; }         
                         
             /// set ML algorithm to use              
-            void set_ml(string ml)
-            {
-            	params.ml = ml;
-            	p_ml = make_shared<ML>(params);
-            }            
+            void set_ml(string ml){ params.ml = ml; }            
             
             /// set EProblemType for shogun              
-            void set_classification(bool classification)
-            {
-            	params.classification = classification;
-            	p_ml = make_shared<ML>(params);
-            }
+            void set_classification(bool classification){ params.classification = classification;}
                  
             /// set level of debug info              
             void set_verbosity(int verbosity){ params.set_verbosity(verbosity); }
@@ -154,7 +146,7 @@ namespace FT{
             void set_split(double sp){params.split = sp;}
             
             ///set data types for input parameters
-            void set_dtypes(vector<char> dtypes){params.dtypes = dtypes; p_ml->set_dtypes(dtypes);}
+            void set_dtypes(vector<char> dtypes){params.dtypes = dtypes;}
 
             ///set feedback
             void set_feedback(double fb){ params.feedback = fb;}
