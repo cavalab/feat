@@ -75,12 +75,12 @@ TEST(Fewtwo, SettingFunctions)
     
     fewtwo.set_ml("RandomForest");
     ASSERT_STREQ("RandomForest", fewtwo.params.ml.c_str());
-    ASSERT_STREQ("RandomForest", fewtwo.p_ml->type.c_str());
-    ASSERT_EQ(sh::EMachineType::CT_BAGGING, fewtwo.p_ml->p_est->get_classifier_type());
-    ASSERT_EQ(sh::EProblemType::PT_REGRESSION, fewtwo.p_ml->p_est->get_machine_problem_type());
+    //ASSERT_STREQ("RandomForest", fewtwo.p_ml->type.c_str());
+    //ASSERT_EQ(sh::EMachineType::CT_BAGGING, fewtwo.p_ml->p_est->get_classifier_type());
+    //ASSERT_EQ(sh::EProblemType::PT_REGRESSION, fewtwo.p_ml->p_est->get_machine_problem_type());
     
-    fewtwo.set_classification(true);
-    ASSERT_EQ(sh::EProblemType::PT_MULTICLASS, fewtwo.p_ml->p_est->get_machine_problem_type());
+    //fewtwo.set_classification(true);
+    //ASSERT_EQ(sh::EProblemType::PT_MULTICLASS, fewtwo.p_ml->p_est->get_machine_problem_type());
     
     fewtwo.set_verbosity(2);
     ASSERT_EQ(2, fewtwo.params.verbosity);
