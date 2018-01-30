@@ -21,14 +21,9 @@ namespace FT{
     	int quantity;
     };
     
-    struct FewObjectParams
+    struct FewObjects
     {
-    	int pop;
-    	int gen;
-    	string ml;
-    	float cr;
-    	int dim;
-    	int dep;
+    	Fewtwo obj;
     	double score;
     };
     
@@ -41,8 +36,8 @@ namespace FT{
         		 vector<string> mlStr = vector<string>{"LinearRidgeRegression"},
         		 vector<int> popRange = vector<int>{50, 100, 150, 200},
         		 vector<int> genRange = vector<int>{50, 100, 150, 200},
-        		 vector<int> dimRange = vector<int>{10},
-        		 vector<int> depRange = vector<int>{3},
+        		 vector<int> dimRange = vector<int>{1},
+        		 vector<int> depRange = vector<int>{2},
         		 vector<float> crRange = vector<float>{0.5},
         		 string funcs = "+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite");    
         
@@ -78,10 +73,9 @@ namespace FT{
         vector<int> depthRange;
         vector<float> crossRates;
         string functions;  
-        vector<struct FewObjectParams> fewObjs;
+        vector<struct FewObjects> fewObjs;
         vector<struct DataFolds> dataFolds;
-        int bestScoreIndex;
-        Fewtwo bestObj; 
+        int bestScoreIndex; 
     };
     
     FewtwoCV::FewtwoCV(int fdSize,
@@ -113,30 +107,19 @@ namespace FT{
     	int curdim;
     	int curdep;
     	
-    	for(auto &curml : ml)
+    	for(auto &curMl : ml)
     		for(auto &curpop : populationRange)
     			for(auto &curgen : generationRange)
     				for(auto &curdim : dimensionRange)
     					for(auto &curdep : depthRange)
     						for(auto &curcr : crossRates)
     						{
-    							struct FewObjectParams curobj;
-    							
-    							curobj.pop = curpop;
-    							curobj.gen = curgen;
-    							curobj.ml = curml;
-    							curobj.cr = curcr;
-    							curobj.dim = curdim;
-    							curobj.dep = curdep;
-    							curobj.score = 0;
-	    						
-	    						fewObjs.push_back(curobj);
-    							
-    							 /*Fewtwo(curpop,		//population size
+    							struct FewObjects curobj;
+    							curobj.obj = Fewtwo(curpop,		//population size
 	    							   				curgen,		//generations
 	    							   				curMl,		//ml string
 	    							   				false,		//classification
-	    							   				0,			//verbosity
+	    							   				1,			//verbosity
 	    							   				0,			//max_stall
 	    							   				"lexicase",	//selection
 	    							   				"pareto", 	//survivability
@@ -145,8 +128,10 @@ namespace FT{
 	    							   				functions,	//nodes
 	    							   				curdim,		//dimension
 	    							   				curdep);	//depth 
-	    						*/	   				
+	    							   				
+	    						curobj.score = 0;
 	    						
+	    						fewObjs.push_back(curobj);
     						}
 	    cout<<"Objects creation complete\n";
     }
@@ -197,8 +182,6 @@ namespace FT{
     	create_folds(x.cols());
     	
     	cout<<"Total number of objects created are "<<fewObjs.size()<<"\n";
-    	
-    	#pragma omp parallel for
     	for(i = 0; i < fewObjs.size(); i++)
     	{
     		VectorXd objScore(foldSize);
@@ -208,22 +191,8 @@ namespace FT{
 	    	for(j = 0; j < foldSize; j++)
 	    	{
 	    	
-	    		cout<<"***************************\nRunning for i = " << i <<" and j = " << j <<"\n*****************************\n";
+	    		cout<<"\n***************************\nRUNNING FOR i = "<<i<<" and j = "<<j<<"\n*************************************\n\n";
 	    		
-	    		Fewtwo obj(fewObjs[i].pop,		//population size
-		   				   fewObjs[i].gen,		//generations
-		   				   fewObjs[i].ml,		//ml string
-		   				   false,				//classification
-		   				   0,					//verbosity
-		   				   0,					//max_stall
-		   				   "lexicase",			//selection
-		   				   "pareto", 			//survivability
-		   				   fewObjs[i].cr,		//cross_rate
-		   				   'a',					//otype
-		   				   functions,			//nodes
-		   				   fewObjs[i].dim,		//dimension
-		   				   fewObjs[i].dep);		//depth 
-		   				   
 	    		int size = 0, filled = 0, k;
     	
 				for(k = 0; k < foldSize; k++)
@@ -243,10 +212,8 @@ namespace FT{
 					}
 				}
 		
-				cout<<"Fitting\n";
-				
-				obj.set_dtypes(find_dtypes(trainX));
-				obj.fit(trainX, trainY);
+				fewObjs[i].obj.set_dtypes(find_dtypes(trainX));
+				fewObjs[i].obj.fit(trainX, trainY);
 				
 				MatrixXd testData(x.rows(), dataFolds[testIndex].quantity);
 				VectorXd actualValues(dataFolds[testIndex].quantity);
@@ -254,13 +221,11 @@ namespace FT{
 				testData << x.block(0, dataFolds[testIndex].startIndex, x.rows(), dataFolds[testIndex].quantity);
 				actualValues << y.block(dataFolds[testIndex].startIndex, 0, 1, dataFolds[testIndex].quantity);
 				
-				cout<<"Predicting\n";
-				
-				VectorXd prediction = obj.predict(testData);
+				VectorXd prediction = fewObjs[i].obj.predict(testData);
 		
 				VectorXd objScore(foldSize);
 		
-				if (obj.get_classification())  	// use classification accuracy
+				if (fewObjs[i].obj.get_classification())  	// use classification accuracy
 					objScore[j] = ((prediction.cast<int>().array() != actualValues.cast<int>().array()).cast<double>()).mean();
 				else                        			// use mean squared error
 					objScore[j] = ((prediction - actualValues).array().pow(2)).mean();
@@ -279,29 +244,13 @@ namespace FT{
 	    		bestScoreIndex = i;
 	    		
 	    cout << "Best tuning parameters for this data is \n";
-	    cout << "\nML = " << fewObjs[bestScoreIndex].ml;
-	    cout << "\nPopulation size = " << fewObjs[bestScoreIndex].pop;
-	    cout << "\nGenerations = " << fewObjs[bestScoreIndex].gen;
-	    cout << "\nDimensions = " << fewObjs[bestScoreIndex].dim;
-	    cout << "\nDepth = " << fewObjs[bestScoreIndex].dep;
-	    cout << "\nCross Rate = " <<fewObjs[bestScoreIndex].cr;
+	    cout << "\nML = " << fewObjs[bestScoreIndex].obj.get_ml();
+	    cout << "\nPopulation size = " << fewObjs[bestScoreIndex].obj.get_pop_size();
+	    cout << "\nGenerations = " << fewObjs[bestScoreIndex].obj.get_generations();
+	    cout << "\nDimensions = " << fewObjs[bestScoreIndex].obj.get_max_dim();
+	    cout << "\nDepth = " << fewObjs[bestScoreIndex].obj.get_max_depth();
+	    cout << "\nCross Rate = " <<fewObjs[bestScoreIndex].obj.get_cross_rate();
 	    cout << "\nScore = " << fewObjs[bestScoreIndex].score<<"\n";
-	    
-	    bestObj = Fewtwo(fewObjs[bestScoreIndex].pop,		//population size
-						 fewObjs[bestScoreIndex].gen,		//generations
-						 fewObjs[bestScoreIndex].ml,		//ml string
-						 false,								//classification
-						 0,									//verbosity
-						 0,									//max_stall
-						 "lexicase",						//selection
-						 "pareto", 							//survivability
-						 fewObjs[bestScoreIndex].cr,		//cross_rate
-						 'a',								//otype
-						 functions,							//nodes
-						 fewObjs[bestScoreIndex].dim,		//dimension
-						 fewObjs[bestScoreIndex].dep);		//depth 
-			    
-		bestObj.fit(x, y);
     }
     
     VectorXd FewtwoCV::predict(MatrixXd x)
@@ -312,7 +261,7 @@ namespace FT{
     		throw;
     	}
     	
-    	return bestObj.predict(x);
+    	return fewObjs[bestScoreIndex].obj.predict(x);
     }    
 }
 #endif
