@@ -82,7 +82,6 @@ namespace FT{
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
                              functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, fb), 
-                      p_pop( make_shared<Population>(pop_size) ),
                       p_sel( make_shared<Selection>(sel) ),
                       p_surv( make_shared<Selection>(surv, true) ),
                       p_eval( make_shared<Evaluation>() ),
@@ -294,6 +293,7 @@ namespace FT{
         set_dtypes(find_dtypes(X));
         
         p_ml = make_shared<ML>(params); // intialize ML
+        p_pop = make_shared<Population>(params.pop_size);
 
         // split data into training and test sets
         MatrixXd X_t(X.rows(),int(X.cols()*params.split));
@@ -320,6 +320,8 @@ namespace FT{
         // evaluate initial population
         params.msg("Evaluating initial population",1);
         p_eval->fitness(*p_pop,X_t,y_t,F,params);
+        
+     	//cout<<"F is "<<F<<"\n";
         
         vector<size_t> survivors;
 

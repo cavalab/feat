@@ -119,7 +119,7 @@ namespace FT{
 	    							   				curgen,		//generations
 	    							   				curMl,		//ml string
 	    							   				false,		//classification
-	    							   				1,			//verbosity
+	    							   				0,			//verbosity
 	    							   				0,			//max_stall
 	    							   				"lexicase",	//selection
 	    							   				"pareto", 	//survivability
@@ -182,6 +182,8 @@ namespace FT{
     	create_folds(x.cols());
     	
     	cout<<"Total number of objects created are "<<fewObjs.size()<<"\n";
+    	
+    	//#pragma omp parallel for
     	for(i = 0; i < fewObjs.size(); i++)
     	{
     		VectorXd objScore(foldSize);
@@ -193,7 +195,7 @@ namespace FT{
 	    	
 	    		cout<<"\n***************************\nRUNNING FOR i = "<<i<<" and j = "<<j<<"\n*************************************\n\n";
 	    		
-	    		int size = 0, filled = 0, k;
+	    		int size = 0, filled = 0, k, l;
     	
 				for(k = 0; k < foldSize; k++)
 					if( k != testIndex)
@@ -201,16 +203,22 @@ namespace FT{
 			
 				MatrixXd trainX(x.rows(), size);
 				VectorXd trainY(size);
-		
+						
 				for(k = 0; k < foldSize; k++)
 				{
 					if(k != testIndex)
 					{
+						//cout<<"k = "<<k<<" filled = "<<filled<<" dataFolds[k].quantity = "<<dataFolds[k].quantity<<"\n";
 						trainX.block(0, filled, x.rows(), dataFolds[k].quantity) = x.block(0, dataFolds[k].startIndex, x.rows(), dataFolds[k].quantity);
 						trainY.block(filled, 0, 1, dataFolds[k].quantity) = y.block(dataFolds[k].startIndex, 0, 1, dataFolds[k].quantity);				
 						filled += dataFolds[k].quantity;
 					}
 				}
+								
+				/*for(k = 0, l = 0; k < y.size(); k++)
+					if(k < dataFolds[testIndex].startIndex || k >= dataFolds[testIndex].startIndex+dataFolds[testIndex].quantity)
+						trainY(l++) = y(k);
+				*/
 		
 				fewObjs[i].obj.set_dtypes(find_dtypes(trainX));
 				fewObjs[i].obj.fit(trainX, trainY);
@@ -230,20 +238,22 @@ namespace FT{
 				else                        			// use mean squared error
 					objScore[j] = ((prediction - actualValues).array().pow(2)).mean();
 			
-	    		testIndex = (testIndex+1)%foldSize;		
+	    		testIndex = (testIndex+1)%foldSize;
+	    		
 	    	}
 	    	
 	    	fewObjs[i].score = objScore.mean();
 	    	
 	    }
 	    
+	    //cout<<"Hello";
 	    bestScoreIndex = 0;
 	    
 	    for(i = 1; i < fewObjs.size(); i++)
 	    	if(fewObjs[i].score < fewObjs[bestScoreIndex].score)
 	    		bestScoreIndex = i;
 	    		
-	    cout << "Best tuning parameters for this data is \n";
+	    cout << "\n********************\nBest tuning parameters for this data is \n";
 	    cout << "\nML = " << fewObjs[bestScoreIndex].obj.get_ml();
 	    cout << "\nPopulation size = " << fewObjs[bestScoreIndex].obj.get_pop_size();
 	    cout << "\nGenerations = " << fewObjs[bestScoreIndex].obj.get_generations();
