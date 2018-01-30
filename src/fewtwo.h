@@ -81,7 +81,7 @@ namespace FT{
                    double split=0.75, double fb=0.5):
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
-                             functions, max_depth, max_dim, erc, obj, shuffle, split, fb), 
+                             functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, fb), 
                       p_pop( make_shared<Population>(pop_size) ),
                       p_sel( make_shared<Selection>(sel) ),
                       p_surv( make_shared<Selection>(surv, true) ),
@@ -122,7 +122,7 @@ namespace FT{
             void set_survival(string surv){ p_surv = make_shared<Selection>(surv, true); }
                         
             /// set cross rate in variation              
-            void set_cross_rate(float cross_rate){	p_variation->set_cross_rate(cross_rate); }
+            void set_cross_rate(float cross_rate){ params.cross_rate = cross_rate; p_variation->set_cross_rate(cross_rate); }
                         
             /// set program output type ('f', 'b')              
             void set_otype(char ot){ params.set_otype(ot); }
@@ -180,6 +180,9 @@ namespace FT{
             
             ///return max_depth of programs
             int get_max_depth(){ return params.max_depth; }
+            
+            ///return cross rate for variation
+            float get_cross_rate(){ return params.cross_rate; }
             
             ///return max size of programs
             int get_max_size(){ return params.max_size; }
@@ -288,6 +291,8 @@ namespace FT{
         if (params.classification)  // setup classification endpoint
             params.set_n_classes(y);
          
+        set_dtypes(find_dtypes(X));
+        
         p_ml = make_shared<ML>(params); // intialize ML
 
         // split data into training and test sets

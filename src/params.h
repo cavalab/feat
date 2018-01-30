@@ -39,16 +39,18 @@ namespace FT{
         vector<char> dtypes;                        ///< data types of input parameters
         double feedback;                            ///< strength of ml feedback on probabilities
         unsigned int n_classes;                     ///< number of classes for classification 
+        float cross_rate;							///< cross rate for variation
 
         Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
-                   char ot, int verbosity, string fs, unsigned int max_depth, 
+                   char ot, int verbosity, string fs, float cr, unsigned int max_depth, 
                    unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
                    double fb, vector<char> datatypes = vector<char>()):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
             classification(classification),
-            max_stall(max_stall), 
+            max_stall(max_stall),
+            cross_rate(cr), 
             max_depth(max_depth),
             max_dim(max_dim),
             erc(constant),
