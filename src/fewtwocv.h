@@ -210,15 +210,15 @@ namespace FT{
 					{
 						//cout<<"k = "<<k<<" filled = "<<filled<<" dataFolds[k].quantity = "<<dataFolds[k].quantity<<"\n";
 						trainX.block(0, filled, x.rows(), dataFolds[k].quantity) = x.block(0, dataFolds[k].startIndex, x.rows(), dataFolds[k].quantity);
-						trainY.block(filled, 0, 1, dataFolds[k].quantity) = y.block(dataFolds[k].startIndex, 0, 1, dataFolds[k].quantity);				
+						//trainY.block(filled, 0, 1, dataFolds[k].quantity) = y.block(dataFolds[k].startIndex, 0, 1, dataFolds[k].quantity);				
 						filled += dataFolds[k].quantity;
 					}
 				}
 								
-				/*for(k = 0, l = 0; k < y.size(); k++)
+				for(k = 0, l = 0; k < y.size(); k++)
 					if(k < dataFolds[testIndex].startIndex || k >= dataFolds[testIndex].startIndex+dataFolds[testIndex].quantity)
 						trainY(l++) = y(k);
-				*/
+				
 		
 				fewObjs[i].obj.set_dtypes(find_dtypes(trainX));
 				fewObjs[i].obj.fit(trainX, trainY);
@@ -227,7 +227,10 @@ namespace FT{
 				VectorXd actualValues(dataFolds[testIndex].quantity);
 		
 				testData << x.block(0, dataFolds[testIndex].startIndex, x.rows(), dataFolds[testIndex].quantity);
-				actualValues << y.block(dataFolds[testIndex].startIndex, 0, 1, dataFolds[testIndex].quantity);
+				
+				for(k = 0; k < dataFolds[testIndex].quantity; k++)
+					actualValues(k) = y(dataFolds[testIndex].startIndex+k);
+				//actualValues << y.block(dataFolds[testIndex].startIndex, 0, 1, dataFolds[testIndex].quantity);
 				
 				VectorXd prediction = fewObjs[i].obj.predict(testData);
 		
