@@ -173,9 +173,6 @@ int main(int argc, char** argv){
     }
     
     
-    vector<string> ml;
-    ml.push_back("LinearRidgeRegression");
-    
     FewtwoCV validator;
     
     validator.fit(X, y);

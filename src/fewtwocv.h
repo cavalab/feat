@@ -33,17 +33,18 @@ namespace FT{
     	public:
     	
         FewtwoCV(int fdSize = 5,
-        		 vector<string> mlStr = vector<string>{"LinearRidgeRegression"},
-        		 vector<int> popRange = vector<int>{50, 100, 150, 200},
-        		 vector<int> genRange = vector<int>{50, 100, 150, 200},
-        		 vector<int> dimRange = vector<int>{1},
-        		 vector<int> depRange = vector<int>{2},
-        		 vector<float> crRange = vector<float>{0.5},
-        		 string funcs = "+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite");    
+        		 bool cl = false,
+        		 vector<int> popRange = vector<int>{100, 500},
+        		 vector<int> genRange = vector<int>{100, 200},
+        		 vector<float> fbRange = vector<float>{0.25, 0.5, 0.8},
+        		 vector<float> crRange = vector<float>{0.25, 0.5, 0.75}
+        		 );    
         
         void fit(MatrixXd x, VectorXd &y);
         
         VectorXd predict(MatrixXd x);
+        
+        void set_fold_size(int fdSize){ foldSize = fdSize; }
         
         void set_ml(vector<string> mlStr){ ml = mlStr; }
         
@@ -51,13 +52,9 @@ namespace FT{
         
         void set_generations(vector<int> genRange){ generationRange = genRange; }
         
-        void set_dimensions(vector<int> dimRange){ dimensionRange = dimRange; }
-        
-        void set_depths(vector<int> depRange){ depthRange = depRange; }
+        void set_feedback(vector<float> fbRange){ feedbackRange = fbRange; }
         
         void set_cross_rates(vector<float> crRates){ crossRates = crRates; }
-        
-        void set_functions(string funcs) { functions = funcs; }
         
         private:
         
@@ -66,12 +63,13 @@ namespace FT{
         void create_folds(int cols);
         
         int foldSize;
+        bool classification;
         vector<string> ml;
         vector<int> populationRange;
         vector<int> generationRange;
-        vector<int> dimensionRange;
-        vector<int> depthRange;
+        vector<float> feedbackRange;
         vector<float> crossRates;
+        
         string functions;  
         vector<struct FewObjects> fewObjs;
         vector<struct DataFolds> dataFolds;
@@ -79,60 +77,66 @@ namespace FT{
     };
     
     FewtwoCV::FewtwoCV(int fdSize,
-    				   vector<string> mlStr,
-    				   vector<int> popRange,
+        			   bool cl,
+        			   vector<int> popRange,
         		 	   vector<int> genRange,
-        		 	   vector<int> dimRange,
-        		 	   vector<int> depRange,
-        		 	   vector<float> crRates,
-        		 	   string funcs):
-        		 	   foldSize(fdSize),
-        		 	   ml(mlStr),
-        		 	   populationRange(popRange),
-        		 	   generationRange(genRange),
-        		 	   dimensionRange(dimRange),
-        		 	   depthRange(depRange),
-        		 	   crossRates(crRates),
-        		 	   functions(funcs),
-        		 	   bestScoreIndex(-1){}
+        		 	   vector<float> fbRange,
+        		 	   vector<float> crRange)
+	{
+		cout<<fdSize<<cl<<std::endl;
+		
+		foldSize = fdSize;
+		classification = cl;
+		populationRange = popRange;
+		generationRange = genRange;
+		feedbackRange = fbRange;
+		crossRates = crRange;
+		
+		if(classification)
+			ml = vector<string>{"LR", "CART"};
+		else
+			ml = vector<string>{"LinearRidgeRegression", "CART"};
+    }
 
 	void FewtwoCV::create_objects()
     {
     
     	cout<<"Creating objects\n";
-    	
-    	int curMl;
-    	int curpop;
-    	int curgen;
-    	int curdim;
-    	int curdep;
-    	
-    	for(auto &curMl : ml)
+    	    	
+    	for(auto &curml : ml)
     		for(auto &curpop : populationRange)
     			for(auto &curgen : generationRange)
-    				for(auto &curdim : dimensionRange)
-    					for(auto &curdep : depthRange)
-    						for(auto &curcr : crossRates)
-    						{
-    							struct FewObjects curobj;
-    							curobj.obj = Fewtwo(curpop,		//population size
-	    							   				curgen,		//generations
-	    							   				curMl,		//ml string
-	    							   				false,		//classification
-	    							   				0,			//verbosity
-	    							   				0,			//max_stall
-	    							   				"lexicase",	//selection
-	    							   				"pareto", 	//survivability
-	    							   				curcr,		//cross_rate
-	    							   				'a',		//otype
-	    							   				functions,	//nodes
-	    							   				curdim,		//dimension
-	    							   				curdep);	//depth 
-	    							   				
-	    						curobj.score = 0;
-	    						
-	    						fewObjs.push_back(curobj);
-    						}
+    				for(auto &curfb : feedbackRange)
+						for(auto &curcr : crossRates)
+						{
+							struct FewObjects curobj;
+							curobj.obj = Fewtwo(curpop,											//population size
+    							   				curgen,											//generations
+    							   				curml,											//ml string
+    							   				classification,									//classification
+    							   				0,												//verbosity
+    							   				0,												//max_stall
+    							   				"lexicase",										//selection
+    							   				"pareto", 										//survivability
+    							   				curcr,											//cross_rate
+    							   				'a',											//otype
+    							   				"+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite",	//nodes
+    							   				3,												//dimension
+    							   				10,												//depth 
+    							   				0,												//random_state
+    							   				false,											//erc
+    							   				"fitness,complexity",							//objectives
+    							   				false,											//shuffle
+    							   				0.75,											//split
+    							   				curfb);											//feedback
+    							   				
+    						curobj.score = 0;
+    						
+    						fewObjs.push_back(curobj);
+    						
+    						
+						}
+						
 	    cout<<"Objects creation complete\n";
     }
     
@@ -175,8 +179,8 @@ namespace FT{
             	
     	int i, j;
     	
-    	cout<<"data size is "<<x.rows()<<"X"<<x.cols()<<"\n\n";
-		cout<<"x is \n"<<x<<"\n";
+    	//cout<<"data size is "<<x.rows()<<"X"<<x.cols()<<"\n\n";
+		//cout<<"x is \n"<<x<<"\n";
 		
     	create_objects();
     	create_folds(x.cols());
