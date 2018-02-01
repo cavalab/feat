@@ -116,14 +116,14 @@ namespace FT{
     
     	cout<<"Creating objects\n";
     	    	
-    	for(auto &curml : ml)
-    		for(auto &curpop : populationRange)
-    			for(auto &curgen : generationRange)
-    				for(auto &curfb : feedbackRange)
-						for(auto &curcr : crossRates)
+		
+		
+		for(auto &curfb : feedbackRange)
+			for(auto &curcr : crossRates)
+			    for(auto &curml : ml)
+    				for(auto &curgen : generationRange)								    
+					    for(auto &curpop : populationRange)
 						{
-							
-							cout<<"Check1\n";
 							struct FewObjects curobj;
 							
 							curobj.obj.set_ml(curml);
@@ -239,7 +239,7 @@ namespace FT{
 	    	}
 	    	
 	    	fewObjs[i].score = objScore.mean();
-	    	cout<<"****Finished for i = "<<i<<"\n";
+	    	cout<<"****Finished object "<<i<<"\n";
 	    	
 	    }
 	    
