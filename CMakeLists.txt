@@ -4,8 +4,8 @@
 
 # version requirement for Eigen
 cmake_minimum_required (VERSION 3.0)
-# use c++ 11
-set (CMAKE_CXX_STANDARD 11)
+# use c++ 14
+set (CMAKE_CXX_STANDARD 14)
 
 # project name
 project(Fewtwo)
@@ -30,14 +30,17 @@ if (NOT CMAKE_BUILD_TYPE)
 endif()
 
 # add OpenMP support
-find_package(OpenMP)
-if (OPENMP_FOUND)
-    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+option(OMP "use OpenMP" ON)
+if (OMP)
+    find_package(OpenMP)
+    if (OPENMP_FOUND)
+        set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    endif()
 endif()
 
 # gather list of source files
-file(GLOB src_files "src/*.cc")
+file(GLOB_RECURSE src_files "src/*.cc")
 
 # executable
 add_executable(fewtwo ${src_files})

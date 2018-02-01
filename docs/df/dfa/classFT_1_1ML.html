@@ -134,6 +134,11 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a142344083a0c371590e15471db3c5890"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27fa984d19c8826c2fcbe81edb6a3417"><td class="memItemLeft" align="right" valign="top">vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#a27fa984d19c8826c2fcbe81edb6a3417">get_weights</a> ()</td></tr>
 <tr class="separator:a27fa984d19c8826c2fcbe81edb6a3417"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8cb3834bdf99902fbb59e24a24f0cc7d"><td class="memItemLeft" align="right" valign="top">VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#a8cb3834bdf99902fbb59e24a24f0cc7d">out</a> (MatrixXd &amp;X, VectorXd &amp;y, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params, bool &amp;pass, const vector&lt; char &gt; &amp;dtypes=vector&lt; char &gt;())</td></tr>
+<tr class="separator:a8cb3834bdf99902fbb59e24a24f0cc7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d56b10a53a3a7a5896edf7dedc00111"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8d56b10a53a3a7a5896edf7dedc00111"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_dtypes</b> (const vector&lt; char &gt; &amp;dtypes)</td></tr>
+<tr class="separator:a8d56b10a53a3a7a5896edf7dedc00111"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -197,6 +202,56 @@ string&#160;</td><td class="memItemRight" valign="bottom"><b>type</b></td></tr>
 </div><div class="memdoc">
 <p>return weight vector from model.</p>
 
+</div>
+</div>
+<a class="anchor" id="a8cb3834bdf99902fbb59e24a24f0cc7d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">VectorXd FT::ML::out </td>
+          <td>(</td>
+          <td class="paramtype">MatrixXd &amp;&#160;</td>
+          <td class="paramname"><em>X</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;&#160;</td>
+          <td class="paramname"><em>params</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool &amp;&#160;</td>
+          <td class="paramname"><em>pass</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const vector&lt; char &gt; &amp;&#160;</td>
+          <td class="paramname"><em>dtypes</em> = <code>vector&lt;char&gt;()</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Trains ml on X, y to generate output yhat = f(X).</p>
+<p>Input: </p><pre class="fragment"> X: n_features x n_samples matrix
+ y: n_samples vector of training labels
+ params: fewtwo parameters
+ ml: the ML model to be trained on X
+</pre><p>Output: </p><pre class="fragment"> yhat: n_samples vector of outputs
+</pre>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>

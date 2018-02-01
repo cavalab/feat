@@ -7,7 +7,7 @@
 # ===
 if [ "$1" == "debug" ]; then
     rm -rf debug; mkdir debug; cd debug; 
-    cmake -DCMAKE_BUILD_TYPE=Debug ..
+    cmake -DCMAKE_BUILD_TYPE=Debug -DOMP=OFF ..
     cd ..
 elif [ "$1" == "profile" ]; then
     rm -rf profile; mkdir profile; cd profile;    

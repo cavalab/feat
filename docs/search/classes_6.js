@@ -1,6 +1,7 @@
 var searchData=
 [
   ['node',['Node',['../d3/daf/classFT_1_1Node.html',1,'FT']]],
+  ['node2dgaussian',['Node2dGaussian',['../d2/db5/classFT_1_1Node2dGaussian.html',1,'FT']]],
   ['nodeadd',['NodeAdd',['../dd/dec/classFT_1_1NodeAdd.html',1,'FT']]],
   ['nodeand',['NodeAnd',['../dc/da3/classFT_1_1NodeAnd.html',1,'FT']]],
   ['nodeconstant',['NodeConstant',['../da/d77/classFT_1_1NodeConstant.html',1,'FT']]],
@@ -10,6 +11,7 @@ var searchData=
   ['nodeequal',['NodeEqual',['../d9/d69/classFT_1_1NodeEqual.html',1,'FT']]],
   ['nodeexponent',['NodeExponent',['../d8/dbf/classFT_1_1NodeExponent.html',1,'FT']]],
   ['nodeexponential',['NodeExponential',['../df/dfa/classFT_1_1NodeExponential.html',1,'FT']]],
+  ['nodegaussian',['NodeGaussian',['../d3/df7/classFT_1_1NodeGaussian.html',1,'FT']]],
   ['nodegeq',['NodeGEQ',['../d6/df3/classFT_1_1NodeGEQ.html',1,'FT']]],
   ['nodegreaterthan',['NodeGreaterThan',['../db/dff/classFT_1_1NodeGreaterThan.html',1,'FT']]],
   ['nodeif',['NodeIf',['../d2/d99/classFT_1_1NodeIf.html',1,'FT']]],
@@ -17,13 +19,18 @@ var searchData=
   ['nodeleq',['NodeLEQ',['../d0/da3/classFT_1_1NodeLEQ.html',1,'FT']]],
   ['nodelessthan',['NodeLessThan',['../db/d85/classFT_1_1NodeLessThan.html',1,'FT']]],
   ['nodelog',['NodeLog',['../db/def/classFT_1_1NodeLog.html',1,'FT']]],
+  ['nodelogit',['NodeLogit',['../d2/d6a/classFT_1_1NodeLogit.html',1,'FT']]],
   ['nodemultiply',['NodeMultiply',['../d8/d7d/classFT_1_1NodeMultiply.html',1,'FT']]],
   ['nodenot',['NodeNot',['../dd/d56/classFT_1_1NodeNot.html',1,'FT']]],
   ['nodeor',['NodeOr',['../d7/d13/classFT_1_1NodeOr.html',1,'FT']]],
   ['noderoot',['NodeRoot',['../db/da6/classFT_1_1NodeRoot.html',1,'FT']]],
+  ['nodesign',['NodeSign',['../d8/dd4/classFT_1_1NodeSign.html',1,'FT']]],
   ['nodesin',['NodeSin',['../da/d1c/classFT_1_1NodeSin.html',1,'FT']]],
   ['nodesqrt',['NodeSqrt',['../d7/d49/classFT_1_1NodeSqrt.html',1,'FT']]],
   ['nodesquare',['NodeSquare',['../d4/da1/classFT_1_1NodeSquare.html',1,'FT']]],
+  ['nodestep',['NodeStep',['../d5/df4/classFT_1_1NodeStep.html',1,'FT']]],
   ['nodesubtract',['NodeSubtract',['../d1/d46/classFT_1_1NodeSubtract.html',1,'FT']]],
-  ['nodevariable',['NodeVariable',['../d5/d06/classFT_1_1NodeVariable.html',1,'FT']]]
+  ['nodetanh',['NodeTanh',['../d8/d18/classFT_1_1NodeTanh.html',1,'FT']]],
+  ['nodevariable',['NodeVariable',['../d5/d06/classFT_1_1NodeVariable.html',1,'FT']]],
+  ['nodexor',['NodeXor',['../d8/d3d/classFT_1_1NodeXor.html',1,'FT']]]
 ];

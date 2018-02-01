@@ -75,12 +75,12 @@ TEST(Fewtwo, SettingFunctions)
     
     fewtwo.set_ml("RandomForest");
     ASSERT_STREQ("RandomForest", fewtwo.params.ml.c_str());
-    ASSERT_STREQ("RandomForest", fewtwo.p_ml->type.c_str());
-    ASSERT_EQ(sh::EMachineType::CT_BAGGING, fewtwo.p_ml->p_est->get_classifier_type());
-    ASSERT_EQ(sh::EProblemType::PT_REGRESSION, fewtwo.p_ml->p_est->get_machine_problem_type());
+    //ASSERT_STREQ("RandomForest", fewtwo.p_ml->type.c_str());
+    //ASSERT_EQ(sh::EMachineType::CT_BAGGING, fewtwo.p_ml->p_est->get_classifier_type());
+    //ASSERT_EQ(sh::EProblemType::PT_REGRESSION, fewtwo.p_ml->p_est->get_machine_problem_type());
     
-    fewtwo.set_classification(true);
-    ASSERT_EQ(sh::EProblemType::PT_MULTICLASS, fewtwo.p_ml->p_est->get_machine_problem_type());
+    //fewtwo.set_classification(true);
+    //ASSERT_EQ(sh::EProblemType::PT_MULTICLASS, fewtwo.p_ml->p_est->get_machine_problem_type());
     
     fewtwo.set_verbosity(2);
     ASSERT_EQ(2, fewtwo.params.verbosity);
@@ -149,7 +149,7 @@ TEST(Fewtwo, predict)
          0.9, -0.4,
          0.5, -0.8,
          0.1,-0.9;
-         
+    
     ASSERT_EQ(fewtwo.predict(X).size(), 7);             //TODO had to remove !bzero ASSERT in set_termincal weights
 }
 
@@ -187,7 +187,7 @@ TEST(Fewtwo, transform)
         
     MatrixXd res = fewtwo.transform(X);
     ASSERT_EQ(res.cols(), 7);
-    ASSERT_EQ(res.rows(), 2);
+    ASSERT_TRUE(res.rows() <= fewtwo.params.max_dim);
 }
 
 TEST(Fewtwo, fit_predict)
@@ -239,7 +239,7 @@ TEST(Fewtwo, fit_transform)
     
     MatrixXd res = fewtwo.fit_transform(X, y);
     ASSERT_EQ(res.cols(), 7);
-    ASSERT_EQ(res.rows(), 2);
+    ASSERT_TRUE(res.rows() <= fewtwo.params.max_dim);
 }
 
 
@@ -270,8 +270,11 @@ TEST(Individual, EvalEquation)
     // initialize population 
     fewtwo.p_pop->init(fewtwo.best_ind, fewtwo.params);
     int i;
-    for(i = 0; i < fewtwo.p_pop->individuals.size(); i++)
-	    ASSERT_TRUE(checkBrackets(fewtwo.p_pop->individuals[i].get_eqn())); //TODO evaluate if string correct or not
+    for(i = 0; i < fewtwo.p_pop->individuals.size(); i++){
+	    if (!checkBrackets(fewtwo.p_pop->individuals[i].get_eqn()))
+            std::cout << "check brackets failed on eqn " << fewtwo.p_pop->individuals[i].get_eqn() << "\n";
+        ASSERT_TRUE(checkBrackets(fewtwo.p_pop->individuals[i].get_eqn())); //TODO evaluate if string correct or not
+    }
 }
 
 TEST(NodeTest, Evaluate)
@@ -584,8 +587,104 @@ TEST(NodeTest, Evaluate)
 	ASSERT_FALSE((isinf(x)).any());
 	ASSERT_FALSE((isnan(abs(x)).any()));
 	
-	//TODO for NodeIf, NodeIfThenElse, NodeVariable, NodeConstant(both types)
+	
+	std::shared_ptr<Node> tanObj = std::shared_ptr<Node>(new NodeTanh());
+	
+	stack_f.clear();
+	stack_b.clear();
+	stack_f.push_back(X.row(0));
+	
+	tanObj->evaluate(X, Y, stack_f, stack_b);	
+	
+	x = stack_f.back(); stack_f.pop_back();
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::shared_ptr<Node> logitObj = std::shared_ptr<Node>(new NodeLogit());
+	
+	stack_f.clear();
+	stack_b.clear();
+	stack_f.push_back(X.row(0));
+	
+	logitObj->evaluate(X, Y, stack_f, stack_b);	
+	
+	x = stack_f.back(); stack_f.pop_back();
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::shared_ptr<Node> stepObj = std::shared_ptr<Node>(new NodeStep());
+	
+	stack_f.clear();
+	stack_b.clear();
+	stack_f.push_back(X.row(0));
+	
+	stepObj->evaluate(X, Y, stack_f, stack_b);	
+	
+	x = stack_f.back(); stack_f.pop_back();
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::shared_ptr<Node> signObj = std::shared_ptr<Node>(new NodeSign());
+	
+	stack_f.clear();
+	stack_b.clear();
+	stack_f.push_back(X.row(0));
+	
+	signObj->evaluate(X, Y, stack_f, stack_b);	
+	
+	x = stack_f.back(); stack_f.pop_back();
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	
+	std::shared_ptr<Node> xorObj = std::shared_ptr<Node>(new NodeXor());
+	
+	stack_f.clear();
+	stack_b.clear();
+	stack_b.push_back(Z1);
+	stack_b.push_back(Z2);
+	
+	xorObj->evaluate(X, Y, stack_f, stack_b);	
+	
+	z = stack_b.back(); stack_b.pop_back();
+	
+	ASSERT_FALSE((isinf(z)).any());
+	ASSERT_FALSE((isnan(abs(z)).any()));
+	
+	std::shared_ptr<Node> gausObj = std::shared_ptr<Node>(new NodeGaussian());
+	
+	stack_f.clear();
+	stack_b.clear();
+	stack_f.push_back(X.row(0));
+	
+	gausObj->evaluate(X, Y, stack_f, stack_b);	
+	
+	x = stack_f.back(); stack_f.pop_back();
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::shared_ptr<Node> gaus2dObj = std::shared_ptr<Node>(new Node2dGaussian());
+	
+	stack_f.clear();
+	stack_b.clear();
+	stack_f.push_back(X.row(0));
+	stack_f.push_back(X.row(1));
+	
+	gaus2dObj->evaluate(X, Y, stack_f, stack_b);	
+	
+	x = stack_f.back(); stack_f.pop_back();
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	//TODO NodeVariable, NodeConstant(both types)
 }
+
 
 bool isValidProgram(vector<std::shared_ptr<Node>>& program, unsigned num_features)
 {
@@ -779,7 +878,8 @@ TEST(Parameters, ParamsTests)
 					  false,							//erc
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
-                      0.75);                             //train/test split
+                      0.75,								//train/test split
+                      0.5);                             // feedback
 					  
 	params.set_max_dim(12);
 	ASSERT_EQ(params.max_dim, 12);
@@ -933,8 +1033,8 @@ TEST(Evaluation, assign_fit)
 					  false,							//erc
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
-                      0.75);                             //train/test split
-                      
+                      0.75,								//train/test split
+                      0.5);                             // feedback
 	Individual ind = Individual();
 	ind.loc = 0;
 	MatrixXd F(10, 1);
@@ -1019,15 +1119,15 @@ TEST(Evaluation, fitness)
 					  false,							//classification
 					  0,								//max_stall
 					  'f',								//otype
-					  2,								//verbosity
+					  1,								//verbosity
 					  "+,-,*,/,exp,log",				//functions
 					  3,								//max_depth
 					  10,								//max_dim
 					  false,							//erc
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
-                      0.75);                             //train/test split
-                      
+                      0.75,								//train/test split
+                      0.5);                             // feedback                 
 	MatrixXd X(10,1); 
     X << 0.0,  
          1.0,  
@@ -1086,8 +1186,8 @@ TEST(Evaluation, out_ml)
 					  false,							//erc
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
-                      0.75);                             //train/test split
-                      
+                      0.75,								//train/test split
+                      0.5);                             // feedback                 
 	MatrixXd X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
@@ -1105,10 +1205,10 @@ TEST(Evaluation, out_ml)
              -1.20648656, -2.68773747;
              
     shared_ptr<Evaluation> p_eval = make_shared<Evaluation>();
-    shared_ptr<ML> p_ml = make_shared<ML>("LinearRidgeRegression", false);
+    shared_ptr<ML> p_ml = make_shared<ML>(params);
              
     bool pass = true;
-    VectorXd yhat = p_eval->out_ml(X, y, params, pass, p_ml);
+    VectorXd yhat = p_ml->out(X, y, params, pass);
     
     double mean = ((yhat - y).array().pow(2)).mean();
     

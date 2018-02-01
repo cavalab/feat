@@ -11,8 +11,12 @@ license: GNU/GPL v3
 #include <Eigen/Dense>
 #include <memory>
 #include <shogun/base/init.h>
-#include <omp.h>
-
+#ifdef _OPENMP
+    #include <omp.h>
+#else
+    #define omp_get_thread_num() 0
+    #define omp_get_max_threads() 1
+#endif
 // stuff being used
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -32,7 +36,10 @@ using std::cout;
 #include "evaluation.h"
 #include "variation.h"
 #include "ml.h"
+#include "node/node.h"
+ 
 
+//shogun initialization
 void __attribute__ ((constructor)) ctor()
 {
     cout<< "INITIALIZING SHOGUN\n";
@@ -71,18 +78,19 @@ namespace FT{
                    char otype='a', string functions = "+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite", 
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
                    bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
-                   double split=0.75, vector<char> dtypes = vector<char>()):
+                   double split=0.75, double fb=0.5):
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
-                             functions, max_depth, max_dim, erc, obj, shuffle, split, dtypes), 
+                             functions, max_depth, max_dim, erc, obj, shuffle, split, fb), 
                       p_pop( make_shared<Population>(pop_size) ),
                       p_sel( make_shared<Selection>(sel) ),
                       p_surv( make_shared<Selection>(surv, true) ),
                       p_eval( make_shared<Evaluation>() ),
-                      p_variation( make_shared<Variation>(cross_rate) ),
-                      p_ml( make_shared<ML>(ml, classification) )
+                      p_variation( make_shared<Variation>(cross_rate) )
+                      
             {
                 r.set_seed(random_state);
+                str_dim = "";
             }
             
             /// set size of population 
@@ -96,19 +104,11 @@ namespace FT{
             void set_generations(int gens){ params.gens = gens; }         
                         
             /// set ML algorithm to use              
-            void set_ml(string ml)
-            {
-            	params.ml = ml;
-            	p_ml = make_shared<ML>(params.ml, params.classification);
-            }            
+            void set_ml(string ml){ params.ml = ml; }            
             
             /// set EProblemType for shogun              
-            void set_classification(bool classification)
-            {
-            	params.classification = classification;
-            	p_ml = make_shared<ML>(params.ml, params.classification);
-            }
-                        
+            void set_classification(bool classification){ params.classification = classification;}
+                 
             /// set level of debug info              
             void set_verbosity(int verbosity){ params.set_verbosity(verbosity); }
                         
@@ -135,7 +135,10 @@ namespace FT{
             
             /// set maximum dimensionality of programs              
             void set_max_dim(unsigned int max_dim){	params.set_max_dim(max_dim); }
-                        
+            
+            ///set dimensionality as multiple of the number of columns
+            void set_max_dim(string str) { str_dim = str; }            
+            
             /// set seeds for each core's random number generator              
             void set_random_state(int random_state){ r.set_seed(random_state); }
                         
@@ -150,7 +153,10 @@ namespace FT{
             
             ///set data types for input parameters
             void set_dtypes(vector<char> dtypes){params.dtypes = dtypes;}
-            
+
+            ///set feedback
+            void set_feedback(double fb){ params.feedback = fb;}
+
             ///return population size
             int get_pop_size(){ return params.pop_size; }
             
@@ -193,9 +199,13 @@ namespace FT{
             ///return fraction of data to use for training
             double get_split(){ return params.split; }
             
+            ///add custom node into fewtwo
+            void add_function(shared_ptr<Node> N){ params.functions.push_back(N); }
+            
             ///return data types for input parameters
             vector<char> get_dtypes(){ return params.dtypes; }
 
+            double get_feedback(){ return params.feedback; }
             /// destructor             
             ~Fewtwo(){} 
                         
@@ -228,12 +238,14 @@ namespace FT{
             shared_ptr<Selection> p_surv;       	///< survival algorithm
             shared_ptr<ML> p_ml;                	///< pointer to machine learning class
             // performance tracking
-            double best_score;                      ///< current best score 
+            double best_score;                      ///< current best score
+            string str_dim;                         ///< dimensionality as multiple of number of columns 
             void update_best();                     ///< updates best score   
             void print_stats(unsigned int);         ///< prints stats
             Individual best_ind;                    ///< best individual
             /// method to fit inital ml model            
             void initial_model(MatrixXd& X, VectorXd& y);
+            void final_model(MatrixXd& X, VectorXd& y);
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
@@ -261,6 +273,22 @@ namespace FT{
          */
         // start the clock
         timer.Reset();
+        
+        if(str_dim.compare("") != 0)
+        {
+            string dimension;
+            dimension = str_dim.substr(0, str_dim.length() - 1);
+            params.msg("STR DIM IS "+ dimension, 1);
+            params.msg("Cols are " + std::to_string(X.cols()), 1);
+            params.msg("Setting dimensionality as " + 
+                       std::to_string((int)(ceil(stod(dimension)*X.cols()))), 1);
+            set_max_dim(ceil(stod(dimension)*X.cols()));
+        }
+        
+        if (params.classification)  // setup classification endpoint
+            params.set_n_classes(y);
+         
+        p_ml = make_shared<ML>(params); // intialize ML
 
         // split data into training and test sets
         MatrixXd X_t(X.rows(),int(X.cols()*params.split));
@@ -324,21 +352,33 @@ namespace FT{
         params.msg("best training representation: " + best_ind.get_eqn(),1);
         params.msg("train score: " + std::to_string(best_score), 1);
         // evaluate population on validation set
-        F_v.resize(X_v.cols(),int(2*params.pop_size)); 
-        p_eval->fitness(*p_pop, X_v, y_v, F_v, params);
-        initial_model(X_v, y_v);        // calculate baseline model validation score
-        update_best();                  // get the best validation model
+        if (params.split < 1.0)
+        {
+            F_v.resize(X_v.cols(),int(2*params.pop_size)); 
+            p_eval->fitness(*p_pop, X_v, y_v, F_v, params);
+            initial_model(X_v, y_v);        // calculate baseline model validation score
+            update_best();                  // get the best validation model
+        }
+        // fit final model to best model
+        final_model(X,y);
         params.msg("best validation representation: " + best_ind.get_eqn(),1);
         params.msg("validation score: " + std::to_string(best_score), 1);
     }
 
+    void Fewtwo::final_model(MatrixXd& X, VectorXd& y)
+    {
+        // fits final model to best tranformation found.
+        bool pass = true;
+        MatrixXd Phi = transform(X);
+        VectorXd yhat = p_ml->out(Phi,y,params,pass,best_ind.dtypes);
+    }
     void Fewtwo::initial_model(MatrixXd& X, VectorXd& y)
     {
         /*!
          * fits an ML model to the raw data as a starting point.
          */
         bool pass = true;
-        VectorXd yhat = p_eval->out_ml(X,y,params,pass,p_ml);
+        VectorXd yhat = p_ml->out(X,y,params,pass);
 
         // set terminal weights based on model
         params.set_term_weights(p_ml->get_weights());
@@ -373,9 +413,29 @@ namespace FT{
     
     VectorXd Fewtwo::predict(MatrixXd& X)
     {
+        normalize(X);
         MatrixXd Phi = transform(X);
+        normalize(Phi);
         auto PhiSG = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(Phi));
-        auto y_pred = p_ml->p_est->apply_regression(PhiSG)->get_labels();
+        SGVector<double> y_pred;
+        if (params.classification && params.n_classes == 2)
+        {
+            auto tmp = p_ml->p_est->apply_binary(PhiSG);
+            y_pred = tmp->get_labels();
+            delete tmp;
+        }
+        else if (params.classification)
+        {
+            auto tmp = p_ml->p_est->apply_multiclass(PhiSG);
+            y_pred = tmp->get_labels();
+            delete tmp;
+        }
+        else
+        {
+            auto tmp = p_ml->p_est->apply_regression(PhiSG);
+            y_pred = tmp->get_labels();
+            delete tmp;
+        }
         return Eigen::Map<VectorXd>(y_pred.data(),y_pred.size());
     }
 
@@ -452,5 +512,6 @@ namespace FT{
         
         std::cout <<"\n\n";
     }
+    
 }
 #endif
