@@ -242,7 +242,7 @@ namespace FT{
     }
     
     /// normalize matrix.
-    void normalize(MatrixXd& X)
+    void normalize(Map<MatrixXd>& X)
     {   
         // normalize features
         for (unsigned int i=0; i<X.rows(); ++i){

@@ -19,12 +19,12 @@ cdef extern from "fewtwo.h" namespace "FT":
         void fit(Map[MatrixXd] & X, Map[VectorXd] & y)
         VectorXd predict(Map[MatrixXd] & X)
         MatrixXd transform(Map[MatrixXd] & X)
-        VectorXd fit_predict(Map[MatrixXd](X),Map[VectorXd](y))
-        #VectorXd fit_transform(Map[MatrixXd](X),Map[VectorXd](y))
+        VectorXd fit_predict(Map[MatrixXd] & X, Map[VectorXd] & y)
+        VectorXd fit_transform(Map[MatrixXd] & X, Map[VectorXd] & y)
 
 cdef class PyFewtwo:
     cdef Fewtwo ft  # hold a c++ instance which we're wrapping
-    def _cinit_(self,int pop_size, int gens, string ml, 
+    def __cinit__(self,int pop_size, int gens, string ml, 
                bool classification, int verbosity, int max_stall,
                string sel, string surv, float cross_rate,
                char otype, string functions, 
@@ -43,6 +43,7 @@ cdef class PyFewtwo:
         return ndarray(self.ft.transform(Map[MatrixXd](X)))
 
     def fit_predict(self,np.ndarray X,np.ndarray y):
-        self.ft.fit(Map[MatrixXd](X), Map[VectorXd](y))
-        return ndarray(self.ft.predict(Map[MatrixXd](X)))
+        return ndarray(self.ft.fit_predict(Map[MatrixXd](X), Map[VectorXd](y)))
 
+    def fit_transform(self,np.ndarray X,np.ndarray y):
+        return ndarray(self.ft.fit_transform(Map[MatrixXd](X), Map[VectorXd](y)))

@@ -210,19 +210,20 @@ namespace FT{
             ~Fewtwo(){} 
                         
             /// train a model.             
-            void fit(MatrixXd& X, VectorXd& y);
+            void fit(Map<MatrixXd>& X, Map<VectorXd>& y);
             
             /// predict on unseen data.             
-            VectorXd predict(MatrixXd& X);        
+            VectorXd predict(Map<MatrixXd>& X);        
             
             /// transform an input matrix using a program.                          
-            MatrixXd transform(MatrixXd& X,  Individual *ind = 0);
+            MatrixXd transform(Map<MatrixXd>& X);
+            MatrixXd transform(Map<MatrixXd>& X,  Individual *ind);
             
             /// convenience function calls fit then predict.            
-            VectorXd fit_predict(MatrixXd& X, VectorXd& y){ fit(X,y); return predict(X); } 
+            VectorXd fit_predict(Map<MatrixXd>& X, Map<VectorXd>& y){ fit(X,y); return predict(X); } 
             
             /// convenience function calls fit then transform. 
-            MatrixXd fit_transform(MatrixXd& X, VectorXd& y){ fit(X,y); return transform(X); }
+            MatrixXd fit_transform(Map<MatrixXd>& X, Map<VectorXd>& y){ fit(X,y); return transform(X); }
                   
         private:
             // Parameters
@@ -244,13 +245,13 @@ namespace FT{
             void print_stats(unsigned int);         ///< prints stats
             Individual best_ind;                    ///< best individual
             /// method to fit inital ml model            
-            void initial_model(MatrixXd& X, VectorXd& y);
-            void final_model(MatrixXd& X, VectorXd& y);
+            void initial_model(Map<MatrixXd>& X, Map<VectorXd>& y);
+            void final_model(Map<MatrixXd>& X, Map<VectorXd>& y);
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
     
-    void Fewtwo::fit(MatrixXd& X, VectorXd& y)
+    void Fewtwo::fit(Map<MatrixXd>& X, Map<VectorXd>& y)
     {
         /*!
          *  Input:
@@ -365,14 +366,14 @@ namespace FT{
         params.msg("validation score: " + std::to_string(best_score), 1);
     }
 
-    void Fewtwo::final_model(MatrixXd& X, VectorXd& y)
+    void Fewtwo::final_model(Map<MatrixXd>& X, Map<VectorXd>& y)
     {
         // fits final model to best tranformation found.
         bool pass = true;
         MatrixXd Phi = transform(X);
         VectorXd yhat = p_ml->out(Phi,y,params,pass,best_ind.dtypes);
     }
-    void Fewtwo::initial_model(MatrixXd& X, VectorXd& y)
+    void Fewtwo::initial_model(Map<MatrixXd>& X, Map<VectorXd>& y)
     {
         /*!
          * fits an ML model to the raw data as a starting point.
@@ -394,8 +395,18 @@ namespace FT{
             best_ind.program.push_back(params.terminals[i]);
         best_ind.fitness = best_score;
     }
-
-    MatrixXd Fewtwo::transform(MatrixXd& X, Individual *ind)
+    
+    MatrixXd Fewtwo::transform(Map<MatrixXd>& X)
+    {
+        /*!
+         * Transforms input data according to best ind
+         */
+        normalize(X); 
+        MatrixXd Phi = best_ind.out(X,params);
+        normalize(Phi);
+        return Phi;
+    }
+    MatrixXd Fewtwo::transform(Map<MatrixXd>& X, Individual *ind)
     {
         /*!
          * Transforms input data according to ind or best ind, if ind is undefined.
@@ -407,12 +418,16 @@ namespace FT{
                 std::cerr << "You need to train a model using fit() before making predictions.\n";
                 throw;
             }
-            return best_ind.out(X,params);
+            MatrixXd Phi = best_ind.out(X,params);
+            normalize(Phi);
+            return Phi;
         }
-        return normalize(ind->out(X,params));
+        MatrixXd Phi = ind->out(X,params);
+        normalize(Phi);
+        return Phi;
     }
     
-    VectorXd Fewtwo::predict(MatrixXd& X)
+    VectorXd Fewtwo::predict(Map<MatrixXd>& X)
     {
         MatrixXd Phi = transform(X);
         auto PhiSG = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(Phi));
