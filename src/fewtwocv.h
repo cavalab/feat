@@ -230,7 +230,7 @@ namespace FT{
 		
 				if (fewObjs[i].obj.get_classification())  	// use classification accuracy
 					objScore[j] = ((prediction.cast<int>().array() != 
-									actualValues.cast<int>().array()).cast<double>()).mean();
+							actualValues.cast<int>().array()).cast<double>()).mean();
 				else                        			// use mean squared error
 					objScore[j] = ((prediction - actualValues).array().pow(2)).mean();
 			
