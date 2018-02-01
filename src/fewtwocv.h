@@ -198,13 +198,15 @@ namespace FT{
 				{
 					if(k != testIndex)
 					{
-						trainX.block(0, filled, x.rows(), dataFolds[k].quantity) = x.block(0, dataFolds[k].startIndex, x.rows(), dataFolds[k].quantity);
+						trainX.block(0, filled, x.rows(), dataFolds[k].quantity) = 
+									x.block(0, dataFolds[k].startIndex, x.rows(), dataFolds[k].quantity);
 						filled += dataFolds[k].quantity;
 					}
 				}
 								
 				for(k = 0, l = 0; k < y.size(); k++)
-					if(k < dataFolds[testIndex].startIndex || k >= dataFolds[testIndex].startIndex+dataFolds[testIndex].quantity)
+					if(k < dataFolds[testIndex].startIndex ||
+					   k >= dataFolds[testIndex].startIndex+dataFolds[testIndex].quantity)
 						trainY(l++) = y(k);
 				
 		
@@ -214,7 +216,8 @@ namespace FT{
 				MatrixXd testData(x.rows(), dataFolds[testIndex].quantity);
 				VectorXd actualValues(dataFolds[testIndex].quantity);
 		
-				testData << x.block(0, dataFolds[testIndex].startIndex, x.rows(), dataFolds[testIndex].quantity);
+				testData << 
+					x.block(0, dataFolds[testIndex].startIndex, x.rows(), dataFolds[testIndex].quantity);
 				
 				for(k = 0; k < dataFolds[testIndex].quantity; k++)
 					actualValues(k) = y(dataFolds[testIndex].startIndex+k);
@@ -222,7 +225,8 @@ namespace FT{
 				VectorXd prediction = fewObjs[i].obj.predict(testData);
 		
 				if (fewObjs[i].obj.get_classification())  	// use classification accuracy
-					objScore[j] = ((prediction.cast<int>().array() != actualValues.cast<int>().array()).cast<double>()).mean();
+					objScore[j] = ((prediction.cast<int>().array() != 
+									actualValues.cast<int>().array()).cast<double>()).mean();
 				else                        			// use mean squared error
 					objScore[j] = ((prediction - actualValues).array().pow(2)).mean();
 			
