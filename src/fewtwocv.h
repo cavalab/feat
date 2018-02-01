@@ -10,6 +10,10 @@ license: GNU/GPL v3
 
 namespace FT{         
     
+    /*!
+     * @class DataFolds
+     * @brief structure contains indexes and number of data sets in each fold
+     */
     struct DataFolds
     {
     	int startIndex;
@@ -103,6 +107,7 @@ namespace FT{
 		feedbackRange = fbRange;
 		crossRates = crRange;
 		
+		//set ML methods according to classification parameter sent
 		if(classification)
 			ml = vector<string>{"LR", "CART"};
 		else
@@ -151,6 +156,7 @@ namespace FT{
     	int i;
     	int startIndex = 0;
     	
+    	// determining indexes and umber of datasets in each fold
     	for(i = 0; i < foldSize; i++)
     	{
     		struct DataFolds fold;
@@ -189,13 +195,15 @@ namespace FT{
     		
     		int testIndex = foldSize - 1;
     		
+    		// loop to fit all data folds in a single object and calculate the mean score
 	    	for(int j = 0; j < foldSize; j++)
 	    	{	    		
 	    		int filled = 0, k, l;
 			
 				MatrixXd trainX(x.rows(), x.cols() - dataFolds[testIndex].quantity);
 				VectorXd trainY(x.cols() - dataFolds[testIndex].quantity);
-						
+				
+				//creating training data from data folds		
 				for(k = 0; k < foldSize; k++)
 				{
 					if(k != testIndex)
@@ -205,16 +213,18 @@ namespace FT{
 						filled += dataFolds[k].quantity;
 					}
 				}
-								
+				
+				// creating training data outputs from data folds				
 				for(k = 0, l = 0; k < y.size(); k++)
 					if(k < dataFolds[testIndex].startIndex ||
 					   k >= dataFolds[testIndex].startIndex+dataFolds[testIndex].quantity)
 						trainY(l++) = y(k);
 				
-		
+		        // set dtypes for training data and train the model
 				fewObjs[i].obj.set_dtypes(find_dtypes(trainX));
 				fewObjs[i].obj.fit(trainX, trainY);
 				
+				// extracting testdata and actual values for test data from data folds
 				MatrixXd testData(x.rows(), dataFolds[testIndex].quantity);
 				VectorXd actualValues(dataFolds[testIndex].quantity);
 		
@@ -224,18 +234,23 @@ namespace FT{
 				for(k = 0; k < dataFolds[testIndex].quantity; k++)
 					actualValues(k) = y(dataFolds[testIndex].startIndex+k);
 				
+				// prediction on test data
 				VectorXd prediction = fewObjs[i].obj.predict(testData);
-		
-				if (fewObjs[i].obj.get_classification())  	// use classification accuracy
+		        
+		        // calculating difference between actual and predicted values
+				if (fewObjs[i].obj.get_classification())
+				    // use classification accuracy
 					objScore[j] = ((prediction.cast<int>().array() != 
 							actualValues.cast<int>().array()).cast<double>()).mean();
-				else                        			// use mean squared error
+				else
+				    // use mean squared error
 					objScore[j] = ((prediction - actualValues).array().pow(2)).mean();
 			
 	    		testIndex = (testIndex+1)%foldSize;
 	    		
 	    	}
 	    	
+	    	// setting mean score for the model based on the tuning parameters
 	    	fewObjs[i].score = objScore.mean();
 	    	cout<<"****Finished object "<<i<<"\n";
 	    	
@@ -243,6 +258,7 @@ namespace FT{
 	    
 	    bestScoreIndex = 0;
 	    
+	    // finding the best model from validation and printing its parameters
 	    for(int i = 1; i < fewObjs.size(); i++)
 	    	if(fewObjs[i].score < fewObjs[bestScoreIndex].score)
 	    		bestScoreIndex = i;
@@ -259,12 +275,14 @@ namespace FT{
     
     VectorXd FewtwoCV::predict(MatrixXd x)
     {
+        // report error if data not trained first
     	if(bestScoreIndex == -1)
     	{
     		std::cerr << "You need to call fit first to cross validate first.\n";
     		throw;
     	}
     	
+    	// prediciting values based on the best model found
     	return fewObjs[bestScoreIndex].obj.predict(x);
     }    
 }
