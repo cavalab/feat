@@ -216,7 +216,7 @@ namespace FT{
             VectorXd predict(MatrixXd& X);        
             
             /// transform an input matrix using a program.                          
-            MatrixXd transform(const MatrixXd& X,  Individual *ind = 0);
+            MatrixXd transform(MatrixXd& X,  Individual *ind = 0);
             
             /// convenience function calls fit then predict.            
             VectorXd fit_predict(MatrixXd& X, VectorXd& y){ fit(X,y); return predict(X); } 
@@ -395,11 +395,12 @@ namespace FT{
         best_ind.fitness = best_score;
     }
 
-    MatrixXd Fewtwo::transform(const MatrixXd& X, Individual *ind)
+    MatrixXd Fewtwo::transform(MatrixXd& X, Individual *ind)
     {
         /*!
          * Transforms input data according to ind or best ind, if ind is undefined.
          */
+        normalize(X);
         if (ind == 0)        // if ind is empty, predict with best_ind
         {
             if (best_ind.program.size()==0){
@@ -408,14 +409,12 @@ namespace FT{
             }
             return best_ind.out(X,params);
         }
-        return ind->out(X,params);
+        return normalize(ind->out(X,params));
     }
     
     VectorXd Fewtwo::predict(MatrixXd& X)
     {
-        normalize(X);
         MatrixXd Phi = transform(X);
-        normalize(Phi);
         auto PhiSG = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(Phi));
         SGVector<double> y_pred;
         if (params.classification && params.n_classes == 2)
