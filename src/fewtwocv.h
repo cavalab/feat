@@ -36,7 +36,7 @@ namespace FT{
         		 bool cl = false,
         		 vector<int> popRange = vector<int>{100, 500},
         		 vector<int> genRange = vector<int>{100, 200},
-        		 vector<float> fbRange = vector<float>{0.25, 0.5, 0.8},
+        		 vector<float> fbRange = vector<float>{0.2, 0.5, 0.8},
         		 vector<float> crRange = vector<float>{0.25, 0.5, 0.75}
         		 );    
         
@@ -187,26 +187,32 @@ namespace FT{
     	
     	cout<<"Total number of objects created are "<<fewObjs.size()<<"\n";
     	
-    	//#pragma omp parallel for
+    	#pragma omp parallel for
     	for(i = 0; i < fewObjs.size(); i++)
     	{
     		VectorXd objScore(foldSize);
     		
     		int testIndex = foldSize - 1;
     		
+    		//cout<<"**Started for i = "<<i<<"\n";
+    		
 	    	for(j = 0; j < foldSize; j++)
 	    	{
 	    	
-	    		cout<<"\n***************************\nRUNNING FOR i = "<<i<<" and j = "<<j<<"\n*************************************\n\n";
+	    		//cout<<"\n\ni = "<<i<<" and j = "<<j<<"\n\n";
 	    		
-	    		int size = 0, filled = 0, k, l;
+	    		int filled = 0, k, l;
+	    		
+	    		/*int size = 0;
     	
 				for(k = 0; k < foldSize; k++)
 					if( k != testIndex)
 						size += dataFolds[k].quantity;
+						
+				*/
 			
-				MatrixXd trainX(x.rows(), size);
-				VectorXd trainY(size);
+				MatrixXd trainX(x.rows(), x.cols() - dataFolds[testIndex].quantity);
+				VectorXd trainY(x.cols() - dataFolds[testIndex].quantity);
 						
 				for(k = 0; k < foldSize; k++)
 				{
@@ -238,8 +244,6 @@ namespace FT{
 				
 				VectorXd prediction = fewObjs[i].obj.predict(testData);
 		
-				VectorXd objScore(foldSize);
-		
 				if (fewObjs[i].obj.get_classification())  	// use classification accuracy
 					objScore[j] = ((prediction.cast<int>().array() != actualValues.cast<int>().array()).cast<double>()).mean();
 				else                        			// use mean squared error
@@ -250,6 +254,7 @@ namespace FT{
 	    	}
 	    	
 	    	fewObjs[i].score = objScore.mean();
+	    	cout<<"****Finished for i = "<<i<<"\n";
 	    	
 	    }
 	    
