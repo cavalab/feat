@@ -8,30 +8,34 @@ license: GNU/GPL v3
 
 #include "fewtwo.h"
 
-namespace FT{
-
-    /*!
-     * @class FewtwoCV
-     * @brief cross validator wrapper. 
-     */
-         
+namespace FT{         
+    
     struct DataFolds
     {
     	int startIndex;
     	int quantity;
     };
     
+    /*!
+     * @class FewObjects
+     * @brief Structure for fewtwo object and its validation score
+     */
     struct FewObjects
     {
     	Fewtwo obj;
     	double score;
     };
     
+    /*!
+     * @class FewtwoCV
+     * @brief cross validator wrapper. 
+     */
     class FewtwoCV
     {
     
     	public:
     	
+    	///constructor
         FewtwoCV(int fdSize = 5,
         		 bool cl = false,
         		 vector<int> popRange = vector<int>{100, 500},
@@ -40,40 +44,49 @@ namespace FT{
         		 vector<float> crRange = vector<float>{0.25, 0.5, 0.75}
         		 );    
         
+        /// fit method to find the best fewtwo object based on input range
         void fit(MatrixXd x, VectorXd &y);
         
+        /// predict method to predict the values based on best fewtwo object identified
         VectorXd predict(MatrixXd x);
         
+        /// set the number of folds in k-way cross validation
         void set_fold_size(int fdSize){ foldSize = fdSize; }
         
+        /// set ml values for cross validation
         void set_ml(vector<string> mlStr){ ml = mlStr; }
         
+        /// set population sizes for cross validation
         void set_populations(vector<int> popRange){ populationRange = popRange; }
         
+        /// set generations for cross validation
         void set_generations(vector<int> genRange){ generationRange = genRange; }
         
+        /// set feedback values for cross validation
         void set_feedback(vector<float> fbRange){ feedbackRange = fbRange; }
         
+        /// set cross rate values for cross validation
         void set_cross_rates(vector<float> crRates){ crossRates = crRates; }
         
         private:
         
+        /// creates a vector of all fewtwo objects for cross validation
         void create_objects();
                 
+        /// create indexes for different folds
         void create_folds(int cols);
         
-        int foldSize;
-        bool classification;
-        vector<string> ml;
-        vector<int> populationRange;
-        vector<int> generationRange;
-        vector<float> feedbackRange;
-        vector<float> crossRates;
-        
-        string functions;  
-        vector<struct FewObjects> fewObjs;
-        vector<struct DataFolds> dataFolds;
-        int bestScoreIndex; 
+        int foldSize;						///< fold size for k-mean cross validation
+        bool classification;				///< whether classification ML methods are used or not
+        vector<string> ml;					///< vector containing list of ML methods to use for cross validation
+        vector<int> populationRange;		///< vector containg list of population values
+        vector<int> generationRange;		///< vector containing list of generation values
+        vector<float> feedbackRange;		///< vector containing list of feedback values
+        vector<float> crossRates;			///< vector containing list of cross rates
+          
+        vector<struct FewObjects> fewObjs;	///< vector containing fewtwo objects to be used for cross validation
+        vector<struct DataFolds> dataFolds;	///< vector containg data fold indexes
+        int bestScoreIndex; 				///< index of the best fewtwo object
     };
     
     FewtwoCV::FewtwoCV(int fdSize,
@@ -110,26 +123,12 @@ namespace FT{
 						for(auto &curcr : crossRates)
 						{
 							struct FewObjects curobj;
-							curobj.obj = Fewtwo(curpop,											//population size
-    							   				curgen,											//generations
-    							   				curml,											//ml string
-    							   				classification,									//classification
-    							   				0,												//verbosity
-    							   				0,												//max_stall
-    							   				"lexicase",										//selection
-    							   				"pareto", 										//survivability
-    							   				curcr,											//cross_rate
-    							   				'a',											//otype
-    							   				"+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite",	//nodes
-    							   				3,												//dimension
-    							   				10,												//depth 
-    							   				0,												//random_state
-    							   				false,											//erc
-    							   				"fitness,complexity",							//objectives
-    							   				false,											//shuffle
-    							   				0.75,											//split
-    							   				curfb);											//feedback
-    							   				
+							curobj.obj. = set_ml(curml);
+							curobj.obj. = set_pop_size(curpop);
+							curobj.obj. = set_generations(curgen);
+							curobj.obj. = set_feedback(curfb);
+							curobj.obj. = set_cross_rate(curcr);
+								   				
     						curobj.score = 0;
     						
     						fewObjs.push_back(curobj);
@@ -176,40 +175,21 @@ namespace FT{
     
     void FewtwoCV::fit(MatrixXd x, VectorXd &y)
     {
-            	
-    	int i, j;
-    	
-    	//cout<<"data size is "<<x.rows()<<"X"<<x.cols()<<"\n\n";
-		//cout<<"x is \n"<<x<<"\n";
-		
     	create_objects();
     	create_folds(x.cols());
     	
     	cout<<"Total number of objects created are "<<fewObjs.size()<<"\n";
     	
     	#pragma omp parallel for
-    	for(i = 0; i < fewObjs.size(); i++)
+    	for(int i = 0; i < fewObjs.size(); i++)
     	{
     		VectorXd objScore(foldSize);
     		
     		int testIndex = foldSize - 1;
     		
-    		//cout<<"**Started for i = "<<i<<"\n";
-    		
-	    	for(j = 0; j < foldSize; j++)
-	    	{
-	    	
-	    		//cout<<"\n\ni = "<<i<<" and j = "<<j<<"\n\n";
-	    		
+	    	for(int j = 0; j < foldSize; j++)
+	    	{	    		
 	    		int filled = 0, k, l;
-	    		
-	    		/*int size = 0;
-    	
-				for(k = 0; k < foldSize; k++)
-					if( k != testIndex)
-						size += dataFolds[k].quantity;
-						
-				*/
 			
 				MatrixXd trainX(x.rows(), x.cols() - dataFolds[testIndex].quantity);
 				VectorXd trainY(x.cols() - dataFolds[testIndex].quantity);
@@ -218,9 +198,7 @@ namespace FT{
 				{
 					if(k != testIndex)
 					{
-						//cout<<"k = "<<k<<" filled = "<<filled<<" dataFolds[k].quantity = "<<dataFolds[k].quantity<<"\n";
 						trainX.block(0, filled, x.rows(), dataFolds[k].quantity) = x.block(0, dataFolds[k].startIndex, x.rows(), dataFolds[k].quantity);
-						//trainY.block(filled, 0, 1, dataFolds[k].quantity) = y.block(dataFolds[k].startIndex, 0, 1, dataFolds[k].quantity);				
 						filled += dataFolds[k].quantity;
 					}
 				}
@@ -240,7 +218,6 @@ namespace FT{
 				
 				for(k = 0; k < dataFolds[testIndex].quantity; k++)
 					actualValues(k) = y(dataFolds[testIndex].startIndex+k);
-				//actualValues << y.block(dataFolds[testIndex].startIndex, 0, 1, dataFolds[testIndex].quantity);
 				
 				VectorXd prediction = fewObjs[i].obj.predict(testData);
 		
@@ -258,10 +235,9 @@ namespace FT{
 	    	
 	    }
 	    
-	    //cout<<"Hello";
 	    bestScoreIndex = 0;
 	    
-	    for(i = 1; i < fewObjs.size(); i++)
+	    for(int i = 1; i < fewObjs.size(); i++)
 	    	if(fewObjs[i].score < fewObjs[bestScoreIndex].score)
 	    		bestScoreIndex = i;
 	    		
