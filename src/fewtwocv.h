@@ -95,9 +95,7 @@ namespace FT{
         		 	   vector<int> genRange,
         		 	   vector<float> fbRange,
         		 	   vector<float> crRange)
-	{
-		cout<<fdSize<<cl<<std::endl;
-		
+	{	
 		foldSize = fdSize;
 		classification = cl;
 		populationRange = popRange;
