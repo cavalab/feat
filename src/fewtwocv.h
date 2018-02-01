@@ -76,17 +76,17 @@ namespace FT{
         /// create indexes for different folds
         void create_folds(int cols);
         
-        int foldSize;						///< fold size for k-mean cross validation
-        bool classification;				///< whether classification ML methods are used or not
-        vector<string> ml;					///< vector containing list of ML methods to use for cross validation
-        vector<int> populationRange;		///< vector containg list of population values
-        vector<int> generationRange;		///< vector containing list of generation values
-        vector<float> feedbackRange;		///< vector containing list of feedback values
-        vector<float> crossRates;			///< vector containing list of cross rates
+        int foldSize;                     ///< fold size for k-mean cross validation
+        bool classification;              ///< whether classification ML methods are used or not
+        vector<string> ml;                ///< vector list of ML methods to use for crossvalidation
+        vector<int> populationRange;      ///< vector list of population values
+        vector<int> generationRange;      ///< vector list of generation values
+        vector<float> feedbackRange;      ///< vector list of feedback values
+        vector<float> crossRates;         ///< vector list of cross rates
           
-        vector<struct FewObjects> fewObjs;	///< vector containing fewtwo objects to be used for cross validation
-        vector<struct DataFolds> dataFolds;	///< vector containg data fold indexes
-        int bestScoreIndex; 				///< index of the best fewtwo object
+        vector<struct FewObjects> fewObjs; ///< vector list of fewtwo objects for cross validation
+        vector<struct DataFolds> dataFolds;///< vector containg data fold indexes
+        int bestScoreIndex;                ///< index of the best fewtwo object
     };
     
     FewtwoCV::FewtwoCV(int fdSize,
@@ -203,7 +203,7 @@ namespace FT{
 					if(k != testIndex)
 					{
 						trainX.block(0, filled, x.rows(), dataFolds[k].quantity) = 
-									x.block(0, dataFolds[k].startIndex, x.rows(), dataFolds[k].quantity);
+							x.block(0, dataFolds[k].startIndex, x.rows(), dataFolds[k].quantity);
 						filled += dataFolds[k].quantity;
 					}
 				}
@@ -221,7 +221,7 @@ namespace FT{
 				VectorXd actualValues(dataFolds[testIndex].quantity);
 		
 				testData << 
-					x.block(0, dataFolds[testIndex].startIndex, x.rows(), dataFolds[testIndex].quantity);
+				x.block(0, dataFolds[testIndex].startIndex,x.rows(),dataFolds[testIndex].quantity);
 				
 				for(k = 0; k < dataFolds[testIndex].quantity; k++)
 					actualValues(k) = y(dataFolds[testIndex].startIndex+k);
