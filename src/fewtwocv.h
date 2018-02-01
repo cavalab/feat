@@ -122,12 +122,16 @@ namespace FT{
     				for(auto &curfb : feedbackRange)
 						for(auto &curcr : crossRates)
 						{
+							
+							cout<<"Check1\n";
 							struct FewObjects curobj;
+							
 							curobj.obj.set_ml(curml);
 							curobj.obj.set_pop_size(curpop);
 							curobj.obj.set_generations(curgen);
 							curobj.obj.set_feedback(curfb);
 							curobj.obj.set_cross_rate(curcr);
+							curobj.obj.set_verbosity(0);
 								   				
     						curobj.score = 0;
     						

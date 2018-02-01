@@ -93,11 +93,7 @@ namespace FT{
             }
             
             /// set size of population 
-            void set_pop_size(int pop_size)
-            {
-            	params.pop_size = pop_size;
-            	p_pop->resize(params.pop_size,true);
-            }            
+            void set_pop_size(int pop_size){ params.pop_size = pop_size; }            
             
             /// set size of max generations              
             void set_generations(int gens){ params.gens = gens; }         

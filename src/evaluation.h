@@ -87,10 +87,7 @@ namespace FT{
             // assign F and aggregate fitness
             params.msg("Assigning fitness to " + pop.individuals[i].get_eqn(), 2);
             
-            #pragma omp critical
-            {
-            	assign_fit(pop.individuals[i],F,yhat,y,params);
-            }
+            assign_fit(pop.individuals[i],F,yhat,y,params);
                         
         }
 
