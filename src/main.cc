@@ -108,7 +108,7 @@ int main(int argc, char** argv){
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
     }
-    cout << "reading inputs ...";
+    //cout << "reading inputs ...";
     if(input.cmdOptionExists("-p"))
         fewtwo.set_pop_size(stoi(input.getCmdOption("-p")));
     if(input.cmdOptionExists("-g"))
@@ -127,8 +127,6 @@ int main(int argc, char** argv){
         fewtwo.set_survival(input.getCmdOption("-surv"));
     if(input.cmdOptionExists("-xr"))
         fewtwo.set_cross_rate(stof(input.getCmdOption("-xr")));
-   // if(input.cmdOptionExists("-otype"))
-   //     fewtwo.set_cross_rate(input.getCmdOption("-otype")[0]);
     if(input.cmdOptionExists("-ops"))
         fewtwo.set_functions(input.getCmdOption("-ops"));
     if(input.cmdOptionExists("-depth"))
@@ -171,17 +169,7 @@ int main(int argc, char** argv){
             std::cout << "setting binary endpoint\n";
                       
     }
-    
-    
-    //vector<string> ml;
-    //ml.push_back("LinearRidgeRegression");
-    //
-    //FewtwoCV validator(ml);
-    //
-    //validator.validate_data(X, y);
-    
-    
-    
+       
     fewtwo.set_dtypes(dtypes);
     
     cout << "fitting model...\n";
@@ -189,7 +177,7 @@ int main(int argc, char** argv){
     fewtwo.fit(X,y);
     
 
-    //cout << "done!\n";
+    cout << "done!\n";
 	
 	
     return 0;

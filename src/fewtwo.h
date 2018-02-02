@@ -42,13 +42,13 @@ using std::cout;
 //shogun initialization
 void __attribute__ ((constructor)) ctor()
 {
-    cout<< "INITIALIZING SHOGUN\n";
+    //cout<< "INITIALIZING SHOGUN\n";
     init_shogun_with_defaults();
 }
 
 void __attribute__ ((destructor))  dtor()
 {
-    cout<< "EXITING SHOGUN\n";
+    //cout<< "EXITING SHOGUN\n";
     exit_shogun();
 }
 
@@ -215,7 +215,7 @@ namespace FT{
             VectorXd predict(MatrixXd& X);        
             
             /// transform an input matrix using a program.                          
-            MatrixXd transform(const MatrixXd& X,  Individual *ind = 0);
+            MatrixXd transform(MatrixXd& X,  Individual *ind = 0);
             
             /// convenience function calls fit then predict.            
             VectorXd fit_predict(MatrixXd& X, VectorXd& y){ fit(X,y); return predict(X); } 
@@ -365,6 +365,11 @@ namespace FT{
         final_model(X,y);
         params.msg("best validation representation: " + best_ind.get_eqn(),1);
         params.msg("validation score: " + std::to_string(best_score), 1);
+
+        // write validation score to file
+        std::ofstream out_file; 
+        out_file.open("score.txt");
+        out_file << best_score ; 
     }
 
     void Fewtwo::final_model(MatrixXd& X, VectorXd& y)
@@ -397,7 +402,7 @@ namespace FT{
         best_ind.fitness = best_score;
     }
 
-    MatrixXd Fewtwo::transform(const MatrixXd& X, Individual *ind)
+    MatrixXd Fewtwo::transform(MatrixXd& X, Individual *ind)
     {
         /*!
          * Transforms input data according to ind or best ind, if ind is undefined.
@@ -408,16 +413,20 @@ namespace FT{
                 std::cerr << "You need to train a model using fit() before making predictions.\n";
                 throw;
             }
-            return best_ind.out(X,params);
+            normalize(X,params.dtypes);
+            MatrixXd Phi = best_ind.out(X,params);
+            normalize(Phi,best_ind.dtypes);
+            return Phi;
         }
-        return ind->out(X,params);
+        normalize(X,params.dtypes);
+        MatrixXd Phi = ind->out(X,params);
+        normalize(Phi,ind->dtypes);
+        return Phi;
     }
     
     VectorXd Fewtwo::predict(MatrixXd& X)
-    {
-        normalize(X);
+    {        
         MatrixXd Phi = transform(X);
-        normalize(Phi);
         auto PhiSG = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(Phi));
         SGVector<double> y_pred;
         if (params.classification && params.n_classes == 2)

@@ -218,8 +218,10 @@ namespace FT{
             else
                 set_dtypes(dtypes);
         }
-
-        normalize(X);   // normalize features 
+        if (dtypes.empty())
+            normalize(X,params.dtypes);   // normalize features 
+        else 
+            normalize(X,dtypes);
 
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
         //std::cout << "setting labels (n_classes = " << params.n_classes << ")\n"; 

@@ -242,7 +242,7 @@ namespace FT{
     }
     
     /// normalize matrix.
-    void normalize(MatrixXd& X)
+    void normalize(MatrixXd& X, const vector<char>& dtypes)
     {   
         // normalize features
         for (unsigned int i=0; i<X.rows(); ++i){
@@ -251,9 +251,12 @@ namespace FT{
                 X.row(i) = VectorXd::Zero(X.row(i).size());
                 continue;
             }
-            X.row(i) = X.row(i).array() - X.row(i).mean();
-            if (X.row(i).norm() > NEAR_ZERO)
-                X.row(i).normalize();
+            if (dtypes.at(i)!='b')   // skip binary rows
+            {
+                X.row(i) = X.row(i).array() - X.row(i).mean();
+                if (X.row(i).norm() > NEAR_ZERO)
+                    X.row(i).normalize();
+            }
         }
     }
 

@@ -100,10 +100,10 @@ namespace FT{
             vector<double> sw = softmax(w);
             for (unsigned i = 0; i<sw.size(); ++i)
                 term_weights.push_back(u + feedback*(sw[i]-u));
-            std::cout << "term weights: ";
+            string p= "term weights: ";
             for (auto tw : term_weights)
-                std::cout << tw << " ";
-            std::cout << "\n";
+                p += std::to_string(tw) + " ";
+            msg(p,2);
         }
         
         /// return shared pointer to a node based on the string passed
