@@ -39,9 +39,11 @@ namespace FT{
             /* Scoring functions */
 
             /// 1 - accuracy 
-            VectorXd accuracy(const VectorXd& y, const VectorXd& yhat)
+            VectorXd accuracy(const VectorXd& y, const VectorXd& yhat, bool reverse=true)
             {
-                return (yhat.cast<int>().array() != y.cast<int>().array()).cast<double>();
+                if (reverse)
+                    return (yhat.cast<int>().array() != y.cast<int>().array()).cast<double>();
+                return (yhat.cast<int>().array() == y.cast<int>().array()).cast<double>();
             }
             
             /// squared error
@@ -51,7 +53,8 @@ namespace FT{
             };
 
             /// 1 - balanced accuracy score
-            double bal_accuracy(const VectorXd& y, const VectorXd& yhat, unsigned n_classes);
+            double bal_accuracy(const VectorXd& y, const VectorXd& yhat, 
+                                vector<int> c=vector<int>(), bool reverse=true);
     };
     
     /////////////////////////////////////////////////////////////////////////////////// Definitions  
@@ -131,7 +134,7 @@ namespace FT{
         if (params.classification)  // use classification accuracy
         {
             F.col(ind.loc) = accuracy(y,yhat); 
-            ind.fitness = bal_accuracy(y,yhat,params.n_classes);
+            ind.fitness = bal_accuracy(y,yhat,params.classes);
         }
         else                        // use mean squared error
         {
@@ -142,32 +145,51 @@ namespace FT{
         params.msg("ind " + std::to_string(ind.loc) + " fitnes: " + std::to_string(ind.fitness),2);
     }
 
-    double Evaluation::bal_accuracy(const VectorXd& y, const VectorXd& yhat, unsigned n_classes)
+    double Evaluation::bal_accuracy(const VectorXd& y, const VectorXd& yhat, vector<int> c,
+                                    bool reverse)
     {
+        if (c.empty())  // determine unique class values
+        {
+            vector<double> uc = unique(y);
+            for (const auto& i : uc)
+                c.push_back(int(i));
+        }
          
         // sensitivity (TP) and specificity (TN)
-        vector<double> TP(n_classes,0.0), TN(n_classes, 0.0), P(n_classes,0.0), N(n_classes,0.0);
-        ArrayXd class_accuracies(n_classes);
+        vector<double> TP(c.size(),0.0), TN(c.size(), 0.0), P(c.size(),0.0), N(c.size(),0.0);
+        ArrayXd class_accuracies(c.size());
+       
         // get class counts
-        for (int i=0; i< n_classes; ++i)
+        
+        for (unsigned i=0; i< c.size(); ++i)
         {
-            P[i] = (y.array().cast<int>() == i).count();  // total positives for this class
-            N[i] = (y.array().cast<int>() != i).count();  // total negatives for this class
+            P.at(i) = (y.array().cast<int>() == c[i]).count();  // total positives for this class
+            N.at(i) = (y.array().cast<int>() != c[i]).count();  // total negatives for this class
         }
+        
 
-        for (unsigned i = 0; i < y.size(); ++i)
+        for (unsigned i = 0; i < y.rows(); ++i)
         {
             if (yhat(i) == y(i))                    // true positive
-                ++TP[y[i]];
-            for (unsigned j = 0; j < n_classes; ++i)
-                if ( y(i) != j && yhat(i) != j )    // true negative
-                    ++TN[j];    
+                ++TP.at(y(i) == -1 ? 0 : y(i));     // if-then ? accounts for -1 class encoding
+
+            for (unsigned j = 0; j < c.size(); ++j)
+                if ( y(i) !=c.at(j) && yhat(i) != c.at(j) )    // true negative
+                    ++TN.at(j);    
+            
         }
+
         // class-wise accuracy = 1/2 ( true positive rate + true negative rate)
-        for (unsigned i=0; i< n_classes; ++i)
+        for (unsigned i=0; i< c.size(); ++i){
             class_accuracies(i) = (TP[i]/P[i] + TN[i]/N[i])/2; 
-        
-        return 1.0 - class_accuracies.mean();
+           // std::cout << "TP(" << i << "): " << TP[i] << ", P[" << i << "]: " << P[i] << "\n";
+           // std::cout << "TN(" << i << "): " << TN[i] << ", N[" << i << "]: " << N[i] << "\n";
+           // std::cout << "class accuracy(" << i << "): " << class_accuracies(i) << "\n";
+        }
+        if (reverse)
+            return 1.0 - class_accuracies.mean();
+        else
+            return class_accuracies.mean();
     }
 }
 #endif

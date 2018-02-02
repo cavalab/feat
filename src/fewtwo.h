@@ -86,8 +86,7 @@ namespace FT{
                       p_sel( make_shared<Selection>(sel) ),
                       p_surv( make_shared<Selection>(surv, true) ),
                       p_eval( make_shared<Evaluation>() ),
-                      p_variation( make_shared<Variation>(cross_rate) )
-                      
+                      p_variation( make_shared<Variation>(cross_rate) )                      
             {
                 r.set_seed(random_state);
                 str_dim = "";
@@ -286,9 +285,11 @@ namespace FT{
             set_max_dim(ceil(stod(dimension)*X.cols()));
         }
         
+        params.check_ml();       
+
         if (params.classification)  // setup classification endpoint
-            params.set_n_classes(y);
-         
+            params.set_classes(y);
+                
         p_ml = make_shared<ML>(params); // intialize ML
 
         // split data into training and test sets
@@ -385,7 +386,7 @@ namespace FT{
         params.set_term_weights(p_ml->get_weights());
 
         if (params.classification)  // assign best score as balanced accuracy
-            best_score = p_eval->bal_accuracy(y, yhat, params.n_classes);
+            best_score = p_eval->bal_accuracy(y, yhat, params.classes);
         else                        // assign best score as MSE
             best_score = p_eval->se(y,yhat).mean();
         

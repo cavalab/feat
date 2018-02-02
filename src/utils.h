@@ -225,7 +225,7 @@ namespace FT{
     }
 
     /// return the softmax transformation of a vector.
-    template <class T>
+    template <typename T>
     vector<T> softmax(const vector<T>& w)
     {
         int x;
@@ -274,5 +274,23 @@ namespace FT{
             nans(i) = std::isnan(x(i));
         return nans;
 
+    }
+
+    /// returns unique elements in vector
+    template <typename T>
+    vector<T> unique(vector<T> w)   // note intentional copy
+    {
+        std::sort(w.begin(),w.end());
+        typename vector<T>::iterator it;
+        it = std::unique(w.begin(),w.end());
+        w.resize(std::distance(w.begin(), it));
+        return w;
+    }
+    /// returns unique elements in Eigen vector
+    template <typename T>
+    vector<T> unique(Matrix<T, Dynamic, 1> w)   // note intentional copy
+    {
+        vector<T> wv( w.data(), w.data()+w.rows());
+        return unique(wv);
     }
 } 

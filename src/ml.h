@@ -50,7 +50,6 @@ namespace FT{
                  */
                 
                 type = params.ml;
-                
                 auto prob_type = sh::EProblemType::PT_REGRESSION;
                 
                 if (params.classification)
@@ -219,13 +218,8 @@ namespace FT{
             else
                 set_dtypes(dtypes);
         }
-        //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " normalize features\n";
-        normalize(X); 
-        //X.rowwise().normalize();
-                // define shogun data
-        //if (params.verbosity > 1) 
 
-        //    std::cout << "thread " + std::to_string(omp_get_thread_num()) + " X: " << X << "\n"; 
+        normalize(X);   // normalize features 
 
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
         //std::cout << "setting labels (n_classes = " << params.n_classes << ")\n"; 
@@ -249,7 +243,7 @@ namespace FT{
         // *** Train the model ***
         
         params.msg("done.",2);
-        //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " get output\n";
+       
         //get output
         SGVector<double> y_pred; 
 

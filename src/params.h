@@ -39,6 +39,7 @@ namespace FT{
         vector<char> dtypes;                        ///< data types of input parameters
         double feedback;                            ///< strength of ml feedback on probabilities
         unsigned int n_classes;                     ///< number of classes for classification 
+        vector<int> classes;                        ///< class labels
 
         Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
                    char ot, int verbosity, string fs, unsigned int max_depth, 
@@ -57,11 +58,8 @@ namespace FT{
             dtypes(datatypes),
             otype(ot),
             feedback(fb)
-
         {
-            if (!ml.compare("LinearRidgeRegression") && classification)
-                ml = "LogisticRegression";
-        	set_verbosity(verbosity);
+            set_verbosity(verbosity);
             set_functions(fs);
             set_objectives(obj);
             updateSize();     
@@ -70,7 +68,16 @@ namespace FT{
         }
         
         ~Parameters(){}
-
+        
+        /// make sure ml choice is valid for problem type.
+        void check_ml()
+        {
+            if (!ml.compare("LinearRidgeRegression") && classification)
+            {
+                msg("Setting ML type to LR",2);
+                ml = "LR";            
+            }
+        }
         /// print message with verbosity control. 
         string msg(string m, int v, string sep="\n") const
         {
@@ -170,7 +177,7 @@ namespace FT{
 
         }
         /// sets the number of classes based on target vector y.
-        void set_n_classes(VectorXd& y);
+        void set_classes(VectorXd& y);
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
@@ -362,27 +369,24 @@ namespace FT{
         }
     }
 
-    void Parameters::set_n_classes(VectorXd& y)
+    void Parameters::set_classes(VectorXd& y)
     {
+        classes.clear();
         if ((y.array()==0 || y.array()==1).all()) 
-        {
-            n_classes = 2; 
+        {             
             if (!ml.compare("LR") || !ml.compare("SVM"))  // re-format y to have labels -1, 1
-                y = (y.cast<int>().array() == 0).select(-1.0,y);
-        }
-        else 
-        {
-            n_classes = 0;
-            vector<double> unique_values;
-            for (unsigned i =0; i<y.size(); ++i)
             {
-                if (!in(unique_values,y(i)))
-                {
-                    unique_values.push_back(y(i));
-                    ++n_classes;
-                }
+                y = (y.cast<int>().array() == 0).select(-1.0,y);
             }
         }
+        
+        // set class labels
+        vector<double> uc = unique(y);
+        for (auto i : uc)
+            classes.push_back(int(i)); 
+        
+        n_classes = classes.size();
+
         std::cout << "number of classes: " << n_classes << "\n";
     }
 }
