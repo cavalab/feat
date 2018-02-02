@@ -173,21 +173,21 @@ int main(int argc, char** argv){
     }
     
     
-    vector<string> ml;
-    ml.push_back("LinearRidgeRegression");
+    //vector<string> ml;
+    //ml.push_back("LinearRidgeRegression");
+    //
+    //FewtwoCV validator(ml);
+    //
+    //validator.validate_data(X, y);
     
-    FewtwoCV validator(ml);
-    
-    validator.validate_data(X, y);
     
     
-    /*
     fewtwo.set_dtypes(dtypes);
     
     cout << "fitting model...\n";
     
     fewtwo.fit(X,y);
-    */
+    
 
     //cout << "done!\n";
 	

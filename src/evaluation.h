@@ -36,7 +36,22 @@ namespace FT{
             void assign_fit(Individual& ind, MatrixXd& F, const VectorXd& yhat, const VectorXd& y,
                             const Parameters& params);       
             
+            /* Scoring functions */
 
+            /// 1 - accuracy 
+            VectorXd accuracy(const VectorXd& y, const VectorXd& yhat)
+            {
+                return (yhat.cast<int>().array() != y.cast<int>().array()).cast<double>();
+            }
+            
+            /// squared error
+            VectorXd se(const VectorXd& y, const VectorXd& yhat)
+            { 
+                return (yhat - y).array().pow(2); 
+            };
+
+            /// 1 - balanced accuracy score
+            double bal_accuracy(const VectorXd& y, const VectorXd& yhat, unsigned n_classes);
     };
     
     /////////////////////////////////////////////////////////////////////////////////// Definitions  
@@ -114,13 +129,45 @@ namespace FT{
         */ 
         assert(F.cols()>ind.loc);
         if (params.classification)  // use classification accuracy
-            F.col(ind.loc) = (yhat.cast<int>().array() != y.cast<int>().array()).cast<double>();
+        {
+            F.col(ind.loc) = accuracy(y,yhat); 
+            ind.fitness = bal_accuracy(y,yhat,params.n_classes);
+        }
         else                        // use mean squared error
-            F.col(ind.loc) = (yhat - y).array().pow(2);
-        
-        // set fitness to average 
-        ind.fitness = F.col(ind.loc).mean();
+        {
+            F.col(ind.loc) = se(y, yhat);
+            ind.fitness = F.col(ind.loc).mean();
+        }
+         
         params.msg("ind " + std::to_string(ind.loc) + " fitnes: " + std::to_string(ind.fitness),2);
+    }
+
+    double Evaluation::bal_accuracy(const VectorXd& y, const VectorXd& yhat, unsigned n_classes)
+    {
+         
+        // sensitivity (TP) and specificity (TN)
+        vector<double> TP(n_classes,0.0), TN(n_classes, 0.0), P(n_classes,0.0), N(n_classes,0.0);
+        ArrayXd class_accuracies(n_classes);
+        // get class counts
+        for (int i=0; i< n_classes; ++i)
+        {
+            P[i] = (y.array().cast<int>() == i).count();  // total positives for this class
+            N[i] = (y.array().cast<int>() != i).count();  // total negatives for this class
+        }
+
+        for (unsigned i = 0; i < y.size(); ++i)
+        {
+            if (yhat(i) == y(i))                    // true positive
+                ++TP[y[i]];
+            for (unsigned j = 0; j < n_classes; ++i)
+                if ( y(i) != j && yhat(i) != j )    // true negative
+                    ++TN[j];    
+        }
+        // class-wise accuracy = 1/2 ( true positive rate + true negative rate)
+        for (unsigned i=0; i< n_classes; ++i)
+            class_accuracies(i) = (TP[i]/P[i] + TN[i]/N[i])/2; 
+        
+        return 1.0 - class_accuracies.mean();
     }
 }
 #endif

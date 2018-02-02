@@ -245,6 +245,7 @@ namespace FT{
             Individual best_ind;                    ///< best individual
             /// method to fit inital ml model            
             void initial_model(MatrixXd& X, VectorXd& y);
+            /// fits final model to best transformation
             void final_model(MatrixXd& X, VectorXd& y);
     };
 
@@ -383,10 +384,10 @@ namespace FT{
         // set terminal weights based on model
         params.set_term_weights(p_ml->get_weights());
 
-        if (params.classification)  // assign best score as mean accuracy
-            best_score = (yhat.cast<int>().array() != y.cast<int>().array()).cast<double>().mean();
+        if (params.classification)  // assign best score as balanced accuracy
+            best_score = p_eval->bal_accuracy(y, yhat, params.n_classes);
         else                        // assign best score as MSE
-            best_score = (yhat-y).array().pow(2).mean();
+            best_score = p_eval->se(y,yhat).mean();
         
         // initialize best_ind to be all the features
         best_ind = Individual();
