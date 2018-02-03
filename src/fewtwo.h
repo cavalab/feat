@@ -90,6 +90,7 @@ namespace FT{
             {
                 r.set_seed(random_state);
                 str_dim = "";
+                name="";
             }
             
             /// set size of population 
@@ -155,6 +156,13 @@ namespace FT{
 
             ///set feedback
             void set_feedback(double fb){ params.feedback = fb;}
+
+            ///set name for files
+            void set_name(string s){name = s;}
+
+            /*                                                      
+             * getting functions
+             */
 
             ///return population size
             int get_pop_size(){ return params.pop_size; }
@@ -229,6 +237,7 @@ namespace FT{
             MatrixXd F;                 			///< matrix of fitness values for population
             MatrixXd F_v;                           ///< matrix of validation scores
             Timer timer;                            ///< start time of training
+            string name;                            ///< name to append to files
             // subclasses for main steps of the evolutionary computation routine
             shared_ptr<Population> p_pop;       	///< population of programs
             shared_ptr<Selection> p_sel;        	///< selection algorithm
@@ -303,7 +312,7 @@ namespace FT{
 
         // initial model on raw input
         params.msg("Fitting initial model", 1);
-        initial_model(X,y);
+        initial_model(X_t,y_t); // TODO: change to X_t, y_t
         params.msg("Initial score: " + std::to_string(best_score), 1);
 
         // initialize population 
@@ -361,15 +370,21 @@ namespace FT{
             initial_model(X_v, y_v);        // calculate baseline model validation score
             update_best();                  // get the best validation model
         }
-        // fit final model to best model
-        final_model(X,y);
+        
+        final_model(X,y);   // fit final model to best model
         params.msg("best validation representation: " + best_ind.get_eqn(),1);
         params.msg("validation score: " + std::to_string(best_score), 1);
 
         // write validation score to file
-        std::ofstream out_file; 
-        out_file.open("score.txt");
-        out_file << best_score ; 
+        std::ofstream out_score; 
+        out_score.open("score_" + name + ".txt");
+        out_score << best_score ;
+        out_score.close();
+        // write model to file
+        std::ofstream out_model; 
+        out_model.open("model_" + name + ".txt");
+        out_model << best_ind.get_eqn() ; 
+        out_model.close();
     }
 
     void Fewtwo::final_model(MatrixXd& X, VectorXd& y)
@@ -387,6 +402,13 @@ namespace FT{
         bool pass = true;
         VectorXd yhat = p_ml->out(X,y,params,pass);
 
+        std::ofstream init_out; 
+        init_out.open("init_out.txt");
+        init_out << yhat;
+        init_out.close();
+        //vector<double> yv(yhat.data(),yhat.data()+yhat.rows());
+        //for (auto i : yv) init_out << i << ",";
+        //std::cout << "\n";
         // set terminal weights based on model
         params.set_term_weights(p_ml->get_weights());
 

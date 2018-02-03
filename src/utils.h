@@ -201,7 +201,7 @@ namespace FT{
                           VectorXd& y_v, bool shuffle)
     {
         /* @params X: n_features x n_samples matrix of training data
-         * @params Y: n_samples vector of training labels
+         * @params y: n_samples vector of training labels
          * @params shuffle: whether or not to shuffle X and y
          * @returns X_t, X_v, y_t, y_v: training and validation matrices
          */
@@ -210,8 +210,9 @@ namespace FT{
             Eigen::PermutationMatrix<Dynamic,Dynamic> perm(X.cols());
             perm.setIdentity();
             r.shuffle(perm.indices().data(), perm.indices().data()+perm.indices().size());
+            //std::cout << "permutation matrix: " << perm << "\n";
             X = X * perm;       // shuffles columns of X
-            y = perm * y;       // shuffle y too  
+            y = (y.transpose() * perm).transpose() ;       // shuffle y too  
         }
         
         // map training and test sets  

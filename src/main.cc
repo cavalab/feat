@@ -105,6 +105,7 @@ int main(int argc, char** argv){
         cout << "--shuffle\tShuffle data before splitting into train/validate sets. (false)\n";
         cout << "-split\tFraction of data to use for training (0.75)\n";
         cout << "-f\tfeedback strength of ML on variation probabilities (0.5)\n";
+        cout << "-n\tname to append to files\n";
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
     }
@@ -143,7 +144,10 @@ int main(int argc, char** argv){
         fewtwo.set_split(std::stod(input.getCmdOption("-split")));
     if(input.cmdOptionExists("-f"))
         fewtwo.set_feedback(std::stod(input.getCmdOption("-f")));
-    cout << "done.\n";
+    if(input.cmdOptionExists("-n"))
+        fewtwo.set_name(input.getCmdOption("-n"));
+
+    //cout << "done.\n";
     ///////////////////////////////////////
 
     // read in dataset
@@ -171,7 +175,8 @@ int main(int argc, char** argv){
     }
        
     fewtwo.set_dtypes(dtypes);
-    
+     
+
     cout << "fitting model...\n";
     
     fewtwo.fit(X,y);

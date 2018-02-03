@@ -112,6 +112,10 @@ namespace FT{
                     //cout << "params.n_classes: " << params.n_classes << "\n";
                     if (params.n_classes == 2){
 	            	    p_est = make_shared<sh::CLibLinear>(sh::L2R_LR);
+                        // setting parameters to match sklearn defaults
+                        dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_compute_bias(true);
+                        dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_max_iterations(100);
+                        dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_epsilon(0.0001);
                         //cout << "set ml type to CLibLinear\n";
                     }
                     else    // multiclass 
@@ -133,7 +137,7 @@ namespace FT{
             // train ml model on X and return estimation y. 
             VectorXd out(MatrixXd& X, VectorXd& y, const Parameters& params, bool& pass,
                          const vector<char>& dtypes=vector<char>());
-            
+           
             // set data types (for tree-based methods)            
             void set_dtypes(const vector<char>& dtypes)
             {
