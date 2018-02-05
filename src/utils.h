@@ -304,7 +304,8 @@ namespace FT{
 	    }
 	    
 	    return dtypes;
-
+	}
+	
     /// returns unique elements in vector
     template <typename T>
     vector<T> unique(vector<T> w)   // note intentional copy
