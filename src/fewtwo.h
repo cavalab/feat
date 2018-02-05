@@ -42,13 +42,13 @@ using std::cout;
 //shogun initialization
 void __attribute__ ((constructor)) ctor()
 {
-    cout<< "INITIALIZING SHOGUN\n";
+    //cout<< "INITIALIZING SHOGUN\n";
     init_shogun_with_defaults();
 }
 
 void __attribute__ ((destructor))  dtor()
 {
-    cout<< "EXITING SHOGUN\n";
+    //cout<< "EXITING SHOGUN\n";
     exit_shogun();
 }
 
@@ -85,11 +85,11 @@ namespace FT{
                       p_sel( make_shared<Selection>(sel) ),
                       p_surv( make_shared<Selection>(surv, true) ),
                       p_eval( make_shared<Evaluation>() ),
-                      p_variation( make_shared<Variation>(cross_rate) )
-                      
+                      p_variation( make_shared<Variation>(cross_rate) )                      
             {
                 r.set_seed(random_state);
                 str_dim = "";
+                name="";
             }
             
             /// set size of population 
@@ -127,7 +127,7 @@ namespace FT{
                         
             /// set max depth of programs              
             void set_max_depth(unsigned int max_depth){ params.set_max_depth(max_depth); }
-            
+             
             /// set maximum dimensionality of programs              
             void set_max_dim(unsigned int max_dim){	params.set_max_dim(max_dim); }
             
@@ -151,6 +151,13 @@ namespace FT{
 
             ///set feedback
             void set_feedback(double fb){ params.feedback = fb;}
+
+            ///set name for files
+            void set_name(string s){name = s;}
+
+            /*                                                      
+             * getting functions
+             */
 
             ///return population size
             int get_pop_size(){ return params.pop_size; }
@@ -187,7 +194,10 @@ namespace FT{
             
             ///return boolean value of erc flag
             bool get_erc(){ return params.erc; }
-            
+           
+            /// get name
+            string get_name(){ return name; }
+
             ///return number of features
             int get_num_features(){ return params.num_features; }
             
@@ -214,7 +224,7 @@ namespace FT{
             VectorXd predict(MatrixXd& X);        
             
             /// transform an input matrix using a program.                          
-            MatrixXd transform(const MatrixXd& X,  Individual *ind = 0);
+            MatrixXd transform(MatrixXd& X,  Individual *ind = 0);
             
             /// convenience function calls fit then predict.            
             VectorXd fit_predict(MatrixXd& X, VectorXd& y){ fit(X,y); return predict(X); } 
@@ -222,12 +232,16 @@ namespace FT{
             /// convenience function calls fit then transform. 
             MatrixXd fit_transform(MatrixXd& X, VectorXd& y){ fit(X,y); return transform(X); }
                   
+            /// scoring function 
+            double score(MatrixXd& X, VectorXd& y);
+            
         private:
             // Parameters
             Parameters params;    					///< hyperparameters of Fewtwo 
             MatrixXd F;                 			///< matrix of fitness values for population
             MatrixXd F_v;                           ///< matrix of validation scores
             Timer timer;                            ///< start time of training
+            string name;                            ///< name to append to files
             // subclasses for main steps of the evolutionary computation routine
             shared_ptr<Population> p_pop;       	///< population of programs
             shared_ptr<Selection> p_sel;        	///< selection algorithm
@@ -243,6 +257,7 @@ namespace FT{
             Individual best_ind;                    ///< best individual
             /// method to fit inital ml model            
             void initial_model(MatrixXd& X, VectorXd& y);
+            /// fits final model to best transformation
             void final_model(MatrixXd& X, VectorXd& y);
     };
 
@@ -277,17 +292,19 @@ namespace FT{
             string dimension;
             dimension = str_dim.substr(0, str_dim.length() - 1);
             params.msg("STR DIM IS "+ dimension, 1);
-            params.msg("Cols are " + std::to_string(X.cols()), 1);
+            params.msg("Cols are " + std::to_string(X.rows()), 1);
             params.msg("Setting dimensionality as " + 
-                       std::to_string((int)(ceil(stod(dimension)*X.cols()))), 1);
-            set_max_dim(ceil(stod(dimension)*X.cols()));
+                       std::to_string((int)(ceil(stod(dimension)*X.rows()))), 1);
+            set_max_dim(ceil(stod(dimension)*X.rows()));
         }
         
+        params.check_ml();       
+
         if (params.classification)  // setup classification endpoint
-            params.set_n_classes(y);
+            params.set_classes(y);
          
         set_dtypes(find_dtypes(X));
-        
+
         p_ml = make_shared<ML>(params); // intialize ML
         p_pop = make_shared<Population>(params.pop_size);
 
@@ -302,9 +319,9 @@ namespace FT{
 
         // initial model on raw input
         params.msg("Fitting initial model", 1);
-        initial_model(X,y);
+        initial_model(X_t,y_t);  
         params.msg("Initial score: " + std::to_string(best_score), 1);
-
+        
         // initialize population 
         params.msg("Initializing population", 1);
         p_pop->init(best_ind,params);
@@ -316,15 +333,12 @@ namespace FT{
         // evaluate initial population
         params.msg("Evaluating initial population",1);
         p_eval->fitness(*p_pop,X_t,y_t,F,params);
-        
-     	//cout<<"F is "<<F<<"\n";
-        
+
         vector<size_t> survivors;
 
         // main generational loop
         for (unsigned int g = 0; g<params.gens; ++g)
-        {
-
+        {        
             // select parents
             params.msg("selection..", 2);
             vector<size_t> parents = p_sel->select(*p_pop, F, params);
@@ -362,10 +376,17 @@ namespace FT{
             initial_model(X_v, y_v);        // calculate baseline model validation score
             update_best();                  // get the best validation model
         }
-        // fit final model to best model
-        final_model(X,y);
+        
+        final_model(X,y);   // fit final model to best model
         params.msg("best validation representation: " + best_ind.get_eqn(),1);
         params.msg("validation score: " + std::to_string(best_score), 1);
+
+        
+        // write model to file
+        std::ofstream out_model; 
+        out_model.open("model_" + name + ".txt");
+        out_model << best_ind.get_eqn() ; 
+        out_model.close();
     }
 
     void Fewtwo::final_model(MatrixXd& X, VectorXd& y)
@@ -382,14 +403,14 @@ namespace FT{
          */
         bool pass = true;
         VectorXd yhat = p_ml->out(X,y,params,pass);
-
+ 
         // set terminal weights based on model
         params.set_term_weights(p_ml->get_weights());
 
-        if (params.classification)  // assign best score as mean accuracy
-            best_score = (yhat.cast<int>().array() != y.cast<int>().array()).cast<double>().mean();
+        if (params.classification)  // assign best score as balanced accuracy
+            best_score = p_eval->bal_accuracy(y, yhat, params.classes);
         else                        // assign best score as MSE
-            best_score = (yhat-y).array().pow(2).mean();
+            best_score = p_eval->se(y,yhat).mean();
         
         // initialize best_ind to be all the features
         best_ind = Individual();
@@ -398,7 +419,7 @@ namespace FT{
         best_ind.fitness = best_score;
     }
 
-    MatrixXd Fewtwo::transform(const MatrixXd& X, Individual *ind)
+    MatrixXd Fewtwo::transform(MatrixXd& X, Individual *ind)
     {
         /*!
          * Transforms input data according to ind or best ind, if ind is undefined.
@@ -409,23 +430,30 @@ namespace FT{
                 std::cerr << "You need to train a model using fit() before making predictions.\n";
                 throw;
             }
-            return best_ind.out(X,params);
+            normalize(X,params.dtypes);
+            MatrixXd Phi = best_ind.out(X,params);
+            normalize(Phi,best_ind.dtypes);
+            return Phi;
         }
-        return ind->out(X,params);
+        normalize(X,params.dtypes);
+        MatrixXd Phi = ind->out(X,params);
+        normalize(Phi,ind->dtypes);
+        return Phi;
     }
     
     VectorXd Fewtwo::predict(MatrixXd& X)
-    {
-        normalize(X);
+    {        
         MatrixXd Phi = transform(X);
-        normalize(Phi);
         auto PhiSG = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(Phi));
         SGVector<double> y_pred;
+        VectorXd yhat;
+
         if (params.classification && params.n_classes == 2)
         {
             auto tmp = p_ml->p_est->apply_binary(PhiSG);
             y_pred = tmp->get_labels();
             delete tmp;
+            
         }
         else if (params.classification)
         {
@@ -439,7 +467,15 @@ namespace FT{
             y_pred = tmp->get_labels();
             delete tmp;
         }
-        return Eigen::Map<VectorXd>(y_pred.data(),y_pred.size());
+        
+        yhat = Eigen::Map<VectorXd>(y_pred.data(),y_pred.size());
+        
+        if (!params.ml.compare("LR") || !params.ml.compare("SVM"))
+        {
+            // convert -1 labels to 0
+            yhat = (yhat.cast<int>().array() == -1).select(0,yhat);
+        }
+        return yhat;        
     }
 
     void Fewtwo::update_best()
@@ -454,7 +490,16 @@ namespace FT{
         }
  
     }
- 
+    
+    double Fewtwo::score(MatrixXd& X, VectorXd& y)
+    {
+        VectorXd yhat = predict(X);
+        
+        if (params.classification)
+            return p_eval->bal_accuracy(y,yhat,vector<int>(),false);
+        else
+            return p_eval->se(y,yhat).mean();
+    }
     void Fewtwo::print_stats(unsigned int g)
     {
         unsigned num_models = std::min(20,p_pop->size());

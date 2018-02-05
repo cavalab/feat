@@ -54,24 +54,13 @@ class InputParser{
          
 };
 
-//int main(int argc, char **argv){
-//    InputParser input(argc, argv);
-//    if(input.cmdOptionExists("-h")){
-//        // Do stuff
-//    }
-//    const std::string &filename = input.getCmdOption("-f");
-//    if (!filename.empty()){
-//        // Do interesting things ...
-//    }
-//    return 0;
-//}
-
 int main(int argc, char** argv){
     // runs FEWTWO from the command line.     
     
     Fewtwo fewtwo;
     std::string sep = ",";
-    
+    double split = 0.75;    // split of input data used to trian Fewtwo
+
     cout << "\n" << 
     "/////////////////////////////////////////////////////////////////////////////////////////////"
     << "\n" << 
@@ -104,11 +93,13 @@ int main(int argc, char** argv){
         cout << "-sep\tInput file separator / delimiter. Choices: , or ""\\\\t"" for tab (,)\n";
         cout << "--shuffle\tShuffle data before splitting into train/validate sets. (false)\n";
         cout << "-split\tFraction of data to use for training (0.75)\n";
+        cout << "-isplit\tInternal slit for Fewtwo's training procedure (0.75)\n";
         cout << "-f\tfeedback strength of ML on variation probabilities (0.5)\n";
+        cout << "-n\tname to append to files\n";
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
     }
-    cout << "reading inputs ...";
+    //cout << "reading inputs ...";
     if(input.cmdOptionExists("-p"))
         fewtwo.set_pop_size(stoi(input.getCmdOption("-p")));
     if(input.cmdOptionExists("-g"))
@@ -127,14 +118,18 @@ int main(int argc, char** argv){
         fewtwo.set_survival(input.getCmdOption("-surv"));
     if(input.cmdOptionExists("-xr"))
         fewtwo.set_cross_rate(stof(input.getCmdOption("-xr")));
-   // if(input.cmdOptionExists("-otype"))
-   //     fewtwo.set_cross_rate(input.getCmdOption("-otype")[0]);
     if(input.cmdOptionExists("-ops"))
         fewtwo.set_functions(input.getCmdOption("-ops"));
     if(input.cmdOptionExists("-depth"))
         fewtwo.set_max_depth(stoi(input.getCmdOption("-depth")));
     if(input.cmdOptionExists("-dim"))
-        fewtwo.set_max_dim(stoi(input.getCmdOption("-dim")));
+    {
+        string tmp = input.getCmdOption("-dim");
+        if (!tmp.substr(tmp.length()-1).compare("x") || !tmp.substr(tmp.length()-1).compare("X"))
+            fewtwo.set_max_dim(tmp);
+        else
+            fewtwo.set_max_dim(stoi(tmp));
+    }
     if(input.cmdOptionExists("-r"))
         fewtwo.set_random_state(stoi(input.getCmdOption("-r")));
     if(input.cmdOptionExists("-sep")) // separator
@@ -142,14 +137,18 @@ int main(int argc, char** argv){
     if(input.cmdOptionExists("--shuffle"))
         fewtwo.set_shuffle(true);
     if(input.cmdOptionExists("-split"))
-        fewtwo.set_split(std::stod(input.getCmdOption("-split")));
+        split = std::stod(input.getCmdOption("-split"));
+    if(input.cmdOptionExists("-isplit"))
+        fewtwo.set_split(std::stod(input.getCmdOption("-isplit")));
     if(input.cmdOptionExists("-f"))
         fewtwo.set_feedback(std::stod(input.getCmdOption("-f")));
-    cout << "done.\n";
+    if(input.cmdOptionExists("-n"))
+        fewtwo.set_name(input.getCmdOption("-n"));
+    
+    //cout << "done.\n";
     ///////////////////////////////////////
 
     // read in dataset
-    cout << "sep: " << sep << "\n";
     char delim;
     if (!sep.compare("\\t")) delim = '\t';
     else if (!sep.compare(",")) delim = ',';
@@ -163,6 +162,8 @@ int main(int argc, char** argv){
     
     cout << "load_csv...";
     FT::load_csv(input.dataset,X,y,names,dtypes,binary_endpoint,delim);
+    fewtwo.set_dtypes(dtypes);
+    
     if (binary_endpoint)
     {
         if (!fewtwo.get_classification())
@@ -171,13 +172,28 @@ int main(int argc, char** argv){
             std::cout << "setting binary endpoint\n";
                       
     }
-    
-    
+     
+    // split data into training and test sets
+    MatrixXd X_t(X.rows(),int(X.cols()*split));
+    MatrixXd X_v(X.rows(),int(X.cols()*(1-split)));
+    VectorXd y_t(int(y.size()*split)), y_v(int(y.size()*(1-split)));
+    FT::train_test_split(X,y,X_t,X_v,y_t,y_v,fewtwo.get_shuffle());      
+             
+
     cout << "fitting model...\n";
     
-    fewtwo.fit(X,y);
-    
+    fewtwo.fit(X_t,y_t);
 
+    cout << "generating prediction...\n";
+
+    double score = fewtwo.score(X_v,y_v);
+    
+    cout << "test score: " << score << "\n";
+    // write validation score to file
+    std::ofstream out_score; 
+    out_score.open("score_" + fewtwo.get_name() + ".txt");
+    out_score << score ;
+    out_score.close();
     cout << "done!\n";
 	
 	
