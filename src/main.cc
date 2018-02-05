@@ -133,7 +133,13 @@ int main(int argc, char** argv){
     if(input.cmdOptionExists("-depth"))
         fewtwo.set_max_depth(stoi(input.getCmdOption("-depth")));
     if(input.cmdOptionExists("-dim"))
-        fewtwo.set_max_dim(stoi(input.getCmdOption("-dim")));
+    {
+        string tmp = input.getCmdOption("-dim");
+        if (!tmp.substr(tmp.length()-1).compare("x") || !tmp.substr(tmp.length()-1).compare("X"))
+            fewtwo.set_max_dim(tmp);
+        else
+            fewtwo.set_max_dim(stoi(tmp));
+    }
     if(input.cmdOptionExists("-r"))
         fewtwo.set_random_state(stoi(input.getCmdOption("-r")));
     if(input.cmdOptionExists("-sep")) // separator

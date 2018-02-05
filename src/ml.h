@@ -84,7 +84,8 @@ namespace FT{
                     }
                     
                 }
-                else if (!type.compare("CART")){
+                else if (!type.compare("CART"))
+                {
                     p_est = make_shared<sh::CMyCARTree>();
                     dynamic_pointer_cast<sh::CMyCARTree>(p_est)->
                                                                set_machine_problem_type(prob_type);
@@ -114,7 +115,6 @@ namespace FT{
 	            	    p_est = make_shared<sh::CLibLinear>(sh::L2R_LR);
                         // setting parameters to match sklearn defaults
                         dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_compute_bias(true);
-                        dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_max_iterations(100);
                         dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_epsilon(0.0001);
                         //cout << "set ml type to CLibLinear\n";
                     }

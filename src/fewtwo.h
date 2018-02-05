@@ -132,7 +132,7 @@ namespace FT{
                         
             /// set max depth of programs              
             void set_max_depth(unsigned int max_depth){ params.set_max_depth(max_depth); }
-            
+             
             /// set maximum dimensionality of programs              
             void set_max_dim(unsigned int max_dim){	params.set_max_dim(max_dim); }
             
@@ -288,10 +288,10 @@ namespace FT{
             string dimension;
             dimension = str_dim.substr(0, str_dim.length() - 1);
             params.msg("STR DIM IS "+ dimension, 1);
-            params.msg("Cols are " + std::to_string(X.cols()), 1);
+            params.msg("Cols are " + std::to_string(X.rows()), 1);
             params.msg("Setting dimensionality as " + 
-                       std::to_string((int)(ceil(stod(dimension)*X.cols()))), 1);
-            set_max_dim(ceil(stod(dimension)*X.cols()));
+                       std::to_string((int)(ceil(stod(dimension)*X.rows()))), 1);
+            set_max_dim(ceil(stod(dimension)*X.rows()));
         }
         
         params.check_ml();       
@@ -312,9 +312,9 @@ namespace FT{
 
         // initial model on raw input
         params.msg("Fitting initial model", 1);
-        initial_model(X_t,y_t); // TODO: change to X_t, y_t
+        initial_model(X_t,y_t);  
         params.msg("Initial score: " + std::to_string(best_score), 1);
-
+        
         // initialize population 
         params.msg("Initializing population", 1);
         p_pop->init(best_ind,params);
@@ -326,13 +326,12 @@ namespace FT{
         // evaluate initial population
         params.msg("Evaluating initial population",1);
         p_eval->fitness(*p_pop,X_t,y_t,F,params);
-        
+       
         vector<size_t> survivors;
 
         // main generational loop
         for (unsigned int g = 0; g<params.gens; ++g)
-        {
-
+        {        
             // select parents
             params.msg("selection..", 2);
             vector<size_t> parents = p_sel->select(*p_pop, F, params);
@@ -401,14 +400,7 @@ namespace FT{
          */
         bool pass = true;
         VectorXd yhat = p_ml->out(X,y,params,pass);
-
-        std::ofstream init_out; 
-        init_out.open("init_out.txt");
-        init_out << yhat;
-        init_out.close();
-        //vector<double> yv(yhat.data(),yhat.data()+yhat.rows());
-        //for (auto i : yv) init_out << i << ",";
-        //std::cout << "\n";
+ 
         // set terminal weights based on model
         params.set_term_weights(p_ml->get_weights());
 

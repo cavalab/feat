@@ -182,9 +182,9 @@ namespace FT{
         // class-wise accuracy = 1/2 ( true positive rate + true negative rate)
         for (unsigned i=0; i< c.size(); ++i){
             class_accuracies(i) = (TP[i]/P[i] + TN[i]/N[i])/2; 
-            std::cout << "TP(" << i << "): " << TP[i] << ", P[" << i << "]: " << P[i] << "\n";
-            std::cout << "TN(" << i << "): " << TN[i] << ", N[" << i << "]: " << N[i] << "\n";
-            std::cout << "class accuracy(" << i << "): " << class_accuracies(i) << "\n";
+            //std::cout << "TP(" << i << "): " << TP[i] << ", P[" << i << "]: " << P[i] << "\n";
+            //std::cout << "TN(" << i << "): " << TN[i] << ", N[" << i << "]: " << N[i] << "\n";
+            //std::cout << "class accuracy(" << i << "): " << class_accuracies(i) << "\n";
         }
         if (reverse)
             return 1.0 - class_accuracies.mean();
