@@ -39,17 +39,19 @@ namespace FT{
         vector<char> dtypes;                        ///< data types of input parameters
         double feedback;                            ///< strength of ml feedback on probabilities
         unsigned int n_classes;                     ///< number of classes for classification 
+        float cross_rate;							///< cross rate for variation
         vector<int> classes;                        ///< class labels
 
         Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
-                   char ot, int verbosity, string fs, unsigned int max_depth, 
+                   char ot, int verbosity, string fs, float cr, unsigned int max_depth, 
                    unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
                    double fb, vector<char> datatypes = vector<char>()):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
             classification(classification),
-            max_stall(max_stall), 
+            max_stall(max_stall),
+            cross_rate(cr), 
             max_depth(max_depth),
             max_dim(max_dim),
             erc(constant),
@@ -95,11 +97,13 @@ namespace FT{
         void set_term_weights(const vector<double>& w)
         {           
             assert(w.size()==terminals.size()); 
+            string weights;
             double u = 1.0/double(w.size());
             term_weights.clear();
             vector<double> sw = softmax(w);
             for (unsigned i = 0; i<sw.size(); ++i)
                 term_weights.push_back(u + feedback*(sw[i]-u));
+
             string p= "term weights: ";
             for (auto tw : term_weights)
                 p += std::to_string(tw) + " ";

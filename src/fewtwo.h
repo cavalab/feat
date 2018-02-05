@@ -81,8 +81,7 @@ namespace FT{
                    double split=0.75, double fb=0.5):
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
-                             functions, max_depth, max_dim, erc, obj, shuffle, split, fb), 
-                      p_pop( make_shared<Population>(pop_size) ),
+                             functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, fb), 
                       p_sel( make_shared<Selection>(sel) ),
                       p_surv( make_shared<Selection>(surv, true) ),
                       p_eval( make_shared<Evaluation>() ),
@@ -94,11 +93,7 @@ namespace FT{
             }
             
             /// set size of population 
-            void set_pop_size(int pop_size)
-            {
-            	params.pop_size = pop_size;
-            	p_pop->resize(params.pop_size,true);
-            }            
+            void set_pop_size(int pop_size){ params.pop_size = pop_size; }            
             
             /// set size of max generations              
             void set_generations(int gens){ params.gens = gens; }         
@@ -122,7 +117,7 @@ namespace FT{
             void set_survival(string surv){ p_surv = make_shared<Selection>(surv, true); }
                         
             /// set cross rate in variation              
-            void set_cross_rate(float cross_rate){	p_variation->set_cross_rate(cross_rate); }
+            void set_cross_rate(float cross_rate){ params.cross_rate = cross_rate; p_variation->set_cross_rate(cross_rate); }
                         
             /// set program output type ('f', 'b')              
             void set_otype(char ot){ params.set_otype(ot); }
@@ -187,6 +182,9 @@ namespace FT{
             
             ///return max_depth of programs
             int get_max_depth(){ return params.max_depth; }
+            
+            ///return cross rate for variation
+            float get_cross_rate(){ return params.cross_rate; }
             
             ///return max size of programs
             int get_max_size(){ return params.max_size; }
@@ -304,8 +302,11 @@ namespace FT{
 
         if (params.classification)  // setup classification endpoint
             params.set_classes(y);
-                
+         
+        set_dtypes(find_dtypes(X));
+
         p_ml = make_shared<ML>(params); // intialize ML
+        p_pop = make_shared<Population>(params.pop_size);
 
         // split data into training and test sets
         MatrixXd X_t(X.rows(),int(X.cols()*params.split));
@@ -332,7 +333,7 @@ namespace FT{
         // evaluate initial population
         params.msg("Evaluating initial population",1);
         p_eval->fitness(*p_pop,X_t,y_t,F,params);
-       
+
         vector<size_t> survivors;
 
         // main generational loop
