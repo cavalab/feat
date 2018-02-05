@@ -173,13 +173,20 @@ int main(int argc, char** argv){
     }
     
     
-    cout << "fitting model...\n";
+    FewtwoCV validator;
+    
+    validator.fit(X, y);
+    
+    
+    
+    /*cout << "fitting model...\n";
     
     fewtwo.fit(X,y);
     
-
+    //fewtwo.fit(X,y);
+    
     cout << "done!\n";
-	
+	*/
 	
     return 0;
 
