@@ -196,7 +196,10 @@ namespace FT{
             
             ///return boolean value of erc flag
             bool get_erc(){ return params.erc; }
-            
+           
+            /// get name
+            string get_name(){ return name; }
+
             ///return number of features
             int get_num_features(){ return params.num_features; }
             
@@ -231,6 +234,9 @@ namespace FT{
             /// convenience function calls fit then transform. 
             MatrixXd fit_transform(MatrixXd& X, VectorXd& y){ fit(X,y); return transform(X); }
                   
+            /// scoring function 
+            double score(MatrixXd& X, VectorXd& y);
+            
         private:
             // Parameters
             Parameters params;    					///< hyperparameters of Fewtwo 
@@ -374,11 +380,7 @@ namespace FT{
         params.msg("best validation representation: " + best_ind.get_eqn(),1);
         params.msg("validation score: " + std::to_string(best_score), 1);
 
-        // write validation score to file
-        std::ofstream out_score; 
-        out_score.open("score_" + name + ".txt");
-        out_score << best_score ;
-        out_score.close();
+        
         // write model to file
         std::ofstream out_model; 
         out_model.open("model_" + name + ".txt");
@@ -443,11 +445,14 @@ namespace FT{
         MatrixXd Phi = transform(X);
         auto PhiSG = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(Phi));
         SGVector<double> y_pred;
+        VectorXd yhat;
+
         if (params.classification && params.n_classes == 2)
         {
             auto tmp = p_ml->p_est->apply_binary(PhiSG);
             y_pred = tmp->get_labels();
             delete tmp;
+            
         }
         else if (params.classification)
         {
@@ -461,7 +466,15 @@ namespace FT{
             y_pred = tmp->get_labels();
             delete tmp;
         }
-        return Eigen::Map<VectorXd>(y_pred.data(),y_pred.size());
+        
+        yhat = Eigen::Map<VectorXd>(y_pred.data(),y_pred.size());
+        
+        if (!params.ml.compare("LR") || !params.ml.compare("SVM"))
+        {
+            // convert -1 labels to 0
+            yhat = (yhat.cast<int>().array() == -1).select(0,yhat);
+        }
+        return yhat;        
     }
 
     void Fewtwo::update_best()
@@ -476,7 +489,16 @@ namespace FT{
         }
  
     }
- 
+    
+    double Fewtwo::score(MatrixXd& X, VectorXd& y)
+    {
+        VectorXd yhat = predict(X);
+        
+        if (params.classification)
+            return p_eval->bal_accuracy(y,yhat,vector<int>(),false);
+        else
+            return p_eval->se(y,yhat).mean();
+    }
     void Fewtwo::print_stats(unsigned int g)
     {
         unsigned num_models = std::min(20,p_pop->size());
