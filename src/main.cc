@@ -195,6 +195,12 @@ int main(int argc, char** argv){
     out_score.open("score_" + fewtwo.get_name() + ".txt");
     out_score << score ;
     out_score.close();
+    // write validation score to file
+    std::ofstream out_arc; 
+    out_score.open("arc_" + fewtwo.get_name() + ".txt");
+    out_score << fewtwo.get_eqns() ;
+    out_score.close();
+    
     cout << "done!\n";
 	
 	

@@ -215,7 +215,38 @@ namespace FT{
             ///return data types for input parameters
             vector<char> get_dtypes(){ return params.dtypes; }
 
+            ///return feedback setting
             double get_feedback(){ return params.feedback; }
+            
+            ///return population as string
+            string get_eqns(bool front=true)
+            {
+                string r="complexity,fitness,eqn\n";
+                if (front)  // only return individuals on the Pareto front
+                {
+                    // printing individuals from the pareto front
+                    unsigned n = 1;
+                    vector<size_t> f = p_pop->sorted_front(n);
+                   
+                    
+                    for (unsigned j = 0; j < f.size(); ++j)
+                    {          
+                        r += std::to_string(p_pop->individuals[f[j]].complexity()) + "," 
+                            + std::to_string((*p_pop)[f[j]].fitness) + "," 
+                            + p_pop->individuals[f[j]].get_eqn() + "\n";  
+                    }
+                }
+                else
+                {
+                    for (unsigned j = 0; j < params.pop_size; ++j)
+                    {          
+                        r += std::to_string(p_pop->individuals[j].complexity()) + "," 
+                            + std::to_string((*p_pop)[j].fitness) + "," 
+                            + p_pop->individuals[j].get_eqn() + "\n";  
+                    }
+                }
+                return r;
+            }
             /// destructor             
             ~Fewtwo(){} 
                         
