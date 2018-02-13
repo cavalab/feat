@@ -478,7 +478,8 @@ namespace FT{
         SGVector<double> y_pred;
         VectorXd yhat;
 
-        if (params.classification && params.n_classes == 2)
+        if (params.classification && params.n_classes == 2 && 
+                (!params.ml.compare("SVM") || !params.ml.compare("LR")))
         {
             auto tmp = p_ml->p_est->apply_binary(PhiSG);
             y_pred = tmp->get_labels();
@@ -500,11 +501,10 @@ namespace FT{
         
         yhat = Eigen::Map<VectorXd>(y_pred.data(),y_pred.size());
         
-        if (!params.ml.compare("LR") || !params.ml.compare("SVM"))
-        {
-            // convert -1 labels to 0
+        if (params.classification && (!params.ml.compare("LR") || !params.ml.compare("SVM")))
+            // convert -1 to 0
             yhat = (yhat.cast<int>().array() == -1).select(0,yhat);
-        }
+        
         return yhat;        
     }
 
@@ -532,7 +532,7 @@ namespace FT{
     }
     void Fewtwo::print_stats(unsigned int g)
     {
-        unsigned num_models = std::min(20,p_pop->size());
+        unsigned num_models = std::min(100,p_pop->size());
         double med_score = median(F.colwise().mean().array());  // median loss
         ArrayXd Sizes(p_pop->size()); unsigned i = 0;           // collect program sizes
         for (const auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;}
