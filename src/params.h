@@ -12,13 +12,13 @@ namespace FT{
     ////////////////////////////////////////////////////////////////////////////////// Declarations
     /*!
      * @class Parameters
-     * @brief holds the hyperparameters for Fewtwo. 
+     * @brief holds the hyperparameters for Feat. 
      */
     struct Parameters
     {
         int pop_size;                   			///< population size
         int gens;                       			///< max generations
-        string ml;                      			///< machine learner used with Fewtwo
+        string ml;                      			///< machine learner used with Feat
         bool classification;            			///< flag to conduct classification rather than 
         int max_stall;                  			///< maximum stall in learning, in generations
         vector<char> otypes;                     	///< program output types ('f', 'b')

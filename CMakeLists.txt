@@ -1,4 +1,4 @@
-# Fewtwo
+# Feat
 # copyright 2017 William La Cava 
 # license: GNU/GPL v3
 
@@ -8,7 +8,7 @@ cmake_minimum_required (VERSION 3.0)
 set (CMAKE_CXX_STANDARD 14)
 
 # project name
-project(Fewtwo)
+project(Feat)
 
 # add Eigen include paths
 find_package(Eigen3 REQUIRED NO_MODULE)
@@ -43,6 +43,6 @@ endif()
 file(GLOB_RECURSE src_files "src/*.cc")
 
 # executable
-add_executable(fewtwo ${src_files})
+add_executable(feat ${src_files})
 
-target_link_libraries(fewtwo shogun)
+target_link_libraries(feat shogun)

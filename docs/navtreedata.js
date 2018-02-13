@@ -1,6 +1,6 @@
 var NAVTREE =
 [
-  [ "FEW-two", "index.html", [
+  [ "Feat", "index.html", [
     [ "Install", "md_INSTALL.html", null ],
     [ "Contributing", "md_CONTRIBUTING.html", null ],
     [ "Examples", "md_examples_EXAMPLES.html", null ],
@@ -23,8 +23,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"db/d85/classFT_1_1NodeLessThan.html#afbfb507bf83f1ee5d98265f54cc09435",
-"df/d48/structshogun_1_1MyCARTreeNodeData.html#a4109bab773c5d688922143ec12b20ad7"
+"da/d77/classFT_1_1NodeConstant.html#aef2438111ac12fba619c9709e4470161",
+"de/d2c/structFT_1_1Parameters.html#aba5d0cd6fdeecbe77f560e202bbd1253"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['few_2dtwo',['FEW-two',['../index.html',1,'']]]
+  ['feat',['Feat',['../index.html',1,'']]]
 ];

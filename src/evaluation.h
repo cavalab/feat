@@ -17,7 +17,7 @@ namespace FT{
     ////////////////////////////////////////////////////////////////////////////////// Declarations
     /*!
      * @class Evaluation
-     * @brief evaluation mixin class for Fewtwo
+     * @brief evaluation mixin class for Feat
      */
     class Evaluation 
     {
@@ -124,7 +124,7 @@ namespace FT{
          *       F: n_samples x pop_size matrix of errors
          *       yhat: predicted output of ind
          *       y: true labels
-         *       params: fewtwo parameters
+         *       params: feat parameters
          *
          *  Output:
          *
