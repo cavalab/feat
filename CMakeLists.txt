@@ -11,13 +11,24 @@ set (CMAKE_CXX_STANDARD 14)
 project(Feat)
 
 # add Eigen include paths
-find_package(Eigen3 REQUIRED NO_MODULE)
-include_directories(${EIGEN3_INCLUDE_DIR})
+option(EIGEN_DIR "use Eigen environment variable" OFF)
+if (EIGEN_DIR)
+    include_directories("$ENV{EIGEN3_INCLUDE_DIR}")
+else()
+    find_package(Eigen3 REQUIRED NO_MODULE)
+    include_directories(${EIGEN3_INCLUDE_DIR})
+endif()
 
 # add Shogun includes
-find_package(Shogun REQUIRED NO_MODULE)
 # find Shogun library
 #find_library(Shogun REQUIRED NO_MODULE)
+option(SHOGUN_DIR "use environment Shogun paths" OFF)
+if (SHOGUN_DIR)
+    include_directories("$ENV{SHOGUN_DIR}")
+    link_directories("$ENV{SHOGUN_LIB}")
+else()
+    find_package(Shogun REQUIRED NO_MODULE)
+endif()
 
 # autocomplete for YouCompleteMe needs commands to be exported
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
