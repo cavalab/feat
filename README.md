@@ -9,6 +9,7 @@ performance for that method. Each individual in Feat's population is its own dat
 
 Feat uses the [Shogun C++ ML toolbox](http://shogun.ml) to fit models. 
 
+Check out the [documentation](https://lacava.github.io/feat) for installation and examples. 
 
 ## Acknowledgments
 
