@@ -48,13 +48,14 @@ export SHOGUN_DIR=/root/miniconda/include/
 
 #building and installing google tests
 # sudo apt-get install cmake
- sudo apt-get install libgtest-dev
-
+sudo apt-get install libgtest-dev
+old_path=$(pwd)
 cd /usr/src/gtest; pwd
 cmake CMakeLists.txt
 make
 cp *.a /usr/lib
-cd ; pwd
+cd $old_path; pwd
+
 echo "installing feat..."
 cd feat; pwd
 mkdir build;
@@ -62,7 +63,7 @@ cd build; pwd
 
 cmake -DEIGEN_DIR=ON -DSHOGUN_DIR=ON ..
 
-cd ..; pwd
+cd $pwd
 
 make -C build VERBOSE=1
 echo "running feat.."
@@ -70,8 +71,6 @@ echo "running feat.."
 #_________________________________________________________
 # tests
 cd tests; pwd
-mkdir build; 
-cd build;
-cmake ..
+cmake .
 make 
 ./runTests
