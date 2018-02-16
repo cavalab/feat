@@ -19,10 +19,10 @@ env:
     # should be limited to 4 on travis
     - OMP_NUM_THREADS=4
     # make cmake verbose
-    #- VERBOSE=1
+    - VERBOSE=1
     matrix:
     # test three different compilers
-    #- OUR_CXX='g++-5' OUR_CC='gcc-5' BUILD_TYPE='release'
+    - CXX='g++-5' CC='gcc-5' BUILD_TYPE='release'
     
 install: sh ci/.travis_install.sh
 
