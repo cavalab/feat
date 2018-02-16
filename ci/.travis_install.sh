@@ -33,6 +33,8 @@ chmod +x miniconda.sh && ./miniconda.sh -b
 export PATH=/root/miniconda/bin:$PATH
 conda update --yes conda
 conda install --yes -c conda-forge shogun-cpp
+export SHOGUN_LIB=/root/miniconda/lib/
+export SHOGUN_DIR=/root/miniconda/include/
 
 #building and installing google tests
 # sudo apt-get install cmake
@@ -48,7 +50,7 @@ cd feat; pwd
 mkdir build;
 cd build; pwd
 
-cmake -DEIGEN_DIR=ON ..
+cmake -DEIGEN_DIR=ON -DSHOGUN_DIR=ON ..
 
 cd ..; pwd
 
