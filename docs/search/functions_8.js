@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['ml',['ML',['../df/dfa/classFT_1_1ML.html#a142344083a0c371590e15471db3c5890',1,'FT::ML']]],
-  ['msg',['msg',['../de/d2c/structFT_1_1Parameters.html#a9963ea635d851c94859b30f2f2586f3a',1,'FT::Parameters']]],
-  ['mutate',['mutate',['../d3/d01/classFT_1_1Variation.html#aaae98d9952312c6a469fe731e54a730d',1,'FT::Variation']]]
+  ['init',['init',['../db/dff/classshogun_1_1CMyCARTree.html#a638888affdd879c8fbb415c47bb11376',1,'shogun::CMyCARTree::init()'],['../d9/ddc/structFT_1_1Population.html#a15021af496aefb86f570ffcb5ba30eb3',1,'FT::Population::init()']]],
+  ['init_5fdefaults',['init_defaults',['../db/d4e/classshogun_1_1CMulticlassLogisticRegression.html#a831754a9b786e6a57d8f79ffc18365b2',1,'shogun::CMulticlassLogisticRegression']]],
+  ['initial_5fmodel',['initial_model',['../db/dff/classFT_1_1Feat.html#a07f4ddb485a0e95606adaa316b7be3ce',1,'FT::Feat']]],
+  ['insert_5fmutate',['insert_mutate',['../d3/d01/classFT_1_1Variation.html#add2977e805db89e32d222f4c0e9741bf',1,'FT::Variation']]],
+  ['is_5flabel_5fvalid',['is_label_valid',['../db/dff/classshogun_1_1CMyCARTree.html#a2f750d8d327e05c7295bbbcad10b4cdf',1,'shogun::CMyCARTree']]]
 ];

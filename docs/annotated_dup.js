@@ -1,12 +1,15 @@
 var annotated_dup =
 [
     [ "FT", null, [
+      [ "BestParams", "d5/d1d/structFT_1_1BestParams.html", "d5/d1d/structFT_1_1BestParams" ],
       [ "Evaluation", "df/db3/classFT_1_1Evaluation.html", "df/db3/classFT_1_1Evaluation" ],
-      [ "Fewtwo", "dc/d9e/classFT_1_1Fewtwo.html", "dc/d9e/classFT_1_1Fewtwo" ],
-      [ "Individual", "df/d8a/structFT_1_1Individual.html", "df/d8a/structFT_1_1Individual" ],
+      [ "Feat", "db/dff/classFT_1_1Feat.html", "db/dff/classFT_1_1Feat" ],
+      [ "FeatCV", "df/de2/classFT_1_1FeatCV.html", "df/de2/classFT_1_1FeatCV" ],
+      [ "Individual", "d8/d25/classFT_1_1Individual.html", "d8/d25/classFT_1_1Individual" ],
       [ "Lexicase", "d8/d78/structFT_1_1Lexicase.html", "d8/d78/structFT_1_1Lexicase" ],
       [ "ML", "df/dfa/classFT_1_1ML.html", "df/dfa/classFT_1_1ML" ],
       [ "Node", "d3/daf/classFT_1_1Node.html", "d3/daf/classFT_1_1Node" ],
+      [ "Node2dGaussian", "d2/db5/classFT_1_1Node2dGaussian.html", "d2/db5/classFT_1_1Node2dGaussian" ],
       [ "NodeAdd", "dd/dec/classFT_1_1NodeAdd.html", "dd/dec/classFT_1_1NodeAdd" ],
       [ "NodeAnd", "dc/da3/classFT_1_1NodeAnd.html", "dc/da3/classFT_1_1NodeAnd" ],
       [ "NodeConstant", "da/d77/classFT_1_1NodeConstant.html", "da/d77/classFT_1_1NodeConstant" ],
@@ -16,6 +19,7 @@ var annotated_dup =
       [ "NodeEqual", "d9/d69/classFT_1_1NodeEqual.html", "d9/d69/classFT_1_1NodeEqual" ],
       [ "NodeExponent", "d8/dbf/classFT_1_1NodeExponent.html", "d8/dbf/classFT_1_1NodeExponent" ],
       [ "NodeExponential", "df/dfa/classFT_1_1NodeExponential.html", "df/dfa/classFT_1_1NodeExponential" ],
+      [ "NodeGaussian", "d3/df7/classFT_1_1NodeGaussian.html", "d3/df7/classFT_1_1NodeGaussian" ],
       [ "NodeGEQ", "d6/df3/classFT_1_1NodeGEQ.html", "d6/df3/classFT_1_1NodeGEQ" ],
       [ "NodeGreaterThan", "db/dff/classFT_1_1NodeGreaterThan.html", "db/dff/classFT_1_1NodeGreaterThan" ],
       [ "NodeIf", "d2/d99/classFT_1_1NodeIf.html", "d2/d99/classFT_1_1NodeIf" ],
@@ -23,15 +27,20 @@ var annotated_dup =
       [ "NodeLEQ", "d0/da3/classFT_1_1NodeLEQ.html", "d0/da3/classFT_1_1NodeLEQ" ],
       [ "NodeLessThan", "db/d85/classFT_1_1NodeLessThan.html", "db/d85/classFT_1_1NodeLessThan" ],
       [ "NodeLog", "db/def/classFT_1_1NodeLog.html", "db/def/classFT_1_1NodeLog" ],
+      [ "NodeLogit", "d2/d6a/classFT_1_1NodeLogit.html", "d2/d6a/classFT_1_1NodeLogit" ],
       [ "NodeMultiply", "d8/d7d/classFT_1_1NodeMultiply.html", "d8/d7d/classFT_1_1NodeMultiply" ],
       [ "NodeNot", "dd/d56/classFT_1_1NodeNot.html", "dd/d56/classFT_1_1NodeNot" ],
       [ "NodeOr", "d7/d13/classFT_1_1NodeOr.html", "d7/d13/classFT_1_1NodeOr" ],
       [ "NodeRoot", "db/da6/classFT_1_1NodeRoot.html", "db/da6/classFT_1_1NodeRoot" ],
+      [ "NodeSign", "d8/dd4/classFT_1_1NodeSign.html", "d8/dd4/classFT_1_1NodeSign" ],
       [ "NodeSin", "da/d1c/classFT_1_1NodeSin.html", "da/d1c/classFT_1_1NodeSin" ],
       [ "NodeSqrt", "d7/d49/classFT_1_1NodeSqrt.html", "d7/d49/classFT_1_1NodeSqrt" ],
       [ "NodeSquare", "d4/da1/classFT_1_1NodeSquare.html", "d4/da1/classFT_1_1NodeSquare" ],
+      [ "NodeStep", "d5/df4/classFT_1_1NodeStep.html", "d5/df4/classFT_1_1NodeStep" ],
       [ "NodeSubtract", "d1/d46/classFT_1_1NodeSubtract.html", "d1/d46/classFT_1_1NodeSubtract" ],
+      [ "NodeTanh", "d8/d18/classFT_1_1NodeTanh.html", "d8/d18/classFT_1_1NodeTanh" ],
       [ "NodeVariable", "d5/d06/classFT_1_1NodeVariable.html", "d5/d06/classFT_1_1NodeVariable" ],
+      [ "NodeXor", "d8/d3d/classFT_1_1NodeXor.html", "d8/d3d/classFT_1_1NodeXor" ],
       [ "Parameters", "de/d2c/structFT_1_1Parameters.html", "de/d2c/structFT_1_1Parameters" ],
       [ "Pareto", "de/d2e/structFT_1_1Pareto.html", "de/d2e/structFT_1_1Pareto" ],
       [ "Population", "d9/ddc/structFT_1_1Population.html", "d9/ddc/structFT_1_1Population" ],
@@ -40,6 +49,11 @@ var annotated_dup =
       [ "SelectionOperator", "d2/d3a/structFT_1_1SelectionOperator.html", "d2/d3a/structFT_1_1SelectionOperator" ],
       [ "Timer", "d3/d4e/classFT_1_1Timer.html", "d3/d4e/classFT_1_1Timer" ],
       [ "Variation", "d3/d01/classFT_1_1Variation.html", "d3/d01/classFT_1_1Variation" ]
+    ] ],
+    [ "shogun", null, [
+      [ "CMulticlassLogisticRegression", "db/d4e/classshogun_1_1CMulticlassLogisticRegression.html", "db/d4e/classshogun_1_1CMulticlassLogisticRegression" ],
+      [ "CMyCARTree", "db/dff/classshogun_1_1CMyCARTree.html", "db/dff/classshogun_1_1CMyCARTree" ],
+      [ "MyCARTreeNodeData", "df/d48/structshogun_1_1MyCARTreeNodeData.html", "df/d48/structshogun_1_1MyCARTreeNodeData" ]
     ] ],
     [ "InputParser", "de/d16/classInputParser.html", "de/d16/classInputParser" ]
 ];

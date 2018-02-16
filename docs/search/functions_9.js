@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['nodeconstant',['NodeConstant',['../da/d77/classFT_1_1NodeConstant.html#aef2438111ac12fba619c9709e4470161',1,'FT::NodeConstant::NodeConstant(bool &amp;v)'],['../da/d77/classFT_1_1NodeConstant.html#abb123d64eb73270a73218ad7b30d49e9',1,'FT::NodeConstant::NodeConstant(const double &amp;v)']]]
+  ['least_5fsquares_5fdeviation',['least_squares_deviation',['../db/dff/classshogun_1_1CMyCARTree.html#a950b666b0f2578b5a79a83db15634d59',1,'shogun::CMyCARTree']]],
+  ['limited',['limited',['../d3/daf/classFT_1_1Node.html#a6fcbaac7477521ce9ce56a85ef535db6',1,'FT::Node']]]
 ];

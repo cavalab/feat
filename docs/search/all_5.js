@@ -1,13 +1,19 @@
 var searchData=
 [
-  ['f',['F',['../dc/d9e/classFT_1_1Fewtwo.html#abb74a39226acd92bc818f231f3ea469b',1,'FT::Fewtwo']]],
-  ['f_5fv',['F_v',['../dc/d9e/classFT_1_1Fewtwo.html#a435533647c2bb17ba787133c2f819bb8',1,'FT::Fewtwo']]],
-  ['fewtwo',['Fewtwo',['../dc/d9e/classFT_1_1Fewtwo.html',1,'FT']]],
-  ['fewtwo',['Fewtwo',['../dc/d9e/classFT_1_1Fewtwo.html#ae2e46a8998e2fa230dac1a45ab7f0ed8',1,'FT::Fewtwo']]],
-  ['fit',['fit',['../dc/d9e/classFT_1_1Fewtwo.html#a652a785ec32021c8b0f93e27389547fa',1,'FT::Fewtwo']]],
-  ['fit_5fpredict',['fit_predict',['../dc/d9e/classFT_1_1Fewtwo.html#ab4464093d6a900464819d7c98e778712',1,'FT::Fewtwo']]],
-  ['fit_5ftransform',['fit_transform',['../dc/d9e/classFT_1_1Fewtwo.html#ab4fbeb79d69fb7dd9806f5c9e30414de',1,'FT::Fewtwo']]],
-  ['fitness',['fitness',['../df/d8a/structFT_1_1Individual.html#a4af553c06f662e1a53cba465247a63c3',1,'FT::Individual::fitness()'],['../df/db3/classFT_1_1Evaluation.html#ae2271be027127d34cb1595dcfe3a381c',1,'FT::Evaluation::fitness()']]],
+  ['f',['F',['../db/dff/classFT_1_1Feat.html#a79c174854ebad874115b6d2625fad7c9',1,'FT::Feat']]],
+  ['f_5fv',['F_v',['../db/dff/classFT_1_1Feat.html#a28308f4d3eea71af9e1bc78dab3f3689',1,'FT::Feat']]],
+  ['feat',['Feat',['../db/dff/classFT_1_1Feat.html#a3cdd03d97877763b0c9464da32a15f3b',1,'FT::Feat']]],
+  ['feat',['Feat',['../db/dff/classFT_1_1Feat.html',1,'FT']]],
+  ['featcv',['FeatCV',['../df/de2/classFT_1_1FeatCV.html',1,'FT']]],
+  ['feature_5fimportances',['feature_importances',['../db/dff/classshogun_1_1CMyCARTree.html#a188eb408001bb7d7d38bda4819a49ce8',1,'shogun::CMyCARTree']]],
+  ['feedback',['feedback',['../de/d2c/structFT_1_1Parameters.html#adace64c4fd209f05a0baf58b98f5b3ad',1,'FT::Parameters']]],
+  ['final_5fmodel',['final_model',['../db/dff/classFT_1_1Feat.html#a5893994ee44def0ad3409e9854a4aba6',1,'FT::Feat']]],
+  ['find_5fweakest_5falpha',['find_weakest_alpha',['../db/dff/classshogun_1_1CMyCARTree.html#ac89dad9e58da2371f65f4096a708155a',1,'shogun::CMyCARTree']]],
+  ['fit',['fit',['../db/dff/classFT_1_1Feat.html#a102b664eb50f27cb6e7e52c80d9e3a2e',1,'FT::Feat']]],
+  ['fit_5fpredict',['fit_predict',['../db/dff/classFT_1_1Feat.html#a0a0d71646c8501f62fe1b2a2946a34d0',1,'FT::Feat']]],
+  ['fit_5ftransform',['fit_transform',['../db/dff/classFT_1_1Feat.html#a05c2de71e136bd9a218075c725237c76',1,'FT::Feat']]],
+  ['fitness',['fitness',['../d8/d25/classFT_1_1Individual.html#a4af553c06f662e1a53cba465247a63c3',1,'FT::Individual::fitness()'],['../df/db3/classFT_1_1Evaluation.html#ae2271be027127d34cb1595dcfe3a381c',1,'FT::Evaluation::fitness()']]],
+  ['form_5ft1',['form_t1',['../db/dff/classshogun_1_1CMyCARTree.html#a4fa218866aa1bbbd73347819f201c17c',1,'shogun::CMyCARTree']]],
   ['functions',['functions',['../de/d2c/structFT_1_1Parameters.html#a7ef68e78453bbe1fd4d4d685494bcb6b',1,'FT::Parameters']]],
-  ['few_2dtwo',['FEW-two',['../index.html',1,'']]]
+  ['feat',['Feat',['../index.html',1,'']]]
 ];

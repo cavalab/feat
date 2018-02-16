@@ -18,8 +18,7 @@ using Eigen::ArrayXd;
 namespace FT{
 
     //////////////////////////////////////////////////////////////////////////////// Declarations
-   double NEAR_ZERO = 0.0000001;
-    /*!
+     /*!
      * @class Node
      * @brief Represents nodes in a program.
      */
@@ -47,8 +46,8 @@ namespace FT{
             ArrayXd limited(ArrayXd x)
             {
                 
-                x = (Eigen::isinf(x)).select(MAX_DBL,x);
-                x = (Eigen::isnan(x)).select(0,x);
+                x = (isinf(x)).select(MAX_DBL,x);
+                x = (isnan(x)).select(0,x);
                 //x = (x < MIN_DBL).select(MIN_DBL,x);
                 return x;
             };

@@ -13,12 +13,14 @@ using namespace Eigen;
 
 namespace FT{
  
+    double NEAR_ZERO = 0.0000001;
+
     /*!
      * load csv file into matrix. 
      */
     
     void load_csv (const std::string & path, MatrixXd& X, VectorXd& y, vector<string> names, 
-                   vector<char> &dtypes, char sep=',') 
+                   vector<char> &dtypes, bool& binary_endpoint, char sep=',') 
     {
         std::ifstream indata;
         indata.open(path);
@@ -72,6 +74,7 @@ namespace FT{
         assert(X.cols() == y.size() && "different numbers of samples in X and y");
         assert(X.rows() == names.size() && "header missing or incorrect number of feature names");
         
+        // get feature types (binary or continuous/categorical)
         int i, j;
         bool isBinary;
         for(i = 0; i < X.rows(); i++)
@@ -89,6 +92,8 @@ namespace FT{
             else
                 dtypes.push_back('f');
         }
+        // check if endpoint is binary
+        binary_endpoint = (y.array() == 0 || y.array() == 1).all();
         
        // cout<<"X^T is\n";
        // for (unsigned i=0; i< dtypes.size(); ++i)
@@ -141,7 +146,7 @@ namespace FT{
         //calculate absolute deviation from median
         ArrayXd dev(x.size());
         for (int i =0; i < x.size(); ++i)
-            dev(i) = abs(x(i) - x_median);
+            dev(i) = fabs(x(i) - x_median);
         // return median of the absolute deviation
         return median(dev);
     }
@@ -196,7 +201,7 @@ namespace FT{
                           VectorXd& y_v, bool shuffle)
     {
         /* @params X: n_features x n_samples matrix of training data
-         * @params Y: n_samples vector of training labels
+         * @params y: n_samples vector of training labels
          * @params shuffle: whether or not to shuffle X and y
          * @returns X_t, X_v, y_t, y_v: training and validation matrices
          */
@@ -205,8 +210,9 @@ namespace FT{
             Eigen::PermutationMatrix<Dynamic,Dynamic> perm(X.cols());
             perm.setIdentity();
             r.shuffle(perm.indices().data(), perm.indices().data()+perm.indices().size());
+            //std::cout << "permutation matrix: " << perm << "\n";
             X = X * perm;       // shuffles columns of X
-            y = perm * y;       // shuffle y too  
+            y = (y.transpose() * perm).transpose() ;       // shuffle y too  
         }
         
         // map training and test sets  
@@ -218,9 +224,10 @@ namespace FT{
 
     
     }
-    
-    template <class T>
-    vector<T> softmax(vector<T> w)
+
+    /// return the softmax transformation of a vector.
+    template <typename T>
+    vector<T> softmax(const vector<T>& w)
     {
         int x;
         T sum = 0;
@@ -233,5 +240,61 @@ namespace FT{
             w_new.push_back(exp(w[x])/sum);
             
         return w_new;
+    }
+    
+    /// normalize matrix.
+    void normalize(MatrixXd& X, const vector<char>& dtypes)
+    {   
+        // normalize features
+        for (unsigned int i=0; i<X.rows(); ++i){
+            if (std::isinf(X.row(i).norm()))
+            {
+                X.row(i) = VectorXd::Zero(X.row(i).size());
+                continue;
+            }
+            if (dtypes.at(i)!='b')   // skip binary rows
+            {
+                X.row(i) = X.row(i).array() - X.row(i).mean();
+                if (X.row(i).norm() > NEAR_ZERO)
+                    X.row(i).normalize();
+            }
+        }
+    }
+
+    /// returns true for elements of x that are infinite
+    ArrayXb isinf(const ArrayXd& x)
+    {
+        ArrayXb infs(x.size());
+        for (unsigned i =0; i < infs.size(); ++i)
+            infs(i) = std::isinf(x(i));
+        return infs;
+    }
+    
+    /// returns true for elements of x that are NaN
+    ArrayXb isnan(const ArrayXd& x)
+    {
+        ArrayXb nans(x.size());
+        for (unsigned i =0; i < nans.size(); ++i)
+            nans(i) = std::isnan(x(i));
+        return nans;
+
+    }
+
+    /// returns unique elements in vector
+    template <typename T>
+    vector<T> unique(vector<T> w)   // note intentional copy
+    {
+        std::sort(w.begin(),w.end());
+        typename vector<T>::iterator it;
+        it = std::unique(w.begin(),w.end());
+        w.resize(std::distance(w.begin(), it));
+        return w;
+    }
+    /// returns unique elements in Eigen vector
+    template <typename T>
+    vector<T> unique(Matrix<T, Dynamic, 1> w)   // note intentional copy
+    {
+        vector<T> wv( w.data(), w.data()+w.rows());
+        return unique(wv);
     }
 } 

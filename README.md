@@ -1,23 +1,24 @@
-# FEW-two
+# Feat
 
-**Few-two** is a feature engineering wrapper that wraps around the Shogun C++ machine learning 
-toolkit and interfaces with scikit-learn. Its purpose is to learn new representations of raw data 
+**Feat** is a feature engineering automation tool that learns new representations of raw data 
 to improve classifier and regressor performance. The underlying methods are based on Pareto 
 optimization and evolutionary computation to search the space of possible transformations.
 
-FEW-two is a completely different code base from [Few](https://lacava.github.io/few). The main
-differences are:
+Feat wraps around a user-chosen ML method and provides a set of representations that give the best 
+performance for that method. Each individual in Feat's population is its own data representation. 
 
- - Each individual in FEW-two is its own ML model + data representation, instead of one piece of an
-   overall model
- - FEW-two is pure c++
- - FEw-two uses the Shogun C++ ML toolbox instead of Scikit-learn
+Feat uses the [Shogun C++ ML toolbox](http://shogun.ml) to fit models. 
 
 
 ## Acknowledgments
 
-This method is being developed to study the genetic causes of human disease in the [Epistasis Lab
-at UPenn](http://epistasis.org). 
+This method is being developed to study human disease in the [Epistasis Lab
+at UPenn](http://epistasis.org) at the University of Pennsylvania. 
+
+## Authors
+
+William La Cava
+Tilak Raj Singh
 
 ## License
 

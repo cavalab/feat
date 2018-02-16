@@ -1,3 +1,13 @@
-\form#0:$ n $
-\form#1:$ k $
-\form#2:$ C(n) = c_n * (\sum_{a=1}^k C(a)) $
+\form#0:$T_max$
+\form#1:$R_\alpha(T)$
+\form#2:$R_\alpha(T)=R(T)+\alpha \times (numleaves)$
+\form#3:$\lambda_{i,j}$
+\form#4:$\lambda_{i,j} = \frac{min(P_L,P_R)-(1-P_{L_iL_j}-P_{R_iR_j})}{min(P_L,P_R)}$
+\form#5:$P_L$
+\form#6:$P_R$
+\form#7:$P_{L_iL_j}$
+\form#8:$P_{R_iR_j}$
+\form#9:$\alpha_k$
+\form#10:$ n $
+\form#11:$ k $
+\form#12:$ C(n) = c_n * (\sum_{a=1}^k C(a)) $

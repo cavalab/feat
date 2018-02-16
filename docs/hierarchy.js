@@ -1,12 +1,22 @@
 var hierarchy =
 [
+    [ "FT::BestParams", "d5/d1d/structFT_1_1BestParams.html", null ],
+    [ "CLinearMulticlassMachine", null, [
+      [ "shogun::CMulticlassLogisticRegression", "db/d4e/classshogun_1_1CMulticlassLogisticRegression.html", null ]
+    ] ],
     [ "FT::Pareto::comparator_obj", "d5/d3d/structFT_1_1Pareto_1_1comparator__obj.html", null ],
+    [ "CTreeMachine", null, [
+      [ "shogun::CMyCARTree", "db/dff/classshogun_1_1CMyCARTree.html", null ]
+    ] ],
     [ "FT::Evaluation", "df/db3/classFT_1_1Evaluation.html", null ],
-    [ "FT::Fewtwo", "dc/d9e/classFT_1_1Fewtwo.html", null ],
-    [ "FT::Individual", "df/d8a/structFT_1_1Individual.html", null ],
+    [ "FT::Feat", "db/dff/classFT_1_1Feat.html", null ],
+    [ "FT::FeatCV", "df/de2/classFT_1_1FeatCV.html", null ],
+    [ "FT::Individual", "d8/d25/classFT_1_1Individual.html", null ],
     [ "InputParser", "de/d16/classInputParser.html", null ],
     [ "FT::ML", "df/dfa/classFT_1_1ML.html", null ],
+    [ "shogun::MyCARTreeNodeData", "df/d48/structshogun_1_1MyCARTreeNodeData.html", null ],
     [ "FT::Node", "d3/daf/classFT_1_1Node.html", [
+      [ "FT::Node2dGaussian", "d2/db5/classFT_1_1Node2dGaussian.html", null ],
       [ "FT::NodeAdd", "dd/dec/classFT_1_1NodeAdd.html", null ],
       [ "FT::NodeAnd", "dc/da3/classFT_1_1NodeAnd.html", null ],
       [ "FT::NodeConstant", "da/d77/classFT_1_1NodeConstant.html", null ],
@@ -16,6 +26,7 @@ var hierarchy =
       [ "FT::NodeEqual", "d9/d69/classFT_1_1NodeEqual.html", null ],
       [ "FT::NodeExponent", "d8/dbf/classFT_1_1NodeExponent.html", null ],
       [ "FT::NodeExponential", "df/dfa/classFT_1_1NodeExponential.html", null ],
+      [ "FT::NodeGaussian", "d3/df7/classFT_1_1NodeGaussian.html", null ],
       [ "FT::NodeGEQ", "d6/df3/classFT_1_1NodeGEQ.html", null ],
       [ "FT::NodeGreaterThan", "db/dff/classFT_1_1NodeGreaterThan.html", null ],
       [ "FT::NodeIf", "d2/d99/classFT_1_1NodeIf.html", null ],
@@ -23,15 +34,20 @@ var hierarchy =
       [ "FT::NodeLEQ", "d0/da3/classFT_1_1NodeLEQ.html", null ],
       [ "FT::NodeLessThan", "db/d85/classFT_1_1NodeLessThan.html", null ],
       [ "FT::NodeLog", "db/def/classFT_1_1NodeLog.html", null ],
+      [ "FT::NodeLogit", "d2/d6a/classFT_1_1NodeLogit.html", null ],
       [ "FT::NodeMultiply", "d8/d7d/classFT_1_1NodeMultiply.html", null ],
       [ "FT::NodeNot", "dd/d56/classFT_1_1NodeNot.html", null ],
       [ "FT::NodeOr", "d7/d13/classFT_1_1NodeOr.html", null ],
       [ "FT::NodeRoot", "db/da6/classFT_1_1NodeRoot.html", null ],
+      [ "FT::NodeSign", "d8/dd4/classFT_1_1NodeSign.html", null ],
       [ "FT::NodeSin", "da/d1c/classFT_1_1NodeSin.html", null ],
       [ "FT::NodeSqrt", "d7/d49/classFT_1_1NodeSqrt.html", null ],
       [ "FT::NodeSquare", "d4/da1/classFT_1_1NodeSquare.html", null ],
+      [ "FT::NodeStep", "d5/df4/classFT_1_1NodeStep.html", null ],
       [ "FT::NodeSubtract", "d1/d46/classFT_1_1NodeSubtract.html", null ],
-      [ "FT::NodeVariable", "d5/d06/classFT_1_1NodeVariable.html", null ]
+      [ "FT::NodeTanh", "d8/d18/classFT_1_1NodeTanh.html", null ],
+      [ "FT::NodeVariable", "d5/d06/classFT_1_1NodeVariable.html", null ],
+      [ "FT::NodeXor", "d8/d3d/classFT_1_1NodeXor.html", null ]
     ] ],
     [ "FT::Parameters", "de/d2c/structFT_1_1Parameters.html", null ],
     [ "FT::Population", "d9/ddc/structFT_1_1Population.html", null ],

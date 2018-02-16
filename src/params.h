@@ -12,13 +12,13 @@ namespace FT{
     ////////////////////////////////////////////////////////////////////////////////// Declarations
     /*!
      * @class Parameters
-     * @brief holds the hyperparameters for Fewtwo. 
+     * @brief holds the hyperparameters for Feat. 
      */
     struct Parameters
     {
         int pop_size;                   			///< population size
         int gens;                       			///< max generations
-        string ml;                      			///< machine learner with which Fewtwo is paired
+        string ml;                      			///< machine learner used with Feat
         bool classification;            			///< flag to conduct classification rather than 
         int max_stall;                  			///< maximum stall in learning, in generations
         vector<char> otypes;                     	///< program output types ('f', 'b')
@@ -37,10 +37,14 @@ namespace FT{
         bool shuffle;                               ///< option to shuffle the data
         double split;                               ///< fraction of data to use for training
         vector<char> dtypes;                        ///< data types of input parameters
+        double feedback;                            ///< strength of ml feedback on probabilities
+        unsigned int n_classes;                     ///< number of classes for classification 
+        vector<int> classes;                        ///< class labels
 
         Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
                    char ot, int verbosity, string fs, unsigned int max_depth, 
-                   unsigned int max_dim, bool constant, string obj, bool sh, double sp, vector<char> datatypes = vector<char>()):    
+                   unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
+                   double fb, vector<char> datatypes = vector<char>()):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
@@ -52,17 +56,28 @@ namespace FT{
             shuffle(sh),
             split(sp),
             dtypes(datatypes),
-            otype(ot)
+            otype(ot),
+            feedback(fb)
         {
-        	set_verbosity(verbosity);
+            set_verbosity(verbosity);
             set_functions(fs);
             set_objectives(obj);
             updateSize();     
             set_otypes();
+            n_classes = 2;
         }
         
         ~Parameters(){}
-
+        
+        /// make sure ml choice is valid for problem type.
+        void check_ml()
+        {
+            if (!ml.compare("LinearRidgeRegression") && classification)
+            {
+                msg("Setting ML type to LR",2);
+                ml = "LR";            
+            }
+        }
         /// print message with verbosity control. 
         string msg(string m, int v, string sep="\n") const
         {
@@ -79,14 +94,16 @@ namespace FT{
         /// sets weights for terminals. 
         void set_term_weights(const vector<double>& w)
         {           
-            bool zeros = std::all_of(w.begin(), w.end(), [](int i) { return i==0; });
-            assert(w.size()==terminals.size());
-            //assert(!zeros);
-            term_weights = w;
-            std::cout << "term weights: ";
+            assert(w.size()==terminals.size()); 
+            double u = 1.0/double(w.size());
+            term_weights.clear();
+            vector<double> sw = softmax(w);
+            for (unsigned i = 0; i<sw.size(); ++i)
+                term_weights.push_back(u + feedback*(sw[i]-u));
+            string p= "term weights: ";
             for (auto tw : term_weights)
-                std::cout << tw << " ";
-            std::cout << "\n";
+                p += std::to_string(tw) + " ";
+            msg(p,2);
         }
         
         /// return shared pointer to a node based on the string passed
@@ -159,6 +176,8 @@ namespace FT{
             }
 
         }
+        /// sets the number of classes based on target vector y.
+        void set_classes(VectorXd& y);
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
@@ -186,6 +205,9 @@ namespace FT{
     		
     	else if (str.compare("cos") == 0)
     		return std::shared_ptr<Node>(new NodeCos());
+    		
+    	else if (str.compare("tanh")==0)
+            return std::shared_ptr<Node>(new NodeTanh());
     	   
         else if (str.compare("^2") == 0)
     		return std::shared_ptr<Node>(new NodeSquare());
@@ -198,9 +220,18 @@ namespace FT{
 
         else if (str.compare("exp") == 0)
     		return std::shared_ptr<Node>(new NodeExponential());
+    		
+    	else if (str.compare("gaussian")==0)
+            return std::shared_ptr<Node>(new NodeGaussian());
+        
+        else if (str.compare("2dgaussian")==0)
+            return std::shared_ptr<Node>(new Node2dGaussian());
 
         else if (str.compare("log") == 0)
     		return std::shared_ptr<Node>(new NodeLog());   
+    		
+    	else if (str.compare("logit")==0)
+            return std::shared_ptr<Node>(new NodeLogit());
 
         // logical operators
         else if (str.compare("and") == 0)
@@ -211,6 +242,9 @@ namespace FT{
    		
      	else if (str.compare("not") == 0)
     		return std::shared_ptr<Node>(new NodeNot());
+    		
+    	else if (str.compare("xor")==0)
+            return std::shared_ptr<Node>(new NodeXor());
    		
     	else if (str.compare("=") == 0)
     		return std::shared_ptr<Node>(new NodeEqual());
@@ -232,6 +266,12 @@ namespace FT{
         	
     	else if (str.compare("ite") == 0)
     		return std::shared_ptr<Node>(new NodeIfThenElse());
+    		
+    	else if (str.compare("step")==0)
+            return std::shared_ptr<Node>(new NodeStep());
+            
+        else if (str.compare("sign")==0)
+            return std::shared_ptr<Node>(new NodeSign());
 
         // variables and constants
          else if (str.compare("x") == 0)
@@ -327,6 +367,27 @@ namespace FT{
             objectives.push_back(token);
             obj.erase(0, pos + delim.length());
         }
+    }
+
+    void Parameters::set_classes(VectorXd& y)
+    {
+        classes.clear();
+        if ((y.array()==0 || y.array()==1).all()) 
+        {             
+            if (!ml.compare("LR") || !ml.compare("SVM"))  // re-format y to have labels -1, 1
+            {
+                y = (y.cast<int>().array() == 0).select(-1.0,y);
+            }
+        }
+        
+        // set class labels
+        vector<double> uc = unique(y);
+        for (auto i : uc)
+            classes.push_back(int(i)); 
+        
+        n_classes = classes.size();
+
+        std::cout << "number of classes: " << n_classes << "\n";
     }
 }
 #endif
