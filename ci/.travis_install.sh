@@ -1,13 +1,13 @@
 echo "ubuntu 14.04 runs cmake 2.8; we need cmake 3 or greater. installing..."
-curl -sSL https://cmake.org/files/v3.5/cmake-3.5.2-Linux-x86_64.tar.gz | sudo tar -xzC /opt
-export PATH=/opt/cmake-3.5.2-Linux-x86_64/bin/:$PATH
+curl -sSL https://cmake.org/files/v3.5/cmake-3.5.2-Linux-x86_64.tar.gz | tar -xz
+export PATH="$(pwd)"/cmake-3.5.2-Linux-x86_64/bin/:$PATH
 cmake --version
 
 #installing eigen 3
  #sudo wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz" -O- | sudo tar xvz -C /usr/include/
 echo "installing eigen..."
-sudo wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"
-sudo tar xzf 3.3.4.tar.gz 
+wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"
+tar xzf 3.3.4.tar.gz 
 mkdir eigen-3.3.4 
 mv eigen-eigen*/* eigen-3.3.4
 
