@@ -13,7 +13,7 @@ Feat uses the [Shogun C++ ML toolbox](http://shogun.ml) to fit models.
 ## Acknowledgments
 
 This method is being developed to study human disease in the [Epistasis Lab
-at UPenn](http://epistasis.org) at the University of Pennsylvania. 
+at UPenn](http://epistasis.org). 
 
 ## License
 
