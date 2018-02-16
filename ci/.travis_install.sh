@@ -11,7 +11,7 @@ sudo tar xzf 3.3.4.tar.gz
 mkdir eigen-3.3.4 
 mv eigen-eigen*/* eigen-3.3.4
 
-export EIGEN3_INCLUDE_DIR="eigen-3.3.4/"
+export EIGEN3_INCLUDE_DIR="$(pwd)/eigen-3.3.4/"
 
 #_______________________________________________
   
@@ -32,28 +32,28 @@ chmod +x miniconda.sh && ./miniconda.sh -b
 #export PATH=/home/travis/miniconda/bin:$PATH
 export PATH=/root/miniconda/bin:$PATH
 conda update --yes conda
-conda install -c conda-forge shogun-cpp
+conda install --yes -c conda-forge shogun-cpp
 
 #building and installing google tests
 # sudo apt-get install cmake
 # sudo apt-get install libgtest-dev
 
-pwd
 #cd /usr/src/gtest; pwd
 #sudo cmake CMakeLists.txt
 #sudo make
 #sudo cp *.a /usr/lib
 #cd /home/travis/build/lacava/feat; pwd
-cd feat;
+echo "installing feat..."
+cd feat; pwd
 mkdir build;
-cd build
+cd build; pwd
 
 cmake -DEIGEN_DIR=ON ..
 
-cd ..
+cd ..; pwd
 
 make -C build VERBOSE=1
-
+echo "running feat.."
 ./build/feat examples/d_enc.csv
 #_________________________________________________________
 
