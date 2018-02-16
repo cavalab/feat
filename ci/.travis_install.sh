@@ -1,3 +1,10 @@
+# install gcc 4.8
+echo "installing gcc 4.8..."
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+sudo apt-get update -qq
+if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
+if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+
 echo "ubuntu 14.04 runs cmake 2.8; we need cmake 3 or greater. installing..."
 curl -sSL https://cmake.org/files/v3.5/cmake-3.5.2-Linux-x86_64.tar.gz | tar -xz
 export PATH="$(pwd)"/cmake-3.5.2-Linux-x86_64/bin/:$PATH
