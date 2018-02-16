@@ -2,17 +2,17 @@ dist: trusty
 sudo: required
 language: cpp
   
-#addons:
-#  apt:
-#    sources:
+addons:
+  apt:
+    sources:
         # Newer GCC
         #- george-edison55-precise-backports
-        #- ubuntu-toolchain-r-test
-#    packages:
+        - ubuntu-toolchain-r-test
+    packages:
 #        - cmake 
 #        - cmake-data
 #        - gcc-5
-#        - g++-5
+        - g++-5
 
 env:
     global:

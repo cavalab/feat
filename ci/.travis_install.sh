@@ -1,12 +1,12 @@
 # install gcc 4.8
-echo "installing gcc 4.8..."
+#echo "installing gcc 4.8..."
 sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
 sudo apt-get update -qq
-#if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
-#if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+##if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
+##if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 sudo apt-get install -qq g++-4.8;
 export CXX="g++-4.8"
-g++ --version
+
 
 echo "ubuntu 14.04 runs cmake 2.8; we need cmake 3 or greater. installing..."
 curl -sSL https://cmake.org/files/v3.5/cmake-3.5.2-Linux-x86_64.tar.gz | tar -xz
@@ -48,13 +48,13 @@ export SHOGUN_DIR=/root/miniconda/include/
 
 #building and installing google tests
 # sudo apt-get install cmake
-# sudo apt-get install libgtest-dev
+ sudo apt-get install libgtest-dev
 
-#cd /usr/src/gtest; pwd
-#sudo cmake CMakeLists.txt
-#sudo make
-#sudo cp *.a /usr/lib
-#cd /home/travis/build/lacava/feat; pwd
+cd /usr/src/gtest; pwd
+cmake CMakeLists.txt
+make
+cp *.a /usr/lib
+cd ; pwd
 echo "installing feat..."
 cd feat; pwd
 mkdir build;
@@ -68,4 +68,10 @@ make -C build VERBOSE=1
 echo "running feat.."
 ./build/feat examples/d_enc.csv
 #_________________________________________________________
-
+# tests
+cd tests; pwd
+mkdir build; 
+cd build;
+cmake ..
+make 
+./runTests
