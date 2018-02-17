@@ -39,12 +39,12 @@ echo "installing shogun via conda..."
 wget http://repo.continuum.io/miniconda/Miniconda-3.9.1-Linux-x86_64.sh \
         -O miniconda.sh
 chmod +x miniconda.sh && ./miniconda.sh -b
-#export PATH=/home/travis/miniconda/bin:$PATH
-export PATH=/root/miniconda/bin:$PATH
+export PATH=/home/travis/miniconda/bin:$PATH
+#export PATH=/root/miniconda/bin:$PATH
 conda update --yes conda
 conda install --yes -c conda-forge shogun-cpp
-export SHOGUN_LIB=/root/miniconda/lib/
-export SHOGUN_DIR=/root/miniconda/include/
+export SHOGUN_LIB=/home/travis/miniconda/lib/
+export SHOGUN_DIR=/home/travis/miniconda/include/
 
 #building and installing google tests
 # sudo apt-get install cmake
@@ -68,8 +68,8 @@ make -C build VERBOSE=1
 echo "running feat.."
 ./build/feat examples/d_enc.csv
 #_________________________________________________________
-# tests
-cd tests; pwd
-cmake .
-make 
-./runTests
+## tests
+#cd tests; pwd
+#cmake .
+#make 
+#./runTests
