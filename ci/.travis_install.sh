@@ -22,7 +22,7 @@ mkdir eigen-3.3.4
 mv eigen-eigen*/* eigen-3.3.4
 
 export EIGEN3_INCLUDE_DIR="$(pwd)/eigen-3.3.4/"
-
+echo $EIGEN3_INCLUDE_DIR
 #_______________________________________________
   
 #installing shogun library
@@ -50,7 +50,8 @@ export SHOGUN_DIR=/home/travis/miniconda/include/
 # sudo apt-get install cmake
 sudo apt-get install libgtest-dev
 old_path=$(pwd)
-cd /usr/src/gtest; pwd
+echo "building google test"
+cd /usr/src/gtest; echo "changed to $(pwd)"
 cmake CMakeLists.txt
 make
 cp *.a /usr/lib
