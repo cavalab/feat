@@ -59,12 +59,12 @@ cd /usr/src/gtest; echo "changed to $(pwd)"
 echo "ls"
 ls
 #cat CMakeLists.txt
-mkdir build
-cd build
-cmake .. 
-make
+sudo mkdir build
+sudo cd build
+sudo cmake .. 
+sudo make
 echo "cp library to /usr/lib"
-cp *.a /usr/lib
+sudo cp *.a /usr/lib
 echo "back to $old_path.."
 cd $old_path; pwd
 
