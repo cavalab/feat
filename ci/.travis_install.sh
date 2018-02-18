@@ -56,6 +56,8 @@ echo "gtest_path set to $gtest_path"
 old_path=$(pwd)
 echo "building google test"
 cd /usr/src/gtest; echo "changed to $(pwd)"
+ls
+cat CMakeLists.txt
 cmake . 
 make
 cp *.a /usr/lib
