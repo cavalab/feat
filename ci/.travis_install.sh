@@ -76,12 +76,13 @@ echo "running cmake.."
 cmake ..
 make
 echo "copying library..."
-cp *.a ../../feat/tests/
+ls
+cp *.a ../../tests/
 
 echo "installing feat..."
-cd ../../feat; pwd
+cd ../..; pwd
 mkdir build;
-cd build; pwd
+cd build; pwd 
 
 cmake -DEIGEN_DIR=ON -DSHOGUN_DIR=ON ..
 
@@ -89,9 +90,3 @@ cd ..
 make -C build VERBOSE=1
 echo "running feat.."
 ./build/feat examples/d_enc.csv
-#_________________________________________________________
-## tests
-#cd tests; pwd
-#cmake .
-#make 
-#./runTests

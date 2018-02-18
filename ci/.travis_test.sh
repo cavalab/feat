@@ -1,4 +1,4 @@
 cd ./tests
-cmake .
+cmake -DEIGEN_DIR=ON -DSHOGUN_DIR=ON .
 make
 ./runTests
