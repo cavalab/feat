@@ -49,27 +49,37 @@ export SHOGUN_DIR=/home/travis/miniconda/include/
 #building and installing google tests
 # sudo apt-get install cmake
 echo "installing google test"
-sudo apt-get install libgtest-dev
-sudo dpkg -L libgtest-dev 
-#gtest_path=$(dpkg -L ligtest-dev | awk '{print $2}')
-#echo "gtest_path set to $gtest_path"
-old_path=$(pwd)
-echo "building google test.."
-cd /usr/src/gtest; echo "changed to $(pwd)"
-echo "ls"
-ls
-#cat CMakeLists.txt
-sudo mkdir build
-sudo cd build
-sudo cmake .. 
-sudo make
-echo "cp library to /usr/lib"
-sudo cp *.a /usr/lib
-echo "back to $old_path.."
-cd $old_path; pwd
+#sudo apt-get install libgtest-dev
+#sudo dpkg -L libgtest-dev 
+##gtest_path=$(dpkg -L ligtest-dev | awk '{print $2}')
+##echo "gtest_path set to $gtest_path"
+#old_path=$(pwd)
+#echo "building google test.."
+#cd /usr/src/gtest; echo "changed to $(pwd)"
+#echo "ls"
+#ls
+##cat CMakeLists.txt
+#sudo mkdir build
+#sudo cd build
+#sudo cmake .. 
+#sudo make
+#echo "cp library to /usr/lib"
+#sudo cp *.a /usr/lib
+#echo "back to $old_path.."
+#cd $old_path; pwd
+git clone https://github.com/google/googletest
+GTEST_DIR="$(pwd)/googletest"
+cd googletest
+mkdir build
+cd build
+echo "running cmake.."
+cmake ..
+make
+echo "copying library..."
+cp *.a ../../feat/tests/
 
 echo "installing feat..."
-cd feat; pwd
+cd ../../feat; pwd
 mkdir build;
 cd build; pwd
 
