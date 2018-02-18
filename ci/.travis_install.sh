@@ -49,7 +49,7 @@ export SHOGUN_DIR=/home/travis/miniconda/include/
 #building and installing google tests
 # sudo apt-get install cmake
 echo "installing google test"
-sudo apt-get install libgtest-dev
+apt-get install libgtest-dev
 dpkg -L libgtest-dev 
 gtest_path=$(dpkg -L ligtest-dev | awk '{print $2}')
 echo "gtest_path set to $gtest_path"
@@ -57,8 +57,10 @@ old_path=$(pwd)
 echo "building google test"
 cd /usr/src/gtest; echo "changed to $(pwd)"
 ls
-cat CMakeLists.txt
-sudo cmake . 
+#cat CMakeLists.txt
+mkdir build
+cd build
+cmake .. 
 make
 cp *.a /usr/lib
 cd $old_path; pwd
