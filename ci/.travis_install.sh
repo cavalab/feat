@@ -58,7 +58,7 @@ echo "building google test"
 cd /usr/src/gtest; echo "changed to $(pwd)"
 ls
 cat CMakeLists.txt
-cmake . 
+sudo cmake . 
 make
 cp *.a /usr/lib
 cd $old_path; pwd
