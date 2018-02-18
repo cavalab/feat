@@ -51,7 +51,7 @@ export SHOGUN_DIR=/home/travis/miniconda/include/
 echo "installing google test"
 sudo apt-get install libgtest-dev
 dpkg -L libgtest-dev 
-gtest_path=$(dpkg -L ligtest-dev | awk '{print $2}'
+gtest_path=$(dpkg -L ligtest-dev | awk '{print $2}')
 echo "gtest_path set to $gtest_path"
 old_path=$(pwd)
 echo "building google test"
