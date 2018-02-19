@@ -1,6 +1,7 @@
 var searchData=
 [
   ['gain',['gain',['../db/dff/classshogun_1_1CMyCARTree.html#a460df8bfb6a6719465ea1015600f8d7b',1,'shogun::CMyCARTree::gain(SGVector&lt; float64_t &gt; wleft, SGVector&lt; float64_t &gt; wright, SGVector&lt; float64_t &gt; wtotal, SGVector&lt; float64_t &gt; labels)'],['../db/dff/classshogun_1_1CMyCARTree.html#a301aa09c8de426452e84d4873d3f8207',1,'shogun::CMyCARTree::gain(const SGVector&lt; float64_t &gt; &amp;wleft, const SGVector&lt; float64_t &gt; &amp;wright, const SGVector&lt; float64_t &gt; &amp;wtotal)']]],
+  ['generationrange',['generationRange',['../df/de2/classFT_1_1FeatCV.html#a935e96e7528a4b6170664349b1c09418',1,'FT::FeatCV']]],
   ['gens',['gens',['../de/d2c/structFT_1_1Parameters.html#a7b17dbd6ccc8cbac4f38bde7b51629ce',1,'FT::Parameters']]],
   ['get_5fclassification',['get_classification',['../db/dff/classFT_1_1Feat.html#a2e33b26b7dab96a27a400ef063cfb6c2',1,'FT::Feat']]],
   ['get_5fcross_5frate',['get_cross_rate',['../d3/d01/classFT_1_1Variation.html#a327a0ac0f9770fe1a87823d7f9bee14b',1,'FT::Variation']]],
@@ -37,6 +38,6 @@ var searchData=
   ['get_5fverbosity',['get_verbosity',['../db/dff/classFT_1_1Feat.html#a0bc4bea99ec0c7312061d633e04e8d1b',1,'FT::Feat']]],
   ['get_5fweights',['get_weights',['../db/dff/classshogun_1_1CMyCARTree.html#a13249afc6623fd680c9128956d235f59',1,'shogun::CMyCARTree::get_weights()'],['../df/dfa/classFT_1_1ML.html#a27fa984d19c8826c2fcbe81edb6a3417',1,'FT::ML::get_weights()']]],
   ['get_5fz',['get_z',['../db/d4e/classshogun_1_1CMulticlassLogisticRegression.html#a664a6b7acf36210e8541febc0ddc6860',1,'shogun::CMulticlassLogisticRegression']]],
-  ['getcmdoption',['getCmdOption',['../de/d16/classInputParser.html#a4948d2aa6303f543f604b4d2f71030bb',1,'InputParser']]],
+  ['getcmdoption',['getCmdOption',['../de/d16/classInputParser.html#a4948d2aa6303f543f604b4d2f71030bb',1,'InputParser::getCmdOption(const std::string &amp;option) const '],['../de/d16/classInputParser.html#a4948d2aa6303f543f604b4d2f71030bb',1,'InputParser::getCmdOption(const std::string &amp;option) const ']]],
   ['gini_5fimpurity_5findex',['gini_impurity_index',['../db/dff/classshogun_1_1CMyCARTree.html#a64fe270e87afc7b6346012e03a8c8808',1,'shogun::CMyCARTree']]]
 ];

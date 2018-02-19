@@ -1,9 +1,10 @@
 <map id="FT::FeatCV" name="FT::FeatCV">
-<area shape="rect" id="node5" href="$db/dff/classFT_1_1Feat.html" title="main class for the Feat learner. " alt="" coords="1035,355,1107,381"/>
-<area shape="rect" id="node8" href="$de/d2c/structFT_1_1Parameters.html" title="holds the hyperparameters for Feat. " alt="" coords="698,204,811,231"/>
-<area shape="rect" id="node19" href="$d8/d25/classFT_1_1Individual.html" title="individual programs in the population " alt="" coords="704,407,805,433"/>
-<area shape="rect" id="node12" title="STL class. " alt="" coords="181,380,261,407"/>
-<area shape="rect" id="node24" href="$d5/d1d/structFT_1_1BestParams.html" title="FT::BestParams" alt="" coords="388,663,507,689"/>
-<area shape="rect" id="node13" title="STL class. " alt="" coords="5,373,132,414"/>
-<area shape="rect" id="node18" href="$d3/d4e/classFT_1_1Timer.html" title="class for timing things. " alt="" coords="715,153,794,180"/>
+<area shape="rect" id="node3" href="$dc/d9a/structFT_1_1DataFolds.html" title="structure contains indexes and number of data sets in each fold " alt="" coords="1195,13,1301,39"/>
+<area shape="rect" id="node5" href="$df/d04/structFT_1_1FeatObjects.html" title="FT::FeatObjects" alt="" coords="1189,349,1307,375"/>
+<area shape="rect" id="node6" href="$db/dff/classFT_1_1Feat.html" title="main class for the Feat learner. " alt="" coords="967,349,1039,375"/>
+<area shape="rect" id="node9" href="$de/d2c/structFT_1_1Parameters.html" title="holds the hyperparameters for Feat. " alt="" coords="698,375,811,402"/>
+<area shape="rect" id="node21" href="$d8/d25/classFT_1_1Individual.html" title="individual programs in the population " alt="" coords="704,426,805,453"/>
+<area shape="rect" id="node13" title="STL class. " alt="" coords="181,173,261,199"/>
+<area shape="rect" id="node14" title="STL class. " alt="" coords="5,165,132,207"/>
+<area shape="rect" id="node19" href="$d3/d4e/classFT_1_1Timer.html" title="class for timing things. " alt="" coords="715,578,794,605"/>
 </map>

@@ -23,8 +23,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"da/d77/classFT_1_1NodeConstant.html#aef2438111ac12fba619c9709e4470161",
-"de/d2c/structFT_1_1Parameters.html#aba5d0cd6fdeecbe77f560e202bbd1253"
+"db/d4e/classshogun_1_1CMulticlassLogisticRegression.html#a1b2770da7b9faa1992263603dfe37a32",
+"de/d2c/structFT_1_1Parameters.html#aace18d360f786428143860deb1531a86"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -2,7 +2,7 @@ var searchData=
 [
   ['pareto',['Pareto',['../de/d2e/structFT_1_1Pareto.html#a88069fd3f28240b8a5c53607f74ffae8',1,'FT::Pareto']]],
   ['point_5fmutate',['point_mutate',['../d3/d01/classFT_1_1Variation.html#a719266961099d87281761315e4c830d5',1,'FT::Variation']]],
-  ['predict',['predict',['../db/dff/classFT_1_1Feat.html#a53c438f9bdd679412b05dd26b24ac5ac',1,'FT::Feat']]],
+  ['predict',['predict',['../db/dff/classFT_1_1Feat.html#a53c438f9bdd679412b05dd26b24ac5ac',1,'FT::Feat::predict()'],['../df/de2/classFT_1_1FeatCV.html#a90947d62c32a75953d90ad68fed6ea7b',1,'FT::FeatCV::predict()']]],
   ['print_5fcross',['print_cross',['../d3/d01/classFT_1_1Variation.html#a1234f2de8297962f2f1668f137c4e89c',1,'FT::Variation']]],
   ['print_5fdata',['print_data',['../df/d48/structshogun_1_1MyCARTreeNodeData.html#ad47f35fda5b0dd3e64b1b5e204a90264',1,'shogun::MyCARTreeNodeData']]],
   ['print_5feqns',['print_eqns',['../d9/ddc/structFT_1_1Population.html#a436fe969119dd5dc8c1129df54360472',1,'FT::Population']]],

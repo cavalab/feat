@@ -8,6 +8,7 @@ var classFT_1_1Feat =
     [ "fit_predict", "db/dff/classFT_1_1Feat.html#a0a0d71646c8501f62fe1b2a2946a34d0", null ],
     [ "fit_transform", "db/dff/classFT_1_1Feat.html#a05c2de71e136bd9a218075c725237c76", null ],
     [ "get_classification", "db/dff/classFT_1_1Feat.html#a2e33b26b7dab96a27a400ef063cfb6c2", null ],
+    [ "get_cross_rate", "db/dff/classFT_1_1Feat.html#a9f53e90d2dbda34e11bc5c8b40750333", null ],
     [ "get_dtypes", "db/dff/classFT_1_1Feat.html#ab8f45e1b798ef3086e4e656aa65bc42e", null ],
     [ "get_eqns", "db/dff/classFT_1_1Feat.html#aacf69516a92c4f61fab96467f270f21d", null ],
     [ "get_erc", "db/dff/classFT_1_1Feat.html#add0aa7d497a0c6d9034d031747ec9345", null ],
