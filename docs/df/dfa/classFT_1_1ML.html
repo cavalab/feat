@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
-<title>FEW-two: FT::ML Class Reference</title>
+<title>Feat: FT::ML Class Reference</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../jquery.js"></script>
 <script type="text/javascript" src="../../dynsections.js"></script>
@@ -31,7 +31,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">FEW-two
+   <div id="projectname">Feat
    </div>
   </td>
  </tr>
@@ -114,7 +114,7 @@ $(document).ready(function(){initNavTree('df/dfa/classFT_1_1ML.html','../../');}
 </div><!--header-->
 <div class="contents">
 
-<p>class that specifies the machine learning algorithm to pair with <a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html" title="main class for the Fewtwo learner. ">Fewtwo</a>.  
+<p>class that specifies the machine learning algorithm to pair with <a class="el" href="../../db/dff/classFT_1_1Feat.html" title="main class for the Feat learner. ">Feat</a>.  
  <a href="../../df/dfa/classFT_1_1ML.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="../../d7/d60/ml_8h_source.html">ml.h</a>&gt;</code></p>
@@ -130,8 +130,8 @@ Collaboration diagram for FT::ML:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a142344083a0c371590e15471db3c5890"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#a142344083a0c371590e15471db3c5890">ML</a> (string ml, bool classification)</td></tr>
-<tr class="separator:a142344083a0c371590e15471db3c5890"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae46f491cb0656cf64334f76d5ac07b9a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#ae46f491cb0656cf64334f76d5ac07b9a">ML</a> (const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params)</td></tr>
+<tr class="separator:ae46f491cb0656cf64334f76d5ac07b9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27fa984d19c8826c2fcbe81edb6a3417"><td class="memItemLeft" align="right" valign="top">vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#a27fa984d19c8826c2fcbe81edb6a3417">get_weights</a> ()</td></tr>
 <tr class="separator:a27fa984d19c8826c2fcbe81edb6a3417"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8cb3834bdf99902fbb59e24a24f0cc7d"><td class="memItemLeft" align="right" valign="top">VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#a8cb3834bdf99902fbb59e24a24f0cc7d">out</a> (MatrixXd &amp;X, VectorXd &amp;y, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params, bool &amp;pass, const vector&lt; char &gt; &amp;dtypes=vector&lt; char &gt;())</td></tr>
@@ -143,16 +143,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_dtypes</b> (const
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:afd284d76c6d59afaae43d8446dc1f80d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afd284d76c6d59afaae43d8446dc1f80d"></a>
-shared_ptr&lt; sh::CMachine &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>p_est</b></td></tr>
+shared_ptr&lt; sh::CMachine &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#afd284d76c6d59afaae43d8446dc1f80d">p_est</a></td></tr>
+<tr class="memdesc:afd284d76c6d59afaae43d8446dc1f80d"><td class="mdescLeft">&#160;</td><td class="mdescRight">pointer to the <a class="el" href="../../df/dfa/classFT_1_1ML.html" title="class that specifies the machine learning algorithm to pair with Feat. ">ML</a> object <br /></td></tr>
 <tr class="separator:afd284d76c6d59afaae43d8446dc1f80d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff990a3a0b9d8135832b717262e8db5f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aff990a3a0b9d8135832b717262e8db5f"></a>
-string&#160;</td><td class="memItemRight" valign="bottom"><b>type</b></td></tr>
+string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#aff990a3a0b9d8135832b717262e8db5f">type</a></td></tr>
+<tr class="memdesc:aff990a3a0b9d8135832b717262e8db5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">user specified <a class="el" href="../../df/dfa/classFT_1_1ML.html" title="class that specifies the machine learning algorithm to pair with Feat. ">ML</a> type <br /></td></tr>
 <tr class="separator:aff990a3a0b9d8135832b717262e8db5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>class that specifies the machine learning algorithm to pair with <a class="el" href="../../dc/d9e/classFT_1_1Fewtwo.html" title="main class for the Fewtwo learner. ">Fewtwo</a>. </p>
+<div class="textblock"><p>class that specifies the machine learning algorithm to pair with <a class="el" href="../../db/dff/classFT_1_1Feat.html" title="main class for the Feat learner. ">Feat</a>. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a142344083a0c371590e15471db3c5890"></a>
+<a class="anchor" id="ae46f491cb0656cf64334f76d5ac07b9a"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -162,19 +164,9 @@ string&#160;</td><td class="memItemRight" valign="bottom"><b>type</b></td></tr>
         <tr>
           <td class="memname">FT::ML::ML </td>
           <td>(</td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>ml</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype">const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;&#160;</td>
+          <td class="paramname"><em>params</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>classification</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -183,7 +175,7 @@ string&#160;</td><td class="memItemRight" valign="bottom"><b>type</b></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>use string to specify a desired <a class="el" href="../../df/dfa/classFT_1_1ML.html" title="class that specifies the machine learning algorithm to pair with Fewtwo. ">ML</a> algorithm from shogun.</p>
+<p>use string to specify a desired <a class="el" href="../../df/dfa/classFT_1_1ML.html" title="class that specifies the machine learning algorithm to pair with Feat. ">ML</a> algorithm from shogun.</p>
 
 </div>
 </div>
@@ -248,7 +240,7 @@ string&#160;</td><td class="memItemRight" valign="bottom"><b>type</b></td></tr>
 <p>Trains ml on X, y to generate output yhat = f(X).</p>
 <p>Input: </p><pre class="fragment"> X: n_features x n_samples matrix
  y: n_samples vector of training labels
- params: fewtwo parameters
+ params: feat parameters
  ml: the ML model to be trained on X
 </pre><p>Output: </p><pre class="fragment"> yhat: n_samples vector of outputs
 </pre>

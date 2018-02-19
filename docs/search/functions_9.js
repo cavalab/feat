@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['ml',['ML',['../df/dfa/classFT_1_1ML.html#a142344083a0c371590e15471db3c5890',1,'FT::ML']]],
-  ['msg',['msg',['../de/d2c/structFT_1_1Parameters.html#abaae697a8ddcb9ddd5e2b190915151ee',1,'FT::Parameters']]],
-  ['mutate',['mutate',['../d3/d01/classFT_1_1Variation.html#aaae98d9952312c6a469fe731e54a730d',1,'FT::Variation']]],
-  ['mycartreenodedata',['MyCARTreeNodeData',['../df/d48/structshogun_1_1MyCARTreeNodeData.html#a4109bab773c5d688922143ec12b20ad7',1,'shogun::MyCARTreeNodeData']]]
+  ['least_5fsquares_5fdeviation',['least_squares_deviation',['../db/dff/classshogun_1_1CMyCARTree.html#a950b666b0f2578b5a79a83db15634d59',1,'shogun::CMyCARTree']]],
+  ['limited',['limited',['../d3/daf/classFT_1_1Node.html#a6fcbaac7477521ce9ce56a85ef535db6',1,'FT::Node']]]
 ];

@@ -37,7 +37,7 @@ namespace FT{
 	
 	/*!
      * @class ML
-     * @brief class that specifies the machine learning algorithm to pair with Fewtwo. 
+     * @brief class that specifies the machine learning algorithm to pair with Feat. 
      */
     class ML 
     {
@@ -50,7 +50,6 @@ namespace FT{
                  */
                 
                 type = params.ml;
-                
                 auto prob_type = sh::EProblemType::PT_REGRESSION;
                 
                 if (params.classification)
@@ -85,7 +84,8 @@ namespace FT{
                     }
                     
                 }
-                else if (!type.compare("CART")){
+                else if (!type.compare("CART"))
+                {
                     p_est = make_shared<sh::CMyCARTree>();
                     dynamic_pointer_cast<sh::CMyCARTree>(p_est)->
                                                                set_machine_problem_type(prob_type);
@@ -113,6 +113,9 @@ namespace FT{
                     //cout << "params.n_classes: " << params.n_classes << "\n";
                     if (params.n_classes == 2){
 	            	    p_est = make_shared<sh::CLibLinear>(sh::L2R_LR);
+                        // setting parameters to match sklearn defaults
+                        dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_compute_bias(true);
+                        dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_epsilon(0.0001);
                         //cout << "set ml type to CLibLinear\n";
                     }
                     else    // multiclass 
@@ -134,7 +137,7 @@ namespace FT{
             // train ml model on X and return estimation y. 
             VectorXd out(MatrixXd& X, VectorXd& y, const Parameters& params, bool& pass,
                          const vector<char>& dtypes=vector<char>());
-            
+           
             // set data types (for tree-based methods)            
             void set_dtypes(const vector<char>& dtypes)
             {
@@ -193,7 +196,7 @@ namespace FT{
          
          *       X: n_features x n_samples matrix
          *       y: n_samples vector of training labels
-         *       params: fewtwo parameters
+         *       params: feat parameters
          *       ml: the ML model to be trained on X
          
          *  Output:
@@ -219,13 +222,10 @@ namespace FT{
             else
                 set_dtypes(dtypes);
         }
-        //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " normalize features\n";
-        normalize(X); 
-        //X.rowwise().normalize();
-                // define shogun data
-        //if (params.verbosity > 1) 
-
-        //    std::cout << "thread " + std::to_string(omp_get_thread_num()) + " X: " << X << "\n"; 
+        if (dtypes.empty())
+            normalize(X,params.dtypes);   // normalize features 
+        else 
+            normalize(X,dtypes);
 
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
         //std::cout << "setting labels (n_classes = " << params.n_classes << ")\n"; 
@@ -249,7 +249,7 @@ namespace FT{
         // *** Train the model ***
         
         params.msg("done.",2);
-        //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " get output\n";
+       
         //get output
         SGVector<double> y_pred; 
 

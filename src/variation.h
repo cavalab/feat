@@ -77,7 +77,7 @@ namespace FT{
          *
          * @param   pop: current population
          * @param  	parents: indices of population to use for variation
-         * @param  	params: fewtwo parameters
+         * @param  	params: feat parameters
          *
          * @return  appends params.pop_size offspring derived from parent variation
          */

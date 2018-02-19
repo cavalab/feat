@@ -1,8 +1,11 @@
 var annotated_dup =
 [
     [ "FT", null, [
+      [ "DataFolds", "dc/d9a/structFT_1_1DataFolds.html", "dc/d9a/structFT_1_1DataFolds" ],
       [ "Evaluation", "df/db3/classFT_1_1Evaluation.html", "df/db3/classFT_1_1Evaluation" ],
-      [ "Fewtwo", "dc/d9e/classFT_1_1Fewtwo.html", "dc/d9e/classFT_1_1Fewtwo" ],
+      [ "Feat", "db/dff/classFT_1_1Feat.html", "db/dff/classFT_1_1Feat" ],
+      [ "FeatCV", "df/de2/classFT_1_1FeatCV.html", "df/de2/classFT_1_1FeatCV" ],
+      [ "FeatObjects", "df/d04/structFT_1_1FeatObjects.html", "df/d04/structFT_1_1FeatObjects" ],
       [ "Individual", "d8/d25/classFT_1_1Individual.html", "d8/d25/classFT_1_1Individual" ],
       [ "Lexicase", "d8/d78/structFT_1_1Lexicase.html", "d8/d78/structFT_1_1Lexicase" ],
       [ "ML", "df/dfa/classFT_1_1ML.html", "df/dfa/classFT_1_1ML" ],
@@ -49,8 +52,10 @@ var annotated_dup =
       [ "Variation", "d3/d01/classFT_1_1Variation.html", "d3/d01/classFT_1_1Variation" ]
     ] ],
     [ "shogun", null, [
+      [ "CMulticlassLogisticRegression", "db/d4e/classshogun_1_1CMulticlassLogisticRegression.html", "db/d4e/classshogun_1_1CMulticlassLogisticRegression" ],
       [ "CMyCARTree", "db/dff/classshogun_1_1CMyCARTree.html", "db/dff/classshogun_1_1CMyCARTree" ],
       [ "MyCARTreeNodeData", "df/d48/structshogun_1_1MyCARTreeNodeData.html", "df/d48/structshogun_1_1MyCARTreeNodeData" ]
     ] ],
+    [ "FewObjects", "d7/dfa/classFewObjects.html", null ],
     [ "InputParser", "de/d16/classInputParser.html", "de/d16/classInputParser" ]
 ];

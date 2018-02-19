@@ -1,11 +1,18 @@
 var hierarchy =
 [
+    [ "CLinearMulticlassMachine", null, [
+      [ "shogun::CMulticlassLogisticRegression", "db/d4e/classshogun_1_1CMulticlassLogisticRegression.html", null ]
+    ] ],
     [ "FT::Pareto::comparator_obj", "d5/d3d/structFT_1_1Pareto_1_1comparator__obj.html", null ],
     [ "CTreeMachine", null, [
       [ "shogun::CMyCARTree", "db/dff/classshogun_1_1CMyCARTree.html", null ]
     ] ],
+    [ "FT::DataFolds", "dc/d9a/structFT_1_1DataFolds.html", null ],
     [ "FT::Evaluation", "df/db3/classFT_1_1Evaluation.html", null ],
-    [ "FT::Fewtwo", "dc/d9e/classFT_1_1Fewtwo.html", null ],
+    [ "FT::Feat", "db/dff/classFT_1_1Feat.html", null ],
+    [ "FT::FeatCV", "df/de2/classFT_1_1FeatCV.html", null ],
+    [ "FT::FeatObjects", "df/d04/structFT_1_1FeatObjects.html", null ],
+    [ "FewObjects", "d7/dfa/classFewObjects.html", null ],
     [ "FT::Individual", "d8/d25/classFT_1_1Individual.html", null ],
     [ "InputParser", "de/d16/classInputParser.html", null ],
     [ "FT::ML", "df/dfa/classFT_1_1ML.html", null ],

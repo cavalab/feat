@@ -201,7 +201,7 @@ namespace FT{
                           VectorXd& y_v, bool shuffle)
     {
         /* @params X: n_features x n_samples matrix of training data
-         * @params Y: n_samples vector of training labels
+         * @params y: n_samples vector of training labels
          * @params shuffle: whether or not to shuffle X and y
          * @returns X_t, X_v, y_t, y_v: training and validation matrices
          */
@@ -210,8 +210,9 @@ namespace FT{
             Eigen::PermutationMatrix<Dynamic,Dynamic> perm(X.cols());
             perm.setIdentity();
             r.shuffle(perm.indices().data(), perm.indices().data()+perm.indices().size());
+            //std::cout << "permutation matrix: " << perm << "\n";
             X = X * perm;       // shuffles columns of X
-            y = perm * y;       // shuffle y too  
+            y = (y.transpose() * perm).transpose() ;       // shuffle y too  
         }
         
         // map training and test sets  
@@ -225,7 +226,7 @@ namespace FT{
     }
 
     /// return the softmax transformation of a vector.
-    template <class T>
+    template <typename T>
     vector<T> softmax(const vector<T>& w)
     {
         int x;
@@ -242,7 +243,11 @@ namespace FT{
     }
     
     /// normalize matrix.
+<<<<<<< HEAD
     void normalize(Map<MatrixXd>& X)
+=======
+    void normalize(MatrixXd& X, const vector<char>& dtypes)
+>>>>>>> master
     {   
         // normalize features
         for (unsigned int i=0; i<X.rows(); ++i){
@@ -251,9 +256,12 @@ namespace FT{
                 X.row(i) = VectorXd::Zero(X.row(i).size());
                 continue;
             }
-            X.row(i) = X.row(i).array() - X.row(i).mean();
-            if (X.row(i).norm() > NEAR_ZERO)
-                X.row(i).normalize();
+            if (dtypes.at(i)!='b')   // skip binary rows
+            {
+                X.row(i) = X.row(i).array() - X.row(i).mean();
+                if (X.row(i).norm() > NEAR_ZERO)
+                    X.row(i).normalize();
+            }
         }
     }
 
@@ -274,5 +282,49 @@ namespace FT{
             nans(i) = std::isnan(x(i));
         return nans;
 
+    }
+    
+    vector<char> find_dtypes(MatrixXd &X)
+    {
+    	int i, j;
+	    bool isBinary;
+	    
+	    vector<char> dtypes;
+	    
+	    for(i = 0; i < X.rows(); i++)
+	    {
+	        isBinary = true;
+	        //cout<<"Checking for column "<<i<<std::endl;
+	        for(j = 0; j < X.cols(); j++)
+	        {
+	            //cout<<"Value is "<<X(i, j)<<std::endl;
+	            if(X(i, j) != 0 && X(i, j) != 1)
+	                isBinary = false;
+	        }
+	        if(isBinary)
+	            dtypes.push_back('b');
+	        else
+	            dtypes.push_back('f');
+	    }
+	    
+	    return dtypes;
+	}
+	
+    /// returns unique elements in vector
+    template <typename T>
+    vector<T> unique(vector<T> w)   // note intentional copy
+    {
+        std::sort(w.begin(),w.end());
+        typename vector<T>::iterator it;
+        it = std::unique(w.begin(),w.end());
+        w.resize(std::distance(w.begin(), it));
+        return w;
+    }
+    /// returns unique elements in Eigen vector
+    template <typename T>
+    vector<T> unique(Matrix<T, Dynamic, 1> w)   // note intentional copy
+    {
+        vector<T> wv( w.data(), w.data()+w.rows());
+        return unique(wv);
     }
 } 

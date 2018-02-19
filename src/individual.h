@@ -175,7 +175,7 @@ namespace FT{
         /*!
          * @params X: n_features x n_samples data
          * @params y: target data
-         * @params: Fewtwo parameters
+         * @params: Feat parameters
          * @returns Phi: n_features x n_samples transformation
          */
 

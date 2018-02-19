@@ -1,9 +1,9 @@
 #!/bin/bash
 # ===
 # Configuration Options:
-# ./configure : builds a release version of fewtwo.
-# ./configure debug : builds a debug version of fewtwo.
-# ./configure profile: build a version of fewtwo use with profiling tools. 
+# ./configure : builds a release version of feat.
+# ./configure debug : builds a debug version of feat.
+# ./configure profile: build a version of feat use with profiling tools. 
 # ===
 if [ "$1" == "debug" ]; then
     rm -rf debug; mkdir debug; cd debug; 
@@ -12,6 +12,19 @@ if [ "$1" == "debug" ]; then
 elif [ "$1" == "profile" ]; then
     rm -rf profile; mkdir profile; cd profile;    
     cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS=-p -O2 ..
+    cd ..
+elif [ "$1" == "lpc" ] ; then
+    # set up LPC environment
+    module load cmake/3.3.2
+    module load gcc/5.2.0
+    export CC="/appl/gcc-5.2.0/bin/gcc"
+    export CXX="/appl/gcc-5.2.0/bin/g++"
+    export EIGEN3_INCLUDE_DIR="$HOME/eigen-3.3.4/"
+    export SHOGUN_DIR="$HOME/anaconda3/include/"
+    export SHOGUN_LIB="$HOME/anaconda3/lib/"
+#    export LD_LIBRARY_PATH="$HOME/anaconda/lib:$LD_LIBRARY_PATH"
+    rm -rf build; mkdir build; cd build; 
+    cmake -DEIGEN_DIR=ON -DSHOGUN_DIR=ON ..
     cd ..
 else
     rm -rf build; mkdir build; cd build; 

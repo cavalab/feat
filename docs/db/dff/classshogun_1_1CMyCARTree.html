@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
-<title>FEW-two: shogun::CMyCARTree Class Reference</title>
+<title>Feat: shogun::CMyCARTree Class Reference</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../jquery.js"></script>
 <script type="text/javascript" src="../../dynsections.js"></script>
@@ -31,7 +31,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">FEW-two
+   <div id="projectname">Feat
    </div>
   </td>
  </tr>
@@ -296,15 +296,15 @@ During the tree growing process, we recursively split a node into left child and
  <br />
 . </p>
 <p>COST-COMPLEXITY PRUNING : <br />
-The maximal tree, <img class="formulaInl" alt="$T_max$" src="../../form_3.png"/> grown during tree growing process is bound to overfit. Hence pruning becomes necessary. Cost-Complexity pruning yields a list of subtrees of varying depths using the complexity normalized resubstitution error, <img class="formulaInl" alt="$R_\alpha(T)$" src="../../form_4.png"/>. The resubstitution error R(T) is a measure of how well a decision tree fits the training data. This measure favours larger trees over smaller ones. However, complexity normalized resubstitution error, adds penalty for increased complexity and hence counters overfitting.<br />
- <img class="formulaInl" alt="$R_\alpha(T)=R(T)+\alpha \times (numleaves)$" src="../../form_5.png"/> <br />
+The maximal tree, <img class="formulaInl" alt="$T_max$" src="../../form_0.png"/> grown during tree growing process is bound to overfit. Hence pruning becomes necessary. Cost-Complexity pruning yields a list of subtrees of varying depths using the complexity normalized resubstitution error, <img class="formulaInl" alt="$R_\alpha(T)$" src="../../form_1.png"/>. The resubstitution error R(T) is a measure of how well a decision tree fits the training data. This measure favours larger trees over smaller ones. However, complexity normalized resubstitution error, adds penalty for increased complexity and hence counters overfitting.<br />
+ <img class="formulaInl" alt="$R_\alpha(T)=R(T)+\alpha \times (numleaves)$" src="../../form_2.png"/> <br />
 The best subtree among the list of subtrees can be chosen using cross validation or using best-fit in the test dataset. <br />
 cf. <a href="https://onlinecourses.science.psu.edu/stat557/node/93">https://onlinecourses.science.psu.edu/stat557/node/93</a> <br />
  <br />
  HANDLING MISSING VALUES : <br />
-While choosing the best split at a node, missing attribute values are left out. But data vectors with missing values of the best attribute chosen are sent to left child or right child using a surrogate split. A surrogate split is one that imitates the best split as closely as possible. While choosing a surrogate split, all splits alternative to the best split are scaned and the degree of closeness between the two is measured using a metric called predictive measure of association, <img class="formulaInl" alt="$\lambda_{i,j}$" src="../../form_6.png"/>. <br />
- <img class="formulaInl" alt="$\lambda_{i,j} = \frac{min(P_L,P_R)-(1-P_{L_iL_j}-P_{R_iR_j})}{min(P_L,P_R)}$" src="../../form_7.png"/> <br />
-where <img class="formulaInl" alt="$P_L$" src="../../form_8.png"/> and <img class="formulaInl" alt="$P_R$" src="../../form_9.png"/> are the node probabilities for the optimal split of node i into left and right nodes respectively, <img class="formulaInl" alt="$P_{L_iL_j}$" src="../../form_10.png"/> ( <img class="formulaInl" alt="$P_{R_iR_j}$" src="../../form_11.png"/> resp.) is the probability that both (optimal) node i and (surrogate) node j send an observation to the Left (Right resp.). <br />
+While choosing the best split at a node, missing attribute values are left out. But data vectors with missing values of the best attribute chosen are sent to left child or right child using a surrogate split. A surrogate split is one that imitates the best split as closely as possible. While choosing a surrogate split, all splits alternative to the best split are scaned and the degree of closeness between the two is measured using a metric called predictive measure of association, <img class="formulaInl" alt="$\lambda_{i,j}$" src="../../form_3.png"/>. <br />
+ <img class="formulaInl" alt="$\lambda_{i,j} = \frac{min(P_L,P_R)-(1-P_{L_iL_j}-P_{R_iR_j})}{min(P_L,P_R)}$" src="../../form_4.png"/> <br />
+where <img class="formulaInl" alt="$P_L$" src="../../form_5.png"/> and <img class="formulaInl" alt="$P_R$" src="../../form_6.png"/> are the node probabilities for the optimal split of node i into left and right nodes respectively, <img class="formulaInl" alt="$P_{L_iL_j}$" src="../../form_7.png"/> ( <img class="formulaInl" alt="$P_{R_iR_j}$" src="../../form_8.png"/> resp.) is the probability that both (optimal) node i and (surrogate) node j send an observation to the Left (Right resp.). <br />
 We use best surrogate split, 2nd best surrogate split and so on until all data points with missing attributes in a node have been sent to left/right child. If all possible surrogate splits are used up but some data points are still to be assigned left/right child, majority rule is used, ie. the data points are assigned the child where majority of data points have gone from the node. <br />
 cf. <a href="http://pic.dhe.ibm.com/infocenter/spssstat/v20r0m0/index.jsp?topic=%2Fcom.ibm.spss.statistics.help%2Falg_tree-cart.htm">http://pic.dhe.ibm.com/infocenter/spssstat/v20r0m0/index.jsp?topic=%2Fcom.ibm.spss.statistics.help%2Falg_tree-cart.htm</a> </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -2026,7 +2026,7 @@ cf. <a href="http://pic.dhe.ibm.com/infocenter/spssstat/v20r0m0/index.jsp?topic=
   </tr>
 </table>
 </div><div class="memdoc">
-<p>stores <img class="formulaInl" alt="$\alpha_k$" src="../../form_12.png"/> values evaluated in cost-complexity pruning </p>
+<p>stores <img class="formulaInl" alt="$\alpha_k$" src="../../form_9.png"/> values evaluated in cost-complexity pruning </p>
 
 </div>
 </div>

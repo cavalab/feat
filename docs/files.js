@@ -1,10 +1,12 @@
 var files =
 [
     [ "evaluation.h", "d3/df9/evaluation_8h_source.html", null ],
-    [ "fewtwo.h", "d7/d68/fewtwo_8h_source.html", null ],
+    [ "feat.h", "d3/dff/feat_8h_source.html", null ],
+    [ "featcv.h", "db/de9/featcv_8h_source.html", null ],
     [ "individual.h", "d5/d1f/individual_8h_source.html", null ],
     [ "lexicase.h", "d3/d12/lexicase_8h_source.html", null ],
     [ "ml.h", "d7/d60/ml_8h_source.html", null ],
+    [ "MulticlassLogisticRegression.h", "d4/dcc/MulticlassLogisticRegression_8h_source.html", null ],
     [ "MyCARTree.h", "d0/d7f/MyCARTree_8h_source.html", null ],
     [ "MyCARTreeNodeData.h", "de/d81/MyCARTreeNodeData_8h_source.html", null ],
     [ "node.h", "d1/d77/node_8h_source.html", null ],
