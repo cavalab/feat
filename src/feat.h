@@ -297,11 +297,7 @@ namespace FT{
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
     
-<<<<<<< HEAD:src/fewtwo.h
     void Fewtwo::fit(Map<MatrixXd>& X, Map<VectorXd>& y)
-=======
-    void Feat::fit(MatrixXd& X, VectorXd& y)
->>>>>>> master:src/feat.h
     {
         /*!
          *  Input:
@@ -427,22 +423,14 @@ namespace FT{
         out_model.close();
     }
 
-<<<<<<< HEAD:src/fewtwo.h
     void Fewtwo::final_model(Map<MatrixXd>& X, Map<VectorXd>& y)
-=======
-    void Feat::final_model(MatrixXd& X, VectorXd& y)
->>>>>>> master:src/feat.h
     {
         // fits final model to best tranformation found.
         bool pass = true;
         MatrixXd Phi = transform(X);
         VectorXd yhat = p_ml->out(Phi,y,params,pass,best_ind.dtypes);
     }
-<<<<<<< HEAD:src/fewtwo.h
     void Fewtwo::initial_model(Map<MatrixXd>& X, Map<VectorXd>& y)
-=======
-    void Feat::initial_model(MatrixXd& X, VectorXd& y)
->>>>>>> master:src/feat.h
     {
         /*!
          * fits an ML model to the raw data as a starting point.
@@ -464,7 +452,6 @@ namespace FT{
             best_ind.program.push_back(params.terminals[i]);
         best_ind.fitness = best_score;
     }
-<<<<<<< HEAD:src/fewtwo.h
     
     MatrixXd Fewtwo::transform(Map<MatrixXd>& X)
     {
@@ -477,10 +464,6 @@ namespace FT{
         return Phi;
     }
     MatrixXd Fewtwo::transform(Map<MatrixXd>& X, Individual *ind)
-=======
-
-    MatrixXd Feat::transform(MatrixXd& X, Individual *ind)
->>>>>>> master:src/feat.h
     {
         /*!
          * Transforms input data according to ind or best ind, if ind is undefined.
@@ -492,7 +475,6 @@ namespace FT{
                 std::cerr << "You need to train a model using fit() before making predictions.\n";
                 throw;
             }
-<<<<<<< HEAD:src/fewtwo.h
             MatrixXd Phi = best_ind.out(X,params);
             normalize(Phi);
             return Phi;
@@ -504,21 +486,6 @@ namespace FT{
     
     VectorXd Fewtwo::predict(Map<MatrixXd>& X)
     {
-=======
-            normalize(X,params.dtypes);
-            MatrixXd Phi = best_ind.out(X,params);
-            normalize(Phi,best_ind.dtypes);
-            return Phi;
-        }
-        normalize(X,params.dtypes);
-        MatrixXd Phi = ind->out(X,params);
-        normalize(Phi,ind->dtypes);
-        return Phi;
-    }
-    
-    VectorXd Feat::predict(MatrixXd& X)
-    {        
->>>>>>> master:src/feat.h
         MatrixXd Phi = transform(X);
         auto PhiSG = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(Phi));
         SGVector<double> y_pred;
