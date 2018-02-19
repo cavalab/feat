@@ -81,7 +81,7 @@ cd $old_path; pwd
 #cp ./googlemock/gtest/*.a /usr/lib
 
 echo "installing feat..."
-cd ../..; pwd
+#cd ../..; pwd
 mkdir build;
 cd build; pwd 
 
