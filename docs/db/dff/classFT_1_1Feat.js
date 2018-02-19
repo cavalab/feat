@@ -43,6 +43,7 @@ var classFT_1_1Feat =
     [ "set_max_stall", "db/dff/classFT_1_1Feat.html#afa4dfa9dcaf6e06a1b87eefe0a7e08dd", null ],
     [ "set_ml", "db/dff/classFT_1_1Feat.html#af72e593c2e2bf7bd49a05f128f551941", null ],
     [ "set_name", "db/dff/classFT_1_1Feat.html#af47926cf65703e6cc6f3ba9a5112ea46", null ],
+    [ "set_objectives", "db/dff/classFT_1_1Feat.html#a0166b613fa0d1969225fafa261f4f7cc", null ],
     [ "set_otype", "db/dff/classFT_1_1Feat.html#afd9d3a1a3a2f3c4ce7f7911b3a336f4a", null ],
     [ "set_pop_size", "db/dff/classFT_1_1Feat.html#a49dd79e97333eaf36f38f3dc3d35e1f7", null ],
     [ "set_random_state", "db/dff/classFT_1_1Feat.html#a4d6b2bd99950c8d6c7e53c9a04f41dbb", null ],
