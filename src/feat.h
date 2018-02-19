@@ -458,9 +458,9 @@ namespace FT{
         /*!
          * Transforms input data according to best ind
          */
-        normalize(X); 
+        normalize(X,params.dtypes); 
         MatrixXd Phi = best_ind.out(X,params);
-        normalize(Phi);
+        normalize(Phi,best_ind.dtypes);
         return Phi;
     }
     MatrixXd Feat::transform(Map<MatrixXd>& X, Individual *ind)
@@ -475,12 +475,14 @@ namespace FT{
                 std::cerr << "You need to train a model using fit() before making predictions.\n";
                 throw;
             }
+            normalize(X,params.dtypes);
             MatrixXd Phi = best_ind.out(X,params);
-            normalize(Phi);
+            normalize(Phi,best_ind.dtypes);
             return Phi;
         }
+        normalize(X,params.dtypes);
         MatrixXd Phi = ind->out(X,params);
-        normalize(Phi);
+        normalize(Phi,ind->dtypes);
         return Phi;
     }
     
