@@ -4,7 +4,7 @@ cmake_minimum_required (VERSION 3.0)
 set (CMAKE_CXX_STANDARD 14)
 
 # project name
-project(FewtwoTests)
+project(FeatTests)
 # add Eigen include paths
 option(EIGEN_DIR "use Eigen environment variable" OFF)
 if (EIGEN_DIR)
