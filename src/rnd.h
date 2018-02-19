@@ -118,7 +118,7 @@ namespace FT {
                  
                 if(w.size() == 0)
                 {   
-                    cout<<"random_choice() w.size() = 0\n";
+                    cout<<"random_choice() w.size() = 0 Calling random_choice(v)\n";
                     return random_choice(v);
                 }
                 else
