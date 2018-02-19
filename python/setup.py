@@ -22,16 +22,16 @@ finally:
 package_version = '0.0'
 
 setup(
-    name="Fewtwo",
+    name="Feat",
     author='William La Cava',
     author_email='williamlacava@gmail.com',
-    url = 'https://lacava.github.io/fewtwo',
-    download_url='https://github.com/lacava/fewtwo/releases/tag/'+package_version,
+    url = 'https://lacava.github.io/feat',
+    download_url='https://github.com/lacava/feat/releases/tag/'+package_version,
     license='GNU/GPLv3',
     description='Another feature engineering wrapper for ML.',
     zip_safe=True,
-    ext_modules = cythonize([Extension(name='fewtwo',
-       sources = ["fewtwo.pyx"],                 # our Cython source
+    ext_modules = cythonize([Extension(name='feat',
+       sources = ["feat.pyx"],                 # our Cython source
        include_dirs = ['../src/','/usr/include/eigen3/']+eigency.get_includes(include_eigen=False),
        extra_compile_args = ['-std=c++0x','-fopenmp','-Wno-sign-compare'],
        extra_link_args = ['-lshogun'],      

@@ -297,7 +297,7 @@ namespace FT{
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
     
-    void Fewtwo::fit(Map<MatrixXd>& X, Map<VectorXd>& y)
+    void Feat::fit(Map<MatrixXd>& X, Map<VectorXd>& y)
     {
         /*!
          *  Input:
@@ -423,14 +423,14 @@ namespace FT{
         out_model.close();
     }
 
-    void Fewtwo::final_model(Map<MatrixXd>& X, Map<VectorXd>& y)
+    void Feat::final_model(Map<MatrixXd>& X, Map<VectorXd>& y)
     {
         // fits final model to best tranformation found.
         bool pass = true;
         MatrixXd Phi = transform(X);
         VectorXd yhat = p_ml->out(Phi,y,params,pass,best_ind.dtypes);
     }
-    void Fewtwo::initial_model(Map<MatrixXd>& X, Map<VectorXd>& y)
+    void Feat::initial_model(Map<MatrixXd>& X, Map<VectorXd>& y)
     {
         /*!
          * fits an ML model to the raw data as a starting point.
@@ -453,7 +453,7 @@ namespace FT{
         best_ind.fitness = best_score;
     }
     
-    MatrixXd Fewtwo::transform(Map<MatrixXd>& X)
+    MatrixXd Feat::transform(Map<MatrixXd>& X)
     {
         /*!
          * Transforms input data according to best ind
@@ -463,7 +463,7 @@ namespace FT{
         normalize(Phi);
         return Phi;
     }
-    MatrixXd Fewtwo::transform(Map<MatrixXd>& X, Individual *ind)
+    MatrixXd Feat::transform(Map<MatrixXd>& X, Individual *ind)
     {
         /*!
          * Transforms input data according to ind or best ind, if ind is undefined.
@@ -484,7 +484,7 @@ namespace FT{
         return Phi;
     }
     
-    VectorXd Fewtwo::predict(Map<MatrixXd>& X)
+    VectorXd Feat::predict(Map<MatrixXd>& X)
     {
         MatrixXd Phi = transform(X);
         auto PhiSG = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(Phi));
