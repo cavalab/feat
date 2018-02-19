@@ -1,5 +1,7 @@
 # Feat
 
+[![Build Status](https://travis-ci.org/lacava/feat.svg?branch=master)](https://travis-ci.org/lacava/feat)
+
 **Feat** is a feature engineering automation tool that learns new representations of raw data 
 to improve classifier and regressor performance. The underlying methods are based on Pareto 
 optimization and evolutionary computation to search the space of possible transformations.
