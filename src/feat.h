@@ -187,6 +187,7 @@ namespace FT{
             ///return max_depth of programs
             int get_max_depth(){ return params.max_depth; }
             
+            ///return cross rate for variation
             float get_cross_rate(){ return params.cross_rate; }
             
             ///return max size of programs
@@ -367,7 +368,6 @@ namespace FT{
         // evaluate initial population
         params.msg("Evaluating initial population",1);
         p_eval->fitness(*p_pop,X_t,y_t,F,params);
-       
         vector<size_t> survivors;
 
         // main generational loop
