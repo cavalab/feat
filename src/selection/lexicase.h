@@ -61,12 +61,7 @@ namespace FT{
 
         // individual locations in F
         vector<size_t> starting_pool;
-        for (const auto& p : pop.individuals)
-        {
-        	starting_pool.push_back(p.loc);
-        	//cout<<"Filled "<<p.loc<<"\t";
-        }
-        //cout<<"Filled "<<p.loc<<"\n";
+        for (const auto& p : pop.individuals) starting_pool.push_back(p.loc);
         assert(starting_pool.size() == P);     
         
         vector<size_t> F_locs(P,0); // selected individuals
@@ -101,24 +96,13 @@ namespace FT{
              
               ++h; // next case
               pass = (winner.size()>1 && h<cases.size()); // only keep going if needed
-              
-              if(winner.size() == 0)
-              {
-              	if(h >= cases.size())
-              		winner.push_back(r.random_choice(pool));
-              	else
-              		pass = true;
-              }
-              else
-              	pool = winner;    // reduce pool to remaining individuals
+              pool = winner;    // reduce pool to remaining individuals
           
             }       
-			
-			
+
             assert(winner.size()>0);
             //if more than one winner, pick randomly
-            F_locs[i] = r.random_choice(winner);   
-            //cout<<"Check 2";                         
+            F_locs[i] = r.random_choice(winner);                            
         }               
 
         // convert F_locs to pop.individuals indices

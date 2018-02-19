@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include "fewtwo.h"
-#include "fewtwocv.h"
-using FT::Fewtwo;
-using FT::FewtwoCV;
+#include "feat.h"
+#include "featcv.h"
+using FT::Feat;
+using FT::FeatCV;
 #include <Eigen/Dense>
 #include <shogun/base/init.h>
 using Eigen::MatrixXd;
@@ -69,7 +69,7 @@ class InputParser{
 int main(int argc, char** argv){
     // runs FEWTWO from the command line.     
     
-    Fewtwo fewtwo;
+    Feat feat;
     std::string sep = ",";
     
     cout << "\n" << 
@@ -86,7 +86,7 @@ int main(int argc, char** argv){
         if (input.dataset.empty()) std::cerr << "Error: no dataset specified.\n---\n";
         // Print help and exit. 
         cout << "Fewtwo is a feature engineering wrapper for learning intelligible models.\n";
-        cout << "Usage:\tfewtwo path/to/dataset [options]\n";
+        cout << "Usage:\tfeat path/to/dataset [options]\n";
         cout << "Options\tDescription (default value)\n";
         cout << "-p\tpopulation size (100)\n";
         cout << "-g\tgenerations (100)\n";
@@ -110,41 +110,41 @@ int main(int argc, char** argv){
     }
     cout << "reading inputs ...";
     if(input.cmdOptionExists("-p"))
-        fewtwo.set_pop_size(stoi(input.getCmdOption("-p")));
+        feat.set_pop_size(stoi(input.getCmdOption("-p")));
     if(input.cmdOptionExists("-g"))
-        fewtwo.set_generations(stoi(input.getCmdOption("-g")));
+        feat.set_generations(stoi(input.getCmdOption("-g")));
     if(input.cmdOptionExists("-ml"))
-        fewtwo.set_ml(input.getCmdOption("-ml"));
+        feat.set_ml(input.getCmdOption("-ml"));
     if(input.cmdOptionExists("--c"))
-        fewtwo.set_classification(true);
+        feat.set_classification(true);
     if(input.cmdOptionExists("-v"))
-        fewtwo.set_verbosity(stoi(input.getCmdOption("-v")));
+        feat.set_verbosity(stoi(input.getCmdOption("-v")));
     if(input.cmdOptionExists("-stall"))
-        fewtwo.set_max_stall(stoi(input.getCmdOption("-stall")));
+        feat.set_max_stall(stoi(input.getCmdOption("-stall")));
     if(input.cmdOptionExists("-sel"))
-        fewtwo.set_selection(input.getCmdOption("-sel"));
+        feat.set_selection(input.getCmdOption("-sel"));
     if(input.cmdOptionExists("-surv"))
-        fewtwo.set_survival(input.getCmdOption("-surv"));
+        feat.set_survival(input.getCmdOption("-surv"));
     if(input.cmdOptionExists("-xr"))
-        fewtwo.set_cross_rate(stof(input.getCmdOption("-xr")));
+        feat.set_cross_rate(stof(input.getCmdOption("-xr")));
    // if(input.cmdOptionExists("-otype"))
-   //     fewtwo.set_cross_rate(input.getCmdOption("-otype")[0]);
+   //     feat.set_cross_rate(input.getCmdOption("-otype")[0]);
     if(input.cmdOptionExists("-ops"))
-        fewtwo.set_functions(input.getCmdOption("-ops"));
+        feat.set_functions(input.getCmdOption("-ops"));
     if(input.cmdOptionExists("-depth"))
-        fewtwo.set_max_depth(stoi(input.getCmdOption("-depth")));
+        feat.set_max_depth(stoi(input.getCmdOption("-depth")));
     if(input.cmdOptionExists("-dim"))
-        fewtwo.set_max_dim(stoi(input.getCmdOption("-dim")));
+        feat.set_max_dim(stoi(input.getCmdOption("-dim")));
     if(input.cmdOptionExists("-r"))
-        fewtwo.set_random_state(stoi(input.getCmdOption("-r")));
+        feat.set_random_state(stoi(input.getCmdOption("-r")));
     if(input.cmdOptionExists("-sep")) // separator
         sep = input.getCmdOption("-sep");   
     if(input.cmdOptionExists("--shuffle"))
-        fewtwo.set_shuffle(true);
+        feat.set_shuffle(true);
     if(input.cmdOptionExists("-split"))
-        fewtwo.set_split(std::stod(input.getCmdOption("-split")));
+        feat.set_split(std::stod(input.getCmdOption("-split")));
     if(input.cmdOptionExists("-f"))
-        fewtwo.set_feedback(std::stod(input.getCmdOption("-f")));
+        feat.set_feedback(std::stod(input.getCmdOption("-f")));
     cout << "done.\n";
     ///////////////////////////////////////
 
@@ -165,28 +165,40 @@ int main(int argc, char** argv){
     FT::load_csv(input.dataset,X,y,names,dtypes,binary_endpoint,delim);
     if (binary_endpoint)
     {
-        if (!fewtwo.get_classification())
+        if (!feat.get_classification())
             std::cerr << "WARNING: binary endpoint detected. Fewtwo is set for regression.";
         else
             std::cout << "setting binary endpoint\n";
                       
     }
     
+    /*
+    string hyper_params = "[{\
+                                ('population': 100)\
+                                ('generations': 100)\
+                                ('maxStall': 25, 50, 100)\
+                                ('crossRate': 0.2)\
+                                ('maxDepth': 0.8)\
+                            },\
+                            {\
+                                ('population': 200, 500)\
+                                ('generations': 2000)\
+                                ('maxStall': 25, 50, 100)\
+                                ('crossRate': 0.2)\
+                                ('maxDepth': 0.8)\
+                            },\
+                           ]";
+    */
     
-    FewtwoCV validator;
+    string hyper_params = "[{\
+                                ('population': 100)\
+                                ('generations': 100)\
+                            },\
+                           ]";
+    
+    FeatCV validator(5, hyper_params);
     
     validator.fit(X, y);
-    
-    
-    
-    /*cout << "fitting model...\n";
-    
-    fewtwo.fit(X,y);
-    
-    //fewtwo.fit(X,y);
-    
-    cout << "done!\n";
-	*/
 	
     return 0;
 

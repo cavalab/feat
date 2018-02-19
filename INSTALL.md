@@ -22,8 +22,8 @@ Few-two uses cmake to build. So clone the repo, create a build directory, go int
 to generate the make file. Then you can build by calling `make`. 
 
 ```
-git clone https://github.com/lacava/fewtwo
-cd fewtwo
+git clone https://github.com/lacava/feat
+cd feat
 mkdir build
 cd build
 cmake ..

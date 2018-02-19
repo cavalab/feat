@@ -77,7 +77,7 @@ namespace FT{
          *
          * @param   pop: current population
          * @param  	parents: indices of population to use for variation
-         * @param  	params: fewtwo parameters
+         * @param  	params: feat parameters
          *
          * @return  appends params.pop_size offspring derived from parent variation
          */
@@ -361,8 +361,8 @@ namespace FT{
                     mlocs.push_back(i);       
             if (mlocs.size()==0)        // mom and dad have no overlapping types, can't cross
             {
-                params.msg("\tno overlapping types between " + mom.program_str() + "," 
-                             + dad.program_str() + "\n", 1);
+                std::cout << "\tno overlapping types between " + mom.program_str() + "," 
+                             + dad.program_str() + "\n";
                 return 0;               
             }
             j1 = r.random_choice(mlocs,mom.get_p(mlocs));    

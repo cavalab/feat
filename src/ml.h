@@ -37,7 +37,7 @@ namespace FT{
 	
 	/*!
      * @class ML
-     * @brief class that specifies the machine learning algorithm to pair with Fewtwo. 
+     * @brief class that specifies the machine learning algorithm to pair with Feat. 
      */
     class ML 
     {
@@ -196,7 +196,7 @@ namespace FT{
          
          *       X: n_features x n_samples matrix
          *       y: n_samples vector of training labels
-         *       params: fewtwo parameters
+         *       params: feat parameters
          *       ml: the ML model to be trained on X
          
          *  Output:

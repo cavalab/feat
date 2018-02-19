@@ -17,7 +17,7 @@ namespace FT{
     ////////////////////////////////////////////////////////////////////////////////// Declarations
     /*!
      * @class Evaluation
-     * @brief evaluation mixin class for Fewtwo
+     * @brief evaluation mixin class for Feat
      */
     class Evaluation 
     {
@@ -104,15 +104,9 @@ namespace FT{
             pop.individuals[i].set_p(ml->get_weights(),params.feedback);
             // assign F and aggregate fitness
             params.msg("Assigning fitness to " + pop.individuals[i].get_eqn(), 2);
-            
-            #pragma omp critical
-            {
-                assign_fit(pop.individuals[i],F,yhat,y,params);
-            }
+            assign_fit(pop.individuals[i],F,yhat,y,params);
                         
         }
-
-     
     }    
     
     // assign fitness to program
@@ -128,7 +122,7 @@ namespace FT{
          *       F: n_samples x pop_size matrix of errors
          *       yhat: predicted output of ind
          *       y: true labels
-         *       params: fewtwo parameters
+         *       params: feat parameters
          *
          *  Output:
          *

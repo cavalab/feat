@@ -42,10 +42,10 @@ namespace FT{
     	///constructor
         FewtwoCV(int fdSize = 5,
         		 bool cl = false,
-        		 vector<int> popRange = vector<int>{100, 500},
-        		 vector<int> genRange = vector<int>{100, 200},
-        		 vector<float> fbRange = vector<float>{0.2, 0.5, 0.8},
-        		 vector<float> crRange = vector<float>{0.25, 0.5, 0.75}
+        		 vector<int> popRange = vector<int>{100},
+        		 vector<int> genRange = vector<int>{100},
+        		 vector<float> fbRange = vector<float>{0.5},
+        		 vector<float> crRange = vector<float>{0.5}
         		 );    
         
         /// fit method to find the best fewtwo object based on input range
@@ -135,6 +135,10 @@ namespace FT{
 							curobj.obj.set_feedback(curfb);
 							curobj.obj.set_cross_rate(curcr);
 							curobj.obj.set_verbosity(0);
+							curobj.obj.set_max_dim(1);
+							curobj.obj.set_max_depth(2);
+							curobj.obj.set_functions("+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite");
+							
 								   				
     						curobj.score = 0;
     						
@@ -188,7 +192,7 @@ namespace FT{
     	
     	cout<<"Total number of objects created are "<<fewObjs.size()<<"\n";
     	
-    	#pragma omp parallel for
+    	//#pragma omp parallel for
     	for(int i = 0; i < fewObjs.size(); i++)
     	{
     		VectorXd objScore(foldSize);
