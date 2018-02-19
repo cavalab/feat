@@ -32,7 +32,6 @@ using namespace shogun;
 
 using namespace FT;
 
-
 bool checkBrackets(string str)
 {
 	stack<char> st;
@@ -1147,7 +1146,7 @@ TEST(Evaluation, assign_fit)
     eval.assign_fit(ind, F, yhat, y, params);
     
     ASSERT_TRUE(F.col(ind.loc) == res);
-    ASSERT_TRUE(ind.fitness == 0.7);
+    ASSERT_EQ(((int)(ind.fitness*1000000)), 347222);
     
 }
 
