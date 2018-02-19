@@ -28,7 +28,7 @@ using namespace shogun;
 #define private public
 
 #include <cstdio>
-#include "../src/fewtwo.h"
+#include "../src/feat.h"
 
 using namespace FT;
 
