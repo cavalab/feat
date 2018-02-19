@@ -107,8 +107,6 @@ namespace FT{
             assign_fit(pop.individuals[i],F,yhat,y,params);
                         
         }
-
-     
     }    
     
     // assign fitness to program
