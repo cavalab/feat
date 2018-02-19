@@ -47,7 +47,7 @@ export SHOGUN_LIB=/home/travis/miniconda/lib/
 export SHOGUN_DIR=/home/travis/miniconda/include/
 
 #building and installing google tests
-# sudo apt-get install cmake
+sudo apt-get install cmake
 echo "installing google test"
 sudo apt-get install libgtest-dev
 #sudo dpkg -L libgtest-dev 
