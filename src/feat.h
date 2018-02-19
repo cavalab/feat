@@ -117,11 +117,7 @@ namespace FT{
             void set_survival(string surv){ p_surv = make_shared<Selection>(surv, true); }
                         
             /// set cross rate in variation              
-            void set_cross_rate(float cross_rate)
-            {
-                params.cross_rate = cross_rate;
-                p_variation->set_cross_rate(cross_rate);
-            }
+            void set_cross_rate(float cross_rate){ params.cross_rate = cross_rate; p_variation->set_cross_rate(cross_rate); }
                         
             /// set program output type ('f', 'b')              
             void set_otype(char ot){ params.set_otype(ot); }
@@ -147,6 +143,8 @@ namespace FT{
             /// flag to shuffle the input samples for train/test splits
             void set_shuffle(bool sh){params.shuffle = sh;}
 
+            /// set objectives in feat
+            void set_objectives(string obj){ params.set_objectives(obj); }
             /// set train fraction of dataset
             void set_split(double sp){params.split = sp;}
             
@@ -337,9 +335,9 @@ namespace FT{
 
         if (params.classification)  // setup classification endpoint
             params.set_classes(y);
-            
+         
         set_dtypes(find_dtypes(X));
-                
+
         p_ml = make_shared<ML>(params); // intialize ML
         p_pop = make_shared<Population>(params.pop_size);
 
@@ -368,6 +366,7 @@ namespace FT{
         // evaluate initial population
         params.msg("Evaluating initial population",1);
         p_eval->fitness(*p_pop,X_t,y_t,F,params);
+
         vector<size_t> survivors;
 
         // main generational loop

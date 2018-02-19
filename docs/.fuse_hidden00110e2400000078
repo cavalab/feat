@@ -1,0 +1,44 @@
+\documentclass{article}
+\usepackage{epsfig}
+\pagestyle{empty}
+\begin{document}
+$T_max$
+\pagebreak
+
+$R_\alpha(T)$
+\pagebreak
+
+$R_\alpha(T)=R(T)+\alpha \times (numleaves)$
+\pagebreak
+
+$\lambda_{i,j}$
+\pagebreak
+
+$\lambda_{i,j} = \frac{min(P_L,P_R)-(1-P_{L_iL_j}-P_{R_iR_j})}{min(P_L,P_R)}$
+\pagebreak
+
+$P_L$
+\pagebreak
+
+$P_R$
+\pagebreak
+
+$P_{L_iL_j}$
+\pagebreak
+
+$P_{R_iR_j}$
+\pagebreak
+
+$\alpha_k$
+\pagebreak
+
+$ n $
+\pagebreak
+
+$ k $
+\pagebreak
+
+$ C(n) = c_n * (\sum_{a=1}^k C(a)) $
+\pagebreak
+
+\end{document}

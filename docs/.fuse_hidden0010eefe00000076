@@ -2,6 +2,7 @@
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodevariable.h:12: warning: Compound FT::NodeVariable is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodelog.h:12: warning: Compound FT::NodeLog is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodeif.h:12: warning: Compound FT::NodeIf is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:18: warning: Compound FT::BestParams is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodecos.h:12: warning: Compound FT::NodeCos is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodedivide.h:12: warning: Compound FT::NodeDivide is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodeleq.h:12: warning: Compound FT::NodeLEQ is not documented.
@@ -12,7 +13,6 @@
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodeexponential.h:12: warning: Compound FT::NodeExponential is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodegeq.h:12: warning: Compound FT::NodeGEQ is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodeadd.h:12: warning: Compound FT::NodeAdd is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:28: warning: Compound FT::FeatObjects is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodegreaterthan.h:12: warning: Compound FT::NodeGreaterThan is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodeexponent.h:12: warning: Compound FT::NodeExponent is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodesign.h:12: warning: Compound FT::NodeSign is not documented.
@@ -20,7 +20,6 @@
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodenot.h:12: warning: Compound FT::NodeNot is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodeor.h:12: warning: Compound FT::NodeOr is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/main.cc:17: warning: Compound InputParser is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/cv_main.cc:17: warning: Compound InputParser is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodelessthan.h:12: warning: Compound FT::NodeLessThan is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/variation.h:18: warning: Compound FT::Variation is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodeequal.h:12: warning: Compound FT::NodeEqual is not documented.
@@ -35,28 +34,29 @@
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodeconstant.h:12: warning: Compound FT::NodeConstant is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodexor.h:12: warning: Compound FT::NodeXor is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodestep.h:12: warning: Compound FT::NodeStep is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/cv_main.cc:21: warning: Member InputParser(int &argc, char **argv) (function) of class InputParser is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/main.cc:21: warning: Member InputParser(int &argc, char **argv) (function) of class InputParser is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/cv_main.cc:19: warning: Member dataset (variable) of class InputParser is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/cv_main.cc:53: warning: Member tokens (variable) of class InputParser is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:19: warning: Member startIndex (variable) of class FT::DataFolds is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:20: warning: Member quantity (variable) of class FT::DataFolds is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:108: warning: Member FeatCV(int fdSize, string params) (function) of class FT::FeatCV is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:144: warning: Member pop_size (variable) of class FT::FeatCV is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:145: warning: Member gens (variable) of class FT::FeatCV is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:146: warning: Member mlStr (variable) of class FT::FeatCV is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:147: warning: Member max_stall (variable) of class FT::FeatCV is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:148: warning: Member sel (variable) of class FT::FeatCV is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:149: warning: Member surv (variable) of class FT::FeatCV is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:150: warning: Member cross_rate (variable) of class FT::FeatCV is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:151: warning: Member funcs (variable) of class FT::FeatCV is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:152: warning: Member max_depth (variable) of class FT::FeatCV is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:153: warning: Member max_dim (variable) of class FT::FeatCV is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:154: warning: Member ercVec (variable) of class FT::FeatCV is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:155: warning: Member obj (variable) of class FT::FeatCV is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:156: warning: Member fb (variable) of class FT::FeatCV is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:29: warning: Member obj (variable) of class FT::FeatObjects is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:30: warning: Member score (variable) of class FT::FeatObjects is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/main.cc:19: warning: Member dataset (variable) of class InputParser is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/main.cc:53: warning: Member tokens (variable) of class InputParser is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:19: warning: Member ml (variable) of class FT::BestParams is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:20: warning: Member population (variable) of class FT::BestParams is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:21: warning: Member generations (variable) of class FT::BestParams is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:22: warning: Member dimensions (variable) of class FT::BestParams is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:23: warning: Member depth (variable) of class FT::BestParams is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:31: warning: Member FeatCV(vector< string > mlStr, int popRange=100, int genRange=100, int dimRange=10, int depRange=3) (function) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:33: warning: Member create_objects() (function) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:35: warning: Member create_folds(MatrixXd &x, VectorXd &y) (function) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:37: warning: Member fold_dtypes(MatrixXd &X) (function) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:39: warning: Member validate_data(MatrixXd x, VectorXd &y) (function) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:43: warning: Member populationRange (variable) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:44: warning: Member generationRange (variable) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:45: warning: Member dimensionRange (variable) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:46: warning: Member depthRange (variable) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:47: warning: Member ml (variable) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:48: warning: Member fewObjs (variable) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:49: warning: Member scores (variable) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:50: warning: Member params (variable) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:51: warning: Member dataFolds (variable) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:52: warning: Member outputFolds (variable) of class FT::FeatCV is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/individual.h:46: warning: Member operator[](int i) (function) of class FT::Individual is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/individual.h:176: warning: Found unknown command `\params'
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/individual.h:177: warning: Found unknown command `\params'
@@ -106,8 +106,8 @@
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodevariable.h:16: warning: Member NodeVariable(const size_t &l, char ntype= 'f', std::string n="") (function) of class FT::NodeVariable is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:43: warning: Member total_arity() (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:43: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/params.h:45: warning: Member Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, char ot, int verbosity, string fs, float cr, unsigned int max_depth, unsigned int max_dim, bool constant, string obj, bool sh, double sp, double fb, vector< char > datatypes=vector< char >()) (function) of class FT::Parameters is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/params.h:161: warning: Member set_otype(char ot) (function) of class FT::Parameters is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/params.h:44: warning: Member Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, char ot, int verbosity, string fs, unsigned int max_depth, unsigned int max_dim, bool constant, string obj, bool sh, double sp, double fb, vector< char > datatypes=vector< char >()) (function) of class FT::Parameters is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/params.h:155: warning: Member set_otype(char ot) (function) of class FT::Parameters is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/selection_operator.h:21: warning: Member select(Population &pop, const MatrixXd &F, const Parameters &p) (function) of class FT::SelectionOperator is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/pareto.h:26: warning: Member fast_nds(Population &) (function) of class FT::Pareto is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/pareto.h:27: warning: Member crowding_distance(Population &, int) (function) of class FT::Pareto is not documented.
@@ -134,7 +134,7 @@
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/rnd.h:82: warning: Member operator()() (function) of class FT::Rnd is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/rnd.h:85: warning: Member shuffle(RandomAccessIterator first, RandomAccessIterator last) (function) of class FT::Rnd is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/rnd.h:95: warning: Member select_randomly(Iter start, Iter end) (function) of class FT::Rnd is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/rnd.h:135: warning: Member rg (variable) of class FT::Rnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/rnd.h:127: warning: Member rg (variable) of class FT::Rnd is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection.h:23: warning: Member pselector (variable) of class FT::Selection is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/selection_operator.h:21: warning: Member select(Population &pop, const MatrixXd &F, const Parameters &p) (function) of class FT::SelectionOperator is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/selection_operator.h:26: warning: Member survive(Population &pop, const MatrixXd &F, const Parameters &p) (function) of class FT::SelectionOperator is not documented.
@@ -154,4 +154,3 @@
   parameter 'labels'
   parameter 'subset_size'
   parameter 'active_indices'
-/media/bill/Drive/Dropbox/PostDoc/code/feat/README.md:3: warning: Unexpected html tag <img> found within <a href=...> context

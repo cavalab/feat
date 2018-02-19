@@ -24,7 +24,7 @@ var searchData=
   ['max_5fstall',['max_stall',['../de/d2c/structFT_1_1Parameters.html#a30f7f95ef22a0228e87e297ab1305ca2',1,'FT::Parameters']]],
   ['min_5fsplit_5fgain',['MIN_SPLIT_GAIN',['../db/dff/classshogun_1_1CMyCARTree.html#a470c47e13d68d22929c515489ecc3e7f',1,'shogun::CMyCARTree']]],
   ['missing',['MISSING',['../db/dff/classshogun_1_1CMyCARTree.html#a24f3fd6ba041039c69b7c24a2555a3fa',1,'shogun::CMyCARTree']]],
-  ['ml',['ml',['../df/de2/classFT_1_1FeatCV.html#a8115d9e23fccb71aa94cc96b6f6dabe0',1,'FT::FeatCV::ml()'],['../de/d2c/structFT_1_1Parameters.html#a7e11bd6f94c1474b695cc9c823e8ea46',1,'FT::Parameters::ml()'],['../df/dfa/classFT_1_1ML.html#ae46f491cb0656cf64334f76d5ac07b9a',1,'FT::ML::ML()']]],
+  ['ml',['ML',['../df/dfa/classFT_1_1ML.html#ae46f491cb0656cf64334f76d5ac07b9a',1,'FT::ML::ML()'],['../de/d2c/structFT_1_1Parameters.html#a7e11bd6f94c1474b695cc9c823e8ea46',1,'FT::Parameters::ml()']]],
   ['ml',['ML',['../df/dfa/classFT_1_1ML.html',1,'FT']]],
   ['msg',['msg',['../de/d2c/structFT_1_1Parameters.html#abaae697a8ddcb9ddd5e2b190915151ee',1,'FT::Parameters']]],
   ['mutate',['mutate',['../d3/d01/classFT_1_1Variation.html#aaae98d9952312c6a469fe731e54a730d',1,'FT::Variation']]],
