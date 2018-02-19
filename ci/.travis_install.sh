@@ -77,7 +77,7 @@ cmake ..
 make
 echo "copying library..."
 ls
-cp ./googlemock/gtest/*.a ../../tests/
+cp ./googlemock/gtest/*.a /usr/lib
 
 echo "installing feat..."
 cd ../..; pwd
