@@ -279,7 +279,33 @@ namespace FT{
         return nans;
 
     }
-
+    
+    vector<char> find_dtypes(MatrixXd &X)
+    {
+    	int i, j;
+	    bool isBinary;
+	    
+	    vector<char> dtypes;
+	    
+	    for(i = 0; i < X.rows(); i++)
+	    {
+	        isBinary = true;
+	        //cout<<"Checking for column "<<i<<std::endl;
+	        for(j = 0; j < X.cols(); j++)
+	        {
+	            //cout<<"Value is "<<X(i, j)<<std::endl;
+	            if(X(i, j) != 0 && X(i, j) != 1)
+	                isBinary = false;
+	        }
+	        if(isBinary)
+	            dtypes.push_back('b');
+	        else
+	            dtypes.push_back('f');
+	    }
+	    
+	    return dtypes;
+	}
+	
     /// returns unique elements in vector
     template <typename T>
     vector<T> unique(vector<T> w)   // note intentional copy

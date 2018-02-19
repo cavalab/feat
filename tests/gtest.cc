@@ -68,7 +68,6 @@ TEST(Feat, SettingFunctions)
     
     feat.set_pop_size(200);
     ASSERT_EQ(200, feat.params.pop_size);
-    ASSERT_EQ(200, feat.p_pop->size());
     
     feat.set_generations(50);
     ASSERT_EQ(50, feat.params.gens);
@@ -117,6 +116,7 @@ TEST(Feat, SettingFunctions)
     feat.set_random_state(2);
     //TODO test random state seed
 }
+
 
 TEST(Feat, predict)
 {
@@ -262,6 +262,13 @@ TEST(Individual, EvalEquation)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
 
+    feat.params.check_ml();       
+  
+    feat.set_dtypes(find_dtypes(X));
+            
+    feat.p_ml = make_shared<ML>(feat.params); // intialize ML
+    feat.p_pop = make_shared<Population>(feat.params.pop_size);
+    
 	feat.params.set_terminals(X.rows()); 
         
     // initial model on raw input
@@ -685,7 +692,6 @@ TEST(NodeTest, Evaluate)
 	//TODO NodeVariable, NodeConstant(both types)
 }
 
-
 bool isValidProgram(vector<std::shared_ptr<Node>>& program, unsigned num_features)
 {
     //checks whether program fulfills all its arities.
@@ -722,6 +728,13 @@ TEST(Variation, MutationTests)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
 
+    feat.params.check_ml();       
+
+    feat.set_dtypes(find_dtypes(X));
+            
+    feat.p_ml = make_shared<ML>(feat.params); // intialize ML
+    feat.p_pop = make_shared<Population>(feat.params.pop_size);
+    
 	feat.params.set_terminals(X.rows()); 
         
     // initial model on raw input
@@ -730,6 +743,9 @@ TEST(Variation, MutationTests)
     // initialize population 
     feat.p_pop->init(feat.best_ind, feat.params);
     
+    feat.F.resize(X.cols(),int(2*feat.params.pop_size));
+    
+    feat.p_eval->fitness(*(feat.p_pop),X,y,feat.F,feat.params);
     
     vector<size_t> parents;
     parents.push_back(2);
@@ -777,6 +793,14 @@ TEST(Variation, CrossoverTests)
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
+             
+    feat.params.check_ml();       
+
+    feat.set_dtypes(find_dtypes(X));
+            
+    feat.p_ml = make_shared<ML>(feat.params); // intialize ML
+    feat.p_pop = make_shared<Population>(feat.params.pop_size);
+    
 
 	feat.params.set_terminals(X.rows()); 
         
@@ -785,6 +809,11 @@ TEST(Variation, CrossoverTests)
                   
     // initialize population 
     feat.p_pop->init(feat.best_ind, feat.params);
+    
+    feat.F.resize(X.cols(),int(2*feat.params.pop_size));
+    
+    feat.p_eval->fitness(*(feat.p_pop),X,y,feat.F,feat.params);
+    
     vector<size_t> parents;
     parents.push_back(2);
     parents.push_back(5);
@@ -834,6 +863,14 @@ TEST(Population, PopulationTests)
              -1.20648656, -2.68773747;
 
 	feat.timer.Reset();
+	
+	feat.params.check_ml();       
+
+    feat.set_dtypes(find_dtypes(X));
+            
+    feat.p_ml = make_shared<ML>(feat.params); // intialize ML
+    feat.p_pop = make_shared<Population>(feat.params.pop_size);
+    
 	feat.params.set_terminals(X.rows()); 
         
     // initial model on raw input
@@ -865,7 +902,7 @@ TEST(Population, PopulationTests)
 
 TEST(Parameters, ParamsTests)
 {                   
-	Parameters params(100, 								//pop_size
+		Parameters params(100, 								//pop_size
 					  100,								//gens
 					  "LinearRidgeRegression",			//ml
 					  false,							//classification
@@ -873,13 +910,14 @@ TEST(Parameters, ParamsTests)
 					  'f',								//otype
 					  1,								//verbosity
 					  "+,-,*,/,exp,log",				//functions
+					  0.5,                              //cross_rate
 					  3,								//max_depth
 					  10,								//max_dim
 					  false,							//erc
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
                       0.75,								//train/test split
-                      0.5);                             // feedback
+                      0.5);                             // feedback 
 					  
 	params.set_max_dim(12);
 	ASSERT_EQ(params.max_dim, 12);
@@ -1020,7 +1058,7 @@ TEST(Individual, Complexity)
 TEST(Evaluation, assign_fit)
 {
 	
-	Parameters params(100, 								//pop_size
+		Parameters params(100, 								//pop_size
 					  100,								//gens
 					  "LinearRidgeRegression",			//ml
 					  false,							//classification
@@ -1028,13 +1066,15 @@ TEST(Evaluation, assign_fit)
 					  'f',								//otype
 					  1,								//verbosity
 					  "+,-,*,/,exp,log",				//functions
+					  0.5,                              //cross_rate
 					  3,								//max_depth
 					  10,								//max_dim
 					  false,							//erc
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
                       0.75,								//train/test split
-                      0.5);                             // feedback
+                      0.5);                             // feedback 
+                      
 	Individual ind = Individual();
 	ind.loc = 0;
 	MatrixXd F(10, 1);
@@ -1113,7 +1153,7 @@ TEST(Evaluation, assign_fit)
 
 TEST(Evaluation, fitness)
 {
-	Parameters params(100, 								//pop_size
+		Parameters params(100, 								//pop_size
 					  100,								//gens
 					  "LinearRidgeRegression",			//ml
 					  false,							//classification
@@ -1121,13 +1161,15 @@ TEST(Evaluation, fitness)
 					  'f',								//otype
 					  1,								//verbosity
 					  "+,-,*,/,exp,log",				//functions
+					  0.5,                              //cross_rate
 					  3,								//max_depth
 					  10,								//max_dim
 					  false,							//erc
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
                       0.75,								//train/test split
-                      0.5);                             // feedback                 
+                      0.5);                             // feedback 
+                        
 	MatrixXd X(10,1); 
     X << 0.0,  
          1.0,  
@@ -1181,6 +1223,7 @@ TEST(Evaluation, out_ml)
 					  'f',								//otype
 					  1,								//verbosity
 					  "+,-,*,/,exp,log",				//functions
+					  0.5,                              //cross_rate
 					  3,								//max_depth
 					  10,								//max_dim
 					  false,							//erc
@@ -1203,7 +1246,8 @@ TEST(Evaluation, out_ml)
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
-             
+    
+    params.dtypes = find_dtypes(X);
     shared_ptr<Evaluation> p_eval = make_shared<Evaluation>();
     shared_ptr<ML> p_ml = make_shared<ML>(params);
              
@@ -1242,6 +1286,15 @@ TEST(Selection, SelectionOperator)
     MatrixXd X_v(X.rows(),int(X.cols()*(1-feat.params.split)));
     VectorXd y_t(int(y.size()*feat.params.split)), y_v(int(y.size()*(1-feat.params.split)));
     train_test_split(X,y,X_t,X_v,y_t,y_v,feat.params.shuffle);
+    
+    feat.timer.Reset();
+	
+	feat.params.check_ml();       
+
+    feat.set_dtypes(find_dtypes(X));
+            
+    feat.p_ml = make_shared<ML>(feat.params); // intialize ML
+    feat.p_pop = make_shared<Population>(feat.params.pop_size);
         
 	feat.params.set_terminals(X.rows()); 
         
@@ -1251,7 +1304,7 @@ TEST(Selection, SelectionOperator)
     // initialize population 
     feat.p_pop->init(feat.best_ind, feat.params);
     
-    feat.F.resize(    X_t.cols(),int(2*feat.params.pop_size));
+    feat.F.resize(X_t.cols(),int(2*feat.params.pop_size));
     feat.p_eval->fitness(*(feat.p_pop), X_t, y_t, feat.F, feat.params);
     vector<size_t> parents = feat.p_sel->select(*(feat.p_pop), feat.F, feat.params);
     
