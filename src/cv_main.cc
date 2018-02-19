@@ -67,7 +67,7 @@ class InputParser{
 //}
 
 int main(int argc, char** argv){
-    // runs FEWTWO from the command line.     
+    // runs FEAT from the command line.     
     
     Feat feat;
     std::string sep = ",";
@@ -75,7 +75,7 @@ int main(int argc, char** argv){
     cout << "\n" << 
     "/////////////////////////////////////////////////////////////////////////////////////////////"
     << "\n" << 
-    "                                        FEWTWO                                               "
+    "                                        FEAT                                               "
     << "\n" <<
     "/////////////////////////////////////////////////////////////////////////////////////////////"
     << "\n";
