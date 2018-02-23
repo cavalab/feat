@@ -1468,13 +1468,6 @@ static void __Pyx_CppExn2PyErr() {
 }
 #endif
 
-/* Print.proto */
-static int __Pyx_Print(PyObject*, PyObject *, int);
-#if CYTHON_COMPILING_IN_PYPY || PY_MAJOR_VERSION >= 3
-static PyObject* __pyx_print = 0;
-static PyObject* __pyx_print_kwargs = 0;
-#endif
-
 /* RealImag.proto */
 #if CYTHON_CCOMPLEX
   #ifdef __cplusplus
@@ -1588,9 +1581,6 @@ static CYTHON_INLINE char __Pyx_PyInt_As_char(PyObject *);
 /* CIntFromPy.proto */
 static CYTHON_INLINE unsigned int __Pyx_PyInt_As_unsigned_int(PyObject *);
 
-/* PrintOne.proto */
-static int __Pyx_PrintOne(PyObject* stream, PyObject *o);
-
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
@@ -1689,11 +1679,9 @@ static const char __pyx_k_X[] = "X";
 static const char __pyx_k_y[] = "y";
 static const char __pyx_k_fb[] = "fb";
 static const char __pyx_k_ml[] = "ml";
-static const char __pyx_k_end[] = "end";
 static const char __pyx_k_erc[] = "erc";
 static const char __pyx_k_obj[] = "obj";
 static const char __pyx_k_sel[] = "sel";
-static const char __pyx_k_file[] = "file";
 static const char __pyx_k_gens[] = "gens";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "__name__";
@@ -1703,7 +1691,6 @@ static const char __pyx_k_array[] = "array";
 static const char __pyx_k_dtype[] = "dtype";
 static const char __pyx_k_numpy[] = "numpy";
 static const char __pyx_k_otype[] = "otype";
-static const char __pyx_k_print[] = "print";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_split[] = "split";
 static const char __pyx_k_double[] = "double";
@@ -1761,10 +1748,8 @@ static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_cross_rate;
 static PyObject *__pyx_n_s_double;
 static PyObject *__pyx_n_s_dtype;
-static PyObject *__pyx_n_s_end;
 static PyObject *__pyx_n_s_erc;
 static PyObject *__pyx_n_s_fb;
-static PyObject *__pyx_n_s_file;
 static PyObject *__pyx_kp_b_fitness_complexity;
 static PyObject *__pyx_n_s_functions;
 static PyObject *__pyx_n_s_gens;
@@ -1787,7 +1772,6 @@ static PyObject *__pyx_n_s_obj;
 static PyObject *__pyx_n_s_otype;
 static PyObject *__pyx_n_b_pareto;
 static PyObject *__pyx_n_s_pop_size;
-static PyObject *__pyx_n_s_print;
 static PyObject *__pyx_n_s_random_state;
 static PyObject *__pyx_n_s_range;
 static PyObject *__pyx_n_s_reduce;
@@ -2493,7 +2477,7 @@ static PyObject *__pyx_pf_4feat_8PyFewtwo_2fit(struct __pyx_obj_4feat_PyFewtwo *
  *         rows_y = len(arr_y)
  *         rows_x = X.shape[0]             # <<<<<<<<<<<<<<
  *         cols_x = X.shape[1]
- *         print arr_x
+ * 
  */
   __pyx_v_rows_x = (__pyx_v_X->dimensions[0]);
 
@@ -2501,23 +2485,14 @@ static PyObject *__pyx_pf_4feat_8PyFewtwo_2fit(struct __pyx_obj_4feat_PyFewtwo *
  *         rows_y = len(arr_y)
  *         rows_x = X.shape[0]
  *         cols_x = X.shape[1]             # <<<<<<<<<<<<<<
- *         print arr_x
+ * 
  *         cdef int c_rows = rows_x
  */
   __pyx_v_cols_x = (__pyx_v_X->dimensions[1]);
 
-  /* "feat.pyx":47
- *         rows_x = X.shape[0]
- *         cols_x = X.shape[1]
- *         print arr_x             # <<<<<<<<<<<<<<
- *         cdef int c_rows = rows_x
- *         cdef int c_cols = cols_x
- */
-  if (__Pyx_PrintOne(0, ((PyObject *)__pyx_v_arr_x)) < 0) __PYX_ERR(1, 47, __pyx_L1_error)
-
   /* "feat.pyx":48
  *         cols_x = X.shape[1]
- *         print arr_x
+ * 
  *         cdef int c_rows = rows_x             # <<<<<<<<<<<<<<
  *         cdef int c_cols = cols_x
  *         cdef int c_rows_y = rows_y
@@ -2525,7 +2500,7 @@ static PyObject *__pyx_pf_4feat_8PyFewtwo_2fit(struct __pyx_obj_4feat_PyFewtwo *
   __pyx_v_c_rows = __pyx_v_rows_x;
 
   /* "feat.pyx":49
- *         print arr_x
+ * 
  *         cdef int c_rows = rows_x
  *         cdef int c_cols = cols_x             # <<<<<<<<<<<<<<
  *         cdef int c_rows_y = rows_y
@@ -5697,10 +5672,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_cross_rate, __pyx_k_cross_rate, sizeof(__pyx_k_cross_rate), 0, 0, 1, 1},
   {&__pyx_n_s_double, __pyx_k_double, sizeof(__pyx_k_double), 0, 0, 1, 1},
   {&__pyx_n_s_dtype, __pyx_k_dtype, sizeof(__pyx_k_dtype), 0, 0, 1, 1},
-  {&__pyx_n_s_end, __pyx_k_end, sizeof(__pyx_k_end), 0, 0, 1, 1},
   {&__pyx_n_s_erc, __pyx_k_erc, sizeof(__pyx_k_erc), 0, 0, 1, 1},
   {&__pyx_n_s_fb, __pyx_k_fb, sizeof(__pyx_k_fb), 0, 0, 1, 1},
-  {&__pyx_n_s_file, __pyx_k_file, sizeof(__pyx_k_file), 0, 0, 1, 1},
   {&__pyx_kp_b_fitness_complexity, __pyx_k_fitness_complexity, sizeof(__pyx_k_fitness_complexity), 0, 0, 0, 0},
   {&__pyx_n_s_functions, __pyx_k_functions, sizeof(__pyx_k_functions), 0, 0, 1, 1},
   {&__pyx_n_s_gens, __pyx_k_gens, sizeof(__pyx_k_gens), 0, 0, 1, 1},
@@ -5723,7 +5696,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_otype, __pyx_k_otype, sizeof(__pyx_k_otype), 0, 0, 1, 1},
   {&__pyx_n_b_pareto, __pyx_k_pareto, sizeof(__pyx_k_pareto), 0, 0, 0, 1},
   {&__pyx_n_s_pop_size, __pyx_k_pop_size, sizeof(__pyx_k_pop_size), 0, 0, 1, 1},
-  {&__pyx_n_s_print, __pyx_k_print, sizeof(__pyx_k_print), 0, 0, 1, 1},
   {&__pyx_n_s_random_state, __pyx_k_random_state, sizeof(__pyx_k_random_state), 0, 0, 1, 1},
   {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
   {&__pyx_n_s_reduce, __pyx_k_reduce, sizeof(__pyx_k_reduce), 0, 0, 1, 1},
@@ -7682,112 +7654,6 @@ static void __Pyx_ReleaseBuffer(Py_buffer *view) {
         return (target_type) value;\
     }
 
-/* Print */
-      #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION < 3
-static PyObject *__Pyx_GetStdout(void) {
-    PyObject *f = PySys_GetObject((char *)"stdout");
-    if (!f) {
-        PyErr_SetString(PyExc_RuntimeError, "lost sys.stdout");
-    }
-    return f;
-}
-static int __Pyx_Print(PyObject* f, PyObject *arg_tuple, int newline) {
-    int i;
-    if (!f) {
-        if (!(f = __Pyx_GetStdout()))
-            return -1;
-    }
-    Py_INCREF(f);
-    for (i=0; i < PyTuple_GET_SIZE(arg_tuple); i++) {
-        PyObject* v;
-        if (PyFile_SoftSpace(f, 1)) {
-            if (PyFile_WriteString(" ", f) < 0)
-                goto error;
-        }
-        v = PyTuple_GET_ITEM(arg_tuple, i);
-        if (PyFile_WriteObject(v, f, Py_PRINT_RAW) < 0)
-            goto error;
-        if (PyString_Check(v)) {
-            char *s = PyString_AsString(v);
-            Py_ssize_t len = PyString_Size(v);
-            if (len > 0) {
-                switch (s[len-1]) {
-                    case ' ': break;
-                    case '\f': case '\r': case '\n': case '\t': case '\v':
-                        PyFile_SoftSpace(f, 0);
-                        break;
-                    default:  break;
-                }
-            }
-        }
-    }
-    if (newline) {
-        if (PyFile_WriteString("\n", f) < 0)
-            goto error;
-        PyFile_SoftSpace(f, 0);
-    }
-    Py_DECREF(f);
-    return 0;
-error:
-    Py_DECREF(f);
-    return -1;
-}
-#else
-static int __Pyx_Print(PyObject* stream, PyObject *arg_tuple, int newline) {
-    PyObject* kwargs = 0;
-    PyObject* result = 0;
-    PyObject* end_string;
-    if (unlikely(!__pyx_print)) {
-        __pyx_print = PyObject_GetAttr(__pyx_b, __pyx_n_s_print);
-        if (!__pyx_print)
-            return -1;
-    }
-    if (stream) {
-        kwargs = PyDict_New();
-        if (unlikely(!kwargs))
-            return -1;
-        if (unlikely(PyDict_SetItem(kwargs, __pyx_n_s_file, stream) < 0))
-            goto bad;
-        if (!newline) {
-            end_string = PyUnicode_FromStringAndSize(" ", 1);
-            if (unlikely(!end_string))
-                goto bad;
-            if (PyDict_SetItem(kwargs, __pyx_n_s_end, end_string) < 0) {
-                Py_DECREF(end_string);
-                goto bad;
-            }
-            Py_DECREF(end_string);
-        }
-    } else if (!newline) {
-        if (unlikely(!__pyx_print_kwargs)) {
-            __pyx_print_kwargs = PyDict_New();
-            if (unlikely(!__pyx_print_kwargs))
-                return -1;
-            end_string = PyUnicode_FromStringAndSize(" ", 1);
-            if (unlikely(!end_string))
-                return -1;
-            if (PyDict_SetItem(__pyx_print_kwargs, __pyx_n_s_end, end_string) < 0) {
-                Py_DECREF(end_string);
-                return -1;
-            }
-            Py_DECREF(end_string);
-        }
-        kwargs = __pyx_print_kwargs;
-    }
-    result = PyObject_Call(__pyx_print, arg_tuple, kwargs);
-    if (unlikely(kwargs) && (kwargs != __pyx_print_kwargs))
-        Py_DECREF(kwargs);
-    if (!result)
-        return -1;
-    Py_DECREF(result);
-    return 0;
-bad:
-    if (kwargs != __pyx_print_kwargs)
-        Py_XDECREF(kwargs);
-    return -1;
-}
-#endif
-
 /* Declarations */
       #if CYTHON_CCOMPLEX
   #ifdef __cplusplus
@@ -8726,43 +8592,6 @@ raise_neg_overflow:
         "can't convert negative value to unsigned int");
     return (unsigned int) -1;
 }
-
-/* PrintOne */
-      #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION < 3
-static int __Pyx_PrintOne(PyObject* f, PyObject *o) {
-    if (!f) {
-        if (!(f = __Pyx_GetStdout()))
-            return -1;
-    }
-    Py_INCREF(f);
-    if (PyFile_SoftSpace(f, 0)) {
-        if (PyFile_WriteString(" ", f) < 0)
-            goto error;
-    }
-    if (PyFile_WriteObject(o, f, Py_PRINT_RAW) < 0)
-        goto error;
-    if (PyFile_WriteString("\n", f) < 0)
-        goto error;
-    Py_DECREF(f);
-    return 0;
-error:
-    Py_DECREF(f);
-    return -1;
-    /* the line below is just to avoid C compiler
-     * warnings about unused functions */
-    return __Pyx_Print(f, NULL, 0);
-}
-#else
-static int __Pyx_PrintOne(PyObject* stream, PyObject *o) {
-    int res;
-    PyObject* arg_tuple = PyTuple_Pack(1, o);
-    if (unlikely(!arg_tuple))
-        return -1;
-    res = __Pyx_Print(stream, arg_tuple, 1);
-    Py_DECREF(arg_tuple);
-    return res;
-}
-#endif
 
 /* CIntToPy */
       static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {

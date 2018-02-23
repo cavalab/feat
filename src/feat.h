@@ -358,6 +358,7 @@ namespace FT{
 
         // initial model on raw input
         params.msg("Fitting initial model", 1);
+	std::cout<<"X Size Training:("<<X_t.rows()<<","<<X_t.cols()<<").\n Y Training Size: "<< y_t.size() << std::endl;
         initial_model(X_t,y_t);  
         params.msg("Initial score: " + std::to_string(best_score), 1);
         
@@ -432,8 +433,9 @@ namespace FT{
     {
         MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
         VectorXd vectY = Map<VectorXd>(Y,lenY);
-	std::cout << "Rows: " << matX.rows() << ". Cols: " << matX.cols() << " "<< ". Y Len: " << vectY.size() <<" "<< std::endl;
-        Feat::fit(matX,vectY);    
+	
+	std::cout << "My Matrix X Size That is Passed from Numpy is: (" << matX.rows() << "," << matX.cols() << ")  \n ySize Passed from Numpy is: " << vectY.size() << std::endl;
+	Feat::fit(matX,vectY);
     }
 
     void Feat::final_model(MatrixXd& X, VectorXd& y)

@@ -1,12 +1,12 @@
 import feat
 import numpy
-from sklearn.datasets import load_breast_cancer
+from sklearn.datasets import load_boston
 
-data_iris = load_breast_cancer()
-X = data_iris.data
+boston = load_boston()
+X = boston.data
 
 
-Y = data_iris.target
+Y = boston.target
 
 clf = feat.PyFewtwo()
 clf.fit(X,Y)
