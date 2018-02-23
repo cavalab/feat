@@ -432,6 +432,7 @@ namespace FT{
     {
         MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
         VectorXd vectY = Map<VectorXd>(Y,lenY);
+	std::cout << "Rows: " << matX.rows() << ". Cols: " << matX.cols() << " "<< ". Y Len: " << vectY.size() <<" "<< std::endl;
         Feat::fit(matX,vectY);    
     }
 

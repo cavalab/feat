@@ -1,8 +1,8 @@
 import feat
 import numpy
-from sklearn.datasets import load_iris
+from sklearn.datasets import load_breast_cancer
 
-data_iris = load_iris()
+data_iris = load_breast_cancer()
 X = data_iris.data
 
 
