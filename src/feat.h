@@ -434,7 +434,6 @@ namespace FT{
         MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
         VectorXd vectY = Map<VectorXd>(Y,lenY);
 	
-	std::cout << "My Matrix X Size That is Passed from Numpy is: (" << matX.rows() << "," << matX.cols() << ")  \n ySize Passed from Numpy is: " << vectY.size() << std::endl;
 	Feat::fit(matX,vectY);
     }
 
