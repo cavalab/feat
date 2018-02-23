@@ -10,4 +10,5 @@ Y = boston.target
 
 clf = feat.PyFewtwo()
 clf.fit(X,Y)
+print clf.predict(X)
 #print  clf.predict(Y) 
