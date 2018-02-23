@@ -44,7 +44,7 @@ cdef class PyFewtwo:
         rows_y = len(arr_y)
         rows_x = X.shape[0]
         cols_x = X.shape[1]
-        print arr_x
+        
         cdef int c_rows = rows_x
         cdef int c_cols = cols_x
         cdef int c_rows_y = rows_y
