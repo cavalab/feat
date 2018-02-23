@@ -117,11 +117,7 @@ namespace FT{
             void set_survival(string surv){ p_surv = make_shared<Selection>(surv, true); }
                         
             /// set cross rate in variation              
-            void set_cross_rate(float cross_rate)
-            {
-                params.cross_rate = cross_rate;
-                p_variation->set_cross_rate(cross_rate);
-            }
+            void set_cross_rate(float cross_rate){ params.cross_rate = cross_rate; p_variation->set_cross_rate(cross_rate); }
                         
             /// set program output type ('f', 'b')              
             void set_otype(char ot){ params.set_otype(ot); }
@@ -147,6 +143,8 @@ namespace FT{
             /// flag to shuffle the input samples for train/test splits
             void set_shuffle(bool sh){params.shuffle = sh;}
 
+            /// set objectives in feat
+            void set_objectives(string obj){ params.set_objectives(obj); }
             /// set train fraction of dataset
             void set_split(double sp){params.split = sp;}
             
@@ -187,6 +185,7 @@ namespace FT{
             ///return max_depth of programs
             int get_max_depth(){ return params.max_depth; }
             
+            ///return cross rate for variation
             float get_cross_rate(){ return params.cross_rate; }
             
             ///return max size of programs
@@ -252,20 +251,25 @@ namespace FT{
             ~Feat(){} 
                         
             /// train a model.             
-            void fit(Map<MatrixXd>& X, Map<VectorXd>& y);
+            void fit(MatrixXd& X, VectorXd& y);
+
+            /// train a model.             
+            void fit(double * X,int rowsX,int colsX, double * Y,int lenY);
             
             /// predict on unseen data.             
-            VectorXd predict(Map<MatrixXd>& X);        
+            VectorXd predict(MatrixXd& X);    
+
+            /// predict on unseen data.             
+            VectorXd predict(double * X, int rowsX, int colsX);     
             
             /// transform an input matrix using a program.                          
-            MatrixXd transform(Map<MatrixXd>& X);
-            MatrixXd transform(Map<MatrixXd>& X,  Individual *ind);
+            MatrixXd transform(MatrixXd& X,  Individual *ind = 0);
             
             /// convenience function calls fit then predict.            
-            VectorXd fit_predict(Map<MatrixXd>& X, Map<VectorXd>& y){ fit(X,y); return predict(X); } 
+            VectorXd fit_predict(MatrixXd& X, VectorXd& y){ fit(X,y); return predict(X); } 
             
             /// convenience function calls fit then transform. 
-            MatrixXd fit_transform(Map<MatrixXd>& X, Map<VectorXd>& y){ fit(X,y); return transform(X); }
+            MatrixXd fit_transform(MatrixXd& X, VectorXd& y){ fit(X,y); return transform(X); }
                   
             /// scoring function 
             double score(MatrixXd& X, VectorXd& y);
@@ -291,13 +295,14 @@ namespace FT{
             void print_stats(unsigned int);         ///< prints stats
             Individual best_ind;                    ///< best individual
             /// method to fit inital ml model            
-            void initial_model(Map<MatrixXd>& X, Map<VectorXd>& y);
-            void final_model(Map<MatrixXd>& X, Map<VectorXd>& y);
+            void initial_model(MatrixXd& X, VectorXd& y);
+            /// fits final model to best transformation
+            void final_model(MatrixXd& X, VectorXd& y);
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
     
-    void Feat::fit(Map<MatrixXd>& X, Map<VectorXd>& y)
+    void Feat::fit(MatrixXd& X, VectorXd& y)
     {
         /*!
          *  Input:
@@ -336,9 +341,9 @@ namespace FT{
 
         if (params.classification)  // setup classification endpoint
             params.set_classes(y);
-            
+         
         set_dtypes(find_dtypes(X));
-                
+
         p_ml = make_shared<ML>(params); // intialize ML
         p_pop = make_shared<Population>(params.pop_size);
 
@@ -367,7 +372,7 @@ namespace FT{
         // evaluate initial population
         params.msg("Evaluating initial population",1);
         p_eval->fitness(*p_pop,X_t,y_t,F,params);
-       
+
         vector<size_t> survivors;
 
         // main generational loop
@@ -423,14 +428,21 @@ namespace FT{
         out_model.close();
     }
 
-    void Feat::final_model(Map<MatrixXd>& X, Map<VectorXd>& y)
+    void Feat::fit(double * X, int rowsX, int colsX, double * Y, int lenY)
+    {
+        MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
+        VectorXd vectY = Map<VectorXd>(Y,lenY);
+        Feat::fit(matX,vectY);    
+    }
+
+    void Feat::final_model(MatrixXd& X, VectorXd& y)
     {
         // fits final model to best tranformation found.
         bool pass = true;
         MatrixXd Phi = transform(X);
         VectorXd yhat = p_ml->out(Phi,y,params,pass,best_ind.dtypes);
     }
-    void Feat::initial_model(Map<MatrixXd>& X, Map<VectorXd>& y)
+    void Feat::initial_model(MatrixXd& X, VectorXd& y)
     {
         /*!
          * fits an ML model to the raw data as a starting point.
@@ -452,40 +464,31 @@ namespace FT{
             best_ind.program.push_back(params.terminals[i]);
         best_ind.fitness = best_score;
     }
-    
-    MatrixXd Feat::transform(Map<MatrixXd>& X)
-    {
-        /*!
-         * Transforms input data according to best ind
-         */
-        normalize(X); 
-        MatrixXd Phi = best_ind.out(X,params);
-        normalize(Phi);
-        return Phi;
-    }
-    MatrixXd Feat::transform(Map<MatrixXd>& X, Individual *ind)
+
+    MatrixXd Feat::transform(MatrixXd& X, Individual *ind)
     {
         /*!
          * Transforms input data according to ind or best ind, if ind is undefined.
          */
-        normalize(X);
         if (ind == 0)        // if ind is empty, predict with best_ind
         {
             if (best_ind.program.size()==0){
                 std::cerr << "You need to train a model using fit() before making predictions.\n";
                 throw;
             }
+            normalize(X,params.dtypes);
             MatrixXd Phi = best_ind.out(X,params);
-            normalize(Phi);
+            normalize(Phi,best_ind.dtypes);
             return Phi;
         }
+        normalize(X,params.dtypes);
         MatrixXd Phi = ind->out(X,params);
-        normalize(Phi);
+        normalize(Phi,ind->dtypes);
         return Phi;
     }
     
-    VectorXd Feat::predict(Map<MatrixXd>& X)
-    {
+    VectorXd Feat::predict(MatrixXd& X)
+    {        
         MatrixXd Phi = transform(X);
         auto PhiSG = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(Phi));
         SGVector<double> y_pred;
@@ -519,6 +522,12 @@ namespace FT{
             yhat = (yhat.cast<int>().array() == -1).select(0,yhat);
         
         return yhat;        
+    }
+
+    VectorXd Feat::predict(double * X, int rowsX,int colsX)
+    {
+        MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
+        return Feat::predict(matX);
     }
 
     void Feat::update_best()

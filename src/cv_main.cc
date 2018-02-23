@@ -67,7 +67,7 @@ class InputParser{
 //}
 
 int main(int argc, char** argv){
-    // runs FEWTWO from the command line.     
+    // runs FEAT from the command line.     
     
     Feat feat;
     std::string sep = ",";
@@ -75,7 +75,7 @@ int main(int argc, char** argv){
     cout << "\n" << 
     "/////////////////////////////////////////////////////////////////////////////////////////////"
     << "\n" << 
-    "                                        FEWTWO                                               "
+    "                                        FEAT                                               "
     << "\n" <<
     "/////////////////////////////////////////////////////////////////////////////////////////////"
     << "\n";
@@ -172,21 +172,33 @@ int main(int argc, char** argv){
                       
     }
     
+    /*
+    string hyper_params = "[{\
+                                ('population': 100)\
+                                ('generations': 100)\
+                                ('maxStall': 25, 50, 100)\
+                                ('crossRate': 0.2)\
+                                ('maxDepth': 0.8)\
+                            },\
+                            {\
+                                ('population': 200, 500)\
+                                ('generations': 2000)\
+                                ('maxStall': 25, 50, 100)\
+                                ('crossRate': 0.2)\
+                                ('maxDepth': 0.8)\
+                            },\
+                           ]";
+    */
     
-    FeatCV validator;
+    string hyper_params = "[{\
+                                ('population': 100)\
+                                ('generations': 100)\
+                            },\
+                           ]";
+    
+    FeatCV validator(5, hyper_params);
     
     validator.fit(X, y);
-    
-    
-    
-    /*cout << "fitting model...\n";
-    
-    feat.fit(X,y);
-    
-    //feat.fit(X,y);
-    
-    cout << "done!\n";
-	*/
 	
     return 0;
 
