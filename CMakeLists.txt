@@ -86,6 +86,9 @@ endif()
 # gather list of source files
 if (CORE_USE_CUDA)   
     file(GLOB_RECURSE cuda_files "*.cu")
+    include_directories("src/node-cuda")
+else()
+    include_directories("src/node/")
 endif()    
 
 file(GLOB_RECURSE src_main_files "src/main.cc")
