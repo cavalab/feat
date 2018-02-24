@@ -7,13 +7,7 @@ license: GNU/GPL v3
 
 
 #include <memory>
-//#ifdef USE_CUDA
-//    #include "node-cuda/nodeadd.h"
-//    #include "node-cuda/node.h"
-//#else
-//    #include "node/nodeadd.h"
-//    #include "node/node.h"
-//#endif
+
 #include "node.h"
 #include "n_add.h"
 #include "n_and.h"
