@@ -8,7 +8,7 @@ X = boston.data
 
 Y = boston.target
 
-clf = feat.PyFewtwo()
+clf = feat.PyFewtwo(split=0.5,verbosity=0)
 clf.fit(X,Y)
 print clf.predict(X)
 #print  clf.predict(Y) 
