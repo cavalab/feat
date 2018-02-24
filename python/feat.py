@@ -21,11 +21,11 @@ class Feat(BaseEstimator):
 
     def predict(self,X):
 
-    #def transform(self,X):
+    def transform(self,X):
 
-    #def fit_predict(self,X,y):
+    def fit_predict(self,X,y):
 
-    #def score(self,X,y):
+    def score(self,X,y):
 
 
 def main():
