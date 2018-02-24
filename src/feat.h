@@ -265,11 +265,29 @@ namespace FT{
             /// transform an input matrix using a program.                          
             MatrixXd transform(MatrixXd& X,  Individual *ind = 0);
             
+	    MatrixXd transform(double * X,  int rows_x, int cols_x);
+            
             /// convenience function calls fit then predict.            
             VectorXd fit_predict(MatrixXd& X, VectorXd& y){ fit(X,y); return predict(X); } 
+           
+            VectorXd fit_predict(double * X, int rows_x, int cols_x, double * Y, int len_y)
+		{
+			MatrixXd matX = Map<MatrixXd>(X,rows_x,cols_x);
+			VectorXd vectY = Map<VectorXd>(Y,len_y);
+			fit(matX,vectY); 
+			return predict(matX); 
+		} 
             
             /// convenience function calls fit then transform. 
             MatrixXd fit_transform(MatrixXd& X, VectorXd& y){ fit(X,y); return transform(X); }
+
+            MatrixXd fit_transform(double * X, int rows_x, int cols_x, double * Y, int len_y)
+		{
+			MatrixXd matX = Map<MatrixXd>(X,rows_x,cols_x);
+			VectorXd vectY = Map<VectorXd>(Y,len_y);
+			fit(matX,vectY); 
+			return transform(matX);
+		}
                   
             /// scoring function 
             double score(MatrixXd& X, VectorXd& y);
@@ -358,7 +376,6 @@ namespace FT{
 
         // initial model on raw input
         params.msg("Fitting initial model", 1);
-	std::cout<<"X Size Training:("<<X_t.rows()<<","<<X_t.cols()<<").\n Y Training Size: "<< y_t.size() << std::endl;
         initial_model(X_t,y_t);  
         params.msg("Initial score: " + std::to_string(best_score), 1);
         
@@ -488,6 +505,14 @@ namespace FT{
         normalize(Phi,ind->dtypes);
         return Phi;
     }
+
+    MatrixXd Feat::transform(double * X, int rows_x,int cols_x)
+    {
+        MatrixXd matX = Map<MatrixXd>(X,rows_x,cols_x);
+        return transform(matX);
+        
+    }
+    
     
     VectorXd Feat::predict(MatrixXd& X)
     {        
