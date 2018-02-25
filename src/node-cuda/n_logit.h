@@ -32,7 +32,7 @@ namespace FT{
             void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
             {
         		string x = stack_f.back(); stack_f.pop_back();
-                stack_f.push_back("1/(1+exp(-1*" + x + "))");
+                stack_f.push_back("1/(1+exp(-(" + x + ")))");
             }
     };
 }	
