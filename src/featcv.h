@@ -397,6 +397,8 @@ namespace FT{
     
     void FeatCV::fit(MatrixXd x, VectorXd &y)
     {
+        vector<vector<ArrayXd> > z;
+        
     	parse();
     	create_folds(x.cols());
     	
@@ -436,7 +438,7 @@ namespace FT{
 				
 		        // set dtypes for training data and train the model
 				featObjs[i].obj.set_dtypes(find_dtypes(trainX));
-				featObjs[i].obj.fit(trainX, trainY);
+				featObjs[i].obj.fit(trainX, trainY, z);
 				
 				// extracting testdata and actual values for test data from data folds
 				MatrixXd testData(x.rows(), dataFolds[testIndex].quantity);
@@ -449,7 +451,7 @@ namespace FT{
 					actualValues(k) = y(dataFolds[testIndex].startIndex+k);
 				
 				// prediction on test data
-				VectorXd prediction = featObjs[i].obj.predict(testData);
+				VectorXd prediction = featObjs[i].obj.predict(testData, z);
 		        
 		        // calculating difference between actual and predicted values
 				if (featObjs[i].obj.get_classification())
@@ -490,6 +492,7 @@ namespace FT{
     VectorXd FeatCV::predict(MatrixXd x)
     {
         // report error if data not trained first
+        vector<vector<ArrayXd> > z;
     	if(bestScoreIndex == -1)
     	{
     		std::cerr << "You need to call fit first to cross validate first.\n";
@@ -497,7 +500,7 @@ namespace FT{
     	}
     	
     	// prediciting values based on the best model found
-    	return featObjs[bestScoreIndex].obj.predict(x);
+    	return featObjs[bestScoreIndex].obj.predict(x, z);
     }    
 }
 #endif

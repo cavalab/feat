@@ -33,7 +33,7 @@ namespace FT{
         ~Individual(){}
 
         /// calculate program output matrix Phi
-        MatrixXd out(const MatrixXd& X, const Parameters& params, const VectorXd& y);
+        MatrixXd out(const MatrixXd& X, const vector<vector<ArrayXd> > &z, const Parameters& params, const VectorXd& y);
 
         /// return symbolic representation of program
         string get_eqn();
@@ -169,7 +169,7 @@ namespace FT{
         return ps;
     }
     // calculate program output matrix
-    MatrixXd Individual::out(const MatrixXd& X, const Parameters& params, 
+    MatrixXd Individual::out(const MatrixXd& X, const vector<vector<ArrayXd> > &z, const Parameters& params, 
                              const VectorXd& y = VectorXd())
     {
         /*!
@@ -181,12 +181,13 @@ namespace FT{
 
         vector<ArrayXd> stack_f; 
         vector<ArrayXb> stack_b;
+        vector<vector<ArrayXd> > stack_z;
         params.msg("evaluating program " + get_eqn(),2);
         // evaluate each node in program
         for (const auto& n : program)
         {
         	if(stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
-	            n->evaluate(X, y, stack_f, stack_b);
+	            n->evaluate(X, y, z, stack_f, stack_b, stack_z);
             else
             {
                 std::cout << "out() error: node " << n->name << " in " + program_str() + 
@@ -234,10 +235,11 @@ namespace FT{
         {
             vector<string> stack_f;     // symbolic floating stack
             vector<string> stack_b;     // symbolic boolean stack
+            vector<string> stack_z;     // symbolic logitudinal stack
 
             for (auto n : program){
             	if(stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
-                	n->eval_eqn(stack_f,stack_b);
+                	n->eval_eqn(stack_f,stack_b, stack_z);
                 else
                 {
                     std::cout << "get_eqn() error: node " << n->name << " in " + program_str() + " is invalid\n";
@@ -250,6 +252,8 @@ namespace FT{
                 eqn += "[" + s + "]";
             for (auto s : stack_b) 
                 eqn += "[" + s + "]";              
+            for (auto s : stack_z) 
+                eqn += "[" + s + "]";
         }
 
         return eqn;

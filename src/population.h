@@ -104,12 +104,14 @@ namespace FT{
         /*! checks whether program fulfills all its arities. */
         vector<ArrayXd> stack_f; 
         vector<ArrayXb> stack_b;
+        vector<vector<ArrayXd> > stack_z;
         MatrixXd X = MatrixXd::Zero(num_features,2); 
         VectorXd y = VectorXd::Zero(2); 
+        vector<vector<ArrayXd> > z;
         unsigned i = 0; 
         for (const auto& n : program){
             if ( stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
-                n->evaluate(X, y, stack_f, stack_b);
+                n->evaluate(X, y, z, stack_f, stack_b, stack_z);
             else{
                 std::cout << "Error: ";
                 for (const auto& p: program) std::cout << p->name << " ";

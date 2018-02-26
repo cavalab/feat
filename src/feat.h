@@ -251,22 +251,22 @@ namespace FT{
             ~Feat(){} 
                         
             /// train a model.             
-            void fit(MatrixXd& X, VectorXd& y);
+            void fit(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > &z);
             
             /// predict on unseen data.             
-            VectorXd predict(MatrixXd& X);        
+            VectorXd predict(MatrixXd& X, vector<vector<ArrayXd> > &z);        
             
             /// transform an input matrix using a program.                          
-            MatrixXd transform(MatrixXd& X,  Individual *ind = 0);
+            MatrixXd transform(MatrixXd& X,  vector<vector<ArrayXd> > &z, Individual *ind = 0);
             
             /// convenience function calls fit then predict.            
-            VectorXd fit_predict(MatrixXd& X, VectorXd& y){ fit(X,y); return predict(X); } 
+            VectorXd fit_predict(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > &z){ fit(X, y, z); return predict(X, z); } 
             
             /// convenience function calls fit then transform. 
-            MatrixXd fit_transform(MatrixXd& X, VectorXd& y){ fit(X,y); return transform(X); }
+            MatrixXd fit_transform(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > &z){ fit(X, y, z); return transform(X, z); }
                   
             /// scoring function 
-            double score(MatrixXd& X, VectorXd& y);
+            double score(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > &z);
             
         private:
             // Parameters
@@ -291,12 +291,12 @@ namespace FT{
             /// method to fit inital ml model            
             void initial_model(MatrixXd& X, VectorXd& y);
             /// fits final model to best transformation
-            void final_model(MatrixXd& X, VectorXd& y);
+            void final_model(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > &z);
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
     
-    void Feat::fit(MatrixXd& X, VectorXd& y)
+    void Feat::fit(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > &z)
     {
         /*!
          *  Input:
@@ -365,7 +365,7 @@ namespace FT{
        
         // evaluate initial population
         params.msg("Evaluating initial population",1);
-        p_eval->fitness(*p_pop,X_t,y_t,F,params);
+        p_eval->fitness(*p_pop,X_t, z, y_t,F,params);
 
         vector<size_t> survivors;
 
@@ -384,7 +384,7 @@ namespace FT{
 
             // evaluate offspring
             params.msg("evaluating offspring...", 2);
-            p_eval->fitness(*p_pop, X_t, y_t, F, params, true);
+            p_eval->fitness(*p_pop, X_t, z, y_t, F, params, true);
 
             // select survivors from combined pool of parents and offspring
             params.msg("survival...", 2);
@@ -405,12 +405,12 @@ namespace FT{
         if (params.split < 1.0)
         {
             F_v.resize(X_v.cols(),int(2*params.pop_size)); 
-            p_eval->fitness(*p_pop, X_v, y_v, F_v, params);
+            p_eval->fitness(*p_pop, X_v, z, y_v, F_v, params);
             initial_model(X_v, y_v);        // calculate baseline model validation score
             update_best();                  // get the best validation model
         }
         
-        final_model(X,y);   // fit final model to best model
+        final_model(X, y, z);   // fit final model to best model
         params.msg("best validation representation: " + best_ind.get_eqn(),1);
         params.msg("validation score: " + std::to_string(best_score), 1);
 
@@ -422,11 +422,11 @@ namespace FT{
         out_model.close();
     }
 
-    void Feat::final_model(MatrixXd& X, VectorXd& y)
+    void Feat::final_model(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > &z)
     {
         // fits final model to best tranformation found.
         bool pass = true;
-        MatrixXd Phi = transform(X);
+        MatrixXd Phi = transform(X, z);
         VectorXd yhat = p_ml->out(Phi,y,params,pass,best_ind.dtypes);
     }
     void Feat::initial_model(MatrixXd& X, VectorXd& y)
@@ -452,7 +452,7 @@ namespace FT{
         best_ind.fitness = best_score;
     }
 
-    MatrixXd Feat::transform(MatrixXd& X, Individual *ind)
+    MatrixXd Feat::transform(MatrixXd& X, vector<vector<ArrayXd> > &z, Individual *ind)
     {
         /*!
          * Transforms input data according to ind or best ind, if ind is undefined.
@@ -464,19 +464,19 @@ namespace FT{
                 throw;
             }
             normalize(X,params.dtypes);
-            MatrixXd Phi = best_ind.out(X,params);
+            MatrixXd Phi = best_ind.out(X, z, params);
             normalize(Phi,best_ind.dtypes);
             return Phi;
         }
         normalize(X,params.dtypes);
-        MatrixXd Phi = ind->out(X,params);
+        MatrixXd Phi = ind->out(X, z,params);
         normalize(Phi,ind->dtypes);
         return Phi;
     }
     
-    VectorXd Feat::predict(MatrixXd& X)
+    VectorXd Feat::predict(MatrixXd& X, vector<vector<ArrayXd> > &z)
     {        
-        MatrixXd Phi = transform(X);
+        MatrixXd Phi = transform(X, z);
         auto PhiSG = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(Phi));
         SGVector<double> y_pred;
         VectorXd yhat;
@@ -524,9 +524,9 @@ namespace FT{
  
     }
     
-    double Feat::score(MatrixXd& X, VectorXd& y)
+    double Feat::score(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > &z)
     {
-        VectorXd yhat = predict(X);
+        VectorXd yhat = predict(X, z);
         
         if (params.classification)
             return p_eval->bal_accuracy(y,yhat,vector<int>(),false);

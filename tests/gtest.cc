@@ -136,10 +136,12 @@ TEST(Feat, predict)
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
+             
+    vector<vector<ArrayXd> > z;
     
     feat.set_verbosity(0);
     
-    feat.fit(X, y);
+    feat.fit(X, y, z);
     
     X << 0,1,  
          0.4,0.8,  
@@ -149,7 +151,7 @@ TEST(Feat, predict)
          0.5, -0.8,
          0.1,-0.9;
     
-    ASSERT_EQ(feat.predict(X).size(), 7);             //TODO had to remove !bzero ASSERT in set_termincal weights
+    ASSERT_EQ(feat.predict(X, z).size(), 7);             //TODO had to remove !bzero ASSERT in set_termincal weights
 }
 
 TEST(Feat, transform)
@@ -171,10 +173,12 @@ TEST(Feat, transform)
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
+             
+    vector<vector<ArrayXd> > z;
     
     feat.set_verbosity(0);
     
-    feat.fit(X, y);
+    feat.fit(X, y, z);
     
     X << 0,1,  
          0.4,0.8,  
@@ -184,7 +188,7 @@ TEST(Feat, transform)
          0.5, -0.8,
          0.1,-0.9;
         
-    MatrixXd res = feat.transform(X);
+    MatrixXd res = feat.transform(X, z);
     ASSERT_EQ(res.cols(), 7);
     ASSERT_TRUE(res.rows() <= feat.params.max_dim);
 }
@@ -208,10 +212,12 @@ TEST(Feat, fit_predict)
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
+             
+    vector<vector<ArrayXd> > z;
     
     feat.set_verbosity(0);
          
-    ASSERT_EQ(feat.fit_predict(X, y).size(), 7);
+    ASSERT_EQ(feat.fit_predict(X, y, z).size(), 7);
 }
 
 TEST(Feat, fit_transform)
@@ -233,10 +239,12 @@ TEST(Feat, fit_transform)
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
+             
+    vector<vector<ArrayXd> > z;
     
     feat.set_verbosity(0);
     
-    MatrixXd res = feat.fit_transform(X, y);
+    MatrixXd res = feat.fit_transform(X, y, z);
     ASSERT_EQ(res.cols(), 7);
     ASSERT_TRUE(res.rows() <= feat.params.max_dim);
 }
@@ -290,6 +298,7 @@ TEST(NodeTest, Evaluate)
 	vector<ArrayXb> stack_b;
 	ArrayXd x;
 	ArrayXb z;
+	vector<vector<ArrayXd> > z1;
 	
 	MatrixXd X(3,2); 
     X << -2.0, 0.0, 10.0,
@@ -312,7 +321,7 @@ TEST(NodeTest, Evaluate)
 	stack_f.push_back(X.row(0));
 	stack_f.push_back(X.row(1));
 	
-	addObj->evaluate(X, Y, stack_f, stack_b);	
+	addObj->evaluate(X, Y, z1, stack_f, stack_b, z1);	
 	
 	x = stack_f.back(); stack_f.pop_back();
 	
@@ -326,7 +335,7 @@ TEST(NodeTest, Evaluate)
 	stack_f.push_back(X.row(0));
 	stack_f.push_back(X.row(1));
 	
-	subObj->evaluate(X, Y, stack_f, stack_b);	
+	subObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	x = stack_f.back(); stack_f.pop_back();
 	
@@ -340,7 +349,7 @@ TEST(NodeTest, Evaluate)
 	stack_f.push_back(X.row(0));
 	stack_f.push_back(X.row(1));
 	
-	mulObj->evaluate(X, Y, stack_f, stack_b);	
+	mulObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	x = stack_f.back(); stack_f.pop_back();
 	
@@ -354,7 +363,7 @@ TEST(NodeTest, Evaluate)
 	stack_f.push_back(X.row(0));
 	stack_f.push_back(X.row(1));
 	
-	divObj->evaluate(X, Y, stack_f, stack_b);	
+	divObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	x = stack_f.back(); stack_f.pop_back();
 	
@@ -367,7 +376,7 @@ TEST(NodeTest, Evaluate)
 	stack_b.clear();
 	stack_f.push_back(X.row(0));
 	
-	sqrtObj->evaluate(X, Y, stack_f, stack_b);	
+	sqrtObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	x = stack_f.back(); stack_f.pop_back();
 	
@@ -380,7 +389,7 @@ TEST(NodeTest, Evaluate)
 	stack_b.clear();
 	stack_f.push_back(X.row(0));
 	
-	sinObj->evaluate(X, Y, stack_f, stack_b);	
+	sinObj->evaluate(X, Y, z1, stack_f, stack_b, z1);	
 	
 	x = stack_f.back(); stack_f.pop_back();
 	
@@ -393,7 +402,7 @@ TEST(NodeTest, Evaluate)
 	stack_b.clear();
 	stack_f.push_back(X.row(0));
 	
-	cosObj->evaluate(X, Y, stack_f, stack_b);	
+	cosObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	x = stack_f.back(); stack_f.pop_back();
 	
@@ -406,7 +415,7 @@ TEST(NodeTest, Evaluate)
 	stack_b.clear();
 	stack_f.push_back(X.row(0));
 	
-	squareObj->evaluate(X, Y, stack_f, stack_b);	
+	squareObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	x = stack_f.back(); stack_f.pop_back();
 	
@@ -420,7 +429,7 @@ TEST(NodeTest, Evaluate)
 	stack_f.push_back(X.row(0));
 	stack_f.push_back(X.row(1));
 	
-	expObj->evaluate(X, Y, stack_f, stack_b);	
+	expObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	x = stack_f.back(); stack_f.pop_back();
 	
@@ -433,7 +442,7 @@ TEST(NodeTest, Evaluate)
 	stack_b.clear();
 	stack_f.push_back(X.row(0));
 	
-	exptObj->evaluate(X, Y, stack_f, stack_b);	
+	exptObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	x = stack_f.back(); stack_f.pop_back();
 	
@@ -446,7 +455,7 @@ TEST(NodeTest, Evaluate)
 	stack_b.clear();
 	stack_f.push_back(X.row(0));
 	
-	logObj->evaluate(X, Y, stack_f, stack_b);	
+	logObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	x = stack_f.back(); stack_f.pop_back();
 	
@@ -460,7 +469,7 @@ TEST(NodeTest, Evaluate)
 	stack_b.push_back(Z1);
 	stack_b.push_back(Z2);
 	
-	andObj->evaluate(X, Y, stack_f, stack_b);	
+	andObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	z = stack_b.back(); stack_b.pop_back();
 	
@@ -474,7 +483,7 @@ TEST(NodeTest, Evaluate)
 	stack_b.push_back(Z1);
 	stack_b.push_back(Z2);
 	
-	orObj->evaluate(X, Y, stack_f, stack_b);	
+	orObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	z = stack_b.back(); stack_b.pop_back();
 	
@@ -487,7 +496,7 @@ TEST(NodeTest, Evaluate)
 	stack_b.clear();
 	stack_b.push_back(Z1);
 	
-	notObj->evaluate(X, Y, stack_f, stack_b);	
+	notObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	z = stack_b.back(); stack_b.pop_back();
 	
@@ -501,7 +510,7 @@ TEST(NodeTest, Evaluate)
 	stack_f.push_back(X.row(0));
 	stack_f.push_back(X.row(1));
 	
-	eqObj->evaluate(X, Y, stack_f, stack_b);	
+	eqObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	z = stack_b.back(); stack_b.pop_back();
 	
@@ -515,7 +524,7 @@ TEST(NodeTest, Evaluate)
 	stack_f.push_back(X.row(0));
 	stack_f.push_back(X.row(1));
 	
-	gtObj->evaluate(X, Y, stack_f, stack_b);	
+	gtObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	z = stack_b.back(); stack_b.pop_back();
 	
@@ -529,7 +538,7 @@ TEST(NodeTest, Evaluate)
 	stack_f.push_back(X.row(0));
 	stack_f.push_back(X.row(1));
 	
-	geqObj->evaluate(X, Y, stack_f, stack_b);	
+	geqObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	z = stack_b.back(); stack_b.pop_back();
 	
@@ -543,7 +552,7 @@ TEST(NodeTest, Evaluate)
 	stack_f.push_back(X.row(0));
 	stack_f.push_back(X.row(1));
 	
-	ltObj->evaluate(X, Y, stack_f, stack_b);	
+	ltObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	z = stack_b.back(); stack_b.pop_back();
 	
@@ -557,7 +566,7 @@ TEST(NodeTest, Evaluate)
 	stack_f.push_back(X.row(0));
 	stack_f.push_back(X.row(1));
 	
-	leqObj->evaluate(X, Y, stack_f, stack_b);	
+	leqObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	z = stack_b.back(); stack_b.pop_back();
 	
@@ -571,7 +580,7 @@ TEST(NodeTest, Evaluate)
 	stack_f.push_back(X.row(0));
 	stack_b.push_back(Z1);
 	
-	ifObj->evaluate(X, Y, stack_f, stack_b);	
+	ifObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	x = stack_f.back(); stack_f.pop_back();
 	
@@ -586,7 +595,7 @@ TEST(NodeTest, Evaluate)
 	stack_f.push_back(X.row(1));
 	stack_b.push_back(Z1);
 	
-	iteObj->evaluate(X, Y, stack_f, stack_b);	
+	iteObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	x = stack_f.back(); stack_f.pop_back();
 	
@@ -600,7 +609,7 @@ TEST(NodeTest, Evaluate)
 	stack_b.clear();
 	stack_f.push_back(X.row(0));
 	
-	tanObj->evaluate(X, Y, stack_f, stack_b);	
+	tanObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	x = stack_f.back(); stack_f.pop_back();
 	
@@ -613,7 +622,7 @@ TEST(NodeTest, Evaluate)
 	stack_b.clear();
 	stack_f.push_back(X.row(0));
 	
-	logitObj->evaluate(X, Y, stack_f, stack_b);	
+	logitObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	x = stack_f.back(); stack_f.pop_back();
 	
@@ -626,7 +635,7 @@ TEST(NodeTest, Evaluate)
 	stack_b.clear();
 	stack_f.push_back(X.row(0));
 	
-	stepObj->evaluate(X, Y, stack_f, stack_b);	
+	stepObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	x = stack_f.back(); stack_f.pop_back();
 	
@@ -639,7 +648,7 @@ TEST(NodeTest, Evaluate)
 	stack_b.clear();
 	stack_f.push_back(X.row(0));
 	
-	signObj->evaluate(X, Y, stack_f, stack_b);	
+	signObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	x = stack_f.back(); stack_f.pop_back();
 	
@@ -654,7 +663,7 @@ TEST(NodeTest, Evaluate)
 	stack_b.push_back(Z1);
 	stack_b.push_back(Z2);
 	
-	xorObj->evaluate(X, Y, stack_f, stack_b);	
+	xorObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	z = stack_b.back(); stack_b.pop_back();
 	
@@ -667,7 +676,7 @@ TEST(NodeTest, Evaluate)
 	stack_b.clear();
 	stack_f.push_back(X.row(0));
 	
-	gausObj->evaluate(X, Y, stack_f, stack_b);	
+	gausObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	x = stack_f.back(); stack_f.pop_back();
 	
@@ -681,7 +690,7 @@ TEST(NodeTest, Evaluate)
 	stack_f.push_back(X.row(0));
 	stack_f.push_back(X.row(1));
 	
-	gaus2dObj->evaluate(X, Y, stack_f, stack_b);	
+	gaus2dObj->evaluate(X, Y, z1, stack_f, stack_b, z1);
 	
 	x = stack_f.back(); stack_f.pop_back();
 	
@@ -697,11 +706,12 @@ bool isValidProgram(vector<std::shared_ptr<Node>>& program, unsigned num_feature
     vector<ArrayXd> stack_f; 
     vector<ArrayXb> stack_b;
     MatrixXd X = MatrixXd::Zero(num_features,2); 
-    VectorXd y = VectorXd::Zero(2); 
+    VectorXd y = VectorXd::Zero(2);
+    vector<vector<ArrayXd> > z; 
    
     for (const auto& n : program){
         if ( stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
-            n->evaluate(X, y, stack_f, stack_b);
+            n->evaluate(X, y, z, stack_f, stack_b, z);
         else
             return false; 
     }
@@ -726,6 +736,8 @@ TEST(Variation, MutationTests)
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
+             
+    vector<vector<ArrayXd> > z; 
 
     feat.params.check_ml();       
 
@@ -744,7 +756,7 @@ TEST(Variation, MutationTests)
     
     feat.F.resize(X.cols(),int(2*feat.params.pop_size));
     
-    feat.p_eval->fitness(*(feat.p_pop),X,y,feat.F,feat.params);
+    feat.p_eval->fitness(*(feat.p_pop),X,z, y,feat.F,feat.params);
     
     vector<size_t> parents;
     parents.push_back(2);
@@ -793,6 +805,8 @@ TEST(Variation, CrossoverTests)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
              
+    vector<vector<ArrayXd> > z; 
+             
     feat.params.check_ml();       
 
     feat.set_dtypes(find_dtypes(X));
@@ -811,7 +825,7 @@ TEST(Variation, CrossoverTests)
     
     feat.F.resize(X.cols(),int(2*feat.params.pop_size));
     
-    feat.p_eval->fitness(*(feat.p_pop),X,y,feat.F,feat.params);
+    feat.p_eval->fitness(*(feat.p_pop),X,z, y,feat.F,feat.params);
     
     vector<size_t> parents;
     parents.push_back(2);
@@ -1187,6 +1201,8 @@ TEST(Evaluation, fitness)
     // y = 2*sin(x0) + 3*cos(x0)
     y << 3.0,  3.30384889,  0.57015434, -2.68773747, -3.47453585,
              -1.06686199,  2.32167986,  3.57567996,  1.54221639, -1.90915382;
+             
+    vector<vector<ArrayXd> > z; 
 
     // make population 
     Population pop(2);
@@ -1205,7 +1221,7 @@ TEST(Evaluation, fitness)
 
     // get fitness
     Evaluation eval; 
-    eval.fitness(pop, X, y, F, params);
+    eval.fitness(pop, X, z, y, F, params);
     // check results
     ASSERT_TRUE(pop.individuals[0].fitness < NEAR_ZERO);
     ASSERT_TRUE(pop.individuals[1].fitness - 60.442868924187906 < NEAR_ZERO);
@@ -1278,6 +1294,8 @@ TEST(Selection, SelectionOperator)
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
+             
+    vector<vector<ArrayXd> > z; 
 
 	feat.timer.Reset();
 	
@@ -1304,7 +1322,7 @@ TEST(Selection, SelectionOperator)
     feat.p_pop->init(feat.best_ind, feat.params);
     
     feat.F.resize(X_t.cols(),int(2*feat.params.pop_size));
-    feat.p_eval->fitness(*(feat.p_pop), X_t, y_t, feat.F, feat.params);
+    feat.p_eval->fitness(*(feat.p_pop), X_t, z, y_t, feat.F, feat.params);
     vector<size_t> parents = feat.p_sel->select(*(feat.p_pop), feat.F, feat.params);
     
     ASSERT_EQ(parents.size(), feat.get_pop_size());

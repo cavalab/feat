@@ -29,7 +29,7 @@ namespace FT{
                 
             
             /// fitness of population.
-            void fitness(Population& pop, const MatrixXd& X, VectorXd& y, MatrixXd& F, 
+            void fitness(Population& pop, const MatrixXd& X, const vector<vector<ArrayXd> > &z, VectorXd& y, MatrixXd& F, 
                          const Parameters& params, bool offspring);
           
             /// assign fitness to an individual and to F.  
@@ -60,7 +60,7 @@ namespace FT{
     /////////////////////////////////////////////////////////////////////////////////// Definitions  
     
     // fitness of population
-    void Evaluation::fitness(Population& pop, const MatrixXd& X, VectorXd& y, MatrixXd& F, 
+    void Evaluation::fitness(Population& pop, const MatrixXd& X, const vector<vector<ArrayXd> > &z, VectorXd& y, MatrixXd& F, 
                  const Parameters& params, bool offspring=false)
     {
     	/*!
@@ -87,7 +87,7 @@ namespace FT{
         {
                         // calculate program output matrix Phi
             params.msg("Generating output for " + pop.individuals[i].get_eqn(), 2);
-            MatrixXd Phi = pop.individuals.at(i).out(X, params, y);            
+            MatrixXd Phi = pop.individuals.at(i).out(X, z, params, y);            
 
             // calculate ML model from Phi
             params.msg("ML training on " + pop.individuals[i].get_eqn(), 2);
@@ -96,7 +96,7 @@ namespace FT{
             VectorXd yhat = ml->out(Phi,y,params,pass,pop.individuals[i].dtypes);
             if (!pass){
                 std::cerr << "Error training eqn " + pop.individuals[i].get_eqn() + "\n";
-                std::cerr << "with raw output " << pop.individuals[i].out(X,params,y) << "\n";
+                std::cerr << "with raw output " << pop.individuals[i].out(X, z, params,y) << "\n";
                 throw;
             }
             // assign weights to individual

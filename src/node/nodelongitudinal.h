@@ -2,24 +2,21 @@
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
-#ifndef NODE_VARIABLE
-#define NODE_VARIABLE
+#ifndef NODE_LONGITUDINAL
+#define NODE_LONGITUDINAL
 
 #include "node.h"
 
 namespace FT{
-	class NodeVariable : public Node
+	class NodeLongitudinal : public Node
 	{
 		public:
 			size_t loc;             ///< column location in X, for x types
 			
-			NodeVariable(const size_t& l, char ntype = 'f', std::string n="")
+			NodeLongitudinal(const size_t& l)
 			{
-                if (n.empty())
-    			    name = "x_" + std::to_string(l);
-                else
-                    name = n;
-    			otype = ntype;
+                name = "l_" + std::to_string(l);
+    			otype = 'f';
     			arity['f'] = 0;
     			arity['b'] = 0;
     			complexity = 1;
@@ -30,19 +27,13 @@ namespace FT{
 			void evaluate(const MatrixXd& X, const VectorXd& y, const vector<vector<ArrayXd> > &z, 
 			        vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b, vector<vector<ArrayXd> > &stack_z)
 		    {
-	    		if (otype == 'b')
-	                stack_b.push_back(X.row(loc).cast<bool>());
-	            else
-	                stack_f.push_back(X.row(loc));
+		        stack_z.push_back(z[loc]);
 		    }
 
 		    /// Evaluates the node symbolically
 		    void eval_eqn(vector<string>& stack_f, vector<string>& stack_b, vector<string>& stack_z)
 		    {
-	    		if (otype == 'b')
-	                stack_b.push_back(name);
-	            else
-	                stack_f.push_back(name);
+		        stack_z.push_back(name);
 		    }
 	};
 }

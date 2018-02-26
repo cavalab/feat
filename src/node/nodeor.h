@@ -22,8 +22,8 @@ namespace FT{
     		}
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
-                    vector<ArrayXb>& stack_b)
+            void evaluate(const MatrixXd& X, const VectorXd& y, const vector<vector<ArrayXd> > &z, 
+			        vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b, vector<vector<ArrayXd> > &stack_z)
             {
                 ArrayXb x2 = stack_b.back(); stack_b.pop_back();
                 ArrayXb x1 = stack_b.back(); stack_b.pop_back();
@@ -33,7 +33,7 @@ namespace FT{
             }
 
             /// Evaluates the node symbolically
-            void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
+            void eval_eqn(vector<string>& stack_f, vector<string>& stack_b, vector<string>& stack_z)
             {
                 string x2 = stack_b.back(); stack_b.pop_back();
                 string x1 = stack_b.back(); stack_b.pop_back();

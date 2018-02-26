@@ -33,11 +33,11 @@ namespace FT{
             virtual ~Node(){}
            
             /// Evaluates the node and updates the stack states. 
-            virtual void evaluate(const MatrixXd& X, const VectorXd& y,vector<ArrayXd>& stack_f, 
-                    vector<ArrayXb>& stack_b) = 0; 
+            virtual void evaluate(const MatrixXd& X, const VectorXd& y, const vector<vector<ArrayXd> > &z, 
+			        vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b, vector<vector<ArrayXd> > &stack_z) = 0; 
 
             /// evaluates the node symbolically
-            virtual void eval_eqn(vector<string>& stack_f, vector<string>& stack_b) = 0;
+            virtual void eval_eqn(vector<string>& stack_f, vector<string>& stack_b, vector<string>& stack_z) = 0;
 
             // total arity
             unsigned int total_arity(){ return arity['f'] + arity['b']; };
