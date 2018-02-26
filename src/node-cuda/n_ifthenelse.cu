@@ -1,46 +1,51 @@
-/* FEWTWO
+/* FEAT
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
-#ifndef NODE_IFTHENELSE
-#define NODE_IFTHENELSE
-
-#include "node.h"
+#include "cuda_utils.h"
+#include "n_ifthenelse.h"
 
 namespace FT{
-	class NodeIfThenElse : public Node
+   		
+    __global__ void Add(double * x1, double * x2, double * out, size_t N)
+    {                    
+        for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
+        {
+            out[i] = x1[i] + x2[i];
+        }
+        return;
+    }
+    /// Evaluates the node and updates the stack states. 
+    void NodeAdd::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
+            vector<ArrayXb>& stack_b)
     {
-    	public:
-    	
-    		NodeIfThenElse()
-    	    {
-    			name = "ite";
-    			otype = 'f';
-    			arity['f'] = 2;
-    			arity['b'] = 1;
-    			complexity = 5;
-    		}
-    		
-            /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
-                    vector<ArrayXb>& stack_b)
-            {
-                ArrayXb b = stack_b.back(); stack_b.pop_back();
-                ArrayXd f2 = stack_f.back(); stack_f.pop_back();
-                ArrayXd f1 = stack_f.back(); stack_f.pop_back();
-                stack_f.push_back(b.select(f1,f2));
-            }
+        ArrayXd x2 = stack_f.back(); stack_f.pop_back();
+        ArrayXd x1 = stack_f.back(); stack_f.pop_back();
+        // evaluate on the GPU
+        ArrayXd result = ArrayXd(x1.size());
+        size_t N = result.size();
+        double * dev_res;
+        int numSMs;
+        cudaDeviceGetAttribute(&numSMs, cudaDevAttrMultiProcessorCount, 0);
+        // allocate device arrays
+        double * dev_x1, * dev_x2 ; 
+        HANDLE_ERROR(cudaMalloc((void **)& dev_x1, sizeof(double)*N));
+        HANDLE_ERROR(cudaMalloc((void **)& dev_x2, sizeof(double)*N));
+        HANDLE_ERROR(cudaMalloc((void **)&dev_res, sizeof(double)*N));
+        // Copy to device
+        HANDLE_ERROR(cudaMemcpy(dev_x1, x1.data(), sizeof(double)*N, cudaMemcpyHostToDevice));
+        HANDLE_ERROR(cudaMemcpy(dev_x2, x2.data(), sizeof(double)*N, cudaMemcpyHostToDevice));
 
-            /// Evaluates the node symbolically
-            void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
-            {
-            	string b = stack_b.back(); stack_b.pop_back();
-                string f2 = stack_f.back(); stack_f.pop_back();
-                string f1 = stack_f.back(); stack_f.pop_back();
-                stack_f.push_back("if-then-else(" + b + "," + f1 + "," + f2 + ")");
-            }
-    };
+        Add<<< 32*numSMs, 128 >>>(dev_x1, dev_x2, dev_res, N);
+       
+        // Copy to host
+        HANDLE_ERROR(cudaMemcpy(result.data(), dev_res, sizeof(double)*N, cudaMemcpyDeviceToHost));
+        
+        stack_f.push_back(limited(result));
+        // Free memory
+        cudaFree(dev_x1); cudaFree(dev_x2); cudaFree(dev_res);
+    }
 
 }	
-
 #endif
+

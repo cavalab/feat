@@ -3,7 +3,7 @@
 # license: GNU/GPL v3
 
 ######### Options ###########################
-option( CORE_USE_CUDA   "Use CUDA to speed up certain parts of the code."  OFF )
+option( CORE_USE_CUDA   "Use CUDA to speed up certain parts of the code."  ON )
 #############################################
 
 ######### CUDA decisions ####################

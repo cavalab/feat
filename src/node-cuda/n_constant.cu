@@ -1,68 +1,51 @@
-/* FEWTWO
+/* FEAT
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
-#ifndef NODE_CONSTANT
-#define NODE_CONSTANT
-
-#include "node.h"
+#include "cuda_utils.h"
+#include "n_constant.h"
 
 namespace FT{
-	class NodeConstant : public Node
+   		
+    __global__ void Add(double * x1, double * x2, double * out, size_t N)
+    {                    
+        for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
+        {
+            out[i] = x1[i] + x2[i];
+        }
+        return;
+    }
+    /// Evaluates the node and updates the stack states. 
+    void NodeAdd::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
+            vector<ArrayXb>& stack_b)
     {
-    	public:
-    		
-    		double d_value;           ///< value, for k and x types
-    		bool b_value;
-    		
-    		NodeConstant()
-    		{
-    			std::cerr << "error in nodeconstant.h : invalid constructor called";
-				throw;
-    		}
+        ArrayXd x2 = stack_f.back(); stack_f.pop_back();
+        ArrayXd x1 = stack_f.back(); stack_f.pop_back();
+        // evaluate on the GPU
+        ArrayXd result = ArrayXd(x1.size());
+        size_t N = result.size();
+        double * dev_res;
+        int numSMs;
+        cudaDeviceGetAttribute(&numSMs, cudaDevAttrMultiProcessorCount, 0);
+        // allocate device arrays
+        double * dev_x1, * dev_x2 ; 
+        HANDLE_ERROR(cudaMalloc((void **)& dev_x1, sizeof(double)*N));
+        HANDLE_ERROR(cudaMalloc((void **)& dev_x2, sizeof(double)*N));
+        HANDLE_ERROR(cudaMalloc((void **)&dev_res, sizeof(double)*N));
+        // Copy to device
+        HANDLE_ERROR(cudaMemcpy(dev_x1, x1.data(), sizeof(double)*N, cudaMemcpyHostToDevice));
+        HANDLE_ERROR(cudaMemcpy(dev_x2, x2.data(), sizeof(double)*N, cudaMemcpyHostToDevice));
 
-            /// declares a boolean constant
-    		NodeConstant(bool& v)
-    		{
-    			name = "k_b";
-    			otype = 'b';
-    			arity['f'] = 0;
-    			arity['b'] = 0;
-    			complexity = 1;
-    			b_value = v;
-    		}
+        Add<<< 32*numSMs, 128 >>>(dev_x1, dev_x2, dev_res, N);
+       
+        // Copy to host
+        HANDLE_ERROR(cudaMemcpy(result.data(), dev_res, sizeof(double)*N, cudaMemcpyDeviceToHost));
+        
+        stack_f.push_back(limited(result));
+        // Free memory
+        cudaFree(dev_x1); cudaFree(dev_x2); cudaFree(dev_res);
+    }
 
-            /// declares a double constant
-    		NodeConstant(const double& v)
-    		{
-    			name = "k_d";
-    			otype = 'f';
-    			arity['f'] = 0;
-    			arity['b'] = 0;
-    			complexity = 1;
-    			d_value = v;
-    		}
-    		
-            /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
-                    vector<ArrayXb>& stack_b)
-            {
-        		if (otype == 'b')
-                    stack_b.push_back(ArrayXb::Constant(X.cols(),int(b_value)));
-                else 	
-                    stack_f.push_back(ArrayXd::Constant(X.cols(),d_value));
-            }
-
-            /// Evaluates the node symbolically
-            void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
-            {
-        		if (otype == 'b')
-                    stack_b.push_back(std::to_string(b_value));
-                else 	
-                    stack_f.push_back(std::to_string(d_value));
-            }
-    		
-    };
 }	
-
 #endif
+
