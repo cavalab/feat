@@ -65,25 +65,25 @@ namespace FT{
     
     tokenType getTokenType(string &token)
     {
-        if(!token.compare("population"))
+        if(!token.compare("pop_size"))
             return population;
         else if(!token.compare("generations"))
             return generation;
         else if(!token.compare("ml"))
             return ml;
-        else if(!token.compare("maxStall"))
+        else if(!token.compare("max_stall"))
             return maxStall;
         else if(!token.compare("selection"))
             return selection;
         else if(!token.compare("survival"))
             return survival;
-        else if(!token.compare("crossRate"))
+        else if(!token.compare("cross_rate"))
             return crossRate;
         else if(!token.compare("functions"))
             return functions;
-        else if(!token.compare("maxDepth"))
+        else if(!token.compare("max_depth"))
             return maxDepth;
-        else if(!token.compare("maxDim"))
+        else if(!token.compare("max_dim"))
             return maxDim;
         else if(!token.compare("erc"))
             return erc;
@@ -224,6 +224,9 @@ namespace FT{
             
             setDefaults();
             
+            for(auto str : mlStr)
+                cout<<"Ml method "<<str<<"\n";
+            
             pushObjects();
             
             startIndex = hyperParams.find('{', endIndex + 1);
@@ -324,15 +327,17 @@ namespace FT{
     {
         str += ",";          // add delimiter to end 
         string delim = "\",";
-        size_t pos = 0;
+        size_t pos = 0, start;
         string token;
         vec.clear();
         while ((pos = str.find(delim)) != string::npos) 
         {
-            token = trim(str.substr(0, pos));
-            vec.push_back(token); break;
+            start = str.find("\"");
+            token = trim(str.substr(start+1, pos-start-1));
+            vec.push_back(token);
             
             str.erase(0, pos + delim.length());
+
         }
     }
     
@@ -344,9 +349,11 @@ namespace FT{
         size_t pos = 0;
         string token;
         vec.clear();
+        //cout<<"Filling vector with str as "<<str<<"\n";
         while ((pos = str.find(delim)) != string::npos) 
         {
             token = trim(str.substr(0, pos));
+            //cout<<"Pushed "<<token<<"\n";
             switch(type)
             {
                 case Integer:   vec.push_back(stoi(token)); break;
@@ -402,72 +409,78 @@ namespace FT{
     	
     	cout<<"Total number of objects created are "<<featObjs.size()<<"\n";
     	
-    	#pragma omp parallel for
-    	for(int i = 0; i < featObjs.size(); i++)
+    	#pragma omp parallel
     	{
-    		VectorXd objScore(foldSize);
-    		
-    		int testIndex = foldSize - 1;
-    		
-    		// loop to fit all data folds in a single object and calculate the mean score
-	    	for(int j = 0; j < foldSize; j++)
-	    	{	    		
-	    		int filled = 0, k, l;
+    	    #pragma omp single
+        	for(int i = 0; i < featObjs.size(); i++)
+        	{
+        	    #pragma omp task
+        		{
+            		VectorXd objScore(foldSize);
+            		
+            		int testIndex = foldSize - 1;
+            		
+            		// loop to fit all data folds in a single object and calculate the mean score
+	            	for(int j = 0; j < foldSize; j++)
+	            	{	    		
+	            		int filled = 0, k, l;
 			
-				MatrixXd trainX(x.rows(), x.cols() - dataFolds[testIndex].quantity);
-				VectorXd trainY(x.cols() - dataFolds[testIndex].quantity);
+				        MatrixXd trainX(x.rows(), x.cols() - dataFolds[testIndex].quantity);
+				        VectorXd trainY(x.cols() - dataFolds[testIndex].quantity);
 				
-				//creating training data from data folds		
-				for(k = 0; k < foldSize; k++)
-				{
-					if(k != testIndex)
-					{
-						trainX.block(0, filled, x.rows(), dataFolds[k].quantity) = 
-							x.block(0, dataFolds[k].startIndex, x.rows(), dataFolds[k].quantity);
-						filled += dataFolds[k].quantity;
-					}
-				}
+				        //creating training data from data folds		
+				        for(k = 0; k < foldSize; k++)
+				        {
+					        if(k != testIndex)
+					        {
+						        trainX.block(0, filled, x.rows(), dataFolds[k].quantity) = 
+							        x.block(0, dataFolds[k].startIndex, x.rows(), dataFolds[k].quantity);
+						        filled += dataFolds[k].quantity;
+					        }
+				        }
 				
-				// creating training data outputs from data folds				
-				for(k = 0, l = 0; k < y.size(); k++)
-					if(k < dataFolds[testIndex].startIndex ||
-					   k >= dataFolds[testIndex].startIndex+dataFolds[testIndex].quantity)
-						trainY(l++) = y(k);
+				        // creating training data outputs from data folds				
+				        for(k = 0, l = 0; k < y.size(); k++)
+					        if(k < dataFolds[testIndex].startIndex ||
+					           k >= dataFolds[testIndex].startIndex+dataFolds[testIndex].quantity)
+						        trainY(l++) = y(k);
 				
-		        // set dtypes for training data and train the model
-				featObjs[i].obj.set_dtypes(find_dtypes(trainX));
-				featObjs[i].obj.fit(trainX, trainY);
+		                // set dtypes for training data and train the model
+				        featObjs[i].obj.set_dtypes(find_dtypes(trainX));
+				        featObjs[i].obj.fit(trainX, trainY);
 				
-				// extracting testdata and actual values for test data from data folds
-				MatrixXd testData(x.rows(), dataFolds[testIndex].quantity);
-				VectorXd actualValues(dataFolds[testIndex].quantity);
+				        // extracting testdata and actual values for test data from data folds
+				        MatrixXd testData(x.rows(), dataFolds[testIndex].quantity);
+				        VectorXd actualValues(dataFolds[testIndex].quantity);
 		
-				testData << 
-				x.block(0, dataFolds[testIndex].startIndex,x.rows(),dataFolds[testIndex].quantity);
+				        testData << 
+				        x.block(0, dataFolds[testIndex].startIndex,x.rows(),dataFolds[testIndex].quantity);
 				
-				for(k = 0; k < dataFolds[testIndex].quantity; k++)
-					actualValues(k) = y(dataFolds[testIndex].startIndex+k);
+				        for(k = 0; k < dataFolds[testIndex].quantity; k++)
+					        actualValues(k) = y(dataFolds[testIndex].startIndex+k);
 				
-				// prediction on test data
-				VectorXd prediction = featObjs[i].obj.predict(testData);
-		        
-		        // calculating difference between actual and predicted values
-				if (featObjs[i].obj.get_classification())
-				    // use classification accuracy
-					objScore[j] = ((prediction.cast<int>().array() != 
-							actualValues.cast<int>().array()).cast<double>()).mean();
-				else
-				    // use mean squared error
-					objScore[j] = ((prediction - actualValues).array().pow(2)).mean();
+				        // prediction on test data
+				        VectorXd prediction = featObjs[i].obj.predict(testData);
+		                
+		                // calculating difference between actual and predicted values
+				        if (featObjs[i].obj.get_classification())
+				            // use classification accuracy
+					        objScore[j] = ((prediction.cast<int>().array() != 
+							        actualValues.cast<int>().array()).cast<double>()).mean();
+				        else
+				            // use mean squared error
+					        objScore[j] = ((prediction - actualValues).array().pow(2)).mean();
 			
-	    		testIndex = (testIndex+1)%foldSize;
-	    		
-	    	}
-	    	
-	    	// setting mean score for the model based on the tuning parameters
-	    	featObjs[i].score = objScore.mean();
-	    	cout<<"****Finished object "<<i<<"\n";
-	    	
+	            		testIndex = (testIndex+1)%foldSize;
+	            		
+	            	}
+	            	
+	            	// setting mean score for the model based on the tuning parameters
+	            	featObjs[i].score = objScore.mean();
+	            	cout<<"****Finished object "<<i<<"\n";
+	            }
+	        	
+	        }
 	    }
 	    
 	    bestScoreIndex = 0;
