@@ -65,25 +65,25 @@ namespace FT{
     
     tokenType getTokenType(string &token)
     {
-        if(!token.compare("population"))
+        if(!token.compare("pop_size"))
             return population;
         else if(!token.compare("generations"))
             return generation;
         else if(!token.compare("ml"))
             return ml;
-        else if(!token.compare("maxStall"))
+        else if(!token.compare("max_stall"))
             return maxStall;
         else if(!token.compare("selection"))
             return selection;
         else if(!token.compare("survival"))
             return survival;
-        else if(!token.compare("crossRate"))
+        else if(!token.compare("cross_rate"))
             return crossRate;
         else if(!token.compare("functions"))
             return functions;
-        else if(!token.compare("maxDepth"))
+        else if(!token.compare("max_depth"))
             return maxDepth;
-        else if(!token.compare("maxDim"))
+        else if(!token.compare("max_dim"))
             return maxDim;
         else if(!token.compare("erc"))
             return erc;
@@ -224,6 +224,9 @@ namespace FT{
             
             setDefaults();
             
+            for(auto str : mlStr)
+                cout<<"Ml method "<<str<<"\n";
+            
             pushObjects();
             
             startIndex = hyperParams.find('{', endIndex + 1);
@@ -324,13 +327,14 @@ namespace FT{
     {
         str += ",";          // add delimiter to end 
         string delim = "\",";
-        size_t pos = 0;
+        size_t pos = 0, start;
         string token;
         vec.clear();
         while ((pos = str.find(delim)) != string::npos) 
         {
-            token = trim(str.substr(0, pos));
-            vec.push_back(token); break;
+            start = str.find("\"");
+            token = trim(str.substr(start+1, pos-start-1));
+            vec.push_back(token);
             
             str.erase(0, pos + delim.length());
         }
@@ -344,9 +348,11 @@ namespace FT{
         size_t pos = 0;
         string token;
         vec.clear();
+        //cout<<"Filling vector with str as "<<str<<"\n";
         while ((pos = str.find(delim)) != string::npos) 
         {
             token = trim(str.substr(0, pos));
+            //cout<<"Pushed "<<token<<"\n";
             switch(type)
             {
                 case Integer:   vec.push_back(stoi(token)); break;
