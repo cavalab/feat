@@ -60,7 +60,7 @@ When using tab-delimited csv files as input, specify `-sep \\t` or `-sep "\t"` a
 
 ### Feat Cross Validator
 
-For cross validation there are a set of tokens you can use to set tuning parameters for feat which are
+The cross-validation version of Feat named `feat_cv` is also built and present in the build/ directory. For cross validation, there are several hyperparameters of Feat that can be tuned: 
 
 * pop_size
 * generations
@@ -76,7 +76,9 @@ For cross validation there are a set of tokens you can use to set tuning paramet
 * objectives
 * feedback
 
-There are 2 ways to set the hyper parameters for featcv. First method is to define a string in cv_main.cc file. and pass that to featcv constructor. See cv_main.cc file for details. The method is to create a input file containing group of parameters and pass the filepath using `-infile` flag. Check featcvinput.txt for sample input file. The input file contains a string similar to the one in cv_main.cc
+There are 2 ways to set the hyper parameters for feat\_cv. The first method is to define a string in `cv_main.cc` file and pass that to the feat\_cv constructor. See `cv_main.cc` for details. 
 
-General structure of input file is
+The second method is to create a input file containing group of parameters and pass the filepath using `-infile` flag. Check featcvinput.txt for a sample input file. The input file contains a string similar to the one in `cv_main.cc`.
+
+The general structure of input file is
 `[{('token1': val1, val2, val3)('token2': val1, val2)}, {('token1': val1, val2, val3)('token2': val1, val2)},]`
