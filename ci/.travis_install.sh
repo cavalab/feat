@@ -42,7 +42,7 @@ echo "installing feat..."
 mkdir build;
 cd build; pwd 
 
-cmake -DEIGEN_DIR=ON -DSHOGUN_DIR=ON ..
+cmake -DTEST=ON -DEIGEN_DIR=ON -DSHOGUN_DIR=ON ..
 
 cd ..
 make -C build VERBOSE=1
