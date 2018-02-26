@@ -134,7 +134,27 @@ $(document).ready(function(){initNavTree('md_examples_EXAMPLES.html','');});
  score: 89.460238
  done!
 </pre><h3>tab-delimited csv files</h3>
-<p>When using tab-delimited csv files as input, specify <code>-sep \\t</code> or <code>-sep "\\t"</code> at the command line. </p>
+<p>When using tab-delimited csv files as input, specify <code>-sep \\t</code> or <code>-sep "\\t"</code> at the command line.</p>
+<h3>Feat Cross Validator</h3>
+<p>The cross-validation version of Feat named <code>feat_cv</code> is also built and present in the build/ directory. For cross validation, there are several hyperparameters of Feat that can be tuned:</p>
+<ul>
+<li>pop_size</li>
+<li>generations</li>
+<li>ml</li>
+<li>max_stall</li>
+<li>selection</li>
+<li>survival</li>
+<li>cross_rate</li>
+<li>functions</li>
+<li>max_depth</li>
+<li>max_dim</li>
+<li>erc</li>
+<li>objectives</li>
+<li>feedback</li>
+</ul>
+<p>There are 2 ways to set the hyper parameters for feat_cv. The first method is to define a string in <code>cv_main.cc</code> file and pass that to the feat_cv constructor. See <code>cv_main.cc</code> for details.</p>
+<p>The second method is to create a input file containing group of parameters and pass the filepath using <code>-infile</code> flag. Check featcvinput.txt for a sample input file. The input file contains a string similar to the one in <code>cv_main.cc</code>.</p>
+<p>The general structure of input file is `[{('token1': val1, val2, val3)('token2': val1, val2)}, {('token1': val1, val2, val3)('token2': val1, val2)},]` </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
