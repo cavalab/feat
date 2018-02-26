@@ -337,6 +337,7 @@ namespace FT{
             vec.push_back(token);
             
             str.erase(0, pos + delim.length());
+
         }
     }
     
@@ -408,72 +409,78 @@ namespace FT{
     	
     	cout<<"Total number of objects created are "<<featObjs.size()<<"\n";
     	
-    	#pragma omp parallel for
-    	for(int i = 0; i < featObjs.size(); i++)
+    	#pragma omp parallel
     	{
-    		VectorXd objScore(foldSize);
-    		
-    		int testIndex = foldSize - 1;
-    		
-    		// loop to fit all data folds in a single object and calculate the mean score
-	    	for(int j = 0; j < foldSize; j++)
-	    	{	    		
-	    		int filled = 0, k, l;
+    	    #pragma omp single
+        	for(int i = 0; i < featObjs.size(); i++)
+        	{
+        	    #pragma omp task
+        		{
+            		VectorXd objScore(foldSize);
+            		
+            		int testIndex = foldSize - 1;
+            		
+            		// loop to fit all data folds in a single object and calculate the mean score
+	            	for(int j = 0; j < foldSize; j++)
+	            	{	    		
+	            		int filled = 0, k, l;
 			
-				MatrixXd trainX(x.rows(), x.cols() - dataFolds[testIndex].quantity);
-				VectorXd trainY(x.cols() - dataFolds[testIndex].quantity);
+				        MatrixXd trainX(x.rows(), x.cols() - dataFolds[testIndex].quantity);
+				        VectorXd trainY(x.cols() - dataFolds[testIndex].quantity);
 				
-				//creating training data from data folds		
-				for(k = 0; k < foldSize; k++)
-				{
-					if(k != testIndex)
-					{
-						trainX.block(0, filled, x.rows(), dataFolds[k].quantity) = 
-							x.block(0, dataFolds[k].startIndex, x.rows(), dataFolds[k].quantity);
-						filled += dataFolds[k].quantity;
-					}
-				}
+				        //creating training data from data folds		
+				        for(k = 0; k < foldSize; k++)
+				        {
+					        if(k != testIndex)
+					        {
+						        trainX.block(0, filled, x.rows(), dataFolds[k].quantity) = 
+							        x.block(0, dataFolds[k].startIndex, x.rows(), dataFolds[k].quantity);
+						        filled += dataFolds[k].quantity;
+					        }
+				        }
 				
-				// creating training data outputs from data folds				
-				for(k = 0, l = 0; k < y.size(); k++)
-					if(k < dataFolds[testIndex].startIndex ||
-					   k >= dataFolds[testIndex].startIndex+dataFolds[testIndex].quantity)
-						trainY(l++) = y(k);
+				        // creating training data outputs from data folds				
+				        for(k = 0, l = 0; k < y.size(); k++)
+					        if(k < dataFolds[testIndex].startIndex ||
+					           k >= dataFolds[testIndex].startIndex+dataFolds[testIndex].quantity)
+						        trainY(l++) = y(k);
 				
-		        // set dtypes for training data and train the model
-				featObjs[i].obj.set_dtypes(find_dtypes(trainX));
-				featObjs[i].obj.fit(trainX, trainY);
+		                // set dtypes for training data and train the model
+				        featObjs[i].obj.set_dtypes(find_dtypes(trainX));
+				        featObjs[i].obj.fit(trainX, trainY);
 				
-				// extracting testdata and actual values for test data from data folds
-				MatrixXd testData(x.rows(), dataFolds[testIndex].quantity);
-				VectorXd actualValues(dataFolds[testIndex].quantity);
+				        // extracting testdata and actual values for test data from data folds
+				        MatrixXd testData(x.rows(), dataFolds[testIndex].quantity);
+				        VectorXd actualValues(dataFolds[testIndex].quantity);
 		
-				testData << 
-				x.block(0, dataFolds[testIndex].startIndex,x.rows(),dataFolds[testIndex].quantity);
+				        testData << 
+				        x.block(0, dataFolds[testIndex].startIndex,x.rows(),dataFolds[testIndex].quantity);
 				
-				for(k = 0; k < dataFolds[testIndex].quantity; k++)
-					actualValues(k) = y(dataFolds[testIndex].startIndex+k);
+				        for(k = 0; k < dataFolds[testIndex].quantity; k++)
+					        actualValues(k) = y(dataFolds[testIndex].startIndex+k);
 				
-				// prediction on test data
-				VectorXd prediction = featObjs[i].obj.predict(testData);
-		        
-		        // calculating difference between actual and predicted values
-				if (featObjs[i].obj.get_classification())
-				    // use classification accuracy
-					objScore[j] = ((prediction.cast<int>().array() != 
-							actualValues.cast<int>().array()).cast<double>()).mean();
-				else
-				    // use mean squared error
-					objScore[j] = ((prediction - actualValues).array().pow(2)).mean();
+				        // prediction on test data
+				        VectorXd prediction = featObjs[i].obj.predict(testData);
+		                
+		                // calculating difference between actual and predicted values
+				        if (featObjs[i].obj.get_classification())
+				            // use classification accuracy
+					        objScore[j] = ((prediction.cast<int>().array() != 
+							        actualValues.cast<int>().array()).cast<double>()).mean();
+				        else
+				            // use mean squared error
+					        objScore[j] = ((prediction - actualValues).array().pow(2)).mean();
 			
-	    		testIndex = (testIndex+1)%foldSize;
-	    		
-	    	}
-	    	
-	    	// setting mean score for the model based on the tuning parameters
-	    	featObjs[i].score = objScore.mean();
-	    	cout<<"****Finished object "<<i<<"\n";
-	    	
+	            		testIndex = (testIndex+1)%foldSize;
+	            		
+	            	}
+	            	
+	            	// setting mean score for the model based on the tuning parameters
+	            	featObjs[i].score = objScore.mean();
+	            	cout<<"****Finished object "<<i<<"\n";
+	            }
+	        	
+	        }
 	    }
 	    
 	    bestScoreIndex = 0;
