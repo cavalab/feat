@@ -1,13 +1,7 @@
-\tableofcontents 
-
 #Getting Started
 
 Feat depends on the [Eigen](http://eigen.tuxfamily.org) matrix library for C++ as well as the [Shogun](http://shogun.ml) ML library. Both come in easy packages that work across platforms. To see our installation, check out the [Travis install file](http://github.com/lacava/feat/blob/master/ci/.travis_install.sh).
 
-
-[Dependencies]
-[Install]
-[Tests]
 
 #Dependencies
 
