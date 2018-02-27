@@ -7,7 +7,7 @@ license: GNU/GPL v3
 
 namespace FT{
    		
-    __global__ void Add(double * x1, double * x2, double * out, size_t N)
+    __global__ void 2DGaussian(double * x1, double * x2, double * out, size_t N)
     {                    
         for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
         {
@@ -16,7 +16,7 @@ namespace FT{
         return;
     }
     /// Evaluates the node and updates the stack states. 
-    void NodeAdd::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
+    void Node2DGaussian::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
             vector<ArrayXb>& stack_b)
     {
         ArrayXd x2 = stack_f.back(); stack_f.pop_back();
@@ -36,7 +36,7 @@ namespace FT{
         HANDLE_ERROR(cudaMemcpy(dev_x1, x1.data(), sizeof(double)*N, cudaMemcpyHostToDevice));
         HANDLE_ERROR(cudaMemcpy(dev_x2, x2.data(), sizeof(double)*N, cudaMemcpyHostToDevice));
 
-        Add<<< 32*numSMs, 128 >>>(dev_x1, dev_x2, dev_res, N);
+        2DGaussian<<< 32*numSMs, 128 >>>(dev_x1, dev_x2, dev_res, N);
        
         // Copy to host
         HANDLE_ERROR(cudaMemcpy(result.data(), dev_res, sizeof(double)*N, cudaMemcpyDeviceToHost));
