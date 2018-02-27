@@ -1,15 +1,15 @@
-#Getting Started
+# Getting Started
 
 Feat depends on the [Eigen](http://eigen.tuxfamily.org) matrix library for C++ as well as the [Shogun](http://shogun.ml) ML library. Both come in easy packages that work across platforms. To see our installation, check out the [Travis install file](http://github.com/lacava/feat/blob/master/ci/.travis_install.sh).
 
 
-#Dependencies
+# Dependencies
 
-##Eigen 
+## Eigen 
 
 Eigen is a header only package. We need Eigen 3 or greater. 
 
-###Debian/Ubuntu 
+### Debian/Ubuntu 
 
 On Debian systems, you can grab the package: 
 
@@ -25,11 +25,11 @@ You can also download the headers and put them somewhere. Then you just have to 
     # set an environmental variable to tell cmake where Eigen is
     export EIGEN3_INCLUDE_DIR="$(pwd)/eigen-3.3.4/"
 
-##Shogun
+## Shogun
 
 You don't have to compile Shogun, just download the binaries. [Their install guide is good.](https://github.com/shogun-toolbox/shogun/blob/develop/doc/readme/INSTALL.md#binaries). We've listed two of the options here.
 
-###Anaconda
+### Anaconda
 
 A good option for Anaconda users is the Shogun Anaconda package. If you use conda, you can get what you need by 
 
@@ -40,7 +40,7 @@ If you do this, you need cmake to find Anaconda's library and include directorie
     export SHOGUN_LIB=/home/travis/miniconda/lib/
     export SHOGUN_DIR=/home/travis/miniconda/include/
 
-###Debian/Ubuntu
+### Debian/Ubuntu
 
 You can also get the Shogun packages:
 
@@ -51,7 +51,7 @@ You can also get the Shogun packages:
 
 
 
-#Installing
+# Installing
 
 Feat uses [cmake](https://cmake.org/) to build. It uses the typical set of instructions:
 
@@ -62,7 +62,7 @@ Feat uses [cmake](https://cmake.org/) to build. It uses the typical set of instr
     ./install # this runs "make -C build VERBOSE=1 -j8"
  
 
-#Running the tests 
+# Running the tests 
 
 *This is totally optional!* If you want to run the tests, you need to install [Google
 Test](https://github.com/google/googletest). A useful guide to doing so is available
