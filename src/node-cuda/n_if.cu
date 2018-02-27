@@ -7,7 +7,7 @@ license: GNU/GPL v3
 
 namespace FT{
    		
-    __global__ void Add(double * x1, double * x2, double * out, size_t N)
+    __global__ void If(double * x1, double * x2, double * out, size_t N)
     {                    
         for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
         {
