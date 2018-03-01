@@ -30,7 +30,7 @@ setup(
     license='GNU/GPLv3',
     description='Another feature engineering wrapper for ML.',
     zip_safe=True,
-    py_modules=['feat.py'], # Feat Python Wrapper for Cython
+    install_requires=['Numpy>=1.8.2','SciPy>=0.13.3'],
     ext_modules = cythonize([Extension(name='pyfeat',
        sources = ["pyfeat.pyx"],    # our Cython source
        include_dirs = ['../src/','/usr/include/eigen3/']+eigency.get_includes(include_eigen=False),
