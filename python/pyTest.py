@@ -1,4 +1,5 @@
-import feat
+from feat import *
+import pyfeat
 import numpy
 from sklearn.datasets import load_boston
 
@@ -8,8 +9,10 @@ X = boston.data
 
 Y = boston.target
 
-clf = feat.PyFewtwo(split=0.5,verbosity=0)
+clf = pyfeat.pyfeat(split=0.5,verbosity=0)
 clf.fit(X,Y)
+
+
 print clf.predict(X)
 print ( clf.transform(X))
 print clf.fit_predict(X,Y)

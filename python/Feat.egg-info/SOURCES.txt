@@ -1,4 +1,5 @@
-feat.cpp
+feat.py
+pyfeat.cpp
 setup.py
 Feat.egg-info/PKG-INFO
 Feat.egg-info/SOURCES.txt
