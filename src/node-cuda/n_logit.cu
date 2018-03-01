@@ -3,7 +3,7 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 #include "cuda_utils.h"
-#include "n_logit.h"
+#include "../node/n_logit.h"
 
 namespace FT{
    		
@@ -44,5 +44,4 @@ namespace FT{
     }
 
 }	
-#endif
 

@@ -3,7 +3,7 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 #include "cuda_utils.h"
-#include "n_divide.h"
+#include "../node/n_divide.h"
 
 namespace FT{
    		
@@ -50,5 +50,4 @@ namespace FT{
     }
 
 }	
-#endif
 

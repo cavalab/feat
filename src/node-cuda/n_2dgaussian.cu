@@ -3,7 +3,7 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 #include "cuda_utils.h"
-#include "n_2dgaussian.h"
+#include "../node/n_2dgaussian.h"
 
 namespace FT{
    		
@@ -58,5 +58,5 @@ namespace FT{
     }
 
 }	
-#endif
+
 

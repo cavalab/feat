@@ -3,7 +3,7 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 #include "cuda_utils.h"
-#include "n_sqrt.h"
+#include "../node/n_sqrt.h"
 
 namespace FT{
    		
@@ -44,5 +44,5 @@ namespace FT{
     }
 
 }	
-#endif
+
 

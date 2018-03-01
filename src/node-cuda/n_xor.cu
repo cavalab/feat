@@ -3,7 +3,7 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 #include "cuda_utils.h"
-#include "n_xor.h"
+#include "../node/n_xor.h"
 
 namespace FT{
    		
@@ -47,5 +47,5 @@ namespace FT{
     }
 
 }	
-#endif
+
 
