@@ -24,7 +24,7 @@ var NAVTREEINDEX =
 [
 ".html",
 "db/d4e/classshogun_1_1CMulticlassLogisticRegression.html#a1b2770da7b9faa1992263603dfe37a32",
-"de/d2c/structFT_1_1Parameters.html#aace18d360f786428143860deb1531a86"
+"de/d2c/structFT_1_1Parameters.html#a9ce3967947412217110573e04828b040"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
