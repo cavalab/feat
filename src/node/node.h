@@ -10,6 +10,10 @@ using std::vector;
 using std::string;
 using std::map;
 using Eigen::ArrayXd;
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
+typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
+
 #define MAX_DBL std::numeric_limits<double>::max()
 #define MIN_DBL std::numeric_limits<double>::min()
 

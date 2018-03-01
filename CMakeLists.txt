@@ -26,9 +26,9 @@ cmake_minimum_required (VERSION 3.0)
 # use c++ 14
 set (CMAKE_CXX_STANDARD 14)
 
-set (CMAKE_CXX_FLAGS "--std=c++11")
+#set (CMAKE_CXX_FLAGS "--std=c++11")
 
-set (CUDA_PROPAGATE_HOST_FLAGS ON)
+#set (CUDA_PROPAGATE_HOST_FLAGS ON)
 
   
 # project name
@@ -79,6 +79,7 @@ if (CORE_USE_CUDA)
     find_package(CUDA REQUIRED)
     add_definitions(-DUSE_CUDA)
     #enable_language(CUDA)
+    list(APPEND CUDA_NVCC_FLAGS "-std=c++11")
 
 endif()
 #############################################
@@ -96,8 +97,8 @@ file(GLOB_RECURSE src_cv_files "src/cv_main.cc")
 if (CORE_USE_CUDA)
     cuda_add_executable(feat ${src_main_files} ${cuda_files})
     cuda_add_executable(feat_cv ${src_cv_files} ${cuda_files})
-    #set_property(TARGET feat PROPERTY CUDA_STANDARD 14)
-    #set_property(TARGET feat_cv PROPERTY CUDA_STANDARD 14)
+    #set_property(TARGET feat PROPERTY CUDA_STANDARD 11)
+    #set_property(TARGET feat_cv PROPERTY CUDA_STANDARD 11)
 
     target_link_libraries(feat shogun ${CUDA_LIBRARIES})
     target_link_libraries(feat_cv shogun ${CUDA_LIBRARIES})
