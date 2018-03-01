@@ -1,10 +1,9 @@
 var searchData=
 [
   ['gain',['gain',['../db/dff/classshogun_1_1CMyCARTree.html#a460df8bfb6a6719465ea1015600f8d7b',1,'shogun::CMyCARTree::gain(SGVector&lt; float64_t &gt; wleft, SGVector&lt; float64_t &gt; wright, SGVector&lt; float64_t &gt; wtotal, SGVector&lt; float64_t &gt; labels)'],['../db/dff/classshogun_1_1CMyCARTree.html#a301aa09c8de426452e84d4873d3f8207',1,'shogun::CMyCARTree::gain(const SGVector&lt; float64_t &gt; &amp;wleft, const SGVector&lt; float64_t &gt; &amp;wright, const SGVector&lt; float64_t &gt; &amp;wtotal)']]],
-  ['generationrange',['generationRange',['../df/de2/classFT_1_1FeatCV.html#a935e96e7528a4b6170664349b1c09418',1,'FT::FeatCV']]],
   ['gens',['gens',['../de/d2c/structFT_1_1Parameters.html#a7b17dbd6ccc8cbac4f38bde7b51629ce',1,'FT::Parameters']]],
   ['get_5fclassification',['get_classification',['../db/dff/classFT_1_1Feat.html#a2e33b26b7dab96a27a400ef063cfb6c2',1,'FT::Feat']]],
-  ['get_5fcross_5frate',['get_cross_rate',['../d3/d01/classFT_1_1Variation.html#a327a0ac0f9770fe1a87823d7f9bee14b',1,'FT::Variation']]],
+  ['get_5fcross_5frate',['get_cross_rate',['../db/dff/classFT_1_1Feat.html#a9f53e90d2dbda34e11bc5c8b40750333',1,'FT::Feat::get_cross_rate()'],['../d3/d01/classFT_1_1Variation.html#a327a0ac0f9770fe1a87823d7f9bee14b',1,'FT::Variation::get_cross_rate()']]],
   ['get_5fdim',['get_dim',['../d8/d25/classFT_1_1Individual.html#a22bf1f1016d87a21c8f21da1a59ef11e',1,'FT::Individual']]],
   ['get_5fdtypes',['get_dtypes',['../db/dff/classFT_1_1Feat.html#ab8f45e1b798ef3086e4e656aa65bc42e',1,'FT::Feat']]],
   ['get_5fepsilon',['get_epsilon',['../db/d4e/classshogun_1_1CMulticlassLogisticRegression.html#af5507379f29446ba8358577b23407461',1,'shogun::CMulticlassLogisticRegression']]],

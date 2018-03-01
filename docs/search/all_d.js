@@ -12,11 +12,11 @@ var searchData=
   ['params',['params',['../db/dff/classFT_1_1Feat.html#abb9d09572b0bb378a16b810a6dcc3491',1,'FT::Feat']]],
   ['pareto',['Pareto',['../de/d2e/structFT_1_1Pareto.html',1,'FT']]],
   ['pareto',['Pareto',['../de/d2e/structFT_1_1Pareto.html#a88069fd3f28240b8a5c53607f74ffae8',1,'FT::Pareto']]],
+  ['parse',['parse',['../df/de2/classFT_1_1FeatCV.html#a72e2789be4eb9aa91834ab63e37c05b2',1,'FT::FeatCV']]],
   ['point_5fmutate',['point_mutate',['../d3/d01/classFT_1_1Variation.html#a719266961099d87281761315e4c830d5',1,'FT::Variation']]],
   ['pop',['pop',['../d2/dbc/structFT_1_1Pareto_1_1sort__n.html#a6c192d2f20e95e952a6da83ffb899d02',1,'FT::Pareto::sort_n::pop()'],['../d5/d3d/structFT_1_1Pareto_1_1comparator__obj.html#accc21e5d6c0cd3415049f06ea10e3d31',1,'FT::Pareto::comparator_obj::pop()']]],
   ['pop_5fsize',['pop_size',['../de/d2c/structFT_1_1Parameters.html#a8253360dc4ad47b3f94f813daa13867a',1,'FT::Parameters']]],
   ['population',['Population',['../d9/ddc/structFT_1_1Population.html',1,'FT']]],
-  ['populationrange',['populationRange',['../df/de2/classFT_1_1FeatCV.html#a16b2256a2bd38cbf41f7fd83e26dbe32',1,'FT::FeatCV']]],
   ['predict',['predict',['../db/dff/classFT_1_1Feat.html#a53c438f9bdd679412b05dd26b24ac5ac',1,'FT::Feat::predict()'],['../df/de2/classFT_1_1FeatCV.html#a90947d62c32a75953d90ad68fed6ea7b',1,'FT::FeatCV::predict()']]],
   ['print_5fcross',['print_cross',['../d3/d01/classFT_1_1Variation.html#a1234f2de8297962f2f1668f137c4e89c',1,'FT::Variation']]],
   ['print_5fdata',['print_data',['../df/d48/structshogun_1_1MyCARTreeNodeData.html#ad47f35fda5b0dd3e64b1b5e204a90264',1,'shogun::MyCARTreeNodeData']]],
@@ -26,5 +26,6 @@ var searchData=
   ['program_5fstr',['program_str',['../d8/d25/classFT_1_1Individual.html#a92d292ab7bebbd42426d006c34e125b6',1,'FT::Individual']]],
   ['prune_5fby_5fcross_5fvalidation',['prune_by_cross_validation',['../db/dff/classshogun_1_1CMyCARTree.html#a7794ca48372f992ca77c877e95c3bdbd',1,'shogun::CMyCARTree']]],
   ['prune_5ftree',['prune_tree',['../db/dff/classshogun_1_1CMyCARTree.html#a998d65ab132d7335e58d0a47fdc73cd3',1,'shogun::CMyCARTree']]],
-  ['prune_5fusing_5ftest_5fdataset',['prune_using_test_dataset',['../db/dff/classshogun_1_1CMyCARTree.html#adc5c4245214a133d9de21a8a50ae2e1d',1,'shogun::CMyCARTree']]]
+  ['prune_5fusing_5ftest_5fdataset',['prune_using_test_dataset',['../db/dff/classshogun_1_1CMyCARTree.html#adc5c4245214a133d9de21a8a50ae2e1d',1,'shogun::CMyCARTree']]],
+  ['pushobjects',['pushObjects',['../df/de2/classFT_1_1FeatCV.html#a1bb52bc351a52610bb563ee3847d6f99',1,'FT::FeatCV']]]
 ];
