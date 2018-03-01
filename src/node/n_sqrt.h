@@ -18,7 +18,7 @@ namespace FT{
 				throw;
     		}
     	
-    		NodeRoot(string n)
+    		NodeRootRoot(string n)
     		{
     			name = n;
     			otype = 'f';
@@ -28,14 +28,7 @@ namespace FT{
     		}
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXi>& stack_b)
-            {
-            	if (stack_f.size() >= arity['f'] && stack_b.size() >= arity['b'])
-            	{
-            		ArrayXd x = stack_f.back(); stack_f.pop_back();
-                    stack_f.push_back(sqrt(abs(x)));
-            	}
-            }
+            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXi>& stack_b);
 
             /// Evaluates the node symbolically
             void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
@@ -47,6 +40,17 @@ namespace FT{
             	}
             }
     };
-}	
+#ifndef USE_CUDA
+    void Node::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXi>& stack_b)
+    {
+        if (stack_f.size() >= arity['f'] && stack_b.size() >= arity['b'])
+        {
+            ArrayXd x = stack_f.back(); stack_f.pop_back();
+            stack_f.push_back(sqrt(abs(x)));
+        }
+    }	
+#endif
+
+}
 
 #endif

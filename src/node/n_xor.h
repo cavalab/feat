@@ -22,16 +22,7 @@ namespace FT{
     		}
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b)
-            {
-        		ArrayXb x2 = stack_b.back(); stack_b.pop_back();
-                ArrayXb x1 = stack_b.back(); stack_b.pop_back();
-
-                ArrayXb res = (x1 != x2).select(ArrayXb::Ones(x1.size()), ArrayXb::Zero(x1.size()));
-
-                stack_b.push_back(res);
-                
-            }
+            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b);
 
             /// Evaluates the node symbolically
             void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
@@ -41,6 +32,18 @@ namespace FT{
                 stack_b.push_back("(" + x1 + " XOR " + x2 + ")");
             }
     };
+#ifndef USE_CUDA
+    void NodeXor::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b)
+    {
+        ArrayXb x2 = stack_b.back(); stack_b.pop_back();
+        ArrayXb x1 = stack_b.back(); stack_b.pop_back();
+
+        ArrayXb res = (x1 != x2).select(ArrayXb::Ones(x1.size()), ArrayXb::Zero(x1.size()));
+
+        stack_b.push_back(res);
+        
+    }
+#endif
 }	
 
 #endif

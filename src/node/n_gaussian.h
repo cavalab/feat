@@ -22,11 +22,7 @@ namespace FT{
     		}
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b)
-            {
-        		ArrayXd x = stack_f.back(); stack_f.pop_back();
-                stack_f.push_back(limited(exp(-1*limited(pow(x, 2)))));
-            }
+            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b);
 
             /// Evaluates the node symbolically
             void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
@@ -35,6 +31,13 @@ namespace FT{
                 stack_f.push_back("exp(-(" + x + " ^ 2))");
             }
     };
+#ifndef USE_CUDA
+    void NodeGaussian::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b)
+    {
+        ArrayXd x = stack_f.back(); stack_f.pop_back();
+        stack_f.push_back(limited(exp(-1*limited(pow(x, 2)))));
+    }
+#endif
 }	
 
 #endif

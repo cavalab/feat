@@ -2,8 +2,8 @@
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
-#ifndef NODE_OPENBRACE
-#define NODE_OPENBRACE
+#ifndef NODE_LEQ
+#define NODE_LEQ
 
 #include "node.h"
 
@@ -23,12 +23,7 @@ namespace FT{
     		
             /// Evaluates the node and updates the stack states. 
             void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
-                    vector<ArrayXb>& stack_b)
-            {
-              	ArrayXd x2 = stack_f.back(); stack_f.pop_back();
-                ArrayXd x1 = stack_f.back(); stack_f.pop_back();
-                stack_b.push_back(x1 <= x2);
-            }
+                    vector<ArrayXb>& stack_b); 
 
             /// Evaluates the node symbolically
             void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
@@ -38,6 +33,15 @@ namespace FT{
                 stack_b.push_back("(" + x1 + "<=" + x2 + ")");
             }
       };
+#ifndef USE_CUDA
+    void NodeLEQ::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
+                    vector<ArrayXb>& stack_b)
+    {
+        ArrayXd x2 = stack_f.back(); stack_f.pop_back();
+        ArrayXd x1 = stack_f.back(); stack_f.pop_back();
+        stack_b.push_back(x1 <= x2);
+    }
+#endif
 }	
 
 #endif

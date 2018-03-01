@@ -23,14 +23,8 @@ namespace FT{
     		
             /// Evaluates the node and updates the stack states. 
             void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
-                    vector<ArrayXb>& stack_b)
-            {
-                ArrayXb b = stack_b.back(); stack_b.pop_back();
-                ArrayXd f2 = stack_f.back(); stack_f.pop_back();
-                ArrayXd f1 = stack_f.back(); stack_f.pop_back();
-                stack_f.push_back(b.select(f1,f2));
-            }
-
+                    vector<ArrayXb>& stack_b);
+           
             /// Evaluates the node symbolically
             void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
             {
@@ -40,6 +34,16 @@ namespace FT{
                 stack_f.push_back("if-then-else(" + b + "," + f1 + "," + f2 + ")");
             }
     };
+#ifndef USE_CUDA
+    void NodeIfThenElse::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
+                    vector<ArrayXb>& stack_b)
+    {
+        ArrayXb b = stack_b.back(); stack_b.pop_back();
+        ArrayXd f2 = stack_f.back(); stack_f.pop_back();
+        ArrayXd f1 = stack_f.back(); stack_f.pop_back();
+        stack_f.push_back(b.select(f1,f2));
+    }
+#endif
 
 }	
 

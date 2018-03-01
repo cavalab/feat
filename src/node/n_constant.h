@@ -45,13 +45,7 @@ namespace FT{
     		
             /// Evaluates the node and updates the stack states. 
             void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
-                    vector<ArrayXb>& stack_b)
-            {
-        		if (otype == 'b')
-                    stack_b.push_back(ArrayXb::Constant(X.cols(),int(b_value)));
-                else 	
-                    stack_f.push_back(ArrayXd::Constant(X.cols(),d_value));
-            }
+                    vector<ArrayXb>& stack_b); 
 
             /// Evaluates the node symbolically
             void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
@@ -63,6 +57,16 @@ namespace FT{
             }
     		
     };
+#ifndef USE_CUDA
+    void NodeConstant::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
+                    vector<ArrayXb>& stack_b)
+    {
+        if (otype == 'b')
+            stack_b.push_back(ArrayXb::Constant(X.cols(),int(b_value)));
+        else 	
+            stack_f.push_back(ArrayXd::Constant(X.cols(),d_value));
+    }
+#endif
 }	
 
 #endif
