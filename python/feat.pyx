@@ -5,6 +5,7 @@ from libcpp.vector cimport vector
 from libcpp.string cimport string
 from libcpp cimport bool
 from eigency.core cimport *
+from sklearn.utils import check_X_y
 
 cdef extern from "feat.h" namespace "FT":
     cdef cppclass Feat: 
@@ -37,6 +38,7 @@ cdef class PyFewtwo:
 
         cdef numpy.ndarray[numpy.double_t, ndim=2, mode="c"] arr_x
         cdef numpy.ndarray[numpy.double_t, ndim=1, mode="c"] arr_y
+        check_X_y(X,y,ensure_2d=True,ensure_min_samples=1)
         X = X.transpose()
         arr_x = numpy.ascontiguousarray(X, dtype=numpy.double)
         arr_y = numpy.ascontiguousarray(y, dtype=numpy.double)
@@ -72,6 +74,7 @@ cdef class PyFewtwo:
 
         cdef numpy.ndarray[numpy.double_t, ndim=2, mode="c"] arr_x
         cdef numpy.ndarray[numpy.double_t, ndim=1, mode="c"] arr_y
+        check_X_y(X,y,ensure_2d=True,ensure_min_samples=1)
         X = X.transpose()
         arr_x = numpy.ascontiguousarray(X, dtype=numpy.double)
         arr_y = numpy.ascontiguousarray(y, dtype=numpy.double)
@@ -84,6 +87,7 @@ cdef class PyFewtwo:
     def fit_transform(self,np.ndarray X,np.ndarray y):
         cdef numpy.ndarray[numpy.double_t, ndim=2, mode="c"] arr_x
         cdef numpy.ndarray[numpy.double_t, ndim=1, mode="c"] arr_y
+        check_X_y(X,y,ensure_2d=True,ensure_min_samples=1)
         X = X.transpose()
         arr_x = numpy.ascontiguousarray(X, dtype=numpy.double)
         arr_y = numpy.ascontiguousarray(y, dtype=numpy.double)
