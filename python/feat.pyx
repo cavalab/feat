@@ -52,6 +52,7 @@ cdef class PyFewtwo:
         cdef numpy.ndarray[numpy.double_t, ndim=2, mode="c"] arr_x
         X = X.transpose()
         arr_x = numpy.ascontiguousarray(X, dtype=numpy.double)
+
         cdef int c_rows = X.shape[0]
         cdef int c_cols = X.shape[1]
         res = ndarray(self.ft.predict(&arr_x[0,0],c_rows,c_cols))
@@ -61,17 +62,13 @@ cdef class PyFewtwo:
         cdef numpy.ndarray[numpy.double_t, ndim=2, mode="c"] arr_x
         X = X.transpose()
         arr_x = numpy.ascontiguousarray(X, dtype=numpy.double)
+
         cdef int c_rows = X.shape[0]
         cdef int c_cols = X.shape[1]
         X = ndarray(self.ft.transform(&arr_x[0,0],c_rows,c_cols))
-        rows_x = X.shape[0]
-        cols_x = X.shape[1]
-        X = X.reshape(rows_x,cols_x)
-        X = X.transpose()
-        return X
+        return X.transpose()
 
     def fit_predict(self,np.ndarray X,np.ndarray y):
-
         cdef numpy.ndarray[numpy.double_t, ndim=2, mode="c"] arr_x
         cdef numpy.ndarray[numpy.double_t, ndim=1, mode="c"] arr_y
         check_X_y(X,y,ensure_2d=True,ensure_min_samples=1)
@@ -96,8 +93,5 @@ cdef class PyFewtwo:
         cdef int c_cols = X.shape[1]
         cdef int c_rows_y = len(arr_y)
         X = ndarray(self.ft.fit_transform( &arr_x[0,0],c_rows,c_cols,&arr_y[0],c_rows_y ))
-        rows_x = X.shape[0]
-        cols_x = X.shape[1]
-        X = X.reshape(rows_x,cols_x)
-        X = X.transpose()
-        return X
+        return X.transpose()
+
