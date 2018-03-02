@@ -11,7 +11,7 @@ namespace FT{
     {                    
         for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
         {
-            if (x2[i] > NEAR_ZERO)
+            if (x2[i] > 0.00000001)
                 out[i] = x1[i] / x2[i];
             else
                 out[i] = 1.0 ;  

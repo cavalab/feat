@@ -47,7 +47,7 @@ namespace FT{
         // Copy to host
         HANDLE_ERROR(cudaMemcpy(result.data(), dev_res, sizeof(double)*N, cudaMemcpyDeviceToHost));
         
-        stack_f.push_back(limited(result));
+        stack_f.push_back(result);
         // Free memory
         cudaFree(dev_x1); cudaFree(dev_x2); cudaFree(dev_res);
     }

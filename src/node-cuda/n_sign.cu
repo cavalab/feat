@@ -32,7 +32,7 @@ namespace FT{
         int numSMs;
         cudaDeviceGetAttribute(&numSMs, cudaDevAttrMultiProcessorCount, 0);
         // allocate device arrays
-        double * dev_x1, ; 
+        double * dev_x1 ; 
         HANDLE_ERROR(cudaMalloc((void **)& dev_x1, sizeof(double)*N));
         HANDLE_ERROR(cudaMalloc((void **)&dev_res, sizeof(double)*N));
         // Copy to device

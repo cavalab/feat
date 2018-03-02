@@ -7,13 +7,12 @@ license: GNU/GPL v3
 
 namespace FT{
    		
-    __global__ void 2DGaussian(double * x1, double x1_mean, double x1_var,
-                               double * x2, double x2_mean, double x2_var, double * out, size_t N)
+    __global__ void Gaussian2D(double * x1, double x1mean, double x1var, double * x2, double x2mean, double x2var, double * out, size_t N)
     {                    
         for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
         {
-            out[i] = exp(-(pow(x1[i] - x1_mean, 2) / (2 * x1_var) +
-                           pow(x2[i] - x2_mean, 2) / (2 * x2_var))); 
+            out[i] = exp(-(pow(x1[i] - x1mean, 2) / (2 * x1var) +
+                           pow(x2[i] - x2mean, 2) / (2 * x2var))); 
         }
         return;
     }
@@ -23,10 +22,10 @@ namespace FT{
     {
         ArrayXd x2 = stack_f.back(); stack_f.pop_back();
         ArrayXd x1 = stack_f.back(); stack_f.pop_back();
-        double x2_mean = x2.mean();
-        double x2_var = variance(x2);
-        double x1_mean = x1.mean();
-        double x1_var = variance(x1);
+        double x2mean = x2.mean();
+        double x2var = variance(x2);
+        double x1mean = x1.mean();
+        double x1var = variance(x1);
         // evaluate on the GPU
         ArrayXd result = ArrayXd(x1.size());
         size_t N = result.size();
@@ -38,16 +37,16 @@ namespace FT{
         HANDLE_ERROR(cudaMalloc((void **)& dev_x1, sizeof(double)*N));
         HANDLE_ERROR(cudaMalloc((void **)& dev_x2, sizeof(double)*N));
         HANDLE_ERROR(cudaMalloc((void **)&dev_res, sizeof(double)*N));
-        //HANDLE_ERROR(cudaMalloc((void **)&x2_mean, sizeof(double)));
-        //HANDLE_ERROR(cudaMalloc((void **)&x2_var, sizeof(double)));
-        //HANDLE_ERROR(cudaMalloc((void **)&x1_mean, sizeof(double)));
-        //HANDLE_ERROR(cudaMalloc((void **)&x2_var, sizeof(double)));
+        //HANDLE_ERROR(cudaMalloc((void **)&x2mean, sizeof(double)));
+        //HANDLE_ERROR(cudaMalloc((void **)&x2var, sizeof(double)));
+        //HANDLE_ERROR(cudaMalloc((void **)&x1mean, sizeof(double)));
+        //HANDLE_ERROR(cudaMalloc((void **)&x2var, sizeof(double)));
 
         // Copy to device
         HANDLE_ERROR(cudaMemcpy(dev_x1, x1.data(), sizeof(double)*N, cudaMemcpyHostToDevice));
         HANDLE_ERROR(cudaMemcpy(dev_x2, x2.data(), sizeof(double)*N, cudaMemcpyHostToDevice));
 
-        2DGaussian<<< 32*numSMs, 128 >>>(dev_x1, x1_mean, x1_var, dev_x2, x2_mean, x2_var, dev_res, N);
+        Gaussian2D<<< 32*numSMs, 128 >>>(dev_x1, x1mean, x1var, dev_x2, x2mean, x2var, dev_res, N);
        
         // Copy to host
         HANDLE_ERROR(cudaMemcpy(result.data(), dev_res, sizeof(double)*N, cudaMemcpyDeviceToHost));

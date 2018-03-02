@@ -57,7 +57,7 @@ namespace FT{
             }
     		
     };
-#ifndef USE_CUDA
+    // Definition
     void NodeConstant::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
                     vector<ArrayXb>& stack_b)
     {
@@ -66,7 +66,6 @@ namespace FT{
         else 	
             stack_f.push_back(ArrayXd::Constant(X.cols(),d_value));
     }
-#endif
 }	
 
 #endif

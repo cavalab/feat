@@ -16,7 +16,7 @@ namespace FT{
         return;
     }
     /// Evaluates the node and updates the stack states. 
-    void NodeSqrt::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
+    void NodeSqrt::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f,
             vector<ArrayXb>& stack_b)
     {
         ArrayXd x1 = stack_f.back(); stack_f.pop_back();
@@ -29,7 +29,7 @@ namespace FT{
         // allocate device arrays
         double * dev_x1  ; 
         HANDLE_ERROR(cudaMalloc((void **)& dev_x1, sizeof(double)*N));
-        HANDLE_ERROR(cudaMalloc((void **)&dev_res, sizeof(double)*N));
+        HANDLE_ERROR(cudaMalloc((void **)& dev_res, sizeof(double)*N));
         // Copy to device
         HANDLE_ERROR(cudaMemcpy(dev_x1, x1.data(), sizeof(double)*N, cudaMemcpyHostToDevice));
 

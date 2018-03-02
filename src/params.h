@@ -225,13 +225,13 @@ namespace FT{
     		return std::shared_ptr<Node>(new NodeExponent());
 
         else if (str.compare("exp") == 0)
-    		return std::shared_ptr<Node>(new NodeExponential());
+    		return std::shared_ptr<Node>(new NodeExp());
     		
     	else if (str.compare("gaussian")==0)
             return std::shared_ptr<Node>(new NodeGaussian());
         
         else if (str.compare("2dgaussian")==0)
-            return std::shared_ptr<Node>(new Node2dGaussian());
+            return std::shared_ptr<Node>(new Node2DGaussian());
 
         else if (str.compare("log") == 0)
     		return std::shared_ptr<Node>(new NodeLog());   

@@ -11,7 +11,7 @@ namespace FT{
     {                    
         for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
         {
-           out[i] = square(x1[i]);
+           out[i] = pow(x1[i], 2);
         }
         return;
     }

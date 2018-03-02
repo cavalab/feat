@@ -8,13 +8,13 @@ license: GNU/GPL v3
 #include "node.h"
 
 namespace FT{
-	class Node2dGaussian : public Node
+	class Node2DGaussian : public Node
     {
     	public:
     	
-    		Node2dGaussian()
+    		Node2DGaussian()
             {
-                name = "2dgaussian";
+                name = "2Dgaussian";
     			otype = 'f';
     			arity['f'] = 2;
     			arity['b'] = 0;
@@ -30,7 +30,7 @@ namespace FT{
             {
         		string x2 = stack_f.back(); stack_f.pop_back();
                 string x1 = stack_f.back(); stack_f.pop_back();
-                stack_f.push_back("gauss2d(" + x1 + "," + x2 + ")");
+                stack_f.push_back("gauss2D(" + x1 + "," + x2 + ")");
             }
             
             private:
@@ -42,7 +42,7 @@ namespace FT{
     };
 	
 #ifndef USE_CUDA
-    void Node2dGaussian::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f,
+    void Node2DGaussian::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f,
             vector<ArrayXb>& stack_b)
     {
         ArrayXd x2 = stack_f.back(); stack_f.pop_back();

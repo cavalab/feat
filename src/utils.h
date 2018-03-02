@@ -2,6 +2,9 @@
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
+#pragma once 
+#ifndef UTILS_H
+#define UTILS_H
 
 #include <Eigen/Dense>
 #include <vector>
@@ -342,3 +345,4 @@ namespace FT{
     }
 
 } 
+#endif

@@ -18,7 +18,7 @@ license: GNU/GPL v3
 #include "node/n_divide.h"
 #include "node/n_equal.h"
 #include "node/n_exponent.h"
-#include "node/n_exponential.h"
+#include "node/n_exp.h"
 #include "node/n_greaterthan.h"
 #include "node/n_if.h"
 #include "node/n_lessthan.h"

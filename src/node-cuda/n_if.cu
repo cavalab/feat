@@ -31,21 +31,21 @@ namespace FT{
         int numSMs;
         cudaDeviceGetAttribute(&numSMs, cudaDevAttrMultiProcessorCount, 0);
         // allocate device arrays
-        bool * dev_x1
+        bool * dev_x1;
         double * dev_x2 ; 
         HANDLE_ERROR(cudaMalloc((void **)& dev_x1, sizeof(bool)*N));
         HANDLE_ERROR(cudaMalloc((void **)& dev_x2, sizeof(double)*N));
         HANDLE_ERROR(cudaMalloc((void **)&dev_res, sizeof(double)*N));
         // Copy to device
         HANDLE_ERROR(cudaMemcpy(dev_x1, x1.data(), sizeof(bool)*N, cudaMemcpyHostToDevice));
-        HANDLE_ERROR(cudaMemcpy(dev_x2, x2.data(), sizeof(bool)*N, cudaMemcpyHostToDevice));
+        HANDLE_ERROR(cudaMemcpy(dev_x2, x2.data(), sizeof(double)*N, cudaMemcpyHostToDevice));
 
         If<<< 32*numSMs, 128 >>>(dev_x1, dev_x2, dev_res, N);
        
         // Copy to host
         HANDLE_ERROR(cudaMemcpy(result.data(), dev_res, sizeof(bool)*N, cudaMemcpyDeviceToHost));
         
-        stack_f.push_back(limited(result));
+        stack_f.push_back(result);
         // Free memory
         cudaFree(dev_x1); cudaFree(dev_x2); cudaFree(dev_res);
     }
