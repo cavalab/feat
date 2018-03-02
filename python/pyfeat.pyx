@@ -6,7 +6,6 @@ from libcpp.string cimport string
 from libcpp cimport bool
 from eigency.core cimport *
 from sklearn.utils import check_X_y
-from sklearn.base import BaseEstimator
 
 cdef extern from "feat.h" namespace "FT":
     cdef cppclass Feat: 
@@ -24,17 +23,16 @@ cdef extern from "feat.h" namespace "FT":
         VectorXd fit_predict(double * X, int rowsX,int colsX, double*  y , int lenY)
         MatrixXd fit_transform(double * X, int rowsX,int colsX, double*  y , int lenY)
 
-cdef class pyfeat:
+cdef class PyFeat:
     cdef Feat ft  # hold a c++ instance which we're wrapping
-    def __cinit__(self,int pop_size, int gens, string ml, 
-               bool classification, int verbosity, int max_stall,
-               string sel, string surv, float cross_rate,
-               char otype, string functions, 
-               unsigned int max_depth, unsigned int max_dim, int random_s, 
-               bool erc , string obj,bool shuffle, double split, double fb ):
+    def __cinit__(self,int pop_size, int gens, string ml, bool classification, int verbosity, int max_stall,string sel, string surv, float cross_rate,string otype, string functions, unsigned int max_depth, unsigned int max_dim, int random_state, bool erc , string obj,bool shuffle, double split, double fb):
+        cdef char otype_char
+        if ( len(otype) == 0):
+            otype_char = 'a' #Defaut Value
+        else:
+            otype_char = ord(otype)
         self.ft = Feat(pop_size,gens,ml,classification,verbosity,max_stall,sel,surv,cross_rate,
-                otype, functions, max_depth, max_dim, random_s, erc, obj, shuffle, split, fb)
-
+otype_char, functions, max_depth, max_dim, random_state, erc, obj, shuffle, split, fb)
     def fit(self,numpy.ndarray X,numpy.ndarray y):
 
         cdef numpy.ndarray[numpy.double_t, ndim=2, mode="c"] arr_x

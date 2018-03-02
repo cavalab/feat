@@ -5,14 +5,14 @@ license: GNU/GPLv3
 """
 
 import argparse
-from ._version import __version__
+#from ._version import __version__
 
 from sklearn.base import BaseEstimator
 import numpy as np
 import pandas as pd
-from pyfeat import pyfeat
+import pyfeat
 
-class feat(BaseEstimator):
+class Feat(BaseEstimator):
     """Feat uses GP to find a data representation that improves the performance of a given ML
     method."""
     def __init__(self, pop_size=100,  gens=100,  ml="LinearRidgeRegression", 
@@ -22,7 +22,7 @@ class feat(BaseEstimator):
                 max_depth=3,   max_dim=10,  random_state=0, 
                 erc = False,  obj="fitness,complexity", shuffle=False,  split=0.75,  fb=0.5):
 
-        self._pyfeat = pyfeat(self, pop_size,  gens,  ml, 
+        self._pyfeat = pyfeat.PyFeat( pop_size,  gens,  ml, 
                 classification,  verbosity,  max_stall,
                 sel,  surv,  cross_rate,
                 otype,  functions, 
@@ -47,8 +47,9 @@ class feat(BaseEstimator):
 
 def main():
     """Main function that is called when Fewtwo is run from the command line"""
-    parser = argparse.ArgumentParser(descripion="A feature engineering wrapper for ML.",
+    parser = argparse.ArgumentParser(description="A feature engineering wrapper for ML.",
                                      add_help=False)
 
+    clf = Feat()
 if __name__ == '__main__':
     main()
