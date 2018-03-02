@@ -1,9 +1,0 @@
-feat.py
-pyfeat.cpp
-setup.py
-Feat.egg-info/PKG-INFO
-Feat.egg-info/SOURCES.txt
-Feat.egg-info/dependency_links.txt
-Feat.egg-info/requires.txt
-Feat.egg-info/top_level.txt
-Feat.egg-info/zip-safe
