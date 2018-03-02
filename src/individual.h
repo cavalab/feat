@@ -185,16 +185,20 @@ namespace FT{
         // evaluate each node in program
         for (const auto& n : program)
         {
-        	if(stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
+            /* std::cout << n->name << ","; */
+            if(stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
 	            n->evaluate(X, y, stack_f, stack_b);
             else
             {
-                std::cout << "out() error: node " << n->name << " in " + program_str() + 
+                std::cout << "individual::out() error: node " << n->name << " in " + program_str() + 
                              " is invalid\n";
+                std::cout << "float stack size: " << stack_f.size() << "\n";
+                std::cout << "bool stack size: " << stack_b.size() << "\n";
+                std::cout << "op arity: " << n->arity['f'] << "f, " << n->arity['b'] << "b\n";
                 exit(1);
             }
         }
-        
+        /* std::cout << "\n"; */
         // convert stack_f to Phi
         params.msg("converting stacks to Phi",2);
         int cols;

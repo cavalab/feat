@@ -78,7 +78,7 @@ namespace FT{
                    char otype='a', string functions = "+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite", 
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
                    bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
-                   double split=0.75, double fb=0.5):
+                   double split=0.75, double fb=0.5, unsigned n_threads=0):
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
                              functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, fb), 
@@ -90,6 +90,8 @@ namespace FT{
                 r.set_seed(random_state);
                 str_dim = "";
                 name="";
+                if (n_threads!=0)
+                    omp_set_num_threads(n_threads);
             }
             
             /// set size of population 
@@ -156,7 +158,9 @@ namespace FT{
 
             ///set name for files
             void set_name(string s){name = s;}
-
+            
+            ///set number of threads
+            void set_threads(unsigned t){ omp_set_num_threads(t); }
             /*                                                      
              * getting functions
              */

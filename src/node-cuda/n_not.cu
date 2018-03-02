@@ -19,7 +19,7 @@ namespace FT{
     void NodeNot::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
             vector<ArrayXb>& stack_b)
     {
-        ArrayXb x1 = stack_b.back(); stack_f.pop_back();
+        ArrayXb x1 = stack_b.back(); stack_b.pop_back();
         // evaluate on the GPU
         ArrayXb result = ArrayXb(x1.size());
         size_t N = result.size();
