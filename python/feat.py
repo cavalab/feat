@@ -33,16 +33,16 @@ class Feat(BaseEstimator):
         self._pyfeat.fit(X,y)
 
     def predict(self,X):
-        self._pyfeat.predict(X)
+        return self._pyfeat.predict(X)
 
     def transform(self,X):
-        self._pyfeat.transform(X)
+        return self._pyfeat.transform(X)
 
     def fit_predict(self,X,y):
-        self._pyfeat.fit_predict(X,y)
+        return self._pyfeat.fit_predict(X,y)
 
     def fit_transform(self,X,y):
-        self._pyfeat.fit_transform(X,y)
+        return self._pyfeat.fit_transform(X,y)
 
 
 def main():
