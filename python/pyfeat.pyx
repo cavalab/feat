@@ -32,7 +32,7 @@ cdef class PyFeat:
         else:
             otype_char = ord(otype)
         self.ft = Feat(pop_size,gens,ml,classification,verbosity,max_stall,sel,surv,cross_rate,
-otype_char, functions, max_depth, max_dim, random_state, erc, obj, shuffle, split, fb)
+        otype_char, functions, max_depth, max_dim, random_state, erc, obj, shuffle, split, fb)
     def fit(self,numpy.ndarray X,numpy.ndarray y):
 
         cdef numpy.ndarray[numpy.double_t, ndim=2, mode="c"] arr_x
