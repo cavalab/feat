@@ -65,12 +65,19 @@ class Feat(BaseEstimator):
     def fit_transform(self,X,y):
         return self._pyfeat.fit_transform(X,y)
 
+    def getAverageMethodForScore(labels):
+        labels_test_set = set(labels)
+        average_method = 'binary'
+        if len(labels_test_set) >2:
+            average_method = 'macro'
+        return average_method
+
     def score(self,features,labels):
         labels_pred = self.predict(features)
         if ( self.classification ):
-            return accuracy_score(labels,labels_pred)
+            return accuracy_score(labels,labels_pred,average=getAverageMethodForScore(labels))
         else:
-            return mse(y, labels)
+            return mse(labels,labels_pred)
         
 
 def main():
