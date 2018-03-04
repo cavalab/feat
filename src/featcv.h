@@ -171,13 +171,13 @@ namespace FT{
     void FeatCV::parse()
     {
         int startIndex = hyperParams.find('{');
-        int endIndex = hyperParams.find("},");
+        int endIndex = hyperParams.find("}");
         
         string curParams;
         string token, values;
         tokenType type;
         
-        int tokenStart, tokenIndex, valueEnd, prevEnd; 
+        int tokenStart, tokenEnd, valueStart, valueEnd;
         
         while(startIndex != string::npos && endIndex != string::npos)
         {
@@ -185,17 +185,16 @@ namespace FT{
             
             curParams = trim(hyperParams.substr(startIndex+1, endIndex - startIndex - 1));
             
-            tokenStart = curParams.find('(');
-            tokenIndex = curParams.find(':');
-            valueEnd = curParams.find(')');
             
-            while(tokenStart != string::npos && tokenIndex != string::npos && valueEnd != string::npos)
+            tokenStart = curParams.find('\'');
+            tokenEnd = curParams.find('\'', tokenStart + 1);
+            valueStart = curParams.find('(', tokenEnd);
+            valueEnd = curParams.find(')', valueStart);
+            
+            while(tokenStart != string::npos && tokenEnd != string::npos && valueStart != string::npos && valueEnd != string::npos)
             {
-                token = trim(curParams.substr(tokenStart + 2, tokenIndex - tokenStart - 3));
-                values = trim(curParams.substr(tokenIndex + 1, valueEnd - tokenIndex - 1));
-                //cout<<"\n\nCurParams = "<<curParams<<"\n";
-                //cout<<"Token  = "<<token<<"\n";
-                //cout<<"values = "<<values<<"\n";
+                token = trim(curParams.substr(tokenStart + 1, tokenEnd - tokenStart - 1));
+                values = trim(curParams.substr(valueStart + 1, valueEnd - valueStart - 1));
                 
                 type = getTokenType(token);
                 
@@ -217,20 +216,22 @@ namespace FT{
                     case unknown:       cout<<"Unknown token type "<<token<<std::endl; throw;
                 }
                 
-                tokenStart = curParams.find('(', valueEnd + 1);
-                tokenIndex = curParams.find(':', valueEnd + 1);
-                valueEnd = curParams.find(')', valueEnd + 1);
+                tokenStart = curParams.find('\'', valueEnd + 1);
+                tokenEnd = curParams.find('\'', tokenStart + 1);
+                valueStart = curParams.find('(', tokenEnd + 1);
+                valueEnd = curParams.find(')', valueStart + 1);
+                
             }
             
             setDefaults();
             
-            for(auto str : mlStr)
-                cout<<"Ml method "<<str<<"\n";
+            /*for(auto str : mlStr)
+                cout<<"Ml method "<<str<<"\n";*/
             
             pushObjects();
             
             startIndex = hyperParams.find('{', endIndex + 1);
-            endIndex = hyperParams.find("},", endIndex + 1);
+            endIndex = hyperParams.find("}", endIndex + 1);
             
         }
         
@@ -498,6 +499,7 @@ namespace FT{
 	    cout << "\nDepth = " << featObjs[bestScoreIndex].obj.get_max_depth();
 	    cout << "\nCross Rate = " <<featObjs[bestScoreIndex].obj.get_cross_rate();
 	    cout << "\nScore = " << featObjs[bestScoreIndex].score<<"\n";
+	    
     }
     
     VectorXd FeatCV::predict(MatrixXd x)
