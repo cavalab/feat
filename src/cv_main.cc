@@ -113,12 +113,12 @@ int main(int argc, char** argv){
         hyper_params = readInputFile(infile);
     else
         hyper_params = "[{\
-                            ('pop_size': 100, 500)\
-                            ('generations': 100, 200)\
-                            ('feedback': 0.2, 0.5, 0.8)\
-                            ('ml': \"LinearRidgeRegression\", \"CART\")\
-                            ('cross_rate': 0.25, 0.5, 0.75)\
-                         },\
+                            'pop_size': (100, 500)\
+                            'generations': (100, 200)\
+                            'feedback': (0.2, 0.5, 0.8)\
+                            'ml': (\"LinearRidgeRegression\", \"CART\")\
+                            'cross_rate': (0.25, 0.5, 0.75)\
+                         }\
                         ]";
                         
     cout<<"Hyper params are \n*****\n"<<hyper_params<<"\n***\n";
