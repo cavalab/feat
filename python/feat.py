@@ -68,7 +68,53 @@ def main():
     """Main function that is called when Fewtwo is run from the command line"""
     parser = argparse.ArgumentParser(description="A feature engineering wrapper for ML.",
                                      add_help=False)
+    parser.add_argument('-p', action='store', dest='POPULATION',default=100,type=int, help='Population Size')
+    parser.add_argument('-g', action='store', dest='GENERATIONS',default=100,type=int, help='Generations Size')    
+    parser.add_argument('-ml', action='store', dest='ML',
+                        default='LinearRidgeRegression',
+                        choices = ['LinearRidgeRegression','LogisticRegression'],type=str, help='Machine Learning Modelling Pair')      
+    parser.add_argument('-c', action='store', dest='IS_CLASSIFICATION',default=False,type=bool, help='False if Classification (default)')
+    parser.add_argument('-v', action='store', dest='VERBOSITY',default=0,type=int, help='Debugging Level 0 | 1 | 2 ')
+    parser.add_argument('-stall', action='store', dest='MAX_STALL',default=0,type=int, help='Maximum generations with no improvement to best score')
+    parser.add_argument('-sel', action='store', dest='SELECTION_METHOD',
+                        default='lexicase',
+                        type=str, help='Selection Method')  
+    parser.add_argument('-surv', action='store', dest='SURVIVAL_METHOD',
+                        default='pareto',
+                        type=str, help='Survival Method')
+    parser.add_argument('-xr', action='store', dest='CROSS_OVER',default=0.5,type=float, help='Cross over Rate in [0,1]')
+    parser.add_argument('-otype', action='store', dest='O_TYPE',default="a",type=str, help='OType')
+    parser.add_argument('-f', action='store', dest='FUNCTIONS',default="+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite",type=str, help='Terminal Functions')
+    parser.add_argument('-mdep', action='store', dest='MAX_DEPTH',default=3,type=int, help='Max Depth')
+    parser.add_argument('-mdim', action='store', dest='MAX_DIMENSION',default=10,type=int, help='Max Dimension')
+    parser.add_argument('-rs', action='store', dest='RANDOM_STATE',default=0,type=int, help='Random State')
+    parser.add_argument('-erc', action='store', dest='ERC',default=False,type=bool, help='ERC')
+    parser.add_argument('-split', action='store', dest='SPLIT',default=0.75,type=float, help='Split ratio for feat')
+    parser.add_argument('-fb', action='store', dest='FB',default=0.5,type=float, help='Fb')
+    parser.add_argument('-shuffle', action='store', dest='SHUFFLE',default=False,type=bool, help='False if no shuffle')
+    parser.add_argument('-obj', action='store', dest='OBJ',default="fitness,complexity",type=str, help='Obj')
 
-    
+    args = parser.parse_args()
+
+    learner = Feat(pop_size = args.POPULATION,
+         gens = args.GENERATIONS,
+         ml = args.ML,
+         classification = args.IS_CLASSIFICATION,
+         verbosity = args.VERBOSITY,
+         max_stall = args.MAX_STALL,
+         sel = args.SELECTION_METHOD,
+         surv = args.SURVIVAL_METHOD,
+         cross_rate = args.CROSS_OVER,
+         otype = args.O_TYPE,
+         functions = args.FUNCTIONS,
+         max_depth = args.MAX_DEPTH,
+         max_dim = args.MAX_DIMENSION,
+         random_state = args.RANDOM_STATE,
+         erc = args.ERC,
+         split = args.SPLIT,
+         fb = args.SHUFFLE,
+         obj = args.OBJ
+        )
+
 if __name__ == '__main__':
     main()
