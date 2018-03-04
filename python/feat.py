@@ -66,11 +66,11 @@ class Feat(BaseEstimator):
         return self._pyfeat.fit_transform(X,y)
 
     def score(self,features,labels):
-        y = self.predict(features)
+        labels_pred = self.predict(features)
         if ( self.classification ):
-            return accuracy_score(features,labels)
+            return accuracy_score(labels,labels_pred)
         else:
-            return mse(features, labels)
+            return mse(y, labels)
         
 
 def main():
