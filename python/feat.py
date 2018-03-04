@@ -11,12 +11,14 @@ from sklearn.base import BaseEstimator
 import numpy as np
 import pandas as pd
 import pyfeat
+from sklearn.metrics import accuracy_score,mean_squared_error as mse
+
 
 class Feat(BaseEstimator):
     """Feat uses GP to find a data representation that improves the performance of a given ML
     method."""
     def __init__(self, pop_size=100,  gens=100,  ml="LinearRidgeRegression", 
-                classification=False,  verbosity=2,  max_stall=0,
+                classification=False,  verbosity=0,  max_stall=0,
                 sel="lexicase",  surv="pareto",  cross_rate=0.5,
                 otype='a',  functions="+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite", 
                 max_depth=3,   max_dim=10,  random_state=0, 
@@ -63,6 +65,13 @@ class Feat(BaseEstimator):
     def fit_transform(self,X,y):
         return self._pyfeat.fit_transform(X,y)
 
+    def score(self,features,labels):
+        y = self.predict(features)
+        if ( self.classification ):
+            return accuracy_score(features,labels)
+        else:
+            return mse(features, labels)
+        
 
 def main():
     """Main function that is called when Fewtwo is run from the command line"""
