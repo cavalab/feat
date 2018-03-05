@@ -59,6 +59,7 @@ int main(int argc, char** argv){
     
     Feat feat;
     std::string sep = ",";
+    std::string ldataFile = "";
     double split = 0.75;    // split of input data used to trian Feat
 
     cout << "\n" << 
@@ -96,6 +97,7 @@ int main(int argc, char** argv){
         cout << "-isplit\tInternal slit for Feat's training procedure (0.75)\n";
         cout << "-f\tfeedback strength of ML on variation probabilities (0.5)\n";
         cout << "-n\tname to append to files\n";
+        cout << "-ldata\tpath to longitudinal data file\n";
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
     }
@@ -142,6 +144,8 @@ int main(int argc, char** argv){
         feat.set_split(std::stod(input.getCmdOption("-isplit")));
     if(input.cmdOptionExists("-f"))
         feat.set_feedback(std::stod(input.getCmdOption("-f")));
+    if(input.cmdOptionExists("-ldata"))
+        ldataFile = input.getCmdOption("-f");
     if(input.cmdOptionExists("-n"))
         feat.set_name(input.getCmdOption("-n"));
     
@@ -181,8 +185,11 @@ int main(int argc, char** argv){
     
     
     vector<vector<ArrayXd> > z;
-    FT::load_longitudinal("../dontcommit/exampleData.csv", z);
-    /*cout << "fitting model...\n";
+    
+    if(ldataFile.compare(""))
+        FT::load_longitudinal(ldataFile, z);
+        
+    cout << "fitting model...\n";
     
     feat.fit(X_t,y_t);
 
@@ -219,10 +226,7 @@ int main(int argc, char** argv){
             out_t << "\n";
     }
     out_t.close();
-    cout << "done!\n";
-    
-    */
-	
+    cout << "done!\n";	
 	
     return 0;
 
