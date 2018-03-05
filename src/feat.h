@@ -251,20 +251,43 @@ namespace FT{
             ~Feat(){} 
                         
             /// train a model.             
-            void fit(Map<MatrixXd>& X, Map<VectorXd>& y);
+            void fit(MatrixXd& X, VectorXd& y);
+
+            /// train a model.             
+            void fit(double * X,int rowsX,int colsX, double * Y,int lenY);
             
             /// predict on unseen data.             
-            VectorXd predict(Map<MatrixXd>& X);        
+            VectorXd predict(MatrixXd& X);    
+
+            /// predict on unseen data.             
+            VectorXd predict(double * X, int rowsX, int colsX);     
             
             /// transform an input matrix using a program.                          
-            MatrixXd transform(Map<MatrixXd>& X);
-            MatrixXd transform(Map<MatrixXd>& X,  Individual *ind);
+            MatrixXd transform(MatrixXd& X,  Individual *ind = 0);
+            
+	    MatrixXd transform(double * X,  int rows_x, int cols_x);
             
             /// convenience function calls fit then predict.            
-            VectorXd fit_predict(Map<MatrixXd>& X, Map<VectorXd>& y){ fit(X,y); return predict(X); } 
+            VectorXd fit_predict(MatrixXd& X, VectorXd& y){ fit(X,y); return predict(X); } 
+           
+            VectorXd fit_predict(double * X, int rows_x, int cols_x, double * Y, int len_y)
+		{
+			MatrixXd matX = Map<MatrixXd>(X,rows_x,cols_x);
+			VectorXd vectY = Map<VectorXd>(Y,len_y);
+			fit(matX,vectY); 
+			return predict(matX); 
+		} 
             
             /// convenience function calls fit then transform. 
-            MatrixXd fit_transform(Map<MatrixXd>& X, Map<VectorXd>& y){ fit(X,y); return transform(X); }
+            MatrixXd fit_transform(MatrixXd& X, VectorXd& y){ fit(X,y); return transform(X); }
+
+            MatrixXd fit_transform(double * X, int rows_x, int cols_x, double * Y, int len_y)
+		{
+			MatrixXd matX = Map<MatrixXd>(X,rows_x,cols_x);
+			VectorXd vectY = Map<VectorXd>(Y,len_y);
+			fit(matX,vectY); 
+			return transform(matX);
+		}
                   
             /// scoring function 
             double score(MatrixXd& X, VectorXd& y);
@@ -290,13 +313,14 @@ namespace FT{
             void print_stats(unsigned int);         ///< prints stats
             Individual best_ind;                    ///< best individual
             /// method to fit inital ml model            
-            void initial_model(Map<MatrixXd>& X, Map<VectorXd>& y);
-            void final_model(Map<MatrixXd>& X, Map<VectorXd>& y);
+            void initial_model(MatrixXd& X, VectorXd& y);
+            /// fits final model to best transformation
+            void final_model(MatrixXd& X, VectorXd& y);
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
     
-    void Feat::fit(Map<MatrixXd>& X, Map<VectorXd>& y)
+    void Feat::fit(MatrixXd& X, VectorXd& y)
     {
         /*!
          *  Input:
@@ -422,14 +446,22 @@ namespace FT{
         out_model.close();
     }
 
-    void Feat::final_model(Map<MatrixXd>& X, Map<VectorXd>& y)
+    void Feat::fit(double * X, int rowsX, int colsX, double * Y, int lenY)
+    {
+        MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
+        VectorXd vectY = Map<VectorXd>(Y,lenY);
+	
+	Feat::fit(matX,vectY);
+    }
+
+    void Feat::final_model(MatrixXd& X, VectorXd& y)
     {
         // fits final model to best tranformation found.
         bool pass = true;
         MatrixXd Phi = transform(X);
         VectorXd yhat = p_ml->out(Phi,y,params,pass,best_ind.dtypes);
     }
-    void Feat::initial_model(Map<MatrixXd>& X, Map<VectorXd>& y)
+    void Feat::initial_model(MatrixXd& X, VectorXd& y)
     {
         /*!
          * fits an ML model to the raw data as a starting point.
@@ -451,23 +483,12 @@ namespace FT{
             best_ind.program.push_back(params.terminals[i]);
         best_ind.fitness = best_score;
     }
-    
-    MatrixXd Feat::transform(Map<MatrixXd>& X)
-    {
-        /*!
-         * Transforms input data according to best ind
-         */
-        normalize(X,params.dtypes); 
-        MatrixXd Phi = best_ind.out(X,params);
-        normalize(Phi,best_ind.dtypes);
-        return Phi;
-    }
-    MatrixXd Feat::transform(Map<MatrixXd>& X, Individual *ind)
+
+    MatrixXd Feat::transform(MatrixXd& X, Individual *ind)
     {
         /*!
          * Transforms input data according to ind or best ind, if ind is undefined.
          */
-        normalize(X);
         if (ind == 0)        // if ind is empty, predict with best_ind
         {
             if (best_ind.program.size()==0){
@@ -484,9 +505,17 @@ namespace FT{
         normalize(Phi,ind->dtypes);
         return Phi;
     }
-    
-    VectorXd Feat::predict(Map<MatrixXd>& X)
+
+    MatrixXd Feat::transform(double * X, int rows_x,int cols_x)
     {
+        MatrixXd matX = Map<MatrixXd>(X,rows_x,cols_x);
+        return transform(matX);
+        
+    }
+    
+    
+    VectorXd Feat::predict(MatrixXd& X)
+    {        
         MatrixXd Phi = transform(X);
         auto PhiSG = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(Phi));
         SGVector<double> y_pred;
@@ -520,6 +549,12 @@ namespace FT{
             yhat = (yhat.cast<int>().array() == -1).select(0,yhat);
         
         return yhat;        
+    }
+
+    VectorXd Feat::predict(double * X, int rowsX,int colsX)
+    {
+        MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
+        return Feat::predict(matX);
     }
 
     void Feat::update_best()
