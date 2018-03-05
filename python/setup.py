@@ -14,7 +14,7 @@ except ImportError:
         import pip
         pip.main(['install', 'eigency'])
     except ImportError:
-        raise ImportError('The eigency library must be installed before FEW. '
+        raise ImportError('The eigency library must be installed before feat. '
                           'Automatic install with pip failed.')
 finally:
     globals()['eigency'] = importlib.import_module('eigency')
@@ -22,7 +22,7 @@ finally:
 package_version = '0.0'
 
 setup(
-    name="Feat",
+    name="feat",
     author='William La Cava',
     author_email='williamlacava@gmail.com',
     url = 'https://lacava.github.io/feat',
@@ -31,7 +31,7 @@ setup(
     description='Another feature engineering wrapper for ML.',
     zip_safe=True,
     install_requires=['Numpy>=1.8.2','SciPy>=0.13.3','scikit-learn'],
-    py_modules=['feat'],
+    py_modules=['feat','metrics'],
     ext_modules = cythonize([Extension(name='pyfeat',
        sources = ["pyfeat.pyx"],    # our Cython source
        include_dirs = ['../src/','/usr/include/eigen3/']+eigency.get_includes(include_eigen=False),
