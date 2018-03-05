@@ -56,8 +56,6 @@ class Feat(BaseEstimator):
                 self.fb)
 
     def fit(self,X,y):
-        X = np.asarray(X,order='F')
-        y = np.asarray(y,order='F')
         self._pyfeat.fit(X,y)
 
     def predict(self,X):
