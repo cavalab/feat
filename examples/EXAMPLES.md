@@ -57,3 +57,28 @@ output should look like
 ### tab-delimited csv files
 
 When using tab-delimited csv files as input, specify `-sep \\t` or `-sep "\t"` at the command line. 
+
+### Feat Cross Validator
+
+The cross-validation version of Feat named `feat_cv` is also built and present in the build/ directory. For cross validation, there are several hyperparameters of Feat that can be tuned: 
+
+* pop_size
+* generations
+* ml
+* max_stall
+* selection
+* survival
+* cross_rate
+* functions
+* max_depth
+* max_dim
+* erc
+* objectives
+* feedback
+
+There are 2 ways to set the hyper parameters for feat\_cv. The first method is to define a string in `cv_main.cc` file and pass that to the feat\_cv constructor. See `cv_main.cc` for details. 
+
+The second method is to create a input file containing group of parameters and pass the filepath using `-infile` flag. Check featcvinput.txt for a sample input file. The input file contains a string similar to the one in `cv_main.cc`.
+
+The general structure of input file is
+`[{('token1': val1, val2, val3)('token2': val1, val2)}, {('token1': val1, val2, val3)('token2': val1, val2)},]`
