@@ -345,6 +345,20 @@ namespace FT{
          *	   7. select surviving individuals from parents and offspring
          */
         // start the clock
+        std::cout << "X^T is\n ";
+        auto XT = X.transpose();
+        for (int i =0; i<10; ++i){
+            for (int j=0; j<XT.cols(); ++j)
+                std::cout << XT(i,j) << ",";
+            std::cout <<"\n";
+        }
+        std::cout << "\n=======\n";
+        
+        for (int i =0; i<10; ++i){
+            std::cout << y(i) << ",";
+        }
+        std::cout <<"\n";
+        exit(0); 
         timer.Reset();
         
         if(str_dim.compare("") != 0)
@@ -454,7 +468,7 @@ namespace FT{
         MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
         VectorXd vectY = Map<VectorXd>(Y,lenY);
 	
-	Feat::fit(matX,vectY);
+	    Feat::fit(matX,vectY);
     }
 
     void Feat::final_model(MatrixXd& X, VectorXd& y)

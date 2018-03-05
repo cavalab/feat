@@ -56,6 +56,8 @@ class Feat(BaseEstimator):
                 self.fb)
 
     def fit(self,X,y):
+        X = np.asarray(X,order='F')
+        y = np.asarray(y,order='F')
         self._pyfeat.fit(X,y)
 
     def predict(self,X):
@@ -77,9 +79,12 @@ class Feat(BaseEstimator):
             return balanced_accuracy_score(labels,labels_pred)
         else:
             return mse(labels,labels_pred)
-        
+
     def get_representation(self):
         return self._pyfeat.get_representation()
+
+    def get_archive(self):
+        return self._pyfeat.get_archive()
 
 def main():
     """Main function that is called when Fewtwo is run from the command line"""
