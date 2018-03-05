@@ -22,6 +22,7 @@ cdef extern from "feat.h" namespace "FT":
         MatrixXd transform(double * X, int rowsX,int colsX)
         VectorXd fit_predict(double * X, int rowsX,int colsX, double*  y , int lenY)
         MatrixXd fit_transform(double * X, int rowsX,int colsX, double*  y , int lenY)
+        string get_representation()
 
 cdef class PyFeat:
     cdef Feat ft  # hold a c++ instance which we're wrapping
@@ -50,7 +51,7 @@ cdef class PyFeat:
         arr_x = numpy.ascontiguousarray(X, dtype=numpy.double)
 
         res = ndarray(self.ft.predict(&arr_x[0,0],X.shape[0],X.shape[1]))
-        return res
+        return res.flatten()
 
     def transform(self,np.ndarray X):
         cdef numpy.ndarray[numpy.double_t, ndim=2, mode="c"] arr_x
@@ -80,4 +81,6 @@ cdef class PyFeat:
         
         X = ndarray(self.ft.fit_transform( &arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y) ))
         return X.transpose()
-
+    
+    def get_representation(self):
+        return self.ft.get_representation().decode()
