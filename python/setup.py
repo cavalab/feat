@@ -31,7 +31,7 @@ setup(
     description='Another feature engineering wrapper for ML.',
     zip_safe=True,
     install_requires=['Numpy>=1.8.2','SciPy>=0.13.3','scikit-learn'],
-    py_modules=['feat'],
+    py_modules=['feat','metrics'],
     ext_modules = cythonize([Extension(name='pyfeat',
        sources = ["pyfeat.pyx"],    # our Cython source
        include_dirs = ['../src/','/usr/include/eigen3/']+eigency.get_includes(include_eigen=False),
