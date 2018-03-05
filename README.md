@@ -1,6 +1,7 @@
 # Feat
 
 [![Build Status](https://travis-ci.org/lacava/feat.svg?branch=master)](https://travis-ci.org/lacava/feat)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/lacava/feat/blob/master/LICENSE)
 
 **Feat** is a feature engineering automation tool that learns new representations of raw data 
 to improve classifier and regressor performance. The underlying methods are based on Pareto 
