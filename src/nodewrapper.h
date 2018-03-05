@@ -40,4 +40,14 @@ license: GNU/GPL v3
 #include "./node/nodesign.h"
 #include "./node/nodetanh.h"
 
+#include "./node/nodelongitudinal.h"
+#include "./node/nodemean.h"
+#include "./node/nodemedian.h"
+#include "./node/nodemax.h"
+#include "./node/nodemin.h"
+#include "./node/nodevar.h"
+#include "./node/nodeskew.h"
+#include "./node/nodekurtosis.h"
+#include "./node/nodetime.h"
+
 #endif

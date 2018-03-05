@@ -33,7 +33,7 @@ namespace FT{
         ~Individual(){}
 
         /// calculate program output matrix Phi
-        MatrixXd out(const MatrixXd& X, const vector<vector<ArrayXd> > &z, const Parameters& params, const VectorXd& y);
+        MatrixXd out(const MatrixXd& X, const vector<vector<ArrayXd> > &Z, const Parameters& params, const VectorXd& y);
 
         /// return symbolic representation of program
         string get_eqn();
@@ -169,11 +169,12 @@ namespace FT{
         return ps;
     }
     // calculate program output matrix
-    MatrixXd Individual::out(const MatrixXd& X, const vector<vector<ArrayXd> > &z, const Parameters& params, 
+    MatrixXd Individual::out(const MatrixXd& X, const vector<vector<ArrayXd> > &Z, const Parameters& params, 
                              const VectorXd& y = VectorXd())
     {
         /*!
          * @params X: n_features x n_samples data
+         * @params Z: longitudinal nodes for samples
          * @params y: target data
          * @params: Feat parameters
          * @returns Phi: n_features x n_samples transformation
@@ -187,7 +188,7 @@ namespace FT{
         for (const auto& n : program)
         {
         	if(stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
-	            n->evaluate(X, y, z, stack_f, stack_b, stack_z);
+	            n->evaluate(X, y, Z, stack_f, stack_b, stack_z);
             else
             {
                 std::cout << "out() error: node " << n->name << " in " + program_str() + 

@@ -136,6 +136,38 @@ namespace FT{
         else
             return x[n];
     }
+    
+    /// calculate variance
+    double variance(const ArrayXd& v) 
+    {
+        double mean = v.mean();
+        ArrayXd tmp = mean*ArrayXd::Ones(v.size());
+        return pow((v - tmp), 2).mean();
+    }
+    
+    /// calculate skew
+    double skew(const ArrayXd& v) 
+    {
+        double mean = v.mean();
+        ArrayXd tmp = mean*ArrayXd::Ones(v.size());
+        
+        double thirdMoment = pow((v - tmp), 3).mean();
+        double variance = pow((v - tmp), 2).mean();
+        
+        return thirdMoment/sqrt(pow(variance, 3));
+    }
+    
+    /// calculate kurtosis
+    double kurtosis(const ArrayXd& v) 
+    {
+        double mean = v.mean();
+        ArrayXd tmp = mean*ArrayXd::Ones(v.size());
+        
+        double fourthMoment = pow((v - tmp), 4).mean();
+        double variance = pow((v - tmp), 2).mean();
+        
+        return fourthMoment/pow(variance, 2);
+    }
 
     /// median absolute deviation
     double mad(const ArrayXd& x) 

@@ -156,7 +156,6 @@ int main(int argc, char** argv){
     
     MatrixXd X;
     VectorXd y; 
-    vector<vector<ArrayXd> > z;
     vector<string> names;
     vector<char> dtypes;
     bool binary_endpoint=false;
@@ -184,11 +183,11 @@ int main(int argc, char** argv){
 
     cout << "fitting model...\n";
     
-    feat.fit(X_t,y_t, z);
+    feat.fit(X_t,y_t);
 
     cout << "generating prediction...\n";
 
-    double score = feat.score(X_v, y_v, z);
+    double score = feat.score(X_v, y_v);
     
     cout << "test score: " << score << "\n";
     // write validation score to file
@@ -206,7 +205,7 @@ int main(int argc, char** argv){
     std::ofstream out_t;
     out_t.open("transformation_"+ feat.get_name() + ".txt");
     
-    MatrixXd Phi = feat.transform(X, z).transpose();
+    MatrixXd Phi = feat.transform(X).transpose();
     for (unsigned i  = 0; i < Phi.rows(); ++i)
     {
         for (unsigned j = 0; j < Phi.cols(); ++j)

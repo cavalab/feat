@@ -22,7 +22,7 @@ namespace FT{
     		}
 
             /// Safe log: pushes log(abs(x)) or MIN_DBL if x is near zero. 
-            void evaluate(const MatrixXd& X, const VectorXd& y, const vector<vector<ArrayXd> > &z, 
+            void evaluate(const MatrixXd& X, const VectorXd& y, const vector<vector<ArrayXd> > &Z, 
 			        vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b, vector<vector<ArrayXd> > &stack_z)
 			{
            		ArrayXd x = stack_f.back(); stack_f.pop_back();                    

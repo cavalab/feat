@@ -251,22 +251,34 @@ namespace FT{
             ~Feat(){} 
                         
             /// train a model.             
-            void fit(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > &z);
+            void fit(MatrixXd& X,
+                     VectorXd& y,
+                     vector<vector<ArrayXd> > Z = vector<vector<ArrayXd> >());
             
             /// predict on unseen data.             
-            VectorXd predict(MatrixXd& X, vector<vector<ArrayXd> > &z);        
+            VectorXd predict(MatrixXd& X, vector<vector<ArrayXd> > Z = vector<vector<ArrayXd> >());        
             
             /// transform an input matrix using a program.                          
-            MatrixXd transform(MatrixXd& X,  vector<vector<ArrayXd> > &z, Individual *ind = 0);
+            MatrixXd transform(MatrixXd& X,
+                               vector<vector<ArrayXd> > Z = vector<vector<ArrayXd> >(),
+                               Individual *ind = 0);
             
             /// convenience function calls fit then predict.            
-            VectorXd fit_predict(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > &z){ fit(X, y, z); return predict(X, z); } 
+            VectorXd fit_predict(MatrixXd& X,
+                                 VectorXd& y,
+                                 vector<vector<ArrayXd> > Z = vector<vector<ArrayXd> >())
+                                 { fit(X, y, Z); return predict(X, Z); } 
             
             /// convenience function calls fit then transform. 
-            MatrixXd fit_transform(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > &z){ fit(X, y, z); return transform(X, z); }
+            MatrixXd fit_transform(MatrixXd& X,
+                                   VectorXd& y,
+                                   vector<vector<ArrayXd> > Z = vector<vector<ArrayXd> >())
+                                   { fit(X, y, Z); return transform(X, Z); }
                   
             /// scoring function 
-            double score(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > &z);
+            double score(MatrixXd& X,
+                         VectorXd& y,
+                         vector<vector<ArrayXd> > Z = vector<vector<ArrayXd> >());
             
         private:
             // Parameters
@@ -291,12 +303,12 @@ namespace FT{
             /// method to fit inital ml model            
             void initial_model(MatrixXd& X, VectorXd& y);
             /// fits final model to best transformation
-            void final_model(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > &z);
+            void final_model(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > &Z);
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
     
-    void Feat::fit(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > &z)
+    void Feat::fit(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > Z)
     {
         /*!
          *  Input:
@@ -365,7 +377,7 @@ namespace FT{
        
         // evaluate initial population
         params.msg("Evaluating initial population",1);
-        p_eval->fitness(*p_pop,X_t, z, y_t,F,params);
+        p_eval->fitness(*p_pop,X_t, Z, y_t,F,params);
 
         vector<size_t> survivors;
 
@@ -384,7 +396,7 @@ namespace FT{
 
             // evaluate offspring
             params.msg("evaluating offspring...", 2);
-            p_eval->fitness(*p_pop, X_t, z, y_t, F, params, true);
+            p_eval->fitness(*p_pop, X_t, Z, y_t, F, params, true);
 
             // select survivors from combined pool of parents and offspring
             params.msg("survival...", 2);
@@ -405,12 +417,12 @@ namespace FT{
         if (params.split < 1.0)
         {
             F_v.resize(X_v.cols(),int(2*params.pop_size)); 
-            p_eval->fitness(*p_pop, X_v, z, y_v, F_v, params);
+            p_eval->fitness(*p_pop, X_v, Z, y_v, F_v, params);
             initial_model(X_v, y_v);        // calculate baseline model validation score
             update_best();                  // get the best validation model
         }
         
-        final_model(X, y, z);   // fit final model to best model
+        final_model(X, y, Z);   // fit final model to best model
         params.msg("best validation representation: " + best_ind.get_eqn(),1);
         params.msg("validation score: " + std::to_string(best_score), 1);
 
@@ -422,11 +434,11 @@ namespace FT{
         out_model.close();
     }
 
-    void Feat::final_model(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > &z)
+    void Feat::final_model(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > &Z)
     {
         // fits final model to best tranformation found.
         bool pass = true;
-        MatrixXd Phi = transform(X, z);
+        MatrixXd Phi = transform(X, Z);
         VectorXd yhat = p_ml->out(Phi,y,params,pass,best_ind.dtypes);
     }
     void Feat::initial_model(MatrixXd& X, VectorXd& y)
@@ -452,7 +464,7 @@ namespace FT{
         best_ind.fitness = best_score;
     }
 
-    MatrixXd Feat::transform(MatrixXd& X, vector<vector<ArrayXd> > &z, Individual *ind)
+    MatrixXd Feat::transform(MatrixXd& X, vector<vector<ArrayXd> > Z, Individual *ind)
     {
         /*!
          * Transforms input data according to ind or best ind, if ind is undefined.
@@ -464,19 +476,19 @@ namespace FT{
                 throw;
             }
             normalize(X,params.dtypes);
-            MatrixXd Phi = best_ind.out(X, z, params);
+            MatrixXd Phi = best_ind.out(X, Z, params);
             normalize(Phi,best_ind.dtypes);
             return Phi;
         }
         normalize(X,params.dtypes);
-        MatrixXd Phi = ind->out(X, z,params);
+        MatrixXd Phi = ind->out(X, Z, params);
         normalize(Phi,ind->dtypes);
         return Phi;
     }
     
-    VectorXd Feat::predict(MatrixXd& X, vector<vector<ArrayXd> > &z)
+    VectorXd Feat::predict(MatrixXd& X, vector<vector<ArrayXd> > Z)
     {        
-        MatrixXd Phi = transform(X, z);
+        MatrixXd Phi = transform(X, Z);
         auto PhiSG = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(Phi));
         SGVector<double> y_pred;
         VectorXd yhat;
@@ -524,9 +536,9 @@ namespace FT{
  
     }
     
-    double Feat::score(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > &z)
+    double Feat::score(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > Z)
     {
-        VectorXd yhat = predict(X, z);
+        VectorXd yhat = predict(X, Z);
         
         if (params.classification)
             return p_eval->bal_accuracy(y,yhat,vector<int>(),false);

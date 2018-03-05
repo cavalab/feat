@@ -33,7 +33,7 @@ namespace FT{
             virtual ~Node(){}
            
             /// Evaluates the node and updates the stack states. 
-            virtual void evaluate(const MatrixXd& X, const VectorXd& y, const vector<vector<ArrayXd> > &z, 
+            virtual void evaluate(const MatrixXd& X, const VectorXd& y, const vector<vector<ArrayXd> > &Z, 
 			        vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b, vector<vector<ArrayXd> > &stack_z) = 0; 
 
             /// evaluates the node symbolically
