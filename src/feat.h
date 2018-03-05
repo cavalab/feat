@@ -252,18 +252,42 @@ namespace FT{
                         
             /// train a model.             
             void fit(MatrixXd& X, VectorXd& y);
+
+            /// train a model.             
+            void fit(double * X,int rowsX,int colsX, double * Y,int lenY);
             
             /// predict on unseen data.             
-            VectorXd predict(MatrixXd& X);        
+            VectorXd predict(MatrixXd& X);    
+
+            /// predict on unseen data.             
+            VectorXd predict(double * X, int rowsX, int colsX);     
             
             /// transform an input matrix using a program.                          
             MatrixXd transform(MatrixXd& X,  Individual *ind = 0);
             
+	    MatrixXd transform(double * X,  int rows_x, int cols_x);
+            
             /// convenience function calls fit then predict.            
             VectorXd fit_predict(MatrixXd& X, VectorXd& y){ fit(X,y); return predict(X); } 
+           
+            VectorXd fit_predict(double * X, int rows_x, int cols_x, double * Y, int len_y)
+		{
+			MatrixXd matX = Map<MatrixXd>(X,rows_x,cols_x);
+			VectorXd vectY = Map<VectorXd>(Y,len_y);
+			fit(matX,vectY); 
+			return predict(matX); 
+		} 
             
             /// convenience function calls fit then transform. 
             MatrixXd fit_transform(MatrixXd& X, VectorXd& y){ fit(X,y); return transform(X); }
+
+            MatrixXd fit_transform(double * X, int rows_x, int cols_x, double * Y, int len_y)
+		{
+			MatrixXd matX = Map<MatrixXd>(X,rows_x,cols_x);
+			VectorXd vectY = Map<VectorXd>(Y,len_y);
+			fit(matX,vectY); 
+			return transform(matX);
+		}
                   
             /// scoring function 
             double score(MatrixXd& X, VectorXd& y);
@@ -422,6 +446,14 @@ namespace FT{
         out_model.close();
     }
 
+    void Feat::fit(double * X, int rowsX, int colsX, double * Y, int lenY)
+    {
+        MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
+        VectorXd vectY = Map<VectorXd>(Y,lenY);
+	
+	Feat::fit(matX,vectY);
+    }
+
     void Feat::final_model(MatrixXd& X, VectorXd& y)
     {
         // fits final model to best tranformation found.
@@ -473,6 +505,14 @@ namespace FT{
         normalize(Phi,ind->dtypes);
         return Phi;
     }
+
+    MatrixXd Feat::transform(double * X, int rows_x,int cols_x)
+    {
+        MatrixXd matX = Map<MatrixXd>(X,rows_x,cols_x);
+        return transform(matX);
+        
+    }
+    
     
     VectorXd Feat::predict(MatrixXd& X)
     {        
@@ -509,6 +549,12 @@ namespace FT{
             yhat = (yhat.cast<int>().array() == -1).select(0,yhat);
         
         return yhat;        
+    }
+
+    VectorXd Feat::predict(double * X, int rowsX,int colsX)
+    {
+        MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
+        return Feat::predict(matX);
     }
 
     void Feat::update_best()
