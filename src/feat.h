@@ -217,7 +217,10 @@ namespace FT{
 
             ///return feedback setting
             double get_feedback(){ return params.feedback; }
-            
+           
+            ///return best model
+            string get_representation(){ return best_ind.get_eqn();}
+
             ///return population as string
             string get_eqns(bool front=true)
             {
