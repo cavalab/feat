@@ -14,7 +14,7 @@ clf.fit(X,Y)
 print('representation: ', clf.get_representation())
 
 print (clf.predict(X))
-print ( clf.transform(X))
-#print (clf.fit_predict(X,Y))
-#print (clf.fit_transform(X,Y))
+print (clf.transform(X))
+print (clf.fit_predict(X,Y))
+print (clf.fit_transform(X,Y))
 
