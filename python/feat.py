@@ -78,6 +78,8 @@ class Feat(BaseEstimator):
         else:
             return mse(labels,labels_pred)
         
+    def get_representation(self):
+        return self._pyfeat.get_representation()
 
 def main():
     """Main function that is called when Fewtwo is run from the command line"""

@@ -14,7 +14,7 @@ except ImportError:
         import pip
         pip.main(['install', 'eigency'])
     except ImportError:
-        raise ImportError('The eigency library must be installed before FEW. '
+        raise ImportError('The eigency library must be installed before feat. '
                           'Automatic install with pip failed.')
 finally:
     globals()['eigency'] = importlib.import_module('eigency')
@@ -22,7 +22,7 @@ finally:
 package_version = '0.0'
 
 setup(
-    name="Feat",
+    name="feat",
     author='William La Cava',
     author_email='williamlacava@gmail.com',
     url = 'https://lacava.github.io/feat',
