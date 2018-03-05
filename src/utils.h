@@ -8,6 +8,7 @@ license: GNU/GPL v3
 #include <fstream>
 #include <chrono>
 #include <ostream>
+#include <map>
 
 using namespace Eigen;
 
@@ -103,6 +104,56 @@ namespace FT{
 
     }
     
+    /*!
+     * load longitudinal csv file into matrix. 
+     */
+    void load_longitudinal(const std::string & path, vector<vector<ArrayXd>> &Z, char sep=',')
+    {
+        std::map<int, std::map<int, std::vector<double> > > dataMap;
+        std::ifstream indata;
+        indata.open(path);
+        if (!indata.good())
+        { 
+            std::cerr << "Invalid input file " + path + "\n"; 
+            exit(1);
+        }
+        std::string line;
+        
+        while (std::getline(indata, line)) 
+        {
+            std::stringstream lineStream(line);
+            std::string sampleNo, value, type;
+            
+            std::getline(lineStream, sampleNo, sep);
+            std::getline(lineStream, value, sep);
+            std::getline(lineStream, type, sep);
+            
+            dataMap[std::stoi(type)][std::stoi(sampleNo)].push_back(std::stod(value));
+        }
+        
+        for ( const auto &myPair: dataMap ) {
+            std::cout << myPair.first << '\n';
+        }
+        
+        std::cout<<dataMap.size()<<'\n';
+        
+        int numTypes = dataMap.size();
+        int numSamples = dataMap[0].size();
+        
+        Z.resize(numTypes);
+        
+        int x, y;
+        
+        for(x = 0; x < numTypes; x++)
+            Z[x].resize(numSamples); 
+            
+        for(x = 0 ; x < numTypes; x++)
+            for(y = 0; y < numSamples; y++)
+            {
+                ArrayXd arr = Map<ArrayXd>(dataMap[x][y].data(), dataMap[x][y].size());
+                Z[x].push_back(arr);
+            }
+    }
     
     /// check if element is in vector.
     template<typename T>

@@ -179,9 +179,10 @@ int main(int argc, char** argv){
     VectorXd y_t(int(y.size()*split)), y_v(int(y.size()*(1-split)));
     FT::train_test_split(X,y,X_t,X_v,y_t,y_v,feat.get_shuffle());      
     
-         
-
-    cout << "fitting model...\n";
+    
+    vector<vector<ArrayXd> > z;
+    FT::load_longitudinal("../dontcommit/exampleData.csv", z);
+    /*cout << "fitting model...\n";
     
     feat.fit(X_t,y_t);
 
@@ -219,6 +220,8 @@ int main(int argc, char** argv){
     }
     out_t.close();
     cout << "done!\n";
+    
+    */
 	
 	
     return 0;
