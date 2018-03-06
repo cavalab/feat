@@ -50,8 +50,8 @@ setup(
        sources = ["pyfeat.pyx"],    # our cython source
        include_dirs = ['../src/','/usr/include/eigen3/',shogun_include_dir]
                       +eigency.get_includes(include_eigen=False),
-       extra_compile_args = ['-std=c++14','-fopenmp','-wno-sign-compare',
-                             '-wno-reorder'],
+       extra_compile_args = ['-std=c++14','-fopenmp','-Wno-sign-compare',
+                             '-Wno-reorder'],
        library_dirs = [shogun_lib],
        extra_link_args = ['-lshogun'],      
        language='c++'
