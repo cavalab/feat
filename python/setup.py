@@ -20,6 +20,20 @@ finally:
     globals()['eigency'] = importlib.import_module('eigency')
 
 package_version = '0.0'
+import os
+env_params = os.environ.keys() 
+if 'EIGEN_INCLUDE_DIR' in env_params:
+    eigen_dir = os.environ['EIGEN_INCLUDE_DIR'] 
+else:
+    eigen_dir = '/usr/include/eigen3/'
+
+shogun_include_dir = ''
+shogun_lib = ''
+if 'SHOGUN_DIR' in env_params:
+    shogun_include_dir = os.environ['SHOGUN_DIR']
+if 'SHOGUN_LIB' in env_params:
+    shogun_lib = os.environ['SHOGUN_LIB']
+
 
 setup(
     name="feat",
@@ -33,9 +47,12 @@ setup(
     install_requires=['Numpy>=1.8.2','SciPy>=0.13.3','scikit-learn'],
     py_modules=['feat','metrics'],
     ext_modules = cythonize([Extension(name='pyfeat',
-       sources = ["pyfeat.pyx"],    # our Cython source
-       include_dirs = ['../src/','/usr/include/eigen3/']+eigency.get_includes(include_eigen=False),
-       extra_compile_args = ['-std=c++14','-fopenmp','-Wno-sign-compare'],
+       sources = ["pyfeat.pyx"],    # our cython source
+       include_dirs = ['../src/','/usr/include/eigen3/',shogun_include_dir]
+                      +eigency.get_includes(include_eigen=False),
+       extra_compile_args = ['-std=c++14','-fopenmp','-wno-sign-compare',
+                             '-wno-reorder'],
+       library_dirs = [shogun_lib],
        extra_link_args = ['-lshogun'],      
        language='c++'
        )],
