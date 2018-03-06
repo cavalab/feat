@@ -454,7 +454,7 @@ namespace FT{
         MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
         VectorXd vectY = Map<VectorXd>(Y,lenY);
 	
-	Feat::fit(matX,vectY);
+	    Feat::fit(matX,vectY);
     }
 
     void Feat::final_model(MatrixXd& X, VectorXd& y)
