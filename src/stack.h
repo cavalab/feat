@@ -54,6 +54,11 @@ namespace FT
                 return st.at(i);
             }
             
+            void clear()
+            {
+                st.clear();
+            }
+            
             typename vector<type>::iterator begin()
             {
                 return st.begin();
