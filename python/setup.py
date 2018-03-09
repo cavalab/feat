@@ -27,8 +27,8 @@ if 'EIGEN_INCLUDE_DIR' in env_params:
 else:
     eigen_dir = '/usr/include/eigen3/'
 
-shogun_include_dir = ''
-shogun_lib = ''
+shogun_include_dir = '/usr/include/'
+shogun_lib = '/usr/lib/'
 if 'SHOGUN_DIR' in env_params:
     shogun_include_dir = os.environ['SHOGUN_DIR']
 if 'SHOGUN_LIB' in env_params:
@@ -44,7 +44,7 @@ setup(
     license='GNU/GPLv3',
     description='Another feature engineering wrapper for ML.',
     zip_safe=True,
-    install_requires=['Numpy>=1.8.2','SciPy>=0.13.3','scikit-learn'],
+    install_requires=['Numpy>=1.8.2','SciPy>=0.13.3','scikit-learn','Cython'],
     py_modules=['feat','metrics'],
     ext_modules = cythonize([Extension(name='pyfeat',
        sources = ["pyfeat.pyx"],    # our cython source
