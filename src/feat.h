@@ -217,7 +217,10 @@ namespace FT{
 
             ///return feedback setting
             double get_feedback(){ return params.feedback; }
-            
+           
+            ///return best model
+            string get_representation(){ return best_ind.get_eqn();}
+
             ///return population as string
             string get_eqns(bool front=true)
             {
@@ -463,7 +466,7 @@ namespace FT{
         MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
         VectorXd vectY = Map<VectorXd>(Y,lenY);
 	
-	Feat::fit(matX,vectY);
+	    Feat::fit(matX,vectY);
     }
 
     void Feat::final_model(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > &Z)	
