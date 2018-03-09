@@ -77,7 +77,12 @@ class Feat(BaseEstimator):
             return balanced_accuracy_score(labels,labels_pred)
         else:
             return mse(labels,labels_pred)
-        
+
+    def get_representation(self):
+        return self._pyfeat.get_representation()
+
+    def get_archive(self):
+        return self._pyfeat.get_archive()
 
 def main():
     """Main function that is called when Fewtwo is run from the command line"""
