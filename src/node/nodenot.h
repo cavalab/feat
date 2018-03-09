@@ -23,17 +23,17 @@ namespace FT{
     		
             /// Evaluates the node and updates the stack states. 
             void evaluate(const MatrixXd& X, const VectorXd& y, const vector<vector<ArrayXd> > &Z, 
-			        vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b, vector<vector<ArrayXd> > &stack_z)
+			        Stacks& stack)
             {
-            	ArrayXb x = stack_b.back(); stack_b.pop_back();
-                stack_b.push_back(!x);
+            	ArrayXb x = stack.b.pop();
+                stack.b.push(!x);
             }
 
             /// Evaluates the node symbolically
-            void eval_eqn(vector<string>& stack_f, vector<string>& stack_b, vector<string>& stack_z)
+            void eval_eqn(Stacks& stack)
             {
-            	string x = stack_b.back(); stack_b.pop_back();
-                stack_b.push_back("NOT(" + x + ")");
+            	string x = stack.bs.pop();
+                stack.bs.push("NOT(" + x + ")");
             }
     };
     

@@ -23,23 +23,23 @@ namespace FT{
     		
             /// Evaluates the node and updates the stack states. 
             void evaluate(const MatrixXd& X, const VectorXd& y, const vector<vector<ArrayXd> > &Z, 
-			        vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b, vector<vector<ArrayXd> > &stack_z)
+			        Stacks& stack)
             {
-        		ArrayXb x2 = stack_b.back(); stack_b.pop_back();
-                ArrayXb x1 = stack_b.back(); stack_b.pop_back();
+        		ArrayXb x2 = stack.b.pop();
+                ArrayXb x1 = stack.b.pop();
 
                 ArrayXb res = (x1 != x2).select(ArrayXb::Ones(x1.size()), ArrayXb::Zero(x1.size()));
 
-                stack_b.push_back(res);
+                stack.b.push(res);
                 
             }
 
             /// Evaluates the node symbolically
-            void eval_eqn(vector<string>& stack_f, vector<string>& stack_b, vector<string>& stack_z)
+            void eval_eqn(Stacks& stack)
             {
-        		string x2 = stack_b.back(); stack_b.pop_back();
-                string x1 = stack_b.back(); stack_b.pop_back();
-                stack_b.push_back("(" + x1 + " XOR " + x2 + ")");
+        		string x2 = stack.bs.pop();
+                string x1 = stack.bs.pop();
+                stack.bs.push("(" + x1 + " XOR " + x2 + ")");
             }
     };
 }	

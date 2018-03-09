@@ -180,15 +180,13 @@ namespace FT{
          * @returns Phi: n_features x n_samples transformation
          */
 
-        vector<ArrayXd> stack_f; 
-        vector<ArrayXb> stack_b;
-        vector<vector<ArrayXd> > stack_z;
+        Stacks stack;
         params.msg("evaluating program " + get_eqn(),2);
         // evaluate each node in program
         for (const auto& n : program)
         {
-        	if(stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
-	            n->evaluate(X, y, Z, stack_f, stack_b, stack_z);
+        	if(stack.f.size() >= n->arity['f'] && stack.b.size() >= n->arity['b'])
+	            n->evaluate(X, y, Z, stack);
             else
             {
                 std::cout << "out() error: node " << n->name << " in " + program_str() + 
@@ -200,29 +198,29 @@ namespace FT{
         // convert stack_f to Phi
         params.msg("converting stacks to Phi",2);
         int cols;
-        if (stack_f.size()==0)
+        if (stack.f.size()==0)
         {
-            if (stack_b.size() == 0)
+            if (stack.b.size() == 0)
             {   std::cout << "Error: no outputs in stacks\n"; throw;}
             
-            cols = stack_b.at(0).size();
+            cols = stack.b.top().size();
         }
         else
-            cols = stack_f.at(0).size();
+            cols = stack.f.top().size();
                
-        int rows_f = stack_f.size();
-        int rows_b = stack_b.size();
+        int rows_f = stack.f.size();
+        int rows_b = stack.b.size();
         dtypes.clear();        
         Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
         // add stack_f to Phi
         for (unsigned int i=0; i<rows_f; ++i)
-        {    Phi.row(i) = VectorXd::Map(stack_f.at(i).data(),cols);
+        {    Phi.row(i) = VectorXd::Map(stack.f.at(i).data(),cols);
              dtypes.push_back('f'); 
         }
         // convert stack_b to Phi       
         for (unsigned int i=0; i<rows_b; ++i)
         {
-            Phi.row(i+rows_f) = ArrayXb::Map(stack_b.at(i).data(),cols).cast<double>();
+            Phi.row(i+rows_f) = ArrayXb::Map(stack.b.at(i).data(),cols).cast<double>();
             dtypes.push_back('b');
         }       
         //Phi.transposeInPlace();
@@ -234,13 +232,11 @@ namespace FT{
     {
         if (eqn.empty())               // calculate eqn if it doesn't exist yet 
         {
-            vector<string> stack_f;     // symbolic floating stack
-            vector<string> stack_b;     // symbolic boolean stack
-            vector<string> stack_z;     // symbolic logitudinal stack
+            Stacks stack;
 
             for (auto n : program){
-            	if(stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
-                	n->eval_eqn(stack_f,stack_b, stack_z);
+            	if(stack.fs.size() >= n->arity['f'] && stack.bs.size() >= n->arity['b'])
+                	n->eval_eqn(stack);
                 else
                 {
                     std::cout << "get_eqn() error: node " << n->name << " in " + program_str() + " is invalid\n";
@@ -249,11 +245,11 @@ namespace FT{
 
             }
             // tie stack outputs together to return representation
-            for (auto s : stack_f) 
+            for (auto s : stack.fs) 
                 eqn += "[" + s + "]";
-            for (auto s : stack_b) 
+            for (auto s : stack.bs) 
                 eqn += "[" + s + "]";              
-            for (auto s : stack_z) 
+            for (auto s : stack.ls) 
                 eqn += "[" + s + "]";
         }
 
