@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "feat.h"
 #include "featcv.h"
+#include "stack.h"
 using FT::Feat;
 using FT::FeatCV;
 #include <Eigen/Dense>

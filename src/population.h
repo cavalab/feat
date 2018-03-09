@@ -102,16 +102,14 @@ namespace FT{
     bool is_valid_program(vector<std::shared_ptr<Node>>& program, unsigned num_features)
     {
         /*! checks whether program fulfills all its arities. */
-        vector<ArrayXd> stack_f; 
-        vector<ArrayXb> stack_b;
-        vector<vector<ArrayXd> > stack_z;
+        Stacks stack;
         MatrixXd X = MatrixXd::Zero(num_features,2); 
         VectorXd y = VectorXd::Zero(2); 
         vector<vector<ArrayXd> > Z;
         unsigned i = 0; 
         for (const auto& n : program){
-            if ( stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
-                n->evaluate(X, y, Z, stack_f, stack_b, stack_z);
+            if ( stack.f.size() >= n->arity['f'] && stack.b.size() >= n->arity['b'])
+                n->evaluate(X, y, Z, stack);
             else{
                 std::cout << "Error: ";
                 for (const auto& p: program) std::cout << p->name << " ";

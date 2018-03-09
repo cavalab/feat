@@ -23,17 +23,17 @@ namespace FT{
 
             /// Safe log: pushes log(abs(x)) or MIN_DBL if x is near zero. 
             void evaluate(const MatrixXd& X, const VectorXd& y, const vector<vector<ArrayXd> > &Z, 
-			        vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b, vector<vector<ArrayXd> > &stack_z)
+			        Stacks& stack)
 			{
-           		ArrayXd x = stack_f.back(); stack_f.pop_back();                    
-                stack_f.push_back( (abs(x) > NEAR_ZERO).select(log(abs(x)),MIN_DBL) );
+           		ArrayXd x = stack.f.pop();
+                stack.f.push( (abs(x) > NEAR_ZERO).select(log(abs(x)),MIN_DBL) );
             }
 
             /// Evaluates the node symbolically
-            void eval_eqn(vector<string>& stack_f, vector<string>& stack_b, vector<string>& stack_z)
+            void eval_eqn(Stacks& stack)
             {
-        		string x = stack_f.back(); stack_f.pop_back();
-                stack_f.push_back("log(" + x + ")");
+        		string x = stack.fs.pop();
+                stack.fs.push("log(" + x + ")");
             }
     };
 }	

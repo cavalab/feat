@@ -24,26 +24,26 @@ namespace FT{
     		
             /// Evaluates the node and updates the stack states. 
             void evaluate(const MatrixXd& X, const VectorXd& y, const vector<vector<ArrayXd> > &Z, 
-			        vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b, vector<vector<ArrayXd> > &stack_z)
+			        Stacks& stack)
             {
-                ArrayXd tmp(stack_z.back().size());
+                ArrayXd tmp(stack.l.top().size());
                 
                 int x;
                 
-                for(x = 0; x < stack_z.back().size(); x++)
-                    tmp(x) = stack_z.back()[x][0];
+                for(x = 0; x < stack.l.top().size(); x++)
+                    tmp(x) = stack.l.top()[x][0];
                     
-                stack_z.pop_back();
+                stack.l.pop();
 
-                stack_f.push_back(tmp);
+                stack.f.push(tmp);
                 
             }
 
             /// Evaluates the node symbolically
-            void eval_eqn(vector<string>& stack_f, vector<string>& stack_b, vector<string>& stack_z)
+            void eval_eqn(Stacks& stack)
             {
-                string x1 = stack_z.back(); stack_z.pop_back();
-                stack_z.push_back("time(" + x1 + ")");
+                string x1 = stack.ls.pop();
+                stack.fs.push("time(" + x1 + ")");
             }
     };
 }	

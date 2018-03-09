@@ -6,6 +6,7 @@ license: GNU/GPL v3
 #define NODE_H
 
 #include<map>
+#include "../stack.h"
 using std::vector;
 using std::string;
 using std::map;
@@ -34,10 +35,10 @@ namespace FT{
            
             /// Evaluates the node and updates the stack states. 
             virtual void evaluate(const MatrixXd& X, const VectorXd& y, const vector<vector<ArrayXd> > &Z, 
-			        vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b, vector<vector<ArrayXd> > &stack_z) = 0; 
+			        Stacks& stack) = 0; 
 
             /// evaluates the node symbolically
-            virtual void eval_eqn(vector<string>& stack_f, vector<string>& stack_b, vector<string>& stack_z) = 0;
+            virtual void eval_eqn(Stacks& stack) = 0;
 
             // total arity
             unsigned int total_arity(){ return arity['f'] + arity['b']; };
