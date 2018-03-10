@@ -32,8 +32,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-        		string x = stack.fs.pop();
-                stack.fs.push("log(" + x + ")");
+                stack.fs.push("log(" + stack.fs.pop() + ")");
             }
     };
 }	

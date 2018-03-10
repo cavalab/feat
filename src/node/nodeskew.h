@@ -26,14 +26,14 @@ namespace FT{
             void evaluate(const MatrixXd& X, const VectorXd& y, const vector<vector<ArrayXd> > &Z, 
 			        Stacks& stack)
             {
-                ArrayXd tmp(stack.l.top().size());
+                ArrayXd tmp(stack.z.top().size());
                 
                 int x;
                 
-                for(x = 0; x < stack.l.top().size(); x++)
-                    tmp(x) = skew(stack.l.top()[x]);
+                for(x = 0; x < stack.z.top().size(); x++)
+                    tmp(x) = skew(stack.z.top()[x]);
                     
-                stack.l.pop();
+                stack.z.pop();
 
                 stack.f.push(tmp);
                 
@@ -42,8 +42,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-                string x1 = stack.ls.pop();
-                stack.fs.push("skew(" + x1 + ")");
+                stack.fs.push("skew(" + stack.zs.pop() + ")");
             }
     };
 }	

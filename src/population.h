@@ -108,7 +108,7 @@ namespace FT{
         vector<vector<ArrayXd> > Z;
         unsigned i = 0; 
         for (const auto& n : program){
-            if ( stack.f.size() >= n->arity['f'] && stack.b.size() >= n->arity['b'])
+            if (stack.check(n->arity))
                 n->evaluate(X, y, Z, stack);
             else{
                 std::cout << "Error: ";

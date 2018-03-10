@@ -31,21 +31,13 @@ namespace FT{
             void evaluate(const MatrixXd& X, const VectorXd& y, const vector<vector<ArrayXd> > &Z, 
 			        Stacks& stack)
             {
-            	if (stack.f.size() >= arity['f'] && stack.b.size() >= arity['b'])
-            	{
-            		ArrayXd x = stack.f.pop();
-                    stack.f.push(sqrt(abs(x)));
-            	}
+                    stack.f.push(sqrt(abs(stack.f.pop())));
             }
 
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-            	if (stack.f.size() >= arity['f'] && stack.b.size() >= arity['b'])
-            	{
-            		string x = stack.fs.pop();
-                    stack.fs.push("sqrt(|" + x + "|)");
-            	}
+                    stack.fs.push("sqrt(|" + stack.fs.pop() + "|)");
             }
     };
 }	

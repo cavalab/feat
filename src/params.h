@@ -140,7 +140,7 @@ namespace FT{
         }
         
         /// set the terminals
-        void set_terminals(int nf);
+        void set_terminals(int nf, int nz);
 
         /// set the objectives
         void set_objectives(string obj);
@@ -294,6 +294,9 @@ namespace FT{
         else if (str.compare("kd")==0)
             return std::shared_ptr<Node>(new NodeConstant(d_val));
             
+        else if (str.compare("z")==0)
+            return std::shared_ptr<Node>(new NodeLongitudinal(loc));
+            
         else
         {
             std::cerr << "Error: no node named " << str << " exists.\n"; 
@@ -335,7 +338,7 @@ namespace FT{
         set_otypes();
     }
 
-    void Parameters::set_terminals(int nf)
+    void Parameters::set_terminals(int nf, int nz)
     {
         /*!
          * based on number of features.
@@ -354,6 +357,11 @@ namespace FT{
     	       		terminals.push_back(createNode(string("kd"), r(), 0, 0));
     	    }        
         // reset output types
+        
+        for (size_t i = 0; i < nz; ++i)
+        {
+            terminals.push_back(createNode(string("z"), 0, 0, i));
+        }
         set_otypes();
     }
 

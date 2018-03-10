@@ -386,8 +386,16 @@ namespace FT{
         VectorXd y_t(int(y.size()*params.split)), y_v(int(y.size()*(1-params.split)));
         train_test_split(X,y,X_t,X_v,y_t,y_v,params.shuffle);
         
+        vector<vector<ArrayXd> > Z_t;
+        vector<vector<ArrayXd> > Z_v;
+        
+        if(Z.size() > 0)
+        {
+            FT::split_longitudinal(Z, Z_t, Z_v, params.split);
+        }
+        
         // define terminals based on size of X
-        params.set_terminals(X.rows());        
+        params.set_terminals(X.rows(), Z.size());        
 
         // initial model on raw input
         params.msg("Fitting initial model", 1);
@@ -404,7 +412,7 @@ namespace FT{
        
         // evaluate initial population
         params.msg("Evaluating initial population",1);
-        p_eval->fitness(*p_pop,X_t, Z, y_t,F,params);
+        p_eval->fitness(*p_pop,X_t, Z_t, y_t,F,params);
 
         vector<size_t> survivors;
 
@@ -423,7 +431,7 @@ namespace FT{
 
             // evaluate offspring
             params.msg("evaluating offspring...", 2);
-            p_eval->fitness(*p_pop, X_t, Z, y_t, F, params, true);
+            p_eval->fitness(*p_pop, X_t, Z_t, y_t, F, params, true);
 
             // select survivors from combined pool of parents and offspring
             params.msg("survival...", 2);
@@ -444,7 +452,7 @@ namespace FT{
         if (params.split < 1.0)
         {
             F_v.resize(X_v.cols(),int(2*params.pop_size)); 
-            p_eval->fitness(*p_pop, X_v, Z, y_v, F_v, params);
+            p_eval->fitness(*p_pop, X_v, Z_v, y_v, F_v, params);
             initial_model(X_v, y_v);        // calculate baseline model validation score
             update_best();                  // get the best validation model
         }

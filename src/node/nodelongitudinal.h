@@ -16,14 +16,14 @@ namespace FT{
 			NodeLongitudinal(const size_t& l, std::string n = "")
 			{
 			    if(n.empty())
-                    name = "l_" + std::to_string(l);
+                    name = "z_" + std::to_string(l);
                 else
                     name = n;
                     
     			otype = 'f';
     			arity['f'] = 0;
     			arity['b'] = 0;
-    			arity['l'] = 1;
+    			arity['z'] = 1;
     			complexity = 1;
     			loc = l;
     		}
@@ -32,13 +32,13 @@ namespace FT{
 			void evaluate(const MatrixXd& X, const VectorXd& y, const vector<vector<ArrayXd> > &Z, 
 			        Stacks& stack)
 		    {
-		        stack.l.push(Z[loc]);
+		        stack.z.push(Z[loc]);
 		    }
 
 		    /// Evaluates the node symbolically
 		    void eval_eqn(Stacks& stack)
 		    {
-		        stack.ls.push(name);
+		        stack.zs.push(name);
 		    }
 	};
 }
