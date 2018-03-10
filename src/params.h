@@ -140,7 +140,7 @@ namespace FT{
         }
         
         /// set the terminals
-        void set_terminals(int nf, int nz);
+        void set_terminals(int nf, int nz = 0);
 
         /// set the objectives
         void set_objectives(string obj);
