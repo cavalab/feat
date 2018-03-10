@@ -39,13 +39,6 @@ namespace FT{
                 string x1 = stack.fs.pop();
                 stack.fs.push("gauss2d(" + x1 + "," + x2 + ")");
             }
-            
-            private:
-                double variance(ArrayXd x)
-                {
-                    double mean = x.mean();
-                    return (limited(pow((x - mean),2))).sum()/(x.count() - 1);
-                }
     };
 }	
 

@@ -5,6 +5,8 @@ license: GNU/GPL v3
 
 #ifndef STACK_H
 #define STACK_H
+
+//#include "node/node.h"
 //external includes
 
 namespace FT
@@ -84,11 +86,20 @@ namespace FT
     {
         Stack<ArrayXd> f;
         Stack<ArrayXb> b;
-        Stack<vector<ArrayXd> > l;
+        Stack<vector<ArrayXd> > z;
         Stack<string> fs;
         Stack<string> bs;
-        Stack<string> ls;
+        Stack<string> zs;
         
+        bool check(std::map<char, unsigned int> &arity)
+        {
+            return f.size() >= arity['f'] && b.size() >= arity['b'];
+        }
+        
+        bool check_s(std::map<char, unsigned int> &arity)
+        {
+            return fs.size() >= arity['f'] && bs.size() >= arity['b'];
+        }
     };
 }
 

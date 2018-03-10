@@ -307,6 +307,25 @@ namespace FT{
 
     
     }
+    
+    void split_longitudinal(vector<vector<ArrayXd> > &Z,
+                            vector<vector<ArrayXd> > Z_t,
+                            vector<vector<ArrayXd> > Z_v,
+                            double split)
+    {
+        int testSize = int(Z[0].size()*split);
+        int validateSize = int(Z[0].size()*(1-split));
+        
+        for(int x = 0; x < Z.size(); x++)
+        {
+            vector<ArrayXd> _Z_t, _Z_v;
+            _Z_t.assign(Z[x].begin(), Z[x].begin()+testSize);
+            _Z_v.assign(Z[x].begin()+testSize, Z[x].begin()+testSize+validateSize);
+            
+            Z_t.push_back(_Z_t);
+            Z_v.push_back(_Z_v);
+        }
+    }
 
     /// return the softmax transformation of a vector.
     template <typename T>

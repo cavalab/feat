@@ -25,15 +25,13 @@ namespace FT{
             void evaluate(const MatrixXd& X, const VectorXd& y, const vector<vector<ArrayXd> > &Z, 
 			        Stacks& stack)
             {
-           		ArrayXd x = stack.f.pop();
-                stack.f.push(limited(exp(x)));
+                stack.f.push(limited(exp(stack.f.pop())));
             }
 
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-        		string x = stack.fs.pop();
-                stack.fs.push("exp(" + x + ")");
+                stack.fs.push("exp(" + stack.fs.pop() + ")");
             }
     };
 }	

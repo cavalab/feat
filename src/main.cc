@@ -185,11 +185,15 @@ int main(int argc, char** argv){
     FT::train_test_split(X,y,X_t,X_v,y_t,y_v,feat.get_shuffle());      
     
     
-    vector<vector<ArrayXd> > z;
+    vector<vector<ArrayXd> > Z;
+    vector<vector<ArrayXd> > Z_t;
+    vector<vector<ArrayXd> > Z_v;
     
     if(ldataFile.compare(""))
-        FT::load_longitudinal(ldataFile, z);
-        
+    {
+        FT::load_longitudinal(ldataFile, Z);
+        FT::split_longitudinal(Z, Z_t, Z_v, split);
+    }   
     cout << "fitting model...\n";
     
     feat.fit(X_t,y_t);

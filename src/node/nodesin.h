@@ -25,16 +25,13 @@ namespace FT{
             void evaluate(const MatrixXd& X, const VectorXd& y, const vector<vector<ArrayXd> > &Z, 
 			        Stacks& stack)
             {
-
-        		ArrayXd x = stack.f.pop();
-                stack.f.push(limited(sin(x)));
+                stack.f.push(limited(sin(stack.f.pop())));
             }
 
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-        		string x = stack.fs.pop();
-                stack.fs.push("sin(" + x + ")");
+                stack.fs.push("sin(" + stack.fs.pop() + ")");
             }
     };
 }	

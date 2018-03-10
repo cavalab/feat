@@ -185,7 +185,7 @@ namespace FT{
         // evaluate each node in program
         for (const auto& n : program)
         {
-        	if(stack.f.size() >= n->arity['f'] && stack.b.size() >= n->arity['b'])
+        	if(stack.check(n->arity))
 	            n->evaluate(X, y, Z, stack);
             else
             {
@@ -235,7 +235,7 @@ namespace FT{
             Stacks stack;
 
             for (auto n : program){
-            	if(stack.fs.size() >= n->arity['f'] && stack.bs.size() >= n->arity['b'])
+            	if(stack.check_s(n->arity))
                 	n->eval_eqn(stack);
                 else
                 {
@@ -249,7 +249,7 @@ namespace FT{
                 eqn += "[" + s + "]";
             for (auto s : stack.bs) 
                 eqn += "[" + s + "]";              
-            for (auto s : stack.ls) 
+            for (auto s : stack.zs) 
                 eqn += "[" + s + "]";
         }
 

@@ -25,9 +25,7 @@ namespace FT{
             void evaluate(const MatrixXd& X, const VectorXd& y, const vector<vector<ArrayXd> > &Z, 
 			        Stacks& stack)
             {
-            	ArrayXb b = stack.b.pop();
-                ArrayXd f = stack.f.pop();
-                stack.f.push(b.select(f,0));
+                stack.f.push(stack.b.pop().select(stack.f.pop(),0));
             }
 
             /// Evaluates the node symbolically
@@ -35,7 +33,7 @@ namespace FT{
             {
               string b = stack.bs.pop();
               string f = stack.fs.pop();
-              stack.fs.push("if-then-else(" + b + "," + f + "," + "0)");
+              stack.fs.push("if-then-else(" + stack.bs.pop() + "," + stack.fs.pop() + "," + "0)");
             }
     };
 }	
