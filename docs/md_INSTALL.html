@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
-<title>Feat: INSTALL</title>
+<title>Feat: Getting Started</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -98,12 +98,11 @@ $(document).ready(function(){initNavTree('md_INSTALL.html','');});
 
 <div class="header">
   <div class="headertitle">
-<div class="title">INSTALL </div>  </div>
+<div class="title">Getting Started </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>#Getting Started</p>
-<p>Feat depends on the <a href="http://eigen.tuxfamily.org">Eigen</a> matrix library for C++ as well as the <a href="http://shogun.ml">Shogun</a> ML library. Both come in easy packages that work across platforms. To see our installation, check out the <a href="http://github.com/lacava/feat/blob/master/ci/.travis_install.sh">Travis install file</a>.</p>
-<p>#Dependencies</p>
+<div class="textblock"><p>Feat depends on the <a href="http://eigen.tuxfamily.org">Eigen</a> matrix library for C++ as well as the <a href="http://shogun.ml">Shogun</a> ML library. Both come in easy packages that work across platforms. To see our installation, check out the <a href="http://github.com/lacava/feat/blob/master/ci/.travis_install.sh">Travis install file</a>.</p>
+<h1>Dependencies</h1>
 <h2>Eigen</h2>
 <p>Eigen is a header only package. We need Eigen 3 or greater.</p>
 <h3>Debian/Ubuntu</h3>
@@ -126,13 +125,13 @@ export SHOGUN_DIR=/home/travis/miniconda/include/
 sudo apt-get update -y
 sudo apt-get install -qq --force-yes --no-install-recommends libshogun18
 sudo apt-get install -qq --force-yes --no-install-recommends libshogun-dev
-</pre><p>#Installing</p>
+</pre><h1>Installing</h1>
 <p>Feat uses <a href="https://cmake.org/">cmake</a> to build. It uses the typical set of instructions:</p>
 <pre class="fragment">git clone https://github.com/lacava/feat # clone the repo
 cd feat # enter the directory
 ./configure # this runs "mkdir build; cd build; cmake .. " 
 ./install # this runs "make -C build VERBOSE=1 -j8"
-</pre><p>#Running the tests</p>
+</pre><h1>Running the tests</h1>
 <p><em>This is totally optional!</em> If you want to run the tests, you need to install <a href="https://github.com/google/googletest">Google Test</a>. A useful guide to doing so is available <a href="https://www.eriksmistad.no/getting-started-with-google-test-on-ubuntu/">here</a>. Then you can use cmake to build the tests. From the repo root,</p>
 <pre class="fragment">./configure tests   
 make test</pre> </div></div><!-- contents -->
