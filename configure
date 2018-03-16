@@ -15,7 +15,7 @@ elif [ "$1" == "profile" ]; then
     cd ..
 elif [ "$1" == "lpc" ] ; then
     # set up LPC environment
-    module load cmake/3.3.2
+    module load cmake/3.4.3
     module load gcc/5.2.0
     export CC="/appl/gcc-5.2.0/bin/gcc"
     export CXX="/appl/gcc-5.2.0/bin/g++"
