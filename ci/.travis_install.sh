@@ -58,9 +58,6 @@ echo "running feat.."
 cd ./python
 sudo python setup.py install build_ext --inplace
 
-#install PMLB
-sudo pip install pmlb 
-
 #_____Run the Python Tests for the wrapper_____#
 cd ../tests
 sudo cp wrappertest.py ../python/ #Copy the file to python folder

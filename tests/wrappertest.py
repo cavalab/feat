@@ -5,7 +5,7 @@ license: GNU/GPLv3
 """
 from feat import Feat
 import numpy
-from pmlb import fetch_data
+from sklearn.datasets import load_boston
 import unittest
 import argparse
 import sys
@@ -17,7 +17,9 @@ class TestFeatWrapper(unittest.TestCase):
     def setUp(self):
         self.v = verbosity
         self.clf = Feat(verbosity=0)
-        self.X , self.y = fetch_data('1029_LEV', return_X_y=True, local_cache_dir='./')
+        boston = load_boston()
+        self.X = boston.data
+        self.y = boston.target
         
     #Test 1: Assert the length of labels returned from predict
     def test_predict_length(self):
@@ -51,7 +53,7 @@ class TestFeatWrapper(unittest.TestCase):
         self.debug("Comparing the length of labls in transform vs actual feature set ")
         expected_value = self.X.shape[0]
         actual_value = trans_X.shape[0]
-        print ( expected_value,actual_value )
+        self.assertEqual( actual_length , expected_length )
 
     #Test 4:  Assert the length of labels returned from fit_transform
     def test_fit_transform_length(self):
@@ -61,7 +63,7 @@ class TestFeatWrapper(unittest.TestCase):
         self.debug("Comparing the length of labls in transform vs actual feature set ")
         expected_value = self.X.shape[0]
         actual_value = trans_X.shape[0]
-        print ( expected_value,actual_value )
+        self.assertEqual( actual_length , expected_length )
 
     def debug(self,message):
         if ( self.v > 0 ):
