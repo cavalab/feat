@@ -22,8 +22,8 @@ finally:
 package_version = '0.0'
 import os
 env_params = os.environ.keys() 
-if 'EIGEN_INCLUDE_DIR' in env_params:
-    eigen_dir = os.environ['EIGEN_INCLUDE_DIR'] 
+if 'EIGEN3_INCLUDE_DIR' in env_params:
+    eigen_dir = os.environ['EIGEN3_INCLUDE_DIR'] 
 else:
     eigen_dir = '/usr/include/eigen3/'
 
@@ -48,7 +48,7 @@ setup(
     py_modules=['feat','metrics'],
     ext_modules = cythonize([Extension(name='pyfeat',
        sources = ["pyfeat.pyx"],    # our cython source
-       include_dirs = ['../src/','/usr/include/eigen3/',shogun_include_dir]
+       include_dirs = ['../src/',eigen_dir,shogun_include_dir]
                       +eigency.get_includes(include_eigen=False),
        extra_compile_args = ['-std=c++14','-fopenmp','-Wno-sign-compare',
                              '-Wno-reorder'],
