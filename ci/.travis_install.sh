@@ -56,8 +56,10 @@ pip freeze
 python -V
 
 cd ./python
-sudo python setup.py install
+sudo python setup.py install build_ext --inplace
 
 #_____Run the Python Tests for the wrapper_____#
 cd ../tests
+sudo cp wrappertest.py ../python/ #Copy the file to python folder
+cd ../python/
 python wrappertest.py -v 1
