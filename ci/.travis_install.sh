@@ -49,19 +49,6 @@ make -C build VERBOSE=1
 echo "running feat.."
 ./build/feat examples/d_enc.csv
 
-#_____Install Pip, Cython, Numpy, Feat, PMLB to run Feat Wrapper Tests____#
-python -m pip install --upgrade pip setuptools wheel
-sudo pip install --upgrade pip
-
-#Install Cython
-pip install --upgrade cython
-
-#Install PMLB
-pip install pmlb
-
-#Install Numpy
-pip install numpy
-
 #Install Feat on the system
 python -V
 cd ./python
