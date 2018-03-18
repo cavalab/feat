@@ -5,7 +5,7 @@ license: GNU/GPLv3
 """
 from feat import Feat
 import numpy
-from sklearn.datasets import load_boston
+from sklearn.datasets import load_diabetes
 import unittest
 import argparse
 import sys
@@ -17,9 +17,9 @@ class TestFeatWrapper(unittest.TestCase):
     def setUp(self):
         self.v = verbosity
         self.clf = Feat(verbosity=self.v)
-        boston = load_boston()
-        self.X = boston.data
-        self.y = boston.target
+        diabetes = load_diabetes()
+        self.X = diabetes.data
+        self.y = diabetes.target
         
     #Test 1: Assert the length of labels returned from predict
     def test_predict_length(self):
