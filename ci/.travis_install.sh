@@ -55,7 +55,7 @@ sudo pip install --upgrade pip
 
 #Install Cython
 pip install Cython
-
+pip install cython3
 #Install PMLB
 pip install pmlb
 
