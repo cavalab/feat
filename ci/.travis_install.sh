@@ -48,3 +48,21 @@ cd ..
 make -C build VERBOSE=1
 echo "running feat.."
 ./build/feat examples/d_enc.csv
+
+#_____Install Python, Numpy, Feat, PMLB to run Feat Wrapper Tests____#
+sudo apt-get install python-pip python-dev build-essential 
+sudo pip install --upgrade pip
+
+#Install PMLB
+pip install pmlb
+
+#Install Numpy
+pip install numpy
+
+#Install Feat on the system
+cd /usr/python
+sudo python setup.py install
+
+#_____Run the Python Tests for the wrapper_____#
+cd /usr/tests
+python wrappertest.py -v 1
