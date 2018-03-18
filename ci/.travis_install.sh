@@ -49,13 +49,14 @@ make -C build VERBOSE=1
 echo "running feat.."
 ./build/feat examples/d_enc.csv
 
-#Install Feat on the system
-python -V
-cd ./python
-sudo python setup.py install
-
 #See the Modules installed -- To debug why Cython.Build isn't recognized in travis
 pip freeze
+
+#Install Feat on the system
+python -V
+
+cd ./python
+sudo python setup.py install
 
 #_____Run the Python Tests for the wrapper_____#
 cd ../tests
