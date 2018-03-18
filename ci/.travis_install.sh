@@ -54,13 +54,16 @@ sudo apt-get install python-pip python-dev build-essential
 sudo pip install --upgrade pip
 
 #Install Cython
-pip install Cython
-pip install cython3
+pip install cython
+
 #Install PMLB
 pip install pmlb
 
 #Install Numpy
 pip install numpy
+
+#check the version of Python
+which python
 
 #Install Feat on the system
 cd ./python
