@@ -50,11 +50,11 @@ echo "running feat.."
 ./build/feat examples/d_enc.csv
 
 #_____Install Pip, Cython, Numpy, Feat, PMLB to run Feat Wrapper Tests____#
-sudo apt-get install python-pip python-dev build-essential 
+python -m pip install --upgrade pip setuptools wheel
 sudo pip install --upgrade pip
 
 #Install Cython
-pip install cython
+pip install --upgrade cython
 
 #Install PMLB
 pip install pmlb
@@ -62,10 +62,8 @@ pip install pmlb
 #Install Numpy
 pip install numpy
 
-#check the version of Python
-which python
-
 #Install Feat on the system
+python -V
 cd ./python
 sudo python setup.py install
 
