@@ -20,6 +20,9 @@ conda install --yes -c conda-forge shogun-cpp
 export SHOGUN_LIB=/home/travis/miniconda/lib/
 export SHOGUN_DIR=/home/travis/miniconda/include/
 
+echo "installing scikit-learn via conda..."
+conda install scikit-learn
+
 #building and installing google tests
 sudo apt-get install cmake
 echo "installing google test"
@@ -59,4 +62,4 @@ which python
 cd ../tests
 sudo cp wrappertest.py ../python/ #Copy the file to python folder
 cd ../python/
-/usr/bin/python wrappertest.py -v 1
+python wrappertest.py -v 1
