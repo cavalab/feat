@@ -54,7 +54,9 @@ sudo python setup.py install build_ext --inplace
 
 #Print the path of Python
 which python
-echo $PYTHONPATH #to see the path of modules python uses
+
+#Install scikit-learn using conda
+sudo conda install scikit-learn
 
 #_____Run the Python Tests for the wrapper_____#
 cd ../tests
