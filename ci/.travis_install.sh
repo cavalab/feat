@@ -21,7 +21,7 @@ export SHOGUN_LIB=/home/travis/miniconda/lib/
 export SHOGUN_DIR=/home/travis/miniconda/include/
 
 echo "installing scikit-learn via conda..."
-conda install scikit-learn
+conda install --yes scikit-learn
 
 #building and installing google tests
 sudo apt-get install cmake
