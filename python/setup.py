@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 from setuptools.extension import Extension
 from Cython.Build import cythonize
-print ( help('modules') ) #Added for debugging Purpose
+
 # the setup file relies on eigency to import its include paths for the
 # extension modules. however eigency isn't known as a dependency until after
 # setup is parsed; so we need to check for and install eigency before setup.

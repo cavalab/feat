@@ -5,13 +5,13 @@ license: GNU/GPLv3
 """
 
 import argparse
-#from ._version import __version__
+#from ._version import __version
 
-from sklearn.base import BaseEstimator
+from sklearn.metrics import mean_squared_error as mse
 import numpy as np
 import pandas as pd
 import pyfeat
-from sklearn.metrics import mean_squared_error as mse
+from sklearn.base import BaseEstimator
 from sklearn.model_selection import train_test_split
 from metrics import balanced_accuracy_score
 
