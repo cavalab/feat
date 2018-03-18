@@ -16,7 +16,7 @@ class TestFeatWrapper(unittest.TestCase):
 
     def setUp(self):
         self.v = verbosity
-        self.clf = Feat(verbosity=0)
+        self.clf = Feat(verbosity=self.v)
         boston = load_boston()
         self.X = boston.data
         self.y = boston.target
@@ -53,7 +53,7 @@ class TestFeatWrapper(unittest.TestCase):
         self.debug("Comparing the length of labls in transform vs actual feature set ")
         expected_value = self.X.shape[0]
         actual_value = trans_X.shape[0]
-        self.assertEqual( actual_length , expected_length )
+        self.assertEqual( actual_value , expected_value )
 
     #Test 4:  Assert the length of labels returned from fit_transform
     def test_fit_transform_length(self):
@@ -63,7 +63,7 @@ class TestFeatWrapper(unittest.TestCase):
         self.debug("Comparing the length of labls in transform vs actual feature set ")
         expected_value = self.X.shape[0]
         actual_value = trans_X.shape[0]
-        self.assertEqual( actual_length , expected_length )
+        self.assertEqual( actual_value , expected_value )
 
     def debug(self,message):
         if ( self.v > 0 ):
