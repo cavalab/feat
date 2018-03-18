@@ -25,6 +25,8 @@ env:
     # test three different compilers
     #- CXX='g++-5' CC='gcc-5' BUILD_TYPE='release'
     
-install: sh ci/.travis_install.sh
+install: 
+  - pip install -q numpy cython pmlb
+  -sh ci/.travis_install.sh
 
 script: sh ci/.travis_test.sh 
