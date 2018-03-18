@@ -26,10 +26,8 @@ env:
     #- CXX='g++-5' CC='gcc-5' BUILD_TYPE='release'
     
 install: 
-    - sudo pip install -q cython pmlb
     - sudo apt-get update
-    - conda install numpy scipy scikit-learn
-    
+    - sudo pip install -q cython pmlb numpy scipy scikit-learn
     - sh ci/.travis_install.sh
 
 script: sh ci/.travis_test.sh 
