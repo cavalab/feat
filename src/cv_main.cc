@@ -1,4 +1,9 @@
 #include <stdio.h>
+#include <fstream>
+#include <streambuf>
+#include <iostream>
+
+using namespace std;
 #include "feat.h"
 #include "featcv.h"
 using FT::Feat;
@@ -54,28 +59,24 @@ class InputParser{
          
 };
 
-//int main(int argc, char **argv){
-//    InputParser input(argc, argv);
-//    if(input.cmdOptionExists("-h")){
-//        // Do stuff
-//    }
-//    const std::string &filename = input.getCmdOption("-f");
-//    if (!filename.empty()){
-//        // Do interesting things ...
-//    }
-//    return 0;
-//}
+string readInputFile(string file)
+{
+    std::ifstream t(file);
+    string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+    
+    return str;
+}
 
 int main(int argc, char** argv){
-    // runs FEAT from the command line.     
-    
-    Feat feat;
+
     std::string sep = ",";
+    std::string infile = "";
+    std::string hyper_params = "";
     
     cout << "\n" << 
     "/////////////////////////////////////////////////////////////////////////////////////////////"
     << "\n" << 
-    "                                        FEAT                                               "
+    "                                        FEATCV                                               "
     << "\n" <<
     "/////////////////////////////////////////////////////////////////////////////////////////////"
     << "\n";
@@ -85,66 +86,19 @@ int main(int argc, char** argv){
     if(input.cmdOptionExists("-h") || input.dataset.empty()){
         if (input.dataset.empty()) std::cerr << "Error: no dataset specified.\n---\n";
         // Print help and exit. 
-        cout << "Fewtwo is a feature engineering wrapper for learning intelligible models.\n";
-        cout << "Usage:\tfeat path/to/dataset [options]\n";
+        cout << "FeatCV is a cross validation model for Feat - a feature engineering wrapper for learning intelligible models.\n";
+        cout << "Usage:\tfeat_cv path/to/dataset [options]\n";
         cout << "Options\tDescription (default value)\n";
-        cout << "-p\tpopulation size (100)\n";
-        cout << "-g\tgenerations (100)\n";
-        cout << "-ml\tMachine learning model pairing (LinearRidgeRegression or LogisticRegression)\n";
-        cout << "--c\tDo classification instead of regression. (false)\n";
-        cout << "-v\tVerbosity. 0: none; 1: stats; 2: debugging (1)\n";
-        cout << "-stall\tMaximum generations with no improvements to best score. (off)\n";
-        cout << "-sel\tSelection method. (lexicase)\n";
-        cout << "-surv\tSurvival method. (nsga2)\n";
-        cout << "-xr\tCrossover rate in [0, 1]. Mutation is the reciprocal. (0.5)\n";
-        cout << "-ops\tComma-separated list of functions to use. (all)\n";
-        cout << "-depth\tMaximum feature depth. (3)\n";
-        cout << "-dim\tMaximum program dimensionality. (10)\n";
-        cout << "-r\tSet random seed. (set randomly)\n";
         cout << "-sep\tInput file separator / delimiter. Choices: , or ""\\\\t"" for tab (,)\n";
-        cout << "--shuffle\tShuffle data before splitting into train/validate sets. (false)\n";
-        cout << "-split\tFraction of data to use for training (0.75)\n";
-        cout << "-f\tfeedback strength of ML on variation probabilities (0.5)\n";
+        cout << "-infile\tInput file containing string for cross validation object\n";
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
     }
     cout << "reading inputs ...";
-    if(input.cmdOptionExists("-p"))
-        feat.set_pop_size(stoi(input.getCmdOption("-p")));
-    if(input.cmdOptionExists("-g"))
-        feat.set_generations(stoi(input.getCmdOption("-g")));
-    if(input.cmdOptionExists("-ml"))
-        feat.set_ml(input.getCmdOption("-ml"));
-    if(input.cmdOptionExists("--c"))
-        feat.set_classification(true);
-    if(input.cmdOptionExists("-v"))
-        feat.set_verbosity(stoi(input.getCmdOption("-v")));
-    if(input.cmdOptionExists("-stall"))
-        feat.set_max_stall(stoi(input.getCmdOption("-stall")));
-    if(input.cmdOptionExists("-sel"))
-        feat.set_selection(input.getCmdOption("-sel"));
-    if(input.cmdOptionExists("-surv"))
-        feat.set_survival(input.getCmdOption("-surv"));
-    if(input.cmdOptionExists("-xr"))
-        feat.set_cross_rate(stof(input.getCmdOption("-xr")));
-   // if(input.cmdOptionExists("-otype"))
-   //     feat.set_cross_rate(input.getCmdOption("-otype")[0]);
-    if(input.cmdOptionExists("-ops"))
-        feat.set_functions(input.getCmdOption("-ops"));
-    if(input.cmdOptionExists("-depth"))
-        feat.set_max_depth(stoi(input.getCmdOption("-depth")));
-    if(input.cmdOptionExists("-dim"))
-        feat.set_max_dim(stoi(input.getCmdOption("-dim")));
-    if(input.cmdOptionExists("-r"))
-        feat.set_random_state(stoi(input.getCmdOption("-r")));
     if(input.cmdOptionExists("-sep")) // separator
-        sep = input.getCmdOption("-sep");   
-    if(input.cmdOptionExists("--shuffle"))
-        feat.set_shuffle(true);
-    if(input.cmdOptionExists("-split"))
-        feat.set_split(std::stod(input.getCmdOption("-split")));
-    if(input.cmdOptionExists("-f"))
-        feat.set_feedback(std::stod(input.getCmdOption("-f")));
+        sep = input.getCmdOption("-sep");
+    if(input.cmdOptionExists("-infile")) // separator
+        infile = input.getCmdOption("-infile");
     cout << "done.\n";
     ///////////////////////////////////////
 
@@ -155,6 +109,20 @@ int main(int argc, char** argv){
     else if (!sep.compare(",")) delim = ',';
     else delim = sep[0];
     
+    if(infile.compare(""))
+        hyper_params = readInputFile(infile);
+    else
+        hyper_params = "[{\
+                            'pop_size': (100, 500)\
+                            'generations': (100, 200)\
+                            'feedback': (0.2, 0.5, 0.8)\
+                            'ml': (\"LinearRidgeRegression\", \"CART\")\
+                            'cross_rate': (0.25, 0.5, 0.75)\
+                         }\
+                        ]";
+                        
+    cout<<"Hyper params are \n*****\n"<<hyper_params<<"\n***\n";
+    
     MatrixXd X;
     VectorXd y; 
     vector<string> names;
@@ -163,44 +131,13 @@ int main(int argc, char** argv){
     
     cout << "load_csv...";
     FT::load_csv(input.dataset,X,y,names,dtypes,binary_endpoint,delim);
-    if (binary_endpoint)
-    {
-        if (!feat.get_classification())
-            std::cerr << "WARNING: binary endpoint detected. Fewtwo is set for regression.";
-        else
-            std::cout << "setting binary endpoint\n";
-                      
-    }
-    
-    /*
-    string hyper_params = "[{\
-                                ('population': 100)\
-                                ('generations': 100)\
-                                ('maxStall': 25, 50, 100)\
-                                ('crossRate': 0.2)\
-                                ('maxDepth': 0.8)\
-                            },\
-                            {\
-                                ('population': 200, 500)\
-                                ('generations': 2000)\
-                                ('maxStall': 25, 50, 100)\
-                                ('crossRate': 0.2)\
-                                ('maxDepth': 0.8)\
-                            },\
-                           ]";
-    */
-    
-    string hyper_params = "[{\
-                                ('population': 100)\
-                                ('generations': 100)\
-                            },\
-                           ]";
     
     FeatCV validator(5, hyper_params);
     
     validator.fit(X, y);
 	
     return 0;
+    
 
 }
 

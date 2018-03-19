@@ -54,6 +54,19 @@ else()
     find_package(Shogun REQUIRED NO_MODULE)
 endif()
 
+# Locate GTest
+option(TEST "build tests" OFF)
+if (TEST)
+    option(GTEST_DIR "use GTest environment path" OFF)
+    if (GTEST_DIR)
+        include_directories("$ENV{GTEST_DIR}/include")
+
+    else()
+        find_package(GTest REQUIRED)
+        include_directories(${GTEST_INCLUDE_DIRS})
+    endif()
+endif()
+
 # autocomplete for YouCompleteMe needs commands to be exported
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -90,10 +103,12 @@ if (CORE_USE_CUDA)
     #    include_directories("src/node-cuda")
 endif()    
 
+
 file(GLOB_RECURSE src_main_files "src/main.cc")
 file(GLOB_RECURSE src_cv_files "src/cv_main.cc")
 
 # executable
+<<<<<<< HEAD
 if (CORE_USE_CUDA)
     cuda_add_executable(feat ${src_main_files} ${cuda_files})
     cuda_add_executable(feat_cv ${src_cv_files} ${cuda_files})
@@ -109,3 +124,19 @@ else()
     target_link_libraries(feat shogun)
     target_link_libraries(feat_cv shogun)
 endif()
+=======
+add_executable(feat ${src_main_files})
+add_executable(feat_cv ${src_cv_files})
+
+#link libraries for different executables
+target_link_libraries(feat shogun)
+target_link_libraries(feat_cv shogun)
+
+if (TEST)
+    # Link runTests with what we want to test and the GTest and pthread library
+    add_executable(tests tests/gtest.cc)
+    target_link_libraries(tests shogun ${GTEST_LIBRARIES} pthread)
+endif()
+
+
+>>>>>>> python
