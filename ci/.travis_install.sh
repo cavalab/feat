@@ -26,6 +26,9 @@ conda install --yes scikit-learn
 echo "installing pandas via conda..."
 conda install --yes pandas
 
+echo "installing eigency via conda..."
+conda install --yes -c sebp eigency 
+
 #building and installing google tests
 sudo apt-get install cmake
 echo "installing google test"
