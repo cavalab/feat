@@ -508,6 +508,7 @@ namespace FT{
             MatrixXd Phi = best_ind.out(X,params);
             std::cout << "normalize again\n";
             normalize(Phi,best_ind.dtypes);
+	    std::cout << "normalized the data and returning phi\n";
             return Phi;
         }
         normalize(X,params.dtypes);
@@ -515,6 +516,7 @@ namespace FT{
         MatrixXd Phi = ind->out(X,params);
         std::cout << "normalize\n";
         normalize(Phi,ind->dtypes);
+	std::cout << "Normalised the daa and returning phi\n";
         return Phi;
     }
 
