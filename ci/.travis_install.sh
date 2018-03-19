@@ -1,4 +1,3 @@
-
 echo "installing eigen..."
 wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"
 tar xzf 3.3.4.tar.gz 
@@ -25,9 +24,6 @@ conda install --yes scikit-learn
 
 echo "installing pandas via conda..."
 conda install --yes pandas
-
-echo "installing eigency via conda..."
-conda install --yes -c sebp eigency 
 
 #building and installing google tests
 sudo apt-get install cmake
