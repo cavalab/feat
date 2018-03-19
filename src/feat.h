@@ -496,16 +496,20 @@ namespace FT{
 
         if (ind == 0)        // if ind is empty, predict with best_ind
         {
+            std::cout << "ind is 0\n";
             if (best_ind.program.size()==0){
                 std::cerr << "You need to train a model using fit() before making predictions.\n";
                 throw;
             }
+            
+            std::cout << "normalize\n";
             normalize(X,params.dtypes);
+            std::cout << "best_ind->out\n";
             MatrixXd Phi = best_ind.out(X,params);
+            std::cout << "normalize again\n";
             normalize(Phi,best_ind.dtypes);
             return Phi;
         }
-        std::cout << "normalize\n";
         normalize(X,params.dtypes);
         std::cout << "ind->out\n";
         MatrixXd Phi = ind->out(X,params);
