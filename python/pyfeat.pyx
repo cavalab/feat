@@ -63,7 +63,7 @@ cdef class PyFeat:
         X = X.transpose()
         arr_x = np.asfortranarray(X, dtype=np.double)
 
-        X = ndarray(self.ft.transform(&arr_x[0,0],X.shape[0],X.shape[1]))
+        X = np.ndarray(self.ft.transform(&arr_x[0,0],X.shape[0],X.shape[1]))
         return X.transpose()
 
     def fit_predict(self,np.ndarray X,np.ndarray y):
@@ -86,7 +86,7 @@ cdef class PyFeat:
                 arr_x = np.asfortranarray(X, dtype=np.double)
                 arr_y = np.asfortranarray(y, dtype=np.double)
                 print ('In pyfeat.pyx...Calling fit_transform...')
-                X = ndarray(self.ft.fit_transform( &arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y) ),order='F')
+                X = np.ndarray(self.ft.fit_transform( &arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y) ))
                 print ('In pyfeat.pyx...Returning from fit_transform...')
                 return X.transpose()
             except:
