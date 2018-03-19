@@ -62,4 +62,4 @@ sudo python setup.py install build_ext --inplace
 cd ../tests
 sudo cp wrappertest.py ../python/ #Copy the file to python folder
 cd ../python/
-sudo python wrappertest.py -v 1
+python wrappertest.py -v 1
