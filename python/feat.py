@@ -68,6 +68,7 @@ class Feat(BaseEstimator):
         return self._pyfeat.fit_predict(X,y)
 
     def fit_transform(self,X,y):
+        print ( 'In feat.py ...calling fit_transform')
         return self._pyfeat.fit_transform(X,y)
 
     def score(self,features,labels):

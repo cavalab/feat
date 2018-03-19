@@ -57,7 +57,7 @@ class TestFeatWrapper(unittest.TestCase):
 
     #Test 4:  Assert the length of labels returned from fit_transform
     def test_fit_transform_length(self):
-        self.debug("Calling fit transform")
+        self.debug("In wrappertest.py...Calling fit transform")
         trans_X = self.clf.fit_transform(self.X,self.y)
 
         self.debug("Comparing the length of labls in transform vs actual feature set ")
