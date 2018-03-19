@@ -67,7 +67,7 @@ class TestFeatWrapper(unittest.TestCase):
 
     def debug(self,message):
         if ( self.v > 0 ):
-            print message
+            print (message)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="",add_help=False)
