@@ -492,6 +492,8 @@ namespace FT{
         /*!
          * Transforms input data according to ind or best ind, if ind is undefined.
          */
+        std::cout << "in Feat::transform\n";
+
         if (ind == 0)        // if ind is empty, predict with best_ind
         {
             if (best_ind.program.size()==0){
@@ -503,8 +505,11 @@ namespace FT{
             normalize(Phi,best_ind.dtypes);
             return Phi;
         }
+        std::cout << "normalize\n";
         normalize(X,params.dtypes);
+        std::cout << "ind->out\n";
         MatrixXd Phi = ind->out(X,params);
+        std::cout << "normalize\n";
         normalize(Phi,ind->dtypes);
         return Phi;
     }
