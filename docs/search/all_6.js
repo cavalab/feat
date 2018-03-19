@@ -38,5 +38,6 @@ var searchData=
   ['get_5fweights',['get_weights',['../db/dff/classshogun_1_1CMyCARTree.html#a13249afc6623fd680c9128956d235f59',1,'shogun::CMyCARTree::get_weights()'],['../df/dfa/classFT_1_1ML.html#a27fa984d19c8826c2fcbe81edb6a3417',1,'FT::ML::get_weights()']]],
   ['get_5fz',['get_z',['../db/d4e/classshogun_1_1CMulticlassLogisticRegression.html#a664a6b7acf36210e8541febc0ddc6860',1,'shogun::CMulticlassLogisticRegression']]],
   ['getcmdoption',['getCmdOption',['../de/d16/classInputParser.html#a4948d2aa6303f543f604b4d2f71030bb',1,'InputParser::getCmdOption(const std::string &amp;option) const '],['../de/d16/classInputParser.html#a4948d2aa6303f543f604b4d2f71030bb',1,'InputParser::getCmdOption(const std::string &amp;option) const ']]],
-  ['gini_5fimpurity_5findex',['gini_impurity_index',['../db/dff/classshogun_1_1CMyCARTree.html#a64fe270e87afc7b6346012e03a8c8808',1,'shogun::CMyCARTree']]]
+  ['gini_5fimpurity_5findex',['gini_impurity_index',['../db/dff/classshogun_1_1CMyCARTree.html#a64fe270e87afc7b6346012e03a8c8808',1,'shogun::CMyCARTree']]],
+  ['getting_20started',['Getting Started',['../md_INSTALL.html',1,'']]]
 ];

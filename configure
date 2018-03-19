@@ -15,7 +15,7 @@ elif [ "$1" == "profile" ]; then
     cd ..
 elif [ "$1" == "lpc" ] ; then
     # set up LPC environment
-    module load cmake/3.3.2
+    module load cmake/3.4.3
     module load gcc/5.2.0
     export CC="/appl/gcc-5.2.0/bin/gcc"
     export CXX="/appl/gcc-5.2.0/bin/g++"
@@ -25,6 +25,10 @@ elif [ "$1" == "lpc" ] ; then
 #    export LD_LIBRARY_PATH="$HOME/anaconda/lib:$LD_LIBRARY_PATH"
     rm -rf build; mkdir build; cd build; 
     cmake -DEIGEN_DIR=ON -DSHOGUN_DIR=ON ..
+    cd ..
+elif [ "$1" == "test" ] ; then 
+    rm -rf build; mkdir build; cd build; 
+    cmake -DTEST=ON ..
     cd ..
 else
     rm -rf build; mkdir build; cd build; 
