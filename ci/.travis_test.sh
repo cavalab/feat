@@ -2,4 +2,4 @@ cd ./build
 ./tests
 
 cd ../python/
-/home/travis/miniconda/python wrappertest.py -v 1
+/home/travis/miniconda/bin/python wrappertest.py -v 1
