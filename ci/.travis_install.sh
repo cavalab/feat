@@ -58,15 +58,17 @@ make -C build VERBOSE=1
 echo "running feat.."
 ./build/feat examples/d_enc.csv
 
-cd ./python
-sudo python setup.py install build_ext --inplace
-
-#_____Run the Python Tests for the wrapper_____#
 echo "python path is..."
 which python
 
 echo "cython path is..."
 which cython
+
+cd ./python
+sudo python setup.py install build_ext --inplace
+
+#_____Run the Python Tests for the wrapper_____#
+
 
 echo "copying wrapper test to the python folder"
 cd ../tests
