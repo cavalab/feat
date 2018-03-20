@@ -1,4 +1,11 @@
 #from distutils.core import setup
+import sys
+print ( 'Default Path to search for modules is...' )
+print ( sys.path )
+print ('Appending Miniconda path...' )
+sys.path.append('/home/travis/miniconda/bin/')
+print ( 'Modules installed at the path are...')
+print ( help("modules") )
 from setuptools import setup, find_packages
 from setuptools.extension import Extension
 from Cython.Build import cythonize
