@@ -55,6 +55,11 @@ namespace FT{
             /// 1 - balanced accuracy score
             double bal_accuracy(const VectorXd& y, const VectorXd& yhat, 
                                 vector<int> c=vector<int>(), bool reverse=true);
+            
+            /// log loss
+            VectorXd log_loss(const VectorXd& y, const VectorXd& yhat, 
+                                vector<int> c=vector<int>(), bool reverse=true);
+
     };
     
     /////////////////////////////////////////////////////////////////////////////////// Definitions  
@@ -190,5 +195,40 @@ namespace FT{
         else
             return class_accuracies.mean();
     }
+
+    double Evaluation::log_loss(const VectorXd& y, const VectorXd& yhat, bool balanced=true, 
+                                vector<int> c)
+
+    {
+    
+        vector<double> class_loss(2,0);
+        vector<int> n_classes (2,0); 
+        for (unsigned i = 0; i < y.rows(); ++i)
+        {
+            if (y.at(i)==1)
+                class_loss[1] += -(y.at(i)*log(yhat.at(i)));
+            else
+                class_loss[0] += (1-y.at(i))*log(1-yhat.at(i));
+            ++n_classes[y.at(i)];
+        }
+        if (balanced)
+            return class_loss[0]/n_classes[0] + class_loss[1]/n_classes[1];
+        else
+            return (class_loss[0] + class_loss[1])/(n_classes[1]+n_classes[0]);
+    
+    }
+
+    /* double Evaluation::multi_log_loss(const */ 
+    /*         { */
+    /*         if (c.empty())  // determine unique class values */
+    /*     { */
+    /*         vector<double> uc = unique(y); */
+    /*         for (const auto& i : uc) */
+    /*             c.push_back(int(i)); */
+    /*     } */
+
+    /*     //vector<double> class_loss(c.size(),0); */ 
+        
+    /* } */
 }
 #endif
