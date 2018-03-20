@@ -27,6 +27,7 @@ env:
     
 install: 
     - sudo apt-get update
+    - sudo pip install cython
     - sh ci/.travis_install.sh
 
 script: sh ci/.travis_test.sh 
