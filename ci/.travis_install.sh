@@ -1,4 +1,3 @@
-
 echo "installing eigen..."
 wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"
 tar xzf 3.3.4.tar.gz 

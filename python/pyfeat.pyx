@@ -82,9 +82,8 @@ cdef class PyFeat:
         X = X.transpose()
         arr_x = np.asfortranarray(X, dtype=np.double)
         arr_y = np.asfortranarray(y, dtype=np.double)
-        print ('In pyfeat.pyx...Calling fit_transform...')
+        
         X = ndarray(self.ft.fit_transform( &arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y) ))
-        print ('In pyfeat.pyx...Returning from fit_transform...')
         return X.transpose()
     
     def get_representation(self):
