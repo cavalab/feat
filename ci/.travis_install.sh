@@ -28,6 +28,7 @@ conda install --yes scikit-learn
 echo "installing pandas via conda..."
 conda install --yes pandas
 
+
 #building and installing google tests
 sudo apt-get install cmake
 echo "installing google test"
@@ -61,8 +62,13 @@ cd ./python
 sudo python setup.py install build_ext --inplace
 
 #_____Run the Python Tests for the wrapper_____#
+echo "python path is..."
 which python
 
+echo "cython path is..."
+which cython
+
+echo "copying wrapper test to the python folder"
 cd ../tests
 sudo cp wrappertest.py ../python/ #Copy the file to python folder
 
