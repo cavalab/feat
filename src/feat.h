@@ -293,7 +293,7 @@ namespace FT{
 		}
                   
             /// scoring function 
-            double score(MatrixXd& X, VectorXd& y);
+            double score(MatrixXd& X, const VectorXd& y);
             
         private:
             // Parameters
@@ -309,14 +309,16 @@ namespace FT{
             shared_ptr<Variation> p_variation;  	///< variation operators
             shared_ptr<Selection> p_surv;       	///< survival algorithm
             shared_ptr<ML> p_ml;                	///< pointer to machine learning class
+            Normalizer N;                           ///< scales training data.
             // performance tracking
             double best_score;                      ///< current best score
+            double best_score_v;                    ///< best validation score
             string str_dim;                         ///< dimensionality as multiple of number of columns 
-            void update_best();                     ///< updates best score   
+            void update_best(bool val=false);       ///< updates best score   
             void print_stats(unsigned int);         ///< prints stats
             Individual best_ind;                    ///< best individual
             /// method to fit inital ml model            
-            void initial_model(MatrixXd& X, VectorXd& y);
+            void initial_model(MatrixXd& X_t, VectorXd& y_t, MatrixXd& X_v, VectorXd& y_v);
             /// fits final model to best transformation
             void final_model(MatrixXd& X, VectorXd& y);
     };
@@ -325,6 +327,7 @@ namespace FT{
     
     void Feat::fit(MatrixXd& X, VectorXd& y)
     {
+
         /*!
          *  Input:
          
@@ -344,6 +347,7 @@ namespace FT{
          *	   6. produce offspring from parents via variation
          *	   7. select surviving individuals from parents and offspring
          */
+
         // start the clock
         timer.Reset();
         
@@ -364,6 +368,8 @@ namespace FT{
             params.set_classes(y);
          
         set_dtypes(find_dtypes(X));
+       
+        N.fit_normalize(X,params.dtypes);                   // normalize data
 
         p_ml = make_shared<ML>(params); // intialize ML
         p_pop = make_shared<Population>(params.pop_size);
@@ -374,12 +380,43 @@ namespace FT{
         VectorXd y_t(int(y.size()*params.split)), y_v(int(y.size()*(1-params.split)));
         train_test_split(X,y,X_t,X_v,y_t,y_v,params.shuffle);
         
+       
+        /* std::cout << "X initial:"; */
+        /* for (unsigned i = 0; i < 10; ++i) */
+        /*     std::cout << X.col(i).transpose() << "\n"; */
+        /* std::cout<<"norms: "; */
+        /* for (unsigned i = 0; i < X.rows(); ++i) */
+        /*     std::cout << X.row(i).norm() << " "; */
+        /* std::cout << "\n"; */       
+        /* std::cout << "y:\n"; */
+        /* std::cout << y.transpose() << "\n"; */
+ 
+        /* std::cout << "X_t initial:"; */
+        /* for (unsigned i = 0; i < 10; ++i) */
+        /*     std::cout << X_t.col(i).transpose() << "\n"; */
+        /* std::cout<<"norms: "; */
+        /* for (unsigned i = 0; i < X_t.rows(); ++i) */
+        /*     std::cout << X_t.row(i).norm() << " "; */
+        /* std::cout << "\n"; */       
+        /* std::cout << "y_t:\n"; */
+        /* std::cout << y_t.transpose() << "\n"; */
+
+        /* std::cout << "X_v initial:"; */
+        /* for (unsigned i = 0; i < 10; ++i) */
+        /*     std::cout << X_v.col(i).transpose() << "\n"; */
+        /* std::cout<<"norms: "; */
+        /* for (unsigned i = 0; i < X_v.rows(); ++i) */
+        /*     std::cout << X_v.row(i).norm() << " "; */
+        /* std::cout << "\n"; */       
+        /* std::cout << "y_v:\n"; */
+        /* std::cout << y_v.transpose() << "\n"; */
+
         // define terminals based on size of X
         params.set_terminals(X.rows());        
 
         // initial model on raw input
         params.msg("Fitting initial model", 1);
-        initial_model(X_t,y_t);  
+        initial_model(X_t,y_t,X_v,y_v);  
         params.msg("Initial score: " + std::to_string(best_score), 1);
         
         // initialize population 
@@ -432,21 +469,21 @@ namespace FT{
         if (params.split < 1.0)
         {
             F_v.resize(X_v.cols(),int(2*params.pop_size)); 
-            p_eval->fitness(*p_pop, X_v, y_v, F_v, params);
-            initial_model(X_v, y_v);        // calculate baseline model validation score
-            update_best();                  // get the best validation model
+            p_eval->val_fitness(*p_pop, X_t, y_t, F_v, X_v, y_v, params);
+            update_best(true);                  // get the best validation model
         }
-        
-        final_model(X,y);   // fit final model to best model
+       
         params.msg("best validation representation: " + best_ind.get_eqn(),1);
-        params.msg("validation score: " + std::to_string(best_score), 1);
+        params.msg("validation score: " + std::to_string(best_score_v), 1);
+        params.msg("fitting final model to all training data...",2);
+        final_model(X,y);   // fit final model to best features
 
         
-        // write model to file
-        std::ofstream out_model; 
-        out_model.open("model_" + name + ".txt");
-        out_model << best_ind.get_eqn() ; 
-        out_model.close();
+        /* // write model to file */
+        /* std::ofstream out_model; */ 
+        /* out_model.open("model_" + name + ".txt"); */
+        /* out_model << best_ind.get_eqn() ; */ 
+        /* out_model.close(); */
     }
 
     void Feat::fit(double * X, int rowsX, int colsX, double * Y, int lenY)
@@ -461,30 +498,42 @@ namespace FT{
     {
         // fits final model to best tranformation found.
         bool pass = true;
-        MatrixXd Phi = transform(X);
-        VectorXd yhat = p_ml->out(Phi,y,params,pass,best_ind.dtypes);
+        /* MatrixXd Phi = transform(X); */
+        MatrixXd Phi = best_ind.out(X,params);        
+        VectorXd yhat = p_ml->fit(Phi,y,params,pass,best_ind.dtypes);
+        double score = p_eval->se(y,yhat).mean();
+        std::cout << "final_model:: score=" << score << "\n";
     }
-    void Feat::initial_model(MatrixXd& X, VectorXd& y)
+    void Feat::initial_model(MatrixXd& X_t, VectorXd& y_t, MatrixXd& X_v, VectorXd& y_v)
     {
         /*!
          * fits an ML model to the raw data as a starting point.
          */
         bool pass = true;
-        VectorXd yhat = p_ml->out(X,y,params,pass);
- 
+        VectorXd yhat = p_ml->fit(X_t,y_t,params,pass);
+        VectorXd yhat_v = p_ml->predict(X_v);
+
         // set terminal weights based on model
         params.set_term_weights(p_ml->get_weights());
 
         if (params.classification)  // assign best score as balanced accuracy
-            best_score = p_eval->bal_accuracy(y, yhat, params.classes);
+        {
+            best_score = p_eval->bal_accuracy(y_t, yhat, params.classes);
+            best_score_v = p_eval->bal_accuracy(y_v, yhat_v, params.classes);
+ 
+        }
         else                        // assign best score as MSE
-            best_score = p_eval->se(y,yhat).mean();
+        {
+            best_score = p_eval->se(y_t,yhat).mean();
+            best_score_v = p_eval->se(y_v,yhat_v).mean();
+        }
         
         // initialize best_ind to be all the features
         best_ind = Individual();
-        for (unsigned i =0; i<X.rows(); ++i)
+        for (unsigned i =0; i<X_t.rows(); ++i)
             best_ind.program.push_back(params.terminals[i]);
         best_ind.fitness = best_score;
+        std::cout << "initial best_score_v:" << best_score_v << "\n";
     }
 
     MatrixXd Feat::transform(MatrixXd& X, Individual *ind)
@@ -492,20 +541,40 @@ namespace FT{
         /*!
          * Transforms input data according to ind or best ind, if ind is undefined.
          */
+        /* std::cout << "**FEAT:transform**\n"; */
+        /* std::cout.precision(5); */
+        /* std::cout << "scale fit:\n"; */
+        /* for (auto s: N.scale) std::cout << s << " "; */
+        /* std::cout << "\n"; */
+
+        /* std::cout << "offset fit:\n"; */
+        /* for (auto s: N.offset) std::cout << s << " "; */
+        /* std::cout << "\n"; */
+
+        /* std::cout << "X before:"; */
+        /* for (unsigned i = 0; i < 10; ++i) */
+        /*     std::cout << X.col(i).transpose() << "\n"; */
+
+        
+        N.normalize(X);       
+        
+        /* std::cout << "X after:"; */
+        /* for (unsigned i = 0; i < 10; ++i) */
+        /*     std::cout << X.col(i).transpose() << "\n"; */
+
         if (ind == 0)        // if ind is empty, predict with best_ind
         {
+            std::cout << "predicting with best_ind\n";
             if (best_ind.program.size()==0){
                 std::cerr << "You need to train a model using fit() before making predictions.\n";
                 throw;
             }
-            normalize(X,params.dtypes);
+            
             MatrixXd Phi = best_ind.out(X,params);
-            normalize(Phi,best_ind.dtypes);
             return Phi;
         }
-        normalize(X,params.dtypes);
+
         MatrixXd Phi = ind->out(X,params);
-        normalize(Phi,ind->dtypes);
         return Phi;
     }
 
@@ -516,42 +585,33 @@ namespace FT{
         
     }
     
-    
     VectorXd Feat::predict(MatrixXd& X)
-    {        
-        MatrixXd Phi = transform(X);
-        auto PhiSG = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(Phi));
-        SGVector<double> y_pred;
-        VectorXd yhat;
+    {   
+        /* std::cout << "**FEAT:predict*\n"; */
+        /* std::cout.precision(5); */
+        /* std::cout << "scale fit:\n"; */
+        /* for (auto s: N.scale) std::cout << s << " "; */
+        /* std::cout << "\n"; */
 
-        if (params.classification && params.n_classes == 2 && 
-                (!params.ml.compare("SVM") || !params.ml.compare("LR")))
-        {
-            auto tmp = p_ml->p_est->apply_binary(PhiSG);
-            y_pred = tmp->get_labels();
-            delete tmp;
-            
-        }
-        else if (params.classification)
-        {
-            auto tmp = p_ml->p_est->apply_multiclass(PhiSG);
-            y_pred = tmp->get_labels();
-            delete tmp;
-        }
-        else
-        {
-            auto tmp = p_ml->p_est->apply_regression(PhiSG);
-            y_pred = tmp->get_labels();
-            delete tmp;
-        }
+        /* std::cout << "offset fit:\n"; */
+        /* for (auto s: N.offset) std::cout << s << " "; */
+        /* std::cout << "\n"; */
+
+        /* std::cout << "X before transform:"; */
+        /* for (unsigned i = 0; i < 10; ++i) */
+        /*     std::cout << X.col(i).transpose() << "\n"; */
+    
+        MatrixXd Phi = transform(X);
         
-        yhat = Eigen::Map<VectorXd>(y_pred.data(),y_pred.size());
-        
-        if (params.classification && (!params.ml.compare("LR") || !params.ml.compare("SVM")))
-            // convert -1 to 0
-            yhat = (yhat.cast<int>().array() == -1).select(0,yhat);
-        
-        return yhat;        
+        /* std::cout << "X after transform:"; */
+        /* for (unsigned i = 0; i < 10; ++i) */
+        /*     std::cout << X.col(i).transpose() << "\n"; */
+
+        /* std::cout << "Phi after transform:"; */
+        /* for (unsigned i = 0; i < 10; ++i) */
+        /*     std::cout << Phi.col(i).transpose() << "\n"; */
+
+        return p_ml->predict(Phi);        
     }
 
     VectorXd Feat::predict(double * X, int rowsX,int colsX)
@@ -560,20 +620,26 @@ namespace FT{
         return Feat::predict(matX);
     }
 
-    void Feat::update_best()
+    void Feat::update_best(bool val)
     {
+        double bs;
+        if (val) 
+            bs = best_score_v;
+        else
+            bs = best_score;
+        
         for (const auto& i: p_pop->individuals)
         {
-            if (i.fitness < best_score)
+            if (i.fitness < bs)
             {
-                best_score = i.fitness;
+                bs = i.fitness;
                 best_ind = i;
             }
         }
  
     }
     
-    double Feat::score(MatrixXd& X, VectorXd& y)
+    double Feat::score(MatrixXd& X, const VectorXd& y)
     {
         VectorXd yhat = predict(X);
         
