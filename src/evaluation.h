@@ -31,7 +31,11 @@ namespace FT{
             /// fitness of population.
             void fitness(Population& pop, const MatrixXd& X, VectorXd& y, MatrixXd& F, 
                          const Parameters& params, bool offspring);
-          
+ 
+            void val_fitness(Population& pop, const MatrixXd& X_t, VectorXd& y_t, MatrixXd& F, 
+                             const MatrixXd& X_v, VectorXd& y_v, const Parameters& params, 
+                             bool offspring);
+         
             /// assign fitness to an individual and to F.  
             void assign_fit(Individual& ind, MatrixXd& F, const VectorXd& yhat, const VectorXd& y,
                             const Parameters& params);       
@@ -57,9 +61,8 @@ namespace FT{
                                 vector<int> c=vector<int>(), bool reverse=true);
             
             /// log loss
-            VectorXd log_loss(const VectorXd& y, const VectorXd& yhat, 
-                                vector<int> c=vector<int>(), bool reverse=true);
-
+            VectorXd log_loss(const VectorXd& y, const VectorXd& yhat, vector<int> c=vector<int>());
+            double bal_loss(const VectorXd& y, const VectorXd& loss, vector<int> c=vector<int>());
     };
     
     /////////////////////////////////////////////////////////////////////////////////// Definitions  
@@ -98,7 +101,7 @@ namespace FT{
             params.msg("ML training on " + pop.individuals[i].get_eqn(), 2);
             bool pass = true;
             auto ml = std::make_shared<ML>(params);
-            VectorXd yhat = ml->out(Phi,y,params,pass,pop.individuals[i].dtypes);
+            VectorXd yhat = ml->fit(Phi,y,params,pass,pop.individuals[i].dtypes);
             if (!pass){
                 std::cerr << "Error training eqn " + pop.individuals[i].get_eqn() + "\n";
                 std::cerr << "with raw output " << pop.individuals[i].out(X,params,y) << "\n";
@@ -137,8 +140,12 @@ namespace FT{
         assert(F.cols()>ind.loc);
         if (params.classification)  // use classification accuracy
         {
-            F.col(ind.loc) = accuracy(y,yhat); 
-            ind.fitness = bal_accuracy(y,yhat,params.classes);
+            /* F.col(ind.loc) = accuracy(y,yhat); */ 
+            F.col(ind.loc) = log_loss(y,yhat); 
+            
+            /* ind.fitness = bal_accuracy(y,yhat,params.classes); */
+            ind.fitness = bal_loss(y,F.col(ind.loc),params.classes);
+            
         }
         else                        // use mean squared error
         {
@@ -149,6 +156,63 @@ namespace FT{
         params.msg("ind " + std::to_string(ind.loc) + " fitnes: " + std::to_string(ind.fitness),2);
     }
 
+    // validation fitness of population
+    void Evaluation::val_fitness(Population& pop, const MatrixXd& X_t, VectorXd& y_t, MatrixXd& F, 
+                            const MatrixXd& X_v, VectorXd& y_v, const Parameters& params, 
+                            bool offspring=false)
+    {
+    	/*!
+         * Input:
+         
+         *      pop: population
+         *      X: feature data
+         *      y: label
+         *      F: matrix of raw fitness values
+         *      p: algorithm parameters
+         
+         * Output:
+         
+         *      F is modified
+         *      pop[:].fitness is modified
+         */
+        
+        
+        unsigned start =0;
+        if (offspring) start = F.cols()/2;
+        // loop through individuals
+        #pragma omp parallel for
+        for (unsigned i = start; i<pop.size(); ++i)
+        {
+            // calculate program output matrix Phi
+            params.msg("Generating output for " + pop.individuals[i].get_eqn(), 2);
+            MatrixXd Phi = pop.individuals.at(i).out(X_t, params, y_t);            
+
+            // calculate ML model from Phi
+            params.msg("ML training on " + pop.individuals[i].get_eqn(), 2);
+            bool pass = true;
+            auto ml = std::make_shared<ML>(params);
+            VectorXd yhat_t = ml->fit(Phi,y_t,params,pass,pop.individuals[i].dtypes);
+            if (!pass){
+                std::cerr << "Error training eqn " + pop.individuals[i].get_eqn() + "\n";
+                std::cerr << "with raw output " << pop.individuals[i].out(X_t,params,y_t) << "\n";
+                throw;
+            }
+            
+            // calculate program output matrix Phi on validation data
+            params.msg("Generating validation output for " + pop.individuals[i].get_eqn(), 2);
+            MatrixXd Phi_v = pop.individuals.at(i).out(X_v, params, y_v);            
+
+            // calculate ML model from Phi
+            params.msg("ML training on " + pop.individuals[i].get_eqn(), 2);
+            VectorXd yhat_v = ml->predict(Phi_v);
+
+            // assign F and aggregate fitness
+            params.msg("Assigning fitness to " + pop.individuals[i].get_eqn(), 2);
+            
+            assign_fit(pop.individuals[i],F,yhat_v,y_v,params);
+                        
+        }
+    }
     double Evaluation::bal_accuracy(const VectorXd& y, const VectorXd& yhat, vector<int> c,
                                     bool reverse)
     {
@@ -196,28 +260,45 @@ namespace FT{
             return class_accuracies.mean();
     }
 
-    double Evaluation::log_loss(const VectorXd& y, const VectorXd& yhat, bool balanced=true, 
-                                vector<int> c)
+    VectorXd Evaluation::log_loss(const VectorXd& y, const VectorXd& yhat, vector<int> c)
 
     {
-    
-        vector<double> class_loss(2,0);
-        vector<int> n_classes (2,0); 
+        double eps = pow(10,-10);
+
+        VectorXd loss(y.rows());  
         for (unsigned i = 0; i < y.rows(); ++i)
         {
-            if (y.at(i)==1)
-                class_loss[1] += -(y.at(i)*log(yhat.at(i)));
+            if (yhat(i) < eps || 1 - yhat(i) < eps)
+                // clip probabilities since log loss is undefined for yhat=0 or yhat=1
+                loss(i) = -(y(i)*log(eps) + (1-y(i))*log(1-eps));
             else
-                class_loss[0] += (1-y.at(i))*log(1-yhat.at(i));
-            ++n_classes[y.at(i)];
-        }
-        if (balanced)
-            return class_loss[0]/n_classes[0] + class_loss[1]/n_classes[1];
-        else
-            return (class_loss[0] + class_loss[1])/(n_classes[1]+n_classes[0]);
-    
+                loss(i) = -(y(i)*log(yhat(i)) + (1-y(i))*log(1-yhat(i)));
+        }   
+        return loss;
     }
 
+    double Evaluation::bal_loss(const VectorXd& y, const VectorXd& loss, 
+                                vector<int> c)
+    {
+       
+        if (c.empty())  // determine unique class values
+        {
+            vector<double> uc = unique(y);
+            for (const auto& i : uc)
+                c.push_back(int(i));
+        }
+        vector<double> class_loss(c.size(),0);
+
+        for (unsigned i = 0; i < c.size(); ++i)
+        {
+            int n = (y.cast<int>().array() == c[i]).count();
+            class_loss[i] = (y.cast<int>().array() == c[i]).select(loss.array(),0).sum()/n;
+        
+        }
+        // return balanced class losses 
+        Map<ArrayXd> cl(class_loss.data(),class_loss.size());        
+        return cl.mean();
+    }
     /* double Evaluation::multi_log_loss(const */ 
     /*         { */
     /*         if (c.empty())  // determine unique class values */
