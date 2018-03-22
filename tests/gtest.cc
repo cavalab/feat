@@ -270,7 +270,8 @@ TEST(Individual, EvalEquation)
             
     feat.p_ml = make_shared<ML>(feat.params); // intialize ML
     feat.p_pop = make_shared<Population>(feat.params.pop_size);
-    
+    feat.p_eval = make_shared<Evaluation>(feat.params.scorer);
+
 	feat.params.set_terminals(X.rows()); 
         
     // initial model on raw input
