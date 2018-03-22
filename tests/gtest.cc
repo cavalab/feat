@@ -882,7 +882,8 @@ TEST(Population, PopulationTests)
             
     feat.p_ml = make_shared<ML>(feat.params); // intialize ML
     feat.p_pop = make_shared<Population>(feat.params.pop_size);  
-    feat.p_eval = make_shared<Evaluation>(feat.params.scorer);
+    std::cout << "feat.params.scorer: " << feat.params.scorer << "\n";
+    feat.p_eval = make_shared<Evaluation>("mse");
 
 	feat.params.set_terminals(X.rows()); 
         
