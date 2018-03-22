@@ -740,7 +740,8 @@ TEST(Variation, MutationTests)
             
     feat.p_ml = make_shared<ML>(feat.params); // intialize ML
     feat.p_pop = make_shared<Population>(feat.params.pop_size);
-    
+    feat.p_eval = make_shared<Evaluation>(feat.params.scorer);
+
 	feat.params.set_terminals(X.rows()); 
         
     // initial model on raw input
@@ -809,6 +810,7 @@ TEST(Variation, CrossoverTests)
             
     feat.p_ml = make_shared<ML>(feat.params); // intialize ML
     feat.p_pop = make_shared<Population>(feat.params.pop_size);
+    feat.p_eval = make_shared<Evaluation>(feat.params.scorer);
     
 	feat.params.set_terminals(X.rows()); 
         
@@ -1263,7 +1265,7 @@ TEST(Evaluation, out_ml)
              -1.20648656, -2.68773747;
     
     params.dtypes = find_dtypes(X);
-    shared_ptr<Evaluation> p_eval = make_shared<Evaluation>(params.scorer);
+    /* shared_ptr<Evaluation> p_eval = make_shared<Evaluation>(params.scorer); */
     shared_ptr<ML> p_ml = make_shared<ML>(params);
              
     bool pass = true;
@@ -1309,8 +1311,9 @@ TEST(Selection, SelectionOperator)
     feat.set_dtypes(find_dtypes(X));
             
     feat.p_ml = make_shared<ML>(feat.params); // intialize ML
-    feat.p_pop = make_shared<Population>(feat.params.pop_size);
-        
+    feat.p_pop = make_shared<Population>(feat.params.pop_size);    
+    feat.p_eval = make_shared<Evaluation>(feat.params.scorer);
+
 	feat.params.set_terminals(X.rows()); 
         
     // initial model on raw input
