@@ -224,56 +224,19 @@ namespace FT{
             else
                 set_dtypes(dtypes);
         }
-        // normalize data
-        /* std::cout << "**ML:fit**\n"; */
-        /* std::cout.precision(5); */
-        /* std::cout << "X before:"; */
-        /* for (unsigned i = 0; i < 10; ++i) */
-        /*     std::cout << X.col(i).transpose() << "\n"; */
-        /* std::cout<<"norms: "; */
-        /* for (unsigned i = 0; i < X.rows(); ++i) */
-        /*     std::cout << X.row(i).norm() << " "; */
-        /* std::cout << "\n"; */
-
+        
         if (dtypes.empty())
             N.fit_normalize(X, params.dtypes);  
         else 
             N.fit_normalize(X, dtypes);
-        
-        /* std::cout << "ML::fit X:"; */
-        /* for (unsigned i = 0; i < 10; ++i) */
-        /*     std::cout << X.col(i).transpose() << "\n"; */
-        /* std::cout<<"norms: "; */
-        /* for (unsigned i = 0; i < X.rows(); ++i) */
-        /*     std::cout << X.row(i).norm() << " "; */
-        /* std::cout << "\n"; */       
-        /* std::cout << "ML::fit y:\n"; */
-        /* std::cout << y.transpose() << "\n"; */
-
-        /* std::cout << "scale fit:\n"; */
-        /* for (auto s: N.scale) std::cout << s << " "; */
-        /* std::cout << "\n"; */
-
-        /* std::cout << "offset fit:\n"; */
-        /* for (auto s: N.offset) std::cout << s << " "; */
-        /* std::cout << "\n"; */
-
-
-        /* std::cout << "X after:"; */
-        /* for (unsigned i = 0; i < 10; ++i) */
-        /*     std::cout << X.col(i).transpose() << "\n"; */
-        /* std::cout<<"norms: "; */
-        /* for (unsigned i = 0; i < X.rows(); ++i) */
-        /*     std::cout << X.row(i).norm() << " "; */
-        /* std::cout << "\n"; */
-
+         
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
         //std::cout << "setting labels (n_classes = " << params.n_classes << ")\n"; 
         //cout << "y is " << y.transpose() << "\n";
         if(prob_type==PT_BINARY && 
                 (!ml_type.compare("LR") || !ml_type.compare("SVM")))  // binary classification           	
         	p_est->set_labels(some<CBinaryLabels>(SGVector<float64_t>(y), 0.5));       	
-        else if (prob_type==PT_MULTICLASS)                         // multiclass classification       
+        else if (prob_type!=PT_REGRESSION)                         // multiclass classification       
             p_est->set_labels(some<CMulticlassLabels>(SGVector<float64_t>(y)));
         else                                                    // regression
             p_est->set_labels(some<CRegressionLabels>(SGVector<float64_t>(y)));
@@ -294,8 +257,9 @@ namespace FT{
              (!ml_type.compare("LR") || !ml_type.compare("SVM")))     // binary classification
         {
             auto clf = p_est->apply_binary(features);
-            clf->scores_to_probabilities(0.0,0.0);  // get sigmoid-fn probabilities
-            y_pred = clf->get_values();
+            /* clf->scores_to_probabilities(0.0,0.0);  // get sigmoid-fn probabilities */
+            /* y_pred = clf->get_values(); */
+            y_pred = clf->get_labels();
             delete clf;
         }
         else if (params.classification)                         // multiclass classification
@@ -315,12 +279,6 @@ namespace FT{
         // map to Eigen vector
         Map<VectorXd> yhat(y_pred.data(),y_pred.size());
         
-        /* vector<double> weights = get_weights(); */
-        /* std::cout << "weights: "; */
-        /* for (auto c : weights) */
-        /*     std::cout << c << " "; */
-        /* std::cout << "\n"; */
-
         //std::cout << "thread" + std::to_string(omp_get_thread_num()) + " map to vector\n";
         
         if (isinf(yhat.array()).any() || isnan(yhat.array()).any())
@@ -335,36 +293,8 @@ namespace FT{
 
     VectorXd ML::predict(MatrixXd& X)
     {
-        /* std::cout.precision(5); */
-        /* std::cout << "**ML::predict\n"; */
-        /* std::cout << "scale fit:\n"; */
-        /* for (auto s: N.scale) std::cout << s << " "; */
-        /* std::cout << "\n"; */
-
-        /* std::cout << "offset fit:\n"; */
-        /* for (auto s: N.offset) std::cout << s << " "; */
-        /* std::cout << "\n"; */
-        /* std::cout << "X before:"; */
-        /* for (unsigned i = 0; i < 10; ++i) */
-        /*     std::cout << X.col(i).transpose() << "\n"; */
 
         N.normalize(X);
-        /* std::cout << "X after:"; */
-        /* for (unsigned i = 0; i < 10; ++i) */
-        /*     std::cout << X.col(i).transpose() << "\n"; */
-        /* std::cout << "ML::predict X:"; */
-        /* for (unsigned i = 0; i < 10; ++i) */
-        /*     std::cout << X.col(i).transpose() << "\n"; */
-        /* std::cout<<"norms: "; */
-        /* for (unsigned i = 0; i < X.rows(); ++i) */
-        /*     std::cout << X.row(i).norm() << " "; */
-        /* std::cout << "\n"; */       
-
-        /* vector<double> weights = get_weights(); */
-        /* std::cout << "weights: "; */
-        /* for (auto c : weights) */
-        /*     std::cout << c << " "; */
-        /* std::cout << "\n"; */
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
         
         SGVector<double> y_pred;
@@ -375,7 +305,7 @@ namespace FT{
             y_pred = tmp->get_labels();
             delete tmp;
         }
-        else if (prob_type==PT_MULTICLASS)
+        else if (prob_type != PT_REGRESSION)
         {
             auto tmp = p_est->apply_multiclass(features);
             y_pred = tmp->get_labels();

@@ -78,13 +78,13 @@ namespace FT{
                    char otype='a', string functions = "+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite", 
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
                    bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
-                   double split=0.75, double fb=0.5):
+                   double split=0.75, double fb=0.5, string scorer=""):
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
-                             functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, fb), 
+                             functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, 
+                             fb, scorer), 
                       p_sel( make_shared<Selection>(sel) ),
                       p_surv( make_shared<Selection>(surv, true) ),
-                      p_eval( make_shared<Evaluation>() ),
                       p_variation( make_shared<Variation>(cross_rate) )                      
             {
                 r.set_seed(random_state);
@@ -362,17 +362,19 @@ namespace FT{
             set_max_dim(ceil(stod(dimension)*X.rows()));
         }
         
-        params.check_ml();       
-
+        params.init();       
+       
         if (params.classification)  // setup classification endpoint
-            params.set_classes(y);
-         
+           params.set_classes(y);        
+        
+
         set_dtypes(find_dtypes(X));
        
         N.fit_normalize(X,params.dtypes);                   // normalize data
 
         p_ml = make_shared<ML>(params); // intialize ML
         p_pop = make_shared<Population>(params.pop_size);
+        p_eval = make_shared<Evaluation>(params.scorer);
 
         // split data into training and test sets
         MatrixXd X_t(X.rows(),int(X.cols()*params.split));
@@ -501,9 +503,11 @@ namespace FT{
         /* MatrixXd Phi = transform(X); */
         MatrixXd Phi = best_ind.out(X,params);        
         VectorXd yhat = p_ml->fit(Phi,y,params,pass,best_ind.dtypes);
-        double score = p_eval->se(y,yhat).mean();
+        VectorXd tmp;
+        double score = p_eval->score(y,yhat,tmp);
         std::cout << "final_model:: score=" << score << "\n";
     }
+    
     void Feat::initial_model(MatrixXd& X_t, VectorXd& y_t, MatrixXd& X_v, VectorXd& y_v)
     {
         /*!
@@ -511,23 +515,18 @@ namespace FT{
          */
         bool pass = true;
         VectorXd yhat = p_ml->fit(X_t,y_t,params,pass);
+        std::cout << "initial_model: predict\n";
         VectorXd yhat_v = p_ml->predict(X_v);
 
         // set terminal weights based on model
         params.set_term_weights(p_ml->get_weights());
+        VectorXd tmp;
+        std::cout << "initial_model: setting best_score\n";
+        best_score = p_eval->score(y_t, yhat,tmp);
+        std::cout << "initial_model: setting best_score_v\n";
+        best_score_v = p_eval->score(y_v, yhat_v,tmp); 
 
-        if (params.classification)  // assign best score as balanced accuracy
-        {
-            best_score = p_eval->bal_accuracy(y_t, yhat, params.classes);
-            best_score_v = p_eval->bal_accuracy(y_v, yhat_v, params.classes);
- 
-        }
-        else                        // assign best score as MSE
-        {
-            best_score = p_eval->se(y_t,yhat).mean();
-            best_score_v = p_eval->se(y_v,yhat_v).mean();
-        }
-        
+       
         // initialize best_ind to be all the features
         best_ind = Individual();
         for (unsigned i =0; i<X_t.rows(); ++i)
@@ -541,27 +540,9 @@ namespace FT{
         /*!
          * Transforms input data according to ind or best ind, if ind is undefined.
          */
-        /* std::cout << "**FEAT:transform**\n"; */
-        /* std::cout.precision(5); */
-        /* std::cout << "scale fit:\n"; */
-        /* for (auto s: N.scale) std::cout << s << " "; */
-        /* std::cout << "\n"; */
-
-        /* std::cout << "offset fit:\n"; */
-        /* for (auto s: N.offset) std::cout << s << " "; */
-        /* std::cout << "\n"; */
-
-        /* std::cout << "X before:"; */
-        /* for (unsigned i = 0; i < 10; ++i) */
-        /*     std::cout << X.col(i).transpose() << "\n"; */
-
         
         N.normalize(X);       
         
-        /* std::cout << "X after:"; */
-        /* for (unsigned i = 0; i < 10; ++i) */
-        /*     std::cout << X.col(i).transpose() << "\n"; */
-
         if (ind == 0)        // if ind is empty, predict with best_ind
         {
             std::cout << "predicting with best_ind\n";
@@ -587,30 +568,7 @@ namespace FT{
     
     VectorXd Feat::predict(MatrixXd& X)
     {   
-        /* std::cout << "**FEAT:predict*\n"; */
-        /* std::cout.precision(5); */
-        /* std::cout << "scale fit:\n"; */
-        /* for (auto s: N.scale) std::cout << s << " "; */
-        /* std::cout << "\n"; */
-
-        /* std::cout << "offset fit:\n"; */
-        /* for (auto s: N.offset) std::cout << s << " "; */
-        /* std::cout << "\n"; */
-
-        /* std::cout << "X before transform:"; */
-        /* for (unsigned i = 0; i < 10; ++i) */
-        /*     std::cout << X.col(i).transpose() << "\n"; */
-    
         MatrixXd Phi = transform(X);
-        
-        /* std::cout << "X after transform:"; */
-        /* for (unsigned i = 0; i < 10; ++i) */
-        /*     std::cout << X.col(i).transpose() << "\n"; */
-
-        /* std::cout << "Phi after transform:"; */
-        /* for (unsigned i = 0; i < 10; ++i) */
-        /*     std::cout << Phi.col(i).transpose() << "\n"; */
-
         return p_ml->predict(Phi);        
     }
 
@@ -642,11 +600,13 @@ namespace FT{
     double Feat::score(MatrixXd& X, const VectorXd& y)
     {
         VectorXd yhat = predict(X);
-        
-        if (params.classification)
-            return p_eval->bal_accuracy(y,yhat,vector<int>(),false);
-        else
-            return p_eval->se(y,yhat).mean();
+        VectorXd loss; 
+        return p_eval->score(y,yhat,loss);
+
+        /* if (params.classification) */
+        /*     return p_eval->bal_accuracy(y,yhat,vector<int>(),false); */
+        /* else */
+        /*     return p_eval->se(y,yhat).mean(); */
     }
     void Feat::print_stats(unsigned int g)
     {

@@ -245,23 +245,26 @@ TEST(Feat, fit_transform)
 TEST(Individual, EvalEquation)
 {
 	Feat feat(100);
-    MatrixXd X(7,2); 
+    MatrixXd X(4,2); 
+    MatrixXd X_v(3,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
          0.84147098,  0.54030231,
-         0.99749499,  0.0707372,
-         0.90929743, -0.41614684,
+         0.99749499,  0.0707372;
+    X_v <<  0.90929743, -0.41614684,
          0.59847214, -0.80114362,
          0.14112001,-0.9899925;
 
     X.transposeInPlace();
-    
-    VectorXd y(7); 
-    // y = 2*x1 + 3.x2
-    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
-             -1.20648656, -2.68773747;
+    X_v.transposeInPlace();
 
-    feat.params.check_ml();       
+    VectorXd y(4); 
+    VectorXd y_v(3); 
+    // y = 2*x1 + 3.x2
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158;
+    y_v << 0.57015434, -1.20648656, -2.68773747;
+
+    feat.params.init();       
   
     feat.set_dtypes(find_dtypes(X));
             
@@ -271,7 +274,7 @@ TEST(Individual, EvalEquation)
 	feat.params.set_terminals(X.rows()); 
         
     // initial model on raw input
-    feat.initial_model(X,y);
+    feat.initial_model(X,y,X_v,y_v);
                   
     // initialize population 
     feat.p_pop->init(feat.best_ind, feat.params);
@@ -711,24 +714,27 @@ bool isValidProgram(vector<std::shared_ptr<Node>>& program, unsigned num_feature
 TEST(Variation, MutationTests)
 {
 	Feat feat(100);
-    MatrixXd X(7,2); 
+    MatrixXd X(4,2); 
+    MatrixXd X_v(3,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
          0.84147098,  0.54030231,
-         0.99749499,  0.0707372,
-         0.90929743, -0.41614684,
+         0.99749499,  0.0707372;
+    X_v <<  0.90929743, -0.41614684,
          0.59847214, -0.80114362,
          0.14112001,-0.9899925;
 
     X.transposeInPlace();
-    
-    VectorXd y(7); 
+    X_v.transposeInPlace();
+
+    VectorXd y(4); 
+    VectorXd y_v(3); 
     // y = 2*x1 + 3.x2
-    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
-             -1.20648656, -2.68773747;
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158;
+    y_v << 0.57015434, -1.20648656, -2.68773747;
 
-    feat.params.check_ml();       
-
+    feat.params.init();       
+  
     feat.set_dtypes(find_dtypes(X));
             
     feat.p_ml = make_shared<ML>(feat.params); // intialize ML
@@ -737,7 +743,7 @@ TEST(Variation, MutationTests)
 	feat.params.set_terminals(X.rows()); 
         
     // initial model on raw input
-    feat.initial_model(X,y);
+    feat.initial_model(X,y,X_v,y_v);
                   
     // initialize population 
     feat.p_pop->init(feat.best_ind, feat.params);
@@ -777,34 +783,37 @@ TEST(Variation, MutationTests)
 TEST(Variation, CrossoverTests)
 {
 	Feat feat(100);
-    MatrixXd X(7,2); 
+    MatrixXd X(4,2); 
+    MatrixXd X_v(3,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
          0.84147098,  0.54030231,
-         0.99749499,  0.0707372,
-         0.90929743, -0.41614684,
+         0.99749499,  0.0707372;
+    X_v <<  0.90929743, -0.41614684,
          0.59847214, -0.80114362,
          0.14112001,-0.9899925;
 
     X.transposeInPlace();
-    
-    VectorXd y(7); 
-    // y = 2*x1 + 3.x2
-    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
-             -1.20648656, -2.68773747;
-             
-    feat.params.check_ml();       
+    X_v.transposeInPlace();
 
+    VectorXd y(4); 
+    VectorXd y_v(3); 
+    // y = 2*x1 + 3.x2
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158;
+    y_v << 0.57015434, -1.20648656, -2.68773747;
+
+    feat.params.init();       
+  
     feat.set_dtypes(find_dtypes(X));
             
     feat.p_ml = make_shared<ML>(feat.params); // intialize ML
     feat.p_pop = make_shared<Population>(feat.params.pop_size);
     
-
 	feat.params.set_terminals(X.rows()); 
         
     // initial model on raw input
-    feat.initial_model(X,y);
+    feat.initial_model(X,y,X_v,y_v);
+
                   
     // initialize population 
     feat.p_pop->init(feat.best_ind, feat.params);
@@ -845,26 +854,27 @@ TEST(Variation, CrossoverTests)
 TEST(Population, PopulationTests)
 {
 	Feat feat(100);
-    MatrixXd X(7,2); 
+    MatrixXd X(4,2); 
+    MatrixXd X_v(3,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
          0.84147098,  0.54030231,
-         0.99749499,  0.0707372,
-         0.90929743, -0.41614684,
+         0.99749499,  0.0707372;
+    X_v <<  0.90929743, -0.41614684,
          0.59847214, -0.80114362,
          0.14112001,-0.9899925;
 
     X.transposeInPlace();
-    
-    VectorXd y(7); 
+    X_v.transposeInPlace();
+
+    VectorXd y(4); 
+    VectorXd y_v(3); 
     // y = 2*x1 + 3.x2
-    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
-             -1.20648656, -2.68773747;
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158;
+    y_v << 0.57015434, -1.20648656, -2.68773747;
 
-	feat.timer.Reset();
-	
-	feat.params.check_ml();       
-
+    feat.params.init();       
+  
     feat.set_dtypes(find_dtypes(X));
             
     feat.p_ml = make_shared<ML>(feat.params); // intialize ML
@@ -873,7 +883,8 @@ TEST(Population, PopulationTests)
 	feat.params.set_terminals(X.rows()); 
         
     // initial model on raw input
-    feat.initial_model(X,y);
+    feat.initial_model(X,y,X_v,y_v);
+
                   
     // initialize population 
     feat.p_pop->init(feat.best_ind, feat.params);
@@ -916,7 +927,8 @@ TEST(Parameters, ParamsTests)
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
                       0.75,								//train/test split
-                      0.5);                             // feedback 
+                      0.5,                             // feedback 
+                      "mse");                           //scoring function
 					  
 	params.set_max_dim(12);
 	ASSERT_EQ(params.max_dim, 12);
@@ -1072,7 +1084,8 @@ TEST(Evaluation, assign_fit)
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
                       0.75,								//train/test split
-                      0.5);                             // feedback 
+                      0.5,                             // feedback 
+                      "mse");                           //scoring function
                       
 	Individual ind = Individual();
 	ind.loc = 0;
@@ -1101,7 +1114,7 @@ TEST(Evaluation, assign_fit)
          0.0,
          0.0;
     
-    Evaluation eval = Evaluation();
+    Evaluation eval = Evaluation("mse");
     
     res << 0.0,
            1.0,
@@ -1167,7 +1180,8 @@ TEST(Evaluation, fitness)
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
                       0.75,								//train/test split
-                      0.5);                             // feedback 
+                      0.5,                             // feedback 
+                      "mse");                           // scoring function
                         
 	MatrixXd X(10,1); 
     X << 0.0,  
@@ -1204,7 +1218,7 @@ TEST(Evaluation, fitness)
     MatrixXd F(10,2);   // output matrix
 
     // get fitness
-    Evaluation eval; 
+    Evaluation eval("mse"); 
     eval.fitness(pop, X, y, F, params);
     // check results
     ASSERT_TRUE(pop.individuals[0].fitness < NEAR_ZERO);
@@ -1229,7 +1243,8 @@ TEST(Evaluation, out_ml)
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
                       0.75,								//train/test split
-                      0.5);                             // feedback                 
+                      0.5,                             // feedback                 
+                      "mse");                           // scoring function
 	MatrixXd X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
@@ -1247,11 +1262,11 @@ TEST(Evaluation, out_ml)
              -1.20648656, -2.68773747;
     
     params.dtypes = find_dtypes(X);
-    shared_ptr<Evaluation> p_eval = make_shared<Evaluation>();
+    shared_ptr<Evaluation> p_eval = make_shared<Evaluation>(params.scorer);
     shared_ptr<ML> p_ml = make_shared<ML>(params);
              
     bool pass = true;
-    VectorXd yhat = p_ml->out(X, y, params, pass);
+    VectorXd yhat = p_ml->fit(X, y, params, pass);
     
     double mean = ((yhat - y).array().pow(2)).mean();
     
@@ -1288,7 +1303,7 @@ TEST(Selection, SelectionOperator)
     
     feat.timer.Reset();
 	
-	feat.params.check_ml();       
+	feat.params.init();       
 
     feat.set_dtypes(find_dtypes(X));
             
@@ -1298,7 +1313,7 @@ TEST(Selection, SelectionOperator)
 	feat.params.set_terminals(X.rows()); 
         
     // initial model on raw input
-    feat.initial_model(X,y);
+    feat.initial_model(X_t,y_t,X_v, y_v);
                   
     // initialize population 
     feat.p_pop->init(feat.best_ind, feat.params);
