@@ -41,11 +41,12 @@ namespace FT{
         unsigned int n_classes;                     ///< number of classes for classification 
         float cross_rate;                           ///< cross rate for variation
         vector<int> classes;                        ///< class labels
+        string scorer;                              ///< loss function
 
         Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
                    char ot, int verbosity, string fs, float cr, unsigned int max_depth, 
                    unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
-                   double fb, vector<char> datatypes = vector<char>()):    
+                   double fb, string sc):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
@@ -57,7 +58,6 @@ namespace FT{
             erc(constant),
             shuffle(sh),
             split(sp),
-            dtypes(datatypes),
             otype(ot),
             feedback(fb)
         {
@@ -67,18 +67,25 @@ namespace FT{
             updateSize();     
             set_otypes();
             n_classes = 2;
+            set_scorer(sc);
         }
         
         ~Parameters(){}
         
-        /// make sure ml choice is valid for problem type.
-        void check_ml()
+        /*! checks initial parameter settings before training.
+         *  make sure ml choice is valid for problem type.
+         *  make sure scorer is set. 
+         *  for classification, check clases and find number.
+         */
+        void init()
         {
             if (!ml.compare("LinearRidgeRegression") && classification)
             {
                 msg("Setting ML type to LR",2);
                 ml = "LR";            
             }
+
+
         }
         /// print message with verbosity control. 
         string msg(string m, int v, string sep="\n") const
@@ -92,7 +99,24 @@ namespace FT{
             }
             return msg;
         }
-        
+       
+        /// sets scorer type
+        void set_scorer(string sc)
+        {
+            if (sc.empty())
+            {
+                if (classification && n_classes == 2)
+                    /* scorer = "log"; */
+                    scorer = "bal_accuracy";
+                else if (classification)
+                    scorer = "bal_accuracy";
+                else
+                    scorer = "mse";
+            }
+            else
+                scorer = sc;
+            msg("scorer set to " + scorer,2);
+        }
         /// sets weights for terminals. 
         void set_term_weights(const vector<double>& w)
         {           
@@ -393,6 +417,8 @@ namespace FT{
         
         n_classes = classes.size();
 
+        set_scorer(scorer); // in case classification has changed, set scorer
+       
         std::cout << "number of classes: " << n_classes << "\n";
     }
 }

@@ -16,7 +16,7 @@ cdef extern from "feat.h" namespace "FT":
                char otype, string functions, 
                unsigned int max_depth, unsigned int max_dim, int random_state, 
                bool erc, string obj,bool shuffle, 
-               double split, double fb) except + 
+               double split, double fb, string scorer) except + 
         void fit(double * X, int rowsX, int colsX, double*  y , int lenY)
         VectorXd predict(double * X, int rowsX,int colsX)
         MatrixXd transform(double * X, int rowsX,int colsX)
@@ -30,14 +30,15 @@ cdef class PyFeat:
     def __cinit__(self,int pop_size, int gens, string ml, bool classification, int verbosity, 
                   int max_stall,string sel, string surv, float cross_rate,string otype, 
                   string functions, unsigned int max_depth, unsigned int max_dim, 
-                  int random_state, bool erc , string obj,bool shuffle, double split, double fb):
+                  int random_state, bool erc , string obj,bool shuffle, double split, double fb,
+                  string scorer):
         cdef char otype_char
         if ( len(otype) == 0):
             otype_char = 'a' #Defaut Value
         else:
             otype_char = ord(otype)
         self.ft = Feat(pop_size,gens,ml,classification,verbosity,max_stall,sel,surv,cross_rate,
-        otype_char, functions, max_depth, max_dim, random_state, erc, obj, shuffle, split, fb)
+        otype_char, functions, max_depth, max_dim, random_state, erc, obj, shuffle, split, fb, scorer)
 
     def fit(self,np.ndarray X,np.ndarray y):
         cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
