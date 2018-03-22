@@ -188,6 +188,7 @@ int main(int argc, char** argv){
     cout << "generating training prediction...\n";
 
     double score_t = feat.score(X_tcopy,y_t);
+    cout.precision(5);
     cout << "train score: " << score_t << "\n";
     
     cout << "generating test prediction...\n";

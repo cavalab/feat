@@ -7,6 +7,7 @@ license: GNU/GPL v3
                                                                                                                                       
 // internal includes
 #include "ml.h"
+#include "metrics.h"
 
 using namespace shogun;
 using Eigen::Map;
@@ -19,15 +20,32 @@ namespace FT{
      * @class Evaluation
      * @brief evaluation mixin class for Feat
      */
+    typedef double (*funcPointer)(const VectorXd&, const VectorXd&, VectorXd&);
+    
     class Evaluation 
     {
         public:
         
-            Evaluation(){}
+            /* VectorXd (* loss_fn)(const VectorXd&, const VectorXd&);  // pointer to loss function */
+            double (* score)(const VectorXd&, const VectorXd&, VectorXd& );    // pointer to scoring function
+            std::map<string, funcPointer> score_hash;
+
+            Evaluation(string scorer)
+            {
+                /* std::cout << "Evaluation: scorer: " + scorer + "\n"; */
+                               
+                score_hash["mse"] = & metrics::mse;
+                score_hash["accuracy"] = & metrics::zero_one_loss;
+                score_hash["bal_accuracy"] = & metrics::bal_zero_one_loss;
+                score_hash["log"] =  & metrics::bal_log_loss; 
+            
+                score = score_hash[scorer];
+            }
 
             ~Evaluation(){}
                 
-            
+            void set_score(string scorer){ score = score_hash[scorer]; }
+
             /// fitness of population.
             void fitness(Population& pop, const MatrixXd& X, VectorXd& y, MatrixXd& F, 
                          const Parameters& params, bool offspring);
@@ -39,30 +57,6 @@ namespace FT{
             /// assign fitness to an individual and to F.  
             void assign_fit(Individual& ind, MatrixXd& F, const VectorXd& yhat, const VectorXd& y,
                             const Parameters& params);       
-            
-            /* Scoring functions */
-
-            /// 1 - accuracy 
-            VectorXd accuracy(const VectorXd& y, const VectorXd& yhat, bool reverse=true)
-            {
-                if (reverse)
-                    return (yhat.cast<int>().array() != y.cast<int>().array()).cast<double>();
-                return (yhat.cast<int>().array() == y.cast<int>().array()).cast<double>();
-            }
-            
-            /// squared error
-            VectorXd se(const VectorXd& y, const VectorXd& yhat)
-            { 
-                return (yhat - y).array().pow(2); 
-            };
-
-            /// 1 - balanced accuracy score
-            double bal_accuracy(const VectorXd& y, const VectorXd& yhat, 
-                                vector<int> c=vector<int>(), bool reverse=true);
-            
-            /// log loss
-            VectorXd log_loss(const VectorXd& y, const VectorXd& yhat, vector<int> c=vector<int>());
-            double bal_loss(const VectorXd& y, const VectorXd& loss, vector<int> c=vector<int>());
     };
     
     /////////////////////////////////////////////////////////////////////////////////// Definitions  
@@ -138,22 +132,11 @@ namespace FT{
          *       modifies F and ind.fitness
         */ 
         assert(F.cols()>ind.loc);
-        if (params.classification)  // use classification accuracy
-        {
-            /* F.col(ind.loc) = accuracy(y,yhat); */ 
-            F.col(ind.loc) = log_loss(y,yhat); 
-            
-            /* ind.fitness = bal_accuracy(y,yhat,params.classes); */
-            ind.fitness = bal_loss(y,F.col(ind.loc),params.classes);
-            
-        }
-        else                        // use mean squared error
-        {
-            F.col(ind.loc) = se(y, yhat);
-            ind.fitness = F.col(ind.loc).mean();
-        }
+        VectorXd loss;
+        ind.fitness = score(y, yhat, loss);
+        F.col(ind.loc) = loss;  
          
-        params.msg("ind " + std::to_string(ind.loc) + " fitnes: " + std::to_string(ind.fitness),2);
+        params.msg("ind " + std::to_string(ind.loc) + " fitness: " + std::to_string(ind.fitness),2);
     }
 
     // validation fitness of population
@@ -203,102 +186,17 @@ namespace FT{
             MatrixXd Phi_v = pop.individuals.at(i).out(X_v, params, y_v);            
 
             // calculate ML model from Phi
-            params.msg("ML training on " + pop.individuals[i].get_eqn(), 2);
+            params.msg("ML predicting on " + pop.individuals[i].get_eqn(), 2);
             VectorXd yhat_v = ml->predict(Phi_v);
 
             // assign F and aggregate fitness
-            params.msg("Assigning fitness to " + pop.individuals[i].get_eqn(), 2);
+            params.msg("Assigning val fitness to " + pop.individuals[i].get_eqn(), 2);
             
             assign_fit(pop.individuals[i],F,yhat_v,y_v,params);
                         
         }
     }
-    double Evaluation::bal_accuracy(const VectorXd& y, const VectorXd& yhat, vector<int> c,
-                                    bool reverse)
-    {
-        if (c.empty())  // determine unique class values
-        {
-            vector<double> uc = unique(y);
-            for (const auto& i : uc)
-                c.push_back(int(i));
-        }
-         
-        // sensitivity (TP) and specificity (TN)
-        vector<double> TP(c.size(),0.0), TN(c.size(), 0.0), P(c.size(),0.0), N(c.size(),0.0);
-        ArrayXd class_accuracies(c.size());
-       
-        // get class counts
-        
-        for (unsigned i=0; i< c.size(); ++i)
-        {
-            P.at(i) = (y.array().cast<int>() == c[i]).count();  // total positives for this class
-            N.at(i) = (y.array().cast<int>() != c[i]).count();  // total negatives for this class
-        }
-        
-
-        for (unsigned i = 0; i < y.rows(); ++i)
-        {
-            if (yhat(i) == y(i))                    // true positive
-                ++TP.at(y(i) == -1 ? 0 : y(i));     // if-then ? accounts for -1 class encoding
-
-            for (unsigned j = 0; j < c.size(); ++j)
-                if ( y(i) !=c.at(j) && yhat(i) != c.at(j) )    // true negative
-                    ++TN.at(j);    
-            
-        }
-
-        // class-wise accuracy = 1/2 ( true positive rate + true negative rate)
-        for (unsigned i=0; i< c.size(); ++i){
-            class_accuracies(i) = (TP[i]/P[i] + TN[i]/N[i])/2; 
-            //std::cout << "TP(" << i << "): " << TP[i] << ", P[" << i << "]: " << P[i] << "\n";
-            //std::cout << "TN(" << i << "): " << TN[i] << ", N[" << i << "]: " << N[i] << "\n";
-            //std::cout << "class accuracy(" << i << "): " << class_accuracies(i) << "\n";
-        }
-        if (reverse)
-            return 1.0 - class_accuracies.mean();
-        else
-            return class_accuracies.mean();
-    }
-
-    VectorXd Evaluation::log_loss(const VectorXd& y, const VectorXd& yhat, vector<int> c)
-
-    {
-        double eps = pow(10,-10);
-
-        VectorXd loss(y.rows());  
-        for (unsigned i = 0; i < y.rows(); ++i)
-        {
-            if (yhat(i) < eps || 1 - yhat(i) < eps)
-                // clip probabilities since log loss is undefined for yhat=0 or yhat=1
-                loss(i) = -(y(i)*log(eps) + (1-y(i))*log(1-eps));
-            else
-                loss(i) = -(y(i)*log(yhat(i)) + (1-y(i))*log(1-yhat(i)));
-        }   
-        return loss;
-    }
-
-    double Evaluation::bal_loss(const VectorXd& y, const VectorXd& loss, 
-                                vector<int> c)
-    {
-       
-        if (c.empty())  // determine unique class values
-        {
-            vector<double> uc = unique(y);
-            for (const auto& i : uc)
-                c.push_back(int(i));
-        }
-        vector<double> class_loss(c.size(),0);
-
-        for (unsigned i = 0; i < c.size(); ++i)
-        {
-            int n = (y.cast<int>().array() == c[i]).count();
-            class_loss[i] = (y.cast<int>().array() == c[i]).select(loss.array(),0).sum()/n;
-        
-        }
-        // return balanced class losses 
-        Map<ArrayXd> cl(class_loss.data(),class_loss.size());        
-        return cl.mean();
-    }
+    
     /* double Evaluation::multi_log_loss(const */ 
     /*         { */
     /*         if (c.empty())  // determine unique class values */
