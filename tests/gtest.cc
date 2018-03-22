@@ -1133,12 +1133,19 @@ TEST(Evaluation, assign_fit)
            81.0;
            
     eval.assign_fit(ind, F, yhat, y, params);
-    
+    if (F.col(ind.loc) != res)
+    {
+        std::cout << "F.col(ind.loc):" << F.col(ind.loc).transpose() << "\n";
+        std::cout << "res:" << res.transpose() << "\n";
+    }
+
     ASSERT_TRUE(F.col(ind.loc) == res);
     ASSERT_TRUE(ind.fitness == 28.5);
     
     params.classification = true;
-    
+   
+    Evaluation evalc("bal_accuracy");
+
     y << 0.0,
          1.0,
          2.0,
@@ -1161,8 +1168,13 @@ TEST(Evaluation, assign_fit)
            1.0,
            1.0;
            
-    eval.assign_fit(ind, F, yhat, y, params);
+    evalc.assign_fit(ind, F, yhat, y, params);
     
+    if (F.col(ind.loc) != res)
+    {
+        std::cout << "F.col(ind.loc):" << F.col(ind.loc).transpose() << "\n";
+        std::cout << "res:" << res.transpose() << "\n";
+    }
     ASSERT_TRUE(F.col(ind.loc) == res);
     ASSERT_EQ(((int)(ind.fitness*1000000)), 347222);
     
