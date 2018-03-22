@@ -23,7 +23,8 @@ class Feat(BaseEstimator):
                 sel="lexicase",  surv="pareto",  cross_rate=0.5,
                 otype='a',  functions="+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite", 
                 max_depth=3,   max_dim=10,  random_state=0, 
-                erc = False,  obj="fitness,complexity", shuffle=False,  split=0.75,  fb=0.5):
+                erc = False,  obj="fitness,complexity", shuffle=False,  split=0.75,  fb=0.5,
+                scorer=''):
         self.pop_size = pop_size
         self.gens = gens
         self.ml = ml.encode()
@@ -43,7 +44,8 @@ class Feat(BaseEstimator):
         self.shuffle = shuffle
         self.split = split
         self.fb = fb
-   
+        self.scorer = scorer.encode()
+        
         self._pyfeat = pyfeat.PyFeat( self.pop_size,  self.gens,  self.ml, 
                 self.classification,  self.verbosity,  self.max_stall,
                 self.sel,  self.surv,  self.cross_rate,
@@ -53,7 +55,8 @@ class Feat(BaseEstimator):
                 self.obj, 
                 self.shuffle,  
                 self.split,  
-                self.fb)
+                self.fb,
+                self.scorer)
 
     def fit(self,X,y):
         self._pyfeat.fit(X,y)

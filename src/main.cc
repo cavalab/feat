@@ -179,45 +179,49 @@ int main(int argc, char** argv){
     VectorXd y_t(int(y.size()*split)), y_v(int(y.size()*(1-split)));
     FT::train_test_split(X,y,X_t,X_v,y_t,y_v,feat.get_shuffle());      
     
-         
+    MatrixXd X_tcopy = X_t;     
 
     cout << "fitting model...\n";
     
     feat.fit(X_t,y_t);
 
-    cout << "generating prediction...\n";
+    cout << "generating training prediction...\n";
 
-    double score = feat.score(X_v,y_v);
+    double score_t = feat.score(X_tcopy,y_t);
+    cout.precision(5);
+    cout << "train score: " << score_t << "\n";
     
+    cout << "generating test prediction...\n";
+    double score = feat.score(X_v,y_v);
     cout << "test score: " << score << "\n";
     // write validation score to file
-    std::ofstream out_score; 
-    out_score.open("score_" + feat.get_name() + ".txt");
-    out_score << score ;
-    out_score.close();
-    // write pareto archive to file
-    std::ofstream out_arc; 
-    out_score.open("arc_" + feat.get_name() + ".txt");
-    out_score << feat.get_eqns() ;
-    out_score.close();
+    /* std::ofstream out_score; */ 
+    /* out_score.open("score_" + feat.get_name() + ".txt"); */
+    /* out_score << score ; */
+    /* out_score.close(); */
+    /* // write pareto archive to file */
+    /* std::ofstream out_arc; */ 
+    /* out_score.open("arc_" + feat.get_name() + ".txt"); */
+    /* out_score << feat.get_eqns() ; */
+    /* out_score.close(); */
 
-    // write transformation matrix to file
-    std::ofstream out_t;
-    out_t.open("transformation_"+ feat.get_name() + ".txt");
+    /* // write transformation matrix to file */
+    /* std::ofstream out_t; */
+    /* out_t.open("transformation_"+ feat.get_name() + ".txt"); */
     
-    MatrixXd Phi = feat.transform(X).transpose();
-    for (unsigned i  = 0; i < Phi.rows(); ++i)
-    {
-        for (unsigned j = 0; j < Phi.cols(); ++j)
-        {
-            out_t << Phi(i,j); 
-            if (j < Phi.cols()-1)
-                out_t << ",";
-        }
-        if (i < Phi.rows()-1)
-            out_t << "\n";
-    }
-    out_t.close();
+    /* MatrixXd Phi = feat.transform(X).transpose(); */
+    /* for (unsigned i  = 0; i < Phi.rows(); ++i) */
+    /* { */
+    /*     for (unsigned j = 0; j < Phi.cols(); ++j) */
+    /*     { */
+    /*         out_t << Phi(i,j); */ 
+    /*         if (j < Phi.cols()-1) */
+    /*             out_t << ","; */
+    /*     } */
+    /*     if (i < Phi.rows()-1) */
+    /*         out_t << "\n"; */
+    /* } */
+    /* out_t.close(); */
     cout << "done!\n";
 	
 	
