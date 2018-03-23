@@ -390,25 +390,51 @@ namespace FT{
         return w_new;
     }
     
-    /// normalize matrix.
-    void normalize(MatrixXd& X, const vector<char>& dtypes)
-    {   
-        // normalize features
-        for (unsigned int i=0; i<X.rows(); ++i){
-            if (std::isinf(X.row(i).norm()))
+    struct Normalizer
+    {
+        vector<double> scale;
+        vector<double> offset;
+        vector<char> dtypes;
+
+        /// fit the scale and offset of data. 
+        void fit(MatrixXd& X, const vector<char>& dt)
+        {
+            scale.clear();
+            offset.clear();
+            dtypes = dt; 
+            for (unsigned int i=0; i<X.rows(); ++i)
             {
-                X.row(i) = VectorXd::Zero(X.row(i).size());
-                continue;
+                VectorXd tmp = X.row(i).array()-X.row(i).mean();
+                scale.push_back(tmp.norm());
+                offset.push_back(X.row(i).mean());
             }
-            if (dtypes.at(i)!='b')   // skip binary rows
+              
+        }
+        /// normalize matrix.
+        void normalize(MatrixXd& X)
+        {  
+            // normalize features
+            for (unsigned int i=0; i<X.rows(); ++i)
             {
-                X.row(i) = X.row(i).array() - X.row(i).mean();
-                if (X.row(i).norm() > NEAR_ZERO)
-                    X.row(i).normalize();
+                if (std::isinf(scale.at(i)))
+                {
+                    X.row(i) = VectorXd::Zero(X.row(i).size());
+                    continue;
+                }
+                if (dtypes.at(i)!='b')   // skip binary rows
+                {
+                    X.row(i) = X.row(i).array() - offset.at(i);
+                    if (scale.at(i) > NEAR_ZERO)
+                        X.row(i) = X.row(i).array()/scale.at(i);
+                }
             }
         }
-    }
-
+        void fit_normalize(MatrixXd& X, const vector<char>& dtypes)
+        {
+            fit(X, dtypes);
+            normalize(X);
+        }
+    };
     /// returns true for elements of x that are infinite
     ArrayXb isinf(const ArrayXd& x)
     {
