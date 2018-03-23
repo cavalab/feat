@@ -196,7 +196,7 @@ int main(int argc, char** argv){
     
     MatrixXd X_tcopy = X_t;     
     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_tcopy = Z_t;
-
+  
     cout << "fitting model...\n";
     
     feat.fit(X_t, y_t, Z_t);
@@ -204,6 +204,7 @@ int main(int argc, char** argv){
     cout << "generating training prediction...\n";
 
     double score_t = feat.score(X_tcopy,y_t, Z_tcopy);
+
     cout.precision(5);
     cout << "train score: " << score_t << "\n";
     

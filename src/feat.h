@@ -498,6 +498,7 @@ namespace FT{
         // evaluate population on validation set
         if (params.split < 1.0)
         {
+            F_v.resize(X_v.cols(),int(2*params.pop_size)); 
             p_eval->val_fitness(*p_pop, X_t, Z_t, y_t, F_v, X_v, Z_v, y_v, params);
             update_best(true);                  // get the best validation model
         }
@@ -505,6 +506,7 @@ namespace FT{
         params.msg("best validation representation: " + best_ind.get_eqn(),1);
         params.msg("validation score: " + std::to_string(best_score_v), 1);
         params.msg("fitting final model to all training data...",2);
+
         final_model(X,y, Z);   // fit final model to best features
 
         
@@ -528,9 +530,10 @@ namespace FT{
     {
         // fits final model to best tranformation found.
         bool pass = true;
-        
+
         /* MatrixXd Phi = transform(X); */
         MatrixXd Phi = best_ind.out(X, Z,params);        
+
         VectorXd yhat = p_ml->fit(Phi,y,params,pass,best_ind.dtypes);
         VectorXd tmp;
         double score = p_eval->score(y,yhat,tmp);
@@ -587,6 +590,7 @@ namespace FT{
         }
 
         MatrixXd Phi = ind->out(X, Z,params);
+
         return Phi;
     }
 
