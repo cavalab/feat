@@ -29,8 +29,13 @@ namespace FT{
                 
             
             /// fitness of population.
-            void fitness(Population& pop, const MatrixXd& X, const vector<vector<ArrayXd> > &Z, VectorXd& y, MatrixXd& F, 
-                         const Parameters& params, bool offspring);
+            void fitness(Population& pop,
+                         const MatrixXd& X, 
+                         const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+                         VectorXd& y, 
+                         MatrixXd& F, 
+                         const Parameters& params, 
+                         bool offspring);
           
             /// assign fitness to an individual and to F.  
             void assign_fit(Individual& ind, MatrixXd& F, const VectorXd& yhat, const VectorXd& y,
@@ -60,8 +65,13 @@ namespace FT{
     /////////////////////////////////////////////////////////////////////////////////// Definitions  
     
     // fitness of population
-    void Evaluation::fitness(Population& pop, const MatrixXd& X, const vector<vector<ArrayXd> > &Z, VectorXd& y, MatrixXd& F, 
-                 const Parameters& params, bool offspring=false)
+    void Evaluation::fitness(Population& pop,
+                             const MatrixXd& X,
+                             const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+                             VectorXd& y, 
+                             MatrixXd& F, 
+                             const Parameters& params, 
+                             bool offspring=false)
     {
     	/*!
          * Input:

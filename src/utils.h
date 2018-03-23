@@ -107,9 +107,11 @@ namespace FT{
     /*!
      * load longitudinal csv file into matrix. 
      */
-    void load_longitudinal(const std::string & path, vector<vector<ArrayXd>> &Z, char sep=',')
+    void load_longitudinal(const std::string & path,
+                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
+                           char sep=',')
     {
-        std::map<int, std::map<int, std::vector<double> > > dataMap;
+        std::map<string, std::map<int, std::pair<std::vector<double>, std::vector<double> > > > dataMap;
         std::ifstream indata;
         indata.open(path);
         if (!indata.good())
@@ -117,42 +119,57 @@ namespace FT{
             std::cerr << "Invalid input file " + path + "\n"; 
             exit(1);
         }
-        std::string line;
+        std::string line, firstKey = "";
         
         while (std::getline(indata, line)) 
         {
             std::stringstream lineStream(line);
-            std::string sampleNo, value, type;
+            std::string sampleNo, value, time, type;
             
             std::getline(lineStream, sampleNo, sep);
             std::getline(lineStream, value, sep);
+            std::getline(lineStream, time, sep);
             std::getline(lineStream, type, sep);
             
-            dataMap[std::stoi(type)][std::stoi(sampleNo)].push_back(std::stod(value));
-        }
-        
-        for ( const auto &myPair: dataMap ) {
-            std::cout << myPair.first << '\n';
+            if(!firstKey.compare(""))
+                firstKey = type;
+            
+            dataMap[type][std::stoi(sampleNo)].first.push_back(std::stod(value));
+            dataMap[type][std::stoi(sampleNo)].second.push_back(std::stod(time));
         }
         
         std::cout<<dataMap.size()<<'\n';
         
         int numTypes = dataMap.size();
-        int numSamples = dataMap[0].size();
+        int numSamples = dataMap[firstKey].size();
         
-        Z.resize(numTypes);
+        int x;
         
-        int x, y;
+        for ( const auto &val: dataMap ) {
+            std::cout << val.first << '\n'; 
+            Z[val.first].first.resize(numSamples);
+            Z[val.first].second.resize(numSamples);
+        }
         
-        for(x = 0; x < numTypes; x++)
-            Z[x].resize(numSamples); 
+        for ( const auto &val: dataMap )
+        {
+            for(x = 0; x < numSamples; x++)
+            {
+                ArrayXd arr1 = Map<ArrayXd>(dataMap[val.first][x].first.data(), dataMap[val.first][x].first.size());
+                ArrayXd arr2 = Map<ArrayXd>(dataMap[val.first][x].second.data(), dataMap[val.first][x].second.size());
+                Z[val.first].first.push_back(arr1);
+                Z[val.first].second.push_back(arr2);
+                
+            }
+        }
             
-        for(x = 0 ; x < numTypes; x++)
+        /*for(x = 0 ; x < numTypes; x++)
             for(y = 0; y < numSamples; y++)
             {
                 ArrayXd arr = Map<ArrayXd>(dataMap[x][y].data(), dataMap[x][y].size());
                 Z[x].push_back(arr);
             }
+        */
     }
     
     /// check if element is in vector.
@@ -219,6 +236,25 @@ namespace FT{
         
         return fourthMoment/pow(variance, 2);
     }
+    
+    double covariance(const ArrayXd& x, const ArrayXd& y)
+    {
+        double meanX = x.mean();
+        double meanY = y.mean();
+        //double count = x.size();
+        
+        ArrayXd tmp1 = meanX*ArrayXd::Ones(x.size());
+        ArrayXd tmp2 = meanY*ArrayXd::Ones(y.size());
+        
+        return ((x - tmp1)*(y - tmp2)).mean();
+        
+    }
+    
+    double slope(const ArrayXd& x, const ArrayXd& y)
+    {
+        return covariance(x, y)/variance(x);
+    }
+    
 
     /// median absolute deviation
     double mad(const ArrayXd& x) 
@@ -308,22 +344,32 @@ namespace FT{
     
     }
     
-    void split_longitudinal(vector<vector<ArrayXd> > &Z,
-                            vector<vector<ArrayXd> > Z_t,
-                            vector<vector<ArrayXd> > Z_v,
+    void split_longitudinal(std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
+                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_t,
+                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_v,
                             double split)
     {
-        int testSize = int(Z[0].size()*split);
-        int validateSize = int(Z[0].size()*(1-split));
-        
-        for(int x = 0; x < Z.size(); x++)
+    
+        int size;
+        for ( const auto &val: Z )
         {
-            vector<ArrayXd> _Z_t, _Z_v;
-            _Z_t.assign(Z[x].begin(), Z[x].begin()+testSize);
-            _Z_v.assign(Z[x].begin()+testSize, Z[x].begin()+testSize+validateSize);
+            size = Z[val.first].first.size();
+            break;
+        }
+        
+        int testSize = int(size*split);
+        int validateSize = int(size*(1-split));
+        
+        for ( const auto &val: Z )
+        {
+            vector<ArrayXd> _Z_t_v, _Z_t_t, _Z_v_v, _Z_v_t;
+            _Z_t_v.assign(Z[val.first].first.begin(), Z[val.first].first.begin()+testSize);
+            _Z_t_t.assign(Z[val.first].second.begin(), Z[val.first].second.begin()+testSize);
+            _Z_v_v.assign(Z[val.first].first.begin()+testSize, Z[val.first].first.begin()+testSize+validateSize);
+            _Z_v_t.assign(Z[val.first].second.begin()+testSize, Z[val.first].second.begin()+testSize+validateSize);
             
-            Z_t.push_back(_Z_t);
-            Z_v.push_back(_Z_v);
+            Z_t[val.first] = make_pair(_Z_t_v, _Z_t_t);
+            Z_v[val.first] = make_pair(_Z_v_v, _Z_v_t);
         }
     }
 

@@ -2,24 +2,24 @@
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
-#ifndef NODE_MEAN
-#define NODE_MEAN
+#ifndef NODE_SLOPE
+#define NODE_SLOPE
 
 #include "node.h"
 
 namespace FT{
-	class NodeMean : public Node
+	class NodeSlope : public Node
     {
     	public:
     	
-    		NodeMean()
+    		NodeSlope()
             {
-                name = "mean";
+                name = "slope";
     			otype = 'f';
     			arity['f'] = 0;
     			arity['b'] = 0;
     			arity['l'] = 1;
-    			complexity = 1;
+    			complexity = 4;
     		}
     		
             /// Evaluates the node and updates the stack states. 
@@ -31,8 +31,8 @@ namespace FT{
                 
                 int x;
                 
-                for(x = 0; x < stack.z.top().first.size(); x++)
-                    tmp(x) = stack.z.top().first[x].mean();
+                for(x = 0; x < stack.z.top().first.size(); x++)                    
+                    tmp(x) = slope(stack.z.top().first[x], stack.z.top().second[x]);
                     
                 stack.z.pop();
 
@@ -43,7 +43,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-                stack.fs.push("mean(" + stack.zs.pop() + ")");
+                stack.fs.push("slope(" + stack.zs.pop() + ")");
             }
     };
 }	

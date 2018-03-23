@@ -136,12 +136,10 @@ TEST(Feat, predict)
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
-             
-    vector<vector<ArrayXd> > z;
     
     feat.set_verbosity(0);
     
-    feat.fit(X, y, z);
+    feat.fit(X, y);
     
     X << 0,1,  
          0.4,0.8,  
@@ -151,7 +149,7 @@ TEST(Feat, predict)
          0.5, -0.8,
          0.1,-0.9;
     
-    ASSERT_EQ(feat.predict(X, z).size(), 7);             //TODO had to remove !bzero ASSERT in set_termincal weights
+    ASSERT_EQ(feat.predict(X).size(), 7);             //TODO had to remove !bzero ASSERT in set_termincal weights
 }
 
 TEST(Feat, transform)
@@ -173,12 +171,10 @@ TEST(Feat, transform)
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
-             
-    vector<vector<ArrayXd> > z;
     
     feat.set_verbosity(0);
     
-    feat.fit(X, y, z);
+    feat.fit(X, y);
     
     X << 0,1,  
          0.4,0.8,  
@@ -188,7 +184,7 @@ TEST(Feat, transform)
          0.5, -0.8,
          0.1,-0.9;
         
-    MatrixXd res = feat.transform(X, z);
+    MatrixXd res = feat.transform(X);
     ASSERT_EQ(res.cols(), 7);
     ASSERT_TRUE(res.rows() <= feat.params.max_dim);
 }
@@ -212,12 +208,10 @@ TEST(Feat, fit_predict)
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
-             
-    vector<vector<ArrayXd> > z;
     
     feat.set_verbosity(0);
          
-    ASSERT_EQ(feat.fit_predict(X, y, z).size(), 7);
+    ASSERT_EQ(feat.fit_predict(X, y).size(), 7);
 }
 
 TEST(Feat, fit_transform)
@@ -239,12 +233,10 @@ TEST(Feat, fit_transform)
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
-             
-    vector<vector<ArrayXd> > z;
     
     feat.set_verbosity(0);
     
-    MatrixXd res = feat.fit_transform(X, y, z);
+    MatrixXd res = feat.fit_transform(X, y);
     ASSERT_EQ(res.cols(), 7);
     ASSERT_TRUE(res.rows() <= feat.params.max_dim);
 }
@@ -296,7 +288,7 @@ TEST(NodeTest, Evaluate)
 	vector<ArrayXd> output;
 	ArrayXd x;
 	ArrayXb z;
-	vector<vector<ArrayXd> > z1;
+	std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z1;
 	
 	Stacks stack;
 	
@@ -705,7 +697,7 @@ bool isValidProgram(vector<std::shared_ptr<Node>>& program, unsigned num_feature
     //checks whether program fulfills all its arities.
     MatrixXd X = MatrixXd::Zero(num_features,2); 
     VectorXd y = VectorXd::Zero(2);
-    vector<vector<ArrayXd> > z; 
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z; 
     
     Stacks stack;
    
@@ -737,7 +729,7 @@ TEST(Variation, MutationTests)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
              
-    vector<vector<ArrayXd> > z; 
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z; 
 
     feat.params.check_ml();       
 
@@ -805,7 +797,7 @@ TEST(Variation, CrossoverTests)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
              
-    vector<vector<ArrayXd> > z; 
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z; 
              
     feat.params.check_ml();       
 
@@ -1202,7 +1194,7 @@ TEST(Evaluation, fitness)
     y << 3.0,  3.30384889,  0.57015434, -2.68773747, -3.47453585,
              -1.06686199,  2.32167986,  3.57567996,  1.54221639, -1.90915382;
              
-    vector<vector<ArrayXd> > z; 
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z; 
 
     // make population 
     Population pop(2);
@@ -1295,7 +1287,7 @@ TEST(Selection, SelectionOperator)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
              
-    vector<vector<ArrayXd> > z; 
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z;
 
 	feat.timer.Reset();
 	

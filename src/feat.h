@@ -256,20 +256,24 @@ namespace FT{
             /// train a model.             
             void fit(MatrixXd& X,
                      VectorXd& y,
-                     vector<vector<ArrayXd> > Z = vector<vector<ArrayXd> >());
+                     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
+                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());
                      
             /// train a model.             
             void fit(double * X,int rowsX,int colsX, double * Y,int lenY);
             
             /// predict on unseen data.             
-            VectorXd predict(MatrixXd& X, vector<vector<ArrayXd> > Z = vector<vector<ArrayXd> >());  
+            VectorXd predict(MatrixXd& X,
+                             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
+                                    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());  
             
             /// predict on unseen data.             
             VectorXd predict(double * X, int rowsX, int colsX);      
             
             /// transform an input matrix using a program.                          
             MatrixXd transform(MatrixXd& X,
-                               vector<vector<ArrayXd> > Z = vector<vector<ArrayXd> >(),
+                               std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
+                                    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >(),
                                Individual *ind = 0);
             
 	        MatrixXd transform(double * X,  int rows_x, int cols_x);
@@ -277,7 +281,8 @@ namespace FT{
             /// convenience function calls fit then predict.            
             VectorXd fit_predict(MatrixXd& X,
                                  VectorXd& y,
-                                 vector<vector<ArrayXd> > Z = vector<vector<ArrayXd> >())
+                                 std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
+                                    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >())
                                  { fit(X, y, Z); return predict(X, Z); } 
                                  
             VectorXd fit_predict(double * X, int rows_x, int cols_x, double * Y, int len_y)
@@ -291,7 +296,8 @@ namespace FT{
             /// convenience function calls fit then transform. 
             MatrixXd fit_transform(MatrixXd& X,
                                    VectorXd& y,
-                                   vector<vector<ArrayXd> > Z = vector<vector<ArrayXd> >())
+                                   std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
+                                    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >())
                                    { fit(X, y, Z); return transform(X, Z); }
                                    
            MatrixXd fit_transform(double * X, int rows_x, int cols_x, double * Y, int len_y)
@@ -305,7 +311,8 @@ namespace FT{
             /// scoring function 
             double score(MatrixXd& X,
                          VectorXd& y,
-                         vector<vector<ArrayXd> > Z = vector<vector<ArrayXd> >());
+                         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
+                                  std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());
             
         private:
             // Parameters
@@ -330,12 +337,14 @@ namespace FT{
             /// method to fit inital ml model            
             void initial_model(MatrixXd& X, VectorXd& y);
             /// fits final model to best transformation
-            void final_model(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > &Z);
+            void final_model(MatrixXd& X, VectorXd& y,
+                             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z);
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
     
-    void Feat::fit(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > Z)
+    void Feat::fit(MatrixXd& X, VectorXd& y,
+                   std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
     {
         /*!
          *  Input:
@@ -386,8 +395,8 @@ namespace FT{
         VectorXd y_t(int(y.size()*params.split)), y_v(int(y.size()*(1-params.split)));
         train_test_split(X,y,X_t,X_v,y_t,y_v,params.shuffle);
         
-        vector<vector<ArrayXd> > Z_t;
-        vector<vector<ArrayXd> > Z_v;
+        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_t;
+        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_v;
         
         if(Z.size() > 0)
         {
@@ -395,7 +404,7 @@ namespace FT{
         }
         
         // define terminals based on size of X
-        params.set_terminals(X.rows(), Z.size());        
+        params.set_terminals(X.rows(), Z);        
 
         // initial model on raw input
         params.msg("Fitting initial model", 1);
@@ -477,7 +486,8 @@ namespace FT{
 	    Feat::fit(matX,vectY);
     }
 
-    void Feat::final_model(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > &Z)	
+    void Feat::final_model(MatrixXd& X, VectorXd& y,
+                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z)	
     {
         // fits final model to best tranformation found.
         bool pass = true;
@@ -507,7 +517,9 @@ namespace FT{
         best_ind.fitness = best_score;
     }
 
-    MatrixXd Feat::transform(MatrixXd& X, vector<vector<ArrayXd> > Z, Individual *ind)
+    MatrixXd Feat::transform(MatrixXd& X,
+                             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z,
+                             Individual *ind)
     {
         /*!
          * Transforms input data according to ind or best ind, if ind is undefined.
@@ -537,7 +549,8 @@ namespace FT{
     }
     
     
-    VectorXd Feat::predict(MatrixXd& X, vector<vector<ArrayXd> > Z)
+    VectorXd Feat::predict(MatrixXd& X,
+                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
     {        
         MatrixXd Phi = transform(X, Z);
         auto PhiSG = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(Phi));
@@ -593,7 +606,8 @@ namespace FT{
  
     }
     
-    double Feat::score(MatrixXd& X, VectorXd& y, vector<vector<ArrayXd> > Z)
+    double Feat::score(MatrixXd& X, VectorXd& y,
+                       std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
     {
         VectorXd yhat = predict(X, Z);
         

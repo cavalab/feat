@@ -86,7 +86,7 @@ namespace FT
     {
         Stack<ArrayXd> f;
         Stack<ArrayXb> b;
-        Stack<vector<ArrayXd> > z;
+        Stack<std::pair<vector<ArrayXd>, vector<ArrayXd> > > z;
         Stack<string> fs;
         Stack<string> bs;
         Stack<string> zs;

@@ -49,5 +49,7 @@ license: GNU/GPL v3
 #include "./node/nodeskew.h"
 #include "./node/nodekurtosis.h"
 #include "./node/nodetime.h"
+#include "./node/nodeslope.h"
+#include "./node/nodemode.h"
 
 #endif
