@@ -808,8 +808,9 @@ TEST(Variation, CrossoverTests)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158;
     y_v << 0.57015434, -1.20648656, -2.68773747;
 
+
     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z; 
-    
+
     feat.params.init();       
   
     feat.set_dtypes(find_dtypes(X));
@@ -1244,6 +1245,7 @@ TEST(Evaluation, fitness)
 
     // get fitness
     Evaluation eval("mse"); 
+
     eval.fitness(pop, X, z, y, F, params);
     
     // check results
