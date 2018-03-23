@@ -22,8 +22,9 @@ namespace FT{
     		}
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y, const vector<vector<ArrayXd> > &Z, 
-			        Stacks& stack)
+            void evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
             {
                 ArrayXd f2 = stack.f.pop();
                 ArrayXd f1 = stack.f.pop();

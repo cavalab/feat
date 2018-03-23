@@ -146,7 +146,7 @@ int main(int argc, char** argv){
     if(input.cmdOptionExists("-f"))
         feat.set_feedback(std::stod(input.getCmdOption("-f")));
     if(input.cmdOptionExists("-ldata"))
-        ldataFile = input.getCmdOption("-f");
+        ldataFile = input.getCmdOption("-ldata");
     if(input.cmdOptionExists("-n"))
         feat.set_name(input.getCmdOption("-n"));
     
@@ -185,9 +185,9 @@ int main(int argc, char** argv){
     FT::train_test_split(X,y,X_t,X_v,y_t,y_v,feat.get_shuffle());      
     
     
-    vector<vector<ArrayXd> > Z;
-    vector<vector<ArrayXd> > Z_t;
-    vector<vector<ArrayXd> > Z_v;
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z;
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_t;
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_v;
     
     if(ldataFile.compare(""))
     {

@@ -11,28 +11,27 @@ namespace FT{
 	class NodeLongitudinal : public Node
 	{
 		public:
-			size_t loc;             ///< column location in X, for x types
+			string zName;
 			
-			NodeLongitudinal(const size_t& l, std::string n = "")
+			NodeLongitudinal(std::string n)
 			{
-			    if(n.empty())
-                    name = "z_" + std::to_string(l);
-                else
-                    name = n;
+                name = "z_"+n;
+                
+                zName = n;
                     
     			otype = 'f';
     			arity['f'] = 0;
     			arity['b'] = 0;
     			arity['z'] = 1;
     			complexity = 1;
-    			loc = l;
     		}
     		
     		/// Evaluates the node and updates the stack states. 		
-			void evaluate(const MatrixXd& X, const VectorXd& y, const vector<vector<ArrayXd> > &Z, 
-			        Stacks& stack)
+			void evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
 		    {
-		        stack.z.push(Z[loc]);
+		        stack.z.push(Z.at(zName));
 		    }
 
 		    /// Evaluates the node symbolically

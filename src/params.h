@@ -140,7 +140,9 @@ namespace FT{
         }
         
         /// set the terminals
-        void set_terminals(int nf, int nz = 0);
+        void set_terminals(int nf,
+                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
+                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > ());
 
         /// set the objectives
         void set_objectives(string obj);
@@ -295,7 +297,7 @@ namespace FT{
             return std::shared_ptr<Node>(new NodeConstant(d_val));
             
         else if (str.compare("z")==0)
-            return std::shared_ptr<Node>(new NodeLongitudinal(loc));
+            return std::shared_ptr<Node>(new NodeLongitudinal(str));
             
         else
         {
@@ -338,7 +340,8 @@ namespace FT{
         set_otypes();
     }
 
-    void Parameters::set_terminals(int nf, int nz)
+    void Parameters::set_terminals(int nf,
+                                   std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
     {
         /*!
          * based on number of features.
@@ -358,9 +361,9 @@ namespace FT{
     	    }        
         // reset output types
         
-        for (size_t i = 0; i < nz; ++i)
+        for (const auto &val : Z)
         {
-            terminals.push_back(createNode(string("z"), 0, 0, i));
+            terminals.push_back(createNode(val.first));
         }
         set_otypes();
     }

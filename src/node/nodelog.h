@@ -22,8 +22,9 @@ namespace FT{
     		}
 
             /// Safe log: pushes log(abs(x)) or MIN_DBL if x is near zero. 
-            void evaluate(const MatrixXd& X, const VectorXd& y, const vector<vector<ArrayXd> > &Z, 
-			        Stacks& stack)
+            void evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
 			{
            		ArrayXd x = stack.f.pop();
                 stack.f.push( (abs(x) > NEAR_ZERO).select(log(abs(x)),MIN_DBL) );

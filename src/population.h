@@ -105,7 +105,7 @@ namespace FT{
         Stacks stack;
         MatrixXd X = MatrixXd::Zero(num_features,2); 
         VectorXd y = VectorXd::Zero(2); 
-        vector<vector<ArrayXd> > Z;
+        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z;
         unsigned i = 0; 
         for (const auto& n : program){
             if (stack.check(n->arity))
