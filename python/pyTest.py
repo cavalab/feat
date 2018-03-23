@@ -7,8 +7,10 @@ X = boston.data
 
 
 Y = boston.target
-
+print('initial constructor...')
 clf= Feat(verbosity=1)
+
+print('calling fit..')
 clf.fit(X,Y)
 
 print('representation: ', clf.get_representation())
