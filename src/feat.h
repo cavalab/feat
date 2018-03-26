@@ -419,7 +419,6 @@ namespace FT{
         // initial model on raw input
         params.msg("Fitting initial model", 1);
         initial_model(X_t,y_t,X_v,y_v);  
-        params.msg("Initial score: " + std::to_string(best_score), 1);
         
         // initialize population 
         params.msg("Initializing population", 1);
@@ -515,15 +514,15 @@ namespace FT{
          */
         bool pass = true;
         VectorXd yhat = p_ml->fit(X_t,y_t,params,pass);
-        std::cout << "initial_model: predict\n";
+        /* std::cout << "initial_model: predict\n"; */
         VectorXd yhat_v = p_ml->predict(X_v);
 
         // set terminal weights based on model
         params.set_term_weights(p_ml->get_weights());
         VectorXd tmp;
-        std::cout << "initial_model: setting best_score\n";
+        /* std::cout << "initial_model: setting best_score\n"; */
         best_score = p_eval->score(y_t, yhat,tmp);
-        std::cout << "initial_model: setting best_score_v\n";
+        /* std::cout << "initial_model: setting best_score_v\n"; */
         best_score_v = p_eval->score(y_v, yhat_v,tmp); 
 
        
@@ -532,7 +531,8 @@ namespace FT{
         for (unsigned i =0; i<X_t.rows(); ++i)
             best_ind.program.push_back(params.terminals[i]);
         best_ind.fitness = best_score;
-        std::cout << "initial best_score_v:" << best_score_v << "\n";
+        params.msg("initial training score: " +std::to_string(best_score),1);
+        params.msg("initial validation score: " +std::to_string(best_score_v),1);
     }
 
     MatrixXd Feat::transform(MatrixXd& X, Individual *ind)
