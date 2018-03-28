@@ -100,6 +100,9 @@ namespace FT{
                     cstack[otype].push_back(std::to_string(complexity) + "*" + c_args);
                 }
             }
+
+            /// makes a unique copy of this node
+            std::unique_ptr<Node> clone(){ return std::make_unique<Node>(*this); }
     };
 }
 #endif

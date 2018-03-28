@@ -15,7 +15,7 @@ namespace FT{
      */
     class Individual{
     public:        
-        vector<std::shared_ptr<Node>> program;      ///< executable data structure
+        vector<std::unique_ptr<Node>> program;      ///< executable data structure
         double fitness;             				///< aggregate fitness score
         size_t loc;                 				///< index of individual in semantic matrix F
         string eqn;                 				///< symbolic representation of program
@@ -42,8 +42,8 @@ namespace FT{
         string program_str() const;
 
         /// setting and getting from individuals vector
-        const std::shared_ptr<Node> operator [](int i) const {return program.at(i);}
-        const std::shared_ptr<Node> & operator [](int i) {return program.at(i);}
+        const std::unique_ptr<Node> operator [](int i) const {return program.at(i);} 
+        /* const std::unique_ptr<Node> & operator [](int i) {return program.at(i);} */
 
         /// set rank
         void set_rank(unsigned r){rank=r;}
@@ -78,6 +78,21 @@ namespace FT{
         ///// set weighted probabilities
         //void set_w(vector<double>& weights);
 
+        /// make a deep copy of the underlying program 
+        vector<std::unique_ptr<Node>> program_copy()
+        {
+            vector<std::unique_ptr<Node>> cpy(program.size());
+            for (const auto& p : program)
+                cpy.push_back(std::make_unique<Node>(*p));
+            
+            return cpy;
+        }
+        /// clone this individual 
+        void clone(Individual& cpy)
+        {
+            cpy.program = this->program_copy();
+            cpy.p = p;
+        }
         /// get probabilities of variation
         vector<double> get_p(){ return p; }     
         /// get inverted weight probability for pogram location i
@@ -235,7 +250,7 @@ namespace FT{
             vector<string> stack_f;     // symbolic floating stack
             vector<string> stack_b;     // symbolic boolean stack
 
-            for (auto n : program){
+            for (const auto& n : program){
             	if(stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
                 	n->eval_eqn(stack_f,stack_b);
                 else

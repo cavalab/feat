@@ -23,6 +23,7 @@ using Eigen::VectorXd;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
 using std::vector;
 using std::string;
+using std::unique_ptr;
 using std::shared_ptr;
 using std::make_shared;
 using std::cout; 
@@ -210,7 +211,7 @@ namespace FT{
             double get_split(){ return params.split; }
             
             ///add custom node into feat
-            void add_function(shared_ptr<Node> N){ params.functions.push_back(N); }
+            void add_function(unique_ptr<Node> N){ params.functions.push_back(N); }
             
             ///return data types for input parameters
             vector<char> get_dtypes(){ return params.dtypes; }
@@ -571,22 +572,22 @@ namespace FT{
        
        
         // ref counting
-        vector<float> use(params.terminals.size());
-        float use_sum=0;
-        for (unsigned i = 0; i< params.terminals.size(); ++i)
-        {    
-            use[i] = float(params.terminals[i].use_count());
-            use_sum += use[i];
-        }
-        vector<size_t> use_idx = argsort(use);
-        std::reverse(use_idx.begin(), use_idx.end());
+        /* vector<float> use(params.terminals.size()); */
+        /* float use_sum=0; */
+        /* for (unsigned i = 0; i< params.terminals.size(); ++i) */
+        /* { */    
+        /*     use[i] = float(params.terminals[i].use_count()); */
+        /*     use_sum += use[i]; */
+        /* } */
+        /* vector<size_t> use_idx = argsort(use); */
+        /* std::reverse(use_idx.begin(), use_idx.end()); */
 
-        int nf = std::min(5,int(params.terminals.size()));
-        std::cout << "Top " << nf <<" features (\% usage):\n";
-        std::cout.precision(1);
-        for (unsigned i = 0; i<nf; ++i) 
-            std::cout << std::fixed << params.terminals[use_idx[i]]->name  
-                      << " (" << use[use_idx[i]]/use_sum*100 << "\%)\t"; 
+        /* int nf = std::min(5,int(params.terminals.size())); */
+        /* std::cout << "Top " << nf <<" features (\% usage):\n"; */
+        /* std::cout.precision(1); */
+        /* for (unsigned i = 0; i<nf; ++i) */ 
+        /*     std::cout << std::fixed << params.terminals[use_idx[i]]->name */  
+        /*               << " (" << use[use_idx[i]]/use_sum*100 << "\%)\t"; */ 
         
         std::cout <<"\n\n";
     }
