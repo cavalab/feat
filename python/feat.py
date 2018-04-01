@@ -5,13 +5,13 @@ license: GNU/GPLv3
 """
 
 import argparse
-#from ._version import __version
+#from ._version import __version__
 
-from sklearn.metrics import mean_squared_error as mse
+from sklearn.base import BaseEstimator
 import numpy as np
 import pandas as pd
 import pyfeat
-from sklearn.base import BaseEstimator
+from sklearn.metrics import mean_squared_error as mse
 from sklearn.model_selection import train_test_split
 from metrics import balanced_accuracy_score
 
@@ -23,27 +23,59 @@ class Feat(BaseEstimator):
                 sel="lexicase",  surv="pareto",  cross_rate=0.5,
                 otype='a',  functions="+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite", 
                 max_depth=3,   max_dim=10,  random_state=0, 
-                erc = False,  obj="fitness,complexity", shuffle=False,  split=0.75,  fb=0.5):
+                erc = False,  obj="fitness,complexity", shuffle=False,  split=0.75,  fb=0.5,
+                scorer=''):
+
+        if ( isinstance(ml, str)):
+               self.ml = ml.encode()
+        else: #If type is instance
+               self.ml = ml
+                
+        if ( isinstance(sel, str)):
+               self.sel = sel.encode()
+        else: #If type is instance
+               self.sel = sel
+
+        if ( isinstance(surv, str)):
+               self.surv = surv.encode()
+        else: #If type is instance
+               self.surv = surv
+
+        if ( isinstance(obj, str)):
+               self.obj = obj.encode()
+        else: #If type is instance
+
+
+        if ( isinstance(otype, str)):
+               self.otype = otype.encode()
+        else: #If type is instance
+               self.otype = otype
+
+        if ( isinstance(functions, str)):
+               self.functions = functions.encode()
+        else: #If type is instance
+               self.functions = functions
+
+        if ( isinstance(scorer, str)):
+               self.scorer = scorer.encode()
+        else: #If type is instance
+               self.scorer = scorer
+        
         self.pop_size = pop_size
         self.gens = gens
-        self.ml = ml.encode()
         self.classification = classification
         self.verbosity = verbosity
         self.max_stall = max_stall
-        self.sel = sel.encode()
-        self.surv = surv.encode()
+        self.obj = obj
         self.cross_rate = cross_rate
-        self.otype = otype.encode()
-        self.functions = functions.encode()
         self.max_depth = max_depth
         self.max_dim = max_dim
         self.random_state = random_state
-        self.erc = erc      
-        self.obj = obj.encode()
+        self.erc = erc
         self.shuffle = shuffle
         self.split = split
         self.fb = fb
-   
+        
         self._pyfeat = pyfeat.PyFeat( self.pop_size,  self.gens,  self.ml, 
                 self.classification,  self.verbosity,  self.max_stall,
                 self.sel,  self.surv,  self.cross_rate,
@@ -53,7 +85,8 @@ class Feat(BaseEstimator):
                 self.obj, 
                 self.shuffle,  
                 self.split,  
-                self.fb)
+                self.fb,
+                self.scorer)
 
     def fit(self,X,y):
         self._pyfeat.fit(X,y)
@@ -68,7 +101,6 @@ class Feat(BaseEstimator):
         return self._pyfeat.fit_predict(X,y)
 
     def fit_transform(self,X,y):
-        print ( 'In feat.py ...calling fit_transform')
         return self._pyfeat.fit_transform(X,y)
 
     def score(self,features,labels):
