@@ -25,63 +25,26 @@ class Feat(BaseEstimator):
                 max_depth=3,   max_dim=10,  random_state=0, 
                 erc = False,  obj="fitness,complexity", shuffle=False,  split=0.75,  fb=0.5,
                 scorer=''):
-<<<<<<< HEAD
-=======
-
-        if ( isinstance(ml, str)):
-               self.ml = ml.encode()
-        else: #If type is instance
-               self.ml = ml
-                
-        if ( isinstance(sel, str)):
-               self.sel = sel.encode()
-        else: #If type is instance
-               self.sel = sel
-
-        if ( isinstance(surv, str)):
-               self.surv = surv.encode()
-        else: #If type is instance
-               self.surv = surv
-
-        if ( isinstance(obj, str)):
-               self.obj = obj.encode()
-        else: #If type is instance
-
-
-        if ( isinstance(otype, str)):
-               self.otype = otype.encode()
-        else: #If type is instance
-               self.otype = otype
-
-        if ( isinstance(functions, str)):
-               self.functions = functions.encode()
-        else: #If type is instance
-               self.functions = functions
-
-        if ( isinstance(scorer, str)):
-               self.scorer = scorer.encode()
-        else: #If type is instance
-               self.scorer = scorer
-        
->>>>>>> 4e2a8029d2d330d75a9eb36e7fcbbd89351ef673
         self.pop_size = pop_size
         self.gens = gens
+        self.ml = ml.encode()
         self.classification = classification
         self.verbosity = verbosity
         self.max_stall = max_stall
-        self.obj = obj
+        self.sel = sel.encode()
+        self.surv = surv.encode()
         self.cross_rate = cross_rate
+        self.otype = otype.encode()
+        self.functions = functions.encode()
         self.max_depth = max_depth
         self.max_dim = max_dim
         self.random_state = random_state
-        self.erc = erc
+        self.erc = erc      
+        self.obj = obj.encode()
         self.shuffle = shuffle
         self.split = split
         self.fb = fb
-<<<<<<< HEAD
         self.scorer = scorer.encode()
-=======
->>>>>>> 4e2a8029d2d330d75a9eb36e7fcbbd89351ef673
         
         self._pyfeat = pyfeat.PyFeat( self.pop_size,  self.gens,  self.ml, 
                 self.classification,  self.verbosity,  self.max_stall,
