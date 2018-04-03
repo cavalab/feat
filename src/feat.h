@@ -540,48 +540,22 @@ namespace FT{
         /*!
          * Transforms input data according to ind or best ind, if ind is undefined.
          */
-<<<<<<< HEAD
         
         N.normalize(X);       
         
         if (ind == 0)        // if ind is empty, predict with best_ind
         {
             std::cout << "predicting with best_ind\n";
-=======
-        std::cout << "in Feat::transform\n";
-
-        if (ind == 0)        // if ind is empty, predict with best_ind
-        {
-            std::cout << "ind is 0\n";
->>>>>>> 4e2a8029d2d330d75a9eb36e7fcbbd89351ef673
             if (best_ind.program.size()==0){
                 std::cerr << "You need to train a model using fit() before making predictions.\n";
                 throw;
             }
             
-<<<<<<< HEAD
             MatrixXd Phi = best_ind.out(X,params);
             return Phi;
         }
 
         MatrixXd Phi = ind->out(X,params);
-=======
-            std::cout << "normalize\n";
-            normalize(X,params.dtypes);
-            std::cout << "best_ind->out\n";
-            MatrixXd Phi = best_ind.out(X,params);
-            std::cout << "normalize again\n";
-            normalize(Phi,best_ind.dtypes);
-	    std::cout << "normalized the data and returning phi\n";
-            return Phi;
-        }
-        normalize(X,params.dtypes);
-        std::cout << "ind->out\n";
-        MatrixXd Phi = ind->out(X,params);
-        std::cout << "normalize\n";
-        normalize(Phi,ind->dtypes);
-	std::cout << "Normalised the daa and returning phi\n";
->>>>>>> 4e2a8029d2d330d75a9eb36e7fcbbd89351ef673
         return Phi;
     }
 
