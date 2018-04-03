@@ -1,4 +1,3 @@
-
 echo "installing eigen..."
 wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"
 tar xzf 3.3.4.tar.gz 
@@ -19,6 +18,16 @@ conda update --yes conda
 conda install --yes -c conda-forge shogun-cpp
 export SHOGUN_LIB=/home/travis/miniconda/lib/
 export SHOGUN_DIR=/home/travis/miniconda/include/
+
+echo "installing cython using conda..."
+conda install --yes cython
+
+echo "installing scikit-learn via conda..."
+conda install --yes scikit-learn
+
+echo "installing pandas via conda..."
+conda install --yes pandas
+
 
 #building and installing google tests
 sudo apt-get install cmake
@@ -48,3 +57,20 @@ cd ..
 make -C build VERBOSE=1
 echo "running feat.."
 ./build/feat examples/d_enc.csv
+
+echo "python path is..."
+which python
+
+echo "cython path is..."
+which cython
+
+cd ./python
+sudo python setup.py install build_ext --inplace
+
+#_____Run the Python Tests for the wrapper_____#
+
+
+echo "copying wrapper test to the python folder"
+cd ../tests
+sudo cp wrappertest.py ../python/ #Copy the file to python folder
+
