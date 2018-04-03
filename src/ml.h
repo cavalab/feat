@@ -283,7 +283,7 @@ namespace FT{
         
         if (isinf(yhat.array()).any() || isnan(yhat.array()).any())
         {
-            std::cerr << "inf or nan values in model fit to: " << X << "\n";
+            //std::cerr << "inf or nan values in model fit to: " << X << "\n";
             pass = false;
         }
         /* std::cout << "ML::fit yhat is " << yhat.transpose() << std::endl; */ 

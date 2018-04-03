@@ -97,9 +97,10 @@ namespace FT{
             auto ml = std::make_shared<ML>(params);
             VectorXd yhat = ml->fit(Phi,y,params,pass,pop.individuals[i].dtypes);
             if (!pass){
-                std::cerr << "Error training eqn " + pop.individuals[i].get_eqn() + "\n";
-                std::cerr << "with raw output " << pop.individuals[i].out(X,params,y) << "\n";
-                throw;
+                //std::cerr << "Error training eqn " + pop.individuals[i].get_eqn() + "\n";
+                //std::cerr << "with raw output " << pop.individuals[i].out(X,params,y) << "\n";
+                //throw;
+                yhat = VectorXd::Zero( yhat.size()  ); 
             }
             // assign weights to individual
            //vector<double> w = ml->get_weights() 
