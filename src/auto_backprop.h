@@ -33,7 +33,7 @@ namespace FT {
 
 		struct BP_NODE
 		{
-			DifNode* n;
+			NodeDx* n;
 			vector<ArrayXd> deriv_list;
 		};
 	};
@@ -80,19 +80,20 @@ namespace FT {
 	void next_branch(vector<BP_NODE> executing, vector<NodeDx> bp_program, vector<ArrayXd> derivatives) {
 		if(executing.empty()) {
 			n_derivatives = []
-			BP_NODE node;
-            while not n_derivatives:
-                node = executing.pop()
-                gradients.pop()
+			BP_NODE bp_node;
+            while (bp_node.deriv_list.empty()) {
+                bp_node = executing.pop()
+                derivatives.pop()
                 
                 if (executing.empty()) {
                     return NULL;
                 }
+            }
             
             // Should now have the next parent node
-            bp_program.append(node.n);
-            gradients.append(n_derivatives.pop(0))  // TODO update this line
-            executing.append((node, n_derivatives))
+            bp_program.push_back(node.n);
+            derivatives.push_back(node.deriv_list.pop(0));  // TODO update this line
+            executing.push_back(node);
 		}
 	}
 
@@ -110,7 +111,22 @@ namespace FT {
 
 			if (node.visits == 0 && node.arity['f'] > 0) {
 				// Calculate all the derivatives and store them, then update all the weights and throw away the node
+				for (int i = 0; i < node.arity['f']; i++) {
+					node.derivative(n_derivatives, fwd_stack, node.arity['f'] + i);
+				}
 
+				node.update(derivatives, fwd_stack, this.n);
+
+				// Get rid of the input arguments for the node
+				for (int i = 0; i < node.arity['f']; i++) {
+					fwd_stack.pop();
+				}
+
+				if (n_derivatives.size()) {
+					derivatives.push_back(n_derivatives.pop());
+				}
+
+				executing.push_back({node, n_derivatives});
 			}
 
 			// Choosing how to move through tree
