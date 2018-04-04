@@ -19,6 +19,10 @@ namespace FT{
     			arity['f'] = 2;
     			arity['b'] = 0;
     			complexity = 2;
+
+                for (int i = 0; i < arity['f']; i++) {
+                    W.push_back(1);
+                }
     		}
     		
             /// Evaluates the node and updates the stack states. 
@@ -28,7 +32,7 @@ namespace FT{
                 ArrayXd x2 = stack_f.back(); stack_f.pop_back();
                 ArrayXd x1 = stack_f.back(); stack_f.pop_back();
                 // safe division returns x1/x2 if x2 != 0, and MAX_DBL otherwise               
-                stack_f.push_back( (abs(x2) > NEAR_ZERO ).select(x1 / x2, 1.0) ); //MAX_DBL    
+                stack_f.push_back( (abs(x2) > NEAR_ZERO ).select((W[1] * x1) / (W[0] * x2), 1.0) ); //MAX_DBL    
             }
 
             /// Evaluates the node symbolically
@@ -38,6 +42,45 @@ namespace FT{
                 string x1 = stack_f.back(); stack_f.pop_back();
                 stack_f.push_back("(" + x1 + "/" + x2 + ")");            	
             }
+
+            ArrayXd getDerivative(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
+                switch (loc) {
+                    case 3: // d/dw1
+                        return stack_f[stack_f.size()-1]/(W[0] * stack_f[stack_f.size()-2]);
+                    case 2: // d/dw0
+                        return -W[1] * stack_f[stack_f.size()-1]/(stack_f[stack_f.size()-2] * pow(W[0], 2));
+                    case 1: // d/dx1
+                        return W[1]/(W[0] * fwd_stack[-2]);
+                    case 0: // d/dx0
+                    default:
+                       return -W[1] * stack_f[stack_f.size() - 1]/(W[0] * pow(stack_f[stack_f.size()], 2));
+                } 
+            }
+
+            // void derivative(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
+            //     switch (loc) {
+            //         case 1:
+            //             gradients.push_back(-W[0] * stack_f[stack_f.size() - 1]/
+            //                 (W[1] * pow(stack_f[stack_f.size()], 2)));
+            //             break;
+            //         case 0:
+            //         default:
+            //             gradients.push_back(W[0]/(W[1] * fwd_stack[-2]));
+            //     } 
+            // }
+
+            // void update(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
+            //     update_value = 1
+            //     for(auto g : gradients) {
+            //         update_value *= g;
+            //     }
+                 
+            //     W_temp = W[:]
+            //     d_w = stack_f[stack_f.size()-1]/(W_temp[1] * stack_f[stack_f.size()-2]);
+            //     W[0] = W_temp[0] - n/update_value.size * sum(d_w * update_value);
+            //     d_w = -W_temp[0] * stack_f[stack_f.size()-1]/(stack_f[stack_f.size()-2] * pow(W[1], 2));
+            //     W[1] = W_temp[1] - n/update_value.size * sum(d_w * update_value); 
+            // }
     };
 }	
 

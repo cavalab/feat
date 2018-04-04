@@ -19,6 +19,10 @@ namespace FT{
     			arity['f'] = 1;
     			arity['b'] = 0;
     			complexity = 4;
+
+                for (int i = 0; i < arity['f']; i++) {
+                    W.push_back(1);
+                }
     		}
 
             /// Safe log: pushes log(abs(x)) or MIN_DBL if x is near zero. 
@@ -26,7 +30,7 @@ namespace FT{
                     vector<ArrayXb>& stack_b)
             {
            		ArrayXd x = stack_f.back(); stack_f.pop_back();                    
-                stack_f.push_back( (abs(x) > NEAR_ZERO).select(log(abs(x)),MIN_DBL) );
+                stack_f.push_back( (abs(x) > NEAR_ZERO).select(log(abs(W[0] * x)),MIN_DBL) );
             }
 
             /// Evaluates the node symbolically
@@ -34,6 +38,16 @@ namespace FT{
             {
         		string x = stack_f.back(); stack_f.pop_back();
                 stack_f.push_back("log(" + x + ")");
+            }
+
+            ArrayXd getDerivative(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
+                switch (loc) {
+                    case 1: // d/dw0
+                        return 1/(W[0]]);
+                    case 0: // d/dx0
+                    default:
+                       return 1/(stack_f[stack_f.size()-1]);
+                } 
             }
     };
 }	

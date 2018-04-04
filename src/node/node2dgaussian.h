@@ -19,6 +19,10 @@ namespace FT{
     			arity['f'] = 2;
     			arity['b'] = 0;
     			complexity = 4;
+
+                for (int i = 0; i < arity['f']; i++) {
+                    W.push_back(1);
+                }
     		}
     		
             /// Evaluates the node and updates the stack states. 
@@ -37,6 +41,18 @@ namespace FT{
         		string x2 = stack_f.back(); stack_f.pop_back();
                 string x1 = stack_f.back(); stack_f.pop_back();
                 stack_f.push_back("gauss2d(" + x1 + "," + x2 + ")");
+            }
+
+            ArrayXd getDerivative(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
+                // TODO 
+                
+                switch (loc) {
+                    case 1: // d/dw0
+                        return -2 * W[0] * pow(stack_f[stack_f.size() - 1], 2) * exp(-pow(W[0] * stack_f[stack_f.size() - 1], 2));
+                    case 0: // d/dx0
+                    default:
+                        return -2 * pow(W[0], 2) * stack_f[stack_f.size() - 1] * exp(-pow(W[0] * stack_f[stack_f.size() - 1], 2));
+                } 
             }
             
             private:

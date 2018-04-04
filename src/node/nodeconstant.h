@@ -61,6 +61,8 @@ namespace FT{
                 else 	
                     stack_f.push_back(std::to_string(d_value));
             }
+
+            // Make the derivative 1
     		
     };
 }	

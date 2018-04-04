@@ -28,7 +28,6 @@ namespace FT{
         		
         		ArrayXd res = (x > 0).select(ArrayXd::Ones(x.size()), ArrayXd::Zero(x.size())); 
                 stack_f.push_back(res);
-                
             }
 
             /// Evaluates the node symbolically
