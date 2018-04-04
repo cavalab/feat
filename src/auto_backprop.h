@@ -100,7 +100,31 @@ namespace FT {
 		vector<ArrayXd> derivatives;
 		// derivatives.push_back()
 
-		bp_program = program;
+		vector<Derivative_Bundle> executing; // Stores node and its associated derivatves
+		vector<NodeDx> bp_program(this.program); // Program we loop through and edit during algorithm
+
+		while (bp_program.size() > 0) {
+			node = bp_program.pop();
+
+			vector<ArrayXd> n_derivatves;
+
+			if (node.visits == 0 && node.arity['f'] > 0) {
+				// Calculate all the derivatives and store them, then update all the weights and throw away the node
+
+			}
+
+			// Choosing how to move through tree
+			if (node.arity == 0) {
+				// Clean up gradients and find the parent node
+				next_branch(executing, bp_program, derivatives);
+			} else {
+				node.visits += 1;
+				if (node.visits > node.arity['f']) {
+					next_branch(executing, bp_program, derivatives);
+				}
+			}
+		}
+
 	}
 }
 

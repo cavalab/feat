@@ -11,6 +11,7 @@ namespace FT{
     {
     	public:
     		vector<int> W;
+            int visits;
     	
     		virtual ~NodeDx(){}
 
