@@ -166,7 +166,7 @@ namespace FT{
                 std::cout << "otype: " << otype << "\n";
                 std::cout << "max_d: " << max_d << "\n";
                 std::cout << "functions: ";
-                for (auto f: functions) std::cout << f->name << " ";
+                for (const auto& f: functions) std::cout << f->name << " ";
                 std::cout << "\n";
                 std::cout << "---\n";
             }

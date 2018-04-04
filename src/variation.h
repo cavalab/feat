@@ -67,6 +67,19 @@ namespace FT{
             float cross_rate;     ///< fraction of crossover in total variation
     };
 
+    std::unique_ptr<Node> random_choice(const vector<std::unique_ptr<Node>> & v)
+    {
+       /*!
+        * return a random element of a vector.
+        */          
+        assert(v.size()>0 && " attemping to return random choice from empty vector");
+        std::vector<size_t> vi(v.size());
+        std::iota(vi.begin(), vi.end(), 0);
+        size_t idx = random_choice(vi);
+        return v.at(idx)->clone();
+    }
+ 
+
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
     
@@ -356,7 +369,7 @@ namespace FT{
             
             // get valid subtree locations
             for (size_t i =0; i<mom.size(); ++i) 
-                if (in(d_otypes,mom[i]->otype)) 
+                if (in(d_otypes,mom.program[i]->otype)) 
                     mlocs.push_back(i);       
             if (mlocs.size()==0)        // mom and dad have no overlapping types, can't cross
             {
@@ -368,7 +381,7 @@ namespace FT{
 
             // get locations in dad's program that match the subtree type picked from mom
             for (size_t i =0; i<dad.size(); ++i) 
-                if (dad[i]->otype == mom[j1]->otype) dlocs.push_back(i);
+                if (dad.program[i]->otype == mom.program[j1]->otype) dlocs.push_back(i);
         } 
         else             // half the time, pick a root node
         {

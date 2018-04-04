@@ -29,15 +29,25 @@ namespace FT{
             char otype;             				///< output type
             std::map<char, unsigned int> arity;		///< floating arity of the operator 
             int complexity;         ///< complexity of node
-            
+
+            /* Node(const std::unique_ptr<Node>& other) */
+            /* { */
+            /*     this = std::make_unique<Node>(*other); */
+            /* } */
             virtual ~Node(){}
            
             /// Evaluates the node and updates the stack states. 
-            virtual void evaluate(const MatrixXd& X, const VectorXd& y,vector<ArrayXd>& stack_f, 
-                    vector<ArrayXb>& stack_b) = 0; 
+            void evaluate(const MatrixXd& X, const VectorXd& y,vector<ArrayXd>& stack_f, 
+                    vector<ArrayXb>& stack_b)
+            {
+                throw std::runtime_error("Node::evaluate not implemented\n");
+            }; 
 
             /// evaluates the node symbolically
-            virtual void eval_eqn(vector<string>& stack_f, vector<string>& stack_b) = 0;
+            void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
+            {
+                throw std::runtime_error("Node::evaluate not implemented\n");
+            }; 
 
             // total arity
             unsigned int total_arity(){ return arity['f'] + arity['b']; };
@@ -45,7 +55,6 @@ namespace FT{
             /// limits node output to be between MIN_DBL and MAX_DBL
             ArrayXd limited(ArrayXd x)
             {
-                
                 x = (isinf(x)).select(MAX_DBL,x);
                 x = (isnan(x)).select(0,x);
                 //x = (x < MIN_DBL).select(MIN_DBL,x);
