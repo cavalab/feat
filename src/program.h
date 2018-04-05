@@ -19,7 +19,7 @@ namespace FT{
         ~Program() = default; 
         Program(const Program& other)
         {
-            std::cout<<"in Program(const Program& other)\n";
+            /* std::cout<<"in Program(const Program& other)\n"; */
             for (const auto& p : other)
                 this->push_back(p->clone());
         }
@@ -32,7 +32,7 @@ namespace FT{
         Program& operator=(Program const& other)
         { 
 
-            std::cout << "in Program& operator=(Program const& other)\n";
+            /* std::cout << "in Program& operator=(Program const& other)\n"; */
             for (const auto& p : other)
                 this->push_back(p->clone());
             return *this; 

@@ -530,7 +530,7 @@ namespace FT{
        
         // initialize best_ind to be all the features
         best_ind = Individual();
-        for (unsigned i =0; i<X.rows(); ++i)
+        for (unsigned i =0; i<X_t.rows(); ++i)
             best_ind.program.push_back(params.terminals[i]->clone());
         best_ind.fitness = best_score;
         std::cout << "initial best_score_v:" << best_score_v << "\n";
