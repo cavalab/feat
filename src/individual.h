@@ -33,30 +33,6 @@ namespace FT{
         
         Individual(){c = 0; dim = 0; eqn="";}
 
-        /* ~Individual(){} */
-        /* Individual(const Individual& other) */
-        /* { */
-        /*     other.program_copy(this->program); */
-        /*     eqn = other.eqn; */
-        /*     std::cout<<"in Individual(const Individual& other)\n"; */
-        /*    /1* other.program_copy(this->program); *1/ */
-        /*    /1* p = other.p; *1/ */
-        /* } */
-        /* Individual(Individual && other){other.program_copy(this->program); */
-        /*     std::cout<<"in Individual(Individual && other)\n";}// = default; */
-
-        /* Individual& operator=(Individual const& other){ */ 
-        /*     other.program_copy(this->program); */
-        /*     this->fitness = other.fitness; */
-
-        /*     std::cout << "in Individual& operator=(Individual const& other)\n"; */
-        /*     return *this; } //other.program_copy(this->program); return *this; } */
-       
-        /* Individual& operator=(Individual && other){ */
-        /*     other.program_copy(this->program); */
-        /*     this->fitness = other.fitness; */
-        /*     std::cout << "in Individual& operator=(Individual && other)\n";} // = default; */ 
-       
         /// calculate program output matrix Phi
         MatrixXd out(const MatrixXd& X, const Parameters& params, const VectorXd& y);
 

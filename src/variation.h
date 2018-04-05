@@ -168,11 +168,10 @@ namespace FT{
             delete_mutate(child,params); 
             assert(is_valid_program(child.program, params.num_features));
         }
-        else if (rf < 2.0/3.0 && child.size() < params.max_size)
-        {
-            insert_mutate(child,params);
-            assert(is_valid_program(child.program, params.num_features));
-        }
+
+        /*     insert_mutate(child,params); */
+        /*     assert(is_valid_program(child.program, params.num_features)); */
+        /* } */
         else
         {        
             point_mutate(child,params);
