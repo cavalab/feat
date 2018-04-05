@@ -28,10 +28,9 @@ using namespace shogun;
 #define private public
 
 #include <cstdio>
-#include "../src/fewtwo.h"
+#include "../src/feat.h"
 
 using namespace FT;
-
 
 bool checkBrackets(string str)
 {
@@ -62,65 +61,65 @@ bool checkBrackets(string str)
 	return true;
 } 
 
-TEST(Fewtwo, SettingFunctions)
+TEST(Feat, SettingFunctions)
 {
-	Fewtwo fewtwo(100);
+	Feat feat(100);
     
-    fewtwo.set_pop_size(200);
-    ASSERT_EQ(200, fewtwo.params.pop_size);
-    ASSERT_EQ(200, fewtwo.p_pop->size());
+    feat.set_pop_size(200);
+    ASSERT_EQ(200, feat.params.pop_size);
     
-    fewtwo.set_generations(50);
-    ASSERT_EQ(50, fewtwo.params.gens);
+    feat.set_generations(50);
+    ASSERT_EQ(50, feat.params.gens);
     
-    fewtwo.set_ml("RandomForest");
-    ASSERT_STREQ("RandomForest", fewtwo.params.ml.c_str());
-    //ASSERT_STREQ("RandomForest", fewtwo.p_ml->type.c_str());
-    //ASSERT_EQ(sh::EMachineType::CT_BAGGING, fewtwo.p_ml->p_est->get_classifier_type());
-    //ASSERT_EQ(sh::EProblemType::PT_REGRESSION, fewtwo.p_ml->p_est->get_machine_problem_type());
+    feat.set_ml("RandomForest");
+    ASSERT_STREQ("RandomForest", feat.params.ml.c_str());
+    //ASSERT_STREQ("RandomForest", feat.p_ml->type.c_str());
+    //ASSERT_EQ(sh::EMachineType::CT_BAGGING, feat.p_ml->p_est->get_classifier_type());
+    //ASSERT_EQ(sh::EProblemType::PT_REGRESSION, feat.p_ml->p_est->get_machine_problem_type());
     
-    //fewtwo.set_classification(true);
-    //ASSERT_EQ(sh::EProblemType::PT_MULTICLASS, fewtwo.p_ml->p_est->get_machine_problem_type());
+    //feat.set_classification(true);
+    //ASSERT_EQ(sh::EProblemType::PT_MULTICLASS, feat.p_ml->p_est->get_machine_problem_type());
     
-    fewtwo.set_verbosity(2);
-    ASSERT_EQ(2, fewtwo.params.verbosity);
+    feat.set_verbosity(2);
+    ASSERT_EQ(2, feat.params.verbosity);
     
-    fewtwo.set_max_stall(2);
-    ASSERT_EQ(2, fewtwo.params.max_stall);
+    feat.set_max_stall(2);
+    ASSERT_EQ(2, feat.params.max_stall);
     
-    fewtwo.set_selection("pareto");
-    ASSERT_STREQ("pareto", fewtwo.p_sel->get_type().c_str());
+    feat.set_selection("pareto");
+    ASSERT_STREQ("pareto", feat.p_sel->get_type().c_str());
     
-    fewtwo.set_survival("lexicase");
-    ASSERT_STREQ("lexicase", fewtwo.p_surv->get_type().c_str());
+    feat.set_survival("lexicase");
+    ASSERT_STREQ("lexicase", feat.p_surv->get_type().c_str());
     
-    fewtwo.set_cross_rate(0.6);
-    EXPECT_EQ(6, (int)(fewtwo.p_variation->get_cross_rate()*10));
+    feat.set_cross_rate(0.6);
+    EXPECT_EQ(6, (int)(feat.p_variation->get_cross_rate()*10));
     
-    fewtwo.set_otype('b');
-    ASSERT_EQ('b', fewtwo.params.otypes[0]);
+    feat.set_otype('b');
+    ASSERT_EQ('b', feat.params.otypes[0]);
     
-    fewtwo.set_functions("+,-");
-    ASSERT_EQ(2, fewtwo.params.functions.size());
-    ASSERT_STREQ("+", fewtwo.params.functions[0]->name.c_str());
-    ASSERT_STREQ("-", fewtwo.params.functions[1]->name.c_str());
+    feat.set_functions("+,-");
+    ASSERT_EQ(2, feat.params.functions.size());
+    ASSERT_STREQ("+", feat.params.functions[0]->name.c_str());
+    ASSERT_STREQ("-", feat.params.functions[1]->name.c_str());
     
-    fewtwo.set_max_depth(2);
-    ASSERT_EQ(2, fewtwo.params.max_depth);
+    feat.set_max_depth(2);
+    ASSERT_EQ(2, feat.params.max_depth);
 
-    fewtwo.set_max_dim(15);
-    ASSERT_EQ(15, fewtwo.params.max_dim);
+    feat.set_max_dim(15);
+    ASSERT_EQ(15, feat.params.max_dim);
     
-    fewtwo.set_erc(false);
-    ASSERT_EQ(false, fewtwo.params.erc);
+    feat.set_erc(false);
+    ASSERT_EQ(false, feat.params.erc);
     
-    fewtwo.set_random_state(2);
+    feat.set_random_state(2);
     //TODO test random state seed
 }
 
-TEST(Fewtwo, predict)
+
+TEST(Feat, predict)
 {
-    Fewtwo fewtwo(100);
+    Feat feat(100);
     
     MatrixXd X(7,2); 
     X << 0,1,  
@@ -138,9 +137,9 @@ TEST(Fewtwo, predict)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
     
-    fewtwo.set_verbosity(0);
+    feat.set_verbosity(0);
     
-    fewtwo.fit(X, y);
+    feat.fit(X, y);
     
     X << 0,1,  
          0.4,0.8,  
@@ -150,12 +149,12 @@ TEST(Fewtwo, predict)
          0.5, -0.8,
          0.1,-0.9;
     
-    ASSERT_EQ(fewtwo.predict(X).size(), 7);             //TODO had to remove !bzero ASSERT in set_termincal weights
+    ASSERT_EQ(feat.predict(X).size(), 7);             //TODO had to remove !bzero ASSERT in set_termincal weights
 }
 
-TEST(Fewtwo, transform)
+TEST(Feat, transform)
 {
-    Fewtwo fewtwo(100);
+    Feat feat(100);
     
     MatrixXd X(7,2); 
     X << 0,1,  
@@ -173,9 +172,9 @@ TEST(Fewtwo, transform)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
     
-    fewtwo.set_verbosity(0);
+    feat.set_verbosity(0);
     
-    fewtwo.fit(X, y);
+    feat.fit(X, y);
     
     X << 0,1,  
          0.4,0.8,  
@@ -185,14 +184,14 @@ TEST(Fewtwo, transform)
          0.5, -0.8,
          0.1,-0.9;
         
-    MatrixXd res = fewtwo.transform(X);
+    MatrixXd res = feat.transform(X);
     ASSERT_EQ(res.cols(), 7);
-    ASSERT_TRUE(res.rows() <= fewtwo.params.max_dim);
+    ASSERT_TRUE(res.rows() <= feat.params.max_dim);
 }
 
-TEST(Fewtwo, fit_predict)
+TEST(Feat, fit_predict)
 {
-    Fewtwo fewtwo(100);
+    Feat feat(100);
     
     MatrixXd X(7,2); 
     X << 0,1,  
@@ -210,14 +209,14 @@ TEST(Fewtwo, fit_predict)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
     
-    fewtwo.set_verbosity(0);
+    feat.set_verbosity(0);
          
-    ASSERT_EQ(fewtwo.fit_predict(X, y).size(), 7);
+    ASSERT_EQ(feat.fit_predict(X, y).size(), 7);
 }
 
-TEST(Fewtwo, fit_transform)
+TEST(Feat, fit_transform)
 {
-    Fewtwo fewtwo(100);
+    Feat feat(100);
     
     MatrixXd X(7,2); 
     X << 0,1,  
@@ -235,45 +234,56 @@ TEST(Fewtwo, fit_transform)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
     
-    fewtwo.set_verbosity(0);
+    feat.set_verbosity(0);
     
-    MatrixXd res = fewtwo.fit_transform(X, y);
+    MatrixXd res = feat.fit_transform(X, y);
     ASSERT_EQ(res.cols(), 7);
-    ASSERT_TRUE(res.rows() <= fewtwo.params.max_dim);
+    ASSERT_TRUE(res.rows() <= feat.params.max_dim);
 }
 
 
 TEST(Individual, EvalEquation)
 {
-	Fewtwo fewtwo(100);
-    MatrixXd X(7,2); 
+	Feat feat(100);
+    MatrixXd X(4,2); 
+    MatrixXd X_v(3,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
          0.84147098,  0.54030231,
-         0.99749499,  0.0707372,
-         0.90929743, -0.41614684,
+         0.99749499,  0.0707372;
+    X_v <<  0.90929743, -0.41614684,
          0.59847214, -0.80114362,
          0.14112001,-0.9899925;
 
     X.transposeInPlace();
-    
-    VectorXd y(7); 
-    // y = 2*x1 + 3.x2
-    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
-             -1.20648656, -2.68773747;
+    X_v.transposeInPlace();
 
-	fewtwo.params.set_terminals(X.rows()); 
+    VectorXd y(4); 
+    VectorXd y_v(3); 
+    // y = 2*x1 + 3.x2
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158;
+    y_v << 0.57015434, -1.20648656, -2.68773747;
+
+    feat.params.init();       
+  
+    feat.set_dtypes(find_dtypes(X));
+            
+    feat.p_ml = make_shared<ML>(feat.params); // intialize ML
+    feat.p_pop = make_shared<Population>(feat.params.pop_size);
+    feat.p_eval = make_shared<Evaluation>(feat.params.scorer);
+
+	feat.params.set_terminals(X.rows()); 
         
     // initial model on raw input
-    fewtwo.initial_model(X,y);
+    feat.initial_model(X,y,X_v,y_v);
                   
     // initialize population 
-    fewtwo.p_pop->init(fewtwo.best_ind, fewtwo.params);
+    feat.p_pop->init(feat.best_ind, feat.params);
     int i;
-    for(i = 0; i < fewtwo.p_pop->individuals.size(); i++){
-	    if (!checkBrackets(fewtwo.p_pop->individuals[i].get_eqn()))
-            std::cout << "check brackets failed on eqn " << fewtwo.p_pop->individuals[i].get_eqn() << "\n";
-        ASSERT_TRUE(checkBrackets(fewtwo.p_pop->individuals[i].get_eqn())); //TODO evaluate if string correct or not
+    for(i = 0; i < feat.p_pop->individuals.size(); i++){
+	    if (!checkBrackets(feat.p_pop->individuals[i].get_eqn()))
+            std::cout << "check brackets failed on eqn " << feat.p_pop->individuals[i].get_eqn() << "\n";
+        ASSERT_TRUE(checkBrackets(feat.p_pop->individuals[i].get_eqn())); //TODO evaluate if string correct or not
     }
 }
 
@@ -685,7 +695,6 @@ TEST(NodeTest, Evaluate)
 	//TODO NodeVariable, NodeConstant(both types)
 }
 
-
 bool isValidProgram(vector<std::shared_ptr<Node>>& program, unsigned num_features)
 {
     //checks whether program fulfills all its arities.
@@ -705,155 +714,198 @@ bool isValidProgram(vector<std::shared_ptr<Node>>& program, unsigned num_feature
 
 TEST(Variation, MutationTests)
 {
-	Fewtwo fewtwo(100);
-    MatrixXd X(7,2); 
+	Feat feat(100);
+    MatrixXd X(4,2); 
+    MatrixXd X_v(3,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
          0.84147098,  0.54030231,
-         0.99749499,  0.0707372,
-         0.90929743, -0.41614684,
+         0.99749499,  0.0707372;
+    X_v <<  0.90929743, -0.41614684,
          0.59847214, -0.80114362,
          0.14112001,-0.9899925;
 
     X.transposeInPlace();
-    
-    VectorXd y(7); 
-    // y = 2*x1 + 3.x2
-    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
-             -1.20648656, -2.68773747;
+    X_v.transposeInPlace();
 
-	fewtwo.params.set_terminals(X.rows()); 
+    VectorXd y(4); 
+    VectorXd y_v(3); 
+    // y = 2*x1 + 3.x2
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158;
+    y_v << 0.57015434, -1.20648656, -2.68773747;
+
+    feat.params.init();       
+  
+    feat.set_dtypes(find_dtypes(X));
+            
+    feat.p_ml = make_shared<ML>(feat.params); // intialize ML
+    feat.p_pop = make_shared<Population>(feat.params.pop_size);
+    feat.p_eval = make_shared<Evaluation>(feat.params.scorer);
+
+	feat.params.set_terminals(X.rows()); 
         
     // initial model on raw input
-    fewtwo.initial_model(X,y);
+    feat.initial_model(X,y,X_v,y_v);
                   
     // initialize population 
-    fewtwo.p_pop->init(fewtwo.best_ind, fewtwo.params);
+    feat.p_pop->init(feat.best_ind, feat.params);
     
+    feat.F.resize(X.cols(),int(2*feat.params.pop_size));
+    
+    feat.p_eval->fitness(*(feat.p_pop),X,y,feat.F,feat.params);
     
     vector<size_t> parents;
     parents.push_back(2);
     parents.push_back(5);
     parents.push_back(7);
     
-    while (fewtwo.p_pop->size() < 2*fewtwo.params.pop_size)
+    while (feat.p_pop->size() < 2*feat.params.pop_size)
     {
 		Individual child;
 		
 		int mom = r.random_choice(parents);
-		int pass = fewtwo.p_variation->mutate(fewtwo.p_pop->individuals[mom],child,fewtwo.params);
+		int pass = feat.p_variation->mutate(feat.p_pop->individuals[mom],child,feat.params);
 		
 		if (pass)                   // congrats! you produced a viable child.
 		{
 			// give child an open location in F
-			child.loc = fewtwo.p_pop->get_open_loc(); 
+			child.loc = feat.p_pop->get_open_loc(); 
 			//push child into pop
-			fewtwo.p_pop->individuals.push_back(child);
+			feat.p_pop->individuals.push_back(child);
 		}
 	}
 	
 	int i;
 	
-	for(i = 0; i < fewtwo.p_pop->individuals.size(); i++)
-		ASSERT_TRUE(isValidProgram(fewtwo.p_pop->individuals[i].program, fewtwo.params.terminals.size()));
+	for(i = 0; i < feat.p_pop->individuals.size(); i++)
+		ASSERT_TRUE(isValidProgram(feat.p_pop->individuals[i].program, feat.params.terminals.size()));
 	
 }
 
 TEST(Variation, CrossoverTests)
 {
-	Fewtwo fewtwo(100);
-    MatrixXd X(7,2); 
+	Feat feat(100);
+    MatrixXd X(4,2); 
+    MatrixXd X_v(3,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
          0.84147098,  0.54030231,
-         0.99749499,  0.0707372,
-         0.90929743, -0.41614684,
+         0.99749499,  0.0707372;
+    X_v <<  0.90929743, -0.41614684,
          0.59847214, -0.80114362,
          0.14112001,-0.9899925;
 
     X.transposeInPlace();
-    
-    VectorXd y(7); 
-    // y = 2*x1 + 3.x2
-    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
-             -1.20648656, -2.68773747;
+    X_v.transposeInPlace();
 
-	fewtwo.params.set_terminals(X.rows()); 
+    VectorXd y(4); 
+    VectorXd y_v(3); 
+    // y = 2*x1 + 3.x2
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158;
+    y_v << 0.57015434, -1.20648656, -2.68773747;
+
+    feat.params.init();       
+  
+    feat.set_dtypes(find_dtypes(X));
+            
+    feat.p_ml = make_shared<ML>(feat.params); // intialize ML
+    feat.p_pop = make_shared<Population>(feat.params.pop_size);
+    feat.p_eval = make_shared<Evaluation>(feat.params.scorer);
+    
+	feat.params.set_terminals(X.rows()); 
         
     // initial model on raw input
-    fewtwo.initial_model(X,y);
+    feat.initial_model(X,y,X_v,y_v);
+
                   
     // initialize population 
-    fewtwo.p_pop->init(fewtwo.best_ind, fewtwo.params);
+    feat.p_pop->init(feat.best_ind, feat.params);
+    
+    feat.F.resize(X.cols(),int(2*feat.params.pop_size));
+    
+    feat.p_eval->fitness(*(feat.p_pop),X,y,feat.F,feat.params);
+    
     vector<size_t> parents;
     parents.push_back(2);
     parents.push_back(5);
     parents.push_back(7);
     
-    while (fewtwo.p_pop->size() < 2*fewtwo.params.pop_size)
+    while (feat.p_pop->size() < 2*feat.params.pop_size)
     {
 		Individual child;
 		
 		int mom = r.random_choice(parents);
         int dad = r.random_choice(parents);
         
-		int pass = fewtwo.p_variation->cross(fewtwo.p_pop->individuals[mom],fewtwo.p_pop->individuals[dad],child,fewtwo.params);
+		int pass = feat.p_variation->cross(feat.p_pop->individuals[mom],feat.p_pop->individuals[dad],child,feat.params);
 		
 		if (pass)                   // congrats! you produced a viable child.
 		{
 			// give child an open location in F
-			child.loc = fewtwo.p_pop->get_open_loc(); 
+			child.loc = feat.p_pop->get_open_loc(); 
 			//push child into pop
-			fewtwo.p_pop->individuals.push_back(child);
+			feat.p_pop->individuals.push_back(child);
 		}
 	}
 	
 	int i;
 	
-	for(i = 0; i < fewtwo.p_pop->individuals.size(); i++)
-		ASSERT_TRUE(isValidProgram(fewtwo.p_pop->individuals[i].program, fewtwo.params.terminals.size()));
+	for(i = 0; i < feat.p_pop->individuals.size(); i++)
+		ASSERT_TRUE(isValidProgram(feat.p_pop->individuals[i].program, feat.params.terminals.size()));
 }
 
 TEST(Population, PopulationTests)
 {
-	Fewtwo fewtwo(100);
-    MatrixXd X(7,2); 
+	Feat feat(100);
+    MatrixXd X(4,2); 
+    MatrixXd X_v(3,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
          0.84147098,  0.54030231,
-         0.99749499,  0.0707372,
-         0.90929743, -0.41614684,
+         0.99749499,  0.0707372;
+    X_v <<  0.90929743, -0.41614684,
          0.59847214, -0.80114362,
          0.14112001,-0.9899925;
 
     X.transposeInPlace();
-    
-    VectorXd y(7); 
-    // y = 2*x1 + 3.x2
-    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
-             -1.20648656, -2.68773747;
+    X_v.transposeInPlace();
 
-	fewtwo.timer.Reset();
-	fewtwo.params.set_terminals(X.rows()); 
+    VectorXd y(4); 
+    VectorXd y_v(3); 
+    // y = 2*x1 + 3.x2
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158;
+    y_v << 0.57015434, -1.20648656, -2.68773747;
+
+    feat.params.init();       
+  
+    feat.set_dtypes(find_dtypes(X));
+            
+    feat.p_ml = make_shared<ML>(feat.params); // intialize ML
+    feat.p_pop = make_shared<Population>(feat.params.pop_size);  
+    std::cout << "feat.params.scorer: " << feat.params.scorer << "\n";
+    feat.p_eval = make_shared<Evaluation>("mse");
+
+	feat.params.set_terminals(X.rows()); 
         
     // initial model on raw input
-    fewtwo.initial_model(X,y);
+    feat.initial_model(X,y,X_v,y_v);
+
                   
     // initialize population 
-    fewtwo.p_pop->init(fewtwo.best_ind, fewtwo.params);
+    feat.p_pop->init(feat.best_ind, feat.params);
     
     vector<size_t> current_locs; 
     int i;
-    for(i = 0; i < fewtwo.p_pop->individuals.size(); i++)
+    for(i = 0; i < feat.p_pop->individuals.size(); i++)
     {
-    	ASSERT_NO_THROW(fewtwo.p_pop->individuals[i]);
-	    current_locs.push_back(fewtwo.p_pop->individuals[i].loc);
+    	ASSERT_NO_THROW(feat.p_pop->individuals[i]);
+	    current_locs.push_back(feat.p_pop->individuals[i].loc);
 	}
 	    
-	size_t loc1 = fewtwo.p_pop->get_open_loc();
-	size_t loc2 = fewtwo.p_pop->get_open_loc();
-	size_t loc3 = fewtwo.p_pop->get_open_loc();
-	size_t loc4 = fewtwo.p_pop->get_open_loc();
+	size_t loc1 = feat.p_pop->get_open_loc();
+	size_t loc2 = feat.p_pop->get_open_loc();
+	size_t loc3 = feat.p_pop->get_open_loc();
+	size_t loc4 = feat.p_pop->get_open_loc();
 	
 	ASSERT_FALSE(std::find(current_locs.begin(), current_locs.end(), loc1) != current_locs.end());
 	ASSERT_FALSE(std::find(current_locs.begin(), current_locs.end(), loc2) != current_locs.end());
@@ -865,7 +917,7 @@ TEST(Population, PopulationTests)
 
 TEST(Parameters, ParamsTests)
 {                   
-	Parameters params(100, 								//pop_size
+		Parameters params(100, 								//pop_size
 					  100,								//gens
 					  "LinearRidgeRegression",			//ml
 					  false,							//classification
@@ -873,13 +925,15 @@ TEST(Parameters, ParamsTests)
 					  'f',								//otype
 					  1,								//verbosity
 					  "+,-,*,/,exp,log",				//functions
+					  0.5,                              //cross_rate
 					  3,								//max_depth
 					  10,								//max_dim
 					  false,							//erc
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
                       0.75,								//train/test split
-                      0.5);                             // feedback
+                      0.5,                             // feedback 
+                      "mse");                           //scoring function
 					  
 	params.set_max_dim(12);
 	ASSERT_EQ(params.max_dim, 12);
@@ -1020,7 +1074,7 @@ TEST(Individual, Complexity)
 TEST(Evaluation, assign_fit)
 {
 	
-	Parameters params(100, 								//pop_size
+		Parameters params(100, 								//pop_size
 					  100,								//gens
 					  "LinearRidgeRegression",			//ml
 					  false,							//classification
@@ -1028,13 +1082,16 @@ TEST(Evaluation, assign_fit)
 					  'f',								//otype
 					  1,								//verbosity
 					  "+,-,*,/,exp,log",				//functions
+					  0.5,                              //cross_rate
 					  3,								//max_depth
 					  10,								//max_dim
 					  false,							//erc
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
                       0.75,								//train/test split
-                      0.5);                             // feedback
+                      0.5,                             // feedback 
+                      "mse");                           //scoring function
+                      
 	Individual ind = Individual();
 	ind.loc = 0;
 	MatrixXd F(10, 1);
@@ -1062,7 +1119,7 @@ TEST(Evaluation, assign_fit)
          0.0,
          0.0;
     
-    Evaluation eval = Evaluation();
+    Evaluation eval = Evaluation("mse");
     
     res << 0.0,
            1.0,
@@ -1076,12 +1133,19 @@ TEST(Evaluation, assign_fit)
            81.0;
            
     eval.assign_fit(ind, F, yhat, y, params);
-    
+    if (F.col(ind.loc) != res)
+    {
+        std::cout << "F.col(ind.loc):" << F.col(ind.loc).transpose() << "\n";
+        std::cout << "res:" << res.transpose() << "\n";
+    }
+
     ASSERT_TRUE(F.col(ind.loc) == res);
     ASSERT_TRUE(ind.fitness == 28.5);
     
     params.classification = true;
-    
+   
+    Evaluation evalc("bal_accuracy");
+
     y << 0.0,
          1.0,
          2.0,
@@ -1104,16 +1168,21 @@ TEST(Evaluation, assign_fit)
            1.0,
            1.0;
            
-    eval.assign_fit(ind, F, yhat, y, params);
+    evalc.assign_fit(ind, F, yhat, y, params);
     
+    if (F.col(ind.loc) != res)
+    {
+        std::cout << "F.col(ind.loc):" << F.col(ind.loc).transpose() << "\n";
+        std::cout << "res:" << res.transpose() << "\n";
+    }
     ASSERT_TRUE(F.col(ind.loc) == res);
-    ASSERT_TRUE(ind.fitness == 0.7);
+    ASSERT_EQ(((int)(ind.fitness*1000000)), 347222);
     
 }
 
 TEST(Evaluation, fitness)
 {
-	Parameters params(100, 								//pop_size
+		Parameters params(100, 								//pop_size
 					  100,								//gens
 					  "LinearRidgeRegression",			//ml
 					  false,							//classification
@@ -1121,13 +1190,16 @@ TEST(Evaluation, fitness)
 					  'f',								//otype
 					  1,								//verbosity
 					  "+,-,*,/,exp,log",				//functions
+					  0.5,                              //cross_rate
 					  3,								//max_depth
 					  10,								//max_dim
 					  false,							//erc
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
                       0.75,								//train/test split
-                      0.5);                             // feedback                 
+                      0.5,                             // feedback 
+                      "mse");                           // scoring function
+                        
 	MatrixXd X(10,1); 
     X << 0.0,  
          1.0,  
@@ -1163,7 +1235,7 @@ TEST(Evaluation, fitness)
     MatrixXd F(10,2);   // output matrix
 
     // get fitness
-    Evaluation eval; 
+    Evaluation eval("mse"); 
     eval.fitness(pop, X, y, F, params);
     // check results
     ASSERT_TRUE(pop.individuals[0].fitness < NEAR_ZERO);
@@ -1181,13 +1253,15 @@ TEST(Evaluation, out_ml)
 					  'f',								//otype
 					  1,								//verbosity
 					  "+,-,*,/,exp,log",				//functions
+					  0.5,                              //cross_rate
 					  3,								//max_depth
 					  10,								//max_dim
 					  false,							//erc
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
                       0.75,								//train/test split
-                      0.5);                             // feedback                 
+                      0.5,                             // feedback                 
+                      "mse");                           // scoring function
 	MatrixXd X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
@@ -1203,12 +1277,13 @@ TEST(Evaluation, out_ml)
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
-             
-    shared_ptr<Evaluation> p_eval = make_shared<Evaluation>();
+    
+    params.dtypes = find_dtypes(X);
+    /* shared_ptr<Evaluation> p_eval = make_shared<Evaluation>(params.scorer); */
     shared_ptr<ML> p_ml = make_shared<ML>(params);
              
     bool pass = true;
-    VectorXd yhat = p_ml->out(X, y, params, pass);
+    VectorXd yhat = p_ml->fit(X, y, params, pass);
     
     double mean = ((yhat - y).array().pow(2)).mean();
     
@@ -1219,7 +1294,7 @@ TEST(Evaluation, out_ml)
 
 TEST(Selection, SelectionOperator)
 {
-    Fewtwo fewtwo(100);
+    Feat feat(100);
     MatrixXd X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
@@ -1236,26 +1311,36 @@ TEST(Selection, SelectionOperator)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
 
-	fewtwo.timer.Reset();
+	feat.timer.Reset();
 	
-	MatrixXd X_t(X.rows(),int(X.cols()*fewtwo.params.split));
-    MatrixXd X_v(X.rows(),int(X.cols()*(1-fewtwo.params.split)));
-    VectorXd y_t(int(y.size()*fewtwo.params.split)), y_v(int(y.size()*(1-fewtwo.params.split)));
-    train_test_split(X,y,X_t,X_v,y_t,y_v,fewtwo.params.shuffle);
-        
-	fewtwo.params.set_terminals(X.rows()); 
+	MatrixXd X_t(X.rows(),int(X.cols()*feat.params.split));
+    MatrixXd X_v(X.rows(),int(X.cols()*(1-feat.params.split)));
+    VectorXd y_t(int(y.size()*feat.params.split)), y_v(int(y.size()*(1-feat.params.split)));
+    train_test_split(X,y,X_t,X_v,y_t,y_v,feat.params.shuffle);
+    
+    feat.timer.Reset();
+	
+	feat.params.init();       
+
+    feat.set_dtypes(find_dtypes(X));
+            
+    feat.p_ml = make_shared<ML>(feat.params); // intialize ML
+    feat.p_pop = make_shared<Population>(feat.params.pop_size);    
+    feat.p_eval = make_shared<Evaluation>(feat.params.scorer);
+
+	feat.params.set_terminals(X.rows()); 
         
     // initial model on raw input
-    fewtwo.initial_model(X,y);
+    feat.initial_model(X_t,y_t,X_v, y_v);
                   
     // initialize population 
-    fewtwo.p_pop->init(fewtwo.best_ind, fewtwo.params);
+    feat.p_pop->init(feat.best_ind, feat.params);
     
-    fewtwo.F.resize(    X_t.cols(),int(2*fewtwo.params.pop_size));
-    fewtwo.p_eval->fitness(*(fewtwo.p_pop), X_t, y_t, fewtwo.F, fewtwo.params);
-    vector<size_t> parents = fewtwo.p_sel->select(*(fewtwo.p_pop), fewtwo.F, fewtwo.params);
+    feat.F.resize(X_t.cols(),int(2*feat.params.pop_size));
+    feat.p_eval->fitness(*(feat.p_pop), X_t, y_t, feat.F, feat.params);
+    vector<size_t> parents = feat.p_sel->select(*(feat.p_pop), feat.F, feat.params);
     
-    ASSERT_EQ(parents.size(), fewtwo.get_pop_size());
+    ASSERT_EQ(parents.size(), feat.get_pop_size());
 }
 
 int main(int argc, char **argv) {

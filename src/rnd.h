@@ -119,11 +119,19 @@ namespace FT {
                 /*!
                  * return a weighted random element of a vector
                  */
-                assert(v.size() == w.size());
-                    
-                std::discrete_distribution<size_t> dis(w.begin(), w.end());
+                 
+                if(w.size() == 0)
+                {   
+                    cout<<"random_choice() w.size() = 0 Calling random_choice(v)\n";
+                    return random_choice(v);
+                }
+                else
+                {
+                    assert(v.size() == w.size());
+                    std::discrete_distribution<size_t> dis(w.begin(), w.end());
 
-                return v[dis(rg[omp_get_thread_num()])]; 
+                    return v[dis(rg[omp_get_thread_num()])]; 
+                }
             }
             ~Rnd() {}
 
