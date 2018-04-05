@@ -211,7 +211,7 @@ namespace FT{
             double get_split(){ return params.split; }
             
             ///add custom node into feat
-            void add_function(unique_ptr<Node> N){ params.functions.push_back(N); }
+            /* void add_function(unique_ptr<Node> N){ params.functions.push_back(N->clone()); } */
             
             ///return data types for input parameters
             vector<char> get_dtypes(){ return params.dtypes; }
@@ -446,7 +446,7 @@ namespace FT{
         // initialize best_ind to be all the features
         best_ind = Individual();
         for (unsigned i =0; i<X.rows(); ++i)
-            best_ind.program.push_back(params.terminals[i]);
+            best_ind.program.push_back(params.terminals[i]->clone());
         best_ind.fitness = best_score;
     }
 

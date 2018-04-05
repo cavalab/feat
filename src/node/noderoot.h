@@ -46,6 +46,8 @@ namespace FT{
                     stack_f.push_back("sqrt(|" + x + "|)");
             	}
             }
+        protected:
+            NodeRoot* clone_impl() const override { return new NodeRoot(*this); };  
     };
 }	
 

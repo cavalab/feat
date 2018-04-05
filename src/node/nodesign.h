@@ -36,6 +36,8 @@ namespace FT{
         		string x = stack_f.back(); stack_f.pop_back();
                 stack_f.push_back("sign("+ x +")");
             }
+        protected:
+            NodeSign* clone_impl() const override { return new NodeSign(*this); };  
     };
 }	
 

@@ -40,6 +40,8 @@ namespace FT{
 
                 stack_b.push_back("(" + x1 + " OR " + x2 + ")");
             }
+        protected:
+            NodeOr* clone_impl() const override { return new NodeOr(*this); };  
     };
     
 }	

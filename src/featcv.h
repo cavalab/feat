@@ -28,7 +28,8 @@ namespace FT{
     
     	public:
     	
-        FeatCV(vector<string> mlStr, int popRange = 100, int genRange = 100, int dimRange = 10, int depRange = 3);    
+        FeatCV(vector<string> mlStr, int popRange = 100, int genRange = 100, int dimRange = 10, 
+               int depRange = 3);    
             
         void create_objects();
                 

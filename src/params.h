@@ -186,107 +186,107 @@ namespace FT{
     {
         // algebraic operators
     	if (str.compare("+") == 0) 
-    		return std::make_unique<Node>(NodeAdd());
+    		return std::unique_ptr<Node>(new NodeAdd());
         
         else if (str.compare("-") == 0)
-    		return std::make_unique<Node>(NodeSubtract());
+    		return std::unique_ptr<Node>(new NodeSubtract());
 
         else if (str.compare("*") == 0)
-    		return std::make_unique<Node>(NodeMultiply());
+    		return std::unique_ptr<Node>(new NodeMultiply());
 
      	else if (str.compare("/") == 0)
-    		return std::make_unique<Node>(NodeDivide());
+    		return std::unique_ptr<Node>(new NodeDivide());
 
         else if (str.compare("sqrt") == 0)
-    		return std::make_unique<Node>(NodeSqrt());
+    		return std::unique_ptr<Node>(new NodeSqrt());
     	
     	else if (str.compare("sin") == 0)
-    		return std::make_unique<Node>(NodeSin());
+    		return std::unique_ptr<Node>(new NodeSin());
     		
     	else if (str.compare("cos") == 0)
-    		return std::make_unique<Node>(NodeCos());
+    		return std::unique_ptr<Node>(new NodeCos());
     		
     	else if (str.compare("tanh")==0)
-            return std::make_unique<Node>(NodeTanh());
+            return std::unique_ptr<Node>(new NodeTanh());
     	   
         else if (str.compare("^2") == 0)
-    		return std::make_unique<Node>(NodeSquare());
+    		return std::unique_ptr<Node>(new NodeSquare());
  	
         else if (str.compare("^3") == 0)
-    		return std::make_unique<Node>(NodeCube());
+    		return std::unique_ptr<Node>(new NodeCube());
     	
         else if (str.compare("^") == 0)
-    		return std::make_unique<Node>(NodeExponent());
+    		return std::unique_ptr<Node>(new NodeExponent());
 
         else if (str.compare("exp") == 0)
-    		return std::make_unique<Node>(NodeExponential());
+    		return std::unique_ptr<Node>(new NodeExponential());
     		
     	else if (str.compare("gaussian")==0)
-            return std::make_unique<Node>(NodeGaussian());
+            return std::unique_ptr<Node>(new NodeGaussian());
         
         else if (str.compare("2dgaussian")==0)
-            return std::make_unique<Node>(Node2dGaussian());
+            return std::unique_ptr<Node>(new Node2dGaussian());
 
         else if (str.compare("log") == 0)
-    		return std::make_unique<Node>(NodeLog());   
+    		return std::unique_ptr<Node>(new NodeLog());   
     		
     	else if (str.compare("logit")==0)
-            return std::make_unique<Node>(NodeLogit());
+            return std::unique_ptr<Node>(new NodeLogit());
 
         // logical operators
         else if (str.compare("and") == 0)
-    		return std::make_unique<Node>(NodeAnd());
+    		return std::unique_ptr<Node>(new NodeAnd());
        
     	else if (str.compare("or") == 0)
-    		return std::make_unique<Node>(NodeOr());
+    		return std::unique_ptr<Node>(new NodeOr());
    		
      	else if (str.compare("not") == 0)
-    		return std::make_unique<Node>(NodeNot());
+    		return std::unique_ptr<Node>(new NodeNot());
     		
     	else if (str.compare("xor")==0)
-            return std::make_unique<Node>(NodeXor());
+            return std::unique_ptr<Node>(new NodeXor());
    		
     	else if (str.compare("=") == 0)
-    		return std::make_unique<Node>(NodeEqual());
+    		return std::unique_ptr<Node>(new NodeEqual());
     		
         else if (str.compare(">") == 0)
-    		return std::make_unique<Node>(NodeGreaterThan());
+    		return std::unique_ptr<Node>(new NodeGreaterThan());
 
     	else if (str.compare(">=") == 0)
-    		return std::make_unique<Node>(NodeGEQ());        
+    		return std::unique_ptr<Node>(new NodeGEQ());        
 
     	else if (str.compare("<") == 0)
-    		return std::make_unique<Node>(NodeLessThan());
+    		return std::unique_ptr<Node>(new NodeLessThan());
     	
     	else if (str.compare("<=") == 0)
-    		return std::make_unique<Node>(NodeLEQ());
+    		return std::unique_ptr<Node>(new NodeLEQ());
     	
      	else if (str.compare("if") == 0)
-    		return std::make_unique<Node>(NodeIf());   	    		
+    		return std::unique_ptr<Node>(new NodeIf());   	    		
         	
     	else if (str.compare("ite") == 0)
-    		return std::make_unique<Node>(NodeIfThenElse());
+    		return std::unique_ptr<Node>(new NodeIfThenElse());
     		
     	else if (str.compare("step")==0)
-            return std::make_unique<Node>(NodeStep());
+            return std::unique_ptr<Node>(new NodeStep());
             
         else if (str.compare("sign")==0)
-            return std::make_unique<Node>(NodeSign());
+            return std::unique_ptr<Node>(new NodeSign());
 
         // variables and constants
          else if (str.compare("x") == 0)
         {
             if(dtypes.size() == 0)
-                return std::make_unique<Node>(NodeVariable(loc));
+                return std::unique_ptr<Node>(new NodeVariable(loc));
             else
-                return std::make_unique<Node>(NodeVariable(loc, dtypes[loc]));
+                return std::unique_ptr<Node>(new NodeVariable(loc, dtypes[loc]));
         }
             
         else if (str.compare("kb")==0)
-            return std::make_unique<Node>(NodeConstant(b_val));
+            return std::unique_ptr<Node>(new NodeConstant(b_val));
             
         else if (str.compare("kd")==0)
-            return std::make_unique<Node>(NodeConstant(d_val));
+            return std::unique_ptr<Node>(new NodeConstant(d_val));
             
         else
         {

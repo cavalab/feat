@@ -5,6 +5,8 @@ license: GNU/GPL v3
 #ifndef INDIVIDUAL_H
 #define INDIVIDUAL_H
 
+#include "program.h"
+
 namespace FT{
     
     ////////////////////////////////////////////////////////////////////////////////// Declarations
@@ -15,7 +17,7 @@ namespace FT{
      */
     class Individual{
     public:        
-        vector<std::unique_ptr<Node>> program;      ///< executable data structure
+        Program program;                            ///< executable data structure
         double fitness;             				///< aggregate fitness score
         size_t loc;                 				///< index of individual in semantic matrix F
         string eqn;                 				///< symbolic representation of program
@@ -28,10 +30,33 @@ namespace FT{
         unsigned int rank;                          ///< pareto front rank
         float crowd_dist;                           ///< crowding distance on the Pareto front
         
+        
         Individual(){c = 0; dim = 0; eqn="";}
 
-        ~Individual(){}
+        /* ~Individual(){} */
+        /* Individual(const Individual& other) */
+        /* { */
+        /*     other.program_copy(this->program); */
+        /*     eqn = other.eqn; */
+        /*     std::cout<<"in Individual(const Individual& other)\n"; */
+        /*    /1* other.program_copy(this->program); *1/ */
+        /*    /1* p = other.p; *1/ */
+        /* } */
+        /* Individual(Individual && other){other.program_copy(this->program); */
+        /*     std::cout<<"in Individual(Individual && other)\n";}// = default; */
 
+        /* Individual& operator=(Individual const& other){ */ 
+        /*     other.program_copy(this->program); */
+        /*     this->fitness = other.fitness; */
+
+        /*     std::cout << "in Individual& operator=(Individual const& other)\n"; */
+        /*     return *this; } //other.program_copy(this->program); return *this; } */
+       
+        /* Individual& operator=(Individual && other){ */
+        /*     other.program_copy(this->program); */
+        /*     this->fitness = other.fitness; */
+        /*     std::cout << "in Individual& operator=(Individual && other)\n";} // = default; */ 
+       
         /// calculate program output matrix Phi
         MatrixXd out(const MatrixXd& X, const Parameters& params, const VectorXd& y);
 
@@ -79,18 +104,16 @@ namespace FT{
         //void set_w(vector<double>& weights);
 
         /// make a deep copy of the underlying program 
-        vector<std::unique_ptr<Node>> program_copy()
-        {
-            vector<std::unique_ptr<Node>> cpy(program.size());
-            for (const auto& p : program)
-                cpy.push_back(std::make_unique<Node>(*p));
-            
-            return cpy;
-        }
+        /* void program_copy(vector<std::unique_ptr<Node>>& cpy) const */
+        /* { */
+        /*     cpy.clear(); */
+        /*     for (const auto& p : program) */
+        /*         cpy.push_back(p->clone()); */
+        /* } */
         /// clone this individual 
         void clone(Individual& cpy)
         {
-            cpy.program = this->program_copy();
+            cpy.program = program;
             cpy.p = p;
         }
         /// get probabilities of variation
@@ -421,9 +444,6 @@ namespace FT{
          
         vector<size_t> indices;     // returned root indices
         int total_arity = -1;       //end node is always a root
-       // map<char,int> total_arity; 
-       // total_arity['b'] = -1;
-       // total_arity['f']=-1;
         for (size_t i = program.size(); i>0; --i)   // reverse loop thru program
         {    
             if (total_arity <= 0 ){ // root node
@@ -436,12 +456,7 @@ namespace FT{
             total_arity += program[i-1]->total_arity(); 
            
         }
-       // while (i >= 0 )
-       // {
-       //     indices.push_back(i-1);
-       //     int j = subtree(i);
-       //     i = j-1;
-       // }
+       
         return indices; 
     }
 
@@ -451,12 +466,6 @@ namespace FT{
         string s = "";
         for (const auto& p : program)
         {
-           // if (!p->name.compare("x"))   // if a variable, include the location data
-           // {
-           //     s += p->name+"_"+std::to_string(std::dynamic_pointer_cast<NodeVariable>(p)->loc); 
-           // }
-           // else
-
             s+= p->name;
             s+=" ";
         }

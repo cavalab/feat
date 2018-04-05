@@ -30,24 +30,15 @@ namespace FT{
             std::map<char, unsigned int> arity;		///< floating arity of the operator 
             int complexity;         ///< complexity of node
 
-            /* Node(const std::unique_ptr<Node>& other) */
-            /* { */
-            /*     this = std::make_unique<Node>(*other); */
-            /* } */
             virtual ~Node(){}
            
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y,vector<ArrayXd>& stack_f, 
-                    vector<ArrayXb>& stack_b)
-            {
-                throw std::runtime_error("Node::evaluate not implemented\n");
-            }; 
-
+            virtual void evaluate(const MatrixXd& X, const VectorXd& y,vector<ArrayXd>& stack_f, 
+                    vector<ArrayXb>& stack_b) = 0;
+          
             /// evaluates the node symbolically
-            void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
-            {
-                throw std::runtime_error("Node::evaluate not implemented\n");
-            }; 
+            virtual void eval_eqn(vector<string>& stack_f, vector<string>& stack_b) = 0;
+             
 
             // total arity
             unsigned int total_arity(){ return arity['f'] + arity['b']; };
@@ -111,7 +102,10 @@ namespace FT{
             }
 
             /// makes a unique copy of this node
-            std::unique_ptr<Node> clone(){ return std::make_unique<Node>(*this); }
+            auto clone() const { return std::unique_ptr<Node>(clone_impl()); }
+        
+        protected:
+            virtual Node* clone_impl() const = 0;
     };
 }
 #endif

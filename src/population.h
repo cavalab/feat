@@ -177,7 +177,7 @@ namespace FT{
             //std::cout << t->name << " ";
             program.push_back(t->clone());
             
-            std::unique_ptr<Node> chosen = program.back()->clone();
+            std::unique_ptr<Node> chosen(program.back()->clone());
             // recurse to fulfill the arity of the chosen function
             for (size_t i = 0; i < chosen->arity['f']; ++i)
                 make_tree(program, functions, terminals, max_d-1, term_weights,'f');
