@@ -100,11 +100,15 @@ namespace FT{
                 //std::cerr << "Error training eqn " + pop.individuals[i].get_eqn() + "\n";
                 //std::cerr << "with raw output " << pop.individuals[i].out(X,params,y) << "\n";
                 //throw;
-                yhat = VectorXd::Zero( yhat.size()  ); 
+                yhat = VectorXd::Zero( yhat.size()  );
+                vector<double> w(0,Phi.rows());     // set weights to zero
+                pop.individuals[i].set_p(w,params.feedback);
             }
-            // assign weights to individual
-           //vector<double> w = ml->get_weights() 
-            pop.individuals[i].set_p(ml->get_weights(),params.feedback);
+            else
+            {
+                // assign weights to individual
+                pop.individuals[i].set_p(ml->get_weights(),params.feedback);
+            }
             // assign F and aggregate fitness
             params.msg("Assigning fitness to " + pop.individuals[i].get_eqn(), 2);
             
