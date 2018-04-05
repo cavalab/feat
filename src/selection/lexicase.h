@@ -52,16 +52,21 @@ namespace FT{
         ArrayXd epsilon = ArrayXd::Zero(N);
       
         // if output is continuous, use epsilon lexicase            
-        if (!params.classification)
-        {
-            // for columns of F, calculate epsilon
-            for (int i = 0; i<epsilon.size(); ++i)
-                epsilon(i) = mad(F.row(i));
-        }
+        /* if (!params.classification) */
+        /* { */
+        // for columns of F, calculate epsilon
+        for (int i = 0; i<epsilon.size(); ++i)
+            epsilon(i) = mad(F.row(i));
+        /* } */
 
         // individual locations in F
         vector<size_t> starting_pool;
-        for (const auto& p : pop.individuals) starting_pool.push_back(p.loc);
+        for (const auto& p : pop.individuals)
+        {
+        	starting_pool.push_back(p.loc);
+        	//cout<<"Filled "<<p.loc<<"\t";
+        }
+        //cout<<"Filled "<<p.loc<<"\n";
         assert(starting_pool.size() == P);     
         
         vector<size_t> F_locs(P,0); // selected individuals
@@ -96,13 +101,24 @@ namespace FT{
              
               ++h; // next case
               pass = (winner.size()>1 && h<cases.size()); // only keep going if needed
-              pool = winner;    // reduce pool to remaining individuals
+              
+              if(winner.size() == 0)
+              {
+              	if(h >= cases.size())
+              		winner.push_back(r.random_choice(pool));
+              	else
+              		pass = true;
+              }
+              else
+              	pool = winner;    // reduce pool to remaining individuals
           
             }       
-
+			
+			
             assert(winner.size()>0);
             //if more than one winner, pick randomly
-            F_locs[i] = r.random_choice(winner);                            
+            F_locs[i] = r.random_choice(winner);   
+            //cout<<"Check 2";                         
         }               
 
         // convert F_locs to pop.individuals indices

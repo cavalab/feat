@@ -1,3 +1,19 @@
 #!/bin/bash
-make -C build VERBOSE=1
+make -C build VERBOSE=1 -j8
 
+if [ "$1" == "lpc" ] ; then
+    module load gcc/5.2.0
+    export EIGEN3_INCLUDE_DIR="$HOME/eigen-3.3.4/"
+    export SHOGUN_DIR="$HOME/anaconda3/include/"
+    export SHOGUN_LIB="$HOME/anaconda3/lib/"    
+fi 
+
+if [ $1 != "n" ] ; then  
+    read -p "Install python wrapper? (y/n) " choice
+    if [ $choice == "y" ] ; then 
+        echo "installing python module..."
+        cd python
+        python setup.py install
+        cd ..
+    fi
+fi
