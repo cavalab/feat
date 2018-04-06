@@ -138,7 +138,7 @@ TEST(Feat, predict)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
     
-    feat.set_verbosity(1);
+    feat.set_verbosity(0);
     
     feat.fit(X, y);
     
@@ -173,7 +173,7 @@ TEST(Feat, transform)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
     
-    feat.set_verbosity(1);
+    feat.set_verbosity(0);
     
     feat.fit(X, y);
     
