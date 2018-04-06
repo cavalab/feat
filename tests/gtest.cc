@@ -156,7 +156,7 @@ TEST(Feat, predict)
 TEST(Feat, transform)
 {
     Feat feat(100); feat.set_random_state(666);
-    
+    feat.set_verbosity(1); 
     MatrixXd X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
@@ -188,7 +188,10 @@ TEST(Feat, transform)
     MatrixXd res = feat.transform(X);
     ASSERT_EQ(res.cols(), 7);
     if (res.rows() > feat.params.max_dim)
-        std::cout << "res.rows(): " << res.rows() << ", params.max_dim: " << feat.params.max_dim << "\n";
+        std::cout << "res.rows(): " << res.rows() << 
+                    ", res.cols(): " << res.cols() << 
+                    ", params.max_dim: " << feat.params.max_dim << "\n";
+
     ASSERT_TRUE(res.rows() <= feat.params.max_dim);
 }
 
@@ -220,7 +223,9 @@ TEST(Feat, fit_predict)
 TEST(Feat, fit_transform)
 {
     Feat feat(100); feat.set_random_state(666);
-    
+   
+    feat.set_verbosity(1);
+
     MatrixXd X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
@@ -241,6 +246,12 @@ TEST(Feat, fit_transform)
     
     MatrixXd res = feat.fit_transform(X, y);
     ASSERT_EQ(res.cols(), 7);
+    
+    if (res.rows() > feat.params.max_dim)
+        std::cout << "res.rows(): " << res.rows() << 
+                    ", res.cols(): " << res.cols() << 
+                    ", params.max_dim: " << feat.params.max_dim << "\n";
+
     ASSERT_TRUE(res.rows() <= feat.params.max_dim);
 }
 
