@@ -506,7 +506,7 @@ namespace FT{
         VectorXd yhat = p_ml->fit(Phi,y,params,pass,best_ind.dtypes);
         VectorXd tmp;
         double score = p_eval->score(y,yhat,tmp);
-        std::cout << "final_model:: score=" << score << "\n";
+        params.msg("final_model score: " + std::to_string(score),1);
     }
     
     void Feat::initial_model(MatrixXd& X_t, VectorXd& y_t, MatrixXd& X_v, VectorXd& y_v)
