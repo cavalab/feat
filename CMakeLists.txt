@@ -66,15 +66,15 @@ endif()
 # gather list of source files
 file(GLOB_RECURSE src_main_files "src/main.cc")
 
-#file(GLOB_RECURSE src_cv_files "src/cv_main.cc")
+file(GLOB_RECURSE src_cv_files "src/cv_main.cc")
 
 # executable
 add_executable(feat ${src_main_files})
-# add_executable(feat_cv ${src_cv_files}) 
+add_executable(feat_cv ${src_cv_files}) 
 
 #link libraries for different executables
 target_link_libraries(feat shogun)
-#target_link_libraries(feat_cv shogun)
+target_link_libraries(feat_cv shogun)
 
 if (TEST)
     # Link runTests with what we want to test and the GTest and pthread library

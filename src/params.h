@@ -6,6 +6,7 @@ license: GNU/GPL v3
 #define PARAMS_H
 // internal includes
 #include "nodewrapper.h"
+#include "nodevector.h"
 
 namespace FT{
 
@@ -26,8 +27,8 @@ namespace FT{
         int verbosity;                  			///< amount of printing. 0: none, 1: minimal, 
                                                     // 2: all
         vector<double> term_weights;    			///< probability weighting of terminals
-        vector<std::unique_ptr<Node>> functions;    ///< function nodes available in programs
-        vector<std::unique_ptr<Node>> terminals;    ///< terminal nodes available in programs
+        NodeVector functions;    ///< function nodes available in programs
+        NodeVector terminals;    ///< terminal nodes available in programs
         unsigned int max_depth;         			///< max depth of programs
         unsigned int max_size;          			///< max size of programs (length)
         unsigned int max_dim;           			///< maximum dimensionality of programs

@@ -5,7 +5,6 @@ license: GNU/GPL v3
 #ifndef INDIVIDUAL_H
 #define INDIVIDUAL_H
 
-#include "program.h"
 
 namespace FT{
     
@@ -17,7 +16,7 @@ namespace FT{
      */
     class Individual{
     public:        
-        Program program;                            ///< executable data structure
+        NodeVector program;                            ///< executable data structure
         double fitness;             				///< aggregate fitness score
         size_t loc;                 				///< index of individual in semantic matrix F
         string eqn;                 				///< symbolic representation of program

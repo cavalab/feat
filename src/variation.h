@@ -300,7 +300,7 @@ namespace FT{
                     string s; 
                     for (const auto& ins : insertion) s += ins->name + " "; 
                     params.msg("\t\tinsertion: " + s + "\n", 2);
-                    Program new_program; 
+                    NodeVector new_program; 
                     splice_programs(new_program, 
                                     child.program, i, i, 
                                     insertion, size_t(0), insertion.size()-1);
@@ -313,7 +313,7 @@ namespace FT{
                     /* /1*                      insertion.end()); *1/ */
                     i += insertion.size()-1;
                 }
-                std::cout << "i: " << i << "\n"; 
+                /* std::cout << "i: " << i << "\n"; */ 
             }
         }
         else    // add a dimension
@@ -446,20 +446,17 @@ namespace FT{
          *
          * @return  vnew: new vector 
          */
-        std::cout << "in splice_programs\n";
-        std::cout << "i1: " << i1 << ", j1: " << j1  << ", i2: " << i2 << ", j2:" << j2 << "\n";
+        /* std::cout << "in splice_programs\n"; */
+        /* std::cout << "i1: " << i1 << ", j1: " << j1  << ", i2: " << i2 << ", j2:" << j2 << "\n"; */
         // size difference between subtrees  
         for (unsigned i = 0; i < i1 ; ++i)                  // beginning of v1
             vnew.push_back(v1.at(i)->clone());
-        std::cout << "splicing in v2...\n";
         for (unsigned i = i2; i <= j2 ; ++i)                 // spliced in v2 portion
             vnew.push_back(v2.at(i)->clone());
-        std::cout << "adding end of v1...\n";
         for (unsigned i = j1+1; i < v1.size() ; ++i)        // end of v1
             vnew.push_back(v1.at(i)->clone());
-        std::cout << "spliced program: ";
-        for (const auto& p : vnew) std::cout << p->name << " ";
-        std::cout << "\n";
+        /* for (const auto& p : vnew) std::cout << p->name << " "; */
+        /* std::cout << "\n"; */
         /* vnew.insert(vnew.end(),v1.begin(),v1.begin()+i1); */          
         /* vnew.insert(vnew.end(),v2.begin()+i2,v2.begin()+j2+1);  // spliced in v2 portion */
         /* vnew.insert(vnew.end(),v1.begin()+j1+1,v1.end()); */       
