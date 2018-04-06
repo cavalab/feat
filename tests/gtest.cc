@@ -138,7 +138,7 @@ TEST(Feat, predict)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
     
-    feat.set_verbosity(0);
+    feat.set_verbosity(1);
     
     feat.fit(X, y);
     
@@ -156,7 +156,7 @@ TEST(Feat, predict)
 TEST(Feat, transform)
 {
     Feat feat(100); feat.set_random_state(666);
-    feat.set_verbosity(1); 
+    
     MatrixXd X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
@@ -173,7 +173,7 @@ TEST(Feat, transform)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
     
-    feat.set_verbosity(0);
+    feat.set_verbosity(1);
     
     feat.fit(X, y);
     
@@ -215,7 +215,7 @@ TEST(Feat, fit_predict)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
     
-    feat.set_verbosity(0);
+    feat.set_verbosity(1);
          
     ASSERT_EQ(feat.fit_predict(X, y).size(), 7);
 }
@@ -242,7 +242,7 @@ TEST(Feat, fit_transform)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
     
-    feat.set_verbosity(0);
+    feat.set_verbosity(1);
     
     MatrixXd res = feat.fit_transform(X, y);
     ASSERT_EQ(res.cols(), 7);
