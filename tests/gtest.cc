@@ -63,7 +63,7 @@ bool checkBrackets(string str)
 
 TEST(Feat, SettingFunctions)
 {
-	Feat feat(100);
+	Feat feat(100); feat.set_random_state(666);
     
     feat.set_pop_size(200);
     ASSERT_EQ(200, feat.params.pop_size);
@@ -119,7 +119,8 @@ TEST(Feat, SettingFunctions)
 
 TEST(Feat, predict)
 {
-    Feat feat(100);
+    Feat feat(100); feat.set_random_state(666);
+
     
     MatrixXd X(7,2); 
     X << 0,1,  
@@ -154,7 +155,7 @@ TEST(Feat, predict)
 
 TEST(Feat, transform)
 {
-    Feat feat(100);
+    Feat feat(100); feat.set_random_state(666);
     
     MatrixXd X(7,2); 
     X << 0,1,  
@@ -186,12 +187,14 @@ TEST(Feat, transform)
         
     MatrixXd res = feat.transform(X);
     ASSERT_EQ(res.cols(), 7);
+    if (res.rows() > feat.params.max_dim)
+        std::cout << "res.rows(): " << res.rows() << ", params.max_dim: " << feat.params.max_dim << "\n";
     ASSERT_TRUE(res.rows() <= feat.params.max_dim);
 }
 
 TEST(Feat, fit_predict)
 {
-    Feat feat(100);
+    Feat feat(100); feat.set_random_state(666);
     
     MatrixXd X(7,2); 
     X << 0,1,  
@@ -216,7 +219,7 @@ TEST(Feat, fit_predict)
 
 TEST(Feat, fit_transform)
 {
-    Feat feat(100);
+    Feat feat(100); feat.set_random_state(666);
     
     MatrixXd X(7,2); 
     X << 0,1,  
@@ -244,7 +247,7 @@ TEST(Feat, fit_transform)
 
 TEST(Individual, EvalEquation)
 {
-	Feat feat(100);
+	Feat feat(100); feat.set_random_state(666);
     MatrixXd X(4,2); 
     MatrixXd X_v(3,2); 
     X << 0,1,  
@@ -714,7 +717,7 @@ bool isValidProgram(NodeVector& program, unsigned num_features)
 
 TEST(Variation, MutationTests)
 {
-	Feat feat(100);
+	Feat feat(100); feat.set_random_state(666);
     MatrixXd X(4,2); 
     MatrixXd X_v(3,2); 
     X << 0,1,  
@@ -784,7 +787,7 @@ TEST(Variation, MutationTests)
 
 TEST(Variation, CrossoverTests)
 {
-	Feat feat(100);
+	Feat feat(100); feat.set_random_state(666);
     MatrixXd X(4,2); 
     MatrixXd X_v(3,2); 
     X << 0,1,  
@@ -856,7 +859,7 @@ TEST(Variation, CrossoverTests)
 
 TEST(Population, PopulationTests)
 {
-	Feat feat(100);
+	Feat feat(100); feat.set_random_state(666);
     MatrixXd X(4,2); 
     MatrixXd X_v(3,2); 
     X << 0,1,  
@@ -1294,7 +1297,7 @@ TEST(Evaluation, out_ml)
 
 TEST(Selection, SelectionOperator)
 {
-    Feat feat(100);
+    Feat feat(100); feat.set_random_state(666);
     MatrixXd X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
