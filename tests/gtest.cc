@@ -187,11 +187,13 @@ TEST(Feat, transform)
         
     MatrixXd res = feat.transform(X);
     ASSERT_EQ(res.cols(), 7);
-    if (res.rows() > feat.params.max_dim)
+    if (res.rows() > feat.params.max_dim){
         std::cout << "res.rows(): " << res.rows() << 
                     ", res.cols(): " << res.cols() << 
                     ", params.max_dim: " << feat.params.max_dim << "\n";
-
+        for (unsigned r =0; r < res.rows(); ++r)
+            std::cout << res.row(r) << "\n";
+    }
     ASSERT_TRUE(res.rows() <= feat.params.max_dim);
 }
 
