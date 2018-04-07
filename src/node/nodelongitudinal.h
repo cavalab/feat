@@ -15,14 +15,14 @@ namespace FT{
 			
 			NodeLongitudinal(std::string n)
 			{
-                name = "z_"+n;
+                name = "z_"+trim(n);
                 
                 zName = n;
                     
-    			otype = 'f';
+    			otype = 'z';
     			arity['f'] = 0;
     			arity['b'] = 0;
-    			arity['z'] = 1;
+    			arity['z'] = 0;
     			complexity = 1;
     		}
     		

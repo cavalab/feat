@@ -149,6 +149,7 @@ TEST(Feat, predict)
          0.5, -0.8,
          0.1,-0.9;
     
+    cout << "Done till here\n";
     ASSERT_EQ(feat.predict(X).size(), 7);             //TODO had to remove !bzero ASSERT in set_termincal weights
 }
 
@@ -1322,14 +1323,16 @@ TEST(Selection, SelectionOperator)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
              
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z;
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z;
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_t;
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_v;
 
 	feat.timer.Reset();
 	
 	MatrixXd X_t(X.rows(),int(X.cols()*feat.params.split));
     MatrixXd X_v(X.rows(),int(X.cols()*(1-feat.params.split)));
     VectorXd y_t(int(y.size()*feat.params.split)), y_v(int(y.size()*(1-feat.params.split)));
-    train_test_split(X,y,X_t,X_v,y_t,y_v,feat.params.shuffle);
+    train_test_split(X, y, Z, X_t, X_v, y_t, y_v, Z_t, Z_v, feat.params.shuffle, feat.params.split);
     
     feat.timer.Reset();
 	
@@ -1350,7 +1353,7 @@ TEST(Selection, SelectionOperator)
     feat.p_pop->init(feat.best_ind, feat.params);
     
     feat.F.resize(X_t.cols(),int(2*feat.params.pop_size));
-    feat.p_eval->fitness(*(feat.p_pop), X_t, z, y_t, feat.F, feat.params);
+    feat.p_eval->fitness(*(feat.p_pop), X_t, Z_t, y_t, feat.F, feat.params);
     vector<size_t> parents = feat.p_sel->select(*(feat.p_pop), feat.F, feat.params);
     
     ASSERT_EQ(parents.size(), feat.get_pop_size());

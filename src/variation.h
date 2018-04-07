@@ -154,17 +154,17 @@ namespace FT{
         float rf = r();
         if (rf < 1.0/3.0 && child.get_dim() > 1){
             delete_mutate(child,params); 
-            assert(is_valid_program(child.program, params.num_features));
+            assert(is_valid_program(child.program, params.num_features, params.longitudinalMap));
         }
         else if (rf < 2.0/3.0 && child.size() < params.max_size)
         {
             insert_mutate(child,params);
-            assert(is_valid_program(child.program, params.num_features));
+            assert(is_valid_program(child.program, params.num_features, params.longitudinalMap));
         }
         else
         {        
             point_mutate(child,params);
-            assert(is_valid_program(child.program, params.num_features));
+            assert(is_valid_program(child.program, params.num_features, params.longitudinalMap));
         }
  
         // check child depth and dimensionality
@@ -196,7 +196,7 @@ namespace FT{
                     for (const auto& f: params.functions)
                     {
                         if (f->otype == p->otype && f->arity['f']==p->arity['f'] && 
-                                f->arity['b']==p->arity['b'])
+                                f->arity['b']==p->arity['b'] && f->arity['z']==p->arity['z'])
                             replacements.push_back(f);
                     }
                 }
@@ -297,7 +297,7 @@ namespace FT{
         {            
             vector<std::shared_ptr<Node>> insertion; // new dimension
             make_program(insertion, params.functions, params.terminals, 1,  
-                         params.term_weights,1,r.random_choice(params.otypes));
+                         params.term_weights,1,r.random_choice(params.otypes), params.longitudinalMap);
             child.program.insert(child.program.end(),insertion.begin(),insertion.end());
         }
     }
@@ -392,7 +392,7 @@ namespace FT{
         if (params.verbosity >= 2) 
             print_cross(mom,i1,j1,dad,i2,j2,child);     
 
-        assert(is_valid_program(child.program,params.num_features));
+        assert(is_valid_program(child.program,params.num_features, params.longitudinalMap));
         // check child depth and dimensionality
         return child.size()>0 && child.size() <= params.max_size 
                     && child.get_dim() <= params.max_dim;

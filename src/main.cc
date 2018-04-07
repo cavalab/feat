@@ -182,7 +182,6 @@ int main(int argc, char** argv){
     MatrixXd X_t(X.rows(),int(X.cols()*split));
     MatrixXd X_v(X.rows(),int(X.cols()*(1-split)));
     VectorXd y_t(int(y.size()*split)), y_v(int(y.size()*(1-split)));
-    FT::train_test_split(X,y,X_t,X_v,y_t,y_v,feat.get_shuffle());      
     
     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z;
     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_t;
@@ -193,6 +192,8 @@ int main(int argc, char** argv){
         FT::load_longitudinal(ldataFile, Z);
         FT::split_longitudinal(Z, Z_t, Z_v, split);
     }   
+    
+    FT::train_test_split(X,y,Z,X_t,X_v,y_t,y_v,Z_t,Z_v,feat.get_shuffle(), split);      
     
     MatrixXd X_tcopy = X_t;     
     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_tcopy = Z_t;
