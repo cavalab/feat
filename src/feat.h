@@ -401,15 +401,12 @@ namespace FT{
         MatrixXd X_t(X.rows(),int(X.cols()*params.split));
         MatrixXd X_v(X.rows(),int(X.cols()*(1-params.split)));
         VectorXd y_t(int(y.size()*params.split)), y_v(int(y.size()*(1-params.split)));
-        train_test_split(X,y,X_t,X_v,y_t,y_v,params.shuffle);
         
         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_t;
         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_v;
         
-        if(Z.size() > 0)
-        {
-            FT::split_longitudinal(Z, Z_t, Z_v, params.split);
-        }
+        train_test_split(X,y,Z,X_t,X_v,y_t,y_v,Z_t,Z_v,params.shuffle, params.split);
+        
        
         /* std::cout << "X initial:"; */
         /* for (unsigned i = 0; i < 10; ++i) */
@@ -451,16 +448,19 @@ namespace FT{
         
         // initialize population 
         params.msg("Initializing population", 1);
+        
         p_pop->init(best_ind,params);
         params.msg("Initial population:\n"+p_pop->print_eqns(),2);
-
+        
         // resize F to be twice the pop-size x number of samples
         F.resize(X_t.cols(),int(2*params.pop_size));
        
         // evaluate initial population
         params.msg("Evaluating initial population",1);
         p_eval->fitness(*p_pop,X_t, Z_t, y_t,F,params);
-
+        
+        params.msg("Initial population done",1);
+        
         vector<size_t> survivors;
 
         // main generational loop

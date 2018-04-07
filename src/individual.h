@@ -131,6 +131,24 @@ namespace FT{
     //}
     void Individual::set_p(const vector<double>& weights, const double& fb)
     {   
+        //cout<<"Weights size = "<<weights.size()<<"\n";
+        //cout<<"Roots size = "<<roots().size()<<"\n";
+        if(weights.size() != roots().size())
+        {
+            cout<<"Weights are\n";
+            for(double weight : weights)
+                cout<<weight<<"\n";
+                
+            cout<<"Roots are\n";
+            auto root1 = roots();
+            for(auto root : root1)
+                cout<<root<<"\n";
+            
+            cout<<"Program is \n";
+            for (auto p : program) std::cout << p->name << " ";
+            cout<<"\n";
+                
+        }
         assert(weights.size() == roots().size());     
         p = weights;
         for (unsigned i=0; i<p.size(); ++i)
@@ -191,7 +209,11 @@ namespace FT{
         for (const auto& n : program)
         {
         	if(stack.check(n->arity))
+        	{
+        	    //cout<<"***enter here "<<n->name<<"\n";
 	            n->evaluate(X, y, Z, stack);
+	            //cout<<"***exit here "<<n->name<<"\n";
+	        }
             else
             {
                 std::cout << "out() error: node " << n->name << " in " + program_str() + 
@@ -297,8 +319,11 @@ namespace FT{
            i = subtree(--i,'f');                   // recurse for floating arguments      
        size_t i2 = i;                              // index for second recursion
        for (unsigned int j = 0; j<arity['b']; ++j)
-           i2 = subtree(--i2,'b');                 // recurse for boolean arguments
-       return std::min(i,i2);
+           i2 = subtree(--i2,'b');
+       size_t i3 = i2;                 // recurse for boolean arguments
+       for (unsigned int j = 0; j<arity['z']; ++j)
+           i3 = subtree(--i3,'z'); 
+       return std::min(i,i3);
     }
    
     // get program dimensionality

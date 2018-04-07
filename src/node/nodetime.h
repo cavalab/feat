@@ -18,7 +18,7 @@ namespace FT{
     			otype = 'f';
     			arity['f'] = 0;
     			arity['b'] = 0;
-    			arity['l'] = 1;
+    			arity['z'] = 1;
     			complexity = 1;
     		}
     		

@@ -93,12 +93,18 @@ namespace FT
         
         bool check(std::map<char, unsigned int> &arity)
         {
-            return f.size() >= arity['f'] && b.size() >= arity['b'];
+            if(arity.find('z') == arity.end())
+                return (f.size() >= arity['f'] && b.size() >= arity['b']);
+            else
+                return (f.size() >= arity['f'] && b.size() >= arity['b'] && z.size() >= arity['z']);
         }
         
         bool check_s(std::map<char, unsigned int> &arity)
         {
-            return fs.size() >= arity['f'] && bs.size() >= arity['b'];
+            if(arity.find('z') == arity.end())
+                return (fs.size() >= arity['f'] && bs.size() >= arity['b']);
+            else
+                return (fs.size() >= arity['f'] && bs.size() >= arity['b'] && zs.size() >= arity['z']);
         }
     };
 }
