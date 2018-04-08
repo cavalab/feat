@@ -80,13 +80,14 @@ namespace FT{
          *      pop[:].fitness is modified
          */
         
-        
         unsigned start =0;
+	bool abort = false;
         if (offspring) start = F.cols()/2;
         // loop through individuals
         #pragma omp parallel for
         for (unsigned i = start; i<pop.size(); ++i)
         {
+	    try {
                         // calculate program output matrix Phi
             params.msg("Generating output for " + pop.individuals[i].get_eqn(), 2);
             MatrixXd Phi = pop.individuals.at(i).out(X, params, y);            
@@ -97,11 +98,11 @@ namespace FT{
             auto ml = std::make_shared<ML>(params);
             VectorXd yhat = ml->fit(Phi,y,params,pass,pop.individuals[i].dtypes);
             if (!pass){
-                //std::cerr << "Error training eqn " + pop.individuals[i].get_eqn() + "\n";
+		yhat = VectorXd::Zero(yhat.size())  ; //high fitness won't be selected  
+                std::cerr << "Error training eqn " + pop.individuals[i].get_eqn() + "\n";
                 //std::cerr << "with raw output " << pop.individuals[i].out(X,params,y) << "\n";
-                //throw;
-                yhat = VectorXd::Zero( yhat.size()  ); 
-            }
+	  	//throw std::runtime_error("Exception caused in Evaluation");
+		}
             // assign weights to individual
            //vector<double> w = ml->get_weights() 
             pop.individuals[i].set_p(ml->get_weights(),params.feedback);
@@ -109,8 +110,15 @@ namespace FT{
             params.msg("Assigning fitness to " + pop.individuals[i].get_eqn(), 2);
             
             assign_fit(pop.individuals[i],F,yhat,y,params);
-                        
+            } catch ( const std::runtime_error& error  ) {
+		abort = true;	
+	    }            
         }
+    	if ( abort ) {
+		params.msg ( "Exception Occured in Evaluation Fitness" , 1 );
+		throw std::runtime_error("Exception caused in Evaluation");
+	}
+	 
     }    
     
     // assign fitness to program

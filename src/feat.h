@@ -327,7 +327,7 @@ namespace FT{
     
     void Feat::fit(MatrixXd& X, VectorXd& y)
     {
-
+ 	try {
         /*!
          *  Input:
          
@@ -431,7 +431,7 @@ namespace FT{
        
         // evaluate initial population
         params.msg("Evaluating initial population",1);
-        p_eval->fitness(*p_pop,X_t,y_t,F,params);
+        p_eval->fitness(*p_pop,X_t,y_t,F,params); 
 
         vector<size_t> survivors;
 
@@ -486,14 +486,23 @@ namespace FT{
         /* out_model.open("model_" + name + ".txt"); */
         /* out_model << best_ind.get_eqn() ; */ 
         /* out_model.close(); */
+	} catch (std::runtime_error &error){ 
+		std::cout << "\nException Occured inside Fit Method of feat" << std::endl;
+		throw std::runtime_error("Exception in feat fit Method ");
+	}
     }
 
     void Feat::fit(double * X, int rowsX, int colsX, double * Y, int lenY)
     {
-        MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
-        VectorXd vectY = Map<VectorXd>(Y,lenY);
+	try { 
+		MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
+		VectorXd vectY = Map<VectorXd>(Y,lenY);
+		Feat::fit(matX,vectY);
+	} catch (std::runtime_error &error){
+		std::cout << "\nException Caught in Feat::Fit(double,int,int,double,int) Method" << std::endl;
+		throw std::runtime_error("Throwing the Error back to the wrapper");
+	}
 	
-	    Feat::fit(matX,vectY);
     }
 
     void Feat::final_model(MatrixXd& X, VectorXd& y)
@@ -505,7 +514,7 @@ namespace FT{
         VectorXd yhat = p_ml->fit(Phi,y,params,pass,best_ind.dtypes);
         VectorXd tmp;
         double score = p_eval->score(y,yhat,tmp);
-        std::cout << "final_model:: score=" << score << "\n";
+        //std::cout << "final_model:: score=" << score << "\n";
     }
     
     void Feat::initial_model(MatrixXd& X_t, VectorXd& y_t, MatrixXd& X_v, VectorXd& y_v)
@@ -514,12 +523,16 @@ namespace FT{
          * fits an ML model to the raw data as a starting point.
          */
         bool pass = true;
+        //std::cout << "Calling p_ml-> fit..." << std::endl;
         VectorXd yhat = p_ml->fit(X_t,y_t,params,pass);
-        //std::cout << "initial_model: predict\n";
+        //std::cout << "Calling p_ml->predict" << std::endl;
         VectorXd yhat_v = p_ml->predict(X_v);
-
+	//std::cout << "Vector yhat Is Built" << std::endl;
         // set terminal weights based on model
+        const vector<double> w = p_ml->get_weights();
+        //std::cout << "Got Weights" << std::endl;
         params.set_term_weights(p_ml->get_weights());
+	//std::cout << "Weights set out for set_term_weights" << std::endl;
         VectorXd tmp;
         //std::cout << "initial_model: setting best_score\n";
         best_score = p_eval->score(y_t, yhat,tmp);
@@ -532,7 +545,7 @@ namespace FT{
         for (unsigned i =0; i<X_t.rows(); ++i)
             best_ind.program.push_back(params.terminals[i]);
         best_ind.fitness = best_score;
-       // std::cout << "initial best_score_v:" << best_score_v << "\n";
+        //std::cout << "initial best_score_v:" << best_score_v << "\n";
     }
 
     MatrixXd Feat::transform(MatrixXd& X, Individual *ind)
@@ -545,7 +558,7 @@ namespace FT{
         
         if (ind == 0)        // if ind is empty, predict with best_ind
         {
-            std::cout << "predicting with best_ind\n";
+            //std::cout << "predicting with best_ind\n";
             if (best_ind.program.size()==0){
                 std::cerr << "You need to train a model using fit() before making predictions.\n";
                 throw;
