@@ -215,17 +215,17 @@ namespace FT{
         #pragma omp parallel for
         for (unsigned i = 1; i< individuals.size(); ++i)
         {  
-	    std::cout << "In OMP For Loop " << i << std::endl;         
+	    //std::cout << "In OMP For Loop " << i << std::endl;         
             // pick a dimensionality for this individual
             int dim = r.rnd_int(1,params.max_dim);      
             // pick depth from [params.min_depth, params.max_depth]
             int depth =  r.rnd_int(1, params.max_depth);
             // make a program for each individual
-            std::cout << "Make Program..." << std::endl;
+            //std::cout << "Make Program..." << std::endl;
             make_program(individuals[i].program, params.functions, params.terminals, depth,
                          params.term_weights,dim,r.random_choice(params.otypes));
             
-            std::cout << ind.get_eqn() + "\n";
+            //std::cout << ind.get_eqn() + "\n";
            
             // set location of individual and increment counter             
             individuals[i].loc = i;   
