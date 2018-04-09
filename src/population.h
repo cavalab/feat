@@ -210,15 +210,18 @@ namespace FT{
          */
         individuals[0] = starting_model;
         individuals[0].loc = 0;
-        
+      	
+	std::cout << "In init Population..." << std::endl;
         #pragma omp parallel for
         for (unsigned i = 1; i< individuals.size(); ++i)
-        {           
+        {  
+	    //std::cout << "In OMP For Loop " << i << std::endl;         
             // pick a dimensionality for this individual
             int dim = r.rnd_int(1,params.max_dim);      
             // pick depth from [params.min_depth, params.max_depth]
             int depth =  r.rnd_int(1, params.max_depth);
             // make a program for each individual
+            //std::cout << "Make Program..." << std::endl;
             make_program(individuals[i].program, params.functions, params.terminals, depth,
                          params.term_weights,dim,r.random_choice(params.otypes));
             
@@ -228,7 +231,9 @@ namespace FT{
             individuals[i].loc = i;   
         }
         // define open locations
+	std::cout << "Done with IMP in init ..." << std::endl;
         update_open_loc(); 
+	std::cout << "Returning from the Population::init" << std::endl;
     }
    
    void Population::update(vector<size_t> survivors)
