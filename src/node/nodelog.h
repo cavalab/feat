@@ -40,7 +40,7 @@ namespace FT{
                 stack_f.push_back("log(" + x + ")");
             }
 
-            ArrayXd getDerivative(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
+            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
                 switch (loc) {
                     case 1: // d/dw0
                         return 1/(W[0]]);

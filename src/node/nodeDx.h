@@ -11,18 +11,18 @@ namespace FT{
     {
     	public:
     		vector<int> W;
-            int visits;
+            int visits = 0;
     	
     		virtual ~NodeDx(){}
 
     		virtual ArrayXd getDerivative(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) = 0;
     		
     		void derivative(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
-                gradients.push_back(getDerivative(gradients, stack_f, loc));
+                gradients.push_back(getDerivative(stack_f, loc));
             }
 
             void update(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
-                update_value = 1
+                update_value = 1;
                 for(auto g : gradients) {
                     update_value *= g;
                 }

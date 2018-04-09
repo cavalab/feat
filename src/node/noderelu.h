@@ -2,10 +2,10 @@
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
-#ifndef NODE_DIVIDE
-#define NODE_DIVIDE
+#ifndef NODE_RELU
+#define NODE_RELU
 
-#include "node.h"
+#include "nodeDx.h"
 
 namespace FT{
 	class NodeDivide : public Node
@@ -29,31 +29,30 @@ namespace FT{
             void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
                     vector<ArrayXb>& stack_b)
             {
-                ArrayXd x2 = stack_f.back(); stack_f.pop_back();
-                ArrayXd x1 = stack_f.back(); stack_f.pop_back();
-                // safe division returns x1/x2 if x2 != 0, and MAX_DBL otherwise               
-                stack_f.push_back( (abs(x2) > NEAR_ZERO ).select((W[1] * x1) / (W[0] * x2), 1.0) ); //MAX_DBL    
+                ArrayXd x = stack_f.back(); stack_f.pop_back();
+                
+                ArrayXd res = (W[0] * x > 0).select(, (W[0] * x == 0).select(ArrayXd::Zero(x.size()), -1*ArrayXd::Ones(x.size()))); 
+                stack_f.push_back(res);
             }
 
             /// Evaluates the node symbolically
             void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
             {
-        		string x2 = stack_f.back(); stack_f.pop_back();
-                string x1 = stack_f.back(); stack_f.pop_back();
-                stack_f.push_back("(" + x1 + "/" + x2 + ")");            	
+        		string x = stack_f.back(); stack_f.pop_back();
+                stack_f.push_back("relu("+ x +")");         	
             }
 
             ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
                 switch (loc) {
-                    case 3: // d/dw1
-                        return stack_f[stack_f.size()-1]/(W[0] * stack_f[stack_f.size()-2]);
-                    case 2: // d/dw0
-                        return -W[1] * stack_f[stack_f.size()-1]/(stack_f[stack_f.size()-2] * pow(W[0], 2));
                     case 1: // d/dx1
+                        ArrayXd x = fwd_stack[fwd_stack.size()-1];
+                        ArrayXd res = (W[0] * x > 0).select(ArrayXd::Ones(x.size()), (x == 0).select(ArrayXd::Zero(x.size()), -1*ArrayXd::Ones(x.size()))); 
                         return W[1]/(W[0] * fwd_stack[-2]);
                     case 0: // d/dx0
                     default:
-                       return -W[1] * stack_f[stack_f.size() - 1]/(W[0] * pow(stack_f[stack_f.size()], 2));
+                        ArrayXd x = fwd_stack[fwd_stack.size()-1];
+                        ArrayXd res = (W[0] * x > 0).select(ArrayXd::Ones(x.size()), (x == 0).select(ArrayXd::Zero(x.size()), -1*ArrayXd::Ones(x.size()))); 
+                        return -W[1] * stack_f[stack_f.size() - 1]/(W[0] * pow(stack_f[stack_f.size()], 2));
                 } 
             }
 

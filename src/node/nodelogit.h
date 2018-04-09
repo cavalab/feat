@@ -39,7 +39,7 @@ namespace FT{
                 stack_f.push_back("1/(1+exp(-1*" + x + "))");
             }
 
-            ArrayXd getDerivative(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
+            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
                 switch (loc) {
                     case 1: // d/dw0
                         numerator = stack_f[stack_f.size() -1] * exp(-W[0] * stack_f[stack_f.size() -1]);

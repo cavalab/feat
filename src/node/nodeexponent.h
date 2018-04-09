@@ -43,7 +43,7 @@ namespace FT{
                 stack_f.push_back("(" + x1 + ")^(" + x2 + ")");
             }
 
-            ArrayXd getDerivative(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
+            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
                 switch (loc) {
                     case 3: // Weight for the base
                         return W[0] * stack_f[stack_f.size()-1] * limited(pow(W[1] * stack_f[stack_f.size() - 2], W[0] * stack_f[stack_f.size() - 1])) / W[1];

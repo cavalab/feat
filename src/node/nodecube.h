@@ -40,7 +40,7 @@ namespace FT{
                 stack_f.push_back("(" + x + "^3)");
             }
 
-            ArrayXd getDerivative(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
+            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
                 switch (loc) {
                     case 1: // d/dw0
                         return 3 * pow(stack_f[stack_f.size()-1], 3) * pow(W[0], 2);

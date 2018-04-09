@@ -82,8 +82,8 @@ namespace FT {
 			n_derivatives = []
 			BP_NODE bp_node;
             while (bp_node.deriv_list.empty()) {
-                bp_node = executing.pop()
-                derivatives.pop()
+                bp_node = executing.pop();
+                derivatives.pop();
                 
                 if (executing.empty()) {
                     return NULL;
