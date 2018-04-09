@@ -187,6 +187,7 @@ namespace FT{
         /// set the output types of programs
         void set_otypes()
         {
+            std::cout << "in set otypes\n";
             otypes.clear();
             switch (otype)
             { 
@@ -194,13 +195,31 @@ namespace FT{
                 case 'f': otypes.push_back('f'); break;
                 default: 
                 {
-                    for (const auto& f: functions)
-                        if (!in(otypes,f->otype)) 
-                            otypes.push_back(f->otype);
                     for (const auto& t: terminals)
                         if (!in(otypes,t->otype)) 
                             otypes.push_back(t->otype);
-
+                    // check if otypes is just 'b', in which case, remove floating point functions
+                    if (otypes.size()==1 && otypes[0]=='b')
+                    {
+                        std::cout << "otypes is size 1 and otypes[0]==b\nerasing functions...\n";
+                        size_t n = functions.size();
+                        for (vector<int>::size_type i =n-1; 
+                             i != (std::vector<int>::size_type) -1; i--){
+                            if (functions.at(i)->arity['f'] >0){
+                                std::cout << "erasing function" << functions.at(i)->name << "\n";
+                                functions.erase(functions.begin()+i);
+                            }
+                        }
+                        std::cout << "functions:\n";
+                        for (auto f : functions) std::cout << f->name << " "; std::cout << "\n";
+                        otype = 'b';
+                    }                        
+                    else
+                    {
+                        for (const auto& f: functions)
+                            if (!in(otypes,f->otype)) 
+                                otypes.push_back(f->otype);
+                    }
                     break;
                 }
             }
