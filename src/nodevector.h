@@ -20,6 +20,7 @@ namespace FT{
         NodeVector(const NodeVector& other)
         {
             /* std::cout<<"in NodeVector(const NodeVector& other)\n"; */
+            this->resize(0);
             for (const auto& p : other)
                 this->push_back(p->clone());
         }
@@ -33,6 +34,7 @@ namespace FT{
         { 
 
             /* std::cout << "in NodeVector& operator=(NodeVector const& other)\n"; */
+            this->resize(0);
             for (const auto& p : other)
                 this->push_back(p->clone());
             return *this; 

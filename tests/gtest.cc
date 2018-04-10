@@ -184,15 +184,15 @@ TEST(Feat, transform)
          0.9, -0.4,
          0.5, -0.8,
          0.1,-0.9;
-        
+       
+    feat.set_verbosity(2);
     MatrixXd res = feat.transform(X);
     ASSERT_EQ(res.cols(), 7);
+
     if (res.rows() > feat.params.max_dim){
         std::cout << "res.rows(): " << res.rows() << 
                     ", res.cols(): " << res.cols() << 
                     ", params.max_dim: " << feat.params.max_dim << "\n";
-        for (unsigned r =0; r < res.rows(); ++r)
-            std::cout << res.row(r) << "\n";
     }
     ASSERT_TRUE(res.rows() <= feat.params.max_dim);
 }
@@ -217,7 +217,7 @@ TEST(Feat, fit_predict)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
     
-    feat.set_verbosity(1);
+    feat.set_verbosity(0);
          
     ASSERT_EQ(feat.fit_predict(X, y).size(), 7);
 }
@@ -226,7 +226,7 @@ TEST(Feat, fit_transform)
 {
     Feat feat(100); feat.set_random_state(666);
    
-    feat.set_verbosity(1);
+    feat.set_verbosity(0);
 
     MatrixXd X(7,2); 
     X << 0,1,  
@@ -244,7 +244,7 @@ TEST(Feat, fit_transform)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
     
-    feat.set_verbosity(1);
+    feat.set_verbosity(0);
     
     MatrixXd res = feat.fit_transform(X, y);
     ASSERT_EQ(res.cols(), 7);
@@ -1360,6 +1360,7 @@ TEST(Selection, SelectionOperator)
 }
 
 int main(int argc, char **argv) {
+    std::cout <<"test\n";
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

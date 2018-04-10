@@ -269,7 +269,7 @@ namespace FT{
             /// transform an input matrix using a program.                          
             MatrixXd transform(MatrixXd& X,  Individual *ind = 0);
             
-	    MatrixXd transform(double * X,  int rows_x, int cols_x);
+            MatrixXd transform(double * X,  int rows_x, int cols_x);
             
             /// convenience function calls fit then predict.            
             VectorXd fit_predict(MatrixXd& X, VectorXd& y){ fit(X,y); return predict(X); } 
@@ -285,13 +285,8 @@ namespace FT{
             /// convenience function calls fit then transform. 
             MatrixXd fit_transform(MatrixXd& X, VectorXd& y){ fit(X,y); return transform(X); }
 
-            MatrixXd fit_transform(double * X, int rows_x, int cols_x, double * Y, int len_y)
-		{
-			MatrixXd matX = Map<MatrixXd>(X,rows_x,cols_x);
-			VectorXd vectY = Map<VectorXd>(Y,len_y);
-			fit(matX,vectY); 
-			return transform(matX);
-		}
+            MatrixXd fit_transform(double * X, int rows_x, int cols_x, double * Y, int len_y);
+
                   
             /// scoring function 
             double score(MatrixXd& X, const VectorXd& y);
@@ -552,12 +547,10 @@ namespace FT{
                 throw;
             }
             
-            MatrixXd Phi = best_ind.out(X,params);
-            return Phi;
+            return best_ind.out(X,params);
         }
-
-        MatrixXd Phi = ind->out(X,params);
-        return Phi;
+    
+        return ind->out(X,params);
     }
 
     MatrixXd Feat::transform(double * X, int rows_x,int cols_x)
@@ -566,7 +559,14 @@ namespace FT{
         return transform(matX);
         
     }
-    
+
+    MatrixXd Feat::fit_transform(double * X, int rows_x, int cols_x, double * Y, int len_y)
+    {
+        MatrixXd matX = Map<MatrixXd>(X,rows_x,cols_x);
+        VectorXd vectY = Map<VectorXd>(Y,len_y);
+        fit(matX,vectY); 
+        return transform(matX);
+    }
     VectorXd Feat::predict(MatrixXd& X)
     {   
         MatrixXd Phi = transform(X);
