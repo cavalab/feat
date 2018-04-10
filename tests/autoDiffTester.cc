@@ -183,8 +183,37 @@ int testDummyProgram() {
 	// Auto_backprop(PROGRAM, COST_FUNCTION, INPUT_DATA, LABELS, ITERS, LEARNING RATE);
 	Auto_backprop engine = new Auto_backprop(p0, COST_FUNCTION, x, y, iters, learning_rate);
 	vector<Node> predictor = engine.run();
+
+	// Test if output is correct
+	ArrayXd pred = evaluateProgram(predictor, x, y);
+	ArrayXd target;
+	target << 0; // Populate with expected results as dictated by tensorflow
+
+	// Test if weights are correct
+	vector<double> expected_weights = {};
+
+	for (int i = 0; i < expected_weights.size(); i++) { // Need check if node doesn't have weights
+		// Check if node is differentiable
+		if (isNodeDx(n)) {
+			if (abs(expected_weights[i] - predictor[i].W) > 0.00001) {
+				cout << "Discrepency with node " + i + "\n";
+			}
+		}
+	}
 }
 
-int testSimpleBackProp() {
+ArrayXd evaluateProgram(vector<Node> program, MatrixXd data, VectorXd labels) {
+	// Create stack for storing execution
+	vector<ArrayXd> stack_f;
 
+	// Iterate through program and calculate results 
+	for (Node n : program) {
+		n.evaluate(data, labels, stack_f, NULL);
+	}
+
+	return stack_f.pop();
+}
+
+bool isNodeDx(Node n) {
+	return d != dynamic_cast<NodeDx*>(n); 
 }

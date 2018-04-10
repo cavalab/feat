@@ -32,7 +32,7 @@ namespace FT {
 		MatrixXd X;
 		VectorXd labels;
 		int iters;
-		vector<NodeDx> program;
+		vector<Node> program;
 
 		struct BP_NODE
 		{
@@ -44,10 +44,12 @@ namespace FT {
 		void forward_prop();
 
 		// Updates stacks to have proper value on top
-		void next_branch(vector<BP_NODE> executing, vector<NodeDx> bp_program, vector<ArrayXd> derivatives);
+		void next_branch(vector<BP_NODE> executing, vector<Node> bp_program, vector<ArrayXd> derivatives);
 
 		// Compute gradients and update weights 
 		void backprop(vector<ArrayXd> f_stack);
+
+		bool isNodeDx(Node n);
 
 	};
 
@@ -90,7 +92,7 @@ namespace FT {
 		return fwd_stack;
 	}
 
-	void next_branch(vector<BP_NODE> executing, vector<NodeDx> bp_program, vector<ArrayXd> derivatives) {
+	void next_branch(vector<BP_NODE> executing, vector<Node> bp_program, vector<ArrayXd> derivatives) {
 		if(executing.empty()) {
 			n_derivatives = []
 			BP_NODE bp_node;
@@ -112,26 +114,27 @@ namespace FT {
 
 	void backprop(vector<ArrayXd> f_stack) {
 		vector<ArrayXd> derivatives;
-		// derivatives.push_back()
+		// derivatives.push_back() Might need a cost function node
 
-		vector<Derivative_Bundle> executing; // Stores node and its associated derivatves
-		vector<NodeDx> bp_program(this.program); // Program we loop through and edit during algorithm
+		vector<BP_NODE> executing; // Stores node and its associated derivatves
+		vector<Node> bp_program(this.program); // Program we loop through and edit during algorithm (is this a shallow or deep copy?)
 
 		while (bp_program.size() > 0) {
-			node = bp_program.pop();
+			Node node = bp_program.pop();
 
 			vector<ArrayXd> n_derivatves;
 
-			if (node.visits == 0 && node.arity['f'] > 0) {
+			if (isNodeDx(node) && node.visits == 0 && node.arity['f'] > 0) {
+				NodeDx* dNode = dynamic_cast<NodeDx*>(node);
 				// Calculate all the derivatives and store them, then update all the weights and throw away the node
 				for (int i = 0; i < node.arity['f']; i++) {
-					node.derivative(n_derivatives, fwd_stack, node.arity['f'] + i);
+					dNode->derivative(n_derivatives, fwd_stack, node.arity['f'] + i);
 				}
 
-				node.update(derivatives, fwd_stack, this.n);
+				dNode->update(derivatives, fwd_stack, this.n);
 
 				// Get rid of the input arguments for the node
-				for (int i = 0; i < node.arity['f']; i++) {
+				for (int i = 0; i < dNode->arity['f']; i++) {
 					fwd_stack.pop();
 				}
 
@@ -139,7 +142,7 @@ namespace FT {
 					derivatives.push_back(n_derivatives.pop());
 				}
 
-				executing.push_back({node, n_derivatives});
+				executing.push_back({dNode, n_derivatives});
 			}
 
 			// Choosing how to move through tree
@@ -153,7 +156,10 @@ namespace FT {
 				}
 			}
 		}
+	}
 
+	bool isNodeDx(Node n) {
+		return d != dynamic_cast<NodeDx*>(n); ;
 	}
 }
 
