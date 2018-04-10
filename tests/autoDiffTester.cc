@@ -139,7 +139,50 @@ int testNodes() {
 }
 
 int testDummyProgram() {
-	
+	// Create a vector of nodes as a dummy program
+	vector<Node> p0;
+	p0.push_back(new NodeVariable(1));
+	p0.push_back(new NodeVariable(2));
+	p0.push_back(new NodeAdd());
+	p0.push_back(new NodeVariable(1));
+	p0.push_back(new NodeTanh());
+	p0.push_back(new NodeSin());
+
+	// Create cost function 
+
+	// Create input data and labels
+	MatrixXd x(10, 2);
+	VectorXd y(10);
+	x << 0.0, -9.0,
+	     1.0, -8.0,
+	     2.0, -7.0,
+	     3.0, -6.0,
+	     4.0, -5.0,
+	     5.0, -4.0,
+	     6.0, -3.0,
+	     7.0, -2.0,
+	     8.0, -1.0,
+	     9.0, -0.0;
+
+	y << 9.0,
+		 8.0,
+		 7.0,
+		 6.0,
+		 5.0,
+		 4.5,
+		 3.0,
+		 2.0,
+		 1.0,
+		 0.0;
+
+	// Params
+	int iters = 500;
+	double learning_rate = 0.01;
+
+
+	// Auto_backprop(PROGRAM, COST_FUNCTION, INPUT_DATA, LABELS, ITERS, LEARNING RATE);
+	Auto_backprop engine = new Auto_backprop(p0, COST_FUNCTION, x, y, iters, learning_rate);
+	vector<Node> predictor = engine.run();
 }
 
 int testSimpleBackProp() {

@@ -1,19 +1,44 @@
 #ifndef AUTO_BACKPROP_H
 #define AUTO_BACKPROP_H
 
+#include <Eigen/Dense>
+
 #include "node/nodeDx.h"
+
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
+typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
 
 namespace FT {
 	class Auto_backprop {
 	public:
-
+		typedef void (*callback)(ArrayXd, ArrayXd);
 		// Add a proper constructor
-		// Auto_backprop(program, cost_func, X, labels, iters=1000, n=0.1) {
-
-		// }
+		Auto_backprop(vector<Node> program, callback cost_func, MatrixXd X, VectorXd labels, int iters=1000, double n=0.1) {
+			this.program = program;
+			this.cost_func = cost_func;
+			this.X = X;
+			this.labels = labels;
+			this.iters = iters;
+			this.n = n;
+		}
 
 		// Return vector of nodes
 		vector<Node> run();
+
+	private:
+		double n; // Learning rate
+		void*(cost_func)(VectorXd, VectorXd);
+		MatrixXd X;
+		VectorXd labels;
+		int iters;
+		vector<NodeDx> program;
+
+		struct BP_NODE
+		{
+			NodeDx* n;
+			vector<ArrayXd> deriv_list;
+		};
 
 		// Return the f_stack
 		void forward_prop();
@@ -24,18 +49,6 @@ namespace FT {
 		// Compute gradients and update weights 
 		void backprop(vector<ArrayXd> f_stack);
 
-	private:
-		double n; // Learning rate
-		void*(cost_func)(ArrayXd, ArrayXd>);
-		ArrayXd labels;
-		int iters;
-		vector<NodeDx> program;
-
-		struct BP_NODE
-		{
-			NodeDx* n;
-			vector<ArrayXd> deriv_list;
-		};
 	};
 
 	///////////////////////////////// Definitions
