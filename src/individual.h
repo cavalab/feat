@@ -195,6 +195,7 @@ namespace FT{
         vector<ArrayXd> stack_f; 
         vector<ArrayXb> stack_b;
         params.msg("evaluating program " + get_eqn(),2);
+        params.msg("program length: " + std::to_string(program.size()),2);
         // evaluate each node in program
         for (const auto& n : program)
         {
@@ -223,6 +224,7 @@ namespace FT{
                
         int rows_f = stack_f.size();
         int rows_b = stack_b.size();
+        
         dtypes.clear();        
         Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
         // add stack_f to Phi
