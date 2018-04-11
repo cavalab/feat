@@ -31,7 +31,7 @@ namespace FT{
 			{
         		ArrayXd x2 = stack_f.back(); stack_f.pop_back();
                 ArrayXd x1 = stack_f.back(); stack_f.pop_back();
-                stack_f.push_back(limited(w[1] * x1 + W[0] * x2));
+                stack_f.push_back(limited(this->W[1] * x1 + this->W[0] * x2));
             }
             
             /// Evaluates the node symbolically
@@ -49,10 +49,10 @@ namespace FT{
                     case 2: 
                         return stack_f[stack_f.size()-1];
                     case 1:
-                        return W[1];
+                        return this->W[1] * ArrayXd::Ones(stack_f[stack_f.size()-2].size());
                     case 0:
                     default:
-                       return W[0];
+                       return this->W[0] * ArrayXd::Ones(stack_f[stack_f.size()-1].size());
                 } 
             }
 

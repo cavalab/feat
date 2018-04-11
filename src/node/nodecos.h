@@ -43,7 +43,7 @@ namespace FT{
             ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
                 switch (loc) {
                     case 1: // d/dw0
-                        return stack_f[stack_f.size()-1] * -sin(W[0] * stack_f[stack_f-1]);
+                        return stack_f[stack_f.size()-1] * -sin(W[0] * stack_f[stack_f.size() - 1]);
                     case 0: // d/dx0
                     default:
                        return W[0] * -sin(W[0] * stack_f[stack_f.size() - 1]);
