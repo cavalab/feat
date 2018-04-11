@@ -6,10 +6,16 @@ license: GNU/GPL v3
 #define NODE_H
 
 #include<map>
+#include <memory>
+#include <vector>
+#include <Eigen/Dense>
 using std::vector;
 using std::string;
 using std::map;
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
 using Eigen::ArrayXd;
+typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
 #define MAX_DBL std::numeric_limits<double>::max()
 #define MIN_DBL std::numeric_limits<double>::min()
 

@@ -40,6 +40,8 @@ namespace FT{
             }
 
             ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
+                ArrayXd numerator;
+                ArrayXd denom;
                 switch (loc) {
                     case 1: // d/dw0
                         numerator = 4 * stack_f[stack_f.size() - 1] * exp(2 * W[0] * stack_f[stack_f.size() - 1]); 

@@ -32,7 +32,7 @@ namespace FT{
                 ArrayXd x2 = stack_f.back(); stack_f.pop_back();
                 ArrayXd x1 = stack_f.back(); stack_f.pop_back();
                 // safe division returns x1/x2 if x2 != 0, and MAX_DBL otherwise               
-                stack_f.push_back( (abs(x2) > NEAR_ZERO ).select((W[1] * x1) / (W[0] * x2), 1.0) ); //MAX_DBL    
+                stack_f.push_back( (abs(x2) > NEAR_ZERO ).select((this->W[1] * x1) / (this->W[0] * x2), 1.0) ); //MAX_DBL    
             }
 
             /// Evaluates the node symbolically
@@ -46,14 +46,14 @@ namespace FT{
             ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
                 switch (loc) {
                     case 3: // d/dw1
-                        return stack_f[stack_f.size()-1]/(W[0] * stack_f[stack_f.size()-2]);
+                        return stack_f[stack_f.size()-1]/(this->W[0] * stack_f[stack_f.size()-2]);
                     case 2: // d/dw0
-                        return -W[1] * stack_f[stack_f.size()-1]/(stack_f[stack_f.size()-2] * pow(W[0], 2));
+                        return -this->W[1] * stack_f[stack_f.size()-1]/(stack_f[stack_f.size()-2] * pow(W[0], 2));
                     case 1: // d/dx1
-                        return W[1]/(W[0] * fwd_stack[-2]);
+                        return this->W[1]/(this->W[0] * stack_f[stack_f.size()-2]);
                     case 0: // d/dx0
                     default:
-                       return -W[1] * stack_f[stack_f.size() - 1]/(W[0] * pow(stack_f[stack_f.size()], 2));
+                       return -this->W[1] * stack_f[stack_f.size() - 1]/(this->W[0] * pow(stack_f[stack_f.size()], 2));
                 } 
             }
 

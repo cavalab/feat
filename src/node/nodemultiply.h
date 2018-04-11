@@ -31,7 +31,7 @@ namespace FT{
             {
         		ArrayXd x2 = stack_f.back(); stack_f.pop_back();
                 ArrayXd x1 = stack_f.back(); stack_f.pop_back();
-                stack_f.push_back(limited(W[1] * x1 * W[0] * x2));
+                stack_f.push_back(limited(this->W[1] * x1 * this->W[0] * x2));
             }
 
             /// Evaluates the node symbolically
@@ -41,19 +41,18 @@ namespace FT{
             	string x1 = stack_f.back(); stack_f.pop_back();
             	stack_f.push_back("(" + x1 + "*" + x2 + ")");
             }
-<<<<<<< HEAD
 
             ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
                 switch (loc) {
                     case 3: 
-                        return stack_f[stack_f.size()-1] * W[0] * stack_f[stack_f.size()-2];
+                        return stack_f[stack_f.size()-1] * this->W[0] * stack_f[stack_f.size()-2];
                     case 2: 
-                        return stack_f[stack_f.size()-1] * W[1] * stack_f[stack_f.size()-2];
+                        return stack_f[stack_f.size()-1] * this->W[1] * stack_f[stack_f.size()-2];
                     case 1:
-                        return W[0] * W[1] * stack_f[stack_f.size() - 2];
+                        return this->W[0] * this->W[1] * stack_f[stack_f.size() - 2];
                     case 0:
                     default:
-                       return W[1] * W[0] * stack_f[stack_f.size() - 1];
+                       return this->W[1] * this->W[0] * stack_f[stack_f.size() - 1];
                 } 
             }
 
@@ -80,10 +79,8 @@ namespace FT{
             //     d_w = d_w = stack_f[stack_f.size()-1] * W_temp[0] * stack_f.size()[stack_f.size()-2];
             //     W[1] = W_temp[1] - n/update_value.size * sum(d_w * update_value); 
             // }
-=======
         protected:
             NodeMultiply* clone_impl() const override { return new NodeMultiply(*this); };  
->>>>>>> 3fc58ab36cf56ee2a412662e57687e377215d5af
     };
 }	
 
