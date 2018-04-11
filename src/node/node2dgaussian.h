@@ -45,6 +45,8 @@ namespace FT{
                     double mean = x.mean();
                     return (limited(pow((x - mean),2))).sum()/(x.count() - 1);
                 }
+        protected:
+                Node2dGaussian* clone_impl() const override { return new Node2dGaussian(*this); };  
     };
 }	
 

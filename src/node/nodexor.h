@@ -40,6 +40,8 @@ namespace FT{
                 string x1 = stack_b.back(); stack_b.pop_back();
                 stack_b.push_back("(" + x1 + " XOR " + x2 + ")");
             }
+        protected:
+            NodeXor* clone_impl() const override { return new NodeXor(*this); };  
     };
 }	
 

@@ -34,6 +34,8 @@ namespace FT{
         		string x = stack_f.back(); stack_f.pop_back();
                 stack_f.push_back("tanh(" + x + ")");
             }
+        protected:
+            NodeTanh* clone_impl() const override { return new NodeTanh(*this); };  
     };
 }	
 

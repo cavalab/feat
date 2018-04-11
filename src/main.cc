@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include "feat.h"
-#include "featcv.h"
+//#include "featcv.h"
 using FT::Feat;
-using FT::FeatCV;
 #include <Eigen/Dense>
 #include <shogun/base/init.h>
 using Eigen::MatrixXd;

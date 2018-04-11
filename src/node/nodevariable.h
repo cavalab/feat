@@ -44,7 +44,9 @@ namespace FT{
 	            else
 	                stack_f.push_back(name);
 		    }
-	};
+	    protected:
+            NodeVariable* clone_impl() const override { return new NodeVariable(*this); };  
+    };
 }
 
 #endif

@@ -34,6 +34,8 @@ namespace FT{
         		string x = stack_f.back(); stack_f.pop_back();
                 stack_f.push_back("exp(-(" + x + " ^ 2))");
             }
+        protected:
+            NodeGaussian* clone_impl() const override { return new NodeGaussian(*this); };  
     };
 }	
 

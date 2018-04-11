@@ -37,6 +37,8 @@ namespace FT{
                 string x1 = stack_f.back(); stack_f.pop_back();
                 stack_f.push_back("(" + x1 + "+" + x2 + ")");
             }
+        protected:
+            NodeAdd* clone_impl() const override { return new NodeAdd(*this); };  
     };
 }	
 

@@ -99,7 +99,7 @@ namespace FT{
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
  
-    bool is_valid_program(vector<std::shared_ptr<Node>>& program, unsigned num_features)
+    bool is_valid_program(vector<std::unique_ptr<Node>>& program, unsigned num_features)
     {
         /*! checks whether program fulfills all its arities. */
         vector<ArrayXd> stack_f; 
@@ -122,9 +122,9 @@ namespace FT{
         return true;
     }
    
-    void make_tree(vector<std::shared_ptr<Node>>& program, 
-                      const vector<std::shared_ptr<Node>>& functions, 
-                      const vector<std::shared_ptr<Node>>& terminals, int max_d,  
+    void make_tree(vector<std::unique_ptr<Node>>& program, 
+                      const vector<std::unique_ptr<Node>>& functions, 
+                      const vector<std::unique_ptr<Node>>& terminals, int max_d,  
                       const vector<double>& term_weights, char otype)
     {  
                 
@@ -145,9 +145,9 @@ namespace FT{
                     tw.push_back(term_weights[i]);
                 }
             }
-            auto t = terminals[r.random_choice(ti,tw)];
+            auto t = terminals[r.random_choice(ti,tw)]->clone();
             //std::cout << t->name << " ";
-            program.push_back(t);
+            program.push_back(t->clone());
         }
         else
         {
@@ -161,23 +161,23 @@ namespace FT{
             if (fi.size()==0){
                 std::cout << "---\n";
                 std::cout << "f1.size()=0. current program: ";
-                for (auto p : program) std::cout << p->name << " ";
+                for (const auto& p : program) std::cout << p->name << " ";
                 std::cout << "\n";
                 std::cout << "otype: " << otype << "\n";
                 std::cout << "max_d: " << max_d << "\n";
                 std::cout << "functions: ";
-                for (auto f: functions) std::cout << f->name << " ";
+                for (const auto& f: functions) std::cout << f->name << " ";
                 std::cout << "\n";
                 std::cout << "---\n";
             }
             assert(fi.size() > 0 && "The operator set specified results in incomplete programs.");
             
             // append a random choice from fs            
-            auto t = functions[r.random_choice(fi)];
+            auto t = functions[r.random_choice(fi)]->clone();
             //std::cout << t->name << " ";
-            program.push_back(t);
+            program.push_back(t->clone());
             
-            std::shared_ptr<Node> chosen = program.back();
+            std::unique_ptr<Node> chosen(program.back()->clone());
             // recurse to fulfill the arity of the chosen function
             for (size_t i = 0; i < chosen->arity['f']; ++i)
                 make_tree(program, functions, terminals, max_d-1, term_weights,'f');
@@ -188,9 +188,9 @@ namespace FT{
 
     }
 
-    void make_program(vector<std::shared_ptr<Node>>& program, 
-                      const vector<std::shared_ptr<Node>>& functions, 
-                      const vector<std::shared_ptr<Node>>& terminals, int max_d, 
+    void make_program(vector<std::unique_ptr<Node>>& program, 
+                      const vector<std::unique_ptr<Node>>& functions, 
+                      const vector<std::unique_ptr<Node>>& terminals, int max_d, 
                       const vector<double>& term_weights, int dim, char otype)
     {
 

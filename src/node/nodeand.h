@@ -38,6 +38,8 @@ namespace FT{
                 string x1 = stack_b.back(); stack_b.pop_back();
                 stack_b.push_back("(" + x1 + " AND " + x2 + ")");
             }
+        protected:
+            virtual NodeAnd* clone_impl() const override { return new NodeAnd(*this); };  
     };
 }	
 

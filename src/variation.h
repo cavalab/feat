@@ -56,16 +56,29 @@ namespace FT{
             void delete_mutate(Individual& child, const Parameters& params);
  
             /// splice two programs together
-            vector<std::shared_ptr<Node>> splice_programs(vector<std::shared_ptr<Node>>& v1, 
-                                                          size_t i1, size_t j1, 
-                                                          vector<std::shared_ptr<Node>>& v2,
-                                                          size_t i2, size_t j2);
+            void splice_programs(vector<std::unique_ptr<Node>>& vnew, 
+                                 const vector<std::unique_ptr<Node>>& v1, size_t i1, size_t j1, 
+                                 const vector<std::unique_ptr<Node>>& v2, size_t i2, size_t j2);
             /// debugging printout of crossover operation.
             void print_cross(Individual&,size_t,size_t,Individual&, size_t, size_t, Individual&,
                              bool after=true);       
             
             float cross_rate;     ///< fraction of crossover in total variation
     };
+
+
+    std::unique_ptr<Node> random_node(const vector<std::unique_ptr<Node>> & v)
+    {
+       /*!
+        * return a random node from a list of nodes.
+        */          
+        assert(v.size()>0 && " attemping to return random choice from empty vector");
+        std::vector<size_t> vi(v.size());
+        std::iota(vi.begin(), vi.end(), 0);
+        size_t idx = r.random_choice(vi);
+        return v.at(idx)->clone();
+    }
+ 
 
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
@@ -148,19 +161,17 @@ namespace FT{
          */    
 
         // make child a copy of mom
-        child.program = mom.program; 
-        child.p = mom.p; 
-
+        mom.clone(child);  
+        
         float rf = r();
         if (rf < 1.0/3.0 && child.get_dim() > 1){
             delete_mutate(child,params); 
             assert(is_valid_program(child.program, params.num_features));
         }
-        else if (rf < 2.0/3.0 && child.size() < params.max_size)
-        {
-            insert_mutate(child,params);
-            assert(is_valid_program(child.program, params.num_features));
-        }
+
+        /*     insert_mutate(child,params); */
+        /*     assert(is_valid_program(child.program, params.num_features)); */
+        /* } */
         else
         {        
             point_mutate(child,params);
@@ -188,7 +199,7 @@ namespace FT{
             if (r() < child.get_p(i)/n)  // mutate p. 
             {
                 params.msg("\t\tmutating node " + p->name, 2);
-                vector<std::shared_ptr<Node>> replacements;  // potential replacements for p
+                vector<std::unique_ptr<Node>> replacements;  // potential replacements for p
 
                 if (p->total_arity() > 0) // then it is an instruction
                 {
@@ -197,7 +208,7 @@ namespace FT{
                     {
                         if (f->otype == p->otype && f->arity['f']==p->arity['f'] && 
                                 f->arity['b']==p->arity['b'])
-                            replacements.push_back(f);
+                            replacements.push_back(f->clone());
                     }
                 }
                 else                    // otherwise it is a terminal
@@ -208,11 +219,11 @@ namespace FT{
                     for (const auto& t : params.terminals)
                     {
                         if (t->otype == p->otype)
-                            replacements.push_back(t);
+                            replacements.push_back(t->clone());
                     }                                       
                 }
                 // replace p with a random one
-                p = r.random_choice(replacements);  
+                p = random_node(replacements);  
             }
             ++i; 
         }
@@ -237,9 +248,11 @@ namespace FT{
                 
                 if (r() < child.get_p(i)/n)  // mutate with weighted probability
                 {
-                    params.msg("\t\tinsert mutating node " + child.program[i]->name, 2);
-                    vector<std::shared_ptr<Node>> insertion;  // inserted segment
-                    vector<std::shared_ptr<Node>> fns;  // potential fns 
+                    params.msg("\t\tinsert mutating node " + child.program[i]->name +
+                               " with probability " + std::to_string(child.get_p(i)) + 
+                               "/" + std::to_string(n), 2);
+                    vector<std::unique_ptr<Node>> insertion;  // inserted segment
+                    vector<std::unique_ptr<Node>> fns;  // potential fns 
                     
                     // find instructions with matching output types and a matching arity to i
                     for (const auto& f: params.functions)
@@ -252,10 +265,10 @@ namespace FT{
                             // args
                             if (child.program[i]->otype=='b')
                                 if (in(params.dtypes,'b') || f->arity['b']==1)
-                                    fns.push_back(f);
+                                    fns.push_back(f->clone());
                             else if (child.program[i]->otype=='f')
                                 if (f->arity['b']==0 || in(params.dtypes,'b') )
-                                    fns.push_back(f);              
+                                    fns.push_back(f->clone());              
                         }
                     }
 
@@ -263,7 +276,7 @@ namespace FT{
                         continue;
 
                     // choose a function to insert                    
-                    insertion.push_back(r.random_choice(fns));
+                    insertion.push_back(random_node(fns));
                     
                     unsigned fa = insertion.back()->arity['f']; // float arity
                     unsigned ba = insertion.back()->arity['b']; // bool arity
@@ -275,30 +288,42 @@ namespace FT{
                         make_tree(insertion,params.functions,params.terminals,0,
                                   params.term_weights,'f');
                     if (child.program[i]->otype=='f')    // add the child now if float
-                        insertion.push_back(child.program[i]);
+                        insertion.push_back(child.program[i]->clone());
                     for (unsigned j = 0; j< ba; ++j)
                         make_tree(insertion,params.functions,params.terminals,0,
                                   params.term_weights,'b');
                     if (child.program[i]->otype=='b') // add the child now if bool
-                        insertion.push_back(child.program[i]);
+                        insertion.push_back(child.program[i]->clone());
                     // post-fix notation
                     std::reverse(insertion.begin(),insertion.end());
-                    
-                    // put the new code in the program 
-                    child.program.erase(child.program.begin()+i);
-                    child.program.insert(child.program.begin()+i, insertion.begin(), 
-                                         insertion.end());
+                   
+                    string s; 
+                    for (const auto& ins : insertion) s += ins->name + " "; 
+                    params.msg("\t\tinsertion: " + s + "\n", 2);
+                    NodeVector new_program; 
+                    splice_programs(new_program, 
+                                    child.program, i, i, 
+                                    insertion, size_t(0), insertion.size()-1);
+                    child.program=new_program;
+                    /* // put the new code in the program */ 
+                    /* child.program.erase(child.program.begin()+i); */
+                    /* for (unsigned j =i ; i<insertion.size(); ++i) */
+                    /*     child.program.push_back(insertion[i]->clone()); */
+                    /* /1* child.program.insert(child.program.begin()+i, insertion.begin(), *1/ */ 
+                    /* /1*                      insertion.end()); *1/ */
                     i += insertion.size()-1;
                 }
-                
+                /* std::cout << "i: " << i << "\n"; */ 
             }
         }
         else    // add a dimension
         {            
-            vector<std::shared_ptr<Node>> insertion; // new dimension
+            vector<std::unique_ptr<Node>> insertion; // new dimension
             make_program(insertion, params.functions, params.terminals, 1,  
                          params.term_weights,1,r.random_choice(params.otypes));
-            child.program.insert(child.program.end(),insertion.begin(),insertion.end());
+            /* child.program.insert(child.program.end(),insertion.begin(),insertion.end()); */
+            for (const auto& ip : insertion) 
+                child.program.push_back(ip->clone());
         }
     }
 
@@ -319,11 +344,16 @@ namespace FT{
         if (params.verbosity >=2)
         { 
             std::string s="";
-            for (unsigned i = start; i<end; ++i) s+= child.program[i]->name + " ";
+            for (unsigned i = start; i<=end; ++i) s+= child.program[i]->name + " ";
             params.msg("\t\tdeleting " + std::to_string(start) + " to " + std::to_string(end) 
                        + ": " + s, 2);
         }    
         child.program.erase(child.program.begin()+start,child.program.begin()+end+1);
+        // delete program from start to end by doing a crossover with an empty program at those
+        // locations
+        /* vector<std::unique_ptr<Node>>blanks; */
+        /* splice_programs(child.program, child.program, start, end, */ 
+        /*                 blanks,size_t(0),size_t(-1)); */
         params.msg("\t\tresult of delete mutation: " + child.program_str(), 2);
     }
 
@@ -357,7 +387,7 @@ namespace FT{
             
             // get valid subtree locations
             for (size_t i =0; i<mom.size(); ++i) 
-                if (in(d_otypes,mom[i]->otype)) 
+                if (in(d_otypes,mom.program[i]->otype)) 
                     mlocs.push_back(i);       
             if (mlocs.size()==0)        // mom and dad have no overlapping types, can't cross
             {
@@ -369,7 +399,7 @@ namespace FT{
 
             // get locations in dad's program that match the subtree type picked from mom
             for (size_t i =0; i<dad.size(); ++i) 
-                if (dad[i]->otype == mom[j1]->otype) dlocs.push_back(i);
+                if (dad.program[i]->otype == mom.program[j1]->otype) dlocs.push_back(i);
         } 
         else             // half the time, pick a root node
         {
@@ -387,7 +417,7 @@ namespace FT{
         i2 = dad.subtree(j2); 
                
         // make child program by splicing mom and dad
-        child.program = splice_programs(mom.program, i1, j1, dad.program, i2, j2);
+        splice_programs(child.program, mom.program, i1, j1, dad.program, i2, j2 );
                      
         if (params.verbosity >= 2) 
             print_cross(mom,i1,j1,dad,i2,j2,child);     
@@ -399,9 +429,9 @@ namespace FT{
     }
     
     // swap vector subsets with different sizes. 
-    vector<std::shared_ptr<Node>> Variation::splice_programs(
-                                     vector<std::shared_ptr<Node>>& v1, size_t i1, size_t j1, 
-                                     vector<std::shared_ptr<Node>>& v2, size_t i2, size_t j2)
+    void Variation::splice_programs( vector<std::unique_ptr<Node>>& vnew,
+                                     const vector<std::unique_ptr<Node>>& v1, size_t i1, size_t j1, 
+                                     const vector<std::unique_ptr<Node>>& v2, size_t i2, size_t j2)
     {
         /*!
          * swap vector subsets with different sizes. 
@@ -416,13 +446,20 @@ namespace FT{
          *
          * @return  vnew: new vector 
          */
-
+        /* std::cout << "in splice_programs\n"; */
+        /* std::cout << "i1: " << i1 << ", j1: " << j1  << ", i2: " << i2 << ", j2:" << j2 << "\n"; */
         // size difference between subtrees  
-        vector<std::shared_ptr<Node>> vnew;
-        vnew.insert(vnew.end(),v1.begin(),v1.begin()+i1);     // beginning of v1
-        vnew.insert(vnew.end(),v2.begin()+i2,v2.begin()+j2+1);  // spliced in v2 portion
-        vnew.insert(vnew.end(),v1.begin()+j1+1,v1.end());       // end of v1
-        return vnew;
+        for (unsigned i = 0; i < i1 ; ++i)                  // beginning of v1
+            vnew.push_back(v1.at(i)->clone());
+        for (unsigned i = i2; i <= j2 ; ++i)                 // spliced in v2 portion
+            vnew.push_back(v2.at(i)->clone());
+        for (unsigned i = j1+1; i < v1.size() ; ++i)        // end of v1
+            vnew.push_back(v1.at(i)->clone());
+        /* for (const auto& p : vnew) std::cout << p->name << " "; */
+        /* std::cout << "\n"; */
+        /* vnew.insert(vnew.end(),v1.begin(),v1.begin()+i1); */          
+        /* vnew.insert(vnew.end(),v2.begin()+i2,v2.begin()+j2+1);  // spliced in v2 portion */
+        /* vnew.insert(vnew.end(),v1.begin()+j1+1,v1.end()); */       
     }
     
     void Variation::print_cross(Individual& mom, size_t i1, size_t j1, Individual& dad, size_t i2, 

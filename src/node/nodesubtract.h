@@ -22,7 +22,8 @@ namespace FT{
     		}
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b)
+            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
+                          vector<ArrayXb>& stack_b)
             {
         		ArrayXd x2 = stack_f.back(); stack_f.pop_back();
                 ArrayXd x1 = stack_f.back(); stack_f.pop_back();
@@ -36,6 +37,8 @@ namespace FT{
                 string x1 = stack_f.back(); stack_f.pop_back();
                 stack_f.push_back("(" + x1 + "-" + x2 + ")");
             }
+        protected:
+            NodeSubtract* clone_impl() const override { return new NodeSubtract(*this); };  
     };
 }	
 
