@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "feat.h"
 #include "featcv.h"
+#include "stack.h"
 using FT::Feat;
 using FT::FeatCV;
 #include <Eigen/Dense>
@@ -59,6 +60,7 @@ int main(int argc, char** argv){
     
     Feat feat;
     std::string sep = ",";
+    std::string ldataFile = "";
     double split = 0.75;    // split of input data used to trian Feat
 
     cout << "\n" << 
@@ -96,6 +98,7 @@ int main(int argc, char** argv){
         cout << "-isplit\tInternal slit for Feat's training procedure (0.75)\n";
         cout << "-f\tfeedback strength of ML on variation probabilities (0.5)\n";
         cout << "-n\tname to append to files\n";
+        cout << "-ldata\tpath to longitudinal data file\n";
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
     }
@@ -142,6 +145,8 @@ int main(int argc, char** argv){
         feat.set_split(std::stod(input.getCmdOption("-isplit")));
     if(input.cmdOptionExists("-f"))
         feat.set_feedback(std::stod(input.getCmdOption("-f")));
+    if(input.cmdOptionExists("-ldata"))
+        ldataFile = input.getCmdOption("-ldata");
     if(input.cmdOptionExists("-n"))
         feat.set_name(input.getCmdOption("-n"));
     
@@ -177,17 +182,30 @@ int main(int argc, char** argv){
     MatrixXd X_t(X.rows(),int(X.cols()*split));
     MatrixXd X_v(X.rows(),int(X.cols()*(1-split)));
     VectorXd y_t(int(y.size()*split)), y_v(int(y.size()*(1-split)));
-    FT::train_test_split(X,y,X_t,X_v,y_t,y_v,feat.get_shuffle());      
+    
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z;
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_t;
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_v;
+    
+    if(ldataFile.compare(""))
+    {
+        FT::load_longitudinal(ldataFile, Z);
+        FT::split_longitudinal(Z, Z_t, Z_v, split);
+    }   
+    
+    FT::train_test_split(X,y,Z,X_t,X_v,y_t,y_v,Z_t,Z_v,feat.get_shuffle(), split);      
     
     MatrixXd X_tcopy = X_t;     
-
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_tcopy = Z_t;
+  
     cout << "fitting model...\n";
     
-    feat.fit(X_t,y_t);
+    feat.fit(X_t, y_t, Z_t);
 
     cout << "generating training prediction...\n";
 
-    double score_t = feat.score(X_tcopy,y_t);
+    double score_t = feat.score(X_tcopy,y_t, Z_tcopy);
+
     cout.precision(5);
     cout << "train score: " << score_t << "\n";
     
@@ -223,7 +241,6 @@ int main(int argc, char** argv){
     /* } */
     /* out_t.close(); */
     cout << "done!\n";
-	
 	
     return 0;
 
