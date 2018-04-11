@@ -2,23 +2,24 @@
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
-#ifndef NODE_SQUARE
-#define NODE_SQUARE
+#ifndef NODE_MODE
+#define NODE_MODE
 
 #include "node.h"
 
 namespace FT{
-	class NodeSquare : public Node
+	class NodeMode : public Node
     {
     	public:
     	
-    		NodeSquare()
-    		{
-    			name = "^2";
+    		NodeMode()
+            {
+                name = "mode";
     			otype = 'f';
-    			arity['f'] = 1;
+    			arity['f'] = 0;
     			arity['b'] = 0;
-    			complexity = 2;
+    			arity['z'] = 1;
+    			complexity = 1;
     		}
     		
             /// Evaluates the node and updates the stack states. 
@@ -26,13 +27,23 @@ namespace FT{
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)
             {
-                stack.f.push(pow(stack.f.pop(),2));
+                ArrayXd tmp(stack.z.top().first.size());
+                
+                int x;
+                
+                for(x = 0; x < stack.z.top().first.size(); x++)
+                    tmp(x) = stack.z.top().first[x].mean();
+                    
+                stack.z.pop();
+
+                stack.f.push(tmp);
+                
             }
 
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-                stack.fs.push("(" + stack.fs.pop() + "^2)");
+                stack.fs.push("mean(" + stack.zs.pop() + ")");
             }
     };
 }	

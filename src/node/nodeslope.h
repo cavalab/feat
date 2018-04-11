@@ -2,22 +2,23 @@
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
-#ifndef NODE_2DGAUSSIAN
-#define NODE_2DGAUSSIAN
+#ifndef NODE_SLOPE
+#define NODE_SLOPE
 
 #include "node.h"
 
 namespace FT{
-	class Node2dGaussian : public Node
+	class NodeSlope : public Node
     {
     	public:
     	
-    		Node2dGaussian()
+    		NodeSlope()
             {
-                name = "2dgaussian";
+                name = "slope";
     			otype = 'f';
-    			arity['f'] = 2;
+    			arity['f'] = 0;
     			arity['b'] = 0;
+    			arity['z'] = 1;
     			complexity = 4;
     		}
     		
@@ -26,19 +27,23 @@ namespace FT{
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)
             {
-        		ArrayXd x2 = stack.f.pop();
-                ArrayXd x1 = stack.f.pop();
+                ArrayXd tmp(stack.z.top().first.size());
                 
-                stack.f.push(limited(exp(-1*(pow((x1-x1.mean()), 2)/(2*variance(x1)) 
-                                  + pow((x2 - x2.mean()), 2)/variance(x2)))));
+                int x;
+                
+                for(x = 0; x < stack.z.top().first.size(); x++)                    
+                    tmp(x) = slope(stack.z.top().first[x], stack.z.top().second[x]);
+                    
+                stack.z.pop();
+
+                stack.f.push(tmp);
+                
             }
 
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-        		string x2 = stack.fs.pop();
-                string x1 = stack.fs.pop();
-                stack.fs.push("gauss2d(" + x1 + "," + x2 + ")");
+                stack.fs.push("slope(" + stack.zs.pop() + ")");
             }
     };
 }	

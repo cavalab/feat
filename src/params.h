@@ -28,6 +28,7 @@ namespace FT{
         vector<double> term_weights;    			///< probability weighting of terminals
         vector<std::shared_ptr<Node>> functions;    ///< function nodes available in programs
         vector<std::shared_ptr<Node>> terminals;    ///< terminal nodes available in programs
+        vector<std::string> longitudinalMap;        ///<vector storing longitudinal data keys
         unsigned int max_depth;         			///< max depth of programs
         unsigned int max_size;          			///< max size of programs (length)
         unsigned int max_dim;           			///< maximum dimensionality of programs
@@ -120,13 +121,22 @@ namespace FT{
         /// sets weights for terminals. 
         void set_term_weights(const vector<double>& w)
         {           
-            assert(w.size()==terminals.size()); 
+            //assert(w.size()==terminals.size()); 
             string weights;
             double u = 1.0/double(w.size());
             term_weights.clear();
             vector<double> sw = softmax(w);
-            for (unsigned i = 0; i<sw.size(); ++i)
-                term_weights.push_back(u + feedback*(sw[i]-u));
+            int x = 0;
+            for (unsigned i = 0; i < terminals.size(); ++i)
+            {
+                if(terminals[i]->otype == 'z')
+                    term_weights.push_back(u);
+                else
+                {
+                    term_weights.push_back(u + feedback*(sw[x]-u));
+                    x++;
+                }
+            }
                 
             weights = "term weights: ";
             for (auto tw : term_weights)
@@ -138,7 +148,7 @@ namespace FT{
         
         /// return shared pointer to a node based on the string passed
         std::shared_ptr<Node> createNode(std::string str, double d_val = 0, bool b_val = false, 
-                                         size_t loc = 0);
+                                         size_t loc = 0, string name = "");
         
         /// sets available functions based on comma-separated list.
         void set_functions(string fs);
@@ -164,7 +174,9 @@ namespace FT{
         }
         
         /// set the terminals
-        void set_terminals(int nf);
+        void set_terminals(int nf,
+                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
+                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > ());
 
         /// set the objectives
         void set_objectives(string obj);
@@ -194,13 +206,15 @@ namespace FT{
                 case 'f': otypes.push_back('f'); break;
                 default: 
                 {
-                    for (const auto& f: functions)
+                    otypes.push_back('b');
+                    otypes.push_back('f');
+                    /*for (const auto& f: functions)
                         if (!in(otypes,f->otype)) 
                             otypes.push_back(f->otype);
                     for (const auto& t: terminals)
                         if (!in(otypes,t->otype)) 
                             otypes.push_back(t->otype);
-
+                    */
                     break;
                 }
             }
@@ -212,7 +226,7 @@ namespace FT{
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
     
-    std::shared_ptr<Node> Parameters::createNode(string str, double d_val, bool b_val, size_t loc)
+    std::shared_ptr<Node> Parameters::createNode(string str, double d_val, bool b_val, size_t loc, string name)
     {
         // algebraic operators
     	if (str.compare("+") == 0) 
@@ -302,6 +316,12 @@ namespace FT{
             
         else if (str.compare("sign")==0)
             return std::shared_ptr<Node>(new NodeSign());
+            
+        else if (str.compare("mean")==0)
+            return std::shared_ptr<Node>(new NodeMean());
+            
+        else if (str.compare("median")==0)
+            return std::shared_ptr<Node>(new NodeMedian());
 
         // variables and constants
          else if (str.compare("x") == 0)
@@ -317,6 +337,12 @@ namespace FT{
             
         else if (str.compare("kd")==0)
             return std::shared_ptr<Node>(new NodeConstant(d_val));
+            
+        else if (str.compare("z")==0)
+        {
+            //std::cout<<"******CALLED with name "<<name<<"\n";
+            return std::shared_ptr<Node>(new NodeLongitudinal(name));
+        }
             
         else
         {
@@ -359,7 +385,8 @@ namespace FT{
         set_otypes();
     }
 
-    void Parameters::set_terminals(int nf)
+    void Parameters::set_terminals(int nf,
+                                   std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
     {
         /*!
          * based on number of features.
@@ -377,6 +404,13 @@ namespace FT{
     	       	else
     	       		terminals.push_back(createNode(string("kd"), r(), 0, 0));
     	    }        
+       
+        for (const auto &val : Z)
+        {
+            longitudinalMap.push_back(val.first);
+            terminals.push_back(createNode(string("z"), 0, 0, 0, val.first));
+        }
+        
         // reset output types
         set_otypes();
     }
