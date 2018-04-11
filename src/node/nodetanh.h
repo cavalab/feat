@@ -5,10 +5,10 @@ license: GNU/GPL v3
 #ifndef NODE_TANH
 #define NODE_TANH
 
-#include "node.h"
+#include "nodeDx.h"
 
 namespace FT{
-	class NodeTanh : public Node
+	class NodeTanh : public NodeDx
     {
     	public:
     	
