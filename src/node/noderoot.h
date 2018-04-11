@@ -5,10 +5,10 @@ license: GNU/GPL v3
 #ifndef NODE_ROOT
 #define NODE_ROOT
 
-#include "node.h"
+#include "nodeDx.h"
 
 namespace FT{
-	class NodeRoot : public Node
+	class NodeRoot : public NodeDx
     {
     	public:
     	
@@ -59,6 +59,9 @@ namespace FT{
                        return W[0] / (2 * sqrt(abs(W[0] * stack_f[stack_f.size() - 1])));
                 } 
             }
+
+        protected:
+            NodeRoot* clone_impl() const override { return new NodeRoot(*this); };  
     };
 }	
 

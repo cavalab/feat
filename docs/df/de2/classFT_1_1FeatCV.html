@@ -107,6 +107,7 @@ $(document).ready(function(){initNavTree('df/de2/classFT_1_1FeatCV.html','../../
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="../../da/d1f/classFT_1_1FeatCV-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -123,66 +124,124 @@ Collaboration diagram for FT::FeatCV:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../da/d82/classFT_1_1FeatCV__coll__graph.png" border="0" usemap="#FT_1_1FeatCV_coll__map" alt="Collaboration graph"/></div>
 <map name="FT_1_1FeatCV_coll__map" id="FT_1_1FeatCV_coll__map">
-<area shape="rect" id="node5" href="../../db/dff/classFT_1_1Feat.html" title="main class for the Feat learner. " alt="" coords="1035,355,1107,381"/>
-<area shape="rect" id="node8" href="../../de/d2c/structFT_1_1Parameters.html" title="holds the hyperparameters for Feat. " alt="" coords="698,204,811,231"/>
-<area shape="rect" id="node19" href="../../d8/d25/classFT_1_1Individual.html" title="individual programs in the population " alt="" coords="704,407,805,433"/>
-<area shape="rect" id="node12" title="STL class. " alt="" coords="181,380,261,407"/>
-<area shape="rect" id="node24" href="../../d5/d1d/structFT_1_1BestParams.html" title="FT::BestParams" alt="" coords="388,663,507,689"/>
-<area shape="rect" id="node13" title="STL class. " alt="" coords="5,373,132,414"/>
-<area shape="rect" id="node18" href="../../d3/d4e/classFT_1_1Timer.html" title="class for timing things. " alt="" coords="715,153,794,180"/>
+<area shape="rect" id="node3" href="../../dc/d9a/structFT_1_1DataFolds.html" title="structure contains indexes and number of data sets in each fold " alt="" coords="1159,13,1265,39"/>
+<area shape="rect" id="node5" href="../../df/d04/structFT_1_1FeatObjects.html" title="FT::FeatObjects" alt="" coords="1153,450,1271,477"/>
+<area shape="rect" id="node6" href="../../db/dff/classFT_1_1Feat.html" title="main class for the Feat learner. " alt="" coords="971,450,1043,477"/>
+<area shape="rect" id="node9" href="../../de/d2c/structFT_1_1Parameters.html" title="holds the hyperparameters for Feat. " alt="" coords="698,375,811,402"/>
+<area shape="rect" id="node21" href="../../d8/d25/classFT_1_1Individual.html" title="individual programs in the population " alt="" coords="704,325,805,351"/>
+<area shape="rect" id="node13" title="STL class. " alt="" coords="181,175,261,202"/>
+<area shape="rect" id="node14" title="STL class. " alt="" coords="5,168,132,209"/>
+<area shape="rect" id="node19" href="../../d3/d4e/classFT_1_1Timer.html" title="class for timing things. " alt="" coords="715,274,794,301"/>
 </map>
 <center><span class="legend">[<a target="top" href="../../graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a2a56e88bcb0d88745051027c3fbb254e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2a56e88bcb0d88745051027c3fbb254e"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>FeatCV</b> (vector&lt; string &gt; mlStr, int popRange=100, int genRange=100, int dimRange=10, int depRange=3)</td></tr>
-<tr class="separator:a2a56e88bcb0d88745051027c3fbb254e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd62abfdd908832100089f05c0904c2c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afd62abfdd908832100089f05c0904c2c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>create_objects</b> ()</td></tr>
-<tr class="separator:afd62abfdd908832100089f05c0904c2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ea47ba80274b4037b0f830cb56bb796"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1ea47ba80274b4037b0f830cb56bb796"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>create_folds</b> (MatrixXd &amp;x, VectorXd &amp;y)</td></tr>
-<tr class="separator:a1ea47ba80274b4037b0f830cb56bb796"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afae8185a9028a0e3dc69cc59d082559f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afae8185a9028a0e3dc69cc59d082559f"></a>
-vector&lt; char &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>fold_dtypes</b> (MatrixXd &amp;X)</td></tr>
-<tr class="separator:afae8185a9028a0e3dc69cc59d082559f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:addfbe4b31928de80ee3bc8bfde5699f0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="addfbe4b31928de80ee3bc8bfde5699f0"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>validate_data</b> (MatrixXd x, VectorXd &amp;y)</td></tr>
-<tr class="separator:addfbe4b31928de80ee3bc8bfde5699f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a201822d1d9fe351cf64cada78336bb8e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a201822d1d9fe351cf64cada78336bb8e"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>FeatCV</b> (int fdSize, string params)</td></tr>
+<tr class="separator:a201822d1d9fe351cf64cada78336bb8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a684d2daade5851008cd44e5a15d5aea1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a684d2daade5851008cd44e5a15d5aea1"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/de2/classFT_1_1FeatCV.html#a684d2daade5851008cd44e5a15d5aea1">fit</a> (MatrixXd x, VectorXd &amp;y)</td></tr>
+<tr class="memdesc:a684d2daade5851008cd44e5a15d5aea1"><td class="mdescLeft">&#160;</td><td class="mdescRight">fit method to find the best feat object based on input range <br /></td></tr>
+<tr class="separator:a684d2daade5851008cd44e5a15d5aea1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90947d62c32a75953d90ad68fed6ea7b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a90947d62c32a75953d90ad68fed6ea7b"></a>
+VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/de2/classFT_1_1FeatCV.html#a90947d62c32a75953d90ad68fed6ea7b">predict</a> (MatrixXd x)</td></tr>
+<tr class="memdesc:a90947d62c32a75953d90ad68fed6ea7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">predict method to predict the values based on best feat object identified <br /></td></tr>
+<tr class="separator:a90947d62c32a75953d90ad68fed6ea7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a72e2789be4eb9aa91834ab63e37c05b2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a72e2789be4eb9aa91834ab63e37c05b2"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/de2/classFT_1_1FeatCV.html#a72e2789be4eb9aa91834ab63e37c05b2">parse</a> ()</td></tr>
+<tr class="memdesc:a72e2789be4eb9aa91834ab63e37c05b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">parse method to parse hyperParams from string and create feat objects <br /></td></tr>
+<tr class="separator:a72e2789be4eb9aa91834ab63e37c05b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1bb52bc351a52610bb563ee3847d6f99"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1bb52bc351a52610bb563ee3847d6f99"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/de2/classFT_1_1FeatCV.html#a1bb52bc351a52610bb563ee3847d6f99">pushObjects</a> ()</td></tr>
+<tr class="memdesc:a1bb52bc351a52610bb563ee3847d6f99"><td class="mdescLeft">&#160;</td><td class="mdescRight">push feat objects according to current set of hyperParams <br /></td></tr>
+<tr class="separator:a1bb52bc351a52610bb563ee3847d6f99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae86150b8afe0c9d1c837a3f07da7a6c7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae86150b8afe0c9d1c837a3f07da7a6c7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/de2/classFT_1_1FeatCV.html#ae86150b8afe0c9d1c837a3f07da7a6c7">create_folds</a> (int cols)</td></tr>
+<tr class="memdesc:ae86150b8afe0c9d1c837a3f07da7a6c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">create indexes for different folds <br /></td></tr>
+<tr class="separator:ae86150b8afe0c9d1c837a3f07da7a6c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08146ded3d5e301ffddfaa246f2e43d0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a08146ded3d5e301ffddfaa246f2e43d0"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/de2/classFT_1_1FeatCV.html#a08146ded3d5e301ffddfaa246f2e43d0">clearVectors</a> ()</td></tr>
+<tr class="memdesc:a08146ded3d5e301ffddfaa246f2e43d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">clears all vectors for parameters <br /></td></tr>
+<tr class="separator:a08146ded3d5e301ffddfaa246f2e43d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a95af2fb7b2d727d0ca3fd36569cfe159"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a95af2fb7b2d727d0ca3fd36569cfe159"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/de2/classFT_1_1FeatCV.html#a95af2fb7b2d727d0ca3fd36569cfe159">setDefaults</a> ()</td></tr>
+<tr class="memdesc:a95af2fb7b2d727d0ca3fd36569cfe159"><td class="mdescLeft">&#160;</td><td class="mdescRight">set default values in vectors if they are empty <br /></td></tr>
+<tr class="separator:a95af2fb7b2d727d0ca3fd36569cfe159"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a086d37d05efd7508ff3111112afc734b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a086d37d05efd7508ff3111112afc734b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/de2/classFT_1_1FeatCV.html#a086d37d05efd7508ff3111112afc734b">fillVector</a> (vector&lt; string &gt; &amp;vec, string &amp;str)</td></tr>
+<tr class="memdesc:a086d37d05efd7508ff3111112afc734b"><td class="mdescLeft">&#160;</td><td class="mdescRight">fill a vector from a comma seperated string (string) <br /></td></tr>
+<tr class="separator:a086d37d05efd7508ff3111112afc734b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9ea3afe67ca72b49054e040f2e23d10"><td class="memTemplParams" colspan="2"><a class="anchor" id="ac9ea3afe67ca72b49054e040f2e23d10"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:ac9ea3afe67ca72b49054e040f2e23d10"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="../../df/de2/classFT_1_1FeatCV.html#ac9ea3afe67ca72b49054e040f2e23d10">fillVector</a> (vector&lt; T &gt; &amp;vec, string &amp;str, vecType type)</td></tr>
+<tr class="memdesc:ac9ea3afe67ca72b49054e040f2e23d10"><td class="mdescLeft">&#160;</td><td class="mdescRight">fill a vector from a comma seperated string (float/double) <br /></td></tr>
+<tr class="separator:ac9ea3afe67ca72b49054e040f2e23d10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a48a7e8a32d83d6b1b1f0d33a4bf7e1d5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a48a7e8a32d83d6b1b1f0d33a4bf7e1d5"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>populationRange</b></td></tr>
-<tr class="separator:a48a7e8a32d83d6b1b1f0d33a4bf7e1d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9b08e776cc6d2a0078004303de379a6e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9b08e776cc6d2a0078004303de379a6e"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>generationRange</b></td></tr>
-<tr class="separator:a9b08e776cc6d2a0078004303de379a6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a20a3b18c87ca9e5e25a5c3e2f25ab937"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a20a3b18c87ca9e5e25a5c3e2f25ab937"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>dimensionRange</b></td></tr>
-<tr class="separator:a20a3b18c87ca9e5e25a5c3e2f25ab937"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ade83603a75111a2fc260f91994f88fa7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ade83603a75111a2fc260f91994f88fa7"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>depthRange</b></td></tr>
-<tr class="separator:ade83603a75111a2fc260f91994f88fa7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8115d9e23fccb71aa94cc96b6f6dabe0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8115d9e23fccb71aa94cc96b6f6dabe0"></a>
-vector&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>ml</b></td></tr>
-<tr class="separator:a8115d9e23fccb71aa94cc96b6f6dabe0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4511836346a61aed90dc08c8f0c5fb59"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4511836346a61aed90dc08c8f0c5fb59"></a>
-vector&lt; <a class="el" href="../../db/dff/classFT_1_1Feat.html">Feat</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>fewObjs</b></td></tr>
-<tr class="separator:a4511836346a61aed90dc08c8f0c5fb59"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a31bcf02f077d69bbab8c7c5904bb79a4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a31bcf02f077d69bbab8c7c5904bb79a4"></a>
-vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>scores</b></td></tr>
-<tr class="separator:a31bcf02f077d69bbab8c7c5904bb79a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a04479d63e4ca3e0cc5af9edd23428d72"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a04479d63e4ca3e0cc5af9edd23428d72"></a>
-vector&lt; struct <a class="el" href="../../d5/d1d/structFT_1_1BestParams.html">BestParams</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>params</b></td></tr>
-<tr class="separator:a04479d63e4ca3e0cc5af9edd23428d72"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa40fe694c6ca04acb7177d14b4808b8d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa40fe694c6ca04acb7177d14b4808b8d"></a>
-vector&lt; MatrixXd &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>dataFolds</b></td></tr>
-<tr class="separator:aa40fe694c6ca04acb7177d14b4808b8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e3563f1ebfee601a5be2af0ce97b7b2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8e3563f1ebfee601a5be2af0ce97b7b2"></a>
-vector&lt; VectorXd &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>outputFolds</b></td></tr>
-<tr class="separator:a8e3563f1ebfee601a5be2af0ce97b7b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd588d2c45280f192beaa1783ea4e546"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acd588d2c45280f192beaa1783ea4e546"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/de2/classFT_1_1FeatCV.html#acd588d2c45280f192beaa1783ea4e546">foldSize</a></td></tr>
+<tr class="memdesc:acd588d2c45280f192beaa1783ea4e546"><td class="mdescLeft">&#160;</td><td class="mdescRight">fold size for k-mean cross validation <br /></td></tr>
+<tr class="separator:acd588d2c45280f192beaa1783ea4e546"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a7f96f993868b345f6e45c9464d0755"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0a7f96f993868b345f6e45c9464d0755"></a>
+string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/de2/classFT_1_1FeatCV.html#a0a7f96f993868b345f6e45c9464d0755">hyperParams</a></td></tr>
+<tr class="memdesc:a0a7f96f993868b345f6e45c9464d0755"><td class="mdescLeft">&#160;</td><td class="mdescRight">string containing parameters for cross validation <br /></td></tr>
+<tr class="separator:a0a7f96f993868b345f6e45c9464d0755"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad07d7d0964837950d3ade54b75aab15f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad07d7d0964837950d3ade54b75aab15f"></a>
+vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>pop_size</b></td></tr>
+<tr class="separator:ad07d7d0964837950d3ade54b75aab15f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2e79f8fc93efc4aa88a5f668b9e21cf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac2e79f8fc93efc4aa88a5f668b9e21cf"></a>
+vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>gens</b></td></tr>
+<tr class="separator:ac2e79f8fc93efc4aa88a5f668b9e21cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a770feced91195261cce1aa8885648c72"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a770feced91195261cce1aa8885648c72"></a>
+vector&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>mlStr</b></td></tr>
+<tr class="separator:a770feced91195261cce1aa8885648c72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad325b753fb0d5e0bf55068ca4c4ba2b2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad325b753fb0d5e0bf55068ca4c4ba2b2"></a>
+vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>max_stall</b></td></tr>
+<tr class="separator:ad325b753fb0d5e0bf55068ca4c4ba2b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae15b31cb60f0e657e3eea3b7ee916486"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae15b31cb60f0e657e3eea3b7ee916486"></a>
+vector&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>sel</b></td></tr>
+<tr class="separator:ae15b31cb60f0e657e3eea3b7ee916486"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1efc52595fb2f1cb380627b5d6239e6a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1efc52595fb2f1cb380627b5d6239e6a"></a>
+vector&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>surv</b></td></tr>
+<tr class="separator:a1efc52595fb2f1cb380627b5d6239e6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af81e47e5190710cb86759e800bf820a9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af81e47e5190710cb86759e800bf820a9"></a>
+vector&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>cross_rate</b></td></tr>
+<tr class="separator:af81e47e5190710cb86759e800bf820a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb7324db2d7b4644fad42d3b45aa54fc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afb7324db2d7b4644fad42d3b45aa54fc"></a>
+vector&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>funcs</b></td></tr>
+<tr class="separator:afb7324db2d7b4644fad42d3b45aa54fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea5135aea18a200303f35c6d7c6b0c8c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aea5135aea18a200303f35c6d7c6b0c8c"></a>
+vector&lt; unsigned int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>max_depth</b></td></tr>
+<tr class="separator:aea5135aea18a200303f35c6d7c6b0c8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0fc7bea1083e806504e2c6dc4f014ada"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0fc7bea1083e806504e2c6dc4f014ada"></a>
+vector&lt; unsigned int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>max_dim</b></td></tr>
+<tr class="separator:a0fc7bea1083e806504e2c6dc4f014ada"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada20637fd93921a20e65ee6195ea7d0c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ada20637fd93921a20e65ee6195ea7d0c"></a>
+vector&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>ercVec</b></td></tr>
+<tr class="separator:ada20637fd93921a20e65ee6195ea7d0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a094a7bfdd2b44f598a0922c02acd3dd9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a094a7bfdd2b44f598a0922c02acd3dd9"></a>
+vector&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>obj</b></td></tr>
+<tr class="separator:a094a7bfdd2b44f598a0922c02acd3dd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87a5acc1af8ee8110b38e7e526676c04"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a87a5acc1af8ee8110b38e7e526676c04"></a>
+vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>fb</b></td></tr>
+<tr class="separator:a87a5acc1af8ee8110b38e7e526676c04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f3b6d83bb4025571fcf13bfa26c5ea5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0f3b6d83bb4025571fcf13bfa26c5ea5"></a>
+vector&lt; struct <a class="el" href="../../df/d04/structFT_1_1FeatObjects.html">FeatObjects</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/de2/classFT_1_1FeatCV.html#a0f3b6d83bb4025571fcf13bfa26c5ea5">featObjs</a></td></tr>
+<tr class="memdesc:a0f3b6d83bb4025571fcf13bfa26c5ea5"><td class="mdescLeft">&#160;</td><td class="mdescRight">vector list of feat objects for cross validation <br /></td></tr>
+<tr class="separator:a0f3b6d83bb4025571fcf13bfa26c5ea5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a200154947f3ceab3d47260091a683b0c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a200154947f3ceab3d47260091a683b0c"></a>
+vector&lt; struct <a class="el" href="../../dc/d9a/structFT_1_1DataFolds.html">DataFolds</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/de2/classFT_1_1FeatCV.html#a200154947f3ceab3d47260091a683b0c">dataFolds</a></td></tr>
+<tr class="memdesc:a200154947f3ceab3d47260091a683b0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">vector containg data fold indexes <br /></td></tr>
+<tr class="separator:a200154947f3ceab3d47260091a683b0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc3db71cfec2aa535fc6e7e1e0e16bfe"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afc3db71cfec2aa535fc6e7e1e0e16bfe"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/de2/classFT_1_1FeatCV.html#afc3db71cfec2aa535fc6e7e1e0e16bfe">bestScoreIndex</a></td></tr>
+<tr class="memdesc:afc3db71cfec2aa535fc6e7e1e0e16bfe"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of the best feat object <br /></td></tr>
+<tr class="separator:afc3db71cfec2aa535fc6e7e1e0e16bfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>cross validator wrapper. </p>

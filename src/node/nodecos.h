@@ -5,10 +5,10 @@ license: GNU/GPL v3
 #ifndef NODE_COS
 #define NODE_COS
 
-#include "node.h"
+#include "nodeDx.h"
 
 namespace FT{
-	class NodeCos : public Node
+	class NodeCos : public NodeDx
     {
     	public:
     	  	
@@ -67,6 +67,9 @@ namespace FT{
             //     d_w = stack_f[stack_f.size()-1] * -sin(W[0] * stack_f[stack_f-1])
             //     W[0] = W[0] - n/update_value.size * sum(d_w * update_value);
             // }
+
+        protected:
+            NodeCos* clone_impl() const override { return new NodeCos(*this); };  
     };
 }	
 

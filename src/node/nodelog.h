@@ -5,10 +5,10 @@ license: GNU/GPL v3
 #ifndef NODE_LOG
 #define NODE_LOG
 
-#include "node.h"
+#include "nodeDx.h"
 
 namespace FT{
-	class NodeLog : public Node
+	class NodeLog : public NodeDx
     {
     	public:
     	
@@ -49,6 +49,8 @@ namespace FT{
                        return 1/(stack_f[stack_f.size()-1]);
                 } 
             }
+        protected:
+            NodeLog* clone_impl() const override { return new NodeLog(*this); };  
     };
 }	
 

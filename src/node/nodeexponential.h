@@ -5,10 +5,10 @@ license: GNU/GPL v3
 #ifndef NODE_EXPONENTIAL
 #define NODE_EXPONENTIAL
 
-#include "node.h"
+#include "nodeDx.h"
 
 namespace FT{
-	class NodeExponential : public Node
+	class NodeExponential : public NodeDx
     {
     	public:
    	
@@ -49,6 +49,8 @@ namespace FT{
                        return W[0] * limited(exp(W[0] * stack_f[stack_f.size()-1]));
                 } 
             }
+        protected:
+            NodeExponential* clone_impl() const override { return new NodeExponential(*this); };  
     };
 }	
 

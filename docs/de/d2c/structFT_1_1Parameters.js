@@ -1,6 +1,6 @@
 var structFT_1_1Parameters =
 [
-    [ "Parameters", "de/d2c/structFT_1_1Parameters.html#a24af16bd78053aa35dcd480541c466a5", null ],
+    [ "Parameters", "de/d2c/structFT_1_1Parameters.html#a1b24021173a5848029427ef0d1cf26dd", null ],
     [ "~Parameters", "de/d2c/structFT_1_1Parameters.html#a076962362db14b59e1b6c8df0eac62df", null ],
     [ "check_ml", "de/d2c/structFT_1_1Parameters.html#ac73ca49c35f1758aefacc941142d104b", null ],
     [ "createNode", "de/d2c/structFT_1_1Parameters.html#ace7871af82efcc6df9fe201df224402b", null ],
@@ -18,6 +18,7 @@ var structFT_1_1Parameters =
     [ "updateSize", "de/d2c/structFT_1_1Parameters.html#ab7aff38ee6d0be5f3c75a8284a7b29e8", null ],
     [ "classes", "de/d2c/structFT_1_1Parameters.html#a49fe9f7e71e11f5532b57267843b11fc", null ],
     [ "classification", "de/d2c/structFT_1_1Parameters.html#a206ae40d847bc59f26332a8de5b86114", null ],
+    [ "cross_rate", "de/d2c/structFT_1_1Parameters.html#a409721e42ee8b49d3a94c42278651e77", null ],
     [ "dtypes", "de/d2c/structFT_1_1Parameters.html#a13aa6e90bb1700d03dff25925839781f", null ],
     [ "erc", "de/d2c/structFT_1_1Parameters.html#a6e7a360a64a2968a13f7ae8bdb51b9fd", null ],
     [ "feedback", "de/d2c/structFT_1_1Parameters.html#adace64c4fd209f05a0baf58b98f5b3ad", null ],

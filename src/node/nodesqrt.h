@@ -5,10 +5,10 @@ license: GNU/GPL v3
 #ifndef NODE_SQRT
 #define NODE_SQRT
 
-#include "node.h"
+#include "nodeDx.h"
 
 namespace FT{
-	class NodeSqrt : public Node
+	class NodeSqrt : public NodeDx
     {
     	public:
     	
@@ -48,6 +48,9 @@ namespace FT{
                         return W[0] / (2 * sqrt(W[0] * stack_f[stack_f.size()-1]));
                 } 
             }
+
+        protected:
+            NodeSqrt* clone_impl() const override { return new NodeSqrt(*this); };  
     };
 }	
 

@@ -5,10 +5,10 @@ license: GNU/GPL v3
 #ifndef NODE_SQUARE
 #define NODE_SQUARE
 
-#include "node.h"
+#include "nodeDx.h"
 
 namespace FT{
-	class NodeSquare : public Node
+	class NodeSquare : public NodeDx
     {
     	public:
     	
@@ -49,6 +49,8 @@ namespace FT{
                        return 2 * pow(W[0], 2) * stack_f[stack_f.size()-1];
                 } 
             }
+        protected:
+            NodeSquare* clone_impl() const override { return new NodeSquare(*this); };  
     };
 }	
 

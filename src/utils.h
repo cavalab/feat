@@ -242,25 +242,51 @@ namespace FT{
         return w_new;
     }
     
-    /// normalize matrix.
-    void normalize(MatrixXd& X, const vector<char>& dtypes)
-    {   
-        // normalize features
-        for (unsigned int i=0; i<X.rows(); ++i){
-            if (std::isinf(X.row(i).norm()))
+    struct Normalizer
+    {
+        vector<double> scale;
+        vector<double> offset;
+        vector<char> dtypes;
+
+        /// fit the scale and offset of data. 
+        void fit(MatrixXd& X, const vector<char>& dt)
+        {
+            scale.clear();
+            offset.clear();
+            dtypes = dt; 
+            for (unsigned int i=0; i<X.rows(); ++i)
             {
-                X.row(i) = VectorXd::Zero(X.row(i).size());
-                continue;
+                VectorXd tmp = X.row(i).array()-X.row(i).mean();
+                scale.push_back(tmp.norm());
+                offset.push_back(X.row(i).mean());
             }
-            if (dtypes.at(i)!='b')   // skip binary rows
+              
+        }
+        /// normalize matrix.
+        void normalize(MatrixXd& X)
+        {  
+            // normalize features
+            for (unsigned int i=0; i<X.rows(); ++i)
             {
-                X.row(i) = X.row(i).array() - X.row(i).mean();
-                if (X.row(i).norm() > NEAR_ZERO)
-                    X.row(i).normalize();
+                if (std::isinf(scale.at(i)))
+                {
+                    X.row(i) = VectorXd::Zero(X.row(i).size());
+                    continue;
+                }
+                if (dtypes.at(i)!='b')   // skip binary rows
+                {
+                    X.row(i) = X.row(i).array() - offset.at(i);
+                    if (scale.at(i) > NEAR_ZERO)
+                        X.row(i) = X.row(i).array()/scale.at(i);
+                }
             }
         }
-    }
-
+        void fit_normalize(MatrixXd& X, const vector<char>& dtypes)
+        {
+            fit(X, dtypes);
+            normalize(X);
+        }
+    };
     /// returns true for elements of x that are infinite
     ArrayXb isinf(const ArrayXd& x)
     {
@@ -279,7 +305,33 @@ namespace FT{
         return nans;
 
     }
-
+    
+    vector<char> find_dtypes(MatrixXd &X)
+    {
+    	int i, j;
+	    bool isBinary;
+	    
+	    vector<char> dtypes;
+	    
+	    for(i = 0; i < X.rows(); i++)
+	    {
+	        isBinary = true;
+	        //cout<<"Checking for column "<<i<<std::endl;
+	        for(j = 0; j < X.cols(); j++)
+	        {
+	            //cout<<"Value is "<<X(i, j)<<std::endl;
+	            if(X(i, j) != 0 && X(i, j) != 1)
+	                isBinary = false;
+	        }
+	        if(isBinary)
+	            dtypes.push_back('b');
+	        else
+	            dtypes.push_back('f');
+	    }
+	    
+	    return dtypes;
+	}
+	
     /// returns unique elements in vector
     template <typename T>
     vector<T> unique(vector<T> w)   // note intentional copy
@@ -297,4 +349,22 @@ namespace FT{
         vector<T> wv( w.data(), w.data()+w.rows());
         return unique(wv);
     }
+    
+    std::string ltrim(std::string str, const std::string& chars = "\t\n\v\f\r ")
+    {
+        str.erase(0, str.find_first_not_of(chars));
+        return str;
+    }
+     
+    std::string rtrim(std::string str, const std::string& chars = "\t\n\v\f\r ")
+    {
+        str.erase(str.find_last_not_of(chars) + 1);
+        return str;
+    }
+     
+    std::string trim(std::string str, const std::string& chars = "\t\n\v\f\r ")
+    {
+        return ltrim(rtrim(str, chars), chars);
+    }
+
 } 

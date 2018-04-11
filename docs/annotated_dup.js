@@ -1,10 +1,11 @@
 var annotated_dup =
 [
     [ "FT", null, [
-      [ "BestParams", "d5/d1d/structFT_1_1BestParams.html", "d5/d1d/structFT_1_1BestParams" ],
+      [ "DataFolds", "dc/d9a/structFT_1_1DataFolds.html", "dc/d9a/structFT_1_1DataFolds" ],
       [ "Evaluation", "df/db3/classFT_1_1Evaluation.html", "df/db3/classFT_1_1Evaluation" ],
       [ "Feat", "db/dff/classFT_1_1Feat.html", "db/dff/classFT_1_1Feat" ],
       [ "FeatCV", "df/de2/classFT_1_1FeatCV.html", "df/de2/classFT_1_1FeatCV" ],
+      [ "FeatObjects", "df/d04/structFT_1_1FeatObjects.html", "df/d04/structFT_1_1FeatObjects" ],
       [ "Individual", "d8/d25/classFT_1_1Individual.html", "d8/d25/classFT_1_1Individual" ],
       [ "Lexicase", "d8/d78/structFT_1_1Lexicase.html", "d8/d78/structFT_1_1Lexicase" ],
       [ "ML", "df/dfa/classFT_1_1ML.html", "df/dfa/classFT_1_1ML" ],
@@ -55,5 +56,6 @@ var annotated_dup =
       [ "CMyCARTree", "db/dff/classshogun_1_1CMyCARTree.html", "db/dff/classshogun_1_1CMyCARTree" ],
       [ "MyCARTreeNodeData", "df/d48/structshogun_1_1MyCARTreeNodeData.html", "df/d48/structshogun_1_1MyCARTreeNodeData" ]
     ] ],
+    [ "FewObjects", "d7/dfa/classFewObjects.html", null ],
     [ "InputParser", "de/d16/classInputParser.html", "de/d16/classInputParser" ]
 ];

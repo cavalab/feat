@@ -5,10 +5,10 @@ license: GNU/GPL v3
 #ifndef NODE_SIN
 #define NODE_SIN
 
-#include "node.h"
+#include "nodeDx.h"
 
 namespace FT{
-	class NodeSin : public Node
+	class NodeSin : public NodeDx
     {
     	public:
     	
@@ -67,6 +67,8 @@ namespace FT{
             //     d_w = stack_f[stack_f.size() - 1] * cos(W[0] * stack_f[stack_f.size()-1]);
             //     W[0] = W[0] - n/update_value.size * sum(d_w * update_value);
             // }
+        protected:
+            NodeSin* clone_impl() const override { return new NodeSin(*this); };  
     };
 }	
 

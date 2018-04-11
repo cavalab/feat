@@ -1,0 +1,30 @@
+dist: trusty
+sudo: required
+language: cpp
+  
+addons:
+  apt:
+    sources:
+        # Newer GCC
+        #- george-edison55-precise-backports
+        - ubuntu-toolchain-r-test
+    packages:
+        #        - cmake 
+        #        - cmake-data
+        #        - gcc-5
+        #        - g++-5
+
+env:
+    global:
+    # should be limited to 4 on travis
+    - OMP_NUM_THREADS=4
+    # make cmake verbose
+    - VERBOSE=1
+    
+#matrix:
+    # test three different compilers
+    #- CXX='g++-5' CC='gcc-5' BUILD_TYPE='release'
+    
+install: sh ci/.travis_install.sh
+
+script: sh ci/.travis_test.sh 

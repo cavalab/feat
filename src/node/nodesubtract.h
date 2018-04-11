@@ -8,7 +8,7 @@ license: GNU/GPL v3
 #include "node.h"
 
 namespace FT{
-	class NodeSubtract : public Node
+	class NodeSubtract : public NodeDx
     {
     	public:
     	
@@ -26,7 +26,8 @@ namespace FT{
     		}
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b)
+            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
+                          vector<ArrayXb>& stack_b)
             {
         		ArrayXd x2 = stack_f.back(); stack_f.pop_back();
                 ArrayXd x1 = stack_f.back(); stack_f.pop_back();
@@ -78,6 +79,8 @@ namespace FT{
             //     d_w = -stack_f[stack_f.size()-2];
             //     W[1] = W_temp[1] - n/update_value.size * sum(d_w * update_value); 
             // }
+        protected:
+            NodeSubtract* clone_impl() const override { return new NodeSubtract(*this); };  
     };
 }	
 
