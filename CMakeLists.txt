@@ -11,13 +11,37 @@ set (CMAKE_CXX_STANDARD 14)
 project(Feat)
 
 # add Eigen include paths
-find_package(Eigen3 REQUIRED NO_MODULE)
-include_directories(${EIGEN3_INCLUDE_DIR})
+option(EIGEN_DIR "use Eigen environment variable" OFF)
+if (EIGEN_DIR)
+    include_directories("$ENV{EIGEN3_INCLUDE_DIR}")
+else()
+    find_package(Eigen3 REQUIRED NO_MODULE)
+    include_directories(${EIGEN3_INCLUDE_DIR})
+endif()
 
 # add Shogun includes
-find_package(Shogun REQUIRED NO_MODULE)
 # find Shogun library
 #find_library(Shogun REQUIRED NO_MODULE)
+option(SHOGUN_DIR "use environment Shogun paths" OFF)
+if (SHOGUN_DIR)
+    include_directories("$ENV{SHOGUN_DIR}")
+    link_directories("$ENV{SHOGUN_LIB}")
+else()
+    find_package(Shogun REQUIRED NO_MODULE)
+endif()
+
+# Locate GTest
+option(TEST "build tests" OFF)
+if (TEST)
+    option(GTEST_DIR "use GTest environment path" OFF)
+    if (GTEST_DIR)
+        include_directories("$ENV{GTEST_DIR}/include")
+
+    else()
+        find_package(GTest REQUIRED)
+        include_directories(${GTEST_INCLUDE_DIRS})
+    endif()
+endif()
 
 # autocomplete for YouCompleteMe needs commands to be exported
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -40,9 +64,22 @@ if (OMP)
 endif()
 
 # gather list of source files
-file(GLOB_RECURSE src_files "src/*.cc")
+file(GLOB_RECURSE src_main_files "src/main.cc")
+
+file(GLOB_RECURSE src_cv_files "src/cv_main.cc")
 
 # executable
-add_executable(feat ${src_files})
+add_executable(feat ${src_main_files})
+add_executable(feat_cv ${src_cv_files}) 
 
+#link libraries for different executables
 target_link_libraries(feat shogun)
+target_link_libraries(feat_cv shogun)
+
+if (TEST)
+    # Link runTests with what we want to test and the GTest and pthread library
+    add_executable(tests tests/gtest.cc)
+    target_link_libraries(tests shogun ${GTEST_LIBRARIES} pthread)
+endif()
+
+

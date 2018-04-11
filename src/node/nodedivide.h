@@ -5,10 +5,10 @@ license: GNU/GPL v3
 #ifndef NODE_DIVIDE
 #define NODE_DIVIDE
 
-#include "node.h"
+#include "nodeDx.h"
 
 namespace FT{
-	class NodeDivide : public Node
+	class NodeDivide : public NodeDx
     {
     	public:
     	  	
@@ -81,6 +81,8 @@ namespace FT{
             //     d_w = -W_temp[0] * stack_f[stack_f.size()-1]/(stack_f[stack_f.size()-2] * pow(W[1], 2));
             //     W[1] = W_temp[1] - n/update_value.size * sum(d_w * update_value); 
             // }
+        protected:
+            NodeDivide* clone_impl() const override { return new NodeDivide(*this); };  
     };
 }	
 

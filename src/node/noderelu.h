@@ -8,11 +8,11 @@ license: GNU/GPL v3
 #include "nodeDx.h"
 
 namespace FT{
-	class NodeDivide : public Node
+	class NodeRelu : public NodeDx
     {
     	public:
     	  	
-    		NodeDivide()
+    		NodeRelu()
     		{
     			name = "/";
     			otype = 'f';
@@ -80,6 +80,9 @@ namespace FT{
             //     d_w = -W_temp[0] * stack_f[stack_f.size()-1]/(stack_f[stack_f.size()-2] * pow(W[1], 2));
             //     W[1] = W_temp[1] - n/update_value.size * sum(d_w * update_value); 
             // }
+
+            protected:
+            NodeRelu* clone_impl() const override { return new NodeRelu(*this); };  
     };
 }	
 

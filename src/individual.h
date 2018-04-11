@@ -5,6 +5,7 @@ license: GNU/GPL v3
 #ifndef INDIVIDUAL_H
 #define INDIVIDUAL_H
 
+
 namespace FT{
     
     ////////////////////////////////////////////////////////////////////////////////// Declarations
@@ -15,7 +16,7 @@ namespace FT{
      */
     class Individual{
     public:        
-        vector<std::shared_ptr<Node>> program;      ///< executable data structure
+        NodeVector program;                            ///< executable data structure
         double fitness;             				///< aggregate fitness score
         size_t loc;                 				///< index of individual in semantic matrix F
         string eqn;                 				///< symbolic representation of program
@@ -28,9 +29,8 @@ namespace FT{
         unsigned int rank;                          ///< pareto front rank
         float crowd_dist;                           ///< crowding distance on the Pareto front
         
+        
         Individual(){c = 0; dim = 0; eqn="";}
-
-        ~Individual(){}
 
         /// calculate program output matrix Phi
         MatrixXd out(const MatrixXd& X, const Parameters& params, const VectorXd& y);
@@ -42,8 +42,8 @@ namespace FT{
         string program_str() const;
 
         /// setting and getting from individuals vector
-        const std::shared_ptr<Node> operator [](int i) const {return program.at(i);}
-        const std::shared_ptr<Node> & operator [](int i) {return program.at(i);}
+        /* const std::unique_ptr<Node> operator [](int i) const {return program.at(i);} */ 
+        /* const std::unique_ptr<Node> & operator [](int i) {return program.at(i);} */
 
         /// set rank
         void set_rank(unsigned r){rank=r;}
@@ -78,6 +78,19 @@ namespace FT{
         ///// set weighted probabilities
         //void set_w(vector<double>& weights);
 
+        /// make a deep copy of the underlying program 
+        /* void program_copy(vector<std::unique_ptr<Node>>& cpy) const */
+        /* { */
+        /*     cpy.clear(); */
+        /*     for (const auto& p : program) */
+        /*         cpy.push_back(p->clone()); */
+        /* } */
+        /// clone this individual 
+        void clone(Individual& cpy)
+        {
+            cpy.program = program;
+            cpy.p = p;
+        }
         /// get probabilities of variation
         vector<double> get_p(){ return p; }     
         /// get inverted weight probability for pogram location i
@@ -182,6 +195,7 @@ namespace FT{
         vector<ArrayXd> stack_f; 
         vector<ArrayXb> stack_b;
         params.msg("evaluating program " + get_eqn(),2);
+        params.msg("program length: " + std::to_string(program.size()),2);
         // evaluate each node in program
         for (const auto& n : program)
         {
@@ -210,6 +224,7 @@ namespace FT{
                
         int rows_f = stack_f.size();
         int rows_b = stack_b.size();
+        
         dtypes.clear();        
         Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
         // add stack_f to Phi
@@ -235,7 +250,7 @@ namespace FT{
             vector<string> stack_f;     // symbolic floating stack
             vector<string> stack_b;     // symbolic boolean stack
 
-            for (auto n : program){
+            for (const auto& n : program){
             	if(stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
                 	n->eval_eqn(stack_f,stack_b);
                 else
@@ -406,9 +421,6 @@ namespace FT{
          
         vector<size_t> indices;     // returned root indices
         int total_arity = -1;       //end node is always a root
-       // map<char,int> total_arity; 
-       // total_arity['b'] = -1;
-       // total_arity['f']=-1;
         for (size_t i = program.size(); i>0; --i)   // reverse loop thru program
         {    
             if (total_arity <= 0 ){ // root node
@@ -421,12 +433,7 @@ namespace FT{
             total_arity += program[i-1]->total_arity(); 
            
         }
-       // while (i >= 0 )
-       // {
-       //     indices.push_back(i-1);
-       //     int j = subtree(i);
-       //     i = j-1;
-       // }
+       
         return indices; 
     }
 
@@ -436,12 +443,6 @@ namespace FT{
         string s = "";
         for (const auto& p : program)
         {
-           // if (!p->name.compare("x"))   // if a variable, include the location data
-           // {
-           //     s += p->name+"_"+std::to_string(std::dynamic_pointer_cast<NodeVariable>(p)->loc); 
-           // }
-           // else
-
             s+= p->name;
             s+=" ";
         }

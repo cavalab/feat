@@ -5,10 +5,10 @@ license: GNU/GPL v3
 #ifndef NODE_CUBE
 #define NODE_CUBE
 
-#include "node.h"
+#include "nodeDx.h"
 
 namespace FT{
-	class NodeCube : public Node
+	class NodeCube : public NodeDx
     {
     	public:
     		  
@@ -49,6 +49,8 @@ namespace FT{
                        return 3 * pow(W[0], 3) * pow(stack_f[stack_f.size()-1], 2);
                 } 
             }
+        protected:
+            NodeCube* clone_impl() const override { return new NodeCube(*this); };  
     };
 }	
 

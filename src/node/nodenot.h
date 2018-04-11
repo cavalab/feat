@@ -35,6 +35,8 @@ namespace FT{
             	string x = stack_b.back(); stack_b.pop_back();
                 stack_b.push_back("NOT(" + x + ")");
             }
+        protected:
+            NodeNot* clone_impl() const override { return new NodeNot(*this); };  
     };
     
 }	

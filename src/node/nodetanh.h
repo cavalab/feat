@@ -75,6 +75,8 @@ namespace FT{
             //     d_w = numerator/denom;
             //     W[0] = W[0] - n/update_value.size() * sum(d_w * update_value);
             // }
+        protected:
+            NodeTanh* clone_impl() const override { return new NodeTanh(*this); };  
     };
 }	
 

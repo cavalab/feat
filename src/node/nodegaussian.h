@@ -5,10 +5,10 @@ license: GNU/GPL v3
 #ifndef NODE_GAUSSIAN
 #define NODE_GAUSSIAN
 
-#include "node.h"
+#include "nodeDx.h"
 
 namespace FT{
-	class NodeGaussian : public Node
+	class NodeGaussian : public NodeDx
     {
     	public:
     	
@@ -48,6 +48,8 @@ namespace FT{
                         return -2 * pow(W[0], 2) * stack_f[stack_f.size() - 1] * exp(-pow(W[0] * stack_f[stack_f.size() - 1], 2));
                 } 
             }
+        protected:
+            NodeGaussian* clone_impl() const override { return new NodeGaussian(*this); };  
     };
 }	
 

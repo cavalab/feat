@@ -5,10 +5,10 @@ license: GNU/GPL v3
 #ifndef NODE_2DGAUSSIAN
 #define NODE_2DGAUSSIAN
 
-#include "node.h"
+#include "nodeDx.h"
 
 namespace FT{
-	class Node2dGaussian : public Node
+	class Node2dGaussian : public NodeDx
     {
     	public:
     	
@@ -61,6 +61,8 @@ namespace FT{
                     double mean = x.mean();
                     return (limited(pow((x - mean),2))).sum()/(x.count() - 1);
                 }
+        protected:
+                Node2dGaussian* clone_impl() const override { return new Node2dGaussian(*this); };  
     };
 }	
 

@@ -5,10 +5,10 @@ license: GNU/GPL v3
 #ifndef NODE_EXPONENT
 #define NODE_EXPONENT
 
-#include "node.h"
+#include "nodeDx.h"
 
 namespace FT{
-	class NodeExponent : public Node
+	class NodeExponent : public NodeDx
     {
     	public:
     	  	
@@ -56,6 +56,8 @@ namespace FT{
                         return limited(pow(W[1] * stack_f[stack_f.size() - 2], W[0] * stack_f[stack_f.size() - 1])) * limited(ln(W[1] * stack_f[stack_f.size() - 2])) * W[0];
                 } 
             }
+        protected:
+            NodeExponent* clone_impl() const override { return new NodeExponent(*this); };  
     };
 }	
 

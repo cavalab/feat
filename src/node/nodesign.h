@@ -5,10 +5,10 @@ license: GNU/GPL v3
 #ifndef NODE_SIGN
 #define NODE_SIGN
 
-#include "node.h"
+#include "nodeDx.h"
 
 namespace FT{
-	class NodeSign : public Node
+	class NodeSign : public NodeDx
     {
     	public:
     	
@@ -51,6 +51,8 @@ namespace FT{
                         return W[0] / (2 * sqrt(W[0] * stack_f[stack_f.size()-1]));
                 } 
             }
+        protected:
+            NodeSign* clone_impl() const override { return new NodeSign(*this); };  
     };
 }	
 

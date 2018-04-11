@@ -80,6 +80,8 @@ namespace FT{
             //     W[1] = W_temp[1] - n/update_value.size * sum(d_w * update_value); 
             // }
 
+        protected:
+            NodeAdd* clone_impl() const override { return new NodeAdd(*this); };  
     };
 }	
 
