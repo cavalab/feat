@@ -173,8 +173,7 @@ namespace FT{
         if (!ml_type.compare("LeastAngleRegression") || !ml_type.compare("LinearRidgeRegression")||
         	!ml_type.compare("SVM") || (!ml_type.compare("LR")))
         {
-            if(prob_type == PT_MULTICLASS && (!ml_type.compare("SVM") || !ml_type.compare("LR")) ) {  
-		//std::cout<< "MultiClass Logistic Regression get_weights()" << std::endl;
+            if(prob_type == PT_MULTICLASS && ( !ml_type.compare("LR")) ) {  
 		auto weights = dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(p_est)->get_w();
 	
 			
