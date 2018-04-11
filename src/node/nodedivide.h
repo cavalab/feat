@@ -5,6 +5,8 @@ license: GNU/GPL v3
 #ifndef NODE_DIVIDE
 #define NODE_DIVIDE
 
+#define NEAR_ZERO 0.00001  // Added in as placeholder, ask Bill what number this should be
+
 #include "nodeDx.h"
 
 namespace FT{
