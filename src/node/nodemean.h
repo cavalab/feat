@@ -44,6 +44,8 @@ namespace FT{
             {
                 stack.fs.push("mean(" + stack.zs.pop() + ")");
             }
+        protected:
+            NodeMean* clone_impl() const override { return new NodeMean(*this); }; 
     };
 }	
 

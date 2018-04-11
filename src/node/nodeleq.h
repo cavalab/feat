@@ -38,7 +38,9 @@ namespace FT{
                 string x1 = stack.fs.pop();
                 stack.bs.push("(" + x1 + "<=" + x2 + ")");
             }
-      };
+        protected:
+            NodeLEQ* clone_impl() const override { return new NodeLEQ(*this); };  
+    };
 }	
 
 #endif

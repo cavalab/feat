@@ -46,6 +46,8 @@ namespace FT{
                 string x1 = stack.zs.pop();
                 stack.fs.push("median(" + stack.zs.pop() + ")");
             }
+        protected:
+            NodeMedian* clone_impl() const override { return new NodeMedian(*this); }; 
     };
 }	
 

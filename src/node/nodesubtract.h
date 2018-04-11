@@ -38,6 +38,8 @@ namespace FT{
                 string x1 = stack.fs.pop();
                 stack.fs.push("(" + x1 + "-" + x2 + ")");
             }
+        protected:
+            NodeSubtract* clone_impl() const override { return new NodeSubtract(*this); };  
     };
 }	
 

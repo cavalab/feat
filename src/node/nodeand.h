@@ -35,6 +35,8 @@ namespace FT{
             {
                 stack.bs.push("(" + stack.bs.pop() + " AND " + stack.bs.pop() + ")");
             }
+        protected:
+            virtual NodeAnd* clone_impl() const override { return new NodeAnd(*this); };  
     };
 }	
 

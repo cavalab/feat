@@ -34,6 +34,8 @@ namespace FT{
             {
                 stack.bs.push("(" + stack.fs.pop() + "==" + stack.fs.pop() + ")");
             }
+        protected:
+            NodeEqual* clone_impl() const override { return new NodeEqual(*this); };  
     };
 }	
 

@@ -35,6 +35,8 @@ namespace FT{
             {
                 stack.bs.push("(" + stack.bs.pop() + " OR " + stack.bs.pop() + ")");
             }
+        protected:
+            NodeOr* clone_impl() const override { return new NodeOr(*this); };  
     };
     
 }	

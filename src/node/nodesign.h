@@ -37,6 +37,8 @@ namespace FT{
             {
                 stack.fs.push("sign("+ stack.fs.pop() +")");
             }
+        protected:
+            NodeSign* clone_impl() const override { return new NodeSign(*this); };  
     };
 }	
 
