@@ -34,6 +34,8 @@ namespace FT{
             {
                 stack.fs.push("1/(1+exp(-1*" + stack.fs.pop() + "))");
             }
+        protected:
+            NodeLogit* clone_impl() const override { return new NodeLogit(*this); };  
     };
 }	
 

@@ -36,6 +36,8 @@ namespace FT{
               string f = stack.fs.pop();
               stack.fs.push("if-then-else(" + stack.bs.pop() + "," + stack.fs.pop() + "," + "0)");
             }
+        protected:
+            NodeIf* clone_impl() const override { return new NodeIf(*this); };  
     };
 }	
 

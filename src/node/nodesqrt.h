@@ -34,6 +34,8 @@ namespace FT{
             {
                 stack.fs.push("sqrt(|" + stack.fs.pop() + "|)");
             }
+        protected:
+            NodeSqrt* clone_impl() const override { return new NodeSqrt(*this); };  
     };
 }	
 

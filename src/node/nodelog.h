@@ -35,6 +35,8 @@ namespace FT{
             {
                 stack.fs.push("log(" + stack.fs.pop() + ")");
             }
+        protected:
+            NodeLog* clone_impl() const override { return new NodeLog(*this); };  
     };
 }	
 

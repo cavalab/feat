@@ -34,6 +34,8 @@ namespace FT{
             {
                 stack.bs.push("NOT(" + stack.bs.pop() + ")");
             }
+        protected:
+            NodeNot* clone_impl() const override { return new NodeNot(*this); };  
     };
     
 }	

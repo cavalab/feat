@@ -44,6 +44,8 @@ namespace FT{
             {
                 stack.fs.push("kurtosis(" + stack.zs.pop() + ")");
             }
+        protected:
+            NodeKurtosis* clone_impl() const override { return new NodeKurtosis(*this); }; 
     };
 }	
 

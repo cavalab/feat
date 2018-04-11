@@ -63,6 +63,8 @@ namespace FT{
                     stack.fs.push(std::to_string(d_value));
             }
     		
+        protected:
+            NodeConstant* clone_impl() const override { return new NodeConstant(*this); };  
     };
 }	
 

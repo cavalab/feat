@@ -39,7 +39,9 @@ namespace FT{
 		    {
 		        stack.zs.push(name);
 		    }
-	};
+        protected:
+            NodeLongitudinal* clone_impl() const override { return new NodeLongitudinal(*this); }; 
+    };
 }
 
 #endif
