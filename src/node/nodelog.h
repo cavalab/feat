@@ -5,6 +5,8 @@ license: GNU/GPL v3
 #ifndef NODE_LOG
 #define NODE_LOG
 
+#define NEAR_ZERO 0.000001
+
 #include "nodeDx.h"
 
 namespace FT{
@@ -43,7 +45,7 @@ namespace FT{
             ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
                 switch (loc) {
                     case 1: // d/dw0
-                        return 1/(W[0]]);
+                        return 1/(W[0] * ArrayXd::Ones(stack_f[stack_f.size()-1].size()));
                     case 0: // d/dx0
                     default:
                        return 1/(stack_f[stack_f.size()-1]);

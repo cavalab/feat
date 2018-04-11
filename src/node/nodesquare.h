@@ -30,7 +30,7 @@ namespace FT{
                     vector<ArrayXb>& stack_b)
             {
         		ArrayXd x = stack_f.back(); stack_f.pop_back();
-                stack_f.push_back(pow(W[0] * x,2));
+                stack_f.push_back(pow(this->W[0] * x,2));
             }
 
             /// Evaluates the node symbolically
@@ -43,10 +43,10 @@ namespace FT{
             ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
                 switch (loc) {
                     case 1: // d/dw0
-                        return 2 * pow(stack_f[stack_f.size()-1], 2) * W[0];
+                        return 2 * pow(stack_f[stack_f.size()-1], 2) * this->W[0];
                     case 0: // d/dx0
                     default:
-                       return 2 * pow(W[0], 2) * stack_f[stack_f.size()-1];
+                       return 2 * pow(this->W[0], 2) * stack_f[stack_f.size()-1];
                 } 
             }
         protected:

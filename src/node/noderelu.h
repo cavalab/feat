@@ -31,7 +31,8 @@ namespace FT{
             {
                 ArrayXd x = stack_f.back(); stack_f.pop_back();
                 
-                ArrayXd res = (W[0] * x > 0).select(, (W[0] * x == 0).select(ArrayXd::Zero(x.size()), -1*ArrayXd::Ones(x.size()))); 
+                // ArrayXd res = (W[0] * x > 0).select((W[0] * x == 0).select(ArrayXd::Zero(x.size()), -1*ArrayXd::Ones(x.size()))); 
+                ArrayXd res = x; // Need to replace with above line
                 stack_f.push_back(res);
             }
 
@@ -43,15 +44,12 @@ namespace FT{
             }
 
             ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
+
                 switch (loc) {
                     case 1: // d/dx1
-                        ArrayXd x = fwd_stack[fwd_stack.size()-1];
-                        ArrayXd res = (W[0] * x > 0).select(ArrayXd::Ones(x.size()), (x == 0).select(ArrayXd::Zero(x.size()), -1*ArrayXd::Ones(x.size()))); 
-                        return W[1]/(W[0] * fwd_stack[-2]);
+                        return W[1]/(W[0] * stack_f[stack_f.size()-2]);
                     case 0: // d/dx0
                     default:
-                        ArrayXd x = fwd_stack[fwd_stack.size()-1];
-                        ArrayXd res = (W[0] * x > 0).select(ArrayXd::Ones(x.size()), (x == 0).select(ArrayXd::Zero(x.size()), -1*ArrayXd::Ones(x.size()))); 
                         return -W[1] * stack_f[stack_f.size() - 1]/(W[0] * pow(stack_f[stack_f.size()], 2));
                 } 
             }
