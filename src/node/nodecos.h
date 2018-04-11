@@ -34,6 +34,8 @@ namespace FT{
             {
                 stack.fs.push("cos(" + stack.fs.pop() + ")");
             }
+        protected:
+            NodeCos* clone_impl() const override { return new NodeCos(*this); };  
     };
 }	
 

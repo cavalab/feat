@@ -34,6 +34,8 @@ namespace FT{
             {
                 stack.fs.push("(" + stack.fs.pop() + "^3)");
             }
+        protected:
+            NodeCube* clone_impl() const override { return new NodeCube(*this); };  
     };
 }	
 

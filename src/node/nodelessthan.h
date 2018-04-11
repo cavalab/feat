@@ -38,6 +38,8 @@ namespace FT{
                 string x1 = stack.fs.pop();
                 stack.bs.push("(" + x1 + "<" + x2 + ")");
             }
+        protected:
+            NodeLessThan* clone_impl() const override { return new NodeLessThan(*this); };  
     };
 }	
 

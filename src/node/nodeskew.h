@@ -45,6 +45,8 @@ namespace FT{
             {
                 stack.fs.push("skew(" + stack.zs.pop() + ")");
             }
+        protected:
+            NodeSkew* clone_impl() const override { return new NodeSkew(*this); }; 
     };
 }	
 

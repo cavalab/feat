@@ -38,6 +38,8 @@ namespace FT{
                 string f1 = stack.fs.pop();
                 stack.fs.push("if-then-else(" + stack.bs.pop() + "," + f1 + "," + f2 + ")");
             }
+        protected:
+            NodeIfThenElse* clone_impl() const override { return new NodeIfThenElse(*this); };  
     };
 
 }	

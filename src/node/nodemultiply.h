@@ -34,6 +34,8 @@ namespace FT{
             {
             	stack.fs.push("(" + stack.fs.pop() + "*" + stack.fs.pop() + ")");
             }
+        protected:
+            NodeMultiply* clone_impl() const override { return new NodeMultiply(*this); };  
     };
 }	
 

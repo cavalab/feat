@@ -45,6 +45,8 @@ namespace FT{
             {
                 stack.fs.push("slope(" + stack.zs.pop() + ")");
             }
+        protected:
+            NodeSlope* clone_impl() const override { return new NodeSlope(*this); }; 
     };
 }	
 

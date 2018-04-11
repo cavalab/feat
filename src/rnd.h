@@ -18,6 +18,9 @@ namespace FT {
      * @class Rnd
      * @brief Defines a multi-core random number generator and its operators.
      */
+    // forward declaration of Node class
+    class Node;
+
     class Rnd
     {
         public:
@@ -98,7 +101,7 @@ namespace FT {
                 advance(start, dis(rg[omp_get_thread_num()]));
                 return start;
             } 
-            
+           
             template<typename T>
             T random_choice(const vector<T>& v)
             {
@@ -108,7 +111,8 @@ namespace FT {
                 assert(v.size()>0 && " attemping to return random choice from empty vector");
                 return *select_randomly(v.begin(),v.end());
             }
-            
+ 
+           
             template<typename T, typename D>
             T random_choice(const vector<T>& v, const vector<D>& w )
             {

@@ -45,6 +45,8 @@ namespace FT{
             {
                 stack.fs.push("min(" + stack.zs.pop() + ")");
             }
+        protected:
+            NodeMin* clone_impl() const override { return new NodeMin(*this); }; 
     };
 }	
 

@@ -40,6 +40,8 @@ namespace FT{
             {
                     stack.fs.push("sqrt(|" + stack.fs.pop() + "|)");
             }
+        protected:
+            NodeRoot* clone_impl() const override { return new NodeRoot(*this); };  
     };
 }	
 
