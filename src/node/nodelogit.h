@@ -38,13 +38,13 @@ namespace FT{
         		string x = stack_f.back(); stack_f.pop_back();
                 stack_f.push_back("1/(1+exp(-1*" + x + "))");
             }
-<<<<<<< HEAD
 
             ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
+                ArrayXd numerator, denom;
                 switch (loc) {
                     case 1: // d/dw0
                         numerator = stack_f[stack_f.size() -1] * exp(-W[0] * stack_f[stack_f.size() -1]);
-                        denom = pow(1 + np.exp(-W[0] * stack_f[stack_f.size()-1]), 2);
+                        denom = pow(1 + exp(-W[0] * stack_f[stack_f.size()-1]), 2);
                         return numerator/denom;
                     case 0: // d/dx0
                     default:
@@ -75,10 +75,9 @@ namespace FT{
             //     d_w = numerator/denom;
             //     W[0] = W[0] - n/update_value.size * sum(d_w * update_value);
             // }
-=======
+
         protected:
             NodeLogit* clone_impl() const override { return new NodeLogit(*this); };  
->>>>>>> 3fc58ab36cf56ee2a412662e57687e377215d5af
     };
 }	
 

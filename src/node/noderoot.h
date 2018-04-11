@@ -36,7 +36,7 @@ namespace FT{
             	if (stack_f.size() >= arity['f'] && stack_b.size() >= arity['b'])
             	{
             		ArrayXd x = stack_f.back(); stack_f.pop_back();
-                    stack_f.push_back(sqrt(abs(x)));
+                    stack_f.push_back(sqrt(abs(this->W[0] * x)));
             	}
             }
 
@@ -53,10 +53,10 @@ namespace FT{
             ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
                 switch (loc) {
                     case 1:
-                        return stack_f[stack_f.size() - 1] / (2 * sqrt(abs(W[0] * stack_f[stack_f.size() - 1])));
+                        return stack_f[stack_f.size() - 1] / (2 * sqrt(abs(this->W[0] * stack_f[stack_f.size() - 1])));
                     case 0:
                     default:
-                       return W[0] / (2 * sqrt(abs(W[0] * stack_f[stack_f.size() - 1])));
+                       return W[0] / (2 * sqrt(abs(this->W[0] * stack_f[stack_f.size() - 1])));
                 } 
             }
 

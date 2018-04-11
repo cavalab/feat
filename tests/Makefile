@@ -1,6 +1,6 @@
 all: autoBP
 
-sample: ../src/node/node.h ../src/node/nodeDx.h trigNodes arithNodes
+sample: ../src/node/node.h ../src/node/nodeDx.h trigNodes arithNodes powerNodes eNodes miscNodes
 	g++ -o sample ../src/node/node.h ../src/node/nodeDx.h ../src/node/nodecos.h
 
 autoBP: autoDiffTester.cc ../src/auto_backprop.h nodes

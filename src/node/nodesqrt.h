@@ -29,7 +29,7 @@ namespace FT{
             void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b)
             {
         		ArrayXd x = stack_f.back(); stack_f.pop_back();
-                stack_f.push_back(sqrt(abs(W[0] * x)));
+                stack_f.push_back(sqrt(abs(this->W[0] * x)));
             }
 
             /// Evaluates the node symbolically
@@ -42,10 +42,10 @@ namespace FT{
             ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
                 switch (loc) {
                     case 1: // d/dw0
-                        return stack_f[stack_f.size()-1] / (2 * sqrt(W[0] * stack_f[stack_f.size()-1]));
+                        return stack_f[stack_f.size()-1] / (2 * sqrt(this->W[0] * stack_f[stack_f.size()-1]));
                     case 0: // d/dx0
                     default:
-                        return W[0] / (2 * sqrt(W[0] * stack_f[stack_f.size()-1]));
+                        return this->W[0] / (2 * sqrt(this->W[0] * stack_f[stack_f.size()-1]));
                 } 
             }
 
