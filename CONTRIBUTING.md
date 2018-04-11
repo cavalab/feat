@@ -28,6 +28,8 @@ git commit -m "adds my new change"
 branch from the upstream repo. 
 
 ```
+git remote add upstream https://github.com/lacava/feat
+git fetch upstream
 git merge upstream/master
 ```
 
