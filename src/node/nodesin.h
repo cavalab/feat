@@ -34,6 +34,8 @@ namespace FT{
             {
                 stack.fs.push("sin(" + stack.fs.pop() + ")");
             }
+        protected:
+            NodeSin* clone_impl() const override { return new NodeSin(*this); };  
     };
 }	
 

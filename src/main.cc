@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include "feat.h"
-#include "featcv.h"
-#include "stack.h"
+
 using FT::Feat;
-using FT::FeatCV;
 #include <Eigen/Dense>
 #include <shogun/base/init.h>
 using Eigen::MatrixXd;
@@ -212,34 +210,7 @@ int main(int argc, char** argv){
     cout << "generating test prediction...\n";
     double score = feat.score(X_v,y_v);
     cout << "test score: " << score << "\n";
-    // write validation score to file
-    /* std::ofstream out_score; */ 
-    /* out_score.open("score_" + feat.get_name() + ".txt"); */
-    /* out_score << score ; */
-    /* out_score.close(); */
-    /* // write pareto archive to file */
-    /* std::ofstream out_arc; */ 
-    /* out_score.open("arc_" + feat.get_name() + ".txt"); */
-    /* out_score << feat.get_eqns() ; */
-    /* out_score.close(); */
 
-    /* // write transformation matrix to file */
-    /* std::ofstream out_t; */
-    /* out_t.open("transformation_"+ feat.get_name() + ".txt"); */
-    
-    /* MatrixXd Phi = feat.transform(X).transpose(); */
-    /* for (unsigned i  = 0; i < Phi.rows(); ++i) */
-    /* { */
-    /*     for (unsigned j = 0; j < Phi.cols(); ++j) */
-    /*     { */
-    /*         out_t << Phi(i,j); */ 
-    /*         if (j < Phi.cols()-1) */
-    /*             out_t << ","; */
-    /*     } */
-    /*     if (i < Phi.rows()-1) */
-    /*         out_t << "\n"; */
-    /* } */
-    /* out_t.close(); */
     cout << "done!\n";
 	
     return 0;

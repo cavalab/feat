@@ -40,6 +40,9 @@ namespace FT{
                 string x1 = stack.fs.pop();
                 stack.fs.push("gauss2d(" + x1 + "," + x2 + ")");
             }
+
+        protected:
+                Node2dGaussian* clone_impl() const override { return new Node2dGaussian(*this); };  
     };
 }	
 

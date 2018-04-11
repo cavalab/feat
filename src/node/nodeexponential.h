@@ -34,6 +34,8 @@ namespace FT{
             {
                 stack.fs.push("exp(" + stack.fs.pop() + ")");
             }
+        protected:
+            NodeExponential* clone_impl() const override { return new NodeExponential(*this); };  
     };
 }	
 

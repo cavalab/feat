@@ -38,6 +38,8 @@ namespace FT{
             {
                 stack.fs.push("step("+ stack.fs.pop() +")");
             }
+        protected:
+            NodeStep* clone_impl() const override { return new NodeStep(*this); };  
     };
 }	
 

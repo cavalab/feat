@@ -47,6 +47,8 @@ namespace FT{
             {
                 stack.fs.push("variance(" + stack.zs.pop() + ")");
             }
+        protected:
+            NodeVar* clone_impl() const override { return new NodeVar(*this); }; 
     };
 }	
 

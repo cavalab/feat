@@ -37,6 +37,8 @@ namespace FT{
             {
                 stack.fs.push("(" + stack.fs.pop() + "/" + stack.fs.pop() + ")");            	
             }
+        protected:
+            NodeDivide* clone_impl() const override { return new NodeDivide(*this); };  
     };
 }	
 

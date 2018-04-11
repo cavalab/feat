@@ -45,6 +45,8 @@ namespace FT{
             {
                 stack.fs.push("max(" + stack.zs.pop() + ")");
             }
+        protected:
+            NodeMax* clone_impl() const override { return new NodeMax(*this); }; 
     };
 }	
 

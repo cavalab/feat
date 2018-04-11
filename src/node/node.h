@@ -30,12 +30,13 @@ namespace FT{
             char otype;             				///< output type
             std::map<char, unsigned int> arity;		///< floating arity of the operator 
             int complexity;         ///< complexity of node
-            
+
             virtual ~Node(){}
            
             /// Evaluates the node and updates the stack states. 
             virtual void evaluate(const MatrixXd& X, const VectorXd& y,
-                                  const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >&Z, 
+                                  const std::map<string, 
+                                                 std::pair<vector<ArrayXd>, vector<ArrayXd>>>&Z, 
 			                      Stacks& stack) = 0; 
 
             /// evaluates the node symbolically
@@ -59,7 +60,6 @@ namespace FT{
             /// limits node output to be between MIN_DBL and MAX_DBL
             ArrayXd limited(ArrayXd x)
             {
-                
                 x = (isinf(x)).select(MAX_DBL,x);
                 x = (isnan(x)).select(0,x);
                 //x = (x < MIN_DBL).select(MIN_DBL,x);
@@ -114,6 +114,12 @@ namespace FT{
                     cstack[otype].push_back(std::to_string(complexity) + "*" + c_args);
                 }
             }
+
+            /// makes a unique copy of this node
+            auto clone() const { return std::unique_ptr<Node>(clone_impl()); }
+        
+        protected:
+            virtual Node* clone_impl() const = 0;
     };
 }
 #endif
