@@ -24,5 +24,6 @@ var searchData=
   ['max_5fstall',['max_stall',['../de/d2c/structFT_1_1Parameters.html#a30f7f95ef22a0228e87e297ab1305ca2',1,'FT::Parameters']]],
   ['min_5fsplit_5fgain',['MIN_SPLIT_GAIN',['../db/dff/classshogun_1_1CMyCARTree.html#a470c47e13d68d22929c515489ecc3e7f',1,'shogun::CMyCARTree']]],
   ['missing',['MISSING',['../db/dff/classshogun_1_1CMyCARTree.html#a24f3fd6ba041039c69b7c24a2555a3fa',1,'shogun::CMyCARTree']]],
-  ['ml',['ml',['../de/d2c/structFT_1_1Parameters.html#a7e11bd6f94c1474b695cc9c823e8ea46',1,'FT::Parameters']]]
+  ['ml',['ml',['../de/d2c/structFT_1_1Parameters.html#a7e11bd6f94c1474b695cc9c823e8ea46',1,'FT::Parameters']]],
+  ['ml_5ftype',['ml_type',['../df/dfa/classFT_1_1ML.html#a0a75b03c805745d54fb50c85d4e59bf6',1,'FT::ML']]]
 ];

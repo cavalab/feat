@@ -1,10 +1,13 @@
 <map id="FT::FeatCV" name="FT::FeatCV">
-<area shape="rect" id="node3" href="$dc/d9a/structFT_1_1DataFolds.html" title="structure contains indexes and number of data sets in each fold " alt="" coords="1159,13,1265,39"/>
-<area shape="rect" id="node5" href="$df/d04/structFT_1_1FeatObjects.html" title="FT::FeatObjects" alt="" coords="1153,450,1271,477"/>
-<area shape="rect" id="node6" href="$db/dff/classFT_1_1Feat.html" title="main class for the Feat learner. " alt="" coords="971,450,1043,477"/>
-<area shape="rect" id="node9" href="$de/d2c/structFT_1_1Parameters.html" title="holds the hyperparameters for Feat. " alt="" coords="698,375,811,402"/>
-<area shape="rect" id="node21" href="$d8/d25/classFT_1_1Individual.html" title="individual programs in the population " alt="" coords="704,325,805,351"/>
-<area shape="rect" id="node13" title="STL class. " alt="" coords="181,175,261,202"/>
-<area shape="rect" id="node14" title="STL class. " alt="" coords="5,168,132,209"/>
-<area shape="rect" id="node19" href="$d3/d4e/classFT_1_1Timer.html" title="class for timing things. " alt="" coords="715,274,794,301"/>
+<area shape="rect" id="node3" href="$dc/d9a/structFT_1_1DataFolds.html" title="structure contains indexes and number of data sets in each fold " alt="" coords="1312,13,1419,39"/>
+<area shape="rect" id="node5" href="$df/d04/structFT_1_1FeatObjects.html" title="FT::FeatObjects" alt="" coords="1307,453,1424,479"/>
+<area shape="rect" id="node6" href="$db/dff/classFT_1_1Feat.html" title="main class for the Feat learner. " alt="" coords="1125,401,1197,427"/>
+<area shape="rect" id="node9" href="$de/d2c/structFT_1_1Parameters.html" title="holds the hyperparameters for Feat. " alt="" coords="851,375,965,402"/>
+<area shape="rect" id="node24" href="$d8/d25/classFT_1_1Individual.html" title="individual programs in the population " alt="" coords="857,122,959,149"/>
+<area shape="rect" id="node11" href="$dd/d15/structFT_1_1NodeVector.html" title="an extension of a vector of unique pointers to nodes " alt="" coords="529,167,643,194"/>
+<area shape="rect" id="node12" title="STL class. " alt="" coords="237,160,397,201"/>
+<area shape="rect" id="node15" title="STL class. " alt="" coords="277,451,357,478"/>
+<area shape="rect" id="node16" title="STL class. " alt="" coords="5,444,132,485"/>
+<area shape="rect" id="node22" href="$d3/d4e/classFT_1_1Timer.html" title="class for timing things. " alt="" coords="869,527,947,554"/>
+<area shape="rect" id="node25" href="$dd/db4/structFT_1_1Normalizer.html" title="FT::Normalizer" alt="" coords="853,173,963,199"/>
 </map>
