@@ -107,6 +107,7 @@ $(document).ready(function(){initNavTree('d7/d13/classFT_1_1NodeOr.html','../../
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="../../d6/d5f/classFT_1_1NodeOr-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">FT::NodeOr Class Reference</div>  </div>
@@ -133,15 +134,19 @@ Collaboration diagram for FT::NodeOr:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a826ba5cd129dda0906ec49c8d2dbd2c6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a826ba5cd129dda0906ec49c8d2dbd2c6"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d13/classFT_1_1NodeOr.html#a826ba5cd129dda0906ec49c8d2dbd2c6">evaluate</a> (const MatrixXd &amp;X, const VectorXd &amp;y, vector&lt; ArrayXd &gt; &amp;stack_f, vector&lt; ArrayXb &gt; &amp;stack_b)</td></tr>
-<tr class="memdesc:a826ba5cd129dda0906ec49c8d2dbd2c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the node and updates the stack states. <br /></td></tr>
-<tr class="separator:a826ba5cd129dda0906ec49c8d2dbd2c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a66497941998233df729157e426e323ec"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a66497941998233df729157e426e323ec"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d13/classFT_1_1NodeOr.html#a66497941998233df729157e426e323ec">eval_eqn</a> (vector&lt; string &gt; &amp;stack_f, vector&lt; string &gt; &amp;stack_b)</td></tr>
-<tr class="memdesc:a66497941998233df729157e426e323ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the node symbolically. <br /></td></tr>
-<tr class="separator:a66497941998233df729157e426e323ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66d278b545f0321d56a2726b2befb718"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a66d278b545f0321d56a2726b2befb718"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d13/classFT_1_1NodeOr.html#a66d278b545f0321d56a2726b2befb718">evaluate</a> (const MatrixXd &amp;X, const VectorXd &amp;y, const std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; &amp;Z, <a class="el" href="../../d5/d75/structFT_1_1Stacks.html">Stacks</a> &amp;stack)</td></tr>
+<tr class="memdesc:a66d278b545f0321d56a2726b2befb718"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the node and updates the stack states. <br /></td></tr>
+<tr class="separator:a66d278b545f0321d56a2726b2befb718"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a432a2a4b242467dc3b423ee71d4045fe"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a432a2a4b242467dc3b423ee71d4045fe"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d13/classFT_1_1NodeOr.html#a432a2a4b242467dc3b423ee71d4045fe">eval_eqn</a> (<a class="el" href="../../d5/d75/structFT_1_1Stacks.html">Stacks</a> &amp;stack)</td></tr>
+<tr class="memdesc:a432a2a4b242467dc3b423ee71d4045fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the node symbolically. <br /></td></tr>
+<tr class="separator:a432a2a4b242467dc3b423ee71d4045fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classFT_1_1Node"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classFT_1_1Node')"><img src="../../closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="../../d3/daf/classFT_1_1Node.html">FT::Node</a></td></tr>
+<tr class="memitem:a95e1d572191c38566fc3edde41081972 inherit pub_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a95e1d572191c38566fc3edde41081972"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/daf/classFT_1_1Node.html#a95e1d572191c38566fc3edde41081972">evaluate</a> (const MatrixXd &amp;X, const VectorXd &amp;y, const std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt;&gt;&gt; &amp;Z, <a class="el" href="../../d5/d75/structFT_1_1Stacks.html">Stacks</a> &amp;stack)=0</td></tr>
+<tr class="memdesc:a95e1d572191c38566fc3edde41081972 inherit pub_methods_classFT_1_1Node"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the node and updates the stack states. <br /></td></tr>
+<tr class="separator:a95e1d572191c38566fc3edde41081972 inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c25f017fe0e31985293be28d7aae946 inherit pub_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3c25f017fe0e31985293be28d7aae946"></a>
 unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>total_arity</b> ()</td></tr>
 <tr class="separator:a3c25f017fe0e31985293be28d7aae946 inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -155,6 +160,16 @@ ArrayXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=".
 <tr class="memitem:ace750fe7282a1d7e6bae7b7e8c16fc99 inherit pub_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/daf/classFT_1_1Node.html#ace750fe7282a1d7e6bae7b7e8c16fc99">eval_complexity_db</a> (map&lt; char, vector&lt; string &gt;&gt; &amp;cstack)</td></tr>
 <tr class="memdesc:ace750fe7282a1d7e6bae7b7e8c16fc99 inherit pub_methods_classFT_1_1Node"><td class="mdescLeft">&#160;</td><td class="mdescRight">evaluates complexity of this node in the context of its child nodes.  <a href="#ace750fe7282a1d7e6bae7b7e8c16fc99">More...</a><br /></td></tr>
 <tr class="separator:ace750fe7282a1d7e6bae7b7e8c16fc99 inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26bfc16470d49222cc6c20d4d7c6b42f inherit pub_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a26bfc16470d49222cc6c20d4d7c6b42f"></a>
+auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/daf/classFT_1_1Node.html#a26bfc16470d49222cc6c20d4d7c6b42f">clone</a> () const </td></tr>
+<tr class="memdesc:a26bfc16470d49222cc6c20d4d7c6b42f inherit pub_methods_classFT_1_1Node"><td class="mdescLeft">&#160;</td><td class="mdescRight">makes a unique copy of this node <br /></td></tr>
+<tr class="separator:a26bfc16470d49222cc6c20d4d7c6b42f inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:ae91819a289c84c73e701bd99395a1b63"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae91819a289c84c73e701bd99395a1b63"></a>
+<a class="el" href="../../d7/d13/classFT_1_1NodeOr.html">NodeOr</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>clone_impl</b> () const override</td></tr>
+<tr class="separator:ae91819a289c84c73e701bd99395a1b63"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
