@@ -123,8 +123,9 @@ Collaboration diagram for FT::ML:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../de/dbe/classFT_1_1ML__coll__graph.png" border="0" usemap="#FT_1_1ML_coll__map" alt="Collaboration graph"/></div>
 <map name="FT_1_1ML_coll__map" id="FT_1_1ML_coll__map">
-<area shape="rect" id="node3" title="STL class. " alt="" coords="218,96,298,123"/>
-<area shape="rect" id="node4" title="STL class. " alt="" coords="195,5,321,47"/>
+<area shape="rect" id="node4" title="STL class. " alt="" coords="350,96,430,123"/>
+<area shape="rect" id="node5" title="STL class. " alt="" coords="327,5,453,47"/>
+<area shape="rect" id="node6" href="../../dd/db4/structFT_1_1Normalizer.html" title="FT::Normalizer" alt="" coords="454,96,563,123"/>
 </map>
 <center><span class="legend">[<a target="top" href="../../graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -132,10 +133,16 @@ Collaboration diagram for FT::ML:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ae46f491cb0656cf64334f76d5ac07b9a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#ae46f491cb0656cf64334f76d5ac07b9a">ML</a> (const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params)</td></tr>
 <tr class="separator:ae46f491cb0656cf64334f76d5ac07b9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ee8ca95a179f4cbe3c3ab87d9066147"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2ee8ca95a179f4cbe3c3ab87d9066147"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> ()</td></tr>
+<tr class="separator:a2ee8ca95a179f4cbe3c3ab87d9066147"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27fa984d19c8826c2fcbe81edb6a3417"><td class="memItemLeft" align="right" valign="top">vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#a27fa984d19c8826c2fcbe81edb6a3417">get_weights</a> ()</td></tr>
 <tr class="separator:a27fa984d19c8826c2fcbe81edb6a3417"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8cb3834bdf99902fbb59e24a24f0cc7d"><td class="memItemLeft" align="right" valign="top">VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#a8cb3834bdf99902fbb59e24a24f0cc7d">out</a> (MatrixXd &amp;X, VectorXd &amp;y, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params, bool &amp;pass, const vector&lt; char &gt; &amp;dtypes=vector&lt; char &gt;())</td></tr>
-<tr class="separator:a8cb3834bdf99902fbb59e24a24f0cc7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad01762995cbd4d7a950fba2e6312c11d"><td class="memItemLeft" align="right" valign="top">VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#ad01762995cbd4d7a950fba2e6312c11d">fit</a> (MatrixXd &amp;X, VectorXd &amp;y, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params, bool &amp;pass, const vector&lt; char &gt; &amp;dtypes=vector&lt; char &gt;())</td></tr>
+<tr class="separator:ad01762995cbd4d7a950fba2e6312c11d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a14a77631ce0d1567dc4a15cbcc64e682"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a14a77631ce0d1567dc4a15cbcc64e682"></a>
+VectorXd&#160;</td><td class="memItemRight" valign="bottom"><b>predict</b> (MatrixXd &amp;X)</td></tr>
+<tr class="separator:a14a77631ce0d1567dc4a15cbcc64e682"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d56b10a53a3a7a5896edf7dedc00111"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8d56b10a53a3a7a5896edf7dedc00111"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>set_dtypes</b> (const vector&lt; char &gt; &amp;dtypes)</td></tr>
 <tr class="separator:a8d56b10a53a3a7a5896edf7dedc00111"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -146,10 +153,17 @@ Public Attributes</h2></td></tr>
 shared_ptr&lt; sh::CMachine &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#afd284d76c6d59afaae43d8446dc1f80d">p_est</a></td></tr>
 <tr class="memdesc:afd284d76c6d59afaae43d8446dc1f80d"><td class="mdescLeft">&#160;</td><td class="mdescRight">pointer to the <a class="el" href="../../df/dfa/classFT_1_1ML.html" title="class that specifies the machine learning algorithm to pair with Feat. ">ML</a> object <br /></td></tr>
 <tr class="separator:afd284d76c6d59afaae43d8446dc1f80d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aff990a3a0b9d8135832b717262e8db5f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aff990a3a0b9d8135832b717262e8db5f"></a>
-string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#aff990a3a0b9d8135832b717262e8db5f">type</a></td></tr>
-<tr class="memdesc:aff990a3a0b9d8135832b717262e8db5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">user specified <a class="el" href="../../df/dfa/classFT_1_1ML.html" title="class that specifies the machine learning algorithm to pair with Feat. ">ML</a> type <br /></td></tr>
-<tr class="separator:aff990a3a0b9d8135832b717262e8db5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a75b03c805745d54fb50c85d4e59bf6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0a75b03c805745d54fb50c85d4e59bf6"></a>
+string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#a0a75b03c805745d54fb50c85d4e59bf6">ml_type</a></td></tr>
+<tr class="memdesc:a0a75b03c805745d54fb50c85d4e59bf6"><td class="mdescLeft">&#160;</td><td class="mdescRight">user specified <a class="el" href="../../df/dfa/classFT_1_1ML.html" title="class that specifies the machine learning algorithm to pair with Feat. ">ML</a> type <br /></td></tr>
+<tr class="separator:a0a75b03c805745d54fb50c85d4e59bf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a156f86502b4359b5fc9e264f9543183a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a156f86502b4359b5fc9e264f9543183a"></a>
+sh::EProblemType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#a156f86502b4359b5fc9e264f9543183a">prob_type</a></td></tr>
+<tr class="memdesc:a156f86502b4359b5fc9e264f9543183a"><td class="mdescLeft">&#160;</td><td class="mdescRight">type of learning problem; binary, multiclass or regression <br /></td></tr>
+<tr class="separator:a156f86502b4359b5fc9e264f9543183a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74f0d745069698615ff59ab1f7249714"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a74f0d745069698615ff59ab1f7249714"></a>
+<a class="el" href="../../dd/db4/structFT_1_1Normalizer.html">Normalizer</a>&#160;</td><td class="memItemRight" valign="bottom"><b>N</b></td></tr>
+<tr class="separator:a74f0d745069698615ff59ab1f7249714"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>class that specifies the machine learning algorithm to pair with <a class="el" href="../../db/dff/classFT_1_1Feat.html" title="main class for the Feat learner. ">Feat</a>. </p>
@@ -180,28 +194,12 @@ string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="..
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a27fa984d19c8826c2fcbe81edb6a3417"></a>
+<a class="anchor" id="ad01762995cbd4d7a950fba2e6312c11d"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">vector&lt; double &gt; FT::ML::get_weights </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>return weight vector from model.</p>
-
-</div>
-</div>
-<a class="anchor" id="a8cb3834bdf99902fbb59e24a24f0cc7d"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">VectorXd FT::ML::out </td>
+          <td class="memname">VectorXd FT::ML::fit </td>
           <td>(</td>
           <td class="paramtype">MatrixXd &amp;&#160;</td>
           <td class="paramname"><em>X</em>, </td>
@@ -244,6 +242,22 @@ string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="..
  ml: the ML model to be trained on X
 </pre><p>Output: </p><pre class="fragment"> yhat: n_samples vector of outputs
 </pre>
+</div>
+</div>
+<a class="anchor" id="a27fa984d19c8826c2fcbe81edb6a3417"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt; double &gt; FT::ML::get_weights </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>return weight vector from model.</p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>

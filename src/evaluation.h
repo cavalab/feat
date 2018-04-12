@@ -47,11 +47,23 @@ namespace FT{
             void set_score(string scorer){ score = score_hash[scorer]; }
 
             /// fitness of population.
-            void fitness(Population& pop, const MatrixXd& X, VectorXd& y, MatrixXd& F, 
-                         const Parameters& params, bool offspring);
- 
-            void val_fitness(Population& pop, const MatrixXd& X_t, VectorXd& y_t, MatrixXd& F, 
-                             const MatrixXd& X_v, VectorXd& y_v, const Parameters& params, 
+            void fitness(Population& pop,
+                         const MatrixXd& X, 
+                         const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+                         VectorXd& y, 
+                         MatrixXd& F, 
+                         const Parameters& params, 
+                         bool offspring);
+          
+            void val_fitness(Population& pop,
+                             const MatrixXd& X_t,
+                             const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_t,
+                             VectorXd& y_t,
+                             MatrixXd& F, 
+                             const MatrixXd& X_v,
+                             const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_v,
+                             VectorXd& y_v,
+                             const Parameters& params, 
                              bool offspring);
          
             /// assign fitness to an individual and to F.  
@@ -62,8 +74,13 @@ namespace FT{
     /////////////////////////////////////////////////////////////////////////////////// Definitions  
     
     // fitness of population
-    void Evaluation::fitness(Population& pop, const MatrixXd& X, VectorXd& y, MatrixXd& F, 
-                 const Parameters& params, bool offspring=false)
+    void Evaluation::fitness(Population& pop,
+                             const MatrixXd& X,
+                             const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+                             VectorXd& y, 
+                             MatrixXd& F, 
+                             const Parameters& params, 
+                             bool offspring=false)
     {
     	/*!
          * Input:
@@ -84,12 +101,12 @@ namespace FT{
         unsigned start =0;
         if (offspring) start = F.cols()/2;
         // loop through individuals
-        #pragma omp parallel for
+        //#pragma omp parallel for
         for (unsigned i = start; i<pop.size(); ++i)
         {
                         // calculate program output matrix Phi
             params.msg("Generating output for " + pop.individuals[i].get_eqn(), 2);
-            MatrixXd Phi = pop.individuals.at(i).out(X, params, y);            
+            MatrixXd Phi = pop.individuals.at(i).out(X, Z, params, y);            
 
             // calculate ML model from Phi
             params.msg("ML training on " + pop.individuals[i].get_eqn(), 2);
@@ -98,7 +115,7 @@ namespace FT{
             VectorXd yhat = ml->fit(Phi,y,params,pass,pop.individuals[i].dtypes);
             if (!pass){
                 std::cerr << "Error training eqn " + pop.individuals[i].get_eqn() + "\n";
-                std::cerr << "with raw output " << pop.individuals[i].out(X,params,y) << "\n";
+                std::cerr << "with raw output " << pop.individuals[i].out(X, Z, params,y) << "\n";
                 throw;
             }
             // assign weights to individual
@@ -139,10 +156,17 @@ namespace FT{
         params.msg("ind " + std::to_string(ind.loc) + " fitness: " + std::to_string(ind.fitness),2);
     }
 
-    // validation fitness of population
-    void Evaluation::val_fitness(Population& pop, const MatrixXd& X_t, VectorXd& y_t, MatrixXd& F, 
-                            const MatrixXd& X_v, VectorXd& y_v, const Parameters& params, 
-                            bool offspring=false)
+    // validation fitness of population                            
+    void Evaluation::val_fitness(Population& pop,
+                             const MatrixXd& X_t,
+                             const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_t,
+                             VectorXd& y_t,
+                             MatrixXd& F, 
+                             const MatrixXd& X_v,
+                             const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_v,
+                             VectorXd& y_v,
+                             const Parameters& params, 
+                             bool offspring = false)
     {
     	/*!
          * Input:
@@ -163,12 +187,12 @@ namespace FT{
         unsigned start =0;
         if (offspring) start = F.cols()/2;
         // loop through individuals
-        #pragma omp parallel for
+        //#pragma omp parallel for
         for (unsigned i = start; i<pop.size(); ++i)
         {
             // calculate program output matrix Phi
             params.msg("Generating output for " + pop.individuals[i].get_eqn(), 2);
-            MatrixXd Phi = pop.individuals.at(i).out(X_t, params, y_t);            
+            MatrixXd Phi = pop.individuals.at(i).out(X_t, Z_t, params, y_t);            
 
             // calculate ML model from Phi
             params.msg("ML training on " + pop.individuals[i].get_eqn(), 2);
@@ -177,13 +201,13 @@ namespace FT{
             VectorXd yhat_t = ml->fit(Phi,y_t,params,pass,pop.individuals[i].dtypes);
             if (!pass){
                 std::cerr << "Error training eqn " + pop.individuals[i].get_eqn() + "\n";
-                std::cerr << "with raw output " << pop.individuals[i].out(X_t,params,y_t) << "\n";
+                std::cerr << "with raw output " << pop.individuals[i].out(X_t, Z_t,params,y_t) << "\n";
                 throw;
             }
             
             // calculate program output matrix Phi on validation data
             params.msg("Generating validation output for " + pop.individuals[i].get_eqn(), 2);
-            MatrixXd Phi_v = pop.individuals.at(i).out(X_v, params, y_v);            
+            MatrixXd Phi_v = pop.individuals.at(i).out(X_v, Z_v, params, y_v);            
 
             // calculate ML model from Phi
             params.msg("ML predicting on " + pop.individuals[i].get_eqn(), 2);
