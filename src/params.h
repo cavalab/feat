@@ -148,7 +148,7 @@ namespace FT{
             msg(weights, 2);
         }
         
-        /// return shared pointer to a node based on the string passed
+        /// return unique pointer to a node based on the string passed
         std::unique_ptr<Node> createNode(std::string str, double d_val = 0, bool b_val = false, 
                                          size_t loc = 0, string name = "");
         
@@ -265,21 +265,13 @@ namespace FT{
     		return std::unique_ptr<Node>(new NodeExponent());
 
         else if (str.compare("exp") == 0)
-<<<<<<< HEAD
-    		return std::shared_ptr<Node>(new NodeExp());
-=======
-    		return std::unique_ptr<Node>(new NodeExponential());
->>>>>>> master
+    		return std::unique_ptr<Node>(new NodeExp());
     		
     	else if (str.compare("gaussian")==0)
             return std::unique_ptr<Node>(new NodeGaussian());
         
         else if (str.compare("2dgaussian")==0)
-<<<<<<< HEAD
-            return std::shared_ptr<Node>(new Node2DGaussian());
-=======
-            return std::unique_ptr<Node>(new Node2dGaussian());
->>>>>>> master
+            return std::unique_ptr<Node>(new Node2DGaussian());
 
         else if (str.compare("log") == 0)
     		return std::unique_ptr<Node>(new NodeLog());   
