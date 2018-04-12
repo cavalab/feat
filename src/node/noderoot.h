@@ -31,23 +31,17 @@ namespace FT{
     		}
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXi>& stack_b)
+            void evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
             {
-            	if (stack_f.size() >= arity['f'] && stack_b.size() >= arity['b'])
-            	{
-            		ArrayXd x = stack_f.back(); stack_f.pop_back();
-                    stack_f.push_back(sqrt(abs(this->W[0] * x)));
-            	}
+                    stack.f.push(sqrt(abs(W[0]*stack.f.pop())));
             }
 
             /// Evaluates the node symbolically
-            void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
+            void eval_eqn(Stacks& stack)
             {
-            	if (stack_f.size() >= arity['f'] && stack_b.size() >= arity['b'])
-            	{
-            		string x = stack_f.back(); stack_f.pop_back();
-                    stack_f.push_back("sqrt(|" + x + "|)");
-            	}
+                    stack.fs.push("sqrt(|" + stack.fs.pop() + "|)");
             }
 
             ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {

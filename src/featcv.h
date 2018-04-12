@@ -404,7 +404,7 @@ namespace FT{
     }
     
     void FeatCV::fit(MatrixXd x, VectorXd &y)
-    {
+    {        
     	parse();
     	create_folds(x.cols());
     	
