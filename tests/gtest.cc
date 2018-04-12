@@ -63,7 +63,7 @@ bool checkBrackets(string str)
 
 TEST(Feat, SettingFunctions)
 {
-	Feat feat(100);
+	Feat feat(100); feat.set_random_state(666);
     
     feat.set_pop_size(200);
     ASSERT_EQ(200, feat.params.pop_size);
@@ -119,7 +119,8 @@ TEST(Feat, SettingFunctions)
 
 TEST(Feat, predict)
 {
-    Feat feat(100);
+    Feat feat(100); feat.set_random_state(666);
+
     
     MatrixXd X(7,2); 
     X << 0,1,  
@@ -149,12 +150,13 @@ TEST(Feat, predict)
          0.5, -0.8,
          0.1,-0.9;
     
+    cout << "Done till here\n";
     ASSERT_EQ(feat.predict(X).size(), 7);             //TODO had to remove !bzero ASSERT in set_termincal weights
 }
 
 TEST(Feat, transform)
 {
-    Feat feat(100);
+    Feat feat(100); feat.set_random_state(666);
     
     MatrixXd X(7,2); 
     X << 0,1,  
@@ -183,15 +185,22 @@ TEST(Feat, transform)
          0.9, -0.4,
          0.5, -0.8,
          0.1,-0.9;
-        
+       
+    feat.set_verbosity(2);
     MatrixXd res = feat.transform(X);
     ASSERT_EQ(res.cols(), 7);
+
+    if (res.rows() > feat.params.max_dim){
+        std::cout << "res.rows(): " << res.rows() << 
+                    ", res.cols(): " << res.cols() << 
+                    ", params.max_dim: " << feat.params.max_dim << "\n";
+    }
     ASSERT_TRUE(res.rows() <= feat.params.max_dim);
 }
 
 TEST(Feat, fit_predict)
 {
-    Feat feat(100);
+    Feat feat(100); feat.set_random_state(666);
     
     MatrixXd X(7,2); 
     X << 0,1,  
@@ -216,8 +225,10 @@ TEST(Feat, fit_predict)
 
 TEST(Feat, fit_transform)
 {
-    Feat feat(100);
-    
+    Feat feat(100); feat.set_random_state(666);
+   
+    feat.set_verbosity(0);
+
     MatrixXd X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
@@ -238,40 +249,50 @@ TEST(Feat, fit_transform)
     
     MatrixXd res = feat.fit_transform(X, y);
     ASSERT_EQ(res.cols(), 7);
+    
+    if (res.rows() > feat.params.max_dim)
+        std::cout << "res.rows(): " << res.rows() << 
+                    ", res.cols(): " << res.cols() << 
+                    ", params.max_dim: " << feat.params.max_dim << "\n";
+
     ASSERT_TRUE(res.rows() <= feat.params.max_dim);
 }
 
 
 TEST(Individual, EvalEquation)
 {
-	Feat feat(100);
-    MatrixXd X(7,2); 
+	Feat feat(100); feat.set_random_state(666);
+    MatrixXd X(4,2); 
+    MatrixXd X_v(3,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
          0.84147098,  0.54030231,
-         0.99749499,  0.0707372,
-         0.90929743, -0.41614684,
+         0.99749499,  0.0707372;
+    X_v <<  0.90929743, -0.41614684,
          0.59847214, -0.80114362,
          0.14112001,-0.9899925;
 
     X.transposeInPlace();
-    
-    VectorXd y(7); 
-    // y = 2*x1 + 3.x2
-    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
-             -1.20648656, -2.68773747;
+    X_v.transposeInPlace();
 
-    feat.params.check_ml();       
+    VectorXd y(4); 
+    VectorXd y_v(3); 
+    // y = 2*x1 + 3.x2
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158;
+    y_v << 0.57015434, -1.20648656, -2.68773747;
+
+    feat.params.init();       
   
     feat.set_dtypes(find_dtypes(X));
             
     feat.p_ml = make_shared<ML>(feat.params); // intialize ML
     feat.p_pop = make_shared<Population>(feat.params.pop_size);
-    
+    feat.p_eval = make_shared<Evaluation>(feat.params.scorer);
+
 	feat.params.set_terminals(X.rows()); 
         
     // initial model on raw input
-    feat.initial_model(X,y);
+    feat.initial_model(X,y,X_v,y_v);
                   
     // initialize population 
     feat.p_pop->init(feat.best_ind, feat.params);
@@ -285,11 +306,12 @@ TEST(Individual, EvalEquation)
 
 TEST(NodeTest, Evaluate)
 {
-	vector<ArrayXd> stack_f;
 	vector<ArrayXd> output;
-	vector<ArrayXb> stack_b;
 	ArrayXd x;
 	ArrayXb z;
+	std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z1;
+	
+	Stacks stack;
 	
 	MatrixXd X(3,2); 
     X << -2.0, 0.0, 10.0,
@@ -305,385 +327,385 @@ TEST(NodeTest, Evaluate)
     VectorXd Y(6); 
     Y << 3.0, 4.0, 5.0, 6.0, 7.0, 8.0;
     
-	std::shared_ptr<Node> addObj = std::shared_ptr<Node>(new NodeAdd());
+	std::unique_ptr<Node> addObj = std::unique_ptr<Node>(new NodeAdd());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
 	
-	addObj->evaluate(X, Y, stack_f, stack_b);	
+	addObj->evaluate(X, Y, z1, stack);	
 	
-	x = stack_f.back(); stack_f.pop_back();
-	
-	ASSERT_FALSE((isinf(x)).any());
-	ASSERT_FALSE((isnan(abs(x)).any()));
-	
-	std::shared_ptr<Node> subObj = std::shared_ptr<Node>(new NodeSubtract());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
-	
-	subObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	x = stack_f.back(); stack_f.pop_back();
+	x = stack.f.pop(); 
 	
 	ASSERT_FALSE((isinf(x)).any());
 	ASSERT_FALSE((isnan(abs(x)).any()));
 	
-	std::shared_ptr<Node> mulObj = std::shared_ptr<Node>(new NodeMultiply());
+	std::unique_ptr<Node> subObj = std::unique_ptr<Node>(new NodeSubtract());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
 	
-	mulObj->evaluate(X, Y, stack_f, stack_b);	
+	subObj->evaluate(X, Y, z1, stack);
 	
-	x = stack_f.back(); stack_f.pop_back();
-	
-	ASSERT_FALSE((isinf(x)).any());
-	ASSERT_FALSE((isnan(abs(x)).any()));
-	
-	std::shared_ptr<Node> divObj = std::shared_ptr<Node>(new NodeDivide());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
-	
-	divObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	x = stack_f.back(); stack_f.pop_back();
+	x = stack.f.pop(); 
 	
 	ASSERT_FALSE((isinf(x)).any());
 	ASSERT_FALSE((isnan(abs(x)).any()));
 	
-	std::shared_ptr<Node> sqrtObj = std::shared_ptr<Node>(new NodeSqrt());
+	std::unique_ptr<Node> mulObj = std::unique_ptr<Node>(new NodeMultiply());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
 	
-	sqrtObj->evaluate(X, Y, stack_f, stack_b);	
+	mulObj->evaluate(X, Y, z1, stack);
 	
-	x = stack_f.back(); stack_f.pop_back();
-	
-	ASSERT_FALSE((isinf(x)).any());
-	ASSERT_FALSE((isnan(abs(x)).any()));
-	
-	std::shared_ptr<Node> sinObj = std::shared_ptr<Node>(new NodeSin());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	
-	sinObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	x = stack_f.back(); stack_f.pop_back();
+	x = stack.f.pop(); 
 	
 	ASSERT_FALSE((isinf(x)).any());
 	ASSERT_FALSE((isnan(abs(x)).any()));
 	
-	std::shared_ptr<Node> cosObj = std::shared_ptr<Node>(new NodeCos());
+	std::unique_ptr<Node> divObj = std::unique_ptr<Node>(new NodeDivide());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
 	
-	cosObj->evaluate(X, Y, stack_f, stack_b);	
+	divObj->evaluate(X, Y, z1, stack);
 	
-	x = stack_f.back(); stack_f.pop_back();
-	
-	ASSERT_FALSE((isinf(x)).any());
-	ASSERT_FALSE((isnan(abs(x)).any()));
-	
-	std::shared_ptr<Node> squareObj = std::shared_ptr<Node>(new NodeSquare());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	
-	squareObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	x = stack_f.back(); stack_f.pop_back();
+	x = stack.f.pop(); 
 	
 	ASSERT_FALSE((isinf(x)).any());
 	ASSERT_FALSE((isnan(abs(x)).any()));
 	
-	std::shared_ptr<Node> expObj = std::shared_ptr<Node>(new NodeExponent());
+	std::unique_ptr<Node> sqrtObj = std::unique_ptr<Node>(new NodeSqrt());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
 	
-	expObj->evaluate(X, Y, stack_f, stack_b);	
+	sqrtObj->evaluate(X, Y, z1, stack);
 	
-	x = stack_f.back(); stack_f.pop_back();
-	
-	ASSERT_FALSE((isinf(x)).any());
-	ASSERT_FALSE((isnan(abs(x)).any()));
-	
-	std::shared_ptr<Node> exptObj = std::shared_ptr<Node>(new NodeExponential());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	
-	exptObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	x = stack_f.back(); stack_f.pop_back();
+	x = stack.f.pop(); 
 	
 	ASSERT_FALSE((isinf(x)).any());
 	ASSERT_FALSE((isnan(abs(x)).any()));
 	
-	std::shared_ptr<Node> logObj = std::shared_ptr<Node>(new NodeLog());
+	std::unique_ptr<Node> sinObj = std::unique_ptr<Node>(new NodeSin());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
 	
-	logObj->evaluate(X, Y, stack_f, stack_b);	
+	sinObj->evaluate(X, Y, z1, stack);	
 	
-	x = stack_f.back(); stack_f.pop_back();
+	x = stack.f.pop(); 
 	
 	ASSERT_FALSE((isinf(x)).any());
 	ASSERT_FALSE((isnan(abs(x)).any()));
 	
-	std::shared_ptr<Node> andObj = std::shared_ptr<Node>(new NodeAnd());
+	std::unique_ptr<Node> cosObj = std::unique_ptr<Node>(new NodeCos());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_b.push_back(Z1);
-	stack_b.push_back(Z2);
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
 	
-	andObj->evaluate(X, Y, stack_f, stack_b);	
+	cosObj->evaluate(X, Y, z1, stack);
 	
-	z = stack_b.back(); stack_b.pop_back();
+	x = stack.f.pop(); 
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::unique_ptr<Node> squareObj = std::unique_ptr<Node>(new NodeSquare());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	
+	squareObj->evaluate(X, Y, z1, stack);
+	
+	x = stack.f.pop(); 
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::unique_ptr<Node> expObj = std::unique_ptr<Node>(new NodeExponent());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
+	
+	expObj->evaluate(X, Y, z1, stack);
+	
+	x = stack.f.pop(); 
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::unique_ptr<Node> exptObj = std::unique_ptr<Node>(new NodeExponential());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	
+	exptObj->evaluate(X, Y, z1, stack);
+	
+	x = stack.f.pop(); 
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::unique_ptr<Node> logObj = std::unique_ptr<Node>(new NodeLog());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	
+	logObj->evaluate(X, Y, z1, stack);
+	
+	x = stack.f.pop(); 
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::unique_ptr<Node> andObj = std::unique_ptr<Node>(new NodeAnd());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.b.push(Z1);
+	stack.b.push(Z2);
+	
+	andObj->evaluate(X, Y, z1, stack);
+	
+	z = stack.b.pop();
 	
 	ASSERT_FALSE((isinf(z)).any());
 	ASSERT_FALSE((isnan(abs(z)).any()));
 	
-	std::shared_ptr<Node> orObj = std::shared_ptr<Node>(new NodeOr());
+	std::unique_ptr<Node> orObj = std::unique_ptr<Node>(new NodeOr());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_b.push_back(Z1);
-	stack_b.push_back(Z2);
+	stack.f.clear();
+	stack.b.clear();
+	stack.b.push(Z1);
+	stack.b.push(Z2);
 	
-	orObj->evaluate(X, Y, stack_f, stack_b);	
+	orObj->evaluate(X, Y, z1, stack);
 	
-	z = stack_b.back(); stack_b.pop_back();
-	
-	ASSERT_FALSE((isinf(z)).any());
-	ASSERT_FALSE((isnan(abs(z)).any()));
-	
-	std::shared_ptr<Node> notObj = std::shared_ptr<Node>(new NodeNot());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_b.push_back(Z1);
-	
-	notObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	z = stack_b.back(); stack_b.pop_back();
+	z = stack.b.pop(); 
 	
 	ASSERT_FALSE((isinf(z)).any());
 	ASSERT_FALSE((isnan(abs(z)).any()));
 	
-	std::shared_ptr<Node> eqObj = std::shared_ptr<Node>(new NodeEqual());
+	std::unique_ptr<Node> notObj = std::unique_ptr<Node>(new NodeNot());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
+	stack.f.clear();
+	stack.b.clear();
+	stack.b.push(Z1);
 	
-	eqObj->evaluate(X, Y, stack_f, stack_b);	
+	notObj->evaluate(X, Y, z1, stack);
 	
-	z = stack_b.back(); stack_b.pop_back();
+	z = stack.b.pop(); 
+	
+	ASSERT_FALSE((isinf(z)).any());
+	ASSERT_FALSE((isnan(abs(z)).any()));
+	
+	std::unique_ptr<Node> eqObj = std::unique_ptr<Node>(new NodeEqual());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
+	
+	eqObj->evaluate(X, Y, z1, stack);
+	
+	z = stack.b.pop(); 
 	
 	ASSERT_FALSE((isinf(z)).any());
 	ASSERT_FALSE((isnan(abs(z)).any()));
 	 
-	std::shared_ptr<Node> gtObj = std::shared_ptr<Node>(new NodeGreaterThan());
+	std::unique_ptr<Node> gtObj = std::unique_ptr<Node>(new NodeGreaterThan());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
 	
-	gtObj->evaluate(X, Y, stack_f, stack_b);	
+	gtObj->evaluate(X, Y, z1, stack);
 	
-	z = stack_b.back(); stack_b.pop_back();
-	
-	ASSERT_FALSE((isinf(z)).any());
-	ASSERT_FALSE((isnan(abs(z)).any()));
-	
-	std::shared_ptr<Node> geqObj = std::shared_ptr<Node>(new NodeGEQ());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
-	
-	geqObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	z = stack_b.back(); stack_b.pop_back();
+	z = stack.b.pop(); 
 	
 	ASSERT_FALSE((isinf(z)).any());
 	ASSERT_FALSE((isnan(abs(z)).any()));
 	
-	std::shared_ptr<Node> ltObj = std::shared_ptr<Node>(new NodeLessThan());
+	std::unique_ptr<Node> geqObj = std::unique_ptr<Node>(new NodeGEQ());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
 	
-	ltObj->evaluate(X, Y, stack_f, stack_b);	
+	geqObj->evaluate(X, Y, z1, stack);
 	
-	z = stack_b.back(); stack_b.pop_back();
-	
-	ASSERT_FALSE((isinf(z)).any());
-	ASSERT_FALSE((isnan(abs(z)).any()));
-	
-	std::shared_ptr<Node> leqObj = std::shared_ptr<Node>(new NodeLEQ());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
-	
-	leqObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	z = stack_b.back(); stack_b.pop_back();
+	z = stack.b.pop(); 
 	
 	ASSERT_FALSE((isinf(z)).any());
 	ASSERT_FALSE((isnan(abs(z)).any()));
 	
-	std::shared_ptr<Node> ifObj = std::shared_ptr<Node>(new NodeIf());
+	std::unique_ptr<Node> ltObj = std::unique_ptr<Node>(new NodeLessThan());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_b.push_back(Z1);
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
 	
-	ifObj->evaluate(X, Y, stack_f, stack_b);	
+	ltObj->evaluate(X, Y, z1, stack);
 	
-	x = stack_f.back(); stack_f.pop_back();
-	
-	ASSERT_FALSE((isinf(x)).any());
-	ASSERT_FALSE((isnan(abs(x)).any()));
-	
-	std::shared_ptr<Node> iteObj = std::shared_ptr<Node>(new NodeIfThenElse());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
-	stack_b.push_back(Z1);
-	
-	iteObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	x = stack_f.back(); stack_f.pop_back();
-	
-	ASSERT_FALSE((isinf(x)).any());
-	ASSERT_FALSE((isnan(abs(x)).any()));
-	
-	
-	std::shared_ptr<Node> tanObj = std::shared_ptr<Node>(new NodeTanh());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	
-	tanObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	x = stack_f.back(); stack_f.pop_back();
-	
-	ASSERT_FALSE((isinf(x)).any());
-	ASSERT_FALSE((isnan(abs(x)).any()));
-	
-	std::shared_ptr<Node> logitObj = std::shared_ptr<Node>(new NodeLogit());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	
-	logitObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	x = stack_f.back(); stack_f.pop_back();
-	
-	ASSERT_FALSE((isinf(x)).any());
-	ASSERT_FALSE((isnan(abs(x)).any()));
-	
-	std::shared_ptr<Node> stepObj = std::shared_ptr<Node>(new NodeStep());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	
-	stepObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	x = stack_f.back(); stack_f.pop_back();
-	
-	ASSERT_FALSE((isinf(x)).any());
-	ASSERT_FALSE((isnan(abs(x)).any()));
-	
-	std::shared_ptr<Node> signObj = std::shared_ptr<Node>(new NodeSign());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	
-	signObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	x = stack_f.back(); stack_f.pop_back();
-	
-	ASSERT_FALSE((isinf(x)).any());
-	ASSERT_FALSE((isnan(abs(x)).any()));
-	
-	
-	std::shared_ptr<Node> xorObj = std::shared_ptr<Node>(new NodeXor());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_b.push_back(Z1);
-	stack_b.push_back(Z2);
-	
-	xorObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	z = stack_b.back(); stack_b.pop_back();
+	z = stack.b.pop(); 
 	
 	ASSERT_FALSE((isinf(z)).any());
 	ASSERT_FALSE((isnan(abs(z)).any()));
 	
-	std::shared_ptr<Node> gausObj = std::shared_ptr<Node>(new NodeGaussian());
+	std::unique_ptr<Node> leqObj = std::unique_ptr<Node>(new NodeLEQ());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
 	
-	gausObj->evaluate(X, Y, stack_f, stack_b);	
+	leqObj->evaluate(X, Y, z1, stack);
 	
-	x = stack_f.back(); stack_f.pop_back();
+	z = stack.b.pop(); 
+	
+	ASSERT_FALSE((isinf(z)).any());
+	ASSERT_FALSE((isnan(abs(z)).any()));
+	
+	std::unique_ptr<Node> ifObj = std::unique_ptr<Node>(new NodeIf());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.b.push(Z1);
+	
+	ifObj->evaluate(X, Y, z1, stack);
+	
+	x = stack.f.pop(); 
 	
 	ASSERT_FALSE((isinf(x)).any());
 	ASSERT_FALSE((isnan(abs(x)).any()));
 	
-	std::shared_ptr<Node> gaus2dObj = std::shared_ptr<Node>(new Node2dGaussian());
+	std::unique_ptr<Node> iteObj = std::unique_ptr<Node>(new NodeIfThenElse());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
+	stack.b.push(Z1);
 	
-	gaus2dObj->evaluate(X, Y, stack_f, stack_b);	
+	iteObj->evaluate(X, Y, z1, stack);
 	
-	x = stack_f.back(); stack_f.pop_back();
+	x = stack.f.pop(); 
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	
+	std::unique_ptr<Node> tanObj = std::unique_ptr<Node>(new NodeTanh());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	
+	tanObj->evaluate(X, Y, z1, stack);
+	
+	x = stack.f.pop(); 
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::unique_ptr<Node> logitObj = std::unique_ptr<Node>(new NodeLogit());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	
+	logitObj->evaluate(X, Y, z1, stack);
+	
+	x = stack.f.pop(); 
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::unique_ptr<Node> stepObj = std::unique_ptr<Node>(new NodeStep());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	
+	stepObj->evaluate(X, Y, z1, stack);
+	
+	x = stack.f.pop(); 
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::unique_ptr<Node> signObj = std::unique_ptr<Node>(new NodeSign());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	
+	signObj->evaluate(X, Y, z1, stack);
+	
+	x = stack.f.pop(); 
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	
+	std::unique_ptr<Node> xorObj = std::unique_ptr<Node>(new NodeXor());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.b.push(Z1);
+	stack.b.push(Z2);
+	
+	xorObj->evaluate(X, Y, z1, stack);
+	
+	z = stack.b.pop(); 
+	
+	ASSERT_FALSE((isinf(z)).any());
+	ASSERT_FALSE((isnan(abs(z)).any()));
+	
+	std::unique_ptr<Node> gausObj = std::unique_ptr<Node>(new NodeGaussian());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	
+	gausObj->evaluate(X, Y, z1, stack);
+	
+	x = stack.f.pop(); 
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::unique_ptr<Node> gaus2dObj = std::unique_ptr<Node>(new Node2dGaussian());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
+	
+	gaus2dObj->evaluate(X, Y, z1, stack);
+	
+	x = stack.f.pop(); 
 	
 	ASSERT_FALSE((isinf(x)).any());
 	ASSERT_FALSE((isnan(abs(x)).any()));
@@ -691,17 +713,18 @@ TEST(NodeTest, Evaluate)
 	//TODO NodeVariable, NodeConstant(both types)
 }
 
-bool isValidProgram(vector<std::shared_ptr<Node>>& program, unsigned num_features)
+bool isValidProgram(NodeVector& program, unsigned num_features)
 {
     //checks whether program fulfills all its arities.
-    vector<ArrayXd> stack_f; 
-    vector<ArrayXb> stack_b;
     MatrixXd X = MatrixXd::Zero(num_features,2); 
-    VectorXd y = VectorXd::Zero(2); 
+    VectorXd y = VectorXd::Zero(2);
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z; 
+    
+    Stacks stack;
    
     for (const auto& n : program){
-        if ( stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
-            n->evaluate(X, y, stack_f, stack_b);
+        if ( stack.f.size() >= n->arity['f'] && stack.b.size() >= n->arity['b'])
+            n->evaluate(X, y, z, stack);
         else
             return false; 
     }
@@ -710,41 +733,47 @@ bool isValidProgram(vector<std::shared_ptr<Node>>& program, unsigned num_feature
 
 TEST(Variation, MutationTests)
 {
-	Feat feat(100);
-    MatrixXd X(7,2); 
+	Feat feat(100); feat.set_random_state(666);
+    MatrixXd X(4,2); 
+    MatrixXd X_v(3,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
          0.84147098,  0.54030231,
-         0.99749499,  0.0707372,
-         0.90929743, -0.41614684,
+         0.99749499,  0.0707372;
+    X_v <<  0.90929743, -0.41614684,
          0.59847214, -0.80114362,
          0.14112001,-0.9899925;
 
     X.transposeInPlace();
-    
-    VectorXd y(7); 
+    X_v.transposeInPlace();
+
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z;
+
+    VectorXd y(4); 
+    VectorXd y_v(3); 
     // y = 2*x1 + 3.x2
-    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
-             -1.20648656, -2.68773747;
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158;
+    y_v << 0.57015434, -1.20648656, -2.68773747;
 
-    feat.params.check_ml();       
-
+    feat.params.init();       
+  
     feat.set_dtypes(find_dtypes(X));
             
     feat.p_ml = make_shared<ML>(feat.params); // intialize ML
     feat.p_pop = make_shared<Population>(feat.params.pop_size);
-    
+    feat.p_eval = make_shared<Evaluation>(feat.params.scorer);
+
 	feat.params.set_terminals(X.rows()); 
         
     // initial model on raw input
-    feat.initial_model(X,y);
+    feat.initial_model(X,y,X_v,y_v);
                   
     // initialize population 
     feat.p_pop->init(feat.best_ind, feat.params);
     
     feat.F.resize(X.cols(),int(2*feat.params.pop_size));
     
-    feat.p_eval->fitness(*(feat.p_pop),X,y,feat.F,feat.params);
+    feat.p_eval->fitness(*(feat.p_pop),X,z, y,feat.F,feat.params);
     
     vector<size_t> parents;
     parents.push_back(2);
@@ -776,42 +805,49 @@ TEST(Variation, MutationTests)
 
 TEST(Variation, CrossoverTests)
 {
-	Feat feat(100);
-    MatrixXd X(7,2); 
+	Feat feat(100); feat.set_random_state(666);
+    MatrixXd X(4,2); 
+    MatrixXd X_v(3,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
          0.84147098,  0.54030231,
-         0.99749499,  0.0707372,
-         0.90929743, -0.41614684,
+         0.99749499,  0.0707372;
+    X_v <<  0.90929743, -0.41614684,
          0.59847214, -0.80114362,
          0.14112001,-0.9899925;
 
     X.transposeInPlace();
-    
-    VectorXd y(7); 
-    // y = 2*x1 + 3.x2
-    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
-             -1.20648656, -2.68773747;
-             
-    feat.params.check_ml();       
+    X_v.transposeInPlace();
 
+    VectorXd y(4); 
+    VectorXd y_v(3); 
+    // y = 2*x1 + 3.x2
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158;
+    y_v << 0.57015434, -1.20648656, -2.68773747;
+
+
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z; 
+
+    feat.params.init();       
+  
     feat.set_dtypes(find_dtypes(X));
             
     feat.p_ml = make_shared<ML>(feat.params); // intialize ML
     feat.p_pop = make_shared<Population>(feat.params.pop_size);
+    feat.p_eval = make_shared<Evaluation>(feat.params.scorer);
     
-
 	feat.params.set_terminals(X.rows()); 
         
     // initial model on raw input
-    feat.initial_model(X,y);
+    feat.initial_model(X,y,X_v,y_v);
+
                   
     // initialize population 
     feat.p_pop->init(feat.best_ind, feat.params);
     
     feat.F.resize(X.cols(),int(2*feat.params.pop_size));
     
-    feat.p_eval->fitness(*(feat.p_pop),X,y,feat.F,feat.params);
+    feat.p_eval->fitness(*(feat.p_pop),X,z, y,feat.F,feat.params);
     
     vector<size_t> parents;
     parents.push_back(2);
@@ -844,36 +880,40 @@ TEST(Variation, CrossoverTests)
 
 TEST(Population, PopulationTests)
 {
-	Feat feat(100);
-    MatrixXd X(7,2); 
+	Feat feat(100); feat.set_random_state(666);
+    MatrixXd X(4,2); 
+    MatrixXd X_v(3,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
          0.84147098,  0.54030231,
-         0.99749499,  0.0707372,
-         0.90929743, -0.41614684,
+         0.99749499,  0.0707372;
+    X_v <<  0.90929743, -0.41614684,
          0.59847214, -0.80114362,
          0.14112001,-0.9899925;
 
     X.transposeInPlace();
-    
-    VectorXd y(7); 
+    X_v.transposeInPlace();
+
+    VectorXd y(4); 
+    VectorXd y_v(3); 
     // y = 2*x1 + 3.x2
-    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
-             -1.20648656, -2.68773747;
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158;
+    y_v << 0.57015434, -1.20648656, -2.68773747;
 
-	feat.timer.Reset();
-	
-	feat.params.check_ml();       
-
+    feat.params.init();       
+  
     feat.set_dtypes(find_dtypes(X));
             
     feat.p_ml = make_shared<ML>(feat.params); // intialize ML
-    feat.p_pop = make_shared<Population>(feat.params.pop_size);
-    
+    feat.p_pop = make_shared<Population>(feat.params.pop_size);  
+    std::cout << "feat.params.scorer: " << feat.params.scorer << "\n";
+    feat.p_eval = make_shared<Evaluation>("mse");
+
 	feat.params.set_terminals(X.rows()); 
         
     // initial model on raw input
-    feat.initial_model(X,y);
+    feat.initial_model(X,y,X_v,y_v);
+
                   
     // initialize population 
     feat.p_pop->init(feat.best_ind, feat.params);
@@ -916,7 +956,8 @@ TEST(Parameters, ParamsTests)
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
                       0.75,								//train/test split
-                      0.5);                             // feedback 
+                      0.5,                             // feedback 
+                      "mse");                           //scoring function
 					  
 	params.set_max_dim(12);
 	ASSERT_EQ(params.max_dim, 12);
@@ -994,13 +1035,13 @@ TEST(Individual, Subtree)
 {
 	Individual a;
 	
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(1)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(2)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeAdd()));
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(3)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(4)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeSubtract()));
-	a.program.push_back(std::shared_ptr<Node>(new NodeMultiply()));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(1)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(2)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeAdd()));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(3)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(4)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeSubtract()));
+	a.program.push_back(std::unique_ptr<Node>(new NodeMultiply()));
 	
 	ASSERT_EQ(a.subtree(5), 3);
 	ASSERT_EQ(a.subtree(2), 0);
@@ -1009,12 +1050,12 @@ TEST(Individual, Subtree)
 	
 	a.program.clear();
 	
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(1)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(2)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(3)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeConstant(true)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeIfThenElse()));
-	a.program.push_back(std::shared_ptr<Node>(new NodeAdd()));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(1)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(2)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(3)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeConstant(true)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeIfThenElse()));
+	a.program.push_back(std::unique_ptr<Node>(new NodeAdd()));
 	
 	ASSERT_EQ(a.subtree(4), 1);
 	ASSERT_EQ(a.subtree(5), 0);
@@ -1025,30 +1066,30 @@ TEST(Individual, Complexity)
 {
 	Individual a;
 	
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(1)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(2)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeAdd()));
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(3)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(4)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeSubtract()));
-	a.program.push_back(std::shared_ptr<Node>(new NodeMultiply()));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(1)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(2)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeAdd()));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(3)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(4)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeSubtract()));
+	a.program.push_back(std::unique_ptr<Node>(new NodeMultiply()));
 	
 	ASSERT_EQ(a.complexity(), 14);
 	
 	a.program.clear();
 	a.c = 0;
 	
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(1)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(2)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeMultiply()));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(1)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(2)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeMultiply()));
 	
 	ASSERT_EQ(a.complexity(), 6);
 	
 	a.program.clear();
 	a.c = 0;
 	
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(1)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeSin()));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(1)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeSin()));
 	
 	ASSERT_EQ(a.complexity(), 6);
 	a.c = 0;
@@ -1072,7 +1113,8 @@ TEST(Evaluation, assign_fit)
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
                       0.75,								//train/test split
-                      0.5);                             // feedback 
+                      0.5,                             // feedback 
+                      "mse");                           //scoring function
                       
 	Individual ind = Individual();
 	ind.loc = 0;
@@ -1101,7 +1143,7 @@ TEST(Evaluation, assign_fit)
          0.0,
          0.0;
     
-    Evaluation eval = Evaluation();
+    Evaluation eval = Evaluation("mse");
     
     res << 0.0,
            1.0,
@@ -1115,12 +1157,19 @@ TEST(Evaluation, assign_fit)
            81.0;
            
     eval.assign_fit(ind, F, yhat, y, params);
-    
+    if (F.col(ind.loc) != res)
+    {
+        std::cout << "F.col(ind.loc):" << F.col(ind.loc).transpose() << "\n";
+        std::cout << "res:" << res.transpose() << "\n";
+    }
+
     ASSERT_TRUE(F.col(ind.loc) == res);
     ASSERT_TRUE(ind.fitness == 28.5);
     
     params.classification = true;
-    
+   
+    Evaluation evalc("bal_accuracy");
+
     y << 0.0,
          1.0,
          2.0,
@@ -1143,8 +1192,13 @@ TEST(Evaluation, assign_fit)
            1.0,
            1.0;
            
-    eval.assign_fit(ind, F, yhat, y, params);
+    evalc.assign_fit(ind, F, yhat, y, params);
     
+    if (F.col(ind.loc) != res)
+    {
+        std::cout << "F.col(ind.loc):" << F.col(ind.loc).transpose() << "\n";
+        std::cout << "res:" << res.transpose() << "\n";
+    }
     ASSERT_TRUE(F.col(ind.loc) == res);
     ASSERT_EQ(((int)(ind.fitness*1000000)), 347222);
     
@@ -1167,7 +1221,8 @@ TEST(Evaluation, fitness)
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
                       0.75,								//train/test split
-                      0.5);                             // feedback 
+                      0.5,                             // feedback 
+                      "mse");                           // scoring function
                         
 	MatrixXd X(10,1); 
     X << 0.0,  
@@ -1187,25 +1242,29 @@ TEST(Evaluation, fitness)
     // y = 2*sin(x0) + 3*cos(x0)
     y << 3.0,  3.30384889,  0.57015434, -2.68773747, -3.47453585,
              -1.06686199,  2.32167986,  3.57567996,  1.54221639, -1.90915382;
+             
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z; 
 
     // make population 
     Population pop(2);
     // individual 0 = [sin(x0) cos(x0)]
-    pop.individuals[0].program.push_back(std::shared_ptr<Node>(new NodeVariable(0)));
-    pop.individuals[0].program.push_back(std::shared_ptr<Node>(new NodeSin()));
-    pop.individuals[0].program.push_back(std::shared_ptr<Node>(new NodeVariable(0)));
-    pop.individuals[0].program.push_back(std::shared_ptr<Node>(new NodeCos()));
+    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeVariable(0)));
+    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeSin()));
+    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeVariable(0)));
+    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeCos()));
     pop.individuals[0].loc = 0;
     std::cout << pop.individuals[0].get_eqn() + "\n";
     // individual 1 = [x0] 
-    pop.individuals[1].program.push_back(std::shared_ptr<Node>(new NodeVariable(0)));
+    pop.individuals[1].program.push_back(std::unique_ptr<Node>(new NodeVariable(0)));
     pop.individuals[1].loc = 1;
     std::cout << pop.individuals[1].get_eqn() + "\n";    
     MatrixXd F(10,2);   // output matrix
 
     // get fitness
-    Evaluation eval; 
-    eval.fitness(pop, X, y, F, params);
+    Evaluation eval("mse"); 
+
+    eval.fitness(pop, X, z, y, F, params);
+    
     // check results
     ASSERT_TRUE(pop.individuals[0].fitness < NEAR_ZERO);
     ASSERT_TRUE(pop.individuals[1].fitness - 60.442868924187906 < NEAR_ZERO);
@@ -1229,7 +1288,8 @@ TEST(Evaluation, out_ml)
 					  "fitness,complexity",  			//obj
                       false,                            //shuffle
                       0.75,								//train/test split
-                      0.5);                             // feedback                 
+                      0.5,                             // feedback                 
+                      "mse");                           // scoring function
 	MatrixXd X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
@@ -1247,11 +1307,11 @@ TEST(Evaluation, out_ml)
              -1.20648656, -2.68773747;
     
     params.dtypes = find_dtypes(X);
-    shared_ptr<Evaluation> p_eval = make_shared<Evaluation>();
+    /* shared_ptr<Evaluation> p_eval = make_shared<Evaluation>(params.scorer); */
     shared_ptr<ML> p_ml = make_shared<ML>(params);
              
     bool pass = true;
-    VectorXd yhat = p_ml->out(X, y, params, pass);
+    VectorXd yhat = p_ml->fit(X, y, params, pass);
     
     double mean = ((yhat - y).array().pow(2)).mean();
     
@@ -1262,7 +1322,7 @@ TEST(Evaluation, out_ml)
 
 TEST(Selection, SelectionOperator)
 {
-    Feat feat(100);
+    Feat feat(100); feat.set_random_state(666);
     MatrixXd X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
@@ -1278,39 +1338,45 @@ TEST(Selection, SelectionOperator)
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
+             
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z;
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_t;
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_v;
 
 	feat.timer.Reset();
 	
 	MatrixXd X_t(X.rows(),int(X.cols()*feat.params.split));
     MatrixXd X_v(X.rows(),int(X.cols()*(1-feat.params.split)));
     VectorXd y_t(int(y.size()*feat.params.split)), y_v(int(y.size()*(1-feat.params.split)));
-    train_test_split(X,y,X_t,X_v,y_t,y_v,feat.params.shuffle);
+    train_test_split(X, y, Z, X_t, X_v, y_t, y_v, Z_t, Z_v, feat.params.shuffle, feat.params.split);
     
     feat.timer.Reset();
 	
-	feat.params.check_ml();       
+	feat.params.init();       
 
     feat.set_dtypes(find_dtypes(X));
             
     feat.p_ml = make_shared<ML>(feat.params); // intialize ML
-    feat.p_pop = make_shared<Population>(feat.params.pop_size);
-        
+    feat.p_pop = make_shared<Population>(feat.params.pop_size);    
+    feat.p_eval = make_shared<Evaluation>(feat.params.scorer);
+
 	feat.params.set_terminals(X.rows()); 
         
     // initial model on raw input
-    feat.initial_model(X,y);
+    feat.initial_model(X_t,y_t,X_v, y_v);
                   
     // initialize population 
     feat.p_pop->init(feat.best_ind, feat.params);
     
     feat.F.resize(X_t.cols(),int(2*feat.params.pop_size));
-    feat.p_eval->fitness(*(feat.p_pop), X_t, y_t, feat.F, feat.params);
+    feat.p_eval->fitness(*(feat.p_pop), X_t, Z_t, y_t, feat.F, feat.params);
     vector<size_t> parents = feat.p_sel->select(*(feat.p_pop), feat.F, feat.params);
     
     ASSERT_EQ(parents.size(), feat.get_pop_size());
 }
 
 int main(int argc, char **argv) {
+    std::cout <<"test\n";
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

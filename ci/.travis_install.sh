@@ -53,6 +53,7 @@ cmake -DTEST=ON -DEIGEN_DIR=ON -DSHOGUN_DIR=ON ..
 cd ..
 make -C build VERBOSE=1
 echo "running feat.."
+<<<<<<< HEAD
 ./build/feat examples/d_enc.csv
 
 cd ./python
@@ -63,3 +64,6 @@ cd ../tests
 sudo cp wrappertest.py ../python/ #Copy the file to python folder
 cd ../python/
 python wrappertest.py -v 1
+=======
+./build/feat examples/d_enc.csv -rs 42
+>>>>>>> master

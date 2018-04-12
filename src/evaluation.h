@@ -7,6 +7,7 @@ license: GNU/GPL v3
                                                                                                                                       
 // internal includes
 #include "ml.h"
+#include "metrics.h"
 
 using namespace shogun;
 using Eigen::Map;
@@ -19,49 +20,67 @@ namespace FT{
      * @class Evaluation
      * @brief evaluation mixin class for Feat
      */
+    typedef double (*funcPointer)(const VectorXd&, const VectorXd&, VectorXd&);
+    
     class Evaluation 
     {
         public:
         
-            Evaluation(){}
+            /* VectorXd (* loss_fn)(const VectorXd&, const VectorXd&);  // pointer to loss function */
+            double (* score)(const VectorXd&, const VectorXd&, VectorXd& );    // pointer to scoring function
+            std::map<string, funcPointer> score_hash;
+
+            Evaluation(string scorer)
+            {
+                /* std::cout << "Evaluation: scorer: " + scorer + "\n"; */
+                               
+                score_hash["mse"] = & metrics::mse;
+                score_hash["accuracy"] = & metrics::zero_one_loss;
+                score_hash["bal_accuracy"] = & metrics::bal_zero_one_loss;
+                score_hash["log"] =  & metrics::bal_log_loss; 
+            
+                score = score_hash[scorer];
+            }
 
             ~Evaluation(){}
                 
-            
+            void set_score(string scorer){ score = score_hash[scorer]; }
+
             /// fitness of population.
-            void fitness(Population& pop, const MatrixXd& X, VectorXd& y, MatrixXd& F, 
-                         const Parameters& params, bool offspring);
+            void fitness(Population& pop,
+                         const MatrixXd& X, 
+                         const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+                         VectorXd& y, 
+                         MatrixXd& F, 
+                         const Parameters& params, 
+                         bool offspring);
           
+            void val_fitness(Population& pop,
+                             const MatrixXd& X_t,
+                             const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_t,
+                             VectorXd& y_t,
+                             MatrixXd& F, 
+                             const MatrixXd& X_v,
+                             const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_v,
+                             VectorXd& y_v,
+                             const Parameters& params, 
+                             bool offspring);
+         
             /// assign fitness to an individual and to F.  
             void assign_fit(Individual& ind, MatrixXd& F, const VectorXd& yhat, const VectorXd& y,
                             const Parameters& params);       
-            
-            /* Scoring functions */
-
-            /// 1 - accuracy 
-            VectorXd accuracy(const VectorXd& y, const VectorXd& yhat, bool reverse=true)
-            {
-                if (reverse)
-                    return (yhat.cast<int>().array() != y.cast<int>().array()).cast<double>();
-                return (yhat.cast<int>().array() == y.cast<int>().array()).cast<double>();
-            }
-            
-            /// squared error
-            VectorXd se(const VectorXd& y, const VectorXd& yhat)
-            { 
-                return (yhat - y).array().pow(2); 
-            };
-
-            /// 1 - balanced accuracy score
-            double bal_accuracy(const VectorXd& y, const VectorXd& yhat, 
-                                vector<int> c=vector<int>(), bool reverse=true);
     };
     
     /////////////////////////////////////////////////////////////////////////////////// Definitions  
     
     // fitness of population
-    void Evaluation::fitness(Population& pop, const MatrixXd& X, VectorXd& y, MatrixXd& F, 
-                 const Parameters& params, bool offspring=false)
+    void Evaluation::fitness(Population& pop,
+                             const MatrixXd& X,
+                             const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+                             VectorXd& y, 
+                             MatrixXd& F, 
+                             const Parameters& params, 
+                             bool offspring=false)
     {
     	/*!
          * Input:
@@ -82,21 +101,21 @@ namespace FT{
         unsigned start =0;
         if (offspring) start = F.cols()/2;
         // loop through individuals
-        #pragma omp parallel for
+        //#pragma omp parallel for
         for (unsigned i = start; i<pop.size(); ++i)
         {
                         // calculate program output matrix Phi
             params.msg("Generating output for " + pop.individuals[i].get_eqn(), 2);
-            MatrixXd Phi = pop.individuals.at(i).out(X, params, y);            
+            MatrixXd Phi = pop.individuals.at(i).out(X, Z, params, y);            
 
             // calculate ML model from Phi
             params.msg("ML training on " + pop.individuals[i].get_eqn(), 2);
             bool pass = true;
             auto ml = std::make_shared<ML>(params);
-            VectorXd yhat = ml->out(Phi,y,params,pass,pop.individuals[i].dtypes);
+            VectorXd yhat = ml->fit(Phi,y,params,pass,pop.individuals[i].dtypes);
             if (!pass){
                 std::cerr << "Error training eqn " + pop.individuals[i].get_eqn() + "\n";
-                std::cerr << "with raw output " << pop.individuals[i].out(X,params,y) << "\n";
+                std::cerr << "with raw output " << pop.individuals[i].out(X, Z, params,y) << "\n";
                 throw;
             }
             // assign weights to individual
@@ -130,65 +149,89 @@ namespace FT{
          *       modifies F and ind.fitness
         */ 
         assert(F.cols()>ind.loc);
-        if (params.classification)  // use classification accuracy
-        {
-            F.col(ind.loc) = accuracy(y,yhat); 
-            ind.fitness = bal_accuracy(y,yhat,params.classes);
-        }
-        else                        // use mean squared error
-        {
-            F.col(ind.loc) = se(y, yhat);
-            ind.fitness = F.col(ind.loc).mean();
-        }
+        VectorXd loss;
+        ind.fitness = score(y, yhat, loss);
+        F.col(ind.loc) = loss;  
          
-        params.msg("ind " + std::to_string(ind.loc) + " fitnes: " + std::to_string(ind.fitness),2);
+        params.msg("ind " + std::to_string(ind.loc) + " fitness: " + std::to_string(ind.fitness),2);
     }
 
-    double Evaluation::bal_accuracy(const VectorXd& y, const VectorXd& yhat, vector<int> c,
-                                    bool reverse)
+    // validation fitness of population                            
+    void Evaluation::val_fitness(Population& pop,
+                             const MatrixXd& X_t,
+                             const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_t,
+                             VectorXd& y_t,
+                             MatrixXd& F, 
+                             const MatrixXd& X_v,
+                             const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_v,
+                             VectorXd& y_v,
+                             const Parameters& params, 
+                             bool offspring = false)
     {
-        if (c.empty())  // determine unique class values
-        {
-            vector<double> uc = unique(y);
-            for (const auto& i : uc)
-                c.push_back(int(i));
-        }
+    	/*!
+         * Input:
          
-        // sensitivity (TP) and specificity (TN)
-        vector<double> TP(c.size(),0.0), TN(c.size(), 0.0), P(c.size(),0.0), N(c.size(),0.0);
-        ArrayXd class_accuracies(c.size());
-       
-        // get class counts
+         *      pop: population
+         *      X: feature data
+         *      y: label
+         *      F: matrix of raw fitness values
+         *      p: algorithm parameters
+         
+         * Output:
+         
+         *      F is modified
+         *      pop[:].fitness is modified
+         */
         
-        for (unsigned i=0; i< c.size(); ++i)
-        {
-            P.at(i) = (y.array().cast<int>() == c[i]).count();  // total positives for this class
-            N.at(i) = (y.array().cast<int>() != c[i]).count();  // total negatives for this class
-        }
         
-
-        for (unsigned i = 0; i < y.rows(); ++i)
+        unsigned start =0;
+        if (offspring) start = F.cols()/2;
+        // loop through individuals
+        //#pragma omp parallel for
+        for (unsigned i = start; i<pop.size(); ++i)
         {
-            if (yhat(i) == y(i))                    // true positive
-                ++TP.at(y(i) == -1 ? 0 : y(i));     // if-then ? accounts for -1 class encoding
+            // calculate program output matrix Phi
+            params.msg("Generating output for " + pop.individuals[i].get_eqn(), 2);
+            MatrixXd Phi = pop.individuals.at(i).out(X_t, Z_t, params, y_t);            
 
-            for (unsigned j = 0; j < c.size(); ++j)
-                if ( y(i) !=c.at(j) && yhat(i) != c.at(j) )    // true negative
-                    ++TN.at(j);    
+            // calculate ML model from Phi
+            params.msg("ML training on " + pop.individuals[i].get_eqn(), 2);
+            bool pass = true;
+            auto ml = std::make_shared<ML>(params);
+            VectorXd yhat_t = ml->fit(Phi,y_t,params,pass,pop.individuals[i].dtypes);
+            if (!pass){
+                std::cerr << "Error training eqn " + pop.individuals[i].get_eqn() + "\n";
+                std::cerr << "with raw output " << pop.individuals[i].out(X_t, Z_t,params,y_t) << "\n";
+                throw;
+            }
             
-        }
+            // calculate program output matrix Phi on validation data
+            params.msg("Generating validation output for " + pop.individuals[i].get_eqn(), 2);
+            MatrixXd Phi_v = pop.individuals.at(i).out(X_v, Z_v, params, y_v);            
 
-        // class-wise accuracy = 1/2 ( true positive rate + true negative rate)
-        for (unsigned i=0; i< c.size(); ++i){
-            class_accuracies(i) = (TP[i]/P[i] + TN[i]/N[i])/2; 
-            //std::cout << "TP(" << i << "): " << TP[i] << ", P[" << i << "]: " << P[i] << "\n";
-            //std::cout << "TN(" << i << "): " << TN[i] << ", N[" << i << "]: " << N[i] << "\n";
-            //std::cout << "class accuracy(" << i << "): " << class_accuracies(i) << "\n";
+            // calculate ML model from Phi
+            params.msg("ML predicting on " + pop.individuals[i].get_eqn(), 2);
+            VectorXd yhat_v = ml->predict(Phi_v);
+
+            // assign F and aggregate fitness
+            params.msg("Assigning val fitness to " + pop.individuals[i].get_eqn(), 2);
+            
+            assign_fit(pop.individuals[i],F,yhat_v,y_v,params);
+                        
         }
-        if (reverse)
-            return 1.0 - class_accuracies.mean();
-        else
-            return class_accuracies.mean();
     }
+    
+    /* double Evaluation::multi_log_loss(const */ 
+    /*         { */
+    /*         if (c.empty())  // determine unique class values */
+    /*     { */
+    /*         vector<double> uc = unique(y); */
+    /*         for (const auto& i : uc) */
+    /*             c.push_back(int(i)); */
+    /*     } */
+
+    /*     //vector<double> class_loss(c.size(),0); */ 
+        
+    /* } */
 }
 #endif

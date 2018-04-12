@@ -14,7 +14,7 @@ using Eigen::Map;
 namespace FT{    
     ////////////////////////////////////////////////////////////////////////////////// Declarations
     extern Rnd r;
-
+    int last;
     /*!
      * @class Population
      * @brief Defines a population of programs and functions for constructing them. 
@@ -23,7 +23,8 @@ namespace FT{
     {
         vector<Individual> individuals;     ///< individual programs
         vector<size_t> open_loc;            ///< unfilled matrix positions
-        vector<size_t> locs; 
+        vector<size_t> locs;
+        
 
         Population(){}
         Population(int p)
@@ -99,17 +100,33 @@ namespace FT{
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
  
-    bool is_valid_program(vector<std::shared_ptr<Node>>& program, unsigned num_features)
+    bool is_valid_program(NodeVector& program, unsigned num_features, 
+                          vector<string> longitudinalMap)
     {
         /*! checks whether program fulfills all its arities. */
-        vector<ArrayXd> stack_f; 
-        vector<ArrayXb> stack_b;
+        Stacks stack;
         MatrixXd X = MatrixXd::Zero(num_features,2); 
         VectorXd y = VectorXd::Zero(2); 
+        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z;
+        
+         for(auto key : longitudinalMap)
+         {
+            Z[key].first.push_back(ArrayXd::Zero(2));
+            Z[key].first.push_back(ArrayXd::Zero(2));
+            Z[key].second.push_back(ArrayXd::Zero(2));
+            Z[key].second.push_back(ArrayXd::Zero(2));
+         }
+        
+        //cout<<"Enter\n";  
         unsigned i = 0; 
         for (const auto& n : program){
-            if ( stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
-                n->evaluate(X, y, stack_f, stack_b);
+            //cout<<"Evaluating node "<<n->name;
+            if (stack.check(n->arity))
+            {
+                //cout<<"\nEvaluating\n";
+                n->evaluate(X, y, Z, stack);
+                //cout<<"Evaluation done\n";
+            }
             else{
                 std::cout << "Error: ";
                 for (const auto& p: program) std::cout << p->name << " ";
@@ -119,13 +136,14 @@ namespace FT{
             }
             ++i;
         }
+        //cout<<"Exit\n";
         return true;
     }
    
-    void make_tree(vector<std::shared_ptr<Node>>& program, 
-                      const vector<std::shared_ptr<Node>>& functions, 
-                      const vector<std::shared_ptr<Node>>& terminals, int max_d,  
-                      const vector<double>& term_weights, char otype)
+    void make_tree(NodeVector& program, 
+                   const NodeVector& functions, 
+                   const NodeVector& terminals, int max_d,  
+                   const vector<double>& term_weights, char otype)
     {  
                 
         /*!
@@ -142,12 +160,12 @@ namespace FT{
                 if (terminals[i]->otype == otype) // grab terminals matching output type
                 {
                     ti.push_back(i);
-                    tw.push_back(term_weights[i]);
+                    tw.push_back(term_weights[i]);                    
                 }
             }
-            auto t = terminals[r.random_choice(ti,tw)];
+            auto t = terminals[r.random_choice(ti,tw)]->clone();
             //std::cout << t->name << " ";
-            program.push_back(t);
+            program.push_back(t->clone());
         }
         else
         {
@@ -155,43 +173,54 @@ namespace FT{
             // with no boolean inputs (assuming all input data is floating point) 
             vector<size_t> fi;
             for (size_t i = 0; i<functions.size(); ++i)
-                if (functions[i]->otype==otype && (max_d>1 || functions[i]->arity['b']==0))
+                if (functions[i]->otype==otype && (max_d>1 || functions[i]->arity['b']==0) 
+                    && (max_d>1 || functions[i]->arity['z']==0))
                     fi.push_back(i);
             
             if (fi.size()==0){
-                std::cout << "---\n";
-                std::cout << "f1.size()=0. current program: ";
-                for (auto p : program) std::cout << p->name << " ";
-                std::cout << "\n";
-                std::cout << "otype: " << otype << "\n";
-                std::cout << "max_d: " << max_d << "\n";
-                std::cout << "functions: ";
-                for (auto f: functions) std::cout << f->name << " ";
-                std::cout << "\n";
-                std::cout << "---\n";
+                if(otype == 'z')
+                {
+                    make_tree(program, functions, terminals, 0, term_weights, 'z');
+                    return;
+                }
+                else{            
+                    std::cout << "---\n";
+                    std::cout << "f1.size()=0. current program: ";
+                    for (const auto& p : program) std::cout << p->name << " ";
+                    std::cout << "\n";
+                    std::cout << "otype: " << otype << "\n";
+                    std::cout << "max_d: " << max_d << "\n";
+                    std::cout << "functions: ";
+                    for (const auto& f: functions) std::cout << f->name << " ";
+                    std::cout << "\n";
+                    std::cout << "---\n";
+                }
             }
+            
             assert(fi.size() > 0 && "The operator set specified results in incomplete programs.");
             
             // append a random choice from fs            
-            auto t = functions[r.random_choice(fi)];
+            auto t = functions[r.random_choice(fi)]->clone();
             //std::cout << t->name << " ";
-            program.push_back(t);
+            program.push_back(t->clone());
             
-            std::shared_ptr<Node> chosen = program.back();
+            std::unique_ptr<Node> chosen(program.back()->clone());
             // recurse to fulfill the arity of the chosen function
             for (size_t i = 0; i < chosen->arity['f']; ++i)
                 make_tree(program, functions, terminals, max_d-1, term_weights,'f');
             for (size_t i = 0; i < chosen->arity['b']; ++i)
                 make_tree(program, functions, terminals, max_d-1, term_weights, 'b');
-
+            for (size_t i = 0; i < chosen->arity['z']; ++i)
+                make_tree(program, functions, terminals, max_d-1, term_weights, 'z');
         }
 
     }
 
-    void make_program(vector<std::shared_ptr<Node>>& program, 
-                      const vector<std::shared_ptr<Node>>& functions, 
-                      const vector<std::shared_ptr<Node>>& terminals, int max_d, 
-                      const vector<double>& term_weights, int dim, char otype)
+    void make_program(NodeVector& program, 
+                      const NodeVector& functions, 
+                      const NodeVector& terminals, int max_d, 
+                      const vector<double>& term_weights, int dim, char otype, 
+                      vector<string> longitudinalMap)
     {
 
         for (unsigned i = 0; i<dim; ++i)    // build trees
@@ -199,7 +228,7 @@ namespace FT{
         
         // reverse program so that it is post-fix notation
         std::reverse(program.begin(),program.end());
-        assert(is_valid_program(program,terminals.size()));
+        assert(is_valid_program(program,terminals.size(), longitudinalMap));
     }
 
 
@@ -211,7 +240,7 @@ namespace FT{
         individuals[0] = starting_model;
         individuals[0].loc = 0;
         
-        #pragma omp parallel for
+        //#pragma omp parallel for
         for (unsigned i = 1; i< individuals.size(); ++i)
         {           
             // pick a dimensionality for this individual
@@ -219,8 +248,10 @@ namespace FT{
             // pick depth from [params.min_depth, params.max_depth]
             int depth =  r.rnd_int(1, params.max_depth);
             // make a program for each individual
+            char ot = r.random_choice(params.otypes);
+            //cout<<"Passing otype as "<<ot<<"\n";
             make_program(individuals[i].program, params.functions, params.terminals, depth,
-                         params.term_weights,dim,r.random_choice(params.otypes));
+                         params.term_weights,dim,ot, params.longitudinalMap);
             
             //std::cout << ind.get_eqn() + "\n";
            

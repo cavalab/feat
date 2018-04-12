@@ -6,6 +6,7 @@ license: GNU/GPL v3
 #define PARAMS_H
 // internal includes
 #include "nodewrapper.h"
+#include "nodevector.h"
 
 namespace FT{
 
@@ -26,8 +27,10 @@ namespace FT{
         int verbosity;                  			///< amount of printing. 0: none, 1: minimal, 
                                                     // 2: all
         vector<double> term_weights;    			///< probability weighting of terminals
-        vector<std::shared_ptr<Node>> functions;    ///< function nodes available in programs
-        vector<std::shared_ptr<Node>> terminals;    ///< terminal nodes available in programs
+        NodeVector functions;                       ///< function nodes available in programs
+        NodeVector terminals;                       ///< terminal nodes available in programs
+        vector<std::string> longitudinalMap;        ///<vector storing longitudinal data keys
+
         unsigned int max_depth;         			///< max depth of programs
         unsigned int max_size;          			///< max size of programs (length)
         unsigned int max_dim;           			///< maximum dimensionality of programs
@@ -41,11 +44,12 @@ namespace FT{
         unsigned int n_classes;                     ///< number of classes for classification 
         float cross_rate;                           ///< cross rate for variation
         vector<int> classes;                        ///< class labels
+        string scorer;                              ///< loss function
 
         Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
                    char ot, int verbosity, string fs, float cr, unsigned int max_depth, 
                    unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
-                   double fb, vector<char> datatypes = vector<char>()):    
+                   double fb, string sc):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
@@ -57,7 +61,6 @@ namespace FT{
             erc(constant),
             shuffle(sh),
             split(sp),
-            dtypes(datatypes),
             otype(ot),
             feedback(fb)
         {
@@ -67,18 +70,25 @@ namespace FT{
             updateSize();     
             set_otypes();
             n_classes = 2;
+            set_scorer(sc);
         }
         
         ~Parameters(){}
         
-        /// make sure ml choice is valid for problem type.
-        void check_ml()
+        /*! checks initial parameter settings before training.
+         *  make sure ml choice is valid for problem type.
+         *  make sure scorer is set. 
+         *  for classification, check clases and find number.
+         */
+        void init()
         {
             if (!ml.compare("LinearRidgeRegression") && classification)
             {
                 msg("Setting ML type to LR",2);
                 ml = "LR";            
             }
+
+
         }
         /// print message with verbosity control. 
         string msg(string m, int v, string sep="\n") const
@@ -92,17 +102,43 @@ namespace FT{
             }
             return msg;
         }
-        
+       
+        /// sets scorer type
+        void set_scorer(string sc)
+        {
+            if (sc.empty())
+            {
+                if (classification && n_classes == 2)
+                    /* scorer = "log"; */
+                    scorer = "bal_accuracy";
+                else if (classification)
+                    scorer = "bal_accuracy";
+                else
+                    scorer = "mse";
+            }
+            else
+                scorer = sc;
+            msg("scorer set to " + scorer,2);
+        }
         /// sets weights for terminals. 
         void set_term_weights(const vector<double>& w)
         {           
-            assert(w.size()==terminals.size()); 
+            //assert(w.size()==terminals.size()); 
             string weights;
             double u = 1.0/double(w.size());
             term_weights.clear();
             vector<double> sw = softmax(w);
-            for (unsigned i = 0; i<sw.size(); ++i)
-                term_weights.push_back(u + feedback*(sw[i]-u));
+            int x = 0;
+            for (unsigned i = 0; i < terminals.size(); ++i)
+            {
+                if(terminals[i]->otype == 'z')
+                    term_weights.push_back(u);
+                else
+                {
+                    term_weights.push_back(u + feedback*(sw[x]-u));
+                    x++;
+                }
+            }
                 
             weights = "term weights: ";
             for (auto tw : term_weights)
@@ -113,8 +149,8 @@ namespace FT{
         }
         
         /// return shared pointer to a node based on the string passed
-        std::shared_ptr<Node> createNode(std::string str, double d_val = 0, bool b_val = false, 
-                                         size_t loc = 0);
+        std::unique_ptr<Node> createNode(std::string str, double d_val = 0, bool b_val = false, 
+                                         size_t loc = 0, string name = "");
         
         /// sets available functions based on comma-separated list.
         void set_functions(string fs);
@@ -140,7 +176,9 @@ namespace FT{
         }
         
         /// set the terminals
-        void set_terminals(int nf);
+        void set_terminals(int nf,
+                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
+                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > ());
 
         /// set the objectives
         void set_objectives(string obj);
@@ -170,13 +208,15 @@ namespace FT{
                 case 'f': otypes.push_back('f'); break;
                 default: 
                 {
-                    for (const auto& f: functions)
+                    otypes.push_back('b');
+                    otypes.push_back('f');
+                    /*for (const auto& f: functions)
                         if (!in(otypes,f->otype)) 
                             otypes.push_back(f->otype);
                     for (const auto& t: terminals)
                         if (!in(otypes,t->otype)) 
                             otypes.push_back(t->otype);
-
+                    */
                     break;
                 }
             }
@@ -188,111 +228,131 @@ namespace FT{
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
     
-    std::shared_ptr<Node> Parameters::createNode(string str, double d_val, bool b_val, size_t loc)
+    std::unique_ptr<Node> Parameters::createNode(string str, double d_val, bool b_val, size_t loc, string name)
     {
         // algebraic operators
     	if (str.compare("+") == 0) 
-    		return std::shared_ptr<Node>(new NodeAdd());
+    		return std::unique_ptr<Node>(new NodeAdd());
         
         else if (str.compare("-") == 0)
-    		return std::shared_ptr<Node>(new NodeSubtract());
+    		return std::unique_ptr<Node>(new NodeSubtract());
 
         else if (str.compare("*") == 0)
-    		return std::shared_ptr<Node>(new NodeMultiply());
+    		return std::unique_ptr<Node>(new NodeMultiply());
 
      	else if (str.compare("/") == 0)
-    		return std::shared_ptr<Node>(new NodeDivide());
+    		return std::unique_ptr<Node>(new NodeDivide());
 
         else if (str.compare("sqrt") == 0)
-    		return std::shared_ptr<Node>(new NodeSqrt());
+    		return std::unique_ptr<Node>(new NodeSqrt());
     	
     	else if (str.compare("sin") == 0)
-    		return std::shared_ptr<Node>(new NodeSin());
+    		return std::unique_ptr<Node>(new NodeSin());
     		
     	else if (str.compare("cos") == 0)
-    		return std::shared_ptr<Node>(new NodeCos());
+    		return std::unique_ptr<Node>(new NodeCos());
     		
     	else if (str.compare("tanh")==0)
-            return std::shared_ptr<Node>(new NodeTanh());
+            return std::unique_ptr<Node>(new NodeTanh());
     	   
         else if (str.compare("^2") == 0)
-    		return std::shared_ptr<Node>(new NodeSquare());
+    		return std::unique_ptr<Node>(new NodeSquare());
  	
         else if (str.compare("^3") == 0)
-    		return std::shared_ptr<Node>(new NodeCube());
+    		return std::unique_ptr<Node>(new NodeCube());
     	
         else if (str.compare("^") == 0)
-    		return std::shared_ptr<Node>(new NodeExponent());
+    		return std::unique_ptr<Node>(new NodeExponent());
 
         else if (str.compare("exp") == 0)
+<<<<<<< HEAD
     		return std::shared_ptr<Node>(new NodeExp());
+=======
+    		return std::unique_ptr<Node>(new NodeExponential());
+>>>>>>> master
     		
     	else if (str.compare("gaussian")==0)
-            return std::shared_ptr<Node>(new NodeGaussian());
+            return std::unique_ptr<Node>(new NodeGaussian());
         
         else if (str.compare("2dgaussian")==0)
+<<<<<<< HEAD
             return std::shared_ptr<Node>(new Node2DGaussian());
+=======
+            return std::unique_ptr<Node>(new Node2dGaussian());
+>>>>>>> master
 
         else if (str.compare("log") == 0)
-    		return std::shared_ptr<Node>(new NodeLog());   
+    		return std::unique_ptr<Node>(new NodeLog());   
     		
     	else if (str.compare("logit")==0)
-            return std::shared_ptr<Node>(new NodeLogit());
+            return std::unique_ptr<Node>(new NodeLogit());
 
         // logical operators
         else if (str.compare("and") == 0)
-    		return std::shared_ptr<Node>(new NodeAnd());
+    		return std::unique_ptr<Node>(new NodeAnd());
        
     	else if (str.compare("or") == 0)
-    		return std::shared_ptr<Node>(new NodeOr());
+    		return std::unique_ptr<Node>(new NodeOr());
    		
      	else if (str.compare("not") == 0)
-    		return std::shared_ptr<Node>(new NodeNot());
+    		return std::unique_ptr<Node>(new NodeNot());
     		
     	else if (str.compare("xor")==0)
-            return std::shared_ptr<Node>(new NodeXor());
+            return std::unique_ptr<Node>(new NodeXor());
    		
     	else if (str.compare("=") == 0)
-    		return std::shared_ptr<Node>(new NodeEqual());
+    		return std::unique_ptr<Node>(new NodeEqual());
     		
         else if (str.compare(">") == 0)
-    		return std::shared_ptr<Node>(new NodeGreaterThan());
+    		return std::unique_ptr<Node>(new NodeGreaterThan());
 
     	else if (str.compare(">=") == 0)
-    		return std::shared_ptr<Node>(new NodeGEQ());        
+    		return std::unique_ptr<Node>(new NodeGEQ());        
 
     	else if (str.compare("<") == 0)
-    		return std::shared_ptr<Node>(new NodeLessThan());
+    		return std::unique_ptr<Node>(new NodeLessThan());
     	
     	else if (str.compare("<=") == 0)
-    		return std::shared_ptr<Node>(new NodeLEQ());
+    		return std::unique_ptr<Node>(new NodeLEQ());
     	
      	else if (str.compare("if") == 0)
-    		return std::shared_ptr<Node>(new NodeIf());   	    		
+    		return std::unique_ptr<Node>(new NodeIf());   	    		
         	
     	else if (str.compare("ite") == 0)
-    		return std::shared_ptr<Node>(new NodeIfThenElse());
+    		return std::unique_ptr<Node>(new NodeIfThenElse());
     		
     	else if (str.compare("step")==0)
-            return std::shared_ptr<Node>(new NodeStep());
+            return std::unique_ptr<Node>(new NodeStep());
             
         else if (str.compare("sign")==0)
-            return std::shared_ptr<Node>(new NodeSign());
+            return std::unique_ptr<Node>(new NodeSign());
+            
+        else if (str.compare("mean")==0)
+            return std::unique_ptr<Node>(new NodeMean());
+            
+        else if (str.compare("median")==0)
+            return std::unique_ptr<Node>(new NodeMedian());
 
         // variables and constants
          else if (str.compare("x") == 0)
         {
             if(dtypes.size() == 0)
-                return std::shared_ptr<Node>(new NodeVariable(loc));
+                return std::unique_ptr<Node>(new NodeVariable(loc));
             else
-                return std::shared_ptr<Node>(new NodeVariable(loc, dtypes[loc]));
+                return std::unique_ptr<Node>(new NodeVariable(loc, dtypes[loc]));
         }
             
         else if (str.compare("kb")==0)
-            return std::shared_ptr<Node>(new NodeConstant(b_val));
+            return std::unique_ptr<Node>(new NodeConstant(b_val));
             
         else if (str.compare("kd")==0)
-            return std::shared_ptr<Node>(new NodeConstant(d_val));
+            return std::unique_ptr<Node>(new NodeConstant(d_val));
+            
+        else if (str.compare("z")==0)
+        {
+            //std::cout<<"******CALLED with name "<<name<<"\n";
+            return std::unique_ptr<Node>(new NodeLongitudinal(name));
+        }
             
         else
         {
@@ -328,14 +388,15 @@ namespace FT{
         } 
         if (verbosity > 1){
             std::cout << "functions set to [";
-            for (auto f: functions) std::cout << f->name << ", "; 
+            for (const auto& f: functions) std::cout << f->name << ", "; 
             std::cout << "]\n";
         }
         // reset output types
         set_otypes();
     }
 
-    void Parameters::set_terminals(int nf)
+    void Parameters::set_terminals(int nf,
+                                   std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
     {
         /*!
          * based on number of features.
@@ -353,6 +414,13 @@ namespace FT{
     	       	else
     	       		terminals.push_back(createNode(string("kd"), r(), 0, 0));
     	    }        
+       
+        for (const auto &val : Z)
+        {
+            longitudinalMap.push_back(val.first);
+            terminals.push_back(createNode(string("z"), 0, 0, 0, val.first));
+        }
+        
         // reset output types
         set_otypes();
     }
@@ -393,6 +461,8 @@ namespace FT{
         
         n_classes = classes.size();
 
+        set_scorer(scorer); // in case classification has changed, set scorer
+       
         std::cout << "number of classes: " << n_classes << "\n";
     }
 }

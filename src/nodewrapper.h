@@ -8,6 +8,7 @@ license: GNU/GPL v3
 
 #include <memory>
 
+<<<<<<< HEAD
 #include "node/node.h"
 #include "node/n_add.h"
 #include "node/n_and.h"
@@ -40,4 +41,18 @@ license: GNU/GPL v3
 #include "node/n_step.h"
 #include "node/n_sign.h"
 #include "node/n_tanh.h"
+=======
+#include "./node/nodelongitudinal.h"
+#include "./node/nodemean.h"
+#include "./node/nodemedian.h"
+#include "./node/nodemax.h"
+#include "./node/nodemin.h"
+#include "./node/nodevar.h"
+#include "./node/nodeskew.h"
+#include "./node/nodekurtosis.h"
+#include "./node/nodetime.h"
+#include "./node/nodeslope.h"
+#include "./node/nodemode.h"
+
+>>>>>>> master
 #endif

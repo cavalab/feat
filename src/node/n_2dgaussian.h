@@ -22,33 +22,31 @@ namespace FT{
     		}
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
-                    vector<ArrayXb>& stack_b);
+         void evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)   ;
 
             /// Evaluates the node symbolically
-            void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
+            void eval_eqn(Stacks& stack)
             {
-        		string x2 = stack_f.back(); stack_f.pop_back();
-                string x1 = stack_f.back(); stack_f.pop_back();
-                stack_f.push_back("gauss2D(" + x1 + "," + x2 + ")");
+        		string x2 = stack.fs.pop();
+                string x1 = stack.fs.pop();
+                stack.fs.push("gauss2d(" + x1 + "," + x2 + ")");
             }
-            
-            private:
-                double variance(ArrayXd x)
-                {
-                    double mean = x.mean();
-                    return (limited(pow((x - mean),2))).sum()/(x.count() - 1);
-                }
+
+        protected:
+                Node2dGaussian* clone_impl() const override { return new Node2dGaussian(*this); };  
     };
 	
 #ifndef USE_CUDA
-    void Node2DGaussian::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f,
-            vector<ArrayXb>& stack_b)
+    void Node2DGaussian::void evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
     {
-        ArrayXd x2 = stack_f.back(); stack_f.pop_back();
-        ArrayXd x1 = stack_f.back(); stack_f.pop_back();
+        ArrayXd x2 = stack.f.pop();
+        ArrayXd x1 = stack.f.pop();
         
-        stack_f.push_back(limited(exp(-1*(pow((x1-x1.mean()), 2)/(2*variance(x1)) 
+        stack.f.push(limited(exp(-1*(pow((x1-x1.mean()), 2)/(2*variance(x1)) 
                           + pow((x2 - x2.mean()), 2)/variance(x2)))));
     }
 #endif
