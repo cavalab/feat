@@ -6,5 +6,5 @@ var searchData=
   ['feedback',['feedback',['../de/d2c/structFT_1_1Parameters.html#adace64c4fd209f05a0baf58b98f5b3ad',1,'FT::Parameters']]],
   ['fitness',['fitness',['../d8/d25/classFT_1_1Individual.html#a4af553c06f662e1a53cba465247a63c3',1,'FT::Individual']]],
   ['foldsize',['foldSize',['../df/de2/classFT_1_1FeatCV.html#acd588d2c45280f192beaa1783ea4e546',1,'FT::FeatCV']]],
-  ['functions',['functions',['../de/d2c/structFT_1_1Parameters.html#a7ef68e78453bbe1fd4d4d685494bcb6b',1,'FT::Parameters']]]
+  ['functions',['functions',['../de/d2c/structFT_1_1Parameters.html#a73627d83a91b1eb185457c0f87c9d473',1,'FT::Parameters']]]
 ];

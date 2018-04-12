@@ -22,24 +22,24 @@ namespace FT{
     		}
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
-                    vector<ArrayXb>& stack_b);
-
+            void evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack);
+            
             /// Evaluates the node symbolically
-            void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
+            void eval_eqn(Stacks& stack)
             {
-              string b = stack_b.back(); stack_b.pop_back();
-              string f = stack_f.back(); stack_f.pop_back();
-              stack_f.push_back("if-then-else(" + b + "," + f + "," + "0)");
+              stack.fs.push("if-then-else(" + stack.bs.pop() + "," + stack.fs.pop() + "," + "0)");
             }
+        protected:
+            NodeIf* clone_impl() const override { return new NodeIf(*this); };  
     };
 #ifndef USE_CUDA
-    void NodeIf::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
-                    vector<ArrayXb>& stack_b)
+    void NodeIf::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
     {
-        ArrayXb b = stack_b.back(); stack_b.pop_back();
-        ArrayXd f = stack_f.back(); stack_f.pop_back();
-        stack_f.push_back(b.select(f,0));
+        stack.f.push(stack.b.pop().select(stack.f.pop(),0));
     }
 #endif
 }	

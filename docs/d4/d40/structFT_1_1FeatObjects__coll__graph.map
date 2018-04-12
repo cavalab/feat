@@ -1,8 +1,11 @@
 <map id="FT::FeatObjects" name="FT::FeatObjects">
-<area shape="rect" id="node2" href="$db/dff/classFT_1_1Feat.html" title="main class for the Feat learner. " alt="" coords="967,343,1039,369"/>
-<area shape="rect" id="node5" href="$de/d2c/structFT_1_1Parameters.html" title="holds the hyperparameters for Feat. " alt="" coords="698,264,811,291"/>
-<area shape="rect" id="node17" href="$d8/d25/classFT_1_1Individual.html" title="individual programs in the population " alt="" coords="704,213,805,240"/>
-<area shape="rect" id="node9" title="STL class. " alt="" coords="181,444,261,471"/>
-<area shape="rect" id="node10" title="STL class. " alt="" coords="5,437,132,478"/>
-<area shape="rect" id="node15" href="$d3/d4e/classFT_1_1Timer.html" title="class for timing things. " alt="" coords="715,416,794,443"/>
+<area shape="rect" id="node2" href="$db/dff/classFT_1_1Feat.html" title="main class for the Feat learner. " alt="" coords="1120,281,1192,308"/>
+<area shape="rect" id="node5" href="$de/d2c/structFT_1_1Parameters.html" title="holds the hyperparameters for Feat. " alt="" coords="851,437,965,464"/>
+<area shape="rect" id="node20" href="$d8/d25/classFT_1_1Individual.html" title="individual programs in the population " alt="" coords="857,177,959,204"/>
+<area shape="rect" id="node7" href="$dd/d15/structFT_1_1NodeVector.html" title="an extension of a vector of unique pointers to nodes " alt="" coords="529,159,643,185"/>
+<area shape="rect" id="node8" title="STL class. " alt="" coords="237,67,397,109"/>
+<area shape="rect" id="node11" title="STL class. " alt="" coords="277,436,357,463"/>
+<area shape="rect" id="node12" title="STL class. " alt="" coords="5,429,132,470"/>
+<area shape="rect" id="node18" href="$d3/d4e/classFT_1_1Timer.html" title="class for timing things. " alt="" coords="869,332,947,359"/>
+<area shape="rect" id="node21" href="$dd/db4/structFT_1_1Normalizer.html" title="FT::Normalizer" alt="" coords="853,488,963,515"/>
 </map>
