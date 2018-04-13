@@ -101,6 +101,8 @@ namespace FT{
         double get_p(const size_t i);
         /// get probability of variation for program locations locs
         vector<double> get_p(const vector<size_t>& locs); 
+        /// get maximum stack size needed for evaluation.
+        std::map<char,size_t> get_max_stack_size();
 
         unsigned int c;            ///< the complexity of the program.    
         vector<char> dtypes;       ///< the data types of each column of the program output
@@ -273,7 +275,7 @@ namespace FT{
         //Phi.transposeInPlace();
         return Phi;
     }
-#else
+#else //////////////////////////////////////////////////////////// GPU implementation
     // calculate program output matrix on GPU
     MatrixXd Individual::out(const MatrixXd& X,
                              const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
@@ -293,7 +295,7 @@ namespace FT{
         params.msg("program length: " + std::to_string(program.size()),2);
         // to minimize copying overhead, set the stack size to the maximum it will reach for the
         // program 
-        //
+        std::map<char, size_t> stack_size = get_stack_size(); 
         // set the device based on the thread number
         unsigned n_gpus; 
         cudaGetDeviceCount(&n_gpus);
@@ -301,6 +303,7 @@ namespace FT{
         cudaSetDevice(device); 
         // allocate memory for the stack on the device
         size_t N = X.cols();
+        stack.allocate(stack_size,N);        
         /* stack.f.resize( */
         // evaluate each node in program
         for (const auto& n : program)
@@ -321,7 +324,9 @@ namespace FT{
                 exit(1);
             }
         }
-        /* std::cout << "\n"; */
+        // copy data from GPU to stack
+        stack.copy_from_device(stack_size,N);
+
         // convert stack_f to Phi
         params.msg("converting stacks to Phi",2);
         int cols;
@@ -342,7 +347,7 @@ namespace FT{
         Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
         // add stack_f to Phi
         for (unsigned int i=0; i<rows_f; ++i)
-        {    Phi.row(i) = VectorXd::Map(stack.f.at(i).data(),cols);
+        {    Phi.row(i) = VectorXd::Map(stack.f.at(i).cast<double>().data(),cols);
              dtypes.push_back('f'); 
         }
         // convert stack_b to Phi       
@@ -568,6 +573,19 @@ namespace FT{
         return s;
     }
 
+    std::map<char, size_t> Individual::get_max_stack_size()
+    {
+        // max stack size is calculated using node arities
+        std::map<char, size_t> stack_size; 
+        for (const auto& n : program)   
+        {   
+            ++stack_size[n->otype];
+            for (const auto& a : n->arity)
+                stack_size[a.first] -= a.second;
+                       
+        }
+        return stack_size;
+    }
 }
 
 #endif

@@ -6,6 +6,9 @@ license: GNU/GPL v3
 #define NODE_ADD
 
 #include "node.h"
+#ifdef USE_CUDA
+    #include "../node-cuda/n_add.h"
+#endif 
 
 namespace FT{
 	class NodeAdd : public Node
@@ -43,6 +46,15 @@ namespace FT{
 	{
 		stack.f.push(limited(stack.f.pop() + stack.f.pop()));
 	}
+#else
+void NodeAdd::void evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >&Z, 
+			              Stacks& stack)
+	{
+	    	
+        Add<<< 32*NUM_SMS, 128, omp_get_thread_num() >>>(stack.dev_f, stack.idx['f'], N);
+        ++stack.idx['f'];
+    }
 #endif
 }
 #endif

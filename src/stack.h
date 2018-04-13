@@ -82,13 +82,23 @@ namespace FT
 #else
     struct Stacks
     {
-        ArrayXXd f;
+        ArrayXXf f;
         ArrayXXb b;
         Stack<std::pair<vector<ArrayXd>, vector<ArrayXd> > > z;
         Stack<string> fs;
         Stack<string> bs;
         Stack<string> zs;
-        
+
+        float * dev_f; 
+        bool * dev_b; 
+        std::map<char, size_t> idx; 
+
+        Stack()
+        {
+            idx['f']=0;
+            idx['b']=0;
+        }
+       
         bool check(std::map<char, unsigned int> &arity)
         {
             if(arity.find('z') == arity.end())
@@ -106,6 +116,25 @@ namespace FT
                 return (fs.size() >= arity['f'] && bs.size() >= arity['b'] 
                         && zs.size() >= arity['z']);
         }
+        
+        void allocate(std::map<char, size_t> stack_size, size_t N)
+        {
+            HANDLE_ERROR(cudaMalloc((void **)& dev_f, sizeof(float)*N*stack_size['f']));
+            HANDLE_ERROR(cudaMalloc((void **)& dev_b, sizeof(bool)*N*stack_size['b']));
+        }
+
+        void copy_from_device(std::map<char, size_t> stack_size, size_t N)
+        {
+            HANDLE_ERROR(cudaMemcpy(dev_f, f.data(), sizeof(float)*N*stack_size['f'],
+                         cudaMemcpyHostToDevice));
+            HANDLE_ERROR(cudaMemcpy(dev_b, b.data(), sizeof(bool)*N*stack_size['b'], 
+                         cudaMemcpyHostToDevice));
+        }
+        ~Stack()
+        {
+            // Free memory
+            cudaFree(dev_f); 
+            cudaFree(dev_b);         }
     };
 #endif
 }
