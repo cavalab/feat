@@ -217,3 +217,16 @@ ArrayXd evaluateProgram(vector<Node> program, MatrixXd data, VectorXd labels) {
 bool isNodeDx(Node n) {
 	return d != dynamic_cast<NodeDx*>(n); 
 }
+
+template <class G>
+G pop(vector<G> v) {
+	G value = v.back();
+	v.pop_back();
+	return value;
+}
+
+G pop_front(vector<G> v) {
+	G value = v.front();
+	v.erase(0);
+	return value;
+}
