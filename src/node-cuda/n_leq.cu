@@ -3,7 +3,7 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 #include "cuda_utils.h"
-#include "../node/n_leq.h"
+/* #include "../node/n_leq.h" */
 
 namespace FT{
    		
@@ -11,9 +11,13 @@ namespace FT{
     {                    
         for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
         {
-            xb[idxb*N+i] = xf[(idxf-1)*N+i] <= xf[(idxf-1)*N+i];
+            xb[idxb*N+i] = xf[(idxf-1)*N+i] <= xf[(idxf-2)*N+i];
         }
         return;
+    }
+    void GPU_LEQ(float * xf, bool * xb, size_t idxf, size_t idxb, size_t N)
+    {
+        GPU_LEQ<<< DIM_GRID, DIM_BLOCK, omp_get_thread_num() >>>(float * xf, bool * xb, size_t idxf, size_t idxb, size_t N);
     }
     /// Evaluates the node and updates the stack states. 
     /* void NodeLEQ::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 

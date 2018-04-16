@@ -3,7 +3,7 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 #include "cuda_utils.h"
-#include "../node/n_divide.h"
+/* #include "../node/n_divide.h" */
 
 namespace FT{
    		
@@ -11,12 +11,16 @@ namespace FT{
     {                    
         for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
         {
-            if (x[idx-2] > 0.00000001)
-                x[idx-2] = x[idx-2] / x[idx-1];
+            if (x[(idx-2)*N+i] > 0.00000001)
+                x[(idx-2)*N+i] = x[(idx-1)*N+i] / x[(idx-2)*N+i];
             else
-                x[idx-2] = 1.0 ;  
+                x[(idx-2)*N+i] = 1.0 ;  
         }
         return;
+    }
+    void GPU_Divide( float * x, size_t idx, size_t N)
+    {
+        GPU_Divide<<< DIM_GRID, DIM_BLOCK, omp_get_thread_num() >>>( float * x, size_t idx, size_t N);
     }
     /// Evaluates the node and updates the stack states. 
     /* void NodeDivide::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 

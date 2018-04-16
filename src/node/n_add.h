@@ -47,12 +47,12 @@ namespace FT{
 		stack.f.push(limited(stack.f.pop() + stack.f.pop()));
 	}
 #else
-void NodeAdd::void evaluate(const MatrixXd& X, const VectorXd& y,
+    void NodeAdd::void evaluate(const MatrixXd& X, const VectorXd& y,
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >&Z, 
 			              Stacks& stack)
 	{
 	    	
-        Add<<< 32*NUM_SMS, 128, omp_get_thread_num() >>>(stack.dev_f, stack.idx['f'], N);
+        GPU_Add(stack.dev_f, stack.idx['f'], N);
         ++stack.idx['f'];
     }
 #endif

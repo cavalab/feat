@@ -117,13 +117,13 @@ namespace FT
                         && zs.size() >= arity['z']);
         }
         
-        void allocate(std::map<char, size_t> stack_size, size_t N)
+        void allocate(const std::map<char, size_t>& stack_size, size_t N)
         {
             HANDLE_ERROR(cudaMalloc((void **)& dev_f, sizeof(float)*N*stack_size['f']));
             HANDLE_ERROR(cudaMalloc((void **)& dev_b, sizeof(bool)*N*stack_size['b']));
         }
 
-        void copy_from_device(std::map<char, size_t> stack_size, size_t N)
+        void copy_from_device(const std::map<char, size_t>& stack_size, size_t N)
         {
             HANDLE_ERROR(cudaMemcpy(dev_f, f.data(), sizeof(float)*N*stack_size['f'],
                          cudaMemcpyHostToDevice));

@@ -3,7 +3,7 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 #include "cuda_utils.h"
-#include "../node/n_gaussian.h"
+/* #include "../node/n_gaussian.h" */
 
 namespace FT{
    		
@@ -11,9 +11,13 @@ namespace FT{
     {                    
         for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
         {
-            x[idx-1] = exp ( - pow ( x[idx-1], 2 ) ) ;
+            x[(idx-1)*N+i] = exp ( - pow ( x[(idx-1)*N+i], 2 ) ) ;
         }
         return;
+    }
+    void GPU_Gaussian( float * x, size_t idx, size_t N)
+    {
+        GPU_Gaussian<<< DIM_GRID, DIM_BLOCK, omp_get_thread_num() >>>( float * x, size_t idx, size_t N);
     }
     /// Evaluates the node and updates the stack states. 
     /* void NodeGaussian::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 

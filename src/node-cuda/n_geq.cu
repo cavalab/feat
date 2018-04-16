@@ -3,17 +3,21 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 #include "cuda_utils.h"
-#include "../node/n_geq.h"
+/* #include "../node/n_geq.h" */
 
 namespace FT{
    		
-    __global__ void GEQ(float * xf, bool * xb, size_t idx, size_t N)
+    __global__ void GEQ(float * xf, bool * xb, size_t idxf, size_t idxb, size_t N)
     {                    
         for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
         {
-            xb[idx] = xf[idx-1] >= xf[idx-2];
+            xb[idxb*N+i] = xf[(idxf-1)*N+i] >= xf[(idxf-2)*N+i];
         }
         return;
+    }
+    void GPU_GEQ(float * xf, bool * xb, size_t idxf, size_t idxb, size_t N)
+    {
+        GPU_GEQ<<< DIM_GRID, DIM_BLOCK, omp_get_thread_num() >>>(float * xf, bool * xb, size_t idxf, size_t idxb, size_t N);
     }
     /// Evaluates the node and updates the stack states. 
     /* void NodeGEQ::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 
