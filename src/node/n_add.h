@@ -6,9 +6,6 @@ license: GNU/GPL v3
 #define NODE_ADD
 
 #include "node.h"
-#ifdef USE_CUDA
-    #include "../node-cuda/n_add.h"
-#endif 
 
 namespace FT{
 	class NodeAdd : public Node
@@ -51,9 +48,7 @@ namespace FT{
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >&Z, 
 			              Stacks& stack)
 	{
-	    	
-        GPU_Add(stack.dev_f, stack.idx['f'], N);
-        ++stack.idx['f'];
+        GPU_Add(stack.dev_f, stack.idx[otype], N);
     }
 #endif
 }

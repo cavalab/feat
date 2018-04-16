@@ -17,7 +17,7 @@ namespace FT{
     }
     void GPU_LEQ(float * xf, bool * xb, size_t idxf, size_t idxb, size_t N)
     {
-        GPU_LEQ<<< DIM_GRID, DIM_BLOCK, omp_get_thread_num() >>>(float * xf, bool * xb, size_t idxf, size_t idxb, size_t N);
+        LEQ<<< DIM_GRID, DIM_BLOCK >>>(xf, xb, idxf, idxb, N);
     }
     /// Evaluates the node and updates the stack states. 
     /* void NodeLEQ::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 

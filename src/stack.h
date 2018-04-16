@@ -5,7 +5,9 @@ license: GNU/GPL v3
 
 #ifndef STACK_H
 #define STACK_H
-
+#ifdef USE_CUDA
+    #include "node-cuda/cuda_utils.h"
+#endif
 //#include "node/node.h"
 //external includes
 
@@ -92,13 +94,20 @@ namespace FT
         float * dev_f; 
         bool * dev_b; 
         std::map<char, size_t> idx; 
+        int N; 
 
-        Stack()
+        Stacks()
         {
             idx['f']=0;
             idx['b']=0;
         }
-       
+
+        void update_idx(char otype, std::map<char, unsigned>& arity)
+        {
+            ++idx[otype];
+            for (const auto& a : arity)
+                    idx[a.first] -= a.second;
+        }
         bool check(std::map<char, unsigned int> &arity)
         {
             if(arity.find('z') == arity.end())
@@ -119,22 +128,20 @@ namespace FT
         
         void allocate(const std::map<char, size_t>& stack_size, size_t N)
         {
-            HANDLE_ERROR(cudaMalloc((void **)& dev_f, sizeof(float)*N*stack_size['f']));
-            HANDLE_ERROR(cudaMalloc((void **)& dev_b, sizeof(bool)*N*stack_size['b']));
+            allocate(dev_f, dev_b, N*stack_size['f'], N*stack_size['b']);
+            N = N;
         }
 
-        void copy_from_device(const std::map<char, size_t>& stack_size, size_t N)
+        void copy_from_device(const std::map<char, size_t>& stack_size)
         {
-            HANDLE_ERROR(cudaMemcpy(dev_f, f.data(), sizeof(float)*N*stack_size['f'],
-                         cudaMemcpyHostToDevice));
-            HANDLE_ERROR(cudaMemcpy(dev_b, b.data(), sizeof(bool)*N*stack_size['b'], 
-                         cudaMemcpyHostToDevice));
+            copy_from_device(dev_f, f.data(), dev_b, b.data(), N*stack_size['f'], N*stack_size['b']);
         }
-        ~Stack()
+        ~Stacks()
         {
             // Free memory
             cudaFree(dev_f); 
-            cudaFree(dev_b);         }
+            cudaFree(dev_b);         
+        }
     };
 #endif
 }

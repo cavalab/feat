@@ -46,6 +46,13 @@ namespace FT{
         stack.f.push(res);
         
     }
+#else
+    void NodeStep::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
+    {
+        GPU_Step(stack.dev_f, stack.idx[otype], stack.N);
+    }
 #endif
 }	
 

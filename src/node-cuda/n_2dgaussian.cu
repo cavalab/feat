@@ -18,7 +18,7 @@ namespace FT{
     }
     void GPU_Gaussian2D(float * x, float x1mean, float x1var, float x2mean, float x2var, size_t idx, size_t N)
     {
-        GPU_Gaussian2D<<< DIM_GRID, DIM_BLOCK, omp_get_thread_num() >>>(float * x, float x1mean, float x1var, float x2mean, float x2var, size_t idx, size_t N);
+        Gaussian2D<<< DIM_GRID, DIM_BLOCK >>>(x, x1mean, x1var, x2mean, x2var, idx, N);
     }
     /// Evaluates the node and updates the stack states. 
     /* void Node2DGaussian::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 

@@ -17,7 +17,7 @@ namespace FT{
     }
     void GPU_GreaterThan(float * xf, bool * xb, size_t idxf, size_t idxb, size_t N)
     {
-        GPU_GreaterThan<<< DIM_GRID, DIM_BLOCK, omp_get_thread_num() >>>(float * xf, bool * xb, size_t idxf, size_t idxb, size_t N);
+        GreaterThan<<< DIM_GRID, DIM_BLOCK >>>(xf, xb, idxf, idxb, N);
     }
     /// Evaluates the node and updates the stack states. 
     /* void NodeGreaterThan::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 

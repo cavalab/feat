@@ -49,6 +49,13 @@ namespace FT{
         stack.f.push(limited(exp(-1*(pow((x1-x1.mean()), 2)/(2*variance(x1)) 
                           + pow((x2 - x2.mean()), 2)/variance(x2)))));
     }
+#else
+    void Node2DGaussian::void evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
+    {
+        GPU_2DGaussian(stack.dev_f, stack.idx[otype], stack.N);
+    }
 #endif
 
 }

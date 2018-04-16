@@ -17,7 +17,7 @@ namespace FT{
     }
     void GPU_Subtract( float * x, size_t idx, size_t N)
     {
-        GPU_Subtract<<< DIM_GRID, DIM_BLOCK, omp_get_thread_num() >>>( float * x, size_t idx, size_t N);
+        Subtract<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N);
     }
     /// Evaluates the node and updates the stack states. 
     /* void NodeSubtract::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 

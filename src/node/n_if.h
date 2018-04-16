@@ -41,6 +41,13 @@ namespace FT{
     {
         stack.f.push(stack.b.pop().select(stack.f.pop(),0));
     }
+#else
+    void NodeIf::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
+    {
+        GPU_If(stack.dev_f, stack.dev_b, stack.idx['f'], stack.idx[otype], stack.N);
+    }
 #endif
 }	
 

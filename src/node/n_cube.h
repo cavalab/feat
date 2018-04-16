@@ -35,12 +35,19 @@ namespace FT{
         protected:
             NodeCube* clone_impl() const override { return new NodeCube(*this); };  
     };
-#ifndef USE_CUDA
+#ifndef USE_CUDA    
     void NodeCube::evaluate(const MatrixXd& X, const VectorXd& y,
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)
     {
         stack.f.push(pow(stack.f.pop(),3));
+    }
+#else
+    void NodeCube::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
+    {
+        GPU_NodeCube(stack.dev_f, stack.idx['f'], stack.N);
     }
 #endif
 }	

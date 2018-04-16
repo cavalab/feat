@@ -21,6 +21,7 @@ license: GNU/GPL v3
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
+typedef Eigen::Array<bool,Eigen::Dynamic,2> ArrayXXb;
 using std::vector;
 using std::string;
 using std::unique_ptr;

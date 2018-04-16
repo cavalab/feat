@@ -17,7 +17,7 @@ namespace FT{
     }
     void GPU_And( bool * x, size_t idx, size_t N)
     {
-        GPU_And<<< DIM_GRID, DIM_BLOCK, omp_get_thread_num() >>>( bool * x, size_t idx, size_t N);
+        And<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N);
     }
     /// Evaluates the node and updates the stack states. 
     /* void NodeAnd::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 

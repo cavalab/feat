@@ -45,6 +45,13 @@ namespace FT{
         ArrayXd x1 = stack.f.pop();
         stack.b.push(x1 < x2);
     }
+#else
+    void NodeLessThan::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
+    {
+        GPU_LessThan(stack.dev_f, stack.dev_b, stack.idx['f'], stack.idx[otype], stack.N);
+    }
 #endif
 }	
 

@@ -41,6 +41,13 @@ namespace FT{
     {
         stack.f.push(limited(sin(stack.f.pop())));
     }
+#else
+    void NodeSin::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
+    {
+        GPU_Sin(stack.dev_f, stack.idx[otype], stack.N);
+    }
 #endif
 }	
 

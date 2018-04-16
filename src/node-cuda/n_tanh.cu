@@ -17,7 +17,7 @@ namespace FT{
     }
     void GPU_Tanh( float * x, size_t idx, size_t N)
     {
-        GPU_Tanh<<< DIM_GRID, DIM_BLOCK, omp_get_thread_num() >>>( float * x, size_t idx, size_t N);
+        Tanh<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N);
     }
     /// Evaluates the node and updates the stack states. 
     /* void NodeTanh::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 

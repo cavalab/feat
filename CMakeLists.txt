@@ -92,7 +92,7 @@ if (CORE_USE_CUDA)
     find_package(CUDA REQUIRED)
     add_definitions(-DUSE_CUDA)
     #enable_language(CUDA)
-    list(APPEND CUDA_NVCC_FLAGS "-std=c++11 --expt-relaxed-constexpr")
+    list(APPEND CUDA_NVCC_FLAGS "-std=c++11 --expt-relaxed-constexpr --default-stream per-thread")
 
 endif()
 #############################################

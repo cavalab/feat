@@ -17,7 +17,7 @@ namespace FT{
     }
     void GPU_Cos( float * x, size_t idx, size_t N)
     {
-        GPU_Cos<<< DIM_GRID, DIM_BLOCK, omp_get_thread_num() >>>( float * x, size_t idx, size_t N);
+        Cos<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N);
     }
     /// Evaluates the node and updates the stack states. 
     /* void NodeCos::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 
