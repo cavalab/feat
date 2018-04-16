@@ -65,7 +65,7 @@ echo "cython path is..."
 which cython
 
 cd ./python
-sudo python setup.py install build_ext --inplace
+python setup.py install
 
 #_____Run the Python Tests for the wrapper_____#
 
