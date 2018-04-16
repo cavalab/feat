@@ -41,7 +41,9 @@ namespace FT{
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)
     {
-        stack.f.push(limited(pow(stack.f.pop(),stack.f.pop())));
+        ArrayXd x2 = stack.f.pop();
+        ArrayXd x1 = stack.f.pop();
+        stack.f.push(limited(pow(x1,x2)));
     }
 #endif
 }	

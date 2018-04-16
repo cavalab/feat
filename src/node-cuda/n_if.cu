@@ -3,11 +3,11 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 #include "cuda_utils.h"
-#include "../node/n_if.h"
+/* #include "../node/n_if.h" */
 
 namespace FT{
    		
-    __global__ void If(bool * xb, float * xf, size_t idx, size_t N)
+    __global__ void If(bool * xb, float * xf, size_t idxf, size_t idxb, size_t N)
     {                    
         for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
         {
@@ -15,10 +15,14 @@ namespace FT{
             /*     xf[idx-1] = xf[idx-1]; */
             /* else */
             /*     out[i] = 0; */ 
-            if (~xb[(idx-1)*N+i])
-                xf[(idx-1)*N+i] = 0;
+            if (~xb[(idxb)*N+i])
+                xf[(idxf-1)*N+i] = 0;
         }
         return;
+    }
+    void GPU_If(bool * xb, float * xf, size_t idxf, size_t idxb, size_t N)
+    {
+        GPU_If<<< DIM_GRID, DIM_BLOCK, omp_get_thread_num() >>>(bool * xb, float * xf, size_t idxf, size_t idxb, size_t N);
     }
     /// Evaluates the node and updates the stack states. 
     /* void NodeIf::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 

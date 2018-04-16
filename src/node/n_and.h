@@ -6,6 +6,9 @@ license: GNU/GPL v3
 #define NODE_AND
 
 #include "node.h"
+#ifdef USE_CUDA
+    #include "../node-cuda/fns.h"
+#endif
 
 namespace FT{
 	class NodeAnd : public Node
@@ -42,6 +45,14 @@ namespace FT{
     {
         stack.b.push_back(stack.b.pop() && stack.b.pop());
 
+    }
+#else
+    void NodeAnd::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
+    {
+       GPU_And(stack.b, stack.idx['b'], y.size());
+       --idx['b'];
     }
 #endif
 }

@@ -3,7 +3,7 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 #include "cuda_utils.h"
-#include "../node/n_and.h"
+/* #include "../node/n_and.h" */
 
 namespace FT{
    		
@@ -14,6 +14,10 @@ namespace FT{
             x[idx-2] = x[idx-2] && x[idx-1];
         }
         return;
+    }
+    void GPU_And( bool * x, size_t idx, size_t N)
+    {
+        GPU_And<<< DIM_GRID, DIM_BLOCK, omp_get_thread_num() >>>( bool * x, size_t idx, size_t N);
     }
     /// Evaluates the node and updates the stack states. 
     /* void NodeAnd::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 

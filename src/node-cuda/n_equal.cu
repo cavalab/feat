@@ -3,17 +3,21 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 #include "cuda_utils.h"
-#include "../node/n_equal.h"
+/* #include "../node/n_equal.h" */
 
 namespace FT{
    		
-    __global__ void Equal(float * xf, bool * xb, size_t idx, size_t N)
+    __global__ void Equal(float * xf, bool * xb, size_t idxf, size_t idxb, size_t N)
     {                    
         for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
         {
-            xb[idx] = x[idx-1] == x[idx-2];
+            xb[(idxb)*N+i] = x[(idxf-1)*N+i] == x[(idxf-2)*N+i];
         }
         return;
+    }
+    void GPU_Equal(float * xf, bool * xb, size_t idxf, size_t idxb, size_t N)
+    {
+        GPU_Equal<<< DIM_GRID, DIM_BLOCK, omp_get_thread_num() >>>(float * xf, bool * xb, size_t idxf, size_t idxb, size_t N);
     }
     /// Evaluates the node and updates the stack states. 
     /* void NodeEqual::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 
