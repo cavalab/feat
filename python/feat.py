@@ -18,33 +18,55 @@ from metrics import balanced_accuracy_score
 class Feat(BaseEstimator):
     """Feat uses GP to find a data representation that improves the performance of a given ML
     method."""
-    def __init__(self, pop_size=100,  gens=100,  ml="LinearRidgeRegression", 
+    def __init__(self, pop_size=100,  gens=100,  ml = "LinearRidgeRegression", 
                 classification=False,  verbosity=0,  max_stall=0,
-                sel="lexicase",  surv="pareto",  cross_rate=0.5,
-                otype='a',  functions="+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite", 
+                sel ="lexicase",  surv ="pareto",  cross_rate=0.5,
+                otype ='a',  functions ="+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite", 
                 max_depth=3,   max_dim=10,  random_state=0, 
-                erc = False,  obj="fitness,complexity", shuffle=False,  split=0.75,  fb=0.5,
-                scorer=''):
+                erc = False,  obj ="fitness,complexity", shuffle=False,  split=0.75,  fb=0.5,
+                scorer =''):
         self.pop_size = pop_size
         self.gens = gens
-        self.ml = ml.encode()
+        if ( isinstance(ml,str) ) :
+             self.ml = ml.encode()
+        else:
+             self.ml = ml
+
         self.classification = classification
         self.verbosity = verbosity
         self.max_stall = max_stall
-        self.sel = sel.encode()
-        self.surv = surv.encode()
+        if ( isinstance(sel,str) ) :
+             self.sel = sel.encode()
+        else:
+             self.sel = sel
+        if ( isinstance(surv,str) ) :
+             self.surv = surv.encode()
+        else:
+             self.surv = surv
         self.cross_rate = cross_rate
-        self.otype = otype.encode()
-        self.functions = functions.encode()
+        if ( isinstance(otype,str) ) :
+             self.otype = otype.encode()
+        else:
+             self.otype = otype
+        if ( isinstance(functions,str) ) :
+             self.functions = functions.encode()
+        else:
+             self.functions = functions
         self.max_depth = max_depth
         self.max_dim = max_dim
         self.random_state = random_state
         self.erc = erc      
-        self.obj = obj.encode()
+        if ( isinstance(obj,str) ) :
+             self.obj = obj.encode()
+        else:
+             self.obj = obj
         self.shuffle = shuffle
         self.split = split
         self.fb = fb
-        self.scorer = scorer.encode()
+        if ( isinstance(scorer,str) ) :
+             self.scorer = scorer.encode()
+        else:
+             self.scorer = scorer
         
         self._pyfeat = pyfeat.PyFeat( self.pop_size,  self.gens,  self.ml, 
                 self.classification,  self.verbosity,  self.max_stall,

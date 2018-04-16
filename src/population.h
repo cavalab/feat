@@ -211,7 +211,7 @@ namespace FT{
         individuals[0] = starting_model;
         individuals[0].loc = 0;
       	
-	std::cout << "In init Population..." << std::endl;
+	//std::cout << "In init Population..." << std::endl;
         #pragma omp parallel for
         for (unsigned i = 1; i< individuals.size(); ++i)
         {  
@@ -231,9 +231,9 @@ namespace FT{
             individuals[i].loc = i;   
         }
         // define open locations
-	std::cout << "Done with IMP in init ..." << std::endl;
+	//std::cout << "Done with IMP in init ..." << std::endl;
         update_open_loc(); 
-	std::cout << "Returning from the Population::init" << std::endl;
+	//std::cout << "Returning from the Population::init" << std::endl;
     }
    
    void Population::update(vector<size_t> survivors)

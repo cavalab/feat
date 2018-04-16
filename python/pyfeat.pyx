@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+"""
+Copyright 2016 William La Cava
+license: GNU/GPLv3
+"""
+
 # distutils: language=c++
 cimport numpy 
 import numpy as np 
