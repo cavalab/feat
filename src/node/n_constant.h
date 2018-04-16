@@ -62,6 +62,7 @@ namespace FT{
             NodeConstant* clone_impl() const override { return new NodeConstant(*this); };  
     };
     // Definition
+#ifndef USE_CUDA    
     void NodeConstant::evaluate(const MatrixXd& X, const VectorXd& y,
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)
@@ -71,6 +72,24 @@ namespace FT{
         else 	
             stack.f.push(ArrayXd::Constant(X.cols(),d_value));
     }
+#else
+    void NodeConstant::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
+    {
+        if (otype == 'b')
+        {
+            ArrayXb::Constant tmp(X.cols(),int(b_value));
+            GPU_NodeConstant(stack.dev_b, tmp.data(), stack.idx[otype], stack.N);
+        }
+        else
+        {
+            ArrayXd::Constant tmp(X.cols(),d_value);
+            GPU_NodeConstant(stack.dev_f, tmp.data(), stack.idx[otype], stack.N);
+        }
+
+    }
+#endif
 }	
 
 #endif

@@ -313,6 +313,8 @@ namespace FT{
         	    //cout<<"***enter here "<<n->name<<"\n";
 	            n->evaluate(X, y, Z, stack);
 	            //cout<<"***exit here "<<n->name<<"\n";
+                // adjust indices
+                :
 	        }
             else
             {

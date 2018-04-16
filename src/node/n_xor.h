@@ -50,6 +50,13 @@ namespace FT{
         stack.b.push(res);
         
     }
+#else
+    void NodeXor::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
+    {
+        GPU_Xor(stack.dev_b, stack.idx[otype], stack.N);
+    }
 #endif
 }	
 

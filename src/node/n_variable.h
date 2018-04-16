@@ -44,7 +44,7 @@ namespace FT{
         protected:
             NodeVariable* clone_impl() const override { return new NodeVariable(*this); };  
 	};
-//#ifndef USE_CUDA
+#ifndef USE_CUDA
     void NodeVariable::evaluate(const MatrixXd& X, const VectorXd& y,
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)
@@ -54,7 +54,17 @@ namespace FT{
         else
             stack.f.push(X.row(loc));
     }
-//#endif
+#else
+    void NodeVariable::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
+    {
+        if (otype == 'b')
+            GPU_Variable(stack.dev_f, X.row(loc).cast<bool>().data(), stack.idx[otype], stack.N);
+        else
+            GPU_Variable(stack.dev_f, X.row(loc).data(), stack.idx[otype], stack.N);
+    }
+#endif
 }
 
 #endif

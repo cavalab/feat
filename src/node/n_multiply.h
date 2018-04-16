@@ -41,6 +41,13 @@ namespace FT{
     {
         stack.f.push(limited(stack.f.pop() * stack.f.pop()));
     }
+#else
+    void NodeMultiply::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
+    {
+        GPU_Multiply(stack.dev_f, stack.idx[otype], stack.N);
+    }
 #endif
 }	
 

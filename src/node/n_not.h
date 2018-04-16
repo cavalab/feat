@@ -42,6 +42,13 @@ namespace FT{
     {
         stack.b.push(!stack.b.pop());
     }
+#else
+    void NodeNot::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
+    {
+        GPU_Not(stack.dev_b, stack.idx[otype], stack.N);
+    }
 #endif
     
 }	

@@ -41,6 +41,13 @@ namespace FT{
     {
         stack.f.push(1/(1+(limited(exp(-1*stack.f.pop())))));
     }
+#else
+    void NodeLogit::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
+    {
+        GPU_Logit(stack.dev_f, stack.idx[otype], stack.N);
+    }
 #endif
 }	
 

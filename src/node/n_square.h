@@ -41,6 +41,13 @@ namespace FT{
     {
         stack.f.push(pow(stack.f.pop(),2));
     }
+#else
+    void NodeSquare::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
+    {
+        GPU_Square(stack.dev_f, stack.idx[otype], stack.N);
+    }
 #endif
 }	
 

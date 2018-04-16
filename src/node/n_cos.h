@@ -34,12 +34,19 @@ namespace FT{
         protected:
             NodeCos* clone_impl() const override { return new NodeCos(*this); };  
     };
-#ifndef USE_CUDA
+#ifndef USE_CUDA    
     void NodeCos::evaluate(const MatrixXd& X, const VectorXd& y,
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)
     {
         stack.f.push(limited(cos(stack.f.pop())));
+    }
+#else
+    void NodeCos::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
+    {
+        GPU_NodeCos(stack.dev_f, stack.idx[otype], stack.N);
     }
 #endif
 }	

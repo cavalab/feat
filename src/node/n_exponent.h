@@ -45,6 +45,13 @@ namespace FT{
         ArrayXd x1 = stack.f.pop();
         stack.f.push(limited(pow(x1,x2)));
     }
+#else
+    void NodeExponent::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
+    {
+        GPU_Exponent(stack.dev_f, stack.idx[otype], stack.N);
+    }
 #endif
 }	
 

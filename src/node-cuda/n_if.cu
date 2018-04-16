@@ -22,7 +22,7 @@ namespace FT{
     }
     void GPU_If(bool * xb, float * xf, size_t idxf, size_t idxb, size_t N)
     {
-        GPU_If<<< DIM_GRID, DIM_BLOCK, omp_get_thread_num() >>>(bool * xb, float * xf, size_t idxf, size_t idxb, size_t N);
+        If<<< DIM_GRID, DIM_BLOCK >>>(xb, xf, idxf, idxb, N);
     }
     /// Evaluates the node and updates the stack states. 
     /* void NodeIf::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 

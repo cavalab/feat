@@ -18,7 +18,7 @@ namespace FT{
     }
     void GPU_IfThenElse(bool * b, float * x, size_t idxb, size_t idxf, size_t N)
     {
-        GPU_IfThenElse<<< DIM_GRID, DIM_BLOCK, omp_get_thread_num() >>>(bool * b, float * x, size_t idxb, size_t idxf, size_t N);
+        IfThenElse<<< DIM_GRID, DIM_BLOCK >>>(b, x, idxb, idxf, N);
     }
     /// Evaluates the node and updates the stack states. 
     /* void NodeIfThenElse::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 

@@ -42,6 +42,13 @@ namespace FT{
         ArrayXd x = stack.f.pop();
         stack.f.push( (abs(x) > NEAR_ZERO).select(log(abs(x)),MIN_DBL) );
     }
+#else
+    void NodeLog::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
+    {
+        GPU_Log(stack.dev_f, stack.idx[otype], stack.N);
+    }
 #endif
 }	
 

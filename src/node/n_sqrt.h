@@ -47,6 +47,13 @@ namespace FT{
     {
             stack.f.push(sqrt(abs(stack.f.pop())));
     }
+#else
+    void NodeSqrt::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
+    {
+        GPU_Sqrt(stack.dev_f, stack.idx[otype], stack.N);
+    }
     }	
 #endif
 

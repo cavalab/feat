@@ -42,6 +42,13 @@ namespace FT{
     {
         stack.b.push(stack.f.pop() > stack.f.pop());
     }
+#else
+    void NodeGreaterThan::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
+    {
+        GPU_GreaterThan(stack.dev_f, stack.dev_b, stack.idx['f'], stack.idx[otype], stack.N);
+    }
 #endif
 }	
 

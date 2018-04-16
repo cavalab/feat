@@ -43,6 +43,13 @@ namespace FT{
         ArrayXd res = (x > 0).select(ArrayXd::Ones(x.size()), (x == 0).select(ArrayXd::Zero(x.size()), -1*ArrayXd::Ones(x.size()))); 
         stack.f.push(res);
     }
+#else
+    void NodeSign::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
+    {
+        GPU_Sign(stack.dev_f, stack.idx[otype], stack.N);
+    }
 #endif
 }	
 

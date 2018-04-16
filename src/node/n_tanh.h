@@ -41,6 +41,13 @@ namespace FT{
     {
         stack.f.push(limited(tanh(stack.f.pop())));
     }
+#else
+    void NodeTanh::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
+    {
+        GPU_Tanh(stack.dev_f, stack.idx[otype], stack.N);
+    }
 #endif
 }	
 

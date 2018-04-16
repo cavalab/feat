@@ -46,6 +46,13 @@ namespace FT{
         ArrayXd f1 = stack.f.pop();
         stack.f.push(stack.b.pop().select(f1,f2));
     }
+#else
+    void NodeIfThenElse::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
+    {
+        GPU_IfThenElse(stack.dev_f, stack.dev_b, stack.idx[otype], stack.idx['b'], stack.N);
+    }
 #endif
 
 }	

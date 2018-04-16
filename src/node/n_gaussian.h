@@ -42,6 +42,13 @@ namespace FT{
     {
         stack.f.push(limited(exp(-1*limited(pow(stack.f.pop(), 2)))));
     }
+#else
+    void NodeGaussian::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
+    {
+        GPU_Gaussian(stack.dev_f, stack.idx[otype], stack.N);
+    }
 #endif
 }	
 
