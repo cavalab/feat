@@ -173,26 +173,24 @@ namespace FT{
         if (!ml_type.compare("LeastAngleRegression") || !ml_type.compare("LinearRidgeRegression")||
         	!ml_type.compare("SVM") || (!ml_type.compare("LR")))
         {
-            if(prob_type == PT_MULTICLASS && (!ml_type.compare("SVM") || !ml_type.compare("LR")) ) 
-            {  
-                //std::cout<< "MultiClass Logistic Regression get_weights()" << std::endl;
-                auto weights = dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(p_est)->get_w();
+            if(prob_type == PT_MULTICLASS && ( !ml_type.compare("LR")) ) {  
+            auto weights = dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(p_est)->get_w();
         
                 
-                for( int j = 0;j<weights[0].size(); j++) 
-                    w.push_back(0);
-                
-                for( int i = 0 ; i < weights.size(); i++ ){ 
-                    for( int j = 0;j<weights[i].size(); j++) {
-                        w[j] += fabs(weights[i][j]);
-                    }
-                }
+            for( int j = 0;j<weights[0].size(); j++) 
+                w.push_back(0);
             
-                for( int i = 0; i < weights.size() ; i++) 
-                    w[i] = w[i]/weights.size();; 
-                return w;		
+            for( int i = 0 ; i < weights.size(); i++ ){ 
+                for( int j = 0;j<weights[i].size(); j++) {
+                    w[j] += fabs(weights[i][j]);
+                }
             }
             
+            for( int i = 0; i < weights.size() ; i++) 
+                w[i] = w[i]/weights.size();; 
+            return w;		
+	        }
+	        
             auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_w();
             
             w.assign(tmp.data(), tmp.data()+tmp.size());          
