@@ -37,18 +37,18 @@ namespace FT{
     };
 	
 #ifndef USE_CUDA
-    void NodeAdd::void evaluate(const MatrixXd& X, const VectorXd& y,
+    void NodeAdd::evaluate(const MatrixXd& X, const VectorXd& y,
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >&Z, 
 			              Stacks& stack)
 	{
 		stack.f.push(limited(stack.f.pop() + stack.f.pop()));
 	}
 #else
-    void NodeAdd::void evaluate(const MatrixXd& X, const VectorXd& y,
+    void NodeAdd::evaluate(const MatrixXd& X, const VectorXd& y,
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >&Z, 
 			              Stacks& stack)
 	{
-        GPU_Add(stack.dev_f, stack.idx[otype], N);
+        GPU_Add(stack.dev_f, stack.idx[otype], stack.N);
     }
 #endif
 }

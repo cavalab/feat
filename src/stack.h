@@ -6,7 +6,7 @@ license: GNU/GPL v3
 #ifndef STACK_H
 #define STACK_H
 #ifdef USE_CUDA
-    #include "node-cuda/cuda_utils.h"
+    #include "node-cuda/stack_utils.h"
 #endif
 //#include "node/node.h"
 //external includes
@@ -128,19 +128,18 @@ namespace FT
         
         void allocate(const std::map<char, size_t>& stack_size, size_t N)
         {
-            allocate(dev_f, dev_b, N*stack_size['f'], N*stack_size['b']);
+            dev_allocate(dev_f, dev_b, N*stack_size.at('f'), N*stack_size.at('b'));
             N = N;
         }
 
-        void copy_from_device(const std::map<char, size_t>& stack_size)
+        void copy_to_host(const std::map<char, size_t>& stack_size)
         {
-            copy_from_device(dev_f, f.data(), dev_b, b.data(), N*stack_size['f'], N*stack_size['b']);
+            copy_from_device(dev_f, f.data(), dev_b, b.data(), N*stack_size.at('f'), 
+                             N*stack_size.at('b'));
         }
         ~Stacks()
         {
-            // Free memory
-            cudaFree(dev_f); 
-            cudaFree(dev_b);         
+            free_device(dev_f, dev_b);
         }
     };
 #endif
