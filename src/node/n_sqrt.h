@@ -38,7 +38,7 @@ namespace FT{
                     stack.fs.push("sqrt(|" + stack.fs.pop() + "|)");
             }
         protected:
-            NodeRoot* clone_impl() const override { return new NodeRoot(*this); };  
+            NodeSqrt* clone_impl() const override { return new NodeSqrt(*this); };  
     };
 #ifndef USE_CUDA
     void NodeSqrt::evaluate(const MatrixXd& X, const VectorXd& y,
@@ -54,9 +54,6 @@ namespace FT{
     {
         GPU_Sqrt(stack.dev_f, stack.idx[otype], stack.N);
     }
-    }	
 #endif
-
 }
-
 #endif

@@ -47,7 +47,7 @@ namespace FT{
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)
     {
-        GPU_NodeEqual(stack.dev_f, stack.dev_b, stack.idx['f'], stack.idx[otype], stack.N);
+        GPU_Equal(stack.dev_f, stack.dev_b, stack.idx['f'], stack.idx[otype], stack.N);
     }
 #endif
 }	

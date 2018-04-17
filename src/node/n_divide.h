@@ -50,7 +50,7 @@ namespace FT{
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)
     {
-        GPU_NodeDivide(stack.dev_f, stack.idx[otype], stack.N);
+        GPU_Divide(stack.dev_f, stack.idx[otype], stack.N);
     }
 #endif
 }	
