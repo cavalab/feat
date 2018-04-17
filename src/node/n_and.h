@@ -48,7 +48,7 @@ namespace FT{
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)
     {
-       GPU_And(stack.b, stack.idx[otype], y.size());
+       GPU_And(stack.dev_b, stack.idx[otype], stack.N);
     }
 #endif
 }

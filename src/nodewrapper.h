@@ -8,6 +8,9 @@ license: GNU/GPL v3
 
 #include <memory>
 
+#ifdef USE_CUDA
+    #include "node-cuda/kernels.h"
+#endif
 #include "node/node.h"
 #include "node/n_add.h"
 #include "node/n_and.h"

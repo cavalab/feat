@@ -327,7 +327,7 @@ namespace FT{
             }
         }
         // copy data from GPU to stack
-        stack.copy_from_device(stack_size,N);
+        stack.copy_to_host(stack_size,N);
 
         // convert stack_f to Phi
         params.msg("converting stacks to Phi",2);
