@@ -17,6 +17,7 @@ void GPU_Cos(float * x, size_t idx, size_t N);
 void GPU_Sqrt(float * x, size_t idx, size_t N);
 void GPU_Square(float * x, size_t idx, size_t N);
 void GPU_Cube(float * x, size_t idx, size_t N);
+void GPU_Exponent(float * x, size_t idx, size_t N);
 void GPU_Logit(float * x, size_t idx, size_t N);
 void GPU_Step(float * x, size_t idx, size_t N);
 void GPU_Sign(float * x, size_t idx, size_t N);
@@ -38,9 +39,9 @@ void GPU_If(float * xf, bool * xb, size_t idxf, size_t idxb, size_t N);
 void GPU_IfThenElse(float * xf, bool * xb, size_t idxf, size_t idxb, size_t N);
 
 // leaves
-void GPU_Constant(float * x1, float * x2, size_t idx, size_t N);
-void GPU_Constant(bool * x1, bool * x2, size_t idx, size_t N);
-void GPU_Variable(float * x1, float * x2, size_t idx, size_t N);
-void GPU_Variable(bool * x1, bool * x2, size_t idx, size_t N);
+void GPU_Constant(float * dev_x, float * host_x, size_t idx, size_t N);
+void GPU_Constant(bool * dev_x, bool * host_x, size_t idx, size_t N);
+void GPU_Variable(float * dev_x, float * host_x, size_t idx, size_t N);
+void GPU_Variable(bool * dev_x, bool * host_x, size_t idx, size_t N);
 }
 #endif

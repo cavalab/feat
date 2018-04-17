@@ -46,7 +46,7 @@ namespace FT{
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)
     {
-        GPU_NodeCos(stack.dev_f, stack.idx[otype], stack.N);
+        GPU_Cos(stack.dev_f, stack.idx[otype], stack.N);
     }
 #endif
 }	

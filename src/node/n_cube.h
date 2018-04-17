@@ -47,7 +47,7 @@ namespace FT{
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)
     {
-        GPU_NodeCube(stack.dev_f, stack.idx['f'], stack.N);
+        GPU_Cube(stack.dev_f, stack.idx['f'], stack.N);
     }
 #endif
 }	

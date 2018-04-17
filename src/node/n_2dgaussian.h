@@ -22,7 +22,7 @@ namespace FT{
     		}
     		
             /// Evaluates the node and updates the stack states. 
-         void evaluate(const MatrixXd& X, const VectorXd& y,
+            void evaluate(const MatrixXd& X, const VectorXd& y,
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)   ;
 
@@ -39,7 +39,7 @@ namespace FT{
     };
 	
 #ifndef USE_CUDA
-    void Node2DGaussian::void evaluate(const MatrixXd& X, const VectorXd& y,
+    void Node2DGaussian::evaluate(const MatrixXd& X, const VectorXd& y,
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)
     {
@@ -50,7 +50,7 @@ namespace FT{
                           + pow((x2 - x2.mean()), 2)/variance(x2)))));
     }
 #else
-    void Node2DGaussian::void evaluate(const MatrixXd& X, const VectorXd& y,
+    void Node2DGaussian::evaluate(const MatrixXd& X, const VectorXd& y,
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)
     {

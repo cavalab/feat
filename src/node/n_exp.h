@@ -22,30 +22,32 @@ namespace FT{
     		}
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
-                    vector<ArrayXb>& stack_b);
+            void evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)   ;
 
             /// Evaluates the node symbolically
-            void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
+            void eval_eqn(Stacks& stack)
             {
-        		string x = stack_f.back(); stack_f.pop_back();
-                stack_f.push_back("exp(" + x + ")");
+                stack.fs.push("exp(" + stack.fs.pop() + ")");
             }
+
         protected:
             NodeExp* clone_impl() const override { return new NodeExp(*this); };  
     };
 #ifndef USE_CUDA
-    void NodeExp::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
-                    vector<ArrayXb>& stack_b)
+    void NodeExp::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)   
     {
-        ArrayXd x = stack_f.back(); stack_f.pop_back();
-        stack_f.push_back(limited(exp(x)));
+        stack.f.push(limited(exp(stack.f.pop())));
     }
 #else
-    void NodeExp::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
-                    vector<ArrayXb>& stack_b)
+    void NodeExp::evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
     {
-        GPU_NodeExp(stack.dev_f, stack.idx[otype], stack.N);
+        GPU_Exp(stack.dev_f, stack.idx[otype], stack.N);
     }
 #endif
 }	

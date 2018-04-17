@@ -1,5 +1,5 @@
 #!/bin/bash
-make -C build VERBOSE=1 -j8
+make -C build -j8
 
 if [ "$1" == "lpc" ] ; then
     module load gcc/5.2.0

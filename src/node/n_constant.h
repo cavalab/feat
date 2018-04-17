@@ -79,13 +79,13 @@ namespace FT{
     {
         if (otype == 'b')
         {
-            ArrayXb tmp = ArrayXb::Constant(X.cols(),int(b_value));
-            GPU_NodeConstant(stack.dev_b, tmp.data(), stack.idx[otype], stack.N);
+            vector<bool> tmp(X.cols(),b_value);
+            GPU_Constant(stack.dev_b, tmp.data(), stack.idx[otype], stack.N);
         }
         else
         {
-            ArrayXb tmp = ArrayXd::Constant(X.cols(),d_value);
-            GPU_NodeConstant(stack.dev_f, tmp.data(), stack.idx[otype], stack.N);
+            vector<float> tmp(X.cols(),d_value);
+            GPU_Constant(stack.dev_f, tmp.data(), stack.idx[otype], stack.N);
         }
 
     }
