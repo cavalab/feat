@@ -46,7 +46,7 @@ namespace FT{
                         return stack_f[stack_f.size() - 1] * cos(W[0] * stack_f[stack_f.size()-1]);
                     case 0: // d/dx0
                     default:
-                        return W[0] * cos(W[0] * stack_f[stack_f.size() - 2]);
+                        return W[0] * cos(W[0] * stack_f[stack_f.size() - 1]);
                 } 
             }
 

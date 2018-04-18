@@ -48,14 +48,24 @@ namespace FT{
             ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
                 switch (loc) {
                     case 3: // d/dw1
-                        return stack_f[stack_f.size()-1]/(this->W[0] * stack_f[stack_f.size()-2]);
+                        return limited(stack_f[stack_f.size()-1]/(this->W[0] * stack_f[stack_f.size()-2]));
                     case 2: // d/dw0
-                        return -this->W[1] * stack_f[stack_f.size()-1]/(stack_f[stack_f.size()-2] * pow(W[0], 2));
+                        return limited(-this->W[1] * stack_f[stack_f.size()-1]/(stack_f[stack_f.size()-2] * pow(this->W[0], 2)));
                     case 1: // d/dx1
-                        return this->W[1]/(this->W[0] * stack_f[stack_f.size()-2]);
+                    {
+                        std::cout << "Checking first derivative\n";
+                        ArrayXd num = -this->W[1] * stack_f[stack_f.size() - 1];
+                        std::cout << "Num computed\n";
+                        ArrayXd denom = (this->W[0] * pow(stack_f[stack_f.size() - 2], 2));
+                        std::cout << "Denom computed\n";
+                        ArrayXd val = num/denom;
+                        std::cout << "Val computed\n";
+                        // return -this->W[1] * stack_f[stack_f.size() - 1]/(this->W[0] * pow(stack_f[stack_f.size()], 2));
+                        return limited(val);
+                    }
                     case 0: // d/dx0
                     default:
-                       return -this->W[1] * stack_f[stack_f.size() - 1]/(this->W[0] * pow(stack_f[stack_f.size()], 2));
+                        return limited(this->W[1]/(this->W[0] * stack_f[stack_f.size()-2]));
                 } 
             }
 
