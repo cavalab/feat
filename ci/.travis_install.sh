@@ -56,7 +56,7 @@ cmake -DTEST=ON -DEIGEN_DIR=ON -DSHOGUN_DIR=ON ..
 cd ..
 make -C build VERBOSE=1
 echo "running feat.."
-./build/feat examples/d_enc.csv
+./build/feat examples/d_enc.csv -rs 42
 
 echo "python path is..."
 which python
