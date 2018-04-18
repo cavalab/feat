@@ -32,7 +32,7 @@ namespace FT{
                 int x;
                 
                 for(x = 0; x < stack.z.top().first.size(); x++)
-                    tmp(x) = limited(kurtosis(stack.z.top().first[x]));
+                    tmp(x) = kurtosis(limited(stack.z.top().first[x]));
                     
                 stack.z.pop();
                 stack.f.push(tmp);

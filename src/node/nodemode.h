@@ -32,7 +32,7 @@ namespace FT{
                 int x;
                 
                 for(x = 0; x < stack.z.top().first.size(); x++)
-                    tmp(x) = limited(stack.z.top().first[x].mean());
+                    tmp(x) = limited(stack.z.top().first[x]).mean();
                     
                 stack.z.pop();
 
