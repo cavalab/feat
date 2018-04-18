@@ -185,7 +185,22 @@ bool CMulticlassLogisticRegression::train_machine(CFeatures* data)
 	int32_t n_feats = m_features->get_dim_feature_space();
 
 	slep_options options = slep_options::default_options();
-
+	if (m_machines->get_num_elements()!=0)
+	{
+		SGMatrix<float64_t> all_w_old(n_feats, n_classes);
+		SGVector<float64_t> all_c_old(n_classes);
+		for (int32_t i=0; i<n_classes; i++)
+		{
+			CLinearMachine* machine = (CLinearMachine*)m_machines->get_element(i);
+			SGVector<float64_t> w = machine->get_w();
+			for (int32_t j=0; j<n_feats; j++)
+				all_w_old(j,i) = w[j];
+			all_c_old[i] = machine->get_bias();
+			SG_UNREF(machine);
+		}
+		options.last_result = new slep_result_t(all_w_old,all_c_old);
+		m_machines->reset_array();
+	}
 	options.tolerance = m_epsilon;
 	options.max_iter = m_max_iter;
 	slep_result_t result = slep_mc_plain_lr(m_features,(CMulticlassLabels*)m_labels,m_z,options);
