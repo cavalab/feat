@@ -5,6 +5,7 @@ license: GNU/GPL v3
 #ifndef STACK_UTILS_H
 #define STACK_UTILS_H
 
+
 //stack utils
 namespace FT{
     void dev_allocate(float * f, bool * b, size_t Sizef, size_t Sizeb);

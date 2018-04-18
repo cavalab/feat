@@ -12,5 +12,13 @@ static void FT::Initialize()
 
 }
 
+static void FT::ChooseGPU()
+{
+        int n_gpus; 
+        cudaGetDeviceCount(&n_gpus);
+        int device = omp_get_max_threads() % n_gpus ; 
+        cudaSetDevice(device); 
+
+}
 
 

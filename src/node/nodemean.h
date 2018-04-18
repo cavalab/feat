@@ -21,24 +21,11 @@ namespace FT{
     			arity['z'] = 1;
     			complexity = 1;
     		}
-    		
-            /// Evaluates the node and updates the stack states. 
+            
             void evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-            {
-                ArrayXd tmp(stack.z.top().first.size());
-                int x;
-                
-                for(x = 0; x < stack.z.top().first.size(); x++)
-                    tmp(x) = stack.z.top().first[x].mean();
-                  
-                stack.z.pop();
-                
-                stack.f.push(tmp);
-                
-            }
-
+                  const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+                  Stacks& stack);
+    		
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
@@ -47,6 +34,37 @@ namespace FT{
         protected:
             NodeMean* clone_impl() const override { return new NodeMean(*this); }; 
     };
+    
+#ifndef USE_CUDA 
+    /// Evaluates the node and updates the stack states. 
+    void NodeMean::evaluate(const MatrixXd& X, const VectorXd& y,
+                  const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+                  Stacks& stack)
+    {
+        ArrayXd tmp(stack.z.top().first.size());
+        int x;
+        
+        for(x = 0; x < stack.z.top().first.size(); x++)
+            tmp(x) = stack.z.top().first[x].mean();
+          
+        stack.z.pop();
+        
+        stack.f.push(tmp);
+        
+    }
+#else
+    void NodeMean::evaluate(const MatrixXd& X, const VectorXd& y,
+                  const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+                  Stacks& stack)
+    {
+        
+        for(unsigned x = 0; x < stack.z.top().first.size(); x++)
+            stack.f.row(stack.idx['f']) = stack.z.top().first[x].mean();
+       
+        stack.z.pop(); 
+    }
+#endif
+
 }	
 
 #endif

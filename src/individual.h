@@ -6,6 +6,9 @@ license: GNU/GPL v3
 #define INDIVIDUAL_H
 
 #include "stack.h"
+#ifdef USE_CUDA
+    #include "node-cuda/cuda_utils.h"
+#endif
 
 namespace FT{
     
@@ -295,15 +298,12 @@ namespace FT{
         params.msg("program length: " + std::to_string(program.size()),2);
         // to minimize copying overhead, set the stack size to the maximum it will reach for the
         // program 
-        std::map<char, size_t> stack_size = get_stack_size(); 
+        std::map<char, size_t> stack_size = get_max_stack_size(); 
         // set the device based on the thread number
-        unsigned n_gpus; 
-        cudaGetDeviceCount(&n_gpus);
-        int device = omp_get_max_threads() % n_gpus ; 
-        cudaSetDevice(device); 
+        ChooseGPU();        
+        
         // allocate memory for the stack on the device
-        size_t N = X.cols();
-        stack.allocate(stack_size,N);        
+        stack.allocate(stack_size,X.cols());        
         /* stack.f.resize( */
         // evaluate each node in program
         for (const auto& n : program)
@@ -314,20 +314,20 @@ namespace FT{
 	            n->evaluate(X, y, Z, stack);
 	            //cout<<"***exit here "<<n->name<<"\n";
                 // adjust indices
-                :
+                stack.update_idx(n->otype, n->arity); 
 	        }
             else
             {
                 std::cout << "individual::out() error: node " << n->name << " in " + program_str() + 
                              " is invalid\n";
-                std::cout << "float stack size: " << stack_f.size() << "\n";
-                std::cout << "bool stack size: " << stack_b.size() << "\n";
+                std::cout << "float stack size: " << stack.f.size() << "\n";
+                std::cout << "bool stack size: " << stack.b.size() << "\n";
                 std::cout << "op arity: " << n->arity['f'] << "f, " << n->arity['b'] << "b\n";
                 exit(1);
             }
         }
         // copy data from GPU to stack
-        stack.copy_to_host(stack_size,N);
+        stack.copy_to_host(stack_size);
 
         // convert stack_f to Phi
         params.msg("converting stacks to Phi",2);
@@ -337,27 +337,35 @@ namespace FT{
             if (stack.b.size() == 0)
             {   std::cout << "Error: no outputs in stacks\n"; throw;}
             
-            cols = stack.b.top().size();
+            cols = stack.b.cols();
         }
         else
-            cols = stack.f.top().size();
+            cols = stack.f.cols();
                
-        int rows_f = stack.f.size();
-        int rows_b = stack.b.size();
+        int rows_f = stack.f.rows();
+        int rows_b = stack.b.rows();
         
         dtypes.clear();        
         Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
-        // add stack_f to Phi
+        
+        ArrayXXb  PhiB = ArrayXXb::Map(stack.b.data(),stack.b.rows(),stack.b.cols());
+        ArrayXXf PhiF = ArrayXXf::Map(stack.f.data(),stack.f.rows(),stack.f.cols());
+        // combine stacks into Phi 
+        Phi <<  PhiF.cast<double>(),
+                PhiB.cast<double>();
+
         for (unsigned int i=0; i<rows_f; ++i)
-        {    Phi.row(i) = VectorXd::Map(stack.f.at(i).cast<double>().data(),cols);
+        {    
+             /* Phi.row(i) = VectorXd::Map(stack.f.at(i).data(),cols); */
              dtypes.push_back('f'); 
         }
         // convert stack_b to Phi       
         for (unsigned int i=0; i<rows_b; ++i)
         {
-            Phi.row(i+rows_f) = ArrayXb::Map(stack.b.at(i).data(),cols).cast<double>();
+            /* Phi.row(i+rows_f) = ArrayXb::Map(stack.b.at(i).data(),cols).cast<double>(); */
             dtypes.push_back('b');
-        }       
+        }
+               
         //Phi.transposeInPlace();
         return Phi;
     }

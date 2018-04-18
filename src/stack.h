@@ -94,7 +94,7 @@ namespace FT
         float * dev_f; 
         bool * dev_b; 
         std::map<char, size_t> idx; 
-        int N; 
+        size_t N; 
 
         Stacks()
         {

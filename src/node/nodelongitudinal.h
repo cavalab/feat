@@ -25,15 +25,11 @@ namespace FT{
     			arity['z'] = 0;
     			complexity = 1;
     		}
+            
+            void evaluate(const MatrixXd& X, const VectorXd& y,
+                  const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+                  Stacks& stack);;
     		
-    		/// Evaluates the node and updates the stack states. 		
-			void evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-		    {
-		        stack.z.push(Z.at(zName));
-		    }
-
 		    /// Evaluates the node symbolically
 		    void eval_eqn(Stacks& stack)
 		    {
@@ -42,6 +38,15 @@ namespace FT{
         protected:
             NodeLongitudinal* clone_impl() const override { return new NodeLongitudinal(*this); }; 
     };
+    
+    /// Evaluates the node and updates the stack states. 		
+    void NodeLongitudinal::evaluate(const MatrixXd& X, const VectorXd& y,
+                  const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+                  Stacks& stack)
+    {
+        stack.z.push(Z.at(zName));
+    }
+
 }
 
 #endif
