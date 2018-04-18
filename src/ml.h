@@ -23,6 +23,7 @@ license: GNU/GPL v3
 #include <shogun/ensemble/MajorityVote.h>
 #include <shogun/multiclass/MulticlassLibLinear.h>
 #include <cmath>
+#include <shogun/machine/LinearMulticlassMachine.h>
 // internal includes
 #include "ml/MyCARTree.h"
 #include "ml/MulticlassLogisticRegression.h"
@@ -109,7 +110,7 @@ namespace FT{
 	            }
 	            else if (!ml_type.compare("LR"))
                 {
-                    assert(prob_type!=PT_REGRESSION && "LR only works with classification.");
+                    assert(prob_type!=PT_REGRESSION & "LR only works with classification.");
                     if (prob_type == PT_BINARY){
 	            	    p_est = make_shared<sh::CLibLinear>(sh::L2R_LR);
                         // setting parameters to match sklearn defaults
@@ -117,8 +118,10 @@ namespace FT{
                         dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_epsilon(0.0001);
                         //cout << "set ml type to CLibLinear\n";
                     }
-                    else    // multiclass 
+                    else  {  // multiclass { 
+ 			//std::cout << "Setting the Classifier to MultiClassLogisticRegression" << std::endl;
                         p_est = make_shared<sh::CMulticlassLogisticRegression>();
+			}
                 
                 }
 	            else
@@ -170,12 +173,30 @@ namespace FT{
         if (!ml_type.compare("LeastAngleRegression") || !ml_type.compare("LinearRidgeRegression")||
         	!ml_type.compare("SVM") || (!ml_type.compare("LR")))
         {
+            if(prob_type == PT_MULTICLASS && ( !ml_type.compare("LR")) ) {  
+            auto weights = dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(p_est)->get_w();
+        
+                
+            for( int j = 0;j<weights[0].size(); j++) 
+                w.push_back(0);
+            
+            for( int i = 0 ; i < weights.size(); i++ ){ 
+                for( int j = 0;j<weights[i].size(); j++) {
+                    w[j] += fabs(weights[i][j]);
+                }
+            }
+            
+            for( int i = 0; i < weights.size() ; i++) 
+                w[i] = w[i]/weights.size();; 
+            return w;		
+	        }
+	        
             auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_w();
             
             w.assign(tmp.data(), tmp.data()+tmp.size());          
             for (unsigned i =0; i<w.size(); ++i)    // take absolute value of weights
                 w[i] = fabs(w[i]);
-        }
+	    }
         else if (!ml_type.compare("CART"))           
             w = dynamic_pointer_cast<sh::CMyCARTree>(p_est)->feature_importances();
         else
@@ -283,11 +304,12 @@ namespace FT{
         
         if (isinf(yhat.array()).any() || isnan(yhat.array()).any())
         {
-            std::cerr << "inf or nan values in model fit to: " << X << "\n";
+            //std::cerr << "inf or nan values in model fit to: " << X << "\n";
             pass = false;
         }
         /* std::cout << "ML::fit yhat is " << yhat.transpose() << std::endl; */ 
         // return
+        //std::cout << "Returning from fit() from the ml.h" << std::endl;
         return yhat;
     }
 
