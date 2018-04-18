@@ -70,7 +70,7 @@ file(GLOB_RECURSE src_cv_files "src/cv_main.cc")
 
 # executable
 add_executable(feat ${src_main_files})
-add_executable(feat_cv ${src_cv_files})
+add_executable(feat_cv ${src_cv_files}) 
 
 #link libraries for different executables
 target_link_libraries(feat shogun)

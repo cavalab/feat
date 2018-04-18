@@ -1,6 +1,22 @@
-# Getting Started
+# Installing
 
-Feat depends on the [Eigen](http://eigen.tuxfamily.org) matrix library for C++ as well as the [Shogun](http://shogun.ml) ML library. Both come in easy packages that work across platforms. To see our installation, check out the [Travis install file](http://github.com/lacava/feat/blob/master/ci/.travis_install.sh).
+To see our installation process from scratch, check out the [Travis install file](http://github.com/lacava/feat/blob/master/ci/.travis_install.sh).
+
+Feat depends on the [Eigen](http://eigen.tuxfamily.org) matrix library for C++ as well as the [Shogun](http://shogun.ml) ML library. Both come in easy packages that work across platforms. If you need Eigen and Shogun, follow the instructions in [Dependencies](#dependencies). 
+
+Feat uses [cmake](https://cmake.org/) to build. It uses the typical set of instructions:
+    
+    git clone https://github.com/lacava/feat # clone the repo
+    cd feat # enter the directory
+    ./configure # this runs "mkdir build; cd build; cmake .. " 
+    ./install # this runs "make -C build VERBOSE=1 -j8"
+
+## Python wrapper
+
+The python wrapper is installed using setuptools as follows: 
+
+    cd python
+    python setup.py install
 
 
 # Dependencies
@@ -49,19 +65,6 @@ You can also get the Shogun packages:
     sudo apt-get install -qq --force-yes --no-install-recommends libshogun18
     sudo apt-get install -qq --force-yes --no-install-recommends libshogun-dev
 
-
-
-# Installing
-
-Feat uses [cmake](https://cmake.org/) to build. It uses the typical set of instructions:
-
-    
-    git clone https://github.com/lacava/feat # clone the repo
-    cd feat # enter the directory
-    ./configure # this runs "mkdir build; cd build; cmake .. " 
-    ./install # this runs "make -C build VERBOSE=1 -j8"
- 
-
 # Running the tests 
 
 *This is totally optional!* If you want to run the tests, you need to install [Google
@@ -70,6 +73,7 @@ Test](https://github.com/google/googletest). A useful guide to doing so is avail
 cmake to build the tests. From the repo root,
 
 
-    ./configure tests   
-    make test
+    ./configure tests   # builds the test Makefile
+    make -C build tests # compiles the tests
+    ./build/tests # runs the tests
 
