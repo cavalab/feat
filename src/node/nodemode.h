@@ -2,22 +2,23 @@
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
-#ifndef NODE_SUBTRACT
-#define NODE_SUBTRACT
+#ifndef NODE_MODE
+#define NODE_MODE
 
 #include "node.h"
 
 namespace FT{
-	class NodeSubtract : public Node
+	class NodeMode : public Node
     {
     	public:
     	
-    		NodeSubtract()
-    		{
-    			name = "-";
+    		NodeMode()
+            {
+                name = "mode";
     			otype = 'f';
-    			arity['f'] = 2;
+    			arity['f'] = 0;
     			arity['b'] = 0;
+    			arity['z'] = 1;
     			complexity = 1;
     		}
     		
@@ -26,20 +27,24 @@ namespace FT{
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)
             {
-        		ArrayXd x2 = stack.f.pop();
-                ArrayXd x1 = stack.f.pop();
-                stack.f.push(x1 - x2);
+                ArrayXd tmp(stack.z.top().first.size());
+                
+                int x;
+                
+                for(x = 0; x < stack.z.top().first.size(); x++)
+                    tmp(x) = stack.z.top().first[x].mean();
+                    
+                stack.z.pop();
+
+                stack.f.push(tmp);
+                
             }
 
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-        		string x2 = stack.fs.pop();
-                string x1 = stack.fs.pop();
-                stack.fs.push("(" + x1 + "-" + x2 + ")");
+                stack.fs.push("mean(" + stack.zs.pop() + ")");
             }
-        protected:
-            NodeSubtract* clone_impl() const override { return new NodeSubtract(*this); };  
     };
 }	
 

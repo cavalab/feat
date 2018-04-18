@@ -118,10 +118,9 @@ namespace FT{
                         dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_epsilon(0.0001);
                         //cout << "set ml type to CLibLinear\n";
                     }
-                    else  {  // multiclass { 
- 			//std::cout << "Setting the Classifier to MultiClassLogisticRegression" << std::endl;
+                    else    // multiclass  
                         p_est = make_shared<sh::CMulticlassLogisticRegression>();
-			}
+			
                 
                 }
 	            else

@@ -23,6 +23,7 @@ using Eigen::VectorXd;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
 using std::vector;
 using std::string;
+using std::unique_ptr;
 using std::shared_ptr;
 using std::make_shared;
 using std::cout; 
@@ -210,7 +211,7 @@ namespace FT{
             double get_split(){ return params.split; }
             
             ///add custom node into feat
-            void add_function(shared_ptr<Node> N){ params.functions.push_back(N); }
+            /* void add_function(unique_ptr<Node> N){ params.functions.push_back(N->clone()); } */
             
             ///return data types for input parameters
             vector<char> get_dtypes(){ return params.dtypes; }
@@ -254,46 +255,59 @@ namespace FT{
             ~Feat(){} 
                         
             /// train a model.             
-            void fit(MatrixXd& X, VectorXd& y);
-
+            void fit(MatrixXd& X,
+                     VectorXd& y,
+                     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
+                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());
+                     
             /// train a model.             
             void fit(double * X,int rowsX,int colsX, double * Y,int lenY);
             
             /// predict on unseen data.             
-            VectorXd predict(MatrixXd& X);    
-
+            VectorXd predict(MatrixXd& X,
+                             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
+                                    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());  
+            
             /// predict on unseen data.             
-            VectorXd predict(double * X, int rowsX, int colsX);     
+            VectorXd predict(double * X, int rowsX, int colsX);      
             
             /// transform an input matrix using a program.                          
-            MatrixXd transform(MatrixXd& X,  Individual *ind = 0);
+            MatrixXd transform(MatrixXd& X,
+                               std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
+                                    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >(),
+                               Individual *ind = 0);
             
-	    MatrixXd transform(double * X,  int rows_x, int cols_x);
+            MatrixXd transform(double * X,  int rows_x, int cols_x);
             
             /// convenience function calls fit then predict.            
-            VectorXd fit_predict(MatrixXd& X, VectorXd& y){ fit(X,y); return predict(X); } 
-           
+            VectorXd fit_predict(MatrixXd& X,
+                                 VectorXd& y,
+                                 std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
+                                    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >())
+                                 { fit(X, y, Z); return predict(X, Z); } 
+                                 
             VectorXd fit_predict(double * X, int rows_x, int cols_x, double * Y, int len_y)
-		{
-			MatrixXd matX = Map<MatrixXd>(X,rows_x,cols_x);
-			VectorXd vectY = Map<VectorXd>(Y,len_y);
-			fit(matX,vectY); 
-			return predict(matX); 
-		} 
+		    {
+			    MatrixXd matX = Map<MatrixXd>(X,rows_x,cols_x);
+			    VectorXd vectY = Map<VectorXd>(Y,len_y);
+			    fit(matX,vectY); 
+			    return predict(matX); 
+		    } 
             
             /// convenience function calls fit then transform. 
-            MatrixXd fit_transform(MatrixXd& X, VectorXd& y){ fit(X,y); return transform(X); }
-
-            MatrixXd fit_transform(double * X, int rows_x, int cols_x, double * Y, int len_y)
-		{
-			MatrixXd matX = Map<MatrixXd>(X,rows_x,cols_x);
-			VectorXd vectY = Map<VectorXd>(Y,len_y);
-			fit(matX,vectY); 
-			return transform(matX);
-		}
+            MatrixXd fit_transform(MatrixXd& X,
+                                   VectorXd& y,
+                                   std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
+                                   std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >())
+                                   { fit(X, y, Z); return transform(X, Z); }
+                                   
+            MatrixXd fit_transform(double * X, int rows_x, int cols_x, double * Y, int len_y);
                   
             /// scoring function 
-            double score(MatrixXd& X, const VectorXd& y);
+            double score(MatrixXd& X,
+                         const VectorXd& y,
+                         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
+                                  std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());
             
         private:
             // Parameters
@@ -320,14 +334,16 @@ namespace FT{
             /// method to fit inital ml model            
             void initial_model(MatrixXd& X_t, VectorXd& y_t, MatrixXd& X_v, VectorXd& y_v);
             /// fits final model to best transformation
-            void final_model(MatrixXd& X, VectorXd& y);
+            void final_model(MatrixXd& X, VectorXd& y,
+                             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z);
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
     
-    void Feat::fit(MatrixXd& X, VectorXd& y)
+    void Feat::fit(MatrixXd& X, VectorXd& y,
+                   std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
     {
- 	try {
+
         /*!
          *  Input:
          
@@ -380,7 +396,11 @@ namespace FT{
         MatrixXd X_t(X.rows(),int(X.cols()*params.split));
         MatrixXd X_v(X.rows(),int(X.cols()*(1-params.split)));
         VectorXd y_t(int(y.size()*params.split)), y_v(int(y.size()*(1-params.split)));
-        train_test_split(X,y,X_t,X_v,y_t,y_v,params.shuffle);
+        
+        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_t;
+        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_v;
+        
+        train_test_split(X,y,Z,X_t,X_v,y_t,y_v,Z_t,Z_v,params.shuffle, params.split);
         
        
         /* std::cout << "X initial:"; */
@@ -414,25 +434,27 @@ namespace FT{
         /* std::cout << y_v.transpose() << "\n"; */
 
         // define terminals based on size of X
-        params.set_terminals(X.rows());        
+        params.set_terminals(X.rows(), Z);        
 
         // initial model on raw input
         params.msg("Fitting initial model", 1);
         initial_model(X_t,y_t,X_v,y_v);  
-        params.msg("Initial score: " + std::to_string(best_score), 1);
         
         // initialize population 
         params.msg("Initializing population", 1);
+        
         p_pop->init(best_ind,params);
         params.msg("Initial population:\n"+p_pop->print_eqns(),2);
-
+        
         // resize F to be twice the pop-size x number of samples
         F.resize(X_t.cols(),int(2*params.pop_size));
        
         // evaluate initial population
         params.msg("Evaluating initial population",1);
-        p_eval->fitness(*p_pop,X_t,y_t,F,params); 
-
+        p_eval->fitness(*p_pop,X_t, Z_t, y_t,F,params);
+        
+        params.msg("Initial population done",1);
+        
         vector<size_t> survivors;
 
         // main generational loop
@@ -450,7 +472,7 @@ namespace FT{
 
             // evaluate offspring
             params.msg("evaluating offspring...", 2);
-            p_eval->fitness(*p_pop, X_t, y_t, F, params, true);
+            p_eval->fitness(*p_pop, X_t, Z_t, y_t, F, params, true);
 
             // select survivors from combined pool of parents and offspring
             params.msg("survival...", 2);
@@ -471,14 +493,15 @@ namespace FT{
         if (params.split < 1.0)
         {
             F_v.resize(X_v.cols(),int(2*params.pop_size)); 
-            p_eval->val_fitness(*p_pop, X_t, y_t, F_v, X_v, y_v, params);
+            p_eval->val_fitness(*p_pop, X_t, Z_t, y_t, F_v, X_v, Z_v, y_v, params);
             update_best(true);                  // get the best validation model
         }
        
         params.msg("best validation representation: " + best_ind.get_eqn(),1);
         params.msg("validation score: " + std::to_string(best_score_v), 1);
         params.msg("fitting final model to all training data...",2);
-        final_model(X,y);   // fit final model to best features
+
+        final_model(X,y, Z);   // fit final model to best features
 
         
         /* // write model to file */
@@ -486,35 +509,29 @@ namespace FT{
         /* out_model.open("model_" + name + ".txt"); */
         /* out_model << best_ind.get_eqn() ; */ 
         /* out_model.close(); */
-	} catch (std::runtime_error &error){ 
-		std::cout << "\nException Occured inside Fit Method of feat" << std::endl;
-		throw std::runtime_error("Exception in feat fit Method ");
-	}
     }
 
     void Feat::fit(double * X, int rowsX, int colsX, double * Y, int lenY)
     {
-	try { 
-		MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
-		VectorXd vectY = Map<VectorXd>(Y,lenY);
-		Feat::fit(matX,vectY);
-	} catch (std::runtime_error &error){
-		std::cout << "\nException Caught in Feat::Fit(double,int,int,double,int) Method" << std::endl;
-		throw std::runtime_error("Throwing the Error back to the wrapper");
-	}
+        MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
+        VectorXd vectY = Map<VectorXd>(Y,lenY);
 	
+	    Feat::fit(matX,vectY);
     }
 
-    void Feat::final_model(MatrixXd& X, VectorXd& y)
+    void Feat::final_model(MatrixXd& X, VectorXd& y,
+                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z)	
     {
         // fits final model to best tranformation found.
         bool pass = true;
+
         /* MatrixXd Phi = transform(X); */
-        MatrixXd Phi = best_ind.out(X,params);        
+        MatrixXd Phi = best_ind.out(X, Z,params);        
+
         VectorXd yhat = p_ml->fit(Phi,y,params,pass,best_ind.dtypes);
         VectorXd tmp;
         double score = p_eval->score(y,yhat,tmp);
-        //std::cout << "final_model:: score=" << score << "\n";
+        params.msg("final_model score: " + std::to_string(score),1);
     }
     
     void Feat::initial_model(MatrixXd& X_t, VectorXd& y_t, MatrixXd& X_v, VectorXd& y_v)
@@ -523,32 +540,31 @@ namespace FT{
          * fits an ML model to the raw data as a starting point.
          */
         bool pass = true;
-        //std::cout << "Calling p_ml-> fit..." << std::endl;
         VectorXd yhat = p_ml->fit(X_t,y_t,params,pass);
-        //std::cout << "Calling p_ml->predict" << std::endl;
+        /* std::cout << "initial_model: predict\n"; */
         VectorXd yhat_v = p_ml->predict(X_v);
-	//std::cout << "Vector yhat Is Built" << std::endl;
+
         // set terminal weights based on model
-        const vector<double> w = p_ml->get_weights();
-        //std::cout << "Got Weights" << std::endl;
         params.set_term_weights(p_ml->get_weights());
-	//std::cout << "Weights set out for set_term_weights" << std::endl;
         VectorXd tmp;
-        //std::cout << "initial_model: setting best_score\n";
+        /* std::cout << "initial_model: setting best_score\n"; */
         best_score = p_eval->score(y_t, yhat,tmp);
-        //std::cout << "initial_model: setting best_score_v\n";
+        /* std::cout << "initial_model: setting best_score_v\n"; */
         best_score_v = p_eval->score(y_v, yhat_v,tmp); 
 
        
         // initialize best_ind to be all the features
         best_ind = Individual();
         for (unsigned i =0; i<X_t.rows(); ++i)
-            best_ind.program.push_back(params.terminals[i]);
+            best_ind.program.push_back(params.terminals[i]->clone());
         best_ind.fitness = best_score;
-        //std::cout << "initial best_score_v:" << best_score_v << "\n";
+        params.msg("initial training score: " +std::to_string(best_score),1);
+        params.msg("initial validation score: " +std::to_string(best_score_v),1);
     }
 
-    MatrixXd Feat::transform(MatrixXd& X, Individual *ind)
+    MatrixXd Feat::transform(MatrixXd& X,
+                             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z,
+                             Individual *ind)
     {
         /*!
          * Transforms input data according to ind or best ind, if ind is undefined.
@@ -558,18 +574,16 @@ namespace FT{
         
         if (ind == 0)        // if ind is empty, predict with best_ind
         {
-            //std::cout << "predicting with best_ind\n";
+            std::cout << "predicting with best_ind\n";
             if (best_ind.program.size()==0){
                 std::cerr << "You need to train a model using fit() before making predictions.\n";
                 throw;
             }
             
-            MatrixXd Phi = best_ind.out(X,params);
-            return Phi;
+            return best_ind.out(X, Z, params);
         }
-
-        MatrixXd Phi = ind->out(X,params);
-        return Phi;
+    
+        return ind->out(X, Z, params);
     }
 
     MatrixXd Feat::transform(double * X, int rows_x,int cols_x)
@@ -578,10 +592,19 @@ namespace FT{
         return transform(matX);
         
     }
-    
-    VectorXd Feat::predict(MatrixXd& X)
-    {   
-        MatrixXd Phi = transform(X);
+
+    MatrixXd Feat::fit_transform(double * X, int rows_x, int cols_x, double * Y, int len_y)
+    {
+        MatrixXd matX = Map<MatrixXd>(X,rows_x,cols_x);
+        VectorXd vectY = Map<VectorXd>(Y,len_y);
+        fit(matX,vectY); 
+        return transform(matX);
+    }
+
+    VectorXd Feat::predict(MatrixXd& X,
+                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
+    {        
+        MatrixXd Phi = transform(X, Z);
         return p_ml->predict(Phi);        
     }
 
@@ -591,13 +614,10 @@ namespace FT{
         return Feat::predict(matX);
     }
 
-    void Feat::update_best(bool val)
+    void Feat::update_best(bool validation)
     {
         double bs;
-        if (val) 
-            bs = best_score_v;
-        else
-            bs = best_score;
+        bs = validation ? best_score_v : best_score ; 
         
         for (const auto& i: p_pop->individuals)
         {
@@ -607,12 +627,18 @@ namespace FT{
                 best_ind = i;
             }
         }
- 
+        
+        if (validation) 
+            best_score_v = bs; 
+        else 
+            best_score = bs;
+
     }
     
-    double Feat::score(MatrixXd& X, const VectorXd& y)
+    double Feat::score(MatrixXd& X, const VectorXd& y,
+                       std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
     {
-        VectorXd yhat = predict(X);
+        VectorXd yhat = predict(X, Z);
         VectorXd loss; 
         return p_eval->score(y,yhat,loss);
 
@@ -621,6 +647,7 @@ namespace FT{
         /* else */
         /*     return p_eval->se(y,yhat).mean(); */
     }
+    
     void Feat::print_stats(unsigned int g)
     {
         unsigned num_models = std::min(100,p_pop->size());
@@ -662,22 +689,22 @@ namespace FT{
        
        
         // ref counting
-        vector<float> use(params.terminals.size());
-        float use_sum=0;
-        for (unsigned i = 0; i< params.terminals.size(); ++i)
-        {    
-            use[i] = float(params.terminals[i].use_count());
-            use_sum += use[i];
-        }
-        vector<size_t> use_idx = argsort(use);
-        std::reverse(use_idx.begin(), use_idx.end());
+        /* vector<float> use(params.terminals.size()); */
+        /* float use_sum=0; */
+        /* for (unsigned i = 0; i< params.terminals.size(); ++i) */
+        /* { */    
+        /*     use[i] = float(params.terminals[i].use_count()); */
+        /*     use_sum += use[i]; */
+        /* } */
+        /* vector<size_t> use_idx = argsort(use); */
+        /* std::reverse(use_idx.begin(), use_idx.end()); */
 
-        int nf = std::min(5,int(params.terminals.size()));
-        std::cout << "Top " << nf <<" features (\% usage):\n";
-        std::cout.precision(1);
-        for (unsigned i = 0; i<nf; ++i) 
-            std::cout << std::fixed << params.terminals[use_idx[i]]->name  
-                      << " (" << use[use_idx[i]]/use_sum*100 << "\%)\t"; 
+        /* int nf = std::min(5,int(params.terminals.size())); */
+        /* std::cout << "Top " << nf <<" features (\% usage):\n"; */
+        /* std::cout.precision(1); */
+        /* for (unsigned i = 0; i<nf; ++i) */ 
+        /*     std::cout << std::fixed << params.terminals[use_idx[i]]->name */  
+        /*               << " (" << use[use_idx[i]]/use_sum*100 << "\%)\t"; */ 
         
         std::cout <<"\n\n";
     }

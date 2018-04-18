@@ -2,23 +2,24 @@
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
-#ifndef NODE_STEP
-#define NODE_STEP
+#ifndef NODE_SKEW
+#define NODE_SKEW
 
 #include "node.h"
 
 namespace FT{
-	class NodeStep : public Node
+	class NodeSkew : public Node
     {
     	public:
     	
-    		NodeStep()
+    		NodeSkew()
             {
-                name = "step";
+                name = "skew";
     			otype = 'f';
-    			arity['f'] = 1;
+    			arity['f'] = 0;
     			arity['b'] = 0;
-    			complexity = 1;
+    			arity['z'] = 1;
+    			complexity = 3;
     		}
     		
             /// Evaluates the node and updates the stack states. 
@@ -26,20 +27,26 @@ namespace FT{
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)
             {
-        		ArrayXd x = stack.f.pop();
-        		
-        		ArrayXd res = (x > 0).select(ArrayXd::Ones(x.size()), ArrayXd::Zero(x.size())); 
-                stack.f.push(res);
+                ArrayXd tmp(stack.z.top().first.size());
+                
+                int x;
+                
+                for(x = 0; x < stack.z.top().first.size(); x++)
+                    tmp(x) = skew(stack.z.top().first[x]);
+                    
+                stack.z.pop();
+
+                stack.f.push(tmp);
                 
             }
 
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-                stack.fs.push("step("+ stack.fs.pop() +")");
+                stack.fs.push("skew(" + stack.zs.pop() + ")");
             }
         protected:
-            NodeStep* clone_impl() const override { return new NodeStep(*this); };  
+            NodeSkew* clone_impl() const override { return new NodeSkew(*this); }; 
     };
 }	
 
