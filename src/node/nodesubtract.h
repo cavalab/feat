@@ -45,14 +45,14 @@ namespace FT{
             ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
                 switch (loc) {
                     case 3: 
-                        return -stack_f[stack_f.size()-2];
+                        return stack_f[stack_f.size()-2];
                     case 2: 
-                        return stack_f[stack_f.size()-1];
+                        return -stack_f[stack_f.size()-1];
                     case 1:
-                        return this->W[1] * ArrayXd::Ones(stack_f[stack_f.size()-1].size());
+                        return -this->W[0] * ArrayXd::Ones(stack_f[stack_f.size()-1].size());
                     case 0:
                     default:
-                       return -this->W[0] * ArrayXd::Ones(stack_f[stack_f.size()-2].size());
+                       return this->W[1] * ArrayXd::Ones(stack_f[stack_f.size()-2].size());
                 } 
             }
 

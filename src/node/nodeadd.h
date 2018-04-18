@@ -49,10 +49,10 @@ namespace FT{
                     case 2: 
                         return stack_f[stack_f.size()-1];
                     case 1:
-                        return this->W[1] * ArrayXd::Ones(stack_f[stack_f.size()-2].size());
+                        return this->W[0] * ArrayXd::Ones(stack_f[stack_f.size()-2].size());
                     case 0:
                     default:
-                        return this->W[0] * ArrayXd::Ones(stack_f[stack_f.size()-1].size());
+                        return this->W[1] * ArrayXd::Ones(stack_f[stack_f.size()-1].size());
                 } 
             }
 
