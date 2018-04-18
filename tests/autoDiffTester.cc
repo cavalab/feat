@@ -140,6 +140,11 @@ int testNodes() {
 		std::cout << "Subtract node (wtr to first input) failed!\n";
 	}
 
+	expectedDerivative(0,0) = -1;
+	expectedDerivative(1,0) = -1;
+	expectedDerivative(2,0) = -1;
+	expectedDerivative(3,0) = -1;
+	expectedDerivative(4,0) = -1;
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 1).matrix()).norm() > 0.0001) {
 		std::cout << "Subtract node (wtr to second input) failed!\n";
 	}
@@ -153,11 +158,11 @@ int testNodes() {
 		std::cout << "Subtract node (wtr to weight on first input) failed!\n";
 	}
 
-	expectedDerivative(0,0) = 4;
-	expectedDerivative(1,0) = 3;
-	expectedDerivative(2,0) = 2;
-	expectedDerivative(3,0) = 1;
-	expectedDerivative(4,0) = 0;
+	expectedDerivative(0,0) = -4;
+	expectedDerivative(1,0) = -3;
+	expectedDerivative(2,0) = -2;
+	expectedDerivative(3,0) = -1;
+	expectedDerivative(4,0) = -0;
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 2).matrix()).norm() > 0.0001) {
 		std::cout << "Subtract node (wtr to weight on second input) failed!\n";
 	}
