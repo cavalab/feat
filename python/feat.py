@@ -27,47 +27,27 @@ class Feat(BaseEstimator):
                 scorer =''):
         self.pop_size = pop_size
         self.gens = gens
-        if ( isinstance(ml,str) ) :
-             self.ml = ml.encode()
-        else:
-             self.ml = ml
+        self.ml = ml.encode() if( isinstance(ml,str) )  else ml
 
         self.classification = classification
         self.verbosity = verbosity
         self.max_stall = max_stall
-        if ( isinstance(sel,str) ) :
-             self.sel = sel.encode()
-        else:
-             self.sel = sel
-        if ( isinstance(surv,str) ) :
-             self.surv = surv.encode()
-        else:
-             self.surv = surv
+        self.sel = sel.encode() if( isinstance(sel,str) )  else sel
+        self.surv = surv.encode() if( isinstance(surv,str) )  else surv
         self.cross_rate = cross_rate
-        if ( isinstance(otype,str) ) :
-             self.otype = otype.encode()
-        else:
-             self.otype = otype
-        if ( isinstance(functions,str) ) :
-             self.functions = functions.encode()
-        else:
-             self.functions = functions
+        self.otype = otype.encode() if( isinstance(otype,str) )  else otype
+        self.functions = functions.encode() if( isinstance(functions,str) )  else functions
         self.max_depth = max_depth
         self.max_dim = max_dim
         self.random_state = random_state
         self.erc = erc      
-        if ( isinstance(obj,str) ) :
-             self.obj = obj.encode()
-        else:
-             self.obj = obj
+        self.obj = obj.encode() if( isinstance(obj,str) )  else obj
         self.shuffle = shuffle
         self.split = split
         self.fb = fb
-        if ( isinstance(scorer,str) ) :
-             self.scorer = scorer.encode()
-        else:
-             self.scorer = scorer
-        
+        self.scorer = scorer.encode() if( isinstance(scorer,str) )  else scorer
+       
+ 
         self._pyfeat = pyfeat.PyFeat( self.pop_size,  self.gens,  self.ml, 
                 self.classification,  self.verbosity,  self.max_stall,
                 self.sel,  self.surv,  self.cross_rate,
