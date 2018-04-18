@@ -32,7 +32,7 @@ namespace FT{
                 int x;
                 
                 for(x = 0; x < stack.z.top().first.size(); x++)
-                    tmp(x) = skew(stack.z.top().first[x]);
+                    tmp(x) = limited(skew(stack.z.top().first[x]));
                     
                 stack.z.pop();
 
