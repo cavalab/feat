@@ -5,6 +5,8 @@ license: GNU/GPL v3
 #ifndef INDIVIDUAL_H
 #define INDIVIDUAL_H
 
+#include "stack.h"
+
 namespace FT{
     
     ////////////////////////////////////////////////////////////////////////////////// Declarations
@@ -15,7 +17,7 @@ namespace FT{
      */
     class Individual{
     public:        
-        vector<std::shared_ptr<Node>> program;      ///< executable data structure
+        NodeVector program;                            ///< executable data structure
         double fitness;             				///< aggregate fitness score
         size_t loc;                 				///< index of individual in semantic matrix F
         string eqn;                 				///< symbolic representation of program
@@ -28,12 +30,14 @@ namespace FT{
         unsigned int rank;                          ///< pareto front rank
         float crowd_dist;                           ///< crowding distance on the Pareto front
         
+        
         Individual(){c = 0; dim = 0; eqn="";}
 
-        ~Individual(){}
-
         /// calculate program output matrix Phi
-        MatrixXd out(const MatrixXd& X, const Parameters& params, const VectorXd& y);
+        MatrixXd out(const MatrixXd& X, 
+                     const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
+                     const Parameters& params,
+                     const VectorXd& y);
 
         /// return symbolic representation of program
         string get_eqn();
@@ -42,8 +46,8 @@ namespace FT{
         string program_str() const;
 
         /// setting and getting from individuals vector
-        const std::shared_ptr<Node> operator [](int i) const {return program.at(i);}
-        const std::shared_ptr<Node> & operator [](int i) {return program.at(i);}
+        /* const std::unique_ptr<Node> operator [](int i) const {return program.at(i);} */ 
+        /* const std::unique_ptr<Node> & operator [](int i) {return program.at(i);} */
 
         /// set rank
         void set_rank(unsigned r){rank=r;}
@@ -78,6 +82,19 @@ namespace FT{
         ///// set weighted probabilities
         //void set_w(vector<double>& weights);
 
+        /// make a deep copy of the underlying program 
+        /* void program_copy(vector<std::unique_ptr<Node>>& cpy) const */
+        /* { */
+        /*     cpy.clear(); */
+        /*     for (const auto& p : program) */
+        /*         cpy.push_back(p->clone()); */
+        /* } */
+        /// clone this individual 
+        void clone(Individual& cpy)
+        {
+            cpy.program = program;
+            cpy.p = p;
+        }
         /// get probabilities of variation
         vector<double> get_p(){ return p; }     
         /// get inverted weight probability for pogram location i
@@ -128,6 +145,24 @@ namespace FT{
     //}
     void Individual::set_p(const vector<double>& weights, const double& fb)
     {   
+        //cout<<"Weights size = "<<weights.size()<<"\n";
+        //cout<<"Roots size = "<<roots().size()<<"\n";
+        if(weights.size() != roots().size())
+        {
+            cout<<"Weights are\n";
+            for(double weight : weights)
+                cout<<weight<<"\n";
+                
+            cout<<"Roots are\n";
+            auto root1 = roots();
+            for(auto root : root1)
+                cout<<root<<"\n";
+            
+            cout<<"Program is \n";
+            for (const auto& p : program) std::cout << p->name << " ";
+            cout<<"\n";
+                
+        }
         assert(weights.size() == roots().size());     
         p = weights;
         for (unsigned i=0; i<p.size(); ++i)
@@ -169,24 +204,31 @@ namespace FT{
         return ps;
     }
     // calculate program output matrix
-    MatrixXd Individual::out(const MatrixXd& X, const Parameters& params, 
+    MatrixXd Individual::out(const MatrixXd& X,
+                             const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
+                             const Parameters& params, 
                              const VectorXd& y = VectorXd())
     {
         /*!
          * @params X: n_features x n_samples data
+         * @params Z: longitudinal nodes for samples
          * @params y: target data
          * @params: Feat parameters
          * @returns Phi: n_features x n_samples transformation
          */
 
-        vector<ArrayXd> stack_f; 
-        vector<ArrayXb> stack_b;
+        Stacks stack;
         params.msg("evaluating program " + get_eqn(),2);
+        params.msg("program length: " + std::to_string(program.size()),2);
         // evaluate each node in program
         for (const auto& n : program)
         {
-        	if(stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
-	            n->evaluate(X, y, stack_f, stack_b);
+        	if(stack.check(n->arity))
+        	{
+        	    //cout<<"***enter here "<<n->name<<"\n";
+	            n->evaluate(X, y, Z, stack);
+	            //cout<<"***exit here "<<n->name<<"\n";
+	        }
             else
             {
                 std::cout << "out() error: node " << n->name << " in " + program_str() + 
@@ -198,29 +240,30 @@ namespace FT{
         // convert stack_f to Phi
         params.msg("converting stacks to Phi",2);
         int cols;
-        if (stack_f.size()==0)
+        if (stack.f.size()==0)
         {
-            if (stack_b.size() == 0)
+            if (stack.b.size() == 0)
             {   std::cout << "Error: no outputs in stacks\n"; throw;}
             
-            cols = stack_b.at(0).size();
+            cols = stack.b.top().size();
         }
         else
-            cols = stack_f.at(0).size();
+            cols = stack.f.top().size();
                
-        int rows_f = stack_f.size();
-        int rows_b = stack_b.size();
+        int rows_f = stack.f.size();
+        int rows_b = stack.b.size();
+        
         dtypes.clear();        
         Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
         // add stack_f to Phi
         for (unsigned int i=0; i<rows_f; ++i)
-        {    Phi.row(i) = VectorXd::Map(stack_f.at(i).data(),cols);
+        {    Phi.row(i) = VectorXd::Map(stack.f.at(i).data(),cols);
              dtypes.push_back('f'); 
         }
         // convert stack_b to Phi       
         for (unsigned int i=0; i<rows_b; ++i)
         {
-            Phi.row(i+rows_f) = ArrayXb::Map(stack_b.at(i).data(),cols).cast<double>();
+            Phi.row(i+rows_f) = ArrayXb::Map(stack.b.at(i).data(),cols).cast<double>();
             dtypes.push_back('b');
         }       
         //Phi.transposeInPlace();
@@ -232,24 +275,26 @@ namespace FT{
     {
         if (eqn.empty())               // calculate eqn if it doesn't exist yet 
         {
-            vector<string> stack_f;     // symbolic floating stack
-            vector<string> stack_b;     // symbolic boolean stack
+            Stacks stack;
 
-            for (auto n : program){
-            	if(stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
-                	n->eval_eqn(stack_f,stack_b);
+            for (const auto& n : program){
+            	if(stack.check_s(n->arity))
+                	n->eval_eqn(stack);
                 else
                 {
-                    std::cout << "get_eqn() error: node " << n->name << " in " + program_str() + " is invalid\n";
+                    std::cout << "get_eqn() error: node " << n->name 
+                              << " in " + program_str() + " is invalid\n";
                     exit(1);
                 }
 
             }
             // tie stack outputs together to return representation
-            for (auto s : stack_f) 
+            for (auto s : stack.fs) 
                 eqn += "[" + s + "]";
-            for (auto s : stack_b) 
+            for (auto s : stack.bs) 
                 eqn += "[" + s + "]";              
+            for (auto s : stack.zs) 
+                eqn += "[" + s + "]";
         }
 
         return eqn;
@@ -291,8 +336,11 @@ namespace FT{
            i = subtree(--i,'f');                   // recurse for floating arguments      
        size_t i2 = i;                              // index for second recursion
        for (unsigned int j = 0; j<arity['b']; ++j)
-           i2 = subtree(--i2,'b');                 // recurse for boolean arguments
-       return std::min(i,i2);
+           i2 = subtree(--i2,'b');
+       size_t i3 = i2;                 // recurse for boolean arguments
+       for (unsigned int j = 0; j<arity['z']; ++j)
+           i3 = subtree(--i3,'z'); 
+       return std::min(i,i3);
     }
    
     // get program dimensionality
@@ -406,9 +454,6 @@ namespace FT{
          
         vector<size_t> indices;     // returned root indices
         int total_arity = -1;       //end node is always a root
-       // map<char,int> total_arity; 
-       // total_arity['b'] = -1;
-       // total_arity['f']=-1;
         for (size_t i = program.size(); i>0; --i)   // reverse loop thru program
         {    
             if (total_arity <= 0 ){ // root node
@@ -421,12 +466,7 @@ namespace FT{
             total_arity += program[i-1]->total_arity(); 
            
         }
-       // while (i >= 0 )
-       // {
-       //     indices.push_back(i-1);
-       //     int j = subtree(i);
-       //     i = j-1;
-       // }
+       
         return indices; 
     }
 
@@ -436,12 +476,6 @@ namespace FT{
         string s = "";
         for (const auto& p : program)
         {
-           // if (!p->name.compare("x"))   // if a variable, include the location data
-           // {
-           //     s += p->name+"_"+std::to_string(std::dynamic_pointer_cast<NodeVariable>(p)->loc); 
-           // }
-           // else
-
             s+= p->name;
             s+=" ";
         }

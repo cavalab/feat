@@ -22,22 +22,23 @@ namespace FT{
     		}
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
-                    vector<ArrayXb>& stack_b)
+            void evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
             {
-                ArrayXd x2 = stack_f.back(); stack_f.pop_back();
-                ArrayXd x1 = stack_f.back(); stack_f.pop_back();
+                ArrayXd x2 = stack.f.pop();
+                ArrayXd x1 = stack.f.pop();
                 // safe division returns x1/x2 if x2 != 0, and MAX_DBL otherwise               
-                stack_f.push_back( (abs(x2) > NEAR_ZERO ).select(x1 / x2, 1.0) ); //MAX_DBL    
+                stack.f.push( (abs(x2) > NEAR_ZERO ).select(x1 / x2, 1.0) ); //MAX_DBL    
             }
 
             /// Evaluates the node symbolically
-            void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
+            void eval_eqn(Stacks& stack)
             {
-        		string x2 = stack_f.back(); stack_f.pop_back();
-                string x1 = stack_f.back(); stack_f.pop_back();
-                stack_f.push_back("(" + x1 + "/" + x2 + ")");            	
+                stack.fs.push("(" + stack.fs.pop() + "/" + stack.fs.pop() + ")");            	
             }
+        protected:
+            NodeDivide* clone_impl() const override { return new NodeDivide(*this); };  
     };
 }	
 
