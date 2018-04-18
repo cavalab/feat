@@ -12,7 +12,7 @@ namespace FT{
     {
     	public:
     		
-    		double d_value;           ///< value, for k and x types
+    		float d_value;           ///< value, for k and x types
     		bool b_value;
     		
     		NodeConstant()
@@ -32,8 +32,8 @@ namespace FT{
     			b_value = v;
     		}
 
-            /// declares a double constant
-    		NodeConstant(const double& v)
+            /// declares a float constant
+    		NodeConstant(const float& v)
     		{
     			name = "k_d";
     			otype = 'f';
@@ -47,7 +47,6 @@ namespace FT{
             void evaluate(const MatrixXd& X, const VectorXd& y,
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack);
-            
 
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
@@ -70,7 +69,7 @@ namespace FT{
         if (otype == 'b')
             stack.b.push(ArrayXb::Constant(X.cols(),int(b_value)));
         else 	
-            stack.f.push(ArrayXd::Constant(X.cols(),d_value));
+            stack.f.push(ArrayXf::Constant(X.cols(),d_value));
     }
 #else
     void NodeConstant::evaluate(const MatrixXd& X, const VectorXd& y,
@@ -79,13 +78,11 @@ namespace FT{
     {
         if (otype == 'b')
         {
-            vector<bool> tmp(X.cols(),b_value);
-            GPU_Constant(stack.dev_b, tmp.data(), stack.idx[otype], stack.N);
+            GPU_Constant(stack.dev_b, b_value, stack.idx['b'], stack.N);
         }
         else
         {
-            vector<float> tmp(X.cols(),d_value);
-            GPU_Constant(stack.dev_f, tmp.data(), stack.idx[otype], stack.N);
+            GPU_Constant(stack.dev_f, d_value, stack.idx['f'], stack.N);
         }
 
     }

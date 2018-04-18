@@ -24,7 +24,7 @@ namespace FT{
             /// Evaluates the node and updates the stack states. 
             void evaluate(const MatrixXd& X, const VectorXd& y,
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)   ;
+			              Stacks& stack);
 
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
@@ -35,7 +35,7 @@ namespace FT{
             }
 
         protected:
-                Node2dGaussian* clone_impl() const override { return new Node2dGaussian(*this); };  
+                Node2DGaussian* clone_impl() const override { return new Node2DGaussian(*this); };  
     };
 	
 #ifndef USE_CUDA

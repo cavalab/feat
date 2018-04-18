@@ -60,9 +60,16 @@ namespace FT{
 			              Stacks& stack)
     {
         if (otype == 'b')
-            GPU_Variable(stack.dev_f, X.row(loc).cast<bool>().data(), stack.idx[otype], stack.N);
+        {
+            ArrayXb tmp = X.row(loc).cast<bool>();
+            GPU_Variable(stack.dev_b, tmp.data(), stack.idx[otype], stack.N);
+
+        }
         else
-            GPU_Variable(stack.dev_f, X.row(loc).data(), stack.idx[otype], stack.N);
+        {
+            ArrayXf tmp = X.row(loc).cast<float>() ;
+            GPU_Variable(stack.dev_f, tmp.data(), stack.idx[otype], stack.N);
+        }
     }
 #endif
 }

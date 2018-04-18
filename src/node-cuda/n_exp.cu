@@ -2,6 +2,7 @@
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
+#include "error_handling.h"
 #include "cuda_utils.h"
 /* #include "../node/n_exp.h" */
 

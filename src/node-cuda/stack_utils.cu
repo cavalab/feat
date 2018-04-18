@@ -2,8 +2,8 @@
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
-#include "cuda_utils.h"
 #include "stack_utils.h"
+#include "error_handling.h"
 // stack utils 
 namespace FT{
     void dev_allocate(float * f, bool * b, size_t Sizef, size_t Sizeb)

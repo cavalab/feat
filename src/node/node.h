@@ -43,7 +43,7 @@ namespace FT{
             virtual void evaluate(const MatrixXd& X, const VectorXd& y,
                                   const std::map<string, 
                                                  std::pair<vector<ArrayXd>, vector<ArrayXd>>>&Z, 
-			                      Stacks& stack) = 0; 
+			                      Stacks& stack) = 0; ;
 
             /// evaluates the node symbolically
             virtual void eval_eqn(Stacks& stack) = 0;

@@ -22,23 +22,9 @@ namespace FT{
     			complexity = 3;
     		}
     		
-            /// Evaluates the node and updates the stack states. 
             void evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-            {
-                ArrayXd tmp(stack.z.top().first.size());
-                
-                int x;
-                
-                for(x = 0; x < stack.z.top().first.size(); x++)
-                    tmp(x) = skew(stack.z.top().first[x]);
-                    
-                stack.z.pop();
-
-                stack.f.push(tmp);
-                
-            }
+                  const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+                  Stacks& stack);
 
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
@@ -48,6 +34,40 @@ namespace FT{
         protected:
             NodeSkew* clone_impl() const override { return new NodeSkew(*this); }; 
     };
+#ifndef USE_CUDA
+    /// Evaluates the node and updates the stack states. 
+    void NodeSkew::evaluate(const MatrixXd& X, const VectorXd& y,
+                  const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+                  Stacks& stack)
+    {
+        ArrayXd tmp(stack.z.top().first.size());
+        
+        int x;
+        
+        for(x = 0; x < stack.z.top().first.size(); x++)
+            tmp(x) = skew(stack.z.top().first[x]);
+            
+        stack.z.pop();
+
+        stack.f.push(tmp);
+        
+    }
+#else
+void NodeSkew::evaluate(const MatrixXd& X, const VectorXd& y,
+                  const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+                  Stacks& stack)
+    {
+        
+        int x;
+        
+        for(x = 0; x < stack.z.top().first.size(); x++)
+            stack.f.row(stack.idx['f']) = skew(stack.z.top().first[x]);
+            
+        stack.z.pop();
+
+        
+        }
+#endif
 }	
 
 #endif
