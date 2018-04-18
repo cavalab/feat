@@ -12,55 +12,76 @@ license: GNU/GPL v3
 namespace FT
 {
     template<typename type>
+    /*!
+     * @class Stack
+     * @brief template stack class which holds various stack types for feat 
+     */
     class Stack
     {
         private:
-            std::vector<type> st;
+            std::vector<type> st;               ///< vector representing the stack
             
         public:
         
-            Stack()
+            ///< constructor initializing the vector
+            Stack()                             
             {
                 st = std::vector<type>();
             }
             
-            void push(type element){ st.push_back(element); }
+            ///< population pushes element at back of vector
+            void push(type element){ st.push_back(element); }   
             
-            type pop()
+            ///< pops element from back of vector and removes it
+            type pop()                                          
             {
                 type ret = st.back();
                 st.pop_back();
                 return ret;
             }
             
-            bool empty(){ return st.empty(); }
+            ///< returns true or false depending on stack is empty or not
+            bool empty(){ return st.empty(); }                  
             
-            unsigned int size(){ return st.size(); }
+            ///< returns size of stack
+            unsigned int size(){ return st.size(); }            
             
-            type& top(){ return st.back(); }
+            ///< returns top element of stack
+            type& top(){ return st.back(); }                    
             
-            type& at(int i){ return st.at(i); }
+            ///< returns element at particular location in stack
+            type& at(int i){ return st.at(i); }                 
             
-            void clear(){ st.clear(); }
+            ///< clears the stack
+            void clear(){ st.clear(); }                         
             
-            typename vector<type>::iterator begin(){ return st.begin(); }
+            ///< returns start iterator of stack
+            typename vector<type>::iterator begin(){ return st.begin(); }   
             
-            typename vector<type>::iterator end(){ return st.end(); }
+            ///< returns end iterator of stack
+            typename vector<type>::iterator end(){ return st.end(); }       
             
-            typename vector<type>::const_iterator begin() const { return st.begin(); }
+            ///< returns const start iterator of stack
+            typename vector<type>::const_iterator begin() const { return st.begin(); }  
             
-            typename vector<type>::const_iterator end() const { return st.end(); }
+            ///< returns const iterator of stack
+            typename vector<type>::const_iterator end() const { return st.end(); }      
     };
     
+    /*!
+     * @class Stacks
+     * @brief contains various types of stacks actually used by feat
+     */
     struct Stacks
     {
-        Stack<ArrayXd> f;
-        Stack<ArrayXb> b;
-        Stack<std::pair<vector<ArrayXd>, vector<ArrayXd> > > z;
-        Stack<string> fs;
-        Stack<string> bs;
-        Stack<string> zs;
+        Stack<ArrayXd> f;                   ///< floating node stack
+        Stack<ArrayXb> b;                   ///< boolean node stack
+        Stack<std::pair<vector<ArrayXd>, vector<ArrayXd> > > z;     ///< longitudinal node stack
+        Stack<string> fs;                   ///< floating node string stack
+        Stack<string> bs;                   ///< boolean node string stack
+        Stack<string> zs;                   ///< longitudinal node string stack
         
+        ///< checks if arity of node provided satisfies the elements in various value stacks
         bool check(std::map<char, unsigned int> &arity)
         {
             if(arity.find('z') == arity.end())
@@ -70,6 +91,7 @@ namespace FT
                         && z.size() >= arity['z']);
         }
         
+        ///< checks if arity of node provided satisfies the node names in various string stacks
         bool check_s(std::map<char, unsigned int> &arity)
         {
             if(arity.find('z') == arity.end())
