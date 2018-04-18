@@ -1,6 +1,5 @@
 #from distutils.core import setup
 import sys
-sys.path.append('/home/travis/miniconda/')
 from setuptools import setup, find_packages
 from setuptools.extension import Extension
 from Cython.Build import cythonize
