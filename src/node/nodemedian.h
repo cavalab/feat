@@ -32,7 +32,7 @@ namespace FT{
                 int x;
                 
                 for(x = 0; x < stack.z.top().first.size(); x++)
-                    tmp(x) = limited(median(stack.z.top().first[x]));
+                    tmp(x) = median(limited(stack.z.top().first[x]));
                     
                 stack.z.pop();
 
