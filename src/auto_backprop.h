@@ -3,6 +3,7 @@
 
 #include <Eigen/Dense>
 #include <iostream>
+#include <vector>
 
 #include "node/node.h"
 #include "node/nodeDx.h"
@@ -24,18 +25,6 @@ namespace FT {
 	class Auto_backprop {
 	public:
 		typedef void (*callback)(ArrayXd, ArrayXd);
-		// Add a proper constructor
-		// Auto_backprop(vector<Node> program, callback cost_func, MatrixXd X, VectorXd labels, int iters=1000, double n=0.1) {
-		// 	this->program = program;
-		// 	this->cost_func = cost_func;
-		// 	this->X = X;
-		// 	this->labels = labels;
-		// 	this->iters = iters;
-		// 	this->n = n;
-		// }
-
-		// Return vector of nodes
-		// vector<Node> run();
 
 	private:
 		double n; // Learning rate
@@ -159,7 +148,7 @@ namespace FT {
 		template <class T>
 		T pop_front(vector<T> v) {
 			T value = v.front();
-			v.erase(0);
+			v.erase(v.begin());
 			return value;
 		}
 

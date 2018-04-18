@@ -8,6 +8,7 @@ license: GNU/GPL v3
 #include<map>
 #include <memory>
 #include <vector>
+#include <iostream>
 #include <Eigen/Dense>
 using std::vector;
 using std::string;
