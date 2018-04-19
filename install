@@ -1,5 +1,12 @@
 #!/bin/bash
-make -C build -j8
+
+if [ "$1" == "gpu" ] ; then
+    make -C buildGPU -j8
+elif [ "$1" == "debug" ] ; then
+    make -C debug -j8
+else
+    make -C build -j8 
+fi
 
 if [ "$1" == "lpc" ] ; then
     module load gcc/5.2.0

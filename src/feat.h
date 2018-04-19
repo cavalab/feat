@@ -13,9 +13,12 @@ license: GNU/GPL v3
 #include <shogun/base/init.h>
 #ifdef _OPENMP
     #include <omp.h>
+    #define SET_THREADS( n ) (omp_set_num_threads( n ))
 #else
+void noop(int n) { }
     #define omp_get_thread_num() 0
     #define omp_get_max_threads() 1
+    #define SET_THREADS( n ) (noop(n) )
 #endif
 // stuff being used
 using Eigen::MatrixXd;
@@ -39,8 +42,9 @@ using std::cout;
 #include "variation.h"
 #include "ml.h"
 #include "node/node.h"
- 
-
+#ifdef USE_CUDA
+    #include "node-cuda/cuda_utils.h" 
+#endif
 //shogun initialization
 void __attribute__ ((constructor)) ctor()
 {
@@ -93,7 +97,9 @@ namespace FT{
                 str_dim = "";
                 name="";
                 if (n_threads!=0)
-                    omp_set_num_threads(n_threads);
+                    SET_THREADS(n_threads);
+                if (USE_CUDA)
+                    initialize_cuda();
             }
             
             /// set size of population 
@@ -162,7 +168,7 @@ namespace FT{
             void set_name(string s){name = s;}
             
             ///set number of threads
-            void set_threads(unsigned t){ omp_set_num_threads(t); }
+            void set_threads(unsigned t){ SET_THREADS(t); }
             /*                                                      
              * getting functions
              */

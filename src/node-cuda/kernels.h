@@ -23,7 +23,8 @@ void GPU_Step(float * x, size_t idx, size_t N);
 void GPU_Sign(float * x, size_t idx, size_t N);
 void GPU_Tanh(float * x, size_t idx, size_t N);
 void GPU_Gaussian(float * x, size_t idx, size_t N);
-void GPU_2DGaussian(float * x, size_t idx, size_t N);
+void GPU_Gaussian2D(float * x, float x1mean, float x1var, float x2mean, float x2var, size_t idx, 
+                    size_t N);
 
 // boolean operators
 void GPU_And(bool * x, size_t idx, size_t N);

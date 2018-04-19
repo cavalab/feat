@@ -300,9 +300,10 @@ namespace FT{
         // program 
         std::map<char, size_t> stack_size = get_max_stack_size(); 
         // set the device based on the thread number
-        ChooseGPU();        
+        choose_gpu();        
         
         // allocate memory for the stack on the device
+        std::cout << "X size: " << X.rows() << "x" << X.cols() << "\n"; 
         stack.allocate(stack_size,X.cols());        
         /* stack.f.resize( */
         // evaluate each node in program
@@ -328,7 +329,21 @@ namespace FT{
         }
         // copy data from GPU to stack
         stack.copy_to_host(stack_size);
-
+        // remove extraneous rows from stacks
+        stack.trim();
+        //check stack
+        std::cout << "stack.f:" << stack.f.rows() << "x" << stack.f.cols() << "\n";
+        for (unsigned i = 0; i < stack.f.rows() ; ++i){
+            for (unsigned j = 0; j<10 ; ++j)
+                std::cout << stack.f(i,j) << ",";
+            std::cout << "\n\n";
+        }
+        std::cout << "stack.b:" << stack.b.rows() << "x" << stack.b.cols() << "\n";
+        for (unsigned i = 0; i < stack.b.rows() ; ++i){
+            for (unsigned j = 0; j<10 ; ++j)
+                std::cout << stack.b(i,j) << ",";
+            std::cout << "\n\n";
+        }
         // convert stack_f to Phi
         params.msg("converting stacks to Phi",2);
         int cols;
@@ -353,6 +368,8 @@ namespace FT{
         // combine stacks into Phi 
         Phi <<  PhiF.cast<double>(),
                 PhiB.cast<double>();
+        
+        std::cout << "Phi:" << Phi.rows() << "x" << Phi.cols() << "\n";
 
         for (unsigned int i=0; i<rows_f; ++i)
         {    
@@ -586,15 +603,25 @@ namespace FT{
     std::map<char, size_t> Individual::get_max_stack_size()
     {
         // max stack size is calculated using node arities
-        std::map<char, size_t> stack_size; 
+        std::map<char, size_t> current_stack_size;
+        current_stack_size['f']=0; current_stack_size['b']=0;
+        std::map<char, size_t> max_stack_size; 
+        max_stack_size['f']=0; max_stack_size['b']=0;
         for (const auto& n : program)   
         {   
-            ++stack_size[n->otype];
+            ++current_stack_size[n->otype];
+            
+            if (current_stack_size[n->otype] > max_stack_size[n->otype])
+                max_stack_size[n->otype] = current_stack_size[n->otype]; 
+            
             for (const auto& a : n->arity)
-                stack_size[a.first] -= a.second;
+                current_stack_size[a.first] -= a.second;
                        
         }
-        return stack_size;
+        std::cout << "stack size: \n";
+        for (const auto& s : max_stack_size)
+            std::cout << s.first << ":" << s.second << "\n";
+        return max_stack_size;
     }
 }
 

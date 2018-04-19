@@ -27,6 +27,10 @@ elif [ "$1" == "tests" ] ; then
     rm -rf build; mkdir build; cd build; 
     cmake -DTEST=ON ..
     cd ..
+elif [ "$1" == "gpu" ] ; then
+    rm -rf buildGPU; mkdir buildGPU; cd buildGPU; 
+    cmake -DCORE_USE_CUDA=ON ..
+    cd ..
 else
     rm -rf build; mkdir build; cd build; 
     cmake ..

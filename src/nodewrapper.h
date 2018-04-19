@@ -38,7 +38,7 @@ license: GNU/GPL v3
 #include "node/n_variable.h"
 #include "node/n_xor.h"
 #include "node/n_gaussian.h"
-#include "node/n_2dgaussian.h"
+#include "node/n_gaussian2d.h"
 #include "node/n_logit.h"
 #include "node/n_step.h"
 #include "node/n_sign.h"

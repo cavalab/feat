@@ -84,8 +84,8 @@ namespace FT
 #else
     struct Stacks
     {
-        ArrayXXf f;
-        ArrayXXb b;
+        Array<float, Dynamic, Dynamic, RowMajor> f;
+        Array<bool, Dynamic, Dynamic, RowMajor>  b;
         Stack<std::pair<vector<ArrayXd>, vector<ArrayXd> > > z;
         Stack<string> fs;
         Stack<string> bs;
@@ -101,7 +101,7 @@ namespace FT
             idx['f']=0;
             idx['b']=0;
         }
-
+ 
         void update_idx(char otype, std::map<char, unsigned>& arity)
         {
             ++idx[otype];
@@ -128,14 +128,36 @@ namespace FT
         
         void allocate(const std::map<char, size_t>& stack_size, size_t N)
         {
+            std::cout << "before dev_allocate, dev_f is " << dev_f << "\n";
             dev_allocate(dev_f, dev_b, N*stack_size.at('f'), N*stack_size.at('b'));
-            N = N;
+            std::cout << "after dev_allocate, dev_f is " << dev_f << "\n";
+            this->N = N;
+            f.resize(stack_size.at('f'),N);
+            b.resize(stack_size.at('b'),N);
         }
 
+        /// resize the f and b stacks to match the outputs of the program
+        void trim()
+        {
+            std::cout << "resizing f to " << idx['f'] << "x" << f.cols() << "\n";
+            f.resize(idx['f'],f.cols());
+            b.resize(idx['b'],b.cols());
+            std::cout << "new f size: " << f.size() << "," << f.rows() << "x" << f.cols() << "\n";
+            /* usigned frows = f.rows()-1; */
+            /* for (unsigned r = idx['f']; r < f.rows(); ++r) */
+            /*     f.block(r,0,frows-r,f.cols()) = f.block(r+1,0,frows-r,f.cols()); */
+            /*     f.conservativeResize(frows,f.cols()); */
+        }
         void copy_to_host(const std::map<char, size_t>& stack_size)
         {
+            std::cout << "size of f before copy_from_device: " << f.size() 
+                      << ", stack size: " << N*stack_size.at('f') << "\n";
+            std::cout << "size of b before copy_from_device: " << b.size() 
+                      << ", stack size: " << N*stack_size.at('b') << "\n";
+
             copy_from_device(dev_f, f.data(), dev_b, b.data(), N*stack_size.at('f'), 
                              N*stack_size.at('b'));
+            trim();
         }
         ~Stacks()
         {
