@@ -10,6 +10,8 @@ license: GNU/GPL v3
 #endif
 //#include "node/node.h"
 //external includes
+#define MAX_DBL std::numeric_limits<double>::max()
+#define MIN_DBL std::numeric_limits<double>::min()
 
 namespace FT
 {
@@ -136,6 +138,15 @@ namespace FT
             b.resize(stack_size.at('b'),N);
         }
 
+        void limit()
+        {
+            // clean floating point stack. 
+            for (unsigned r = 0 ; r < f.rows(); ++r)
+            {
+                f.row(r) = (isinf(f.row(r))).select(MAX_DBL,f.row(r));
+                f.row(r) = (isnan(f.row(r))).select(0,f.row(r));
+            }
+        }
         /// resize the f and b stacks to match the outputs of the program
         void trim()
         {
@@ -157,7 +168,8 @@ namespace FT
 
             copy_from_device(dev_f, f.data(), dev_b, b.data(), N*stack_size.at('f'), 
                              N*stack_size.at('b'));
-            trim();
+            trim(); 
+            limit();
         }
         ~Stacks()
         {
