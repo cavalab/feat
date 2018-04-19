@@ -15,6 +15,23 @@ using namespace Eigen;
 namespace FT{
  
     double NEAR_ZERO = 0.0000001;
+    
+    std::string ltrim(std::string str, const std::string& chars = "\t\n\v\f\r ")
+    {
+        str.erase(0, str.find_first_not_of(chars));
+        return str;
+    }
+     
+    std::string rtrim(std::string str, const std::string& chars = "\t\n\v\f\r ")
+    {
+        str.erase(str.find_last_not_of(chars) + 1);
+        return str;
+    }
+     
+    std::string trim(std::string str, const std::string& chars = "\t\n\v\f\r ")
+    {
+        return ltrim(rtrim(str, chars), chars);
+    }
 
     /*!
      * load csv file into matrix. 
@@ -40,7 +57,9 @@ namespace FT{
             std::string cell;
             
             while (std::getline(lineStream, cell, sep)) 
-            {                
+            {
+                cell = trim(cell);
+                  
                 if (rows==0) // read in header
                 {
                     if (!cell.compare("class") || !cell.compare("target") 
@@ -53,6 +72,7 @@ namespace FT{
                     values.push_back(std::stod(cell));
                 else
                     targets.push_back(std::stod(cell));
+                
                 ++col;
             }
             ++rows;
@@ -84,23 +104,6 @@ namespace FT{
         // check if endpoint is binary
         binary_endpoint = (y.array() == 0 || y.array() == 1).all();
         
-    }
-    
-    std::string ltrim(std::string str, const std::string& chars = "\t\n\v\f\r ")
-    {
-        str.erase(0, str.find_first_not_of(chars));
-        return str;
-    }
-     
-    std::string rtrim(std::string str, const std::string& chars = "\t\n\v\f\r ")
-    {
-        str.erase(str.find_last_not_of(chars) + 1);
-        return str;
-    }
-     
-    std::string trim(std::string str, const std::string& chars = "\t\n\v\f\r ")
-    {
-        return ltrim(rtrim(str, chars), chars);
     }
     
     /*!
