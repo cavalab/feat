@@ -92,7 +92,6 @@ namespace FT{
                     }
                 }
                 cstack[otype].push_back(complexity*c_args);
-               
             }
             
             /// evaluates complexity of this node in the context of its child nodes.
