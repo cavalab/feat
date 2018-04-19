@@ -26,7 +26,7 @@ license: GNU/GPL v3
 // internal includes
 #include "ml/MyCARTree.h"
 #include "ml/MulticlassLogisticRegression.h"
-#include "ml/MulticlassLibLinear.h"
+#include "ml/MulticlassLibLinear.cpp"
 
 // stuff being used
 using std::string;
