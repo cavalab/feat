@@ -194,10 +194,11 @@ namespace FT{
     }
     
     /// calculate variance
-    double variance(const ArrayXd& v) 
+    template<typename T>
+    T variance(const Eigen::Array<T,Dynamic,1>& v) 
     {
-        double mean = v.mean();
-        ArrayXd tmp = mean*ArrayXd::Ones(v.size());
+        T mean = v.mean();
+        Eigen::Array<T, Dynamic, 1> tmp = mean*Eigen::Array<T, Dynamic, 1>::Ones(v.size());
         return pow((v - tmp), 2).mean();
     }
     

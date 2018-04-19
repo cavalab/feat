@@ -270,8 +270,8 @@ namespace FT{
     	else if (str.compare("gaussian")==0)
             return std::unique_ptr<Node>(new NodeGaussian());
         
-        else if (str.compare("2dgaussian")==0)
-            return std::unique_ptr<Node>(new Node2DGaussian());
+        else if (str.compare("gaussian2d")==0)
+            return std::unique_ptr<Node>(new NodeGaussian2D());
 
         else if (str.compare("log") == 0)
     		return std::unique_ptr<Node>(new NodeLog());   

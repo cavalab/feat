@@ -17,7 +17,7 @@ namespace FT{
         }
         return;
     }
-    void GPU_IfThenElse(bool * b, float * x, size_t idxb, size_t idxf, size_t N)
+    void GPU_IfThenElse(float * x, bool *b ,size_t idxb, size_t idxf, size_t N)
     {
         IfThenElse<<< DIM_GRID, DIM_BLOCK >>>(b, x, idxb, idxf, N);
     }

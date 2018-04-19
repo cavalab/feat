@@ -19,9 +19,10 @@ extern int DIM_BLOCK;
 
 
 namespace FT{
-static void Initialize();
-static void ChooseGPU();
 
+    void choose_gpu();
+
+    void initialize_cuda();
 }
 
 #endif

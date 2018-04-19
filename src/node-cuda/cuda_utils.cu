@@ -4,19 +4,23 @@ license: GNU/GPL v3
 */
 #include "cuda_utils.h"
 
-static void FT::Initialize()
+int NUM_SMS = 32; 
+int DIM_GRID = 1024; 
+int DIM_BLOCK = 128; 
+
+
+void FT::initialize_cuda()
 {
     cudaDeviceGetAttribute(&NUM_SMS, cudaDevAttrMultiProcessorCount, 0); 
     DIM_GRID = 32*NUM_SMS;
     DIM_BLOCK = 128; 
-
 }
 
-static void FT::ChooseGPU()
+void FT::choose_gpu()
 {
         int n_gpus; 
         cudaGetDeviceCount(&n_gpus);
-        int device = omp_get_max_threads() % n_gpus ; 
+        int device = omp_get_thread_num() % n_gpus ; 
         cudaSetDevice(device); 
 
 }

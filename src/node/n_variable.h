@@ -63,11 +63,15 @@ namespace FT{
         {
             ArrayXb tmp = X.row(loc).cast<bool>();
             GPU_Variable(stack.dev_b, tmp.data(), stack.idx[otype], stack.N);
-
         }
         else
         {
             ArrayXf tmp = X.row(loc).cast<float>() ;
+            std::cout << "NodeVariable:\n stack.dev_f: " << stack.dev_f 
+                      << "\ntmp.data(): " << tmp.data() 
+                      << "\ntmp.size(): " << tmp.size()
+                      << "\nstack.idx[otype]: " << stack.idx[otype]
+                      << "\nstack.N: " << stack.N <<"\n";
             GPU_Variable(stack.dev_f, tmp.data(), stack.idx[otype], stack.N);
         }
     }
