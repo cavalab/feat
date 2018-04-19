@@ -116,25 +116,26 @@ namespace FT{
             VectorXd yhat = ml->fit(Phi,y,params,pass,pop.individuals[i].dtypes);
 
 
-	    if (!pass){
-       		yhat = VectorXd::Zero(yhat.size())  ; //high fitness won't be selected  
-	        vector<double> w(0,Phi.rows());     // set weights to zero
-		pop.individuals[i].set_p(w,params.feedback);
-	    }
-	    else{
-                // assign weights to individual
-                pop.individuals[i].set_p(ml->get_weights(),params.feedback);
-	    }
+            if (!pass)
+            {
+                yhat = VectorXd::Zero(yhat.size())  ; //high fitness won't be selected  
+                vector<double> w(0,Phi.rows());     // set weights to zero
+                pop.individuals[i].set_p(w,params.feedback);
+            }
+            else{
+                    // assign weights to individual
+                    pop.individuals[i].set_p(ml->get_weights(),params.feedback);
+            }
 
-            // assign weights to individual
-            //vector<double> w = ml->get_weights() 
-            pop.individuals[i].set_p(ml->get_weights(),params.feedback);
-            // assign F and aggregate fitness
-            params.msg("Assigning fitness to " + pop.individuals[i].get_eqn(), 2);
-            
-            assign_fit(pop.individuals[i],F,yhat,y,params);
-                        
-        }
+                // assign weights to individual
+                //vector<double> w = ml->get_weights() 
+                pop.individuals[i].set_p(ml->get_weights(),params.feedback);
+                // assign F and aggregate fitness
+                params.msg("Assigning fitness to " + pop.individuals[i].get_eqn(), 2);
+                
+                assign_fit(pop.individuals[i],F,yhat,y,params);
+                            
+            }
     }    
     
     // assign fitness to program
