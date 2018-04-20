@@ -11,14 +11,14 @@ license: GNU/GPL v3
 #include <Eigen/Dense>
 #include <memory>
 #include <shogun/base/init.h>
+
+void noop(int n) { }
 #ifdef _OPENMP
     #include <omp.h>
-    #define SET_THREADS( n ) (omp_set_num_threads( n ))
 #else
-void noop(int n) { }
     #define omp_get_thread_num() 0
     #define omp_get_max_threads() 1
-    #define SET_THREADS( n ) (noop(n) )
+    #define omp_set_num_threads( x ) 0
 #endif
 // stuff being used
 using Eigen::MatrixXd;
@@ -42,9 +42,15 @@ using std::cout;
 #include "variation.h"
 #include "ml.h"
 #include "node/node.h"
+
 #ifdef USE_CUDA
     #include "node-cuda/cuda_utils.h" 
+    #define GPU true
+#else
+    #define GPU false
+    #define initialize_cuda() 0
 #endif
+
 //shogun initialization
 void __attribute__ ((constructor)) ctor()
 {
@@ -97,8 +103,8 @@ namespace FT{
                 str_dim = "";
                 name="";
                 if (n_threads!=0)
-                    SET_THREADS(n_threads);
-                if (USE_CUDA)
+                    omp_set_num_threads(n_threads);
+                if (GPU)
                     initialize_cuda();
             }
             
@@ -168,7 +174,7 @@ namespace FT{
             void set_name(string s){name = s;}
             
             ///set number of threads
-            void set_threads(unsigned t){ SET_THREADS(t); }
+            void set_threads(unsigned t){ omp_set_num_threads(t); }
             /*                                                      
              * getting functions
              */

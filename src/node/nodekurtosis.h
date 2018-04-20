@@ -38,7 +38,7 @@ namespace FT{
     /// Evaluates the node and updates the stack states. 
     void NodeKurtosis::evaluate(const MatrixXd& X, const VectorXd& y,
                   const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-                  Stacks& stack);
+                  Stacks& stack)
     {
         ArrayXd tmp(stack.z.top().first.size());
         

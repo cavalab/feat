@@ -239,8 +239,8 @@ namespace FT{
             {
                 std::cout << "individual::out() error: node " << n->name << " in " + program_str() + 
                              " is invalid\n";
-                std::cout << "float stack size: " << stack_f.size() << "\n";
-                std::cout << "bool stack size: " << stack_b.size() << "\n";
+                std::cout << "float stack size: " << stack.f.size() << "\n";
+                std::cout << "bool stack size: " << stack.b.size() << "\n";
                 std::cout << "op arity: " << n->arity['f'] << "f, " << n->arity['b'] << "b\n";
                 exit(1);
             }
@@ -303,7 +303,7 @@ namespace FT{
         choose_gpu();        
         
         // allocate memory for the stack on the device
-        std::cout << "X size: " << X.rows() << "x" << X.cols() << "\n"; 
+        /* std::cout << "X size: " << X.rows() << "x" << X.cols() << "\n"; */ 
         stack.allocate(stack_size,X.cols());        
         /* stack.f.resize( */
         // evaluate each node in program
@@ -332,18 +332,18 @@ namespace FT{
         // remove extraneous rows from stacks
         stack.trim();
         //check stack
-        std::cout << "stack.f:" << stack.f.rows() << "x" << stack.f.cols() << "\n";
-        for (unsigned i = 0; i < stack.f.rows() ; ++i){
-            for (unsigned j = 0; j<10 ; ++j)
-                std::cout << stack.f(i,j) << ",";
-            std::cout << "\n\n";
-        }
-        std::cout << "stack.b:" << stack.b.rows() << "x" << stack.b.cols() << "\n";
-        for (unsigned i = 0; i < stack.b.rows() ; ++i){
-            for (unsigned j = 0; j<10 ; ++j)
-                std::cout << stack.b(i,j) << ",";
-            std::cout << "\n\n";
-        }
+        /* std::cout << "stack.f:" << stack.f.rows() << "x" << stack.f.cols() << "\n"; */
+        /* for (unsigned i = 0; i < stack.f.rows() ; ++i){ */
+        /*     for (unsigned j = 0; j<10 ; ++j) */
+        /*         std::cout << stack.f(i,j) << ","; */
+        /*     std::cout << "\n\n"; */
+        /* } */
+        /* std::cout << "stack.b:" << stack.b.rows() << "x" << stack.b.cols() << "\n"; */
+        /* for (unsigned i = 0; i < stack.b.rows() ; ++i){ */
+        /*     for (unsigned j = 0; j<10 ; ++j) */
+        /*         std::cout << stack.b(i,j) << ","; */
+        /*     std::cout << "\n\n"; */
+        /* } */
         // convert stack_f to Phi
         params.msg("converting stacks to Phi",2);
         int cols;
@@ -369,7 +369,7 @@ namespace FT{
         Phi <<  PhiF.cast<double>(),
                 PhiB.cast<double>();
         
-        std::cout << "Phi:" << Phi.rows() << "x" << Phi.cols() << "\n";
+        /* std::cout << "Phi:" << Phi.rows() << "x" << Phi.cols() << "\n"; */
 
         for (unsigned int i=0; i<rows_f; ++i)
         {    
@@ -618,9 +618,9 @@ namespace FT{
                 current_stack_size[a.first] -= a.second;
                        
         }
-        std::cout << "stack size: \n";
-        for (const auto& s : max_stack_size)
-            std::cout << s.first << ":" << s.second << "\n";
+        /* std::cout << "stack size: \n"; */
+        /* for (const auto& s : max_stack_size) */
+        /*     std::cout << s.first << ":" << s.second << "\n"; */
         return max_stack_size;
     }
 }

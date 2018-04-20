@@ -67,9 +67,9 @@ namespace FT{
 			              Stacks& stack)
     {
         if (otype == 'b')
-            stack.b.push(ArrayXb::Constant(X.cols(),int(b_value)));
+            stack.b.push(ArrayXb::Constant(X.cols(),b_value));
         else 	
-            stack.f.push(ArrayXf::Constant(X.cols(),d_value));
+            stack.f.push(ArrayXd::Constant(X.cols(),d_value));
     }
 #else
     void NodeConstant::evaluate(const MatrixXd& X, const VectorXd& y,

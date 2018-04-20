@@ -130,9 +130,9 @@ namespace FT
         
         void allocate(const std::map<char, size_t>& stack_size, size_t N)
         {
-            std::cout << "before dev_allocate, dev_f is " << dev_f << "\n";
+            /* std::cout << "before dev_allocate, dev_f is " << dev_f << "\n"; */
             dev_allocate(dev_f, dev_b, N*stack_size.at('f'), N*stack_size.at('b'));
-            std::cout << "after dev_allocate, dev_f is " << dev_f << "\n";
+            /* std::cout << "after dev_allocate, dev_f is " << dev_f << "\n"; */
             this->N = N;
             f.resize(stack_size.at('f'),N);
             b.resize(stack_size.at('b'),N);
@@ -150,10 +150,10 @@ namespace FT
         /// resize the f and b stacks to match the outputs of the program
         void trim()
         {
-            std::cout << "resizing f to " << idx['f'] << "x" << f.cols() << "\n";
+            /* std::cout << "resizing f to " << idx['f'] << "x" << f.cols() << "\n"; */
             f.resize(idx['f'],f.cols());
             b.resize(idx['b'],b.cols());
-            std::cout << "new f size: " << f.size() << "," << f.rows() << "x" << f.cols() << "\n";
+            /* std::cout << "new f size: " << f.size() << "," << f.rows() << "x" << f.cols() << "\n"; */
             /* usigned frows = f.rows()-1; */
             /* for (unsigned r = idx['f']; r < f.rows(); ++r) */
             /*     f.block(r,0,frows-r,f.cols()) = f.block(r+1,0,frows-r,f.cols()); */
@@ -161,10 +161,10 @@ namespace FT
         }
         void copy_to_host(const std::map<char, size_t>& stack_size)
         {
-            std::cout << "size of f before copy_from_device: " << f.size() 
-                      << ", stack size: " << N*stack_size.at('f') << "\n";
-            std::cout << "size of b before copy_from_device: " << b.size() 
-                      << ", stack size: " << N*stack_size.at('b') << "\n";
+            /* std::cout << "size of f before copy_from_device: " << f.size() */ 
+            /*           << ", stack size: " << N*stack_size.at('f') << "\n"; */
+            /* std::cout << "size of b before copy_from_device: " << b.size() */ 
+            /*           << ", stack size: " << N*stack_size.at('b') << "\n"; */
 
             copy_from_device(dev_f, f.data(), dev_b, b.data(), N*stack_size.at('f'), 
                              N*stack_size.at('b'));

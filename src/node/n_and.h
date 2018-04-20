@@ -40,7 +40,7 @@ namespace FT{
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)
     {
-        stack.b.push_back(stack.b.pop() && stack.b.pop());
+        stack.b.push(stack.b.pop() && stack.b.pop());
 
     }
 #else
