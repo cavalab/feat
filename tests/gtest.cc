@@ -303,7 +303,7 @@ TEST(Individual, EvalEquation)
         ASSERT_TRUE(checkBrackets(feat.p_pop->individuals[i].get_eqn())); //TODO evaluate if string correct or not
     }
 }
-
+#ifndef USE_CUDA
 TEST(NodeTest, Evaluate)
 {
 	vector<ArrayXd> output;
@@ -435,27 +435,27 @@ TEST(NodeTest, Evaluate)
 	ASSERT_FALSE((isinf(x)).any());
 	ASSERT_FALSE((isnan(abs(x)).any()));
 	
-	std::unique_ptr<Node> expObj = std::unique_ptr<Node>(new NodeExponent());
+	std::unique_ptr<Node> exptObj = std::unique_ptr<Node>(new NodeExponent());
 	
 	stack.f.clear();
 	stack.b.clear();
 	stack.f.push(X.row(0));
 	stack.f.push(X.row(1));
 	
-	expObj->evaluate(X, Y, z1, stack);
+	exptObj->evaluate(X, Y, z1, stack);
 	
 	x = stack.f.pop(); 
 	
 	ASSERT_FALSE((isinf(x)).any());
 	ASSERT_FALSE((isnan(abs(x)).any()));
 	
-	std::unique_ptr<Node> exptObj = std::unique_ptr<Node>(new NodeExponential());
+	std::unique_ptr<Node> expObj = std::unique_ptr<Node>(new NodeExp());
 	
 	stack.f.clear();
 	stack.b.clear();
 	stack.f.push(X.row(0));
 	
-	exptObj->evaluate(X, Y, z1, stack);
+	expObj->evaluate(X, Y, z1, stack);
 	
 	x = stack.f.pop(); 
 	
@@ -696,7 +696,7 @@ TEST(NodeTest, Evaluate)
 	ASSERT_FALSE((isinf(x)).any());
 	ASSERT_FALSE((isnan(abs(x)).any()));
 	
-	std::unique_ptr<Node> gaus2dObj = std::unique_ptr<Node>(new Node2dGaussian());
+	std::unique_ptr<Node> gaus2dObj = std::unique_ptr<Node>(new NodeGaussian2D());
 	
 	stack.f.clear();
 	stack.b.clear();
@@ -712,7 +712,7 @@ TEST(NodeTest, Evaluate)
 	
 	//TODO NodeVariable, NodeConstant(both types)
 }
-
+#endif
 bool isValidProgram(NodeVector& program, unsigned num_features)
 {
     //checks whether program fulfills all its arities.
