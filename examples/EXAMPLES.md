@@ -2,9 +2,9 @@
 
 ## Command line example
 
-Fewtwo can be run from the command-line. All of its options are configurable there. 
-After a default build, the fewtwo executable will be in the `build` directory.  
-From the repo directory, type `./build/fewtwo -h` to see options.
+Feat can be run from the command-line. All of its options are configurable there. 
+After a default build, the feat executable will be in the `build` directory.  
+From the repo directory, type `./build/feat -h` to see options.
 
 The first argument to the executable should be the dataset file to learn from. This dataset should
 be a comma- or tab-delimited file with columns corresponding to features, one column corresponding
@@ -14,10 +14,10 @@ interpreted correctly.* See the datasets in the examples folder for guidance.
 
 ### ENC problem
 
-We will run Fewtwo on the [energy
+We will run Feat on the [energy
 efficiency](https://archive.ics.uci.edu/ml/datasets/Energy+efficiency) dataset from UCI, which is
 included in `examples/d_enc.txt`. 
-To run Fewtwo with a population 1000 for 100 generations using a random seed of 42, type
+To run Feat with a population 1000 for 100 generations using a random seed of 42, type
 
 ```
 ./build/feat examples/d_enc.csv -p 100 -g 100 -r 42
