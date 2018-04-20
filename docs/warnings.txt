@@ -1,10 +1,10 @@
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodelogit.h:12: warning: Compound FT::NodeLogit is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/utils.h:425: warning: Compound FT::Normalizer is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_exp.h:12: warning: Compound FT::NodeExp is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodevariable.h:12: warning: Compound FT::NodeVariable is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodelog.h:12: warning: Compound FT::NodeLog is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodevar.h:12: warning: Compound FT::NodeVar is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodeskew.h:12: warning: Compound FT::NodeSkew is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_gaussian2d.h:12: warning: Compound FT::NodeGaussian2D is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodekurtosis.h:12: warning: Compound FT::NodeKurtosis is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodeif.h:12: warning: Compound FT::NodeIf is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodecos.h:12: warning: Compound FT::NodeCos is not documented.
@@ -90,10 +90,10 @@
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/lexicase.h:17: warning: Member Lexicase(bool surv) (function) of class FT::Lexicase is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/selection_operator.h:14: warning: Member survival (variable) of class FT::SelectionOperator is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/selection_operator.h:15: warning: Member name (variable) of class FT::SelectionOperator is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml.h:65: warning: Member init() (function) of class FT::ML is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml.h:138: warning: Member predict(MatrixXd &X) (function) of class FT::ML is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml.h:140: warning: Member set_dtypes(const vector< char > &dtypes) (function) of class FT::ML is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml.h:159: warning: Member N (variable) of class FT::ML is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml.h:66: warning: Member init() (function) of class FT::ML is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml.h:140: warning: Member predict(MatrixXd &X) (function) of class FT::ML is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml.h:142: warning: Member set_dtypes(const vector< char > &dtypes) (function) of class FT::ML is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml.h:161: warning: Member N (variable) of class FT::ML is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:46: warning: Member total_arity() (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:122: warning: Member clone_impl() const =0 (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:46: warning: Member total_arity() (function) of class FT::Node is not documented.
@@ -114,13 +114,13 @@
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:46: warning: Member total_arity() (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodeequal.h:38: warning: Member clone_impl() const override (function) of class FT::NodeEqual is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:46: warning: Member total_arity() (function) of class FT::Node is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_exp.h:35: warning: Member clone_impl() const override (function) of class FT::NodeExp is not documented.
-/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:46: warning: Member total_arity() (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodeexponent.h:43: warning: Member clone_impl() const override (function) of class FT::NodeExponent is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:46: warning: Member total_arity() (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodeexponential.h:38: warning: Member clone_impl() const override (function) of class FT::NodeExponential is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:46: warning: Member total_arity() (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodegaussian.h:39: warning: Member clone_impl() const override (function) of class FT::NodeGaussian is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:46: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_gaussian2d.h:38: warning: Member clone_impl() const override (function) of class FT::NodeGaussian2D is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:46: warning: Member total_arity() (function) of class FT::Node is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/nodegeq.h:42: warning: Member clone_impl() const override (function) of class FT::NodeGEQ is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:46: warning: Member total_arity() (function) of class FT::Node is not documented.
@@ -260,6 +260,7 @@
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/utils.h:293: warning: Member operator<<(std::basic_ostream< T, Traits > &out, const Timer &timer) (friend) of class FT::Timer is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/variation.h:59: warning: The following parameters of FT::Variation::splice_programs(NodeVector &vnew, const NodeVector &v1, size_t i1, size_t j1, const NodeVector &v2, size_t i2, size_t j2) are not documented:
   parameter 'vnew'
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml/MulticlassLogisticRegression.h:92: warning: Member get_w() (function) of class shogun::CMulticlassLogisticRegression is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml/MyCARTree.h:231: warning: Member pre_sort_features(CFeatures *data, SGMatrix< float64_t > &sorted_feats, SGMatrix< index_t > &sorted_indices) (function) of class shogun::CMyCARTree is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml/MyCARTree.h:233: warning: Member set_sorted_features(SGMatrix< float64_t > &sorted_feats, SGMatrix< index_t > &sorted_indices) (function) of class shogun::CMyCARTree is not documented.
 /media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml/MyCARTree.h:264: warning: argument 'labels_vec' of command @param is not found in the argument list of shogun::CMyCARTree::compute_best_attribute(const SGMatrix< float64_t > &mat, const SGVector< float64_t > &weights, CLabels *labels, SGVector< float64_t > &left, SGVector< float64_t > &right, SGVector< bool > &is_left_final, int32_t &num_missing, int32_t &count_left, int32_t &count_right, float64_t &IG, int32_t subset_size=0, const SGVector< int32_t > &active_indices=SGVector< index_t >())

@@ -1,6 +1,5 @@
 var files =
 [
-    [ "cuda_utils.h", "de/d4f/cuda__utils_8h_source.html", null ],
     [ "evaluation.h", "d3/df9/evaluation_8h_source.html", null ],
     [ "feat.h", "d3/dff/feat_8h_source.html", null ],
     [ "featcv.h", "db/de9/featcv_8h_source.html", null ],
@@ -11,7 +10,7 @@ var files =
     [ "MulticlassLogisticRegression.h", "d4/dcc/MulticlassLogisticRegression_8h_source.html", null ],
     [ "MyCARTree.h", "d0/d7f/MyCARTree_8h_source.html", null ],
     [ "MyCARTreeNodeData.h", "de/d81/MyCARTreeNodeData_8h_source.html", null ],
-    [ "n_exp.h", "d1/d4b/n__exp_8h_source.html", null ],
+    [ "n_gaussian2d.h", "d8/da3/n__gaussian2d_8h_source.html", null ],
     [ "node.h", "d1/d77/node_8h_source.html", null ],
     [ "node2dgaussian.h", "d3/d7f/node2dgaussian_8h_source.html", null ],
     [ "nodeadd.h", "d7/d7a/nodeadd_8h_source.html", null ],
