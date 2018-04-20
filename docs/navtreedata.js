@@ -23,8 +23,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"d8/d3c/nodecube_8h_source.html",
-"db/dff/classshogun_1_1CMyCARTree.html#a638888affdd879c8fbb415c47bb11376",
+"d8/d3d/classFT_1_1NodeXor.html",
+"db/dff/classshogun_1_1CMyCARTree.html#a600d66b60e54b46820a70172e67ac3bb",
 "df/dfa/classFT_1_1ML.html#ae46f491cb0656cf64334f76d5ac07b9a"
 ];
 
