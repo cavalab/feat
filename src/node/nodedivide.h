@@ -53,15 +53,11 @@ namespace FT{
                         return limited(-this->W[1] * stack_f[stack_f.size()-1]/(stack_f[stack_f.size()-2] * pow(this->W[0], 2)));
                     case 1: // d/dx1
                     {
-                        std::cout << "Checking first derivative\n";
                         ArrayXd num = -this->W[1] * stack_f[stack_f.size() - 1];
-                        std::cout << "Num computed\n";
-                        ArrayXd denom = (this->W[0] * pow(stack_f[stack_f.size() - 2], 2));
-                        std::cout << "Denom computed\n";
+                        ArrayXd denom = limited(this->W[0] * pow(stack_f[stack_f.size() - 2], 2));
                         ArrayXd val = num/denom;
-                        std::cout << "Val computed\n";
                         // return -this->W[1] * stack_f[stack_f.size() - 1]/(this->W[0] * pow(stack_f[stack_f.size()], 2));
-                        return limited(val);
+                        return val;
                     }
                     case 0: // d/dx0
                     default:

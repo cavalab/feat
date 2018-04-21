@@ -13,12 +13,14 @@ using Eigen::VectorXd;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
 
 /**
-TODOS
+TODO
 ------------------------
 Integrate cost function
 Integrate vectorList
 Integrate pointers?
 More graceful handling of non derivative nodes (like adding one to derivative stack and such)
+TODO Integrate derivative of cost function pointer 
+TODO Make it so stops traversing once it hits a non-differentiable node and then goes upstream and finds another branch to traverse
 **/
 
 namespace FT {
@@ -30,6 +32,7 @@ namespace FT {
 		double n; // Learning rate
 		// void*(cost_func)(VectorXd, VectorXd);
 		callback cost_func;
+		callback d_cost_func;
 		MatrixXd X;
 		VectorXd labels;
 		int iters;
@@ -59,7 +62,6 @@ namespace FT {
 			}
 
 			stack_f.push_back(pop<ArrayXd>(execution_stack)); // Would be nice to create a general "pop" function that does both these steps at once
-
 			return stack_f;
 		}
 
@@ -153,9 +155,10 @@ namespace FT {
 		}
 
 	public:
-		Auto_backprop(vector<Node*> program, callback cost_func, MatrixXd X, VectorXd labels, int iters=1000, double n=0.1) {
+		Auto_backprop(vector<Node*> program, callback cost_func, callback d_cost_func, MatrixXd X, VectorXd labels, int iters=1000, double n=0.1) {
 			this->program = program;
 			this->cost_func = cost_func;
+			this->d_cost_func = d_cost_func;
 			this->X = X;
 			this->labels = labels;
 			this->iters = iters;
