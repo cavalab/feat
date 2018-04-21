@@ -48,7 +48,7 @@ namespace FT{
                         return limited(1/(W[0] * ArrayXd::Ones(stack_f[stack_f.size()-1].size())));
                     case 0: // d/dx0
                     default:
-                       return limited(1/(stack_f[stack_f.size()-1]));
+                        return limited(1/stack_f[stack_f.size()-1]);
                 } 
             }
         protected:

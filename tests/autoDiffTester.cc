@@ -28,6 +28,9 @@
 // Backprop progam
 #include "../src/auto_backprop.h"
 
+// Cost function
+#include "../src/metrics.h"
+
 // TODO - implement a testing method that prints out the derivatives for testing against outputs of tensorflow/pythong impl
 
 using namespace std;
@@ -202,38 +205,38 @@ int testNodes() {
 
 	// DIV NODE CHECK -------------------------------------------------------------------------------
 	toTest = new FT::NodeDivide();
-	expectedDerivative(0,0) = 0;	// Div by 0 (limited to 0)
-	expectedDerivative(1,0) = 1/1;
-	expectedDerivative(2,0) = 1/2;
-	expectedDerivative(3,0) = 1/3;
-	expectedDerivative(4,0) = 1/4; 
+	expectedDerivative(0,0) = MAX_DBL;	// Div by 0 (limited to 0)
+	expectedDerivative(1,0) = 1.0/1;
+	expectedDerivative(2,0) = 1.0/2;
+	expectedDerivative(3,0) = 1.0/3;
+	expectedDerivative(4,0) = 1.0/4; 
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 0).matrix()).norm() > 0.0001) {
 		std::cout << "Divide node (wtr to first input) failed!\n";
 	}
 
-	expectedDerivative(0,0) = 0;	// Div by 0
-	expectedDerivative(1,0) = -3/1;
-	expectedDerivative(2,0) = -2/4;
-	expectedDerivative(3,0) = -1/9;
-	expectedDerivative(4,0) = -0/16; 
+	expectedDerivative(0,0) = -MAX_DBL;	// Div by 0
+	expectedDerivative(1,0) = -3.0/1;
+	expectedDerivative(2,0) = -2.0/4;
+	expectedDerivative(3,0) = -1.0/9;
+	expectedDerivative(4,0) = -0.0/16; 
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 1).matrix()).norm() > 0.0001) {
 		std::cout << "Divide node (wtr to second input) failed!\n";
 	}
 
-	expectedDerivative(0,0) = 0;	// Div by 0
-	expectedDerivative(1,0) = 3/1;
-	expectedDerivative(2,0) = 2/2;
-	expectedDerivative(3,0) = 1/3;
-	expectedDerivative(4,0) = 0/4; 
+	expectedDerivative(0,0) = MAX_DBL;	// Div by 0
+	expectedDerivative(1,0) = 3.0/1;
+	expectedDerivative(2,0) = 2.0/2;
+	expectedDerivative(3,0) = 1.0/3;
+	expectedDerivative(4,0) = 0.0/4;
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 3).matrix()).norm() > 0.0001) {
 		std::cout << "Divide node (wtr to weight on first input) failed!\n";
 	}
 
-	expectedDerivative(0,0) = -0;	//Div by 0
-	expectedDerivative(1,0) = -3/1;
-	expectedDerivative(2,0) = -2/2;
-	expectedDerivative(3,0) = -1/3;
-	expectedDerivative(4,0) = -0/4;
+	expectedDerivative(0,0) = -MAX_DBL;	//Div by 0
+	expectedDerivative(1,0) = -3.0/1;
+	expectedDerivative(2,0) = -2.0/2;
+	expectedDerivative(3,0) = -1.0/3;
+	expectedDerivative(4,0) = -0.0/4;
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 2).matrix()).norm() > 0.0001) {
 		std::cout << "Divide node (wtr to weight on second input) failed!\n";
 	}
@@ -378,11 +381,11 @@ int testNodes() {
 
 	// LOG NODE CHECK -------------------------------------------------------------------------------
 	toTest = new FT::NodeLog();
-	expectedDerivative(0,0) = 1/4;
-	expectedDerivative(1,0) = 1/3;
-	expectedDerivative(2,0) = 1/2;
+	expectedDerivative(0,0) = 1.0/4;
+	expectedDerivative(1,0) = 1.0/3;
+	expectedDerivative(2,0) = 1.0/2;
 	expectedDerivative(3,0) = 1;
-	expectedDerivative(4,0) = 0; // Division by 0 error
+	expectedDerivative(4,0) = MAX_DBL; // Check if this is intended
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 0).matrix()).norm() > 0.0001) { // Currently pseudocode
 		std::cout << "Log node (wtr to input) failed!\n";
 	}
@@ -470,19 +473,19 @@ int testNodes() {
 
 	// TANH NODE CHECK-------------------------------------------------------------------------------
 	toTest = new FT::NodeTanh();
-	expectedDerivative(0,0) = 0.419974341614026069394496;
-	expectedDerivative(1,0) = 0.419974341614026069394496;
-	expectedDerivative(2,0) = 0.419974341614026069394496;
-	expectedDerivative(3,0) = 0.419974341614026069394496;
-	expectedDerivative(4,0) = 0.419974341614026069394496;
+	expectedDerivative(0,0) = 0.0013409506830258968799702;
+	expectedDerivative(1,0) = 0.00986603716544019127315616968;
+	expectedDerivative(2,0) = 0.07065082485316446568624765586105;
+	expectedDerivative(3,0) = 0.41997434161402606939449673904170;
+	expectedDerivative(4,0) = 1;
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 0).matrix()).norm() > 0.0001) { // Currently pseudocode
 		std::cout << "Tanh node (wtr to input) failed!\n";
 	}
 
-	expectedDerivative(0,0) = 0.00536380273210358751988087;
-	expectedDerivative(1,0) = 0.02959811149632057381946850;
-	expectedDerivative(2,0) = 0.14130164970632893137249531;
-	expectedDerivative(3,0) = 0.41997434161402606939449673;
+	expectedDerivative(0,0) = 4 * 0.0013409506830258968799702;
+	expectedDerivative(1,0) = 3 * 0.00986603716544019127315616968;
+	expectedDerivative(2,0) = 2 * 0.07065082485316446568624765586105;
+	expectedDerivative(3,0) = 1 * 0.41997434161402606939449673904170;
 	expectedDerivative(4,0) = 0;
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 1).matrix()).norm() > 0.0001) { // Currently pseudocode
 		std::cout << "Tanh node (wtr to weight) failed!\n";
@@ -531,7 +534,7 @@ int testDummyProgram() {
 	double learning_rate = 0.01;
 
 
-	// Auto_backprop(PROGRAM, COST_FUNCTION, INPUT_DATA, LABELS, ITERS, LEARNING RATE);
+	// Auto_backprop(PROGRAM, COST_FUNCTION, D_COST_FUNCTION, INPUT_DATA, LABELS, ITERS, LEARNING RATE);
 	FT::Auto_backprop* engine = new FT::Auto_backprop(p0, NULL, x, y, iters, learning_rate);
 	vector<Node*> predictor = engine->run();
 
