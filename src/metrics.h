@@ -13,12 +13,12 @@ namespace metrics{
     // Squared difference
     VectorXd squared_difference(const VectorXd& y, const VectorXd& yhat)
     {
-        return pow(y_hat - y, 2);
+        return pow(yhat - y, 2);
     }
 
     // Derivative of squared difference with respec to yhat
     VectorXd d_squared_difference(const VectorXd& y, const VectorXd& yhat) {
-        return 2 * (y_hat - y);
+        return 2 * (yhat - y);
     }
     
     /// log loss

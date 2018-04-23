@@ -29,7 +29,7 @@
 #include "../src/auto_backprop.h"
 
 // Cost function
-#include "../src/metrics.h"
+#include "../src/testMetrics.h"
 
 // TODO - implement a testing method that prints out the derivatives for testing against outputs of tensorflow/pythong impl
 
@@ -66,11 +66,15 @@ ArrayXd evaluateProgram(vector<Node*> program, MatrixXd data, VectorXd labels) {
 	vector<ArrayXd> stack_f;
 	vector<ArrayXb> stack_b;
 
+	std::cout << "Running evaluation.\n";
 	// Iterate through program and calculate results 
 	for (Node* n : program) {
+		std::cout << "Running: " << n->name << "\n";
 		n->evaluate(data, labels, stack_f, stack_b);
+		std::cout << "result:" << stack_f[stack_f.size() - 1] << "\n--";
 	}
 
+	std::cout << "Returning result.\n" << stack_f[stack_f.size() - 1] << "\n-----------------\n";
 	return pop(stack_f);
 }
 
@@ -493,65 +497,76 @@ int testNodes() {
 }
 
 int testDummyProgram() {
+	std::cout << "Initializing Dummy program Sin(X1 + X2 + X3)\n";
 	// Create a vector of nodes as a dummy program
 	vector<Node*> p0;
+	p0.push_back(new FT::NodeVariable(0));
 	p0.push_back(new FT::NodeVariable(1));
-	p0.push_back(new FT::NodeVariable(2));
 	p0.push_back(new FT::NodeAdd());
 	p0.push_back(new FT::NodeVariable(1));
-	p0.push_back(new FT::NodeTanh());
+	p0.push_back(new FT::NodeAdd());
 	p0.push_back(new FT::NodeSin());
 
 	// Create cost function 
 
 	// Create input data and labels
-	MatrixXd x(10, 2);
-	VectorXd y(10);
-	x << 0.0, -9.0,
-	     1.0, -8.0,
-	     2.0, -7.0,
-	     3.0, -6.0,
-	     4.0, -5.0,
-	     5.0, -4.0,
-	     6.0, -3.0,
-	     7.0, -2.0,
-	     8.0, -1.0,
-	     9.0, -0.0;
+	MatrixXd x(2, 2);
+	VectorXd y(2);
+	x << 0.0, 1.0, 
+		 2.0, 3.0;
 
-	y << 9.0,
-		 8.0,
-		 7.0,
-		 6.0,
-		 5.0,
-		 4.5,
-		 3.0,
-		 2.0,
-		 1.0,
-		 0.0;
+	y << 9.0, 
+		 8.0;
 
 	// Params
-	int iters = 500;
+	int iters = 5;
 	double learning_rate = 0.01;
 
-
+	std::cout << "Initialized dummy program. Running auto backprop\n";
 	// Auto_backprop(PROGRAM, COST_FUNCTION, D_COST_FUNCTION, INPUT_DATA, LABELS, ITERS, LEARNING RATE);
-	FT::Auto_backprop* engine = new FT::Auto_backprop(p0, NULL, x, y, iters, learning_rate);
+	FT::Auto_backprop* engine = new FT::Auto_backprop(p0, NULL, FT::metrics::d_squared_difference, x, y, iters, learning_rate);
 	vector<Node*> predictor = engine->run();
 
+	std::cout << "Initializing test of output\n";
 	// Test if output is correct
 	ArrayXd pred = evaluateProgram(predictor, x, y);
-	ArrayXd target;
-	target << 0; // Populate with expected results as dictated by tensorflow
+	std::cout << "Testing against target\n";
+	ArrayXd target(2,1); // Populate with expected results as dictated by tensorflow
+	target(0,0) = 0;
+	target(1,0) = 1;
+	// target(2,0) = 2;
+	// target(3,0) = 3;
+	// target(4,0) = 4;
+	// target(5,0) = 0;
+	// target(6,0) = 1;
+	// target(7,0) = 2;
+	// target(8,0) = 3;
+	// target(9,0) = 4; 
+
+	std::cout << "Evaluating\n" << target << "\n" << pred;
+
+	if ((target.matrix() - pred.matrix()).norm() > 0.0001) 
+	{
+		std::cout << "\nError with evaluation, engine does not match tensorflow!\n";
+	}
+
+	std::cout << "\nTesting weights\n";
 
 	// Test if weights are correct
-	vector<double> expected_weights = {};
+	vector<double> expected_weights;
+	expected_weights.push_back(1.0);
+	expected_weights.push_back(1.0);
+	expected_weights.push_back(1.0);
 
+
+	std::cout << "Running tests...\n";
 	int count = 0;
 	for (int i = 0; i < predictor.size(); i++) { // Need check if node doesn't have weights
 		// Check if node is differentiable
+		std::cout << "Testing ouput of " << predictor[i]->name << "\n";
 		if (isNodeDx(predictor[i])) {
 			if (abs(expected_weights[count] - dynamic_cast<NodeDx*>(predictor[i])->W[0]) > 0.00001) {
-				cout << "Discrepency with node " << i << "\n";
+				cout << "Discrepency with" << predictor[i]->name << "\n";
 			}
 			count++;
 		}
@@ -559,6 +574,6 @@ int testDummyProgram() {
 }
 
 int main() {
-	testNodes();
+	testDummyProgram();
 	return 1;
 }
