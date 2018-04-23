@@ -21,12 +21,12 @@ license: GNU/GPL v3
 #include <shogun/classifier/svm/LibLinear.h>
 #include <shogun/ensemble/MeanRule.h>
 #include <shogun/ensemble/MajorityVote.h>
-#include <shogun/multiclass/MulticlassLibLinear.h>
 #include <cmath>
 #include <shogun/machine/LinearMulticlassMachine.h>
 // internal includes
 #include "ml/MyCARTree.h"
 #include "ml/MulticlassLogisticRegression.h"
+#include "ml/MulticlassLibLinear.h"
 
 // stuff being used
 using std::string;
@@ -172,8 +172,14 @@ namespace FT{
         if (!ml_type.compare("LeastAngleRegression") || !ml_type.compare("LinearRidgeRegression")||
         	!ml_type.compare("SVM") || (!ml_type.compare("LR")))
         {
-            if(prob_type == PT_MULTICLASS && ( !ml_type.compare("LR")) ) {  
-            auto weights = dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(p_est)->get_w();
+            if(prob_type == PT_MULTICLASS && ( !ml_type.compare("LR") || !ml_type.compare("SVM") ) ) {
+		
+		vector<SGVector<float64_t>> weights;
+
+		if( !ml_type.compare("LR"))
+	            weights = dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(p_est)->get_w();
+		else //SVM
+	          weights = dynamic_pointer_cast<sh::CMulticlassLibLinear>(p_est)->get_w();
         
                 
             for( int j = 0;j<weights[0].size(); j++) 
