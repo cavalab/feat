@@ -163,9 +163,18 @@ namespace FT{
                     tw.push_back(term_weights[i]);                    
                 }
             }
-            auto t = terminals[r.random_choice(ti,tw)]->clone();
-            //std::cout << t->name << " ";
-            program.push_back(t->clone());
+            
+            if(ti.size() > 0 && tw.size() > 0)
+            {
+                auto t = terminals[r.random_choice(ti,tw)]->clone();
+                //std::cout << t->name << " ";
+                program.push_back(t->clone());
+            }
+            else
+            {
+                std::cout << "Error: Using longitudinal nodes when no longitudinal data available\n";
+                throw;
+            }
         }
         else
         {

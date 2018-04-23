@@ -32,7 +32,7 @@ namespace FT{
                 int x;
                 
                 for(x = 0; x < stack.z.top().first.size(); x++)
-                    tmp(x) = median(stack.z.top().first[x]);
+                    tmp(x) = median(limited(stack.z.top().first[x]));
                     
                 stack.z.pop();
 
@@ -43,7 +43,6 @@ namespace FT{
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-                string x1 = stack.zs.pop();
                 stack.fs.push("median(" + stack.zs.pop() + ")");
             }
         protected:
