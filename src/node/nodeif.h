@@ -26,7 +26,7 @@ namespace FT{
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)
             {
-                stack.f.push(stack.b.pop().select(stack.f.pop(),0));
+                stack.f.push(limited(stack.b.pop().select(stack.f.pop(),0)));
             }
 
             /// Evaluates the node symbolically
