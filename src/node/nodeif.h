@@ -32,8 +32,6 @@ namespace FT{
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-              string b = stack.bs.pop();
-              string f = stack.fs.pop();
               stack.fs.push("if-then-else(" + stack.bs.pop() + "," + stack.fs.pop() + "," + "0)");
             }
         protected:
