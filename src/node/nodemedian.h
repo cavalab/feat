@@ -43,7 +43,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-                string x1 = stack.zs.pop();
+                //string x1 = stack.zs.pop();
                 stack.fs.push("median(" + stack.zs.pop() + ")");
             }
         protected:
