@@ -107,4 +107,4 @@ There are 2 ways to set the hyper parameters for feat\_cv. The first method is t
 The second method is to create a input file containing group of parameters and pass the filepath using `-infile` flag. Check featcvinput.txt for a sample input file. The input file contains a string similar to the one in `cv_main.cc`.
 
 The general structure of input file is
-`[{('token1': val1, val2, val3)('token2': val1, val2)}, {('token1': val1, val2, val3)('token2': val1, val2)},]`
+`[{'token1': (val1, val2, val3), 'token2': (val1, val2)}, {'token1': (val1, val2, val3), 'token2': (val1, val2)}]`
