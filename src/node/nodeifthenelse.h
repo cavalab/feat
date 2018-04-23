@@ -28,7 +28,7 @@ namespace FT{
             {
                 ArrayXd f2 = stack.f.pop();
                 ArrayXd f1 = stack.f.pop();
-                stack.f.push(stack.b.pop().select(f1,f2));
+                stack.f.push(limited(stack.b.pop().select(f1,f2)));
             }
 
             /// Evaluates the node symbolically
