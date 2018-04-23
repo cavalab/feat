@@ -17,11 +17,13 @@ namespace FT{
 
     		virtual ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) = 0;
     		
-    		void derivative(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
+    		void derivative(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) 
+            {
                 gradients.push_back(getDerivative(stack_f, loc));
             }
 
-            void update(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, double n) {
+            void update(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, double n) 
+            {
                 ArrayXd update_value = ArrayXd::Ones(stack_f[0].size());
                 for(ArrayXd g : gradients) {
                     update_value *= g;
@@ -34,6 +36,15 @@ namespace FT{
                 	W_temp[i] = W[i] - n/update_value.size() * (d_w * update_value).sum();
                 }
                 this->W = W_temp;
+            }
+
+            void print_weight()
+            {
+                std::cout << this->name << "|W has value";
+                for (int i = 0; i < this->arity['f']; i++) {
+                    std::cout << " " << this->W[i];
+                }
+                std::cout << "\n";
             }
     };
 }	
