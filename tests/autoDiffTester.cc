@@ -521,7 +521,7 @@ int testDummyProgram() {
 		 8.0;
 
 	// Params
-	int iters = 1;
+	int iters = 100;
 	double learning_rate = 0.1;
 
 	std::cout << "Initialized dummy program. Running auto backprop\n";
