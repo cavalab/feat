@@ -20,14 +20,15 @@ namespace FT{
      * @class Evaluation
      * @brief evaluation mixin class for Feat
      */
-    typedef double (*funcPointer)(const VectorXd&, const VectorXd&, VectorXd&);
+    typedef double (*funcPointer)(const VectorXd&, const VectorXd&, VectorXd&,
+                                  const vector<float>&);
     
     class Evaluation 
     {
         public:
         
             /* VectorXd (* loss_fn)(const VectorXd&, const VectorXd&);  // pointer to loss function */
-            double (* score)(const VectorXd&, const VectorXd&, VectorXd& );    // pointer to scoring function
+            double (* score)(const VectorXd&, const VectorXd&, VectorXd&, const vector<float>&);    // pointer to scoring function
             std::map<string, funcPointer> score_hash;
 
             Evaluation(string scorer)
@@ -158,7 +159,7 @@ namespace FT{
         */ 
         assert(F.cols()>ind.loc);
         VectorXd loss;
-        ind.fitness = score(y, yhat, loss);
+        ind.fitness = score(y, yhat, loss, params.class_weights);
         F.col(ind.loc) = loss;  
          
         params.msg("ind " + std::to_string(ind.loc) + " fitness: " + std::to_string(ind.fitness),2);

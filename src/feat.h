@@ -75,7 +75,7 @@ namespace FT{
               
             Feat(int pop_size=100, int gens = 100, string ml = "LinearRidgeRegression", 
                    bool classification = false, int verbosity = 1, int max_stall = 0,
-                   string sel ="lexicase", string surv="pareto", float cross_rate = 0.5,
+                   string sel ="lexicase", string surv="nsga2", float cross_rate = 0.5,
                    char otype='a', string functions = "+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite", 
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
                    bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
@@ -159,6 +159,8 @@ namespace FT{
             ///set name for files
             void set_name(string s){name = s;}
 
+            ///set scoring function
+            void set_scorer(string s){scorer=s; params.scorer=s;}
             /*                                                      
              * getting functions
              */
@@ -534,7 +536,7 @@ namespace FT{
 
         VectorXd yhat = p_ml->fit(Phi,y,params,pass,best_ind.dtypes);
         VectorXd tmp;
-        double score = p_eval->score(y,yhat,tmp);
+        double score = p_eval->score(y,yhat,tmp,params.class_weights);
         params.msg("final_model score: " + std::to_string(score),1);
     }
     
@@ -552,9 +554,9 @@ namespace FT{
         params.set_term_weights(p_ml->get_weights());
         VectorXd tmp;
         /* std::cout << "initial_model: setting best_score\n"; */
-        best_score = p_eval->score(y_t, yhat,tmp);
+        best_score = p_eval->score(y_t, yhat,tmp, params.class_weights);
         /* std::cout << "initial_model: setting best_score_v\n"; */
-        best_score_v = p_eval->score(y_v, yhat_v,tmp); 
+        best_score_v = p_eval->score(y_v, yhat_v,tmp, params.class_weights); 
 
        
         // initialize best_ind to be all the features
@@ -644,7 +646,7 @@ namespace FT{
     {
         VectorXd yhat = predict(X, Z);
         VectorXd loss; 
-        return p_eval->score(y,yhat,loss);
+        return p_eval->score(y,yhat,loss,params.class_weights);
 
         /* if (params.classification) */
         /*     return p_eval->bal_accuracy(y,yhat,vector<int>(),false); */

@@ -44,6 +44,7 @@ namespace FT{
         unsigned int n_classes;                     ///< number of classes for classification 
         float cross_rate;                           ///< cross rate for variation
         vector<int> classes;                        ///< class labels
+        vector<float> class_weights;               ///< weights for class labels
         string scorer;                              ///< loss function
 
         Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
@@ -71,6 +72,7 @@ namespace FT{
             set_otypes();
             n_classes = 2;
             set_scorer(sc);
+            class_weights.resize(0);
         }
         
         ~Parameters(){}
@@ -453,8 +455,12 @@ namespace FT{
         
         n_classes = classes.size();
 
-        set_scorer(scorer); // in case classification has changed, set scorer
-       
+        // set class weights
+        class_weights.clear();
+        class_weights.resize(n_classes);
+        for (unsigned i = 0; i < n_classes; ++i)
+            class_weights.at(i) = (y.cast<int>().array() == classes.at(i)).count()/y.size(); 
+        
         std::cout << "number of classes: " << n_classes << "\n";
     }
 }
