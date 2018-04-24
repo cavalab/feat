@@ -32,8 +32,11 @@ namespace FT{
 		    {
 	    		if (otype == 'b')
 	                stack_b.push_back(X.row(loc).cast<bool>());
-	            else
-	                stack_f.push_back(X.row(loc));
+	            else {
+	            	stack_f.push_back(X.row(loc));
+	            	std::cout << this->name << " assigned value " << stack_f[stack_f.size() - 1];
+	            }
+	                
 		    }
 
 		    /// Evaluates the node symbolically

@@ -110,19 +110,22 @@ namespace FT {
 
 		// Compute gradients and update weights 
 		void backprop(vector<ArrayXd> f_stack) {
+			std::cout << "---------------------------\n";
 			vector<ArrayXd> derivatives;
 			derivatives.push_back(this->d_cost_func(this->labels, f_stack[f_stack.size() - 1])); // Might need a cost function node (still need to address this)
+			std::cout << "Cost derivative: " << this->d_cost_func(this->labels, f_stack[f_stack.size() - 1]) << "\n"; // Working according to test program
+			pop<ArrayXd>(&f_stack); // Get rid of input to cost function
 
 			vector<BP_NODE> executing; // Stores node and its associated derivatves
 			// Currently I don't think updates will be saved, might want a pointer of nodes so don't have to restock the list
 			vector<Node*> bp_program(this->program); // Program we loop through and edit during algorithm (is this a shallow or deep copy?)
 
-			std::cout << "Initializing backprop systems.\n";
+			// std::cout << "Initializing backprop systems.\n";
 			while (bp_program.size() > 0) {
 				Node* node = pop<Node*>(&bp_program);
-				std::cout << "Size of program: " << bp_program.size() << "\n";
-				std::cout << "Evaluating: " << node->name;
-				print_weights();
+				// std::cout << "Size of program: " << bp_program.size() << "\n";
+				// std::cout << "Evaluating: " << node->name;
+				// print_weights();
 
 				vector<ArrayXd> n_derivatives;
 
@@ -130,11 +133,11 @@ namespace FT {
 					NodeDx* dNode = dynamic_cast<NodeDx*>(node); // Could probably put this up one and have the if condition check if null
 					// Calculate all the derivatives and store them, then update all the weights and throw away the node
 					for (int i = 0; i < node->arity['f']; i++) {
-						dNode->derivative(n_derivatives, f_stack, node->arity['f'] + i);
+						dNode->derivative(n_derivatives, f_stack, i);
 					}
 
 					dNode->update(derivatives, f_stack, this->n);
-					dNode->print_weight();
+					// dNode->print_weight();
 
 					// Get rid of the input arguments for the node
 					for (int i = 0; i < dNode->arity['f']; i++) {
@@ -160,7 +163,8 @@ namespace FT {
 				}
 			}
 
-			std::cout << "Backprop terminated\n";
+			// std::cout << "Backprop terminated\n";
+			print_weights();
 		}
 
 		bool isNodeDx(Node* n) {
