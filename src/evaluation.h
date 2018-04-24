@@ -32,7 +32,7 @@ namespace FT{
 
             Evaluation(string scorer)
             {
-                /* std::cout << "Evaluation: scorer: " + scorer + "\n"; */
+                std::cout << "Evaluation: scorer: " + scorer + "\n";
                                
                 score_hash["mse"] = & metrics::mse;
                 score_hash["accuracy"] = & metrics::zero_one_loss;
