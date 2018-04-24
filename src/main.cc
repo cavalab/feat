@@ -97,6 +97,7 @@ int main(int argc, char** argv){
         cout << "-f\tfeedback strength of ML on variation probabilities (0.5)\n";
         cout << "-n\tname to append to files\n";
         cout << "-ldata\tpath to longitudinal data file\n";
+        cout << "-scorer\tscoring function [mse, accuracy, bal_accuracy, log]\n"; 
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
     }
@@ -143,11 +144,12 @@ int main(int argc, char** argv){
         feat.set_split(std::stod(input.getCmdOption("-isplit")));
     if(input.cmdOptionExists("-f"))
         feat.set_feedback(std::stod(input.getCmdOption("-f")));
-    if(input.cmdOptionExists("-ldata"))
-        ldataFile = input.getCmdOption("-ldata");
     if(input.cmdOptionExists("-n"))
         feat.set_name(input.getCmdOption("-n"));
-    
+    if(input.cmdOptionExists("-ldata"))
+        ldataFile = input.getCmdOption("-ldata");
+    if(input.cmdOptionExists("-scorer"))
+        feat.set_scorer(input.getCmdOption("-scorer"));
     //cout << "done.\n";
     ///////////////////////////////////////
 

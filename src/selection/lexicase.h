@@ -52,12 +52,12 @@ namespace FT{
         ArrayXd epsilon = ArrayXd::Zero(N);
       
         // if output is continuous, use epsilon lexicase            
-        /* if (!params.classification) */
-        /* { */
-        // for columns of F, calculate epsilon
-        for (int i = 0; i<epsilon.size(); ++i)
-            epsilon(i) = mad(F.row(i));
-        /* } */
+        if (!params.classification || params.scorer.compare("log"))
+        {
+            // for columns of F, calculate epsilon
+            for (int i = 0; i<epsilon.size(); ++i)
+                epsilon(i) = mad(F.row(i));
+        }
 
         // individual locations in F
         vector<size_t> starting_pool;

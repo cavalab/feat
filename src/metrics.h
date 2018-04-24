@@ -11,7 +11,8 @@ namespace metrics{
     /* Scoring functions */
     
     /// log loss
-    VectorXd log_loss(const VectorXd& y, const VectorXd& yhat)
+    VectorXd log_loss(const VectorXd& y, const VectorXd& yhat, 
+                      const vector<float>& weights={1.0,1.0})
     {
         /* std::cout << "in log loss\n"; */
         double eps = pow(10,-10);
@@ -21,23 +22,25 @@ namespace metrics{
         {
             if (yhat(i) < eps || 1 - yhat(i) < eps)
                 // clip probabilities since log loss is undefined for yhat=0 or yhat=1
-                loss(i) = -(y(i)*log(eps) + (1-y(i))*log(1-eps));
+                loss(i) = -(y(i)*log(eps) + (1-y(i))*log(1-eps))*weights.at(y(i));
             else
-                loss(i) = -(y(i)*log(yhat(i)) + (1-y(i))*log(1-yhat(i)));
+                loss(i) = -(y(i)*log(yhat(i)) + (1-y(i))*log(1-yhat(i)))*weights.at(y(i));
         }   
         return loss;
     }
 
     
     /// mean squared error
-    double mse(const VectorXd& y, const VectorXd& yhat, VectorXd& loss )
+    double mse(const VectorXd& y, const VectorXd& yhat, VectorXd& loss, 
+               const vector<float>& weights=vector<float>() )
     {
         loss = (yhat - y).array().pow(2);
         return loss.mean(); 
     };
 
 
-    double bal_zero_one_loss(const VectorXd& y, const VectorXd& yhat, VectorXd& loss )
+    double bal_zero_one_loss(const VectorXd& y, const VectorXd& yhat, VectorXd& loss, 
+               const vector<float>& weights=vector<float>() )
     {
         /* std::cout << "in bal_zero_one_loss\n"; */
         vector<double> uc = unique(y);
@@ -83,7 +86,8 @@ namespace metrics{
         return 1.0 - class_accuracies.mean();
     }
 
-    double bal_log_loss(const VectorXd& y, const VectorXd& yhat, VectorXd& loss )
+    double bal_log_loss(const VectorXd& y, const VectorXd& yhat, VectorXd& loss, 
+               const vector<float>& weights=vector<float>() )
     {
       
         loss = log_loss(y,yhat);
@@ -107,7 +111,8 @@ namespace metrics{
     }
     
     /// 1 - accuracy 
-    double zero_one_loss(const VectorXd& y, const VectorXd& yhat, VectorXd& loss )
+    double zero_one_loss(const VectorXd& y, const VectorXd& yhat, VectorXd& loss, 
+               const vector<float>& weights=vector<float>() )
     {
         loss = (yhat.cast<int>().array() != y.cast<int>().array()).cast<double>();
         return loss.mean();
