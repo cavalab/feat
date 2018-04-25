@@ -271,6 +271,12 @@ namespace FT{
                              std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
                                     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());  
             
+            /// predict on unseen data. return CLabels.
+            shared_ptr<CLabels> predict_labels(MatrixXd& X,
+                             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
+                              std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());  
+            
+
             /// predict on unseen data.             
             VectorXd predict(double * X, int rowsX, int colsX);      
             
@@ -408,37 +414,6 @@ namespace FT{
         
         train_test_split(X,y,Z,X_t,X_v,y_t,y_v,Z_t,Z_v,params.shuffle, params.split);
         
-       
-        /* std::cout << "X initial:"; */
-        /* for (unsigned i = 0; i < 10; ++i) */
-        /*     std::cout << X.col(i).transpose() << "\n"; */
-        /* std::cout<<"norms: "; */
-        /* for (unsigned i = 0; i < X.rows(); ++i) */
-        /*     std::cout << X.row(i).norm() << " "; */
-        /* std::cout << "\n"; */       
-        /* std::cout << "y:\n"; */
-        /* std::cout << y.transpose() << "\n"; */
- 
-        /* std::cout << "X_t initial:"; */
-        /* for (unsigned i = 0; i < 10; ++i) */
-        /*     std::cout << X_t.col(i).transpose() << "\n"; */
-        /* std::cout<<"norms: "; */
-        /* for (unsigned i = 0; i < X_t.rows(); ++i) */
-        /*     std::cout << X_t.row(i).norm() << " "; */
-        /* std::cout << "\n"; */       
-        /* std::cout << "y_t:\n"; */
-        /* std::cout << y_t.transpose() << "\n"; */
-
-        /* std::cout << "X_v initial:"; */
-        /* for (unsigned i = 0; i < 10; ++i) */
-        /*     std::cout << X_v.col(i).transpose() << "\n"; */
-        /* std::cout<<"norms: "; */
-        /* for (unsigned i = 0; i < X_v.rows(); ++i) */
-        /*     std::cout << X_v.row(i).norm() << " "; */
-        /* std::cout << "\n"; */       
-        /* std::cout << "y_v:\n"; */
-        /* std::cout << y_v.transpose() << "\n"; */
-
         // define terminals based on size of X
         params.set_terminals(X.rows(), Z);        
 
@@ -534,7 +509,7 @@ namespace FT{
         /* MatrixXd Phi = transform(X); */
         MatrixXd Phi = best_ind.out(X, Z,params);        
 
-        VectorXd yhat = p_ml->fit(Phi,y,params,pass,best_ind.dtypes);
+        shared_ptr<CLabels> yhat = p_ml->fit(Phi,y,params,pass,best_ind.dtypes);
         VectorXd tmp;
         double score = p_eval->score(y,yhat,tmp,params.class_weights);
         params.msg("final_model score: " + std::to_string(score),1);
@@ -546,9 +521,9 @@ namespace FT{
          * fits an ML model to the raw data as a starting point.
          */
         bool pass = true;
-        VectorXd yhat = p_ml->fit(X_t,y_t,params,pass);
+        shared_ptr<CLabels> yhat = p_ml->fit(X_t,y_t,params,pass);
         /* std::cout << "initial_model: predict\n"; */
-        VectorXd yhat_v = p_ml->predict(X_v);
+        shared_ptr<CLabels> yhat_v = p_ml->predict(X_v);
 
         // set terminal weights based on model
         params.set_term_weights(p_ml->get_weights());
@@ -611,6 +586,13 @@ namespace FT{
                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
     {        
         MatrixXd Phi = transform(X, Z);
+        return p_ml->predict_vector(Phi);        
+    }
+
+    shared_ptr<CLabels> Feat::predict_labels(MatrixXd& X,
+                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
+    {        
+        MatrixXd Phi = transform(X, Z);
         return p_ml->predict(Phi);        
     }
 
@@ -644,9 +626,9 @@ namespace FT{
     double Feat::score(MatrixXd& X, const VectorXd& y,
                        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
     {
-        VectorXd yhat = predict(X, Z);
+        shared_ptr<CLabels> labels = predict_labels(X, Z);
         VectorXd loss; 
-        return p_eval->score(y,yhat,loss,params.class_weights);
+        return p_eval->score(y,labels,loss,params.class_weights);
 
         /* if (params.classification) */
         /*     return p_eval->bal_accuracy(y,yhat,vector<int>(),false); */

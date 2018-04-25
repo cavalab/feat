@@ -44,7 +44,8 @@ namespace FT{
         unsigned int n_classes;                     ///< number of classes for classification 
         float cross_rate;                           ///< cross rate for variation
         vector<int> classes;                        ///< class labels
-        vector<float> class_weights;               ///< weights for class labels
+        vector<float> class_weights;                ///< weights for each class
+        vector<float> sample_weights;               ///< weights for each sample 
         string scorer;                              ///< loss function
 
         Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
@@ -72,7 +73,6 @@ namespace FT{
             set_otypes();
             n_classes = 2;
             set_scorer(sc);
-            class_weights.resize(0);
         }
         
         ~Parameters(){}
@@ -111,10 +111,18 @@ namespace FT{
             if (sc.empty())
             {
                 if (classification && n_classes == 2)
-                    /* scorer = "log"; */
-                    scorer = "bal_accuracy";
-                else if (classification)
-                    scorer = "bal_accuracy";
+                {
+                    if (ml.compare("LR") || ml.compare("SVM"))
+                        scorer = "log";
+                    else
+                        scorer = "zero_one";
+                }
+                else if (classification){
+                    if (ml.compare("LR") || ml.compare("SVM"))
+                        scorer = "multi_log";
+                    else
+                        scorer = "bal_zero_one";
+                }
                 else
                     scorer = "mse";
             }
@@ -440,13 +448,13 @@ namespace FT{
     void Parameters::set_classes(VectorXd& y)
     {
         classes.clear();
-        if ((y.array()==0 || y.array()==1).all()) 
-        {             
-            if (!ml.compare("LR") || !ml.compare("SVM"))  // re-format y to have labels -1, 1
-            {
-                y = (y.cast<int>().array() == 0).select(-1.0,y);
-            }
-        }
+        /* if ((y.array()==0 || y.array()==1).all()) */ 
+        /* { */             
+        /*     if (!ml.compare("LR") || !ml.compare("SVM"))  // re-format y to have labels -1, 1 */
+        /*     { */
+        /*         y = (y.cast<int>().array() == 0).select(-1.0,y); */
+        /*     } */
+        /* } */
         
         // set class labels
         vector<double> uc = unique(y);
@@ -456,11 +464,13 @@ namespace FT{
         n_classes = classes.size();
 
         // set class weights
-        class_weights.clear();
         class_weights.resize(n_classes);
+        sample_weights.clear();
         for (unsigned i = 0; i < n_classes; ++i)
             class_weights.at(i) = (y.cast<int>().array() == classes.at(i)).count()/y.size(); 
-        
+        for (unsigned i = 0; i < y.size(); ++i)
+            sample_weights.push_back(class_weights.at(int(y(i))));
+
         std::cout << "number of classes: " << n_classes << "\n";
     }
 }
