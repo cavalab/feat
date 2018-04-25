@@ -6,6 +6,7 @@ license: GNU/GPL v3
 #define METRIC_H
 
 #include <Eigen/Dense>
+#include <iostream>
 
 using Eigen::VectorXd;
 
@@ -17,6 +18,7 @@ namespace metrics{
     // Squared difference
     // Derivative of squared difference with respec to yhat
     VectorXd d_squared_difference(const VectorXd& y, const VectorXd& yhat) {
+    	std::cout << "YHat: " << yhat << "\nY: " << y << "\n"; 
         return 2 * (yhat - y);
     }
 } // metrics

@@ -86,26 +86,38 @@ namespace FT {
 		}
 
 		// Updates stacks to have proper value on top
-		void next_branch(vector<BP_NODE> executing, vector<Node*> bp_program, vector<ArrayXd> derivatives) {
+		void next_branch(vector<BP_NODE>& executing, vector<Node*>& bp_program, vector<ArrayXd>& derivatives) {
 			// While there are still nodes with branches to explore
 			if(!executing.empty()) {
 				// Declare variable to hold node and its associated derivatives
 				BP_NODE bp_node = pop<BP_NODE>(&executing); // Check first element
 	            // Loop until branch to explore is found
-	            while (bp_node.deriv_list.empty()) {
+	            while (bp_node.deriv_list.empty() && !executing.empty()) {
+	            	std::cout << "Looping\n";
 	                bp_node = pop<BP_NODE>(&executing); // Get node and its derivatves
-	                derivatives.pop_back(); // Remove associated gradients from stack
-	                
+	                std::cout << "recovered node\n";
+
+	                // For some reason this function is not removing element from the stack
+	                std::cout << "Before pop: " << derivatives.size() << "\n";
+	                pop<ArrayXd>(&derivatives); // Remove associated gradients from stack
+	                std::cout << "After pop: " << derivatives.size() << "\n";
+	                std::cout << "Checking if\n";
 	                if (executing.empty()) {
+	                	std::cout << "Returning\n";
 	                    return;
 	                }
 	            }
 	            
+	            std::cout << "Have parent node\n";
+	            std::cout << "Node: " << bp_node.n << "\n";
 	            // Should now have the next parent node and derivatves (stored in bp_node)
-	            bp_program.push_back(bp_node.n);
-	            derivatives.push_back(pop_front<ArrayXd>(&(bp_node.deriv_list))); // Pull derivative from front of list due to how we stored them earlier
-	            executing.push_back(bp_node); // Push it back on the stack in order to sync all the stacks
+	            if (!bp_node.deriv_list.empty()) {
+	            	bp_program.push_back(bp_node.n);
+	            	derivatives.push_back(pop_front<ArrayXd>(&(bp_node.deriv_list))); // Pull derivative from front of list due to how we stored them earlier
+	            	executing.push_back(bp_node); // Push it back on the stack in order to sync all the stacks
+	            }
 			}
+			std::cout << "Got to next branch\n";
 		}
 
 		// Compute gradients and update weights 
@@ -124,7 +136,7 @@ namespace FT {
 			while (bp_program.size() > 0) {
 				Node* node = pop<Node*>(&bp_program);
 				// std::cout << "Size of program: " << bp_program.size() << "\n";
-				// std::cout << "Evaluating: " << node->name;
+				std::cout << "Evaluating: " << node->name << "\n";
 				// print_weights();
 
 				vector<ArrayXd> n_derivatives;
@@ -151,13 +163,16 @@ namespace FT {
 					executing.push_back({dNode, n_derivatives});
 				}
 
+				std::cout << "Checking branch\n";
 				// Choosing how to move through tree
-				if (node->arity['f'] == 0) {
+				if (node->arity['f'] == 0 || !isNodeDx(node)) {
 					// Clean up gradients and find the parent node
+					pop<ArrayXd>(&derivatives);	// TODO check if this fixed
 					next_branch(executing, bp_program, derivatives);
 				} else {
 					node->visits += 1;
 					if (node->visits > node->arity['f']) {
+						std::cout << "Going to next branch";
 						next_branch(executing, bp_program, derivatives);
 					}
 				}

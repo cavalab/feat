@@ -43,6 +43,7 @@ namespace FT{
                     // std::cout << "Updated with " << (d_w * update_value).sum() << "\n";
                 }
                 this->W = W_temp;
+                std::cout << "Updated\n";
                 // print_weight();
             }
 

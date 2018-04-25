@@ -45,23 +45,26 @@ namespace FT{
                 stack_f.push_back("(" + x1 + "/" + x2 + ")");            	
             }
 
+            // Might want to check derivative orderings for other 2 arg nodes
             ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
+                ArrayXd x1 = stack_f[stack_f.size() - 2];
+                ArrayXd x2 = stack_f[stack_f.size() - 1];
                 switch (loc) {
-                    case 3: // d/dw1
-                        return limited(stack_f[stack_f.size()-1]/(this->W[0] * stack_f[stack_f.size()-2]));
-                    case 2: // d/dw0
-                        return limited(-this->W[1] * stack_f[stack_f.size()-1]/(stack_f[stack_f.size()-2] * pow(this->W[0], 2)));
-                    case 1: // d/dx1
+                    case 3:
+                        return limited(x1/(this->W[0] * x2));
+                    case 2:
+                        return limited(-this->W[1] * x1/(x2 * pow(this->W[0], 2)));
+                    case 1:
                     {
-                        ArrayXd num = -this->W[1] * stack_f[stack_f.size() - 1];
-                        ArrayXd denom = limited(this->W[0] * pow(stack_f[stack_f.size() - 2], 2));
+                        ArrayXd num = -this->W[1] * x1;
+                        ArrayXd denom = limited(this->W[0] * pow(x2, 2));
                         ArrayXd val = num/denom;
                         // return -this->W[1] * stack_f[stack_f.size() - 1]/(this->W[0] * pow(stack_f[stack_f.size()], 2));
                         return val;
                     }
-                    case 0: // d/dx0
+                    case 0:
                     default:
-                        return limited(this->W[1]/(this->W[0] * stack_f[stack_f.size()-2]));
+                        return limited(this->W[1]/(this->W[0] * x2));
                 } 
             }
 
