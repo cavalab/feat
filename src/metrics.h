@@ -4,20 +4,35 @@ license: GNU/GPL v3
 */
 #ifndef METRICS_H
 #define METRIC_H
+#include <shogun/labels/Labels.h>
 
 namespace FT{
 namespace metrics{
 
     /* Scoring functions */
     
+    /// mean squared error
+    double mse(const VectorXd& y, const shared_ptr<CLabels>& labels, VectorXd& loss, 
+               const vector<float>& weights=vector<float>() )
+    {
+        SGVector<double> tmp = dynamic_pointer_cast<sh::CRegressionLabels>(labels)->get_labels();
+        Map<VectorXd> yhat(tmp.data(),tmp.size());
+        loss = (yhat - y).array().pow(2);
+        return loss.mean(); 
+    }
+    
     /// log loss
-    VectorXd log_loss(const VectorXd& y, const VectorXd& yhat, 
+    double log_loss(const VectorXd& y, const shared_ptr<CLabels>& labels, VectorXd& loss,
                       const vector<float>& weights={1.0,1.0})
     {
+        dynamic_pointer_cast<sh::CBinaryLabels>(labels)->scores_to_probabilities();
+        SGVector<double> tmp = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_values();
+        Map<VectorXd> yhat(tmp.data(),tmp.size());
+
         /* std::cout << "in log loss\n"; */
         double eps = pow(10,-10);
 
-        VectorXd loss(y.rows());  
+        loss.resize(y.rows());  
         for (unsigned i = 0; i < y.rows(); ++i)
         {
             if (yhat(i) < eps || 1 - yhat(i) < eps)
@@ -26,22 +41,57 @@ namespace metrics{
             else
                 loss(i) = -(y(i)*log(yhat(i)) + (1-y(i))*log(1-yhat(i)))*weights.at(y(i));
         }   
-        return loss;
+        return loss.mean();
     }
 
-    
-    /// mean squared error
-    double mse(const VectorXd& y, const VectorXd& yhat, VectorXd& loss, 
+    /// multinomial log loss
+    double multi_log_loss(const VectorXd& y, const shared_ptr<CLabels>& labels, VectorXd& loss,
+                      const vector<float>& weights=vector<float>())
+    {
+        // get class labels
+        vector<double> uc = unique(y);
+        vector<float> w;
+        if (weights.empty())
+            w = vector<float>(1.0,uc.size());
+        else
+            w = weights;
+
+        ArrayXXd confidences(y.size(),uc.size());
+        for (const auto& c : uc)
+        {
+            SGVector<double> tmp = dynamic_pointer_cast<
+                                    sh::CMulticlassLabels>(labels)->get_multiclass_confidences(int(c));
+            confidences.col(int(c)) = Map<ArrayXd>(tmp.data(),tmp.size());
+        }
+
+        /* std::cout << "in log loss\n"; */
+        double eps = pow(10,-10);
+
+        loss.resize(y.rows());  
+        for (const auto& c : uc)
+        {
+            ArrayXd yhat = confidences.col(int(c));
+
+            for (unsigned i = 0; i < y.rows(); ++i)
+            {
+                double yi = y(i) == c ? 1.0 : 0.0 ; 
+                
+                if (yhat(i) < eps || 1 - yhat(i) < eps)
+                    // clip probabilities since log loss is undefined for yhat=0 or yhat=1
+                    loss(i) = -(yi*log(eps) + (1-yi)*log(1-eps))*w.at(y(i));
+                else
+                    loss(i) = -(yi*log(yhat(i)) + (1-yi)*log(1-yhat(i)))*w.at(y(i));
+            }   
+        }
+        return loss.mean();
+    }
+
+    double bal_zero_one_loss(const VectorXd& y, const shared_ptr<CLabels>& labels, VectorXd& loss, 
                const vector<float>& weights=vector<float>() )
     {
-        loss = (yhat - y).array().pow(2);
-        return loss.mean(); 
-    };
+        SGVector<double> tmp = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_labels();
+        Map<VectorXd> yhat(tmp.data(),tmp.size());
 
-
-    double bal_zero_one_loss(const VectorXd& y, const VectorXd& yhat, VectorXd& loss, 
-               const vector<float>& weights=vector<float>() )
-    {
         /* std::cout << "in bal_zero_one_loss\n"; */
         vector<double> uc = unique(y);
         vector<int> c;
@@ -86,34 +136,37 @@ namespace metrics{
         return 1.0 - class_accuracies.mean();
     }
 
-    double bal_log_loss(const VectorXd& y, const VectorXd& yhat, VectorXd& loss, 
-               const vector<float>& weights=vector<float>() )
-    {
+    /* double bal_log_loss(const VectorXd& y, const shared_ptr<CLabels>& labels, VectorXd& loss, */ 
+    /*            const vector<float>& weights=vector<float>() ) */
+    /* { */
       
-        loss = log_loss(y,yhat);
+    /*     loss = log_loss(y,yhat); */
 
-        vector<double> uc = unique(y);
-        vector<int> c; 
-        for (const auto& i : uc)
-            c.push_back(int(i));
+    /*     vector<double> uc = unique(y); */
+    /*     vector<int> c; */ 
+    /*     for (const auto& i : uc) */
+    /*         c.push_back(int(i)); */
         
-        vector<double> class_loss(c.size(),0);
+    /*     vector<double> class_loss(c.size(),0); */
 
-        for (unsigned i = 0; i < c.size(); ++i)
-        {
-            int n = (y.cast<int>().array() == c[i]).count();
-            class_loss[i] = (y.cast<int>().array() == c[i]).select(loss.array(),0).sum()/n;
+    /*     for (unsigned i = 0; i < c.size(); ++i) */
+    /*     { */
+    /*         int n = (y.cast<int>().array() == c[i]).count(); */
+    /*         class_loss[i] = (y.cast<int>().array() == c[i]).select(loss.array(),0).sum()/n; */
         
-        }
-        // return balanced class losses 
-        Map<ArrayXd> cl(class_loss.data(),class_loss.size());        
-        return cl.mean();
-    }
+    /*     } */
+    /*     // return balanced class losses */ 
+    /*     Map<ArrayXd> cl(class_loss.data(),class_loss.size()); */        
+    /*     return cl.mean(); */
+    /* } */
     
     /// 1 - accuracy 
-    double zero_one_loss(const VectorXd& y, const VectorXd& yhat, VectorXd& loss, 
+    double zero_one_loss(const VectorXd& y, const shared_ptr<CLabels>& labels, VectorXd& loss, 
                const vector<float>& weights=vector<float>() )
     {
+        SGVector<double> tmp = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_labels();
+        Map<VectorXd> yhat(tmp.data(),tmp.size());
+
         loss = (yhat.cast<int>().array() != y.cast<int>().array()).cast<double>();
         return loss.mean();
     }
