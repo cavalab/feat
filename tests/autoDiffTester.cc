@@ -3,26 +3,27 @@
 #include <string>
 #include <Eigen/Dense>
 #include <math.h>
+#include <sstream>
 
 // Include node and node children
 #include "../src/node/node.h"
 #include "../src/node/nodeDx.h"
-#include "../src/node/nodeadd.h"
-#include "../src/node/nodecos.h"
-#include "../src/node/nodecube.h"
-#include "../src/node/nodedivide.h"
-#include "../src/node/nodeexponent.h"
-#include "../src/node/nodemultiply.h"
-#include "../src/node/nodeexponential.h"
-#include "../src/node/nodegaussian.h"
-#include "../src/node/nodelog.h"
-#include "../src/node/nodelogit.h"
-#include "../src/node/noderelu.h"
-#include "../src/node/nodesqrt.h"
-#include "../src/node/nodesin.h"
-#include "../src/node/nodesquare.h"
-#include "../src/node/nodesubtract.h"
-#include "../src/node/nodetanh.h"
+#include "../src/node/nodeadd.h" 		// Tested
+#include "../src/node/nodecos.h"		// Tested
+#include "../src/node/nodecube.h"		// Test
+#include "../src/node/nodedivide.h"		// Tested
+#include "../src/node/nodeexponent.h"	// Tested
+#include "../src/node/nodemultiply.h"	// Tested <- Check again
+#include "../src/node/nodeexponential.h"// Tested
+#include "../src/node/nodegaussian.h"   // Tested <- Check again
+#include "../src/node/nodelog.h"		// Tested
+#include "../src/node/nodelogit.h"		// Tested
+#include "../src/node/noderelu.h"		// Tested
+#include "../src/node/nodesqrt.h"		// Tested
+#include "../src/node/nodesin.h"		// Tested
+#include "../src/node/nodesquare.h"		// Tested
+#include "../src/node/nodesubtract.h"   // Tested
+#include "../src/node/nodetanh.h"		// Tested
 #include "../src/node/nodevariable.h"
 
 // Backprop progam
@@ -496,32 +497,76 @@ int testNodes() {
 	}
 }
 
-int testDummyProgram() {
+vector<Node*> programGen() {
+	vector<Node*> program;
+	std::string txt;
+
+	std::cout << "Please input test program. ex: Var1 Var2 + cos" << "\n";
+	getline(std::cin, txt);
+	char ch = ' ';
+	size_t pos = txt.find( ch );
+    size_t initialPos = 0;
+
+    // Decompose statement
+    while( pos != std::string::npos ) {
+    	std::string token = txt.substr( initialPos, pos - initialPos );
+        std::cout << token << "\n";
+
+        if (token == "+") {
+        	program.push_back(new FT::NodeAdd());
+        } else if (token == "-") {
+        	program.push_back(new FT::NodeSubtract());
+        } else if (token == "/") {
+        	program.push_back(new FT::NodeDivide());
+        } else if (token == "*") {
+        	program.push_back(new FT::NodeMultiply());
+        } else if (token == "cos") {
+        	program.push_back(new FT::NodeCos());
+        } else if (token == "sin") {
+        	program.push_back(new FT::NodeSin());
+        } else if (token == "x0") {
+        	program.push_back(new FT::NodeVariable(0));
+        } else if (token == "x1") {
+        	program.push_back(new FT::NodeVariable(1));
+        }
+
+        initialPos = pos + 1;
+
+        pos = txt.find( ch, initialPos );
+    }
+
+    // Add the last one
+    std::cout << txt.substr( initialPos, std::min( pos, txt.size() ) - initialPos + 1 ) << "\n";
+    std::cout << "ProgramGen done";
+
+    return program;
+}
+
+int testDummyProgram(int iters) {
 	std::cout << "Initializing Dummy program Sin(X1 + X2 + X3)\n";
 	// Create a vector of nodes as a dummy program
 	vector<Node*> p0;
 	p0.push_back(new FT::NodeVariable(0));
-	p0.push_back(new FT::NodeVariable(1));
-	p0.push_back(new FT::NodeAdd());
-	p0.push_back(new FT::NodeSin());
+	//p0.push_back(new FT::NodeVariable(1));
 	p0.push_back(new FT::NodeCos());
-	// p0.push_back(new FT::NodeVariable(1));
-	// p0.push_back(new FT::NodeAdd());
-	// p0.push_back(new FT::NodeSin());
+	p0.push_back(new FT::NodeVariable(1));
+	p0.push_back(new FT::NodeSin());
+	p0.push_back(new FT::NodeAdd());
+	p0.push_back(new FT::NodeLogit());
 
 	// Create cost function 
 
 	// Create input data and labels
 	MatrixXd x(2, 2);
 	VectorXd y(2);
-	x << 0.0, 1.0, 
-		 1.0, 0.0;
+	x << 7.3, 6.7, 
+		 12.4, 13.2;
 
 	y << 9.0, 
 		 8.0;
 
 	// Params
-	int iters = 100;
+	// int iters = 100;
 	double learning_rate = 0.1;
 
 	std::cout << "Initialized dummy program. Running auto backprop\n";
@@ -576,6 +621,20 @@ int testDummyProgram() {
 }
 
 int main() {
-	testDummyProgram();
+	int myNumber = 0;
+	string input = "";
+	programGen();
+	while (true) {
+		cout << "Please enter a valid number: ";
+	   	getline(cin, input);
+
+	   	// This code converts from string to number safely.
+	   	stringstream myStream(input);
+	   	if (myStream >> myNumber)
+	    	break;
+	   	cout << "Invalid number, please try again" << endl;
+	}
+ 	cout << "Running with : " << myNumber << endl << endl;
+	testDummyProgram(myNumber);
 	return 1;
 }
