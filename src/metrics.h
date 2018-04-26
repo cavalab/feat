@@ -59,18 +59,34 @@ namespace metrics{
         else
             w = weights;
 
-        ArrayXXd confidences(y.size(),uc.size());
-        for (const auto& c : uc)
-        {
-            SGVector<double> tmp = dynamic_pointer_cast<
-                                    sh::CMulticlassLabels>(labels)->get_multiclass_confidences(int(c));
-            confidences.col(int(c)) = Map<ArrayXd>(tmp.data(),tmp.size());
-        }
+        SGVector<double> labs = dynamic_pointer_cast<sh::CMulticlassLabels>(labels)->
+                                                            get_unique_labels();
+        /* std::cout << "unique labels: \n"; */ 
+        /* for (int i = 0; i < labs.size(); ++i) std::cout << labs[i] << " " ; std::cout << "\n"; */
 
+        /* int nclasses = dynamic_pointer_cast<sh::CMulticlassLabels>(labels)->get_num_classes(); */
+        /* std::cout << "nclasses: " << nclasses << "\n"; */
+
+        SGVector<double> ypred = dynamic_pointer_cast<sh::CMulticlassLabels>(labels)->
+                                                            get_labels();
+        Map<ArrayXd> yhat(ypred.data(),y.size());
+        /* std::cout << "yhat: " << yhat.transpose() << "\n"; */
+
+        ArrayXXd confidences(y.size(),uc.size());
+        std::cout << "confidences:\n"; 
+        for (unsigned i =0; i<y.size(); ++i)
+        {
+            SGVector<double> tmp = dynamic_pointer_cast<sh::CMulticlassLabels>(labels)->
+                                                            get_multiclass_confidences(int(i));
+            confidences.row(i) = Map<ArrayXd>(tmp.data(),tmp.size());
+            std::cout << confidences.row(i) << "\n";
+        }
+        for (auto c : uc)
+            std::cout << "class " << int(c) << ": " << confidences.col(int(c)).transpose() << "\n";
         /* std::cout << "in log loss\n"; */
         double eps = pow(10,-10);
 
-        loss.resize(y.rows());  
+        loss = VectorXd::Zero(y.rows());  
         for (const auto& c : uc)
         {
             ArrayXd yhat = confidences.col(int(c));
@@ -78,21 +94,30 @@ namespace metrics{
             for (unsigned i = 0; i < y.rows(); ++i)
             {
                 double yi = y(i) == c ? 1.0 : 0.0 ; 
-                
+                std::cout << "yi: " << yi << ", yhat(i): " << yhat(i) ;  
                 if (yhat(i) < eps || 1 - yhat(i) < eps)
+                {
                     // clip probabilities since log loss is undefined for yhat=0 or yhat=1
-                    loss(i) = -(yi*log(eps) + (1-yi)*log(1-eps))*w.at(y(i));
+                    loss(i) += -(yi*log(eps) + (1-yi)*log(1-eps))*w.at(y(i));
+                    std::cout << "loss(" << i << ") += " << -(yi*log(eps) + (1-yi)*log(1-eps))*w.at(y(i)) ;
+                }
                 else
-                    loss(i) = -(yi*log(yhat(i)) + (1-yi)*log(1-yhat(i)))*w.at(y(i));
+                {
+                    loss(i) += -(yi*log(yhat(i)) + (1-yi)*log(1-yhat(i)))*w.at(y(i));
+                    std::cout << "loss(" << i << ") += " << -(yi*log(yhat(i)) + (1-yi)*log(1-yhat(i)))*w.at(y(i));
+                }
+                /* std::cout << "\n"; */
             }   
         }
+        std::cout << "loss: " << loss.transpose() << "\n";
+        std::cout << "mean loss: " << loss.mean() << "\n";
         return loss.mean();
     }
 
     double bal_zero_one_loss(const VectorXd& y, const shared_ptr<CLabels>& labels, VectorXd& loss, 
                const vector<float>& weights=vector<float>() )
     {
-        SGVector<double> tmp = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_labels();
+        SGVector<double> tmp = dynamic_pointer_cast<sh::CMulticlassLabels>(labels)->get_labels();
         Map<VectorXd> yhat(tmp.data(),tmp.size());
 
         /* std::cout << "in bal_zero_one_loss\n"; */
@@ -171,6 +196,7 @@ namespace metrics{
         Map<VectorXd> yhat(tmp.data(),tmp.size());
 
         loss = (yhat.cast<int>().array() != y.cast<int>().array()).cast<double>();
+        //TODO: weight loss by sample weights
         return loss.mean();
     }
    

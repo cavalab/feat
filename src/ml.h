@@ -26,7 +26,7 @@ license: GNU/GPL v3
 // internal includes
 #include "ml/MyCARTree.h"
 #include "ml/MulticlassLogisticRegression.h"
-#include "ml/MulticlassLibLinear.h"
+#include "ml/MyMulticlassLibLinear.h"
 
 // stuff being used
 using std::string;
@@ -36,6 +36,7 @@ using std::make_shared;
 using std::cout;
 namespace sh = shogun;
 using sh::EProblemType; 
+using sh::EProbHeuristicType;
 namespace FT{
 	
 	/*!
@@ -104,8 +105,12 @@ namespace FT{
                 {               
                 	if(prob_type==PT_BINARY)
                         p_est = make_shared<sh::CLibLinear>(sh::L2R_L2LOSS_SVC_DUAL);       
-                    else if (prob_type==PT_MULTICLASS)
-                        p_est = make_shared<sh::CMulticlassLibLinear>();
+                    else if (prob_type==PT_MULTICLASS){
+                        p_est = make_shared<CMyMulticlassLibLinear>();
+                        dynamic_pointer_cast<CMyMulticlassLibLinear>(p_est)->
+                                                                     set_prob_heuris(sh::OVA_NORM);
+
+                    }
 	                else                // SVR
 	                	p_est = make_shared<sh::CLibLinearRegression>(); 
                     
@@ -121,7 +126,11 @@ namespace FT{
                         //cout << "set ml type to CLibLinear\n";
                     }
                     else    // multiclass  
+                    {
                         p_est = make_shared<sh::CMulticlassLogisticRegression>();
+                        dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(p_est)->
+                                                                     set_prob_heuris(sh::OVA_NORM);
+                    }
 			
                 
                 }
@@ -186,7 +195,7 @@ namespace FT{
 		if( !ml_type.compare("LR"))
 	            weights = dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(p_est)->get_w();
 		else //SVM
-	          weights = dynamic_pointer_cast<sh::CMulticlassLibLinear>(p_est)->get_w();
+	          weights = dynamic_pointer_cast<sh::CMyMulticlassLibLinear>(p_est)->get_w();
         
                 
             for( int j = 0;j<weights[0].size(); j++) 
@@ -264,23 +273,23 @@ namespace FT{
             N.fit_normalize(X, dtypes);
          
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
-        //std::cout << "setting labels (n_classes = " << params.n_classes << ")\n"; 
-        //cout << "y is " << y.transpose() << "\n";
+        /* cout << "y is " << y.transpose() << "\n"; */
         if(prob_type==PT_BINARY && 
                 (!ml_type.compare("LR") || !ml_type.compare("SVM")))  // binary classification           	
         {
-            
-            /* CBinaryLabels tmp = CBinaryLabels(SGVector<float64_t>(y), 0.5); */
-            /* SGVector<float64_t> testy = tmp.get_labels(); */
-            /* std::cout << "original labels: \n"; */
-            /* std::cout << y.transpose() << "\n"; */
-            /* std::cout << "thresholded labels: \n"; */
-            /* Map<VectorXd> testye(testy.data(),testy.size()); */
-            /* std::cout << testye.transpose() << "\n"; */
-        	p_est->set_labels(some<CBinaryLabels>(SGVector<float64_t>(y), 0.5));       	
+            p_est->set_labels(some<CBinaryLabels>(SGVector<float64_t>(y), 0.5));       	
         }
         else if (prob_type!=PT_REGRESSION)                         // multiclass classification       
+        {
             p_est->set_labels(some<CMulticlassLabels>(SGVector<float64_t>(y)));
+            /* auto labels_train = (CMulticlassLabels *)p_est->get_labels(); */
+            /* SGVector<double> labs = labels_train->get_unique_labels(); */
+            /* std::cout << "unique labels: \n"; */ 
+            /* for (int i = 0; i < labs.size(); ++i) std::cout << labs[i] << " " ; std::cout << "\n"; */
+
+            /* int nclasses = labels_train->get_num_classes(); */
+            /* std::cout << "nclasses: " << nclasses << "\n"; */
+        }
         else                                                    // regression
             p_est->set_labels(some<CRegressionLabels>(SGVector<float64_t>(y)));
         
@@ -321,17 +330,15 @@ namespace FT{
         //y_pred.display_vector();
         // map to Eigen vector
         Map<VectorXd> yhat(y_pred.data(),y_pred.size());
-        // recast -1 values as 0 if needed
-        if (prob_type==PT_BINARY && 
-             (!ml_type.compare("LR") || !ml_type.compare("SVM")))     // binary classification
-            yhat = (yhat.cast<int>().array() == -1).select(0.0,yhat);
+        /* // recast -1 values as 0 if needed */
+        /* if (prob_type==PT_BINARY && */ 
+        /*      (!ml_type.compare("LR") || !ml_type.compare("SVM")))     // binary classification */
+        /*     yhat = (yhat.cast<int>().array() == -1).select(0.0,yhat); */
         
         if (isinf(yhat.array()).any() || isnan(yhat.array()).any())
         {
             pass = false;
         }
-        /* std::cout << "ML::fit yhat is " << yhat.transpose() << std::endl; */ 
-        // return
         //std::cout << "Returning from fit() from the ml.h" << std::endl;
         return labels;
     }
