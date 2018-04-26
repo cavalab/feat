@@ -28,7 +28,9 @@ namespace metrics{
         dynamic_pointer_cast<sh::CBinaryLabels>(labels)->scores_to_probabilities();
         SGVector<double> tmp = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_values();
         Map<VectorXd> yhat(tmp.data(),tmp.size());
-
+        /* std::cout << "yhat: " << yhat.transpose() << "\n"; */
+        /* std::cout << "weights: "; */
+        /* for (auto w : weights) std::cout << w << " " ; std::cout << "\n"; */
         /* std::cout << "in log loss\n"; */
         double eps = pow(10,-10);
 
@@ -41,6 +43,7 @@ namespace metrics{
             else
                 loss(i) = -(y(i)*log(yhat(i)) + (1-y(i))*log(1-yhat(i)))*weights.at(y(i));
         }   
+        /* std::cout << "loss: " << loss.transpose() << "\n"; */
         return loss.mean();
     }
 
