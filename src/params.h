@@ -234,6 +234,7 @@ namespace FT{
         }
         /// sets the number of classes based on target vector y.
         void set_classes(VectorXd& y);
+        void set_sample_weights(VectorXd& y);
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
@@ -448,29 +449,27 @@ namespace FT{
     void Parameters::set_classes(VectorXd& y)
     {
         classes.clear();
-        /* if ((y.array()==0 || y.array()==1).all()) */ 
-        /* { */             
-        /*     if (!ml.compare("LR") || !ml.compare("SVM"))  // re-format y to have labels -1, 1 */
-        /*     { */
-        /*         y = (y.cast<int>().array() == 0).select(-1.0,y); */
-        /*     } */
-        /* } */
-        
+
         // set class labels
         vector<double> uc = unique(y);
-        for (auto i : uc)
-            classes.push_back(int(i)); 
         
-        n_classes = classes.size();
+        n_classes = uc.size();
 
+        for (auto c : uc)
+            classes.push_back(int(c));
+    }
+
+    void Parameters::set_sample_weights(VectorXd& y)
+    {
         // set class weights
         class_weights.resize(n_classes);
         sample_weights.clear();
         for (unsigned i = 0; i < n_classes; ++i)
-            class_weights.at(i) = (y.cast<int>().array() == classes.at(i)).count()/y.size(); 
+            class_weights.at(i) = float((y.cast<int>().array() == int(classes.at(i))).count())/y.size(); 
         for (unsigned i = 0; i < y.size(); ++i)
             sample_weights.push_back(class_weights.at(int(y(i))));
-
+        std::cout << "class weights: "; 
+        for (auto c : class_weights) std::cout << c << " " ; std::cout << "\n";
         std::cout << "number of classes: " << n_classes << "\n";
     }
 }

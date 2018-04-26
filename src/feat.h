@@ -414,6 +414,9 @@ namespace FT{
         
         train_test_split(X,y,Z,X_t,X_v,y_t,y_v,Z_t,Z_v,params.shuffle, params.split);
         
+        if (params.classification) 
+            params.set_sample_weights(y_t); 
+       
         // define terminals based on size of X
         params.set_terminals(X.rows(), Z);        
 
