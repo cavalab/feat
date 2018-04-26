@@ -480,7 +480,8 @@ namespace FT{
             p_eval->val_fitness(*p_pop, X_t, Z_t, y_t, F_v, X_v, Z_v, y_v, params);
             update_best(true);                  // get the best validation model
         }
-       
+        else
+            best_score_v = best_score;
         params.msg("best validation representation: " + best_ind.get_eqn(),1);
         params.msg("validation score: " + std::to_string(best_score_v), 1);
         params.msg("fitting final model to all training data...",2);
@@ -525,23 +526,26 @@ namespace FT{
          */
         bool pass = true;
         shared_ptr<CLabels> yhat = p_ml->fit(X_t,y_t,params,pass);
-        /* std::cout << "initial_model: predict\n"; */
-        shared_ptr<CLabels> yhat_v = p_ml->predict(X_v);
 
         // set terminal weights based on model
         params.set_term_weights(p_ml->get_weights());
         VectorXd tmp;
-        /* std::cout << "initial_model: setting best_score\n"; */
         best_score = p_eval->score(y_t, yhat,tmp, params.class_weights);
-        /* std::cout << "initial_model: setting best_score_v\n"; */
-        best_score_v = p_eval->score(y_v, yhat_v,tmp, params.class_weights); 
-
-       
+        
+        if (params.split < 1.0)
+        {
+            shared_ptr<CLabels> yhat_v = p_ml->predict(X_v);
+            best_score_v = p_eval->score(y_v, yhat_v,tmp, params.class_weights); 
+        }
+        else
+            best_score_v = best_score;
+        
         // initialize best_ind to be all the features
         best_ind = Individual();
         for (unsigned i =0; i<X_t.rows(); ++i)
             best_ind.program.push_back(params.terminals[i]->clone());
         best_ind.fitness = best_score;
+        
         params.msg("initial training score: " +std::to_string(best_score),1);
         params.msg("initial validation score: " +std::to_string(best_score_v),1);
     }

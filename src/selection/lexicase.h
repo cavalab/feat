@@ -72,7 +72,7 @@ namespace FT{
         
         vector<size_t> F_locs(P,0); // selected individuals
         
-        /* #pragma omp parallel for */ 
+        #pragma omp parallel for 
         for (unsigned int i = 0; i<P; ++i)  // selection loop
         {
             vector<size_t> cases; // cases (samples)
@@ -86,23 +86,10 @@ namespace FT{
                 {
                     vector<size_t> choice_idxs(N-i);
                     iota(choice_idxs.begin(),choice_idxs.end(),0);
-                    /* std::cout << "choice_idxs: " ; */ 
-                    /* for (auto ch : choice_idxs) std::cout << ch << " " ; std::cout << "\n"; */
-                    /* std::cout << "sample_weights: " ; */ 
-                    /* for (auto ch : sample_weights) std::cout << ch << " " ; std::cout << "\n"; */
-
                     size_t idx = r.random_choice(choice_idxs,sample_weights);
-                    /* std::cout << "idx: " << idx << "\n"; */
                     cases.push_back(choices.at(idx));
-                    /* std::cout << "cases: " ; */ 
-                    /* for (auto ch : cases) std::cout << ch << " " ; std::cout << "\n"; */
                     choices.erase(choices.begin() + idx);
-                    /* std::cout << "choices: " ; */ 
-                    /* for (auto ch : choices) std::cout << ch << " " ; std::cout << "\n"; */
-
                     sample_weights.erase(sample_weights.begin() + idx);
-                    /* std::cout << "sample_weights: " ; */ 
-                    /* for (auto ch : sample_weights) std::cout << ch << " " ; std::cout << "\n"; */
                 }
             }
             else
