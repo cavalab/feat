@@ -484,8 +484,13 @@ namespace FT{
             params.msg("survivors:\n" + p_pop->print_eqns(), 2);
 
             update_best();
-            if (params.verbosity>0) print_stats(g+1);           
+            if(params.verbosity>0)
+                print_stats(g+1);
+            else
+                printProgress(((g+1)*1.0)/params.gens);
+                //cout<<"\rCompleted "<<((g+1)*100/params.gens)<<"%"<< std::flush;
         }
+        cout<<"\n";
         params.msg("finished",1);
         params.msg("best training representation: " + best_ind.get_eqn(),1);
         params.msg("train score: " + std::to_string(best_score), 1);
