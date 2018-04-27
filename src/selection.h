@@ -31,7 +31,7 @@ namespace FT{
             if (!type.compare("lexicase"))
                 pselector = std::make_shared<Lexicase>(survival); 
             else if (!type.compare("nsga2"))
-                pselector = std::make_shared<Pareto>(survival);
+                pselector = std::make_shared<NSGA2>(survival);
             else
                 std::cerr << "Undefined Selection Operator " + type + "\n";
                 
