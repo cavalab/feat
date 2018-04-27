@@ -27,7 +27,7 @@ namespace FT{
 			              Stacks& stack)
 			{
            		ArrayXd x = stack.f.pop();
-                stack.f.push( (abs(x) > NEAR_ZERO).select(log(abs(x)),MIN_DBL) );
+                stack.f.push(limited( (abs(x) > NEAR_ZERO).select(log(abs(x)),MIN_DBL) ) );
             }
 
             /// Evaluates the node symbolically

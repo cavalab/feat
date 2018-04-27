@@ -32,7 +32,7 @@ namespace FT{
 
             Evaluation(string scorer)
             {
-                /* std::cout << "Evaluation: scorer: " + scorer + "\n"; */
+                std::cout << "Evaluation: scorer: " + scorer + "\n";
                                
                 score_hash["mse"] = & metrics::mse;
                 score_hash["accuracy"] = & metrics::zero_one_loss;
@@ -112,14 +112,22 @@ namespace FT{
             params.msg("ML training on " + pop.individuals[i].get_eqn(), 2);
             bool pass = true;
             auto ml = std::make_shared<ML>(params);
+
             VectorXd yhat = ml->fit(Phi,y,params,pass,pop.individuals[i].dtypes);
-            if (!pass){
-                std::cerr << "Error training eqn " + pop.individuals[i].get_eqn() + "\n";
-                std::cerr << "with raw output " << pop.individuals[i].out(X, Z, params,y) << "\n";
-                throw;
-            }
+
+
+	    if (!pass){
+       		yhat = VectorXd::Zero(yhat.size())  ; //high fitness won't be selected  
+	        vector<double> w(0,Phi.rows());     // set weights to zero
+		pop.individuals[i].set_p(w,params.feedback);
+	    }
+	    else{
+                // assign weights to individual
+                pop.individuals[i].set_p(ml->get_weights(),params.feedback);
+	    }
+
             // assign weights to individual
-           //vector<double> w = ml->get_weights() 
+            //vector<double> w = ml->get_weights() 
             pop.individuals[i].set_p(ml->get_weights(),params.feedback);
             // assign F and aggregate fitness
             params.msg("Assigning fitness to " + pop.individuals[i].get_eqn(), 2);

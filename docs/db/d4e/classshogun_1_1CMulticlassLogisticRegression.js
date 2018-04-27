@@ -6,6 +6,7 @@ var classshogun_1_1CMulticlassLogisticRegression =
     [ "get_epsilon", "db/d4e/classshogun_1_1CMulticlassLogisticRegression.html#af5507379f29446ba8358577b23407461", null ],
     [ "get_max_iter", "db/d4e/classshogun_1_1CMulticlassLogisticRegression.html#aa9f28cd23c522ae4bebc991db217b2f1", null ],
     [ "get_name", "db/d4e/classshogun_1_1CMulticlassLogisticRegression.html#af12206650d9da5e1b9996eeaccb625a3", null ],
+    [ "get_w", "db/d4e/classshogun_1_1CMulticlassLogisticRegression.html#a33096f3cffa738fda518a210480970f2", null ],
     [ "get_z", "db/d4e/classshogun_1_1CMulticlassLogisticRegression.html#a664a6b7acf36210e8541febc0ddc6860", null ],
     [ "init_defaults", "db/d4e/classshogun_1_1CMulticlassLogisticRegression.html#a831754a9b786e6a57d8f79ffc18365b2", null ],
     [ "register_parameters", "db/d4e/classshogun_1_1CMulticlassLogisticRegression.html#aec2a79530dfb17795eb4168ae2fa7487", null ],
