@@ -3,8 +3,10 @@
 
 #include <Eigen/Dense>
 #include <iostream>
+#include <map>
 #include <vector>
 
+#include "stack.h"
 #include "node/node.h"
 #include "node/nodeDx.h"
 
@@ -58,23 +60,31 @@ namespace FT {
 		// Return the f_stack
 		vector<ArrayXd> forward_prop() 
 		{
+			std::cout << "Forward pass\n";
 			// Iterate through all the nodes evaluating and tracking ouputs
 			vector<ArrayXd> stack_f; // Tracks output values
 			vector<ArrayXd> execution_stack; // Tracks output values and groups them based on input to functions
 			vector<ArrayXb> tmp;
 
+			FT::Stacks stack;
+			std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z; 
+
 			// Use stack_f and execution stack to avoid issue of branches affecting what elements appear before a node 
 			for (Node* p : this->program) { // Can think about changing with call to Node for cases with nodes that aren't differentiable
+				std::cout << "Evaluating node: " << p->name << "\n";
 				for (int i = 0; i < p->arity['f']; i++) {
-					stack_f.push_back(execution_stack[execution_stack.size() - (p->arity['f'] - i)]);
+					stack_f.push_back(stack.f.at(stack.f.size() - (p->arity['f'] - i)));
+					// stack_f.push_back(execution_stack[execution_stack.size() - (p->arity['f'] - i)]);
 				}
 
-				p->evaluate(this->X, this->labels, execution_stack, tmp);
+				p->evaluate(this->X, this->labels, z, stack); // execution_stack, tmp);
 				p->visits = 0;
 			}
 
-			stack_f.push_back(pop<ArrayXd>(&execution_stack)); // Would be nice to create a general "pop" function that does both these steps at once
+			stack_f.push_back(stack.f.pop());
+			//stack_f.push_back(pop<ArrayXd>(&execution_stack)); // Would be nice to create a general "pop" function that does both these steps at once
 
+			std::cout << "Returning forward pass.\n";
 			return stack_f;
 		}
 

@@ -1,3 +1,4 @@
+#include <map>
 #include <vector>
 #include <iostream>
 #include <string>
@@ -18,7 +19,7 @@
 #include "../src/node/nodegaussian.h"   // Tested <- Check again
 #include "../src/node/nodelog.h"		// Tested
 #include "../src/node/nodelogit.h"		// Tested
-#include "../src/node/noderelu.h"		// Tested
+// #include "../src/node/noderelu.h"		// Tested
 #include "../src/node/nodesqrt.h"		// Tested
 #include "../src/node/nodesin.h"		// Tested
 #include "../src/node/nodesquare.h"		// Tested
@@ -31,6 +32,9 @@
 
 // Cost function
 #include "../src/testMetrics.h"
+
+// Stacks
+#include "../src/stack.h"
 
 // TODO - implement a testing method that prints out the derivatives for testing against outputs of tensorflow/pythong impl
 
@@ -67,11 +71,14 @@ ArrayXd evaluateProgram(vector<Node*> program, MatrixXd data, VectorXd labels) {
 	vector<ArrayXd> stack_f;
 	vector<ArrayXb> stack_b;
 
+	FT::Stacks stack;
+	std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z; 
+
 	std::cout << "Running evaluation.\n";
 	// Iterate through program and calculate results 
 	for (Node* n : program) {
 		std::cout << "Running: " << n->name << "\n";
-		n->evaluate(data, labels, stack_f, stack_b);
+		n->evaluate(data, labels, z, stack);
 		std::cout << "result:" << stack_f[stack_f.size() - 1] << "\n--";
 	}
 
