@@ -21,5 +21,5 @@ powerNodes: ../src/node/nodecube.h ../src/node/nodeexponent.h ../src/node/nodesq
 eNodes: ../src/node/nodeexponential.h ../src/node/nodelog.h
 	g++ -o eNodes ../src/node/nodeexponential.h ../src/node/nodelog.h
 
-miscNodes: ../src/node/nodelogit.h ../src/node/noderelu.h ../src/node/nodevariable.h ../src/node/nodegaussian.h ../src/node/node2dgaussian.h
-	g++ -o miscNodes ../src/node/nodelogit.h ../src/node/noderelu.h ../src/node/nodevariable.h ../src/node/nodegaussian.h ../src/node/node2dgaussian.h
+miscNodes: ../src/node/nodelogit.h ../src/node/noderelu.h ../src/node/nodevariable.h ../src/node/nodegaussian.h
+	g++ -o miscNodes ../src/node/nodelogit.h ../src/node/noderelu.h ../src/node/nodevariable.h ../src/node/nodegaussian.h

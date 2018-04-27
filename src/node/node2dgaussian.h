@@ -5,7 +5,10 @@ license: GNU/GPL v3
 #ifndef NODE_2DGAUSSIAN
 #define NODE_2DGAUSSIAN
 
+#include <numeric>
+
 #include "nodeDx.h"
+#include "../utils.h"
 
 namespace FT{
 	class Node2dGaussian : public NodeDx
@@ -48,13 +51,6 @@ namespace FT{
                     default:
                         return -2 * pow(W[0], 2) * stack_f[stack_f.size() - 1] * exp(-pow(W[0] * stack_f[stack_f.size() - 1], 2));
                 } 
-            }
-
-        private:
-            double variance(ArrayXd x)
-            {
-                double mean = x.mean();
-                return (limited(pow((x - mean),2))).sum()/(x.count() - 1);
             }
             
         protected:

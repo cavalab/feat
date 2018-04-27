@@ -17,10 +17,8 @@ typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
 /**
 TODO
 ------------------------
-Integrate cost function
 Integrate vectorList
 Integrate pointers?
-More graceful handling of non derivative nodes (like adding one to derivative stack and such)
 TODO Make it so stops traversing once it hits a non-differentiable node and then goes upstream and finds another branch to traverse
 **/
 
