@@ -56,42 +56,22 @@ namespace FT{
                         return limited(-this->W[1] * x1/(x2 * pow(this->W[0], 2)));
                     case 1:
                     {
+                        return limited(this->W[1]/(this->W[0] * x2));
+                        // ArrayXd num = -this->W[1] * x1;
+                        // ArrayXd denom = limited(this->W[0] * pow(x2, 2));
+                        // ArrayXd val = num/denom;
+                        // return val;
+                    }
+                    case 0: // with respect to first element off stack (x2)
+                    default:
                         ArrayXd num = -this->W[1] * x1;
                         ArrayXd denom = limited(this->W[0] * pow(x2, 2));
                         ArrayXd val = num/denom;
-                        // return -this->W[1] * stack_f[stack_f.size() - 1]/(this->W[0] * pow(stack_f[stack_f.size()], 2));
                         return val;
-                    }
-                    case 0:
-                    default:
-                        return limited(this->W[1]/(this->W[0] * x2));
+                        // return limited(this->W[1]/(this->W[0] * x2));
                 } 
             }
-
-            // void derivative(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
-            //     switch (loc) {
-            //         case 1:
-            //             gradients.push_back(-W[0] * stack_f[stack_f.size() - 1]/
-            //                 (W[1] * pow(stack_f[stack_f.size()], 2)));
-            //             break;
-            //         case 0:
-            //         default:
-            //             gradients.push_back(W[0]/(W[1] * fwd_stack[-2]));
-            //     } 
-            // }
-
-            // void update(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
-            //     update_value = 1
-            //     for(auto g : gradients) {
-            //         update_value *= g;
-            //     }
-                 
-            //     W_temp = W[:]
-            //     d_w = stack_f[stack_f.size()-1]/(W_temp[1] * stack_f[stack_f.size()-2]);
-            //     W[0] = W_temp[0] - n/update_value.size * sum(d_w * update_value);
-            //     d_w = -W_temp[0] * stack_f[stack_f.size()-1]/(stack_f[stack_f.size()-2] * pow(W[1], 2));
-            //     W[1] = W_temp[1] - n/update_value.size * sum(d_w * update_value); 
-            // }
+            
         protected:
             NodeDivide* clone_impl() const override { return new NodeDivide(*this); };  
     };

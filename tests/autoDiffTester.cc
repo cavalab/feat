@@ -36,7 +36,13 @@
 // Stacks
 #include "../src/stack.h"
 
-// TODO - implement a testing method that prints out the derivatives for testing against outputs of tensorflow/pythong impl
+/**
+Notes
+===========================
+In 3 layer program last layer has some inconsistencies at 3-4 decimal places with tensorflow
+Ask bill about what order arguments should be in since its mixed across nodes
+Add import from util for 2d Gauss
+**/
 
 using namespace std;
 
@@ -521,6 +527,8 @@ Node* parseToNode(std::string token) {
     	return new FT::NodeVariable(0);
     } else if (token == "x1") {
     	return new FT::NodeVariable(1);
+    } else if (token == "exponent") {
+    	return new FT::NodeExponent();
     }
 }
 

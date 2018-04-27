@@ -30,7 +30,6 @@ namespace FT{
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >&Z, 
 			              Stacks& stack)
 			{
-
                 stack.f.push(limited(this->W[1] * stack.f.pop() + this->W[0] * stack.f.pop()));
             }
             
