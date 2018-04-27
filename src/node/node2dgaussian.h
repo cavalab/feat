@@ -49,6 +49,13 @@ namespace FT{
                         return -2 * pow(W[0], 2) * stack_f[stack_f.size() - 1] * exp(-pow(W[0] * stack_f[stack_f.size() - 1], 2));
                 } 
             }
+
+        private:
+            double variance(ArrayXd x)
+            {
+                double mean = x.mean();
+                return (limited(pow((x - mean),2))).sum()/(x.count() - 1);
+            }
             
         protected:
                 Node2dGaussian* clone_impl() const override { return new Node2dGaussian(*this); };  

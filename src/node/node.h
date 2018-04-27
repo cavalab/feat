@@ -5,7 +5,7 @@ license: GNU/GPL v3
 #ifndef NODE_H
 #define NODE_H
 
-#include<map>
+#include <map>
 #include <memory>
 #include <vector>
 #include <iostream>

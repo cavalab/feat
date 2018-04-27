@@ -6,6 +6,17 @@ license: GNU/GPL v3
 #ifndef STACK_H
 #define STACK_H
 
+#include <string>
+#include <Eigen/Dense>
+#include <vector>
+
+using std::vector;
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
+using Eigen::ArrayXd;
+typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
+using namespace std;
+
 //#include "node/node.h"
 //external includes
 
