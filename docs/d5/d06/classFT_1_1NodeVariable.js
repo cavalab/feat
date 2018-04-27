@@ -1,7 +1,8 @@
 var classFT_1_1NodeVariable =
 [
     [ "NodeVariable", "d5/d06/classFT_1_1NodeVariable.html#ac237560d71cab7977cdc98b65940dd8c", null ],
-    [ "eval_eqn", "d5/d06/classFT_1_1NodeVariable.html#a9373760a699fb950816afe512b2afe99", null ],
-    [ "evaluate", "d5/d06/classFT_1_1NodeVariable.html#ae1f24b220ede1879f66de1eb1d4bd142", null ],
+    [ "clone_impl", "d5/d06/classFT_1_1NodeVariable.html#a2c121598a166995ecaebe1a4c2e37a43", null ],
+    [ "eval_eqn", "d5/d06/classFT_1_1NodeVariable.html#a197cc33c481cd976bb46a033567abe75", null ],
+    [ "evaluate", "d5/d06/classFT_1_1NodeVariable.html#a98bda0b99519e5f218413f93e1fc3246", null ],
     [ "loc", "d5/d06/classFT_1_1NodeVariable.html#a3363f9817f0d6d4a82aaa007777eff83", null ]
 ];

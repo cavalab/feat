@@ -44,22 +44,23 @@ namespace FT{
     		}
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
-                    vector<ArrayXb>& stack_b)
+            void evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
             {
         		if (otype == 'b')
-                    stack_b.push_back(ArrayXb::Constant(X.cols(),int(b_value)));
+                    stack.b.push(ArrayXb::Constant(X.cols(),int(b_value)));
                 else 	
-                    stack_f.push_back(ArrayXd::Constant(X.cols(),d_value));
+                    stack.f.push(ArrayXd::Constant(X.cols(),d_value));
             }
 
             /// Evaluates the node symbolically
-            void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
+            void eval_eqn(Stacks& stack)
             {
         		if (otype == 'b')
-                    stack_b.push_back(std::to_string(b_value));
+                    stack.bs.push(std::to_string(b_value));
                 else 	
-                    stack_f.push_back(std::to_string(d_value));
+                    stack.fs.push(std::to_string(d_value));
             }
 
             // Make the derivative 1

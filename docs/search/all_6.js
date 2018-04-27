@@ -30,6 +30,7 @@ var searchData=
   ['get_5fotypes',['get_otypes',['../db/dff/classFT_1_1Feat.html#ad180b14d8d4b20def8c792db8e34c13f',1,'FT::Feat']]],
   ['get_5fp',['get_p',['../d8/d25/classFT_1_1Individual.html#ae899b349b404b58b56ee6b0273e83793',1,'FT::Individual::get_p()'],['../d8/d25/classFT_1_1Individual.html#a304ebfdedcc5b2fcc21fcb2ece7e2354',1,'FT::Individual::get_p(const size_t i)'],['../d8/d25/classFT_1_1Individual.html#af963c801dce1a81a802d826fdac90991',1,'FT::Individual::get_p(const vector&lt; size_t &gt; &amp;locs)']]],
   ['get_5fpop_5fsize',['get_pop_size',['../db/dff/classFT_1_1Feat.html#aa846df76606deab76ddcb2719b00e8ad',1,'FT::Feat']]],
+  ['get_5frepresentation',['get_representation',['../db/dff/classFT_1_1Feat.html#a7082d552aeecc156e8ca2d3ef6dd85d9',1,'FT::Feat']]],
   ['get_5fshuffle',['get_shuffle',['../db/dff/classFT_1_1Feat.html#ae3a52cf234315172314c0083f1d35320',1,'FT::Feat']]],
   ['get_5fsplit',['get_split',['../db/dff/classFT_1_1Feat.html#a0212c6394678e646dbd060b5f4aeb0a8',1,'FT::Feat']]],
   ['get_5ftype',['get_type',['../de/d87/structFT_1_1Selection.html#a15bffb5ec310fbcbbe793d26e510279c',1,'FT::Selection']]],
@@ -38,6 +39,5 @@ var searchData=
   ['get_5fweights',['get_weights',['../db/dff/classshogun_1_1CMyCARTree.html#a13249afc6623fd680c9128956d235f59',1,'shogun::CMyCARTree::get_weights()'],['../df/dfa/classFT_1_1ML.html#a27fa984d19c8826c2fcbe81edb6a3417',1,'FT::ML::get_weights()']]],
   ['get_5fz',['get_z',['../db/d4e/classshogun_1_1CMulticlassLogisticRegression.html#a664a6b7acf36210e8541febc0ddc6860',1,'shogun::CMulticlassLogisticRegression']]],
   ['getcmdoption',['getCmdOption',['../de/d16/classInputParser.html#a4948d2aa6303f543f604b4d2f71030bb',1,'InputParser::getCmdOption(const std::string &amp;option) const '],['../de/d16/classInputParser.html#a4948d2aa6303f543f604b4d2f71030bb',1,'InputParser::getCmdOption(const std::string &amp;option) const ']]],
-  ['gini_5fimpurity_5findex',['gini_impurity_index',['../db/dff/classshogun_1_1CMyCARTree.html#a64fe270e87afc7b6346012e03a8c8808',1,'shogun::CMyCARTree']]],
-  ['getting_20started',['Getting Started',['../md_INSTALL.html',1,'']]]
+  ['gini_5fimpurity_5findex',['gini_impurity_index',['../db/dff/classshogun_1_1CMyCARTree.html#a64fe270e87afc7b6346012e03a8c8808',1,'shogun::CMyCARTree']]]
 ];
