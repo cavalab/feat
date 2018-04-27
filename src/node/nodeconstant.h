@@ -51,7 +51,7 @@ namespace FT{
         		if (otype == 'b')
                     stack.b.push(ArrayXb::Constant(X.cols(),int(b_value)));
                 else 	
-                    stack.f.push(ArrayXd::Constant(X.cols(),d_value));
+                    stack.f.push(limited(ArrayXd::Constant(X.cols(),d_value)));
             }
 
             /// Evaluates the node symbolically

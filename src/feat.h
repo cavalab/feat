@@ -91,6 +91,7 @@ namespace FT{
                 r.set_seed(random_state);
                 str_dim = "";
                 name="";
+                scorer=scorer;
             }
             
             /// set size of population 
@@ -324,6 +325,7 @@ namespace FT{
             shared_ptr<Selection> p_surv;       	///< survival algorithm
             shared_ptr<ML> p_ml;                	///< pointer to machine learning class
             Normalizer N;                           ///< scales training data.
+            string scorer;                          ///< scoring function name.
             // performance tracking
             double best_score;                      ///< current best score
             double best_score_v;                    ///< best validation score
@@ -381,8 +383,10 @@ namespace FT{
         params.init();       
        
         if (params.classification)  // setup classification endpoint
-           params.set_classes(y);        
-        
+        {
+           params.set_classes(y);       
+           params.set_scorer(scorer);
+        } 
 
         set_dtypes(find_dtypes(X));
        

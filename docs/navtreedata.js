@@ -1,7 +1,7 @@
 var NAVTREE =
 [
   [ "Feat", "index.html", [
-    [ "INSTALL", "md_INSTALL.html", null ],
+    [ "Installing", "md_INSTALL.html", null ],
     [ "Contributing", "md_CONTRIBUTING.html", null ],
     [ "Examples", "md_examples_EXAMPLES.html", null ],
     [ "Classes", "annotated.html", [
@@ -23,8 +23,9 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"db/d4e/classshogun_1_1CMulticlassLogisticRegression.html#a1b2770da7b9faa1992263603dfe37a32",
-"de/d2c/structFT_1_1Parameters.html#a9ce3967947412217110573e04828b040"
+"d8/d3d/classFT_1_1NodeXor.html",
+"db/dff/classshogun_1_1CMyCARTree.html#a600d66b60e54b46820a70172e67ac3bb",
+"df/dfa/classFT_1_1ML.html#ae46f491cb0656cf64334f76d5ac07b9a"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

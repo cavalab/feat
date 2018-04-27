@@ -1,10 +1,12 @@
 var classFT_1_1Node =
 [
     [ "~Node", "d3/daf/classFT_1_1Node.html#a489c8c6789e4b1cde1c3515f8d7eec24", null ],
+    [ "clone", "d3/daf/classFT_1_1Node.html#a26bfc16470d49222cc6c20d4d7c6b42f", null ],
+    [ "clone_impl", "d3/daf/classFT_1_1Node.html#a31941d8bc3a131c9391621302782a558", null ],
     [ "eval_complexity", "d3/daf/classFT_1_1Node.html#a85f5dc8e63804703fb5b1cc7c297c0e8", null ],
     [ "eval_complexity_db", "d3/daf/classFT_1_1Node.html#ace750fe7282a1d7e6bae7b7e8c16fc99", null ],
-    [ "eval_eqn", "d3/daf/classFT_1_1Node.html#a7714db1ffa28435740e3fee44d089490", null ],
-    [ "evaluate", "d3/daf/classFT_1_1Node.html#aecb7dab00e51a509473c4dc2fb13252a", null ],
+    [ "eval_eqn", "d3/daf/classFT_1_1Node.html#a3952281776956a34657594b457a3d710", null ],
+    [ "evaluate", "d3/daf/classFT_1_1Node.html#a95e1d572191c38566fc3edde41081972", null ],
     [ "limited", "d3/daf/classFT_1_1Node.html#a6fcbaac7477521ce9ce56a85ef535db6", null ],
     [ "total_arity", "d3/daf/classFT_1_1Node.html#a3c25f017fe0e31985293be28d7aae946", null ],
     [ "arity", "d3/daf/classFT_1_1Node.html#aa2657ef496eb386585ccb99cc6211f90", null ],
