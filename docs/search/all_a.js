@@ -26,6 +26,7 @@ var searchData=
   ['missing',['MISSING',['../db/dff/classshogun_1_1CMyCARTree.html#a24f3fd6ba041039c69b7c24a2555a3fa',1,'shogun::CMyCARTree']]],
   ['ml',['ML',['../df/dfa/classFT_1_1ML.html#ae46f491cb0656cf64334f76d5ac07b9a',1,'FT::ML::ML()'],['../de/d2c/structFT_1_1Parameters.html#a7e11bd6f94c1474b695cc9c823e8ea46',1,'FT::Parameters::ml()']]],
   ['ml',['ML',['../df/dfa/classFT_1_1ML.html',1,'FT']]],
+  ['ml_5ftype',['ml_type',['../df/dfa/classFT_1_1ML.html#a0a75b03c805745d54fb50c85d4e59bf6',1,'FT::ML']]],
   ['msg',['msg',['../de/d2c/structFT_1_1Parameters.html#abaae697a8ddcb9ddd5e2b190915151ee',1,'FT::Parameters']]],
   ['mutate',['mutate',['../d3/d01/classFT_1_1Variation.html#aaae98d9952312c6a469fe731e54a730d',1,'FT::Variation']]],
   ['mycartreenodedata',['MyCARTreeNodeData',['../df/d48/structshogun_1_1MyCARTreeNodeData.html',1,'shogun']]],

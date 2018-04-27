@@ -27,25 +27,23 @@ namespace FT{
     		}
     		
     		/// Evaluates the node and updates the stack states. 		
-			void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
-                    vector<ArrayXb>& stack_b)
+			void evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
 		    {
 	    		if (otype == 'b')
-	                stack_b.push_back(X.row(loc).cast<bool>());
-	            else {
-	            	stack_f.push_back(X.row(loc));
-	            	std::cout << this->name << " assigned value " << stack_f[stack_f.size() - 1];
-	            }
-	                
+	                stack.b.push(X.row(loc).cast<bool>());
+	            else
+	                stack.f.push(X.row(loc));
 		    }
 
 		    /// Evaluates the node symbolically
-		    void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
+		    void eval_eqn(Stacks& stack)
 		    {
 	    		if (otype == 'b')
-	                stack_b.push_back(name);
+	                stack.bs.push(name);
 	            else
-	                stack_f.push_back(name);
+	                stack.fs.push(name);
 		    }
 	    protected:
             NodeVariable* clone_impl() const override { return new NodeVariable(*this); };  

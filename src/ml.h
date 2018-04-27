@@ -109,7 +109,7 @@ namespace FT{
 	            }
 	            else if (!ml_type.compare("LR"))
                 {
-                    assert(prob_type!=PT_REGRESSION & "LR only works with classification.");
+                    assert(prob_type!=PT_REGRESSION && "LR only works with classification.");
                     if (prob_type == PT_BINARY){
 	            	    p_est = make_shared<sh::CLibLinear>(sh::L2R_LR);
                         // setting parameters to match sklearn defaults

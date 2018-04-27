@@ -56,9 +56,9 @@ namespace FT{
             void delete_mutate(Individual& child, const Parameters& params);
  
             /// splice two programs together
-            void splice_programs(vector<std::unique_ptr<Node>>& vnew, 
-                                 const vector<std::unique_ptr<Node>>& v1, size_t i1, size_t j1, 
-                                 const vector<std::unique_ptr<Node>>& v2, size_t i2, size_t j2);
+            void splice_programs(NodeVector& vnew, 
+                                 const NodeVector& v1, size_t i1, size_t j1, 
+                                 const NodeVector& v2, size_t i2, size_t j2);
             /// debugging printout of crossover operation.
             void print_cross(Individual&,size_t,size_t,Individual&, size_t, size_t, Individual&,
                              bool after=true);       
@@ -67,7 +67,7 @@ namespace FT{
     };
 
 
-    std::unique_ptr<Node> random_node(const vector<std::unique_ptr<Node>> & v)
+    std::unique_ptr<Node> random_node(const NodeVector & v)
     {
        /*!
         * return a random node from a list of nodes.
@@ -166,16 +166,17 @@ namespace FT{
         float rf = r();
         if (rf < 1.0/3.0 && child.get_dim() > 1){
             delete_mutate(child,params); 
-            assert(is_valid_program(child.program, params.num_features));
+            assert(is_valid_program(child.program, params.num_features, params.longitudinalMap));
         }
-
-        /*     insert_mutate(child,params); */
-        /*     assert(is_valid_program(child.program, params.num_features)); */
-        /* } */
+        else if (rf < 2.0/3.0 && child.size() < params.max_size)
+        {
+            insert_mutate(child,params);
+            assert(is_valid_program(child.program, params.num_features, params.longitudinalMap));
+        }
         else
         {        
             point_mutate(child,params);
-            assert(is_valid_program(child.program, params.num_features));
+            assert(is_valid_program(child.program, params.num_features, params.longitudinalMap));
         }
  
         // check child depth and dimensionality
@@ -199,7 +200,7 @@ namespace FT{
             if (r() < child.get_p(i)/n)  // mutate p. 
             {
                 params.msg("\t\tmutating node " + p->name, 2);
-                vector<std::unique_ptr<Node>> replacements;  // potential replacements for p
+                NodeVector replacements;  // potential replacements for p
 
                 if (p->total_arity() > 0) // then it is an instruction
                 {
@@ -207,7 +208,7 @@ namespace FT{
                     for (const auto& f: params.functions)
                     {
                         if (f->otype == p->otype && f->arity['f']==p->arity['f'] && 
-                                f->arity['b']==p->arity['b'])
+                                f->arity['b']==p->arity['b'] && f->arity['z']==p->arity['z'])
                             replacements.push_back(f->clone());
                     }
                 }
@@ -251,8 +252,8 @@ namespace FT{
                     params.msg("\t\tinsert mutating node " + child.program[i]->name +
                                " with probability " + std::to_string(child.get_p(i)) + 
                                "/" + std::to_string(n), 2);
-                    vector<std::unique_ptr<Node>> insertion;  // inserted segment
-                    vector<std::unique_ptr<Node>> fns;  // potential fns 
+                    NodeVector insertion;  // inserted segment
+                    NodeVector fns;  // potential fns 
                     
                     // find instructions with matching output types and a matching arity to i
                     for (const auto& f: params.functions)
@@ -318,9 +319,9 @@ namespace FT{
         }
         else    // add a dimension
         {            
-            vector<std::unique_ptr<Node>> insertion; // new dimension
+            NodeVector insertion; // new dimension
             make_program(insertion, params.functions, params.terminals, 1,  
-                         params.term_weights,1,r.random_choice(params.otypes));
+                         params.term_weights,1,r.random_choice(params.otypes), params.longitudinalMap);
             /* child.program.insert(child.program.end(),insertion.begin(),insertion.end()); */
             for (const auto& ip : insertion) 
                 child.program.push_back(ip->clone());
@@ -422,16 +423,16 @@ namespace FT{
         if (params.verbosity >= 2) 
             print_cross(mom,i1,j1,dad,i2,j2,child);     
 
-        assert(is_valid_program(child.program,params.num_features));
+        assert(is_valid_program(child.program,params.num_features, params.longitudinalMap));
         // check child depth and dimensionality
         return child.size()>0 && child.size() <= params.max_size 
                     && child.get_dim() <= params.max_dim;
     }
     
     // swap vector subsets with different sizes. 
-    void Variation::splice_programs( vector<std::unique_ptr<Node>>& vnew,
-                                     const vector<std::unique_ptr<Node>>& v1, size_t i1, size_t j1, 
-                                     const vector<std::unique_ptr<Node>>& v2, size_t i2, size_t j2)
+    void Variation::splice_programs( NodeVector& vnew,
+                                     const NodeVector& v1, size_t i1, size_t j1, 
+                                     const NodeVector& v2, size_t i2, size_t j2)
     {
         /*!
          * swap vector subsets with different sizes. 
