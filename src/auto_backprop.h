@@ -19,7 +19,6 @@ Integrate cost function
 Integrate vectorList
 Integrate pointers?
 More graceful handling of non derivative nodes (like adding one to derivative stack and such)
-TODO Integrate derivative of cost function pointer 
 TODO Make it so stops traversing once it hits a non-differentiable node and then goes upstream and finds another branch to traverse
 **/
 
@@ -30,10 +29,6 @@ namespace FT {
 
 	private:
 		double n; // Learning rate
-		// void*(cost_func)(VectorXd, VectorXd);
-		// callback cost_func;
-		// callback d_cost_func;
-		callback cost_func; // Not actually necessary 
 		callback d_cost_func;
 		MatrixXd X;
 		VectorXd labels;
@@ -63,7 +58,6 @@ namespace FT {
 		// Return the f_stack
 		vector<ArrayXd> forward_prop() 
 		{
-			std::cout << "Forward pass execution running.\n";
 			// Iterate through all the nodes evaluating and tracking ouputs
 			vector<ArrayXd> stack_f; // Tracks output values
 			vector<ArrayXd> execution_stack; // Tracks output values and groups them based on input to functions
@@ -81,7 +75,6 @@ namespace FT {
 
 			stack_f.push_back(pop<ArrayXd>(&execution_stack)); // Would be nice to create a general "pop" function that does both these steps at once
 
-			std::cout << "Forward pass execution terminated.\n";
 			return stack_f;
 		}
 
@@ -93,23 +86,15 @@ namespace FT {
 				BP_NODE bp_node = pop<BP_NODE>(&executing); // Check first element
 	            // Loop until branch to explore is found
 	            while (bp_node.deriv_list.empty() && !executing.empty()) {
-	            	std::cout << "Looping\n";
 	                bp_node = pop<BP_NODE>(&executing); // Get node and its derivatves
-	                std::cout << "recovered node\n";
 
 	                // For some reason this function is not removing element from the stack
-	                std::cout << "Before pop: " << derivatives.size() << "\n";
 	                pop<ArrayXd>(&derivatives); // Remove associated gradients from stack
-	                std::cout << "After pop: " << derivatives.size() << "\n";
-	                std::cout << "Checking if\n";
 	                if (executing.empty()) {
-	                	std::cout << "Returning\n";
 	                    return;
 	                }
 	            }
 	            
-	            std::cout << "Have parent node\n";
-	            std::cout << "Node: " << bp_node.n << "\n";
 	            // Should now have the next parent node and derivatves (stored in bp_node)
 	            if (!bp_node.deriv_list.empty()) {
 	            	bp_program.push_back(bp_node.n);
@@ -117,7 +102,6 @@ namespace FT {
 	            	executing.push_back(bp_node); // Push it back on the stack in order to sync all the stacks
 	            }
 			}
-			std::cout << "Got to next branch\n";
 		}
 
 		// Compute gradients and update weights 
@@ -163,7 +147,6 @@ namespace FT {
 					executing.push_back({dNode, n_derivatives});
 				}
 
-				std::cout << "Checking branch\n";
 				// Choosing how to move through tree
 				if (node->arity['f'] == 0 || !isNodeDx(node)) {
 					// Clean up gradients and find the parent node
@@ -172,7 +155,6 @@ namespace FT {
 				} else {
 					node->visits += 1;
 					if (node->visits > node->arity['f']) {
-						std::cout << "Going to next branch";
 						next_branch(executing, bp_program, derivatives);
 					}
 				}
@@ -201,9 +183,8 @@ namespace FT {
 		}
 
 	public:
-		Auto_backprop(vector<Node*> program, callback cost_func, callback d_cost_func, MatrixXd X, VectorXd labels, int iters=1000, double n=0.1) {
+		Auto_backprop(vector<Node*> program, callback d_cost_func, MatrixXd X, VectorXd labels, int iters=1000, double n=0.1) {
 			this->program = program;
-			this->cost_func = cost_func;
 			this->d_cost_func = d_cost_func;
 			this->X = X;
 			this->labels = labels;
