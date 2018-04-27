@@ -30,7 +30,6 @@ namespace FT{
                 ArrayXd tmp(stack.z.top().first.size());
                 
                 int x;
-                double mean;
                 ArrayXd tmp1;
                 
                 for(x = 0; x < stack.z.top().first.size(); x++)

@@ -27,15 +27,53 @@ std::string trim(std::string str, const std::string& chars = "\t\n\v\f\r ")
     return ltrim(rtrim(str, chars), chars);
 }
 
-std::string vectorToString(int startIndex, std::vector<string> vec)
+std::string vectorToString(int startIndex, std::vector<string> vec, int skipIndex = -1)
 {
     string res ="";
     int x;
     
     for(x = startIndex; x < vec.size(); x++)
+    {
+        if(skipIndex != -1 && x == skipIndex)
+            continue;
         res += vec[x]+", ";
+    }
         
     return res;
+}
+
+unsigned long getTimeStamp(std::string datetime="1970.01.01 00:00:00"){
+    //cout<<"Parsing time as "<<datetime<<"\n";
+	if(datetime.length()<19){std::cout<<"invalid string - cant convert to timestamp";}
+	struct tm tm;
+	tm.tm_year=atoi(datetime.substr(0,4).c_str())-1900;
+	tm.tm_mon=atoi(datetime.substr(5, 2).c_str())-1;
+	tm.tm_mday=atoi(datetime.substr(8, 2).c_str());
+	tm.tm_hour=atoi(datetime.substr(11, 2).c_str());
+	tm.tm_min=atoi(datetime.substr(14, 2).c_str());
+	tm.tm_sec=atoi(datetime.substr(17, 2).c_str());
+	
+	//char buff[80];
+	//strftime(buff, 80, "%Y.%m.%d %H:%M:%S", &tm);
+	//std::cout<<"should be: "<<std::string(buff)<<"\n";
+    
+    time_t retVal;
+
+
+    char *tz;
+
+    tz = getenv("TZ");
+    setenv("TZ", "", 1);
+    tzset();
+    retVal = mktime(&tm);
+    if (tz)
+        setenv("TZ", tz, 1);
+    else
+        unsetenv("TZ");
+    
+    tzset();
+    
+	return retVal;	
 }
 
 /*
@@ -188,7 +226,8 @@ int main(int argc, char *argv[])
 	    {
 	        //printf("Found\n");
 	        longitudinalPresent[pid] = true;
-	        outFile << to_string(pidMap[pid])+", "+result[9]+", 0"+", BMI\n";
+	        long time = getTimeStamp(result[2]+" "+result[3].substr(1, 8));
+	        outFile << to_string(pidMap[pid])+", "+result[9]+", "+to_string(time)+", BMI\n";
 	    }
 	    
 	    //break;

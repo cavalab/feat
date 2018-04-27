@@ -15,6 +15,8 @@ using namespace Eigen;
 namespace FT{
  
     double NEAR_ZERO = 0.0000001;
+    string PBSTR = "====================================================================================================";
+    int PBWIDTH = 100;
     
     std::string ltrim(std::string str, const std::string& chars = "\t\n\v\f\r ")
     {
@@ -527,5 +529,14 @@ namespace FT{
     {
         vector<T> wv( w.data(), w.data()+w.rows());
         return unique(wv);
+    }
+
+    void printProgress (double percentage)
+    {
+        int val = (int) (percentage * 100);
+        int lpad = (int) (percentage * PBWIDTH);
+        int rpad = PBWIDTH - lpad;
+        printf ("\rCompleted %3d%% [%.*s%*s]", val, lpad, PBSTR.c_str(), rpad, "");
+        fflush (stdout);
     }
 } 
