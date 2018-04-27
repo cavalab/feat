@@ -34,13 +34,11 @@ namespace FT{
 
             Evaluation(string scorer)
             {
-                std::cout << "Evaluation: scorer: " + scorer + "\n";
-                               
-                score_hash["mse"] = & metrics::mse;
-                score_hash["zero_one"] = & metrics::zero_one_loss;
-                score_hash["bal_zero_one"] = & metrics::bal_zero_one_loss;
-                score_hash["log"] =  & metrics::log_loss; 
-                score_hash["multi_log"] =  & metrics::multi_log_loss; 
+                score_hash["mse"] = & metrics::mse_label;
+                score_hash["zero_one"] = & metrics::zero_one_loss_label;
+                score_hash["bal_zero_one"] = & metrics::bal_zero_one_loss_label;
+                score_hash["log"] =  & metrics::log_loss_label; 
+                score_hash["multi_log"] =  & metrics::multi_log_loss_label; 
             
                 score = score_hash[scorer];
             }

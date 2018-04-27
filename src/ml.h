@@ -144,15 +144,23 @@ namespace FT{
             // return vector of weights for model. 
             vector<double> get_weights();
             
-            // train ml model on X and return estimation y. 
+            // train ml model on X and return label object. 
             shared_ptr<CLabels> fit(MatrixXd& X, VectorXd& y, const Parameters& params, bool& pass,
                          const vector<char>& dtypes=vector<char>());
+
+            // train ml model on X and return estimation y. 
+            VectorXd fit_vector(MatrixXd& X, VectorXd& y, const Parameters& params, bool& pass,
+                         const vector<char>& dtypes=vector<char>());
+
             // predict using a trained ML model, returning a label object. 
             shared_ptr<CLabels> predict(MatrixXd& X);
             
             // predict using a trained ML model, returning a vector of predictions. 
             VectorXd predict_vector(MatrixXd& X);
             
+            /// utility function to convert CLabels types to VectorXd types. 
+            VectorXd labels_to_vector(shared_ptr<CLabels>& labels);
+
             /* VectorXd predict(MatrixXd& X); */
             // set data types (for tree-based methods)            
             void set_dtypes(const vector<char>& dtypes)
@@ -343,6 +351,13 @@ namespace FT{
         return labels;
     }
 
+    VectorXd ML::fit_vector(MatrixXd& X, VectorXd& y, const Parameters& params, bool& pass,
+                     const vector<char>& dtypes)
+    {
+        shared_ptr<CLabels> labels = fit(X, y, params, pass, dtypes); 
+        
+        return labels_to_vector(labels);     
+    }
     shared_ptr<CLabels> ML::predict(MatrixXd& X)
     {
 
@@ -364,7 +379,12 @@ namespace FT{
     VectorXd ML::predict_vector(MatrixXd& X)
     {
         shared_ptr<CLabels> labels = predict(X);
+        return labels_to_vector(labels);     
         
+    }
+
+    VectorXd ML::labels_to_vector(shared_ptr<CLabels>& labels)
+    {
         SGVector<double> y_pred;
         if (prob_type==PT_BINARY && 
                 (!ml_type.compare("SVM") || !ml_type.compare("LR")))
