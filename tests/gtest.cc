@@ -1298,16 +1298,71 @@ TEST(Evaluation, log_loss)
              0.4396698295617455 ,
              0.47602999293839676 ;
     
-    cout << "running log_loss\n";
     double score = metrics::log_loss(y, yhat, loss);
-    cout << "assertion\n";
-    if (((int)(score*100000)) != 45495 )
-    {
-        cout << "score*100000: " << int(score*100000); 
-    }
+    
     ASSERT_EQ(((int)(score*100000)),45495);
 }
 
+TEST(Evaluation, multi_log_loss)
+{
+    // test log loss
+	
+    Parameters params(100, 								//pop_size
+              100,								//gens
+              "LinearRidgeRegression",			//ml
+              true,							//classification
+              0,								//max_stall
+              'f',								//otype
+              1,								//verbosity
+              "+,-,*,/,exp,log",				//functions
+              0.5,                              //cross_rate
+              3,								//max_depth
+              10,								//max_dim
+              false,							//erc
+              "fitness,complexity",  			//obj
+              false,                            //shuffle
+              0.75,								//train/test split
+              0.5,                             // feedback 
+              "bal_zero_one");                           //scoring function
+	
+    VectorXd y(10), loss(10);
+    ArrayXXd confidences(10,2);
+
+    // test log loss
+    y << 0, 
+         0,
+         1,
+		 2,
+		 2,
+		 0,
+		 1,
+		 1,
+		 0,
+		 2;
+
+  
+    cout << "setting confidences\n";
+    confidences << 0.4635044256474209,0.0968001677665267,0.43969540658605233,
+					0.6241231423983534,0.04763759878396275,0.3282392588176838,
+					0.3204639096468384,0.6057958969556588,0.07374019339750265,
+					0.4749388491547049,0.07539667564715603,0.44966447519813907,
+					0.3552503205282328,0.019014184065430532,0.6257354954063368,
+					0.6492498543925875,0.16946198974704466,0.18128815586036792,
+					0.21966902720063683,0.6516907637412063,0.12864020905815685,
+					0.02498948061874484,0.7120963741266988,0.26291414525455636,
+					0.523429658423623,0.2017439717928997,0.2748263697834774,
+					0.2686577572168724,0.449670901690872,0.2816713410922557;
+    
+    cout << "running multi_log_loss\n";
+	vector<float> weights = {0.4, 0.4, 0.3};
+    double score = metrics::multi_log_loss(y, confidences, loss, weights);
+    cout << "assertion\n";
+    if (((int)(score*100000)) != 61236 )
+    {
+        cout << "score*100000: " << int(score*100000); 
+    }
+    ASSERT_EQ(((int)(score*100000)),61236);
+}
 TEST(Evaluation, fitness)
 {
 		Parameters params(100, 								//pop_size
