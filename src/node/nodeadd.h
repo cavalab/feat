@@ -57,30 +57,6 @@ namespace FT{
                 } 
             }
 
-            // void derivative(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
-            //     switch (loc) {
-            //         case 1:
-            //             gradients.push_back(W[1]);
-            //             break;
-            //         case 0:
-            //         default:
-            //             gradients.push_back(W[0]);
-            //     } 
-            // }
-
-            // void update(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
-            //     update_value = 1
-            //     for(auto g : gradients) {
-            //         update_value *= g;
-            //     }
-                 
-            //     W_temp = W[:]
-            //     d_w = stack_f[stack_f.size()-1];
-            //     W[0] = W_temp[0] - n/update_value.size * sum(d_w * update_value);
-            //     d_w = stack_f[stack_f.size()-2];
-            //     W[1] = W_temp[1] - n/update_value.size * sum(d_w * update_value); 
-            // }
-
         protected:
             NodeAdd* clone_impl() const override { return new NodeAdd(*this); };  
     };

@@ -497,38 +497,43 @@ int testNodes() {
 	}
 }
 
+Node* parseToNode(std::string token) {
+	if (token == "+") {
+    	return new FT::NodeAdd();
+    } else if (token == "-") {
+    	return new FT::NodeSubtract();
+    } else if (token == "/") {
+    	return new FT::NodeDivide();
+    } else if (token == "*") {
+    	return new FT::NodeMultiply();
+    } else if (token == "cos") {
+    	return new FT::NodeCos();
+    } else if (token == "sin") {
+    	return new FT::NodeSin();
+    } else if (token == "x0") {
+    	return new FT::NodeVariable(0);
+    } else if (token == "x1") {
+    	return new FT::NodeVariable(1);
+    }
+}
+
 vector<Node*> programGen() {
 	vector<Node*> program;
 	std::string txt;
 
-	std::cout << "Please input test program. ex: Var1 Var2 + cos" << "\n";
+	std::cout << "Please input test program. ex: x0 x1 + cos" << "\n";
 	getline(std::cin, txt);
 	char ch = ' ';
 	size_t pos = txt.find( ch );
     size_t initialPos = 0;
 
     // Decompose statement
+    std::string token;
     while( pos != std::string::npos ) {
-    	std::string token = txt.substr( initialPos, pos - initialPos );
+    	token = txt.substr( initialPos, pos - initialPos );
         std::cout << token << "\n";
 
-        if (token == "+") {
-        	program.push_back(new FT::NodeAdd());
-        } else if (token == "-") {
-        	program.push_back(new FT::NodeSubtract());
-        } else if (token == "/") {
-        	program.push_back(new FT::NodeDivide());
-        } else if (token == "*") {
-        	program.push_back(new FT::NodeMultiply());
-        } else if (token == "cos") {
-        	program.push_back(new FT::NodeCos());
-        } else if (token == "sin") {
-        	program.push_back(new FT::NodeSin());
-        } else if (token == "x0") {
-        	program.push_back(new FT::NodeVariable(0));
-        } else if (token == "x1") {
-        	program.push_back(new FT::NodeVariable(1));
-        }
+        program.push_back(parseToNode(token));
 
         initialPos = pos + 1;
 
@@ -536,25 +541,21 @@ vector<Node*> programGen() {
     }
 
     // Add the last one
-    std::cout << txt.substr( initialPos, std::min( pos, txt.size() ) - initialPos + 1 ) << "\n";
+    token = txt.substr( initialPos, std::min( pos, txt.size() ) - initialPos + 1 );
+    std::cout << token << "\n";
+    program.push_back(parseToNode(token));
     std::cout << "ProgramGen done";
 
     return program;
 }
 
-int testDummyProgram(int iters) {
-	std::cout << "Initializing Dummy program Sin(X1 + X2 + X3)\n";
-	// Create a vector of nodes as a dummy program
-	vector<Node*> p0;
-	p0.push_back(new FT::NodeVariable(0));
-	//p0.push_back(new FT::NodeVariable(1));
-	p0.push_back(new FT::NodeCos());
-	p0.push_back(new FT::NodeVariable(1));
-	p0.push_back(new FT::NodeSin());
-	p0.push_back(new FT::NodeAdd());
-	p0.push_back(new FT::NodeLogit());
-
-	// Create cost function 
+int testDummyProgram(vector<Node*> p0, int iters) {
+	std::cout << "Testing program: [";
+	
+	for (Node* n : p0) {
+		std::cout << n->name << ", ";
+	}
+	std::cout << "]\n";
 
 	// Create input data and labels
 	MatrixXd x(2, 2);
@@ -571,61 +572,16 @@ int testDummyProgram(int iters) {
 
 	std::cout << "Initialized dummy program. Running auto backprop\n";
 	// Auto_backprop(PROGRAM, COST_FUNCTION, D_COST_FUNCTION, INPUT_DATA, LABELS, ITERS, LEARNING RATE);
-	FT::Auto_backprop* engine = new FT::Auto_backprop(p0, NULL, FT::metrics::d_squared_difference, x, y, iters, learning_rate);
+	FT::Auto_backprop* engine = new FT::Auto_backprop(p0, FT::metrics::d_squared_difference, x, y, iters, learning_rate);
 	vector<Node*> predictor = engine->run();
-
-	// std::cout << "Initializing test of output\n";
-	// // Test if output is correct
-	// // ArrayXd pred = evaluateProgram(predictor, x, y);
-	// std::cout << "Testing against target\n";
-	// ArrayXd target(2,1); // Populate with expected results as dictated by tensorflow
-	// target(0,0) = 0;
-	// target(1,0) = 1;
-	// target(2,0) = 2;
-	// target(3,0) = 3;
-	// target(4,0) = 4;
-	// target(5,0) = 0;
-	// target(6,0) = 1;
-	// target(7,0) = 2;
-	// target(8,0) = 3;
-	// target(9,0) = 4; 
-
-	// std::cout << "Evaluating\n" << target << "\n" << pred;
-
-	// if ((target.matrix() - pred.matrix()).norm() > 0.0001) 
-	// {
-	// 	std::cout << "\nError with evaluation, engine does not match tensorflow!\n";
-	// }
-
-	// std::cout << "\nTesting weights\n";
-
-	// // Test if weights are correct
-	// vector<double> expected_weights;
-	// expected_weights.push_back(0.66421908);
-	// expected_weights.push_back(0.36864603);
-	// expected_weights.push_back(0.012676249);
-
-
-	// std::cout << "Running tests...\n";
-	// int count = 0;
-	// for (int i = 0; i < predictor.size(); i++) { // Need check if node doesn't have weights
-	// 	// Check if node is differentiable
-	// 	std::cout << "Testing ouput of " << predictor[i]->name << "\n";
-	// 	if (isNodeDx(predictor[i])) {
-	// 		if (abs(expected_weights[count] - dynamic_cast<NodeDx*>(predictor[i])->W[0]) > 0.00001) {
-	// 			cout << "Discrepency with" << predictor[i]->name << "\n";
-	// 		}
-	// 		count++;
-	// 	}
-	// }
 }
 
 int main() {
 	int myNumber = 0;
 	string input = "";
-	programGen();
+	vector<Node*> program = programGen();
 	while (true) {
-		cout << "Please enter a valid number: ";
+		cout << "Please enter nubmer of iterations: ";
 	   	getline(cin, input);
 
 	   	// This code converts from string to number safely.
@@ -635,6 +591,6 @@ int main() {
 	   	cout << "Invalid number, please try again" << endl;
 	}
  	cout << "Running with : " << myNumber << endl << endl;
-	testDummyProgram(myNumber);
+	testDummyProgram(program, myNumber);
 	return 1;
 }

@@ -44,6 +44,7 @@ namespace FT{
                 }
                 this->W = W_temp;
                 std::cout << "Updated\n";
+                std::cout << "***************************\n";
                 // print_weight();
             }
 
