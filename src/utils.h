@@ -15,8 +15,8 @@ using namespace Eigen;
 namespace FT{
  
     double NEAR_ZERO = 0.0000001;
-    string PBSTR = "============================================================================="+
-                   "=======================";
+    string PBSTR = "============================================================================"
+                   "========================";
     int PBWIDTH = 100;
     
     std::string ltrim(std::string str, const std::string& chars = "\t\n\v\f\r ")
