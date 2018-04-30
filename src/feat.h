@@ -168,6 +168,17 @@ namespace FT{
                 load_partial_longitudinal(s,Z,',',ids);
                 for (auto& z : Z)
                     reorder_longitudinal(z.second.first, z.second.second, ids);
+                cout << "Z:\n";
+                for (auto& z : Z)
+                {
+                    cout << z.first << "\n";
+                    for (unsigned i = 0; i < z.second.first.size(); ++i)
+                    {
+                        cout << "value: " << z.second.first.at(i).matrix().transpose() << "\n";
+                        cout << "time: " << z.second.second.at(i).matrix().transpose() << "\n";
+                    }
+                }
+                    
                 return Z;
             }
 

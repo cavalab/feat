@@ -257,6 +257,11 @@ namespace FT{
             N.fit_normalize(X, dtypes);
          
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
+        cout << "Phi:\n";
+        for (int i = 0; i < 10 ; ++i)
+        {
+            cout << X.row(i) << (i < 10 ? " " : "\n"); 
+        }
         //std::cout << "setting labels (n_classes = " << params.n_classes << ")\n"; 
         //cout << "y is " << y.transpose() << "\n";
         if(prob_type==PT_BINARY && 
@@ -293,7 +298,6 @@ namespace FT{
             auto clf = p_est->apply_multiclass(features);
             y_pred = clf->get_labels();
             delete clf;
-            
         }
         else                                                    // regression
         {

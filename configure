@@ -29,6 +29,6 @@ elif [ "$1" == "tests" ] ; then
     cd ..
 else
     rm -rf build; mkdir build; cd build; 
-    cmake ..
+    cmake -DSHOGUN_DIR=ON ..
     cd ..
 fi
