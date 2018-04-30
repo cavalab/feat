@@ -119,8 +119,6 @@ namespace FT{
             else
                 scorer = sc;
             msg("scorer set to " + scorer,2);
-            
-           cout<<"************scorer set to " + scorer + "\n";
         }
         /// sets weights for terminals. 
         void set_term_weights(const vector<double>& w)
