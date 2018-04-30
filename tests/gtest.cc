@@ -1326,7 +1326,7 @@ TEST(Evaluation, multi_log_loss)
               "bal_zero_one");                           //scoring function
 	
     VectorXd y(10), loss(10);
-    ArrayXXd confidences(10,2);
+    ArrayXXd confidences(10,3);
 
     // test log loss
     y << 0, 
@@ -1354,13 +1354,11 @@ TEST(Evaluation, multi_log_loss)
 					0.2686577572168724,0.449670901690872,0.2816713410922557;
     
     cout << "running multi_log_loss\n";
-	vector<float> weights = {0.4, 0.4, 0.3};
+	/* vector<float> weights = {0.4*3.0, 0.4*3.0, 0.3*3.0}; */
+	vector<float> weights = {1, 1, 1};
     double score = metrics::multi_log_loss(y, confidences, loss, weights);
     cout << "assertion\n";
-    if (((int)(score*100000)) != 61236 )
-    {
-        cout << "score*100000: " << int(score*100000); 
-    }
+
     ASSERT_EQ(((int)(score*100000)),61236);
 }
 TEST(Evaluation, fitness)
