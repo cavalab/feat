@@ -42,7 +42,7 @@ namespace metrics{
             else
                 loss(i) = -(y(i)*log(yhat(i)) + (1-y(i))*log(1-yhat(i)))*weights.at(y(i));
         }   
-        std::cout << "loss: " << loss.transpose() << "\n";
+        /* std::cout << "loss: " << loss.transpose() << "\n"; */
         return loss.mean();
     }
 
@@ -72,27 +72,33 @@ namespace metrics{
         double eps = pow(10,-10);
 
         loss = VectorXd::Zero(y.rows());  
-        for (const auto& c : uc)
+        for (unsigned i = 0; i < y.rows(); ++i)
         {
-            ArrayXd yhat = confidences.col(int(c));
-
-            for (unsigned i = 0; i < y.rows(); ++i)
+            for (const auto& c : uc)
             {
+                ArrayXd yhat = confidences.col(int(c));
+                /* std::cout << "class " << c << "\n"; */
+
                 double yi = y(i) == c ? 1.0 : 0.0 ; 
-                std::cout << "yi: " << yi << ", yhat(i): " << yhat(i) ;  
-                if (yhat(i) < eps || 1 - yhat(i) < eps)
+                /* std::cout << "yi: " << yi << ", yhat(" << i << "): " << yhat(i) ; */  
+                if (y(i) == c)
                 {
-                    // clip probabilities since log loss is undefined for yhat=0 or yhat=1
-                    loss(i) += -(yi*log(eps) + (1-yi)*log(1-eps))*w.at(y(i));
-                    std::cout << "loss(" << i << ") += " << -(yi*log(eps) + (1-yi)*log(1-eps))*w.at(y(i)) ;
-                }
-                else
-                {
-                    loss(i) += -(yi*log(yhat(i)) + (1-yi)*log(1-yhat(i)))*w.at(y(i));
-                    std::cout << "loss(" << i << ") += " << -(yi*log(yhat(i)) + (1-yi)*log(1-yhat(i)))*w.at(y(i));
+                    if (yhat(i) < eps || 1 - yhat(i) < eps)
+                    {
+                        // clip probabilities since log loss is undefined for yhat=0 or yhat=1
+                        loss(i) += -log(eps);
+                        /* std::cout << ", loss(" << i << ") += " << -yi*log(eps); */
+                    }
+                    else
+                    {
+                        loss(i) += -log(yhat(i));
+                        /* std::cout << ", loss(" << i << ") += " << -yi*log(yhat(i)); */
+                    }
                 }
                 /* std::cout << "\n"; */
             }   
+            /* std::cout << "w.at(y(" << i << ")): " << w.at(y(i)) << "\n"; */
+            loss(i) = loss(i)*w.at(y(i));
         }
         /* std::cout << "loss: " << loss.transpose() << "\n"; */
         /* std::cout << "mean loss: " << loss.mean() << "\n"; */
