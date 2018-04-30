@@ -159,6 +159,27 @@ namespace FT{
             ///set name for files
             void set_name(string s){name = s;}
 
+            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>> set_z(string s, 
+                    int * train_idx, int train_size)
+            {
+
+                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z;
+                vector<int> ids(train_idx,train_idx+train_size);
+                load_partial_longitudinal(s,Z,',',ids);
+                for (auto& z : Z)
+                    reorder_longitudinal(z.second.first, z.second.second, ids);
+                return Z;
+            }
+
+            void fit_with_z(double * X,int rowsX,int colsX, double * Y,int lenY, string s, 
+                            int * train_idx, int train_size)
+            {
+
+                MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
+                VectorXd vectY = Map<VectorXd>(Y,lenY);
+                auto Z = set_z(s, train_idx, train_size);
+                fit(matX,vectY,Z); 
+            }
             /*                                                      
              * getting functions
              */
@@ -400,7 +421,7 @@ namespace FT{
         MatrixXd X_t(X.rows(),int(X.cols()*params.split));
         MatrixXd X_v(X.rows(),int(X.cols()*(1-params.split)));
         VectorXd y_t(int(y.size()*params.split)), y_v(int(y.size()*(1-params.split)));
-        
+       
         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_t;
         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_v;
         
