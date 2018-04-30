@@ -318,15 +318,37 @@ namespace FT{
             
         else if (str.compare("sign")==0)
             return std::unique_ptr<Node>(new NodeSign());
-            
+           
+        // longitudinal nodes
         else if (str.compare("mean")==0)
             return std::unique_ptr<Node>(new NodeMean());
             
         else if (str.compare("median")==0)
             return std::unique_ptr<Node>(new NodeMedian());
+            
+        else if (str.compare("max")==0)
+            return std::unique_ptr<Node>(new NodeMax());
+        
+        else if (str.compare("min")==0)
+            return std::unique_ptr<Node>(new NodeMin());
+        
+        else if (str.compare("variance")==0)
+            return std::unique_ptr<Node>(new NodeVar());
+            
+        else if (str.compare("skew")==0)
+            return std::unique_ptr<Node>(new NodeSkew());
+            
+        else if (str.compare("kurtosis")==0)
+            return std::unique_ptr<Node>(new NodeKurtosis());
+            
+        else if (str.compare("slope")==0)
+            return std::unique_ptr<Node>(new NodeSlope());
+            
+        else if (str.compare("count")==0)
+            return std::unique_ptr<Node>(new NodeCount());
 
         // variables and constants
-         else if (str.compare("x") == 0)
+        else if (str.compare("x") == 0)
         {
             if(dtypes.size() == 0)
                 return std::unique_ptr<Node>(new NodeVariable(loc));
@@ -348,7 +370,7 @@ namespace FT{
             
         else
         {
-            std::cerr << "Error: no node named " << str << " exists.\n"; 
+            std::cerr << "Error: no node named '" << str << "' exists.\n"; 
             throw;
         }
         //TODO: add squashing functions, time delay functions, and stats functions

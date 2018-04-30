@@ -76,7 +76,7 @@ namespace FT{
             Feat(int pop_size=100, int gens = 100, string ml = "LinearRidgeRegression", 
                    bool classification = false, int verbosity = 1, int max_stall = 0,
                    string sel ="lexicase", string surv="pareto", float cross_rate = 0.5,
-                   char otype='a', string functions = "+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite", 
+                   char otype='a', string functions = "+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite",
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
                    bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
                    double split=0.75, double fb=0.5, string scorer=""):
@@ -178,6 +178,9 @@ namespace FT{
                 MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
                 VectorXd vectY = Map<VectorXd>(Y,lenY);
                 auto Z = set_z(s, train_idx, train_size);
+                // TODO: make sure long fns are set
+                string longfns = "mean,median,max,min,variance,skew,kurtosis,slope,count";
+
                 fit(matX,vectY,Z); 
             }
             /*                                                      
@@ -509,8 +512,13 @@ namespace FT{
             params.msg("survivors:\n" + p_pop->print_eqns(), 2);
 
             update_best();
-            if (params.verbosity>0) print_stats(g+1);           
+            if(params.verbosity>0)
+                print_stats(g+1);
+            else
+                printProgress(((g+1)*1.0)/params.gens);
+                //cout<<"\rCompleted "<<((g+1)*100/params.gens)<<"%"<< std::flush;
         }
+        cout<<"\n";
         params.msg("finished",1);
         params.msg("best training representation: " + best_ind.get_eqn(),1);
         params.msg("train score: " + std::to_string(best_score), 1);

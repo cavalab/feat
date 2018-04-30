@@ -5,7 +5,7 @@ license: GNU/GPLv3
 """
 
 # distutils: language=c++
-cimport numpy 
+import ctypes
 import numpy as np 
 from libcpp.vector cimport vector
 from libcpp.string cimport string
@@ -61,15 +61,15 @@ cdef class PyFeat:
     def fit_with_z(self,np.ndarray X,np.ndarray y, string zfile, np.ndarray zids):
         cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
         cdef np.ndarray[np.double_t, ndim=1, mode="fortran"] arr_y
-        cdef np.ndarray[np.int_t, ndim=1, mode="fortran"] arr_z_id
+        cdef np.ndarray[int, ndim=1, mode="fortran"] arr_z_id
         check_X_y(X,y,ensure_2d=True,ensure_min_samples=1)
         X = X.transpose()
         arr_x = np.asfortranarray(X, dtype=np.double)
         arr_y = np.asfortranarray(y, dtype=np.double)
-        arr_z_id = np.asfortranarray(zids, dtype=np.int)
+        arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
 
         self.ft.fit_with_z(&arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y),
-                           zfile, &arr_z_id[0],len(arr_z_id))
+                           zfile, &arr_z_id[0], len(arr_z_id))
 
 
     def predict(self,np.ndarray X):

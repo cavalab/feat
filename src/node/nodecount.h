@@ -2,19 +2,19 @@
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
-#ifndef NODE_MIN
-#define NODE_MIN
+#ifndef NODE_COUNT
+#define NODE_COUNT
 
 #include "node.h"
 
 namespace FT{
-	class NodeMin : public Node
+	class NodeCount : public Node
     {
     	public:
     	
-    		NodeMin()
+    		NodeCount()
             {
-                name = "min";
+                name = "count";
     			otype = 'f';
     			arity['f'] = 0;
     			arity['b'] = 0;
@@ -28,14 +28,13 @@ namespace FT{
 			              Stacks& stack)
             {
                 ArrayXd tmp(stack.z.top().first.size());
-                
                 int x;
                 
                 for(x = 0; x < stack.z.top().first.size(); x++)
-                    tmp(x) = limited(stack.z.top().first[x]).minCoeff();
-                    
+                    tmp(x) = limited(stack.z.top().first[x]).cols();
+                  
                 stack.z.pop();
-
+                
                 stack.f.push(tmp);
                 
             }
@@ -43,10 +42,10 @@ namespace FT{
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-                stack.fs.push("min(" + stack.zs.pop() + ")");
+                stack.fs.push("count(" + stack.zs.pop() + ")");
             }
         protected:
-            NodeMin* clone_impl() const override { return new NodeMin(*this); }; 
+            NodeCount* clone_impl() const override { return new NodeCount(*this); }; 
     };
 }	
 

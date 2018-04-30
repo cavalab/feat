@@ -15,6 +15,26 @@ using namespace Eigen;
 namespace FT{
  
     double NEAR_ZERO = 0.0000001;
+    string PBSTR = "============================================================================="+
+                   "=======================";
+    int PBWIDTH = 100;
+    
+    std::string ltrim(std::string str, const std::string& chars = "\t\n\v\f\r ")
+    {
+        str.erase(0, str.find_first_not_of(chars));
+        return str;
+    }
+     
+    std::string rtrim(std::string str, const std::string& chars = "\t\n\v\f\r ")
+    {
+        str.erase(str.find_last_not_of(chars) + 1);
+        return str;
+    }
+     
+    std::string trim(std::string str, const std::string& chars = "\t\n\v\f\r ")
+    {
+        return ltrim(rtrim(str, chars), chars);
+    }
 
     /*!
      * load csv file into matrix. 
@@ -40,7 +60,9 @@ namespace FT{
             std::string cell;
             
             while (std::getline(lineStream, cell, sep)) 
-            {                
+            {
+                cell = trim(cell);
+                  
                 if (rows==0) // read in header
                 {
                     if (!cell.compare("class") || !cell.compare("target") 
@@ -53,6 +75,7 @@ namespace FT{
                     values.push_back(std::stod(cell));
                 else
                     targets.push_back(std::stod(cell));
+                
                 ++col;
             }
             ++rows;
@@ -84,23 +107,6 @@ namespace FT{
         // check if endpoint is binary
         binary_endpoint = (y.array() == 0 || y.array() == 1).all();
         
-    }
-    
-    std::string ltrim(std::string str, const std::string& chars = "\t\n\v\f\r ")
-    {
-        str.erase(0, str.find_first_not_of(chars));
-        return str;
-    }
-     
-    std::string rtrim(std::string str, const std::string& chars = "\t\n\v\f\r ")
-    {
-        str.erase(str.find_last_not_of(chars) + 1);
-        return str;
-    }
-     
-    std::string trim(std::string str, const std::string& chars = "\t\n\v\f\r ")
-    {
-        return ltrim(rtrim(str, chars), chars);
     }
     
     /*!
@@ -176,7 +182,7 @@ namespace FT{
         }
     }
     
-/*!
+    /*!
      * load partial longitudinal csv file into matrix according to idx vector
      */
     void load_partial_longitudinal(const std::string & path,
@@ -260,6 +266,7 @@ namespace FT{
             
         }
     }
+
     /// check if element is in vector.
     template<typename T>
     bool in(const vector<T> v, const T& i)
@@ -627,5 +634,14 @@ namespace FT{
     {
         vector<T> wv( w.data(), w.data()+w.rows());
         return unique(wv);
+    }
+
+    void printProgress (double percentage)
+    {
+        int val = (int) (percentage * 100);
+        int lpad = (int) (percentage * PBWIDTH);
+        int rpad = PBWIDTH - lpad;
+        printf ("\rCompleted %3d%% [%.*s%*s]", val, lpad, PBSTR.c_str(), rpad, "");
+        fflush (stdout);
     }
 } 
