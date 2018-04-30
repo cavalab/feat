@@ -162,6 +162,72 @@ namespace FT{
         }
     }
     
+    /*!
+     * load partial longitudinal csv file into matrix according to idx vector
+     */
+    void load_partial_longitudinal(const std::string & path,
+                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
+                           char sep=',', vector<int> idx)
+    {
+        std::map<int, bool> idMap;
+        
+        for(auto id : idx)
+            idMap[id] = true;
+        
+        std::map<string, std::map<int, std::pair<std::vector<double>, std::vector<double> > > > dataMap;
+        std::ifstream indata;
+        indata.open(path);
+        if (!indata.good())
+        { 
+            std::cerr << "Invalid input file " + path + "\n"; 
+            exit(1);
+        }
+        std::string line, firstKey = "";
+        
+        while (std::getline(indata, line)) 
+        {
+            std::stringstream lineStream(line);
+            std::string sampleNo, value, time, type;
+            
+            std::getline(lineStream, sampleNo, sep);
+            std::getline(lineStream, value, sep);
+            std::getline(lineStream, time, sep);
+            std::getline(lineStream, type, sep);
+            
+            type = trim(type);
+            
+            if(!firstKey.compare(""))
+                firstKey = type;
+            
+            int sNo = std::stoi(sampleNo);
+            if(idMap.find(sNo) != idMap.end())
+            {
+                if(idMap[sNo] == true)
+                {
+                    dataMap[type][sNo].first.push_back(std::stod(value));
+                    dataMap[type][sNo]].second.push_back(std::stod(time));
+                }
+            }
+        }
+        
+        int numSamples = dataMap[firstKey].size();
+        int numTypes = dataMap.size();	
+        
+        int x;
+        
+        for ( const auto &val: dataMap )
+        {
+            for(x = 0; x < numSamples; x++)
+            {
+                ArrayXd arr1 = Map<ArrayXd>(dataMap[val.first][x].first.data(), dataMap[val.first][x].first.size());
+                ArrayXd arr2 = Map<ArrayXd>(dataMap[val.first][x].second.data(), dataMap[val.first][x].second.size());
+                Z[val.first].first.push_back(arr1);
+                Z[val.first].second.push_back(arr2);
+            }
+            
+        }
+    }
+    
     /// check if element is in vector.
     template<typename T>
     bool in(const vector<T> v, const T& i)
