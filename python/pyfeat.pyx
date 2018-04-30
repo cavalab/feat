@@ -30,6 +30,8 @@ cdef extern from "feat.h" namespace "FT":
         MatrixXd fit_transform(double * X, int rowsX,int colsX, double*  y , int lenY)
         string get_representation()
         string get_eqns()
+        void fit_with_z(double * X,int rowsX,int colsX, double * Y,int lenY, string s, 
+                            int * train_idx, int train_size)
 
 cdef class PyFeat:
     cdef Feat ft  # hold a c++ instance which we're wrapping
@@ -55,6 +57,20 @@ cdef class PyFeat:
         arr_y = np.asfortranarray(y, dtype=np.double)
 
         self.ft.fit(&arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y))
+
+    def fit_with_z(self,np.ndarray X,np.ndarray y, string zfile, np.ndarray zids):
+        cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
+        cdef np.ndarray[np.double_t, ndim=1, mode="fortran"] arr_y
+        cdef np.ndarray[np.int_t, ndim=1, mode="fortran"] arr_z_id
+        check_X_y(X,y,ensure_2d=True,ensure_min_samples=1)
+        X = X.transpose()
+        arr_x = np.asfortranarray(X, dtype=np.double)
+        arr_y = np.asfortranarray(y, dtype=np.double)
+        arr_z_id = np.asfortranarray(zids, dtype=np.int)
+
+        self.ft.fit_with_z(&arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y),
+                           zfile, &arr_z_id[0],len(arr_z_id))
+
 
     def predict(self,np.ndarray X):
         cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x

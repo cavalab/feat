@@ -60,8 +60,11 @@ class Feat(BaseEstimator):
                 self.fb,
                 self.scorer)
 
-    def fit(self,X,y):
-        self._pyfeat.fit(X,y)
+    def fit(self,X,y,zfile=None,zids=None):
+        if zfile:
+            self._pyfeat.fit_with_z(X,y,zfile,zids)
+        else:
+            self._pyfeat.fit(X,y)
 
     def predict(self,X):
         return self._pyfeat.predict(X)
