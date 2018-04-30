@@ -205,7 +205,7 @@ namespace FT{
                 if(idMap[sNo] == true)
                 {
                     dataMap[type][sNo].first.push_back(std::stod(value));
-                    dataMap[type][sNo]].second.push_back(std::stod(time));
+                    dataMap[type][sNo].second.push_back(std::stod(time));
                 }
             }
         }
@@ -371,7 +371,7 @@ namespace FT{
 			
     };
     
-    void reorder_logitudinal(vector<ArrayXd> &vec1,
+    void reorder_longitudinal(vector<ArrayXd> &vec1,
                              vector<ArrayXd> &vec2,
                              vector<int> const &order) 
     {   
@@ -457,7 +457,7 @@ namespace FT{
                 zidx.assign(((int*)zw.data()), (((int*)zw.data())+zw.size()));
                 
                 for(auto &val : Z)
-                    reorder_logitudinal(val.second.first, val.second.second, zidx);
+                    reorder_longitudinal(val.second.first, val.second.second, zidx);
             }
             
         }
