@@ -167,7 +167,7 @@ namespace FT{
      */
     void load_partial_longitudinal(const std::string & path,
                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
-                           char sep=',', vector<int> idx)
+                           char sep, vector<int> idx)
     {
         std::map<int, bool> idMap;
         
