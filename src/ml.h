@@ -59,7 +59,7 @@ namespace FT{
                 
                 ml_type = params.ml;
                 prob_type = PT_REGRESSION;
-                
+                max_train_time=60; 
                 if (params.classification)
                 { 
                     if (params.n_classes==2)
@@ -140,7 +140,7 @@ namespace FT{
 	            else
                 	std::cerr << "'" + ml_type + "' is not a valid ml choice\n";
                 
-                p_est->set_max_train_time(10);  // set maximum training time per model
+                p_est->set_max_train_time(max_train_time);  // set maximum training time per model
             }
         
             ~ML(){}
@@ -190,6 +190,7 @@ namespace FT{
             sh::EProblemType prob_type;         ///< type of learning problem; binary, multiclass 
                                                 ///  or regression 
             Normalizer N;                       ///< normalization
+            int max_train_time;                 ///< max seconds allowed for training
     };
 /////////////////////////////////////////////////////////////////////////////////////// Definitions
 
