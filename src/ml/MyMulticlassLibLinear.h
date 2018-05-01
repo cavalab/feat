@@ -38,14 +38,14 @@ namespace shogun
     state can be forced to clear using
     reset_train_state() method.
  */
-class CMulticlassLibLinear : public CLinearMulticlassMachine
+class CMyMulticlassLibLinear : public CLinearMulticlassMachine
 {
 	public:
 		MACHINE_PROBLEM_TYPE(PT_MULTICLASS)
 
 		/** default constructor  */
 
-		CMulticlassLibLinear() :
+		CMyMulticlassLibLinear() :
 			CLinearMulticlassMachine()
 		{
 			init_defaults();
@@ -56,7 +56,7 @@ class CMulticlassLibLinear : public CLinearMulticlassMachine
 		 * @param features features
 		 * @param labs labels
 		 */
-		CMulticlassLibLinear(float64_t C, CDotFeatures* features, CLabels* labs) :
+		CMyMulticlassLibLinear(float64_t C, CDotFeatures* features, CLabels* labs) :
 			CLinearMulticlassMachine(new CMulticlassOneVsRestStrategy(),features,NULL,labs)
 		{
 			init_defaults();
@@ -66,7 +66,7 @@ class CMulticlassLibLinear : public CLinearMulticlassMachine
 
 
 		/** destructor */
-		~CMulticlassLibLinear()
+		~CMyMulticlassLibLinear()
 		{
 			reset_train_state();
 		}

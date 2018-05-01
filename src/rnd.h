@@ -93,7 +93,7 @@ namespace FT {
 				    swap (first[i], first[d(rg[omp_get_thread_num()])]);
 			    }
 			}            
-
+            
             template<typename Iter>                                    
             Iter select_randomly(Iter start, Iter end) 
             {
