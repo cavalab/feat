@@ -13,6 +13,7 @@ license: GNU/GPL v3
 #include "./node/nodeand.h"
 #include "./node/nodeconstant.h"
 #include "./node/nodecos.h"
+#include "./node/nodecount.h"
 #include "./node/nodecube.h"
 #include "./node/nodedivide.h"
 #include "./node/nodeequal.h"

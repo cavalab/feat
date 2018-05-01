@@ -281,7 +281,13 @@ namespace FT{
             N.fit_normalize(X, dtypes);
          
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
-        /* cout << "y is " << y.transpose() << "\n"; */
+        /* cout << "Phi:\n"; */
+        /* for (int i = 0; i < 10 ; ++i) */
+        /* { */
+        /*     cout << X.col(i) << (i < 10 ? " " : "\n"); */ 
+        /* } */
+        //std::cout << "setting labels (n_classes = " << params.n_classes << ")\n"; 
+        //cout << "y is " << y.transpose() << "\n";
         if(prob_type==PT_BINARY && 
                 (!ml_type.compare("LR") || !ml_type.compare("SVM")))  // binary classification           	
         {
@@ -326,8 +332,6 @@ namespace FT{
         {
             labels = shared_ptr<CLabels>(p_est->apply_multiclass(features));
             y_pred = dynamic_pointer_cast<sh::CMulticlassLabels>(labels)->get_labels();
-            /* delete clf; */
-            
         }
         else                                                    // regression
         {
@@ -338,11 +342,9 @@ namespace FT{
         //y_pred.display_vector();
         // map to Eigen vector
         Map<VectorXd> yhat(y_pred.data(),y_pred.size());
-        /* // recast -1 values as 0 if needed */
-        /* if (prob_type==PT_BINARY && */ 
-        /*      (!ml_type.compare("LR") || !ml_type.compare("SVM")))     // binary classification */
-        /*     yhat = (yhat.cast<int>().array() == -1).select(0.0,yhat); */
-        
+       
+        /* std::cout << "yhat: " << yhat.transpose() << "\n"; */ 
+
         if (isinf(yhat.array()).any() || isnan(yhat.array()).any())
         {
             pass = false;
@@ -393,7 +395,8 @@ namespace FT{
             y_pred = dynamic_pointer_cast<sh::CMulticlassLabels>(labels)->get_labels();
         else
             y_pred = dynamic_pointer_cast<sh::CRegressionLabels>(labels)->get_labels();
-        
+       
+        y_pred.display_vector();
         Map<VectorXd> yhat(y_pred.data(),y_pred.size());
         
         if (prob_type==PT_BINARY && (!ml_type.compare("LR") || !ml_type.compare("SVM")))

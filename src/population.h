@@ -249,7 +249,7 @@ namespace FT{
         individuals[0] = starting_model;
         individuals[0].loc = 0;
         
-        //#pragma omp parallel for
+        #pragma omp parallel for
         for (unsigned i = 1; i< individuals.size(); ++i)
         {           
             // pick a dimensionality for this individual
