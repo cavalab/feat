@@ -13,9 +13,6 @@ using std::map;
 using Eigen::ArrayXd;
 #define MAX_DBL std::numeric_limits<double>::max()
 #define MIN_DBL std::numeric_limits<double>::min()
-
-
-
 namespace FT{
 
     //////////////////////////////////////////////////////////////////////////////// Declarations

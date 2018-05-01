@@ -20,7 +20,7 @@ class Feat(BaseEstimator):
     method."""
     def __init__(self, pop_size=100,  gens=100,  ml = "LinearRidgeRegression", 
                 classification=False,  verbosity=0,  max_stall=0,
-                sel ="lexicase",  surv ="pareto",  cross_rate=0.5,
+                sel ="lexicase",  surv ="nsga2",  cross_rate=0.5,
                 otype ='a',  functions ="+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite", 
                 max_depth=3,   max_dim=10,  random_state=0, 
                 erc = False,  obj ="fitness,complexity", shuffle=False,  split=0.75,  fb=0.5,
@@ -115,7 +115,7 @@ def main():
                         type=str, help='Selection Method')  
     parser.add_argument('-sep', action='store', dest='SEP', default=',', type=str, help='separator used on input file.')
     parser.add_argument('-surv', action='store', dest='SURVIVAL_METHOD',
-                        default='pareto',
+                        default='nsga2',
                         type=str, help='Survival Method')
     parser.add_argument('-xr', action='store', dest='CROSS_OVER',default=0.5,type=float, help='Cross over Rate in [0,1]')
     parser.add_argument('-otype', action='store', dest='O_TYPE',default="a",type=str, help='OType')

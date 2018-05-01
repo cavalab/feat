@@ -44,6 +44,8 @@ namespace FT{
         unsigned int n_classes;                     ///< number of classes for classification 
         float cross_rate;                           ///< cross rate for variation
         vector<int> classes;                        ///< class labels
+        vector<float> class_weights;                ///< weights for each class
+        vector<float> sample_weights;               ///< weights for each sample 
         string scorer;                              ///< loss function
 
         Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
@@ -109,10 +111,18 @@ namespace FT{
             if (sc.empty())
             {
                 if (classification && n_classes == 2)
-                    /* scorer = "log"; */
-                    scorer = "bal_accuracy";
-                else if (classification)
-                    scorer = "bal_accuracy";
+                {
+                    if (ml.compare("LR") || ml.compare("SVM"))
+                        scorer = "log";
+                    else
+                        scorer = "zero_one";
+                }
+                else if (classification){
+                    if (ml.compare("LR") || ml.compare("SVM"))
+                        scorer = "multi_log";
+                    else
+                        scorer = "bal_zero_one";
+                }
                 else
                     scorer = "mse";
             }
@@ -224,6 +234,7 @@ namespace FT{
         }
         /// sets the number of classes based on target vector y.
         void set_classes(VectorXd& y);
+        void set_sample_weights(VectorXd& y);
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
@@ -434,7 +445,10 @@ namespace FT{
             longitudinalMap.push_back(val.first);
             terminals.push_back(createNode(string("z"), 0, 0, 0, val.first));
         }
-        
+        cout << "setting z terminals\n";
+        for (const auto& t : terminals) 
+            cout << t->name << " " ;
+        cout << "\n";
         // reset output types
         set_otypes();
     }
@@ -460,23 +474,27 @@ namespace FT{
     void Parameters::set_classes(VectorXd& y)
     {
         classes.clear();
-        if ((y.array()==0 || y.array()==1).all()) 
-        {             
-            if (!ml.compare("LR") || !ml.compare("SVM"))  // re-format y to have labels -1, 1
-            {
-                y = (y.cast<int>().array() == 0).select(-1.0,y);
-            }
-        }
-        
+
         // set class labels
         vector<double> uc = unique(y);
-        for (auto i : uc)
-            classes.push_back(int(i)); 
         
-        n_classes = classes.size();
+        n_classes = uc.size();
 
-        set_scorer(scorer); // in case classification has changed, set scorer
-       
+        for (auto c : uc)
+            classes.push_back(int(c));
+    }
+
+    void Parameters::set_sample_weights(VectorXd& y)
+    {
+        // set class weights
+        class_weights.resize(n_classes);
+        sample_weights.clear();
+        for (unsigned i = 0; i < n_classes; ++i)
+            class_weights.at(i) = float(n_classes*(y.cast<int>().array() == int(classes.at(i))).count())/y.size(); 
+        for (unsigned i = 0; i < y.size(); ++i)
+            sample_weights.push_back(class_weights.at(int(y(i))));
+        std::cout << "class weights: "; 
+        for (auto c : class_weights) std::cout << c << " " ; std::cout << "\n";
         std::cout << "number of classes: " << n_classes << "\n";
     }
 }
