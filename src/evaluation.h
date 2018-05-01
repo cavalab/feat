@@ -20,24 +20,25 @@ namespace FT{
      * @class Evaluation
      * @brief evaluation mixin class for Feat
      */
-    typedef double (*funcPointer)(const VectorXd&, const VectorXd&, VectorXd&);
+    typedef double (*funcPointer)(const VectorXd&, const shared_ptr<CLabels>&, VectorXd&,
+                                  const vector<float>&);
     
     class Evaluation 
     {
         public:
         
             /* VectorXd (* loss_fn)(const VectorXd&, const VectorXd&);  // pointer to loss function */
-            double (* score)(const VectorXd&, const VectorXd&, VectorXd& );    // pointer to scoring function
+            double (* score)(const VectorXd&, const shared_ptr<CLabels>&, VectorXd&, 
+                             const vector<float>&);    // pointer to scoring function
             std::map<string, funcPointer> score_hash;
 
             Evaluation(string scorer)
             {
-                std::cout << "Evaluation: scorer: " + scorer + "\n";
-                               
-                score_hash["mse"] = & metrics::mse;
-                score_hash["accuracy"] = & metrics::zero_one_loss;
-                score_hash["bal_accuracy"] = & metrics::bal_zero_one_loss;
-                score_hash["log"] =  & metrics::bal_log_loss; 
+                score_hash["mse"] = & metrics::mse_label;
+                score_hash["zero_one"] = & metrics::zero_one_loss_label;
+                score_hash["bal_zero_one"] = & metrics::bal_zero_one_loss_label;
+                score_hash["log"] =  & metrics::log_loss_label; 
+                score_hash["multi_log"] =  & metrics::multi_log_loss_label; 
             
                 score = score_hash[scorer];
             }
@@ -67,7 +68,7 @@ namespace FT{
                              bool offspring);
          
             /// assign fitness to an individual and to F.  
-            void assign_fit(Individual& ind, MatrixXd& F, const VectorXd& yhat, const VectorXd& y,
+            void assign_fit(Individual& ind, MatrixXd& F, const shared_ptr<CLabels>& yhat, const VectorXd& y,
                             const Parameters& params);       
     };
     
@@ -113,32 +114,32 @@ namespace FT{
             bool pass = true;
             auto ml = std::make_shared<ML>(params);
 
-            VectorXd yhat = ml->fit(Phi,y,params,pass,pop.individuals[i].dtypes);
+            shared_ptr<CLabels> yhat = ml->fit(Phi,y,params,pass,pop.individuals[i].dtypes);
 
-
-	    if (!pass){
-       		yhat = VectorXd::Zero(yhat.size())  ; //high fitness won't be selected  
-	        vector<double> w(0,Phi.rows());     // set weights to zero
-		pop.individuals[i].set_p(w,params.feedback);
-	    }
-	    else{
-                // assign weights to individual
-                pop.individuals[i].set_p(ml->get_weights(),params.feedback);
-	    }
-
-            // assign weights to individual
-            //vector<double> w = ml->get_weights() 
-            pop.individuals[i].set_p(ml->get_weights(),params.feedback);
             // assign F and aggregate fitness
             params.msg("Assigning fitness to " + pop.individuals[i].get_eqn(), 2);
-            
-            assign_fit(pop.individuals[i],F,yhat,y,params);
-                        
-        }
+
+            if (!pass)
+            {
+                vector<double> w(0,Phi.rows());     // set weights to zero
+                pop.individuals[i].set_p(w,params.feedback);
+                pop.individuals[i].fitness = MAX_DBL;
+                F.col(pop.individuals[i].loc) = MAX_DBL*VectorXd::Ones(y.size());
+            }
+            else
+            {
+                    // assign weights to individual
+                    pop.individuals[i].set_p(ml->get_weights(),params.feedback);
+                    assign_fit(pop.individuals[i],F,yhat,y,params);
+
+            }
+
+                            
+            }
     }    
     
     // assign fitness to program
-    void Evaluation::assign_fit(Individual& ind, MatrixXd& F, const VectorXd& yhat, 
+    void Evaluation::assign_fit(Individual& ind, MatrixXd& F, const shared_ptr<CLabels>& yhat, 
                                 const VectorXd& y, const Parameters& params)
     {
         /*!
@@ -158,7 +159,7 @@ namespace FT{
         */ 
         assert(F.cols()>ind.loc);
         VectorXd loss;
-        ind.fitness = score(y, yhat, loss);
+        ind.fitness = score(y, yhat, loss, params.class_weights);
         F.col(ind.loc) = loss;  
          
         params.msg("ind " + std::to_string(ind.loc) + " fitness: " + std::to_string(ind.fitness),2);
@@ -206,7 +207,7 @@ namespace FT{
             params.msg("ML training on " + pop.individuals[i].get_eqn(), 2);
             bool pass = true;
             auto ml = std::make_shared<ML>(params);
-            VectorXd yhat_t = ml->fit(Phi,y_t,params,pass,pop.individuals[i].dtypes);
+            shared_ptr<CLabels> yhat_t = ml->fit(Phi,y_t,params,pass,pop.individuals[i].dtypes);
             if (!pass){
                 std::cerr << "Error training eqn " + pop.individuals[i].get_eqn() + "\n";
                 std::cerr << "with raw output " << pop.individuals[i].out(X_t, Z_t,params,y_t) << "\n";
@@ -219,7 +220,7 @@ namespace FT{
 
             // calculate ML model from Phi
             params.msg("ML predicting on " + pop.individuals[i].get_eqn(), 2);
-            VectorXd yhat_v = ml->predict(Phi_v);
+            shared_ptr<CLabels> yhat_v = ml->predict(Phi_v);
 
             // assign F and aggregate fitness
             params.msg("Assigning val fitness to " + pop.individuals[i].get_eqn(), 2);

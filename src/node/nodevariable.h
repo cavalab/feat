@@ -34,7 +34,7 @@ namespace FT{
 	    		if (otype == 'b')
 	                stack.b.push(X.row(loc).cast<bool>());
 	            else
-	                stack.f.push(limited(X.row(loc)));
+	                stack.f.push(X.row(loc));
 		    }
 
 		    /// Evaluates the node symbolically
