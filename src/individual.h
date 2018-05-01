@@ -256,6 +256,7 @@ namespace FT{
         dtypes.clear();        
         Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
         // add stack_f to Phi
+       
         for (unsigned int i=0; i<rows_f; ++i)
         {    
              ArrayXd Row = ArrayXd::Map(stack.f.at(i).data(),cols);
