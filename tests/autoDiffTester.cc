@@ -27,6 +27,9 @@
 #include "../src/node/nodetanh.h"		// Tested
 #include "../src/node/nodevariable.h"
 
+// Non differentiable nodes
+#include "../src/node/nodemax.h"
+
 // Backprop progam
 #include "../src/auto_backprop.h"
 
@@ -529,6 +532,8 @@ Node* parseToNode(std::string token) {
     	return new FT::NodeVariable(1);
     } else if (token == "exponent") {
     	return new FT::NodeExponent();
+    } else if (token == "max") {
+    	return new FT::NodeMax();
     }
 }
 
