@@ -37,6 +37,9 @@ using std::cout;
 namespace sh = shogun;
 using sh::EProblemType; 
 using sh::EProbHeuristicType;
+using sh::CBinaryLabels;
+using sh::CMulticlassLabels;
+using sh::CLabels;
 namespace FT{
 	
 	/*!
@@ -56,7 +59,7 @@ namespace FT{
                 
                 ml_type = params.ml;
                 prob_type = PT_REGRESSION;
-                
+                max_train_time=60; 
                 if (params.classification)
                 { 
                     if (params.n_classes==2)
@@ -137,6 +140,7 @@ namespace FT{
 	            else
                 	std::cerr << "'" + ml_type + "' is not a valid ml choice\n";
                 
+                p_est->set_max_train_time(max_train_time);  // set maximum training time per model
             }
         
             ~ML(){}
@@ -157,7 +161,10 @@ namespace FT{
             
             // predict using a trained ML model, returning a vector of predictions. 
             VectorXd predict_vector(MatrixXd& X);
-            
+ 
+            // predict using a trained ML model, returning a vector of predictions. 
+            ArrayXXd predict_proba(MatrixXd& X);
+           
             /// utility function to convert CLabels types to VectorXd types. 
             VectorXd labels_to_vector(shared_ptr<CLabels>& labels);
 
@@ -183,6 +190,7 @@ namespace FT{
             sh::EProblemType prob_type;         ///< type of learning problem; binary, multiclass 
                                                 ///  or regression 
             Normalizer N;                       ///< normalization
+            int max_train_time;                 ///< max seconds allowed for training
     };
 /////////////////////////////////////////////////////////////////////////////////////// Definitions
 
@@ -385,6 +393,39 @@ namespace FT{
         
     }
 
+    ArrayXXd ML::predict_proba(MatrixXd& X)
+    {
+        shared_ptr<CLabels> labels = shared_ptr<CLabels>(predict(X));
+           
+        if (prob_type==PT_BINARY && 
+                (!ml_type.compare("SVM") || !ml_type.compare("LR")))
+        {
+            shared_ptr<CBinaryLabels> BLabels = dynamic_pointer_cast<CBinaryLabels>(labels);
+            BLabels->scores_to_probabilities();
+            SGVector<double> tmp= BLabels->get_values();
+            ArrayXXd confidences(1,tmp.size());
+            confidences.row(0) = Map<ArrayXd>(tmp.data(),tmp.size()); 
+            return confidences;
+        }
+        else if (prob_type == PT_MULTICLASS)
+        {
+            shared_ptr<CMulticlassLabels> MLabels = dynamic_pointer_cast<CMulticlassLabels>(labels);
+            MatrixXd confidences(MLabels->get_num_classes(), MLabels->get_num_labels()) ; 
+            for (unsigned i =0; i<confidences.rows(); ++i)
+            {
+                SGVector<double> tmp = MLabels->get_multiclass_confidences(int(i));
+                confidences.row(i) = Map<ArrayXd>(tmp.data(),tmp.size());
+                /* std::cout << confidences.row(i) << "\n"; */
+            }
+            return confidences;
+        }
+        else
+        {
+            std::cerr << "Error: predict_proba not defined for problem type or ML method\n";
+            throw;
+        }
+    }
+
     VectorXd ML::labels_to_vector(shared_ptr<CLabels>& labels)
     {
         SGVector<double> y_pred;
@@ -396,7 +437,6 @@ namespace FT{
         else
             y_pred = dynamic_pointer_cast<sh::CRegressionLabels>(labels)->get_labels();
        
-        y_pred.display_vector();
         Map<VectorXd> yhat(y_pred.data(),y_pred.size());
         
         if (prob_type==PT_BINARY && (!ml_type.compare("LR") || !ml_type.compare("SVM")))

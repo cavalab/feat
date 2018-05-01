@@ -303,10 +303,25 @@ namespace FT{
             shared_ptr<CLabels> predict_labels(MatrixXd& X,
                              std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
                               std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());  
-           
+
+            /// predict probabilities of each class.
+            ArrayXXd predict_proba(MatrixXd& X,
+                             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
+                              std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());  
+            
+            ArrayXXd predict_proba(double * X, int rows_x, int cols_x) 
+            {			    
+                MatrixXd matX = Map<MatrixXd>(X,rows_x,cols_x);
+                return predict_proba(matX);
+            }
+	
             /// predict on unseen data, loading longitudinal samples (Z) from file.
             VectorXd predict_with_z(double * X, int rowsX,int colsX, 
                                     string s, int * idx, int idx_size);
+
+            /// predict probabilities of each class.
+            ArrayXXd predict_proba_with_z(double * X, int rowsX,int colsX, 
+                                    string s, int * idx, int idx_size);  
 
             /// predict on unseen data.             
             VectorXd predict(double * X, int rowsX, int colsX);      
@@ -668,6 +683,24 @@ namespace FT{
         /* string longfns = "mean,median,max,min,variance,skew,kurtosis,slope,count"; */
 
         return predict(matX,Z); 
+    }
+
+    ArrayXXd Feat::predict_proba(MatrixXd& X,
+                             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
+    {
+        MatrixXd Phi = transform(X, Z);
+        return p_ml->predict_proba(Phi);        
+    }
+ 
+    ArrayXXd Feat::predict_proba_with_z(double * X, int rowsX,int colsX, 
+                                    string s, int * idx, int idx_size)
+    {
+        MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
+        auto Z = get_Z(s, idx, idx_size);
+        // TODO: make sure long fns are set
+        /* string longfns = "mean,median,max,min,variance,skew,kurtosis,slope,count"; */
+
+        return predict_proba(matX,Z); 
     }
 
 
