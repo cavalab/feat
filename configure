@@ -11,7 +11,7 @@ if [ "$1" == "debug" ]; then
     cd ..
 elif [ "$1" == "profile" ]; then
     rm -rf profile; mkdir profile; cd profile;    
-    cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS=-p -DCMAKE_CXX_FLAGS=-O2 ..
+    cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS=-p -DCMAKE_CXX_FLAGS=-O2 -DSHOGUN_DIR=ON ..
     cd ..
 elif [ "$1" == "lpc" ] ; then
     # set up LPC environment
@@ -25,10 +25,10 @@ elif [ "$1" == "lpc" ] ; then
     cd ..
 elif [ "$1" == "tests" ] ; then 
     rm -rf build; mkdir build; cd build; 
-    cmake -DTEST=ON ..
+    cmake -DSHOGUN_DIR=ON .. -DTEST=ON ..
     cd ..
 else
     rm -rf build; mkdir build; cd build; 
-    cmake ..
+    cmake -DSHOGUN_DIR=ON ..
     cd ..
 fi

@@ -31,6 +31,7 @@ else:
 shogun_include_dir = '/usr/include/'
 shogun_lib = '/usr/lib/'
 if 'SHOGUN_DIR' in env_params:
+    print('SHOGUN_DIR=',os.environ['SHOGUN_DIR'])
     shogun_include_dir = os.environ['SHOGUN_DIR']
 if 'SHOGUN_LIB' in env_params:
     shogun_lib = os.environ['SHOGUN_LIB']

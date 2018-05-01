@@ -102,7 +102,7 @@ namespace FT{
         unsigned start =0;
         if (offspring) start = F.cols()/2;
         // loop through individuals
-        //#pragma omp parallel for
+        #pragma omp parallel for
         for (unsigned i = start; i<pop.size(); ++i)
         {
                         // calculate program output matrix Phi
@@ -196,7 +196,7 @@ namespace FT{
         unsigned start =0;
         if (offspring) start = F.cols()/2;
         // loop through individuals
-        //#pragma omp parallel for
+        #pragma omp parallel for
         for (unsigned i = start; i<pop.size(); ++i)
         {
             // calculate program output matrix Phi

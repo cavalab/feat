@@ -254,6 +254,30 @@ namespace FT{
                 }
                 return r;
             }
+            
+            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>> get_Z(string s, 
+                    int * idx, int idx_size)
+            {
+
+                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z;
+                vector<int> ids(idx,idx+idx_size);
+                load_partial_longitudinal(s,Z,',',ids);
+                for (auto& z : Z)
+                    reorder_longitudinal(z.second.first, z.second.second, ids);
+                /* cout << "Z:\n"; */
+                /* for (auto& z : Z) */
+                /* { */
+                /*     cout << z.first << "\n"; */
+                /*     for (unsigned i = 0; i < z.second.first.size(); ++i) */
+                /*     { */
+                /*         cout << "value: " << z.second.first.at(i).matrix().transpose() << "\n"; */
+                /*         cout << "time: " << z.second.second.at(i).matrix().transpose() << "\n"; */
+                /*     } */
+                /* } */
+                    
+                return Z;
+            }
+
             /// destructor             
             ~Feat(){} 
                         
@@ -265,17 +289,24 @@ namespace FT{
                      
             /// train a model.             
             void fit(double * X,int rowsX,int colsX, double * Y,int lenY);
-            
+
+            /// train a model, first loading longitudinal samples (Z) from file.
+            void fit_with_z(double * X, int rowsX, int colsX, double * Y, int lenY, string s, 
+                            int * idx, int idx_size);
+           
             /// predict on unseen data.             
             VectorXd predict(MatrixXd& X,
                              std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
-                                    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());  
+                                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());  
             
             /// predict on unseen data. return CLabels.
             shared_ptr<CLabels> predict_labels(MatrixXd& X,
                              std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
                               std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());  
-            
+           
+            /// predict on unseen data, loading longitudinal samples (Z) from file.
+            VectorXd predict_with_z(double * X, int rowsX,int colsX, 
+                                    string s, int * idx, int idx_size);
 
             /// predict on unseen data.             
             VectorXd predict(double * X, int rowsX, int colsX);      
@@ -283,7 +314,7 @@ namespace FT{
             /// transform an input matrix using a program.                          
             MatrixXd transform(MatrixXd& X,
                                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
-                                    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >(),
+                                 std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >(),
                                Individual *ind = 0);
             
             MatrixXd transform(double * X,  int rows_x, int cols_x);
@@ -292,7 +323,7 @@ namespace FT{
             VectorXd fit_predict(MatrixXd& X,
                                  VectorXd& y,
                                  std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
-                                    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >())
+                                 std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >())
                                  { fit(X, y, Z); return predict(X, Z); } 
                                  
             VectorXd fit_predict(double * X, int rows_x, int cols_x, double * Y, int len_y)
@@ -316,7 +347,7 @@ namespace FT{
             double score(MatrixXd& X,
                          const VectorXd& y,
                          std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
-                                  std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());
+                               std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());
             
         private:
             // Parameters
@@ -408,7 +439,7 @@ namespace FT{
         MatrixXd X_t(X.rows(),int(X.cols()*params.split));
         MatrixXd X_v(X.rows(),int(X.cols()*(1-params.split)));
         VectorXd y_t(int(y.size()*params.split)), y_v(int(y.size()*(1-params.split)));
-        
+       
         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_t;
         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_v;
         
@@ -468,8 +499,13 @@ namespace FT{
             params.msg("survivors:\n" + p_pop->print_eqns(), 2);
 
             update_best();
-            if (params.verbosity>0) print_stats(g+1);           
+            if(params.verbosity>0)
+                print_stats(g+1);
+            else
+                printProgress(((g+1)*1.0)/params.gens);
+                //cout<<"\rCompleted "<<((g+1)*100/params.gens)<<"%"<< std::flush;
         }
+        cout<<"\n";
         params.msg("finished",1);
         params.msg("best training representation: " + best_ind.get_eqn(),1);
         params.msg("train score: " + std::to_string(best_score), 1);
@@ -502,6 +538,19 @@ namespace FT{
         VectorXd vectY = Map<VectorXd>(Y,lenY);
 	
 	    Feat::fit(matX,vectY);
+    }
+    
+    void Feat::fit_with_z(double * X, int rowsX, int colsX, double * Y, int lenY, string s, 
+                    int * idx, int idx_size)
+    {
+
+        MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
+        VectorXd vectY = Map<VectorXd>(Y,lenY);
+        auto Z = get_Z(s, idx, idx_size);
+        // TODO: make sure long fns are set
+        /* string longfns = "mean,median,max,min,variance,skew,kurtosis,slope,count"; */
+
+        fit(matX,vectY,Z); 
     }
 
     void Feat::final_model(MatrixXd& X, VectorXd& y,
@@ -606,8 +655,21 @@ namespace FT{
     VectorXd Feat::predict(double * X, int rowsX,int colsX)
     {
         MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
-        return Feat::predict(matX);
+        return predict(matX);
     }
+
+    VectorXd Feat::predict_with_z(double * X, int rowsX,int colsX, 
+                                    string s, int * idx, int idx_size)
+    {
+
+        MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
+        auto Z = get_Z(s, idx, idx_size);
+        // TODO: make sure long fns are set
+        /* string longfns = "mean,median,max,min,variance,skew,kurtosis,slope,count"; */
+
+        return predict(matX,Z); 
+    }
+
 
     void Feat::update_best(bool validation)
     {

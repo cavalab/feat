@@ -53,7 +53,6 @@ namespace metrics{
         dynamic_pointer_cast<sh::CBinaryLabels>(labels)->scores_to_probabilities();
         SGVector<double> tmp = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_values();
         Map<VectorXd> yhat(tmp.data(),tmp.size());
-        /* std::cout << "yhat: " << yhat.transpose() << "\n"; */ 
         return log_loss(y,yhat,loss,weights);
     }
  
