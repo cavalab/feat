@@ -13,7 +13,7 @@ import pandas as pd
 import pyfeat
 from sklearn.metrics import mean_squared_error as mse
 from sklearn.model_selection import train_test_split
-from metrics import balanced_accuracy_score
+from sklearn.metrics import log_loss
 
 class Feat(BaseEstimator):
     """Feat uses GP to find a data representation that improves the performance of a given ML
@@ -67,8 +67,12 @@ class Feat(BaseEstimator):
         else:
             self._pyfeat.fit(X,y)
 
-    def predict(self,X):
-        return self._pyfeat.predict(X)
+    def predict(self,X,zfile=None,zids=None):
+        if zfile:
+            zfile = zfile.encode() if isinstance(zfile,str) else zfile
+            return self._pyfeat.predict_with_z(X,zfile,zids)
+        else:
+            return self._pyfeat.predict(X)
 
     def transform(self,X):
         return self._pyfeat.transform(X)
@@ -79,11 +83,15 @@ class Feat(BaseEstimator):
     def fit_transform(self,X,y):
         return self._pyfeat.fit_transform(X,y)
 
-    def score(self,features,labels):
-        labels_pred = self.predict(features).flatten()
+    def score(self,features,labels,zfile=None,zids=None):
+        if zfile:
+            zfile = zfile.encode() if isinstance(zfile,str) else zfile
+            labels_pred = self._pyfeat.predict_with_z(features,zfile,zids).flatten()
+        else:
+            labels_pred = self.predict(features).flatten()
         print('labels_pred:',labels_pred)
         if ( self.classification ):
-            return balanced_accuracy_score(labels,labels_pred)
+            return log_loss(labels,labels_pred)
         else:
             return mse(labels,labels_pred)
 

@@ -278,10 +278,10 @@ namespace FT{
         else if (str.compare("exp") == 0)
     		return std::unique_ptr<Node>(new NodeExponential());
     		
-    	else if (str.compare("gaussian")==0)
+    	else if (str.compare("gauss")==0)
             return std::unique_ptr<Node>(new NodeGaussian());
         
-        else if (str.compare("2dgaussian")==0)
+        else if (str.compare("gauss2d")==0)
             return std::unique_ptr<Node>(new Node2dGaussian());
 
         else if (str.compare("log") == 0)
@@ -445,10 +445,9 @@ namespace FT{
             longitudinalMap.push_back(val.first);
             terminals.push_back(createNode(string("z"), 0, 0, 0, val.first));
         }
-        cout << "setting z terminals\n";
-        for (const auto& t : terminals) 
-            cout << t->name << " " ;
-        cout << "\n";
+        /* for (const auto& t : terminals) */ 
+        /*     cout << t->name << " " ; */
+        /* cout << "\n"; */
         // reset output types
         set_otypes();
     }
