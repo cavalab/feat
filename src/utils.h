@@ -19,6 +19,17 @@ namespace FT{
                    "========================";
     int PBWIDTH = 100;
     
+    static double MAX_DBL = std::numeric_limits<double>::max();
+    static double MIN_DBL = std::numeric_limits<double>::lowest();
+
+    /// limits node output to be between MIN_DBL and MAX_DBL
+    void clean(ArrayXd& x)
+    {
+        x = (x < MIN_DBL).select(MIN_DBL,x);
+        x = (isinf(x)).select(MAX_DBL,x);
+        x = (isnan(x)).select(0,x);
+    };  
+
     std::string ltrim(std::string str, const std::string& chars = "\t\n\v\f\r ")
     {
         str.erase(0, str.find_first_not_of(chars));
@@ -189,11 +200,18 @@ namespace FT{
                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
                            char sep, vector<int> idx)
     {
+        /* loads data from the longitudinal file, with idx providing the id numbers of each row in
+         * the main data (X and y).
+         * I.e., idx[k] = the id of samples in Z associated with sample k in X and y
+         */
         std::map<int, bool> idMap;
-        
-        for(auto id : idx)
+        std::map<int, int> idLoc;
+        unsigned i = 0;
+        for(const auto& id : idx){
             idMap[id] = true;
-        
+            idLoc[id] = i;
+            ++i;
+        }
         std::map<string, std::map<int, std::pair<std::vector<double>, std::vector<double> > > > dataMap;
         std::ifstream indata;
         indata.open(path);
@@ -203,7 +221,8 @@ namespace FT{
             exit(1);
         }
         std::string line, firstKey = "";
-        
+       
+        // get header
         string header;
         std::getline(indata, header); 
     
@@ -243,8 +262,9 @@ namespace FT{
             {
                 if(idMap[sNo] == true)
                 {
-                    dataMap[type][sNo].first.push_back(std::stod(value));
-                    dataMap[type][sNo].second.push_back(std::stod(time));
+                    dataMap[type][idLoc[sNo]].first.push_back(std::stod(value));
+                    dataMap[type][idLoc[sNo]].second.push_back(std::stod(time));
+                    ++i;
                 }
             }
         }

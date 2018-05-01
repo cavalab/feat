@@ -257,7 +257,10 @@ namespace FT{
         Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
         // add stack_f to Phi
         for (unsigned int i=0; i<rows_f; ++i)
-        {    Phi.row(i) = VectorXd::Map(stack.f.at(i).data(),cols);
+        {    
+             ArrayXd Row = ArrayXd::Map(stack.f.at(i).data(),cols);
+             clean(Row); // remove nans, set infs to max and min
+             Phi.row(i) = Row;
              dtypes.push_back('f'); 
         }
         // convert stack_b to Phi       

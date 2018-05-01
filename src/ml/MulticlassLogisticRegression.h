@@ -207,11 +207,13 @@ bool CMulticlassLogisticRegression::train_machine(CFeatures* data)
 
 	SGMatrix<float64_t> all_w = result.w;
 	SGVector<float64_t> all_c = result.c;
-	for (int32_t i=0; i<n_classes; i++)
+
+    for (int32_t i=0; i<n_classes; i++)
 	{
 		SGVector<float64_t> w(n_feats);
 		for (int32_t j=0; j<n_feats; j++)
 			w[j] = all_w(j,i);
+        
 		float64_t c = all_c[i];
 		CLinearMachine* machine = new CLinearMachine();
 		machine->set_w(w);
