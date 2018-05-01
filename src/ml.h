@@ -437,7 +437,6 @@ namespace FT{
         else
             y_pred = dynamic_pointer_cast<sh::CRegressionLabels>(labels)->get_labels();
        
-        y_pred.display_vector();
         Map<VectorXd> yhat(y_pred.data(),y_pred.size());
         
         if (prob_type==PT_BINARY && (!ml_type.compare("LR") || !ml_type.compare("SVM")))
