@@ -26,8 +26,8 @@ namespace FT{
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)
             {
-        		ArrayXb x2 = stack.b.pop();
-                ArrayXb x1 = stack.b.pop();
+        		ArrayXb x1 = stack.b.pop();
+                ArrayXb x2 = stack.b.pop();
 
                 ArrayXb res = (x1 != x2).select(ArrayXb::Ones(x1.size()), ArrayXb::Zero(x1.size()));
 
@@ -38,8 +38,8 @@ namespace FT{
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-        		string x2 = stack.bs.pop();
-                string x1 = stack.bs.pop();
+        		string x1 = stack.bs.pop();
+                string x2 = stack.bs.pop();
                 stack.bs.push("(" + x1 + " XOR " + x2 + ")");
             }
         protected:
