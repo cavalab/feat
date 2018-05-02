@@ -36,7 +36,6 @@ namespace FT{
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-        		string x = stack.fs.pop();
                 stack.fs.push("exp(-(" + stack.fs.pop() + " ^ 2))");
             }
 

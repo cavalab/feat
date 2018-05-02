@@ -30,7 +30,7 @@ namespace FT{
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)
             {
-                stack.f.push(pow(W[0]*stack.f.pop(),2));
+                stack.f.push(limited(pow(W[0]*stack.f.pop(),2)));
             }
 
             /// Evaluates the node symbolically

@@ -88,6 +88,8 @@ class CMulticlassLogisticRegression : public CLinearMulticlassMachine
 		 * @return max iter value
 		 */
 		inline int32_t get_max_iter() const { return m_max_iter; }
+       		
+		vector<SGVector<float64_t>> get_w();
 
 	protected:
 
@@ -151,6 +153,22 @@ CMulticlassLogisticRegression::~CMulticlassLogisticRegression()
 {
 }
 
+
+ vector<SGVector<float64_t>> CMulticlassLogisticRegression::get_w()
+{
+    vector<SGVector<float64_t>> weights_vector;
+    
+    int n_classes = ((CMulticlassLabels*)m_labels)->get_num_classes();
+    for (int32_t i=0; i<n_classes; i++)
+	{
+		CLinearMachine* machine = (CLinearMachine*)m_machines->get_element(i);
+		weights_vector.push_back(machine->get_w());
+	}
+	
+     return weights_vector;	
+}
+
+
 bool CMulticlassLogisticRegression::train_machine(CFeatures* data)
 {
 	if (data)
@@ -189,11 +207,13 @@ bool CMulticlassLogisticRegression::train_machine(CFeatures* data)
 
 	SGMatrix<float64_t> all_w = result.w;
 	SGVector<float64_t> all_c = result.c;
-	for (int32_t i=0; i<n_classes; i++)
+
+    for (int32_t i=0; i<n_classes; i++)
 	{
 		SGVector<float64_t> w(n_feats);
 		for (int32_t j=0; j<n_feats; j++)
 			w[j] = all_w(j,i);
+        
 		float64_t c = all_c[i];
 		CLinearMachine* machine = new CLinearMachine();
 		machine->set_w(w);

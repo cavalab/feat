@@ -15,6 +15,37 @@ using namespace Eigen;
 namespace FT{
  
     double NEAR_ZERO = 0.0000001;
+    string PBSTR = "============================================================================"
+                   "========================";
+    int PBWIDTH = 100;
+    
+    static double MAX_DBL = std::numeric_limits<double>::max();
+    static double MIN_DBL = std::numeric_limits<double>::lowest();
+
+    /// limits node output to be between MIN_DBL and MAX_DBL
+    void clean(ArrayXd& x)
+    {
+        x = (x < MIN_DBL).select(MIN_DBL,x);
+        x = (isinf(x)).select(MAX_DBL,x);
+        x = (isnan(x)).select(0,x);
+    };  
+
+    std::string ltrim(std::string str, const std::string& chars = "\t\n\v\f\r ")
+    {
+        str.erase(0, str.find_first_not_of(chars));
+        return str;
+    }
+     
+    std::string rtrim(std::string str, const std::string& chars = "\t\n\v\f\r ")
+    {
+        str.erase(str.find_last_not_of(chars) + 1);
+        return str;
+    }
+     
+    std::string trim(std::string str, const std::string& chars = "\t\n\v\f\r ")
+    {
+        return ltrim(rtrim(str, chars), chars);
+    }
 
     /*!
      * load csv file into matrix. 
@@ -40,7 +71,9 @@ namespace FT{
             std::string cell;
             
             while (std::getline(lineStream, cell, sep)) 
-            {                
+            {
+                cell = trim(cell);
+                  
                 if (rows==0) // read in header
                 {
                     if (!cell.compare("class") || !cell.compare("target") 
@@ -53,6 +86,7 @@ namespace FT{
                     values.push_back(std::stod(cell));
                 else
                     targets.push_back(std::stod(cell));
+                
                 ++col;
             }
             ++rows;
@@ -86,23 +120,6 @@ namespace FT{
         
     }
     
-    std::string ltrim(std::string str, const std::string& chars = "\t\n\v\f\r ")
-    {
-        str.erase(0, str.find_first_not_of(chars));
-        return str;
-    }
-     
-    std::string rtrim(std::string str, const std::string& chars = "\t\n\v\f\r ")
-    {
-        str.erase(str.find_last_not_of(chars) + 1);
-        return str;
-    }
-     
-    std::string trim(std::string str, const std::string& chars = "\t\n\v\f\r ")
-    {
-        return ltrim(rtrim(str, chars), chars);
-    }
-    
     /*!
      * load longitudinal csv file into matrix. 
      */
@@ -119,17 +136,36 @@ namespace FT{
             exit(1);
         }
         std::string line, firstKey = "";
+       
+        string header;
+        std::getline(indata, header); 
+    
+        std::stringstream lineStream(header);
+        
+        std::map<string,int> head_to_col;
+        for (int i = 0; i<4; ++i)
+        {
+            string tmp; 
+            std::getline(lineStream,tmp, sep);
+            head_to_col[tmp] = i;
+        }
         
         while (std::getline(indata, line)) 
         {
             std::stringstream lineStream(line);
             std::string sampleNo, value, time, type;
             
-            std::getline(lineStream, sampleNo, sep);
-            std::getline(lineStream, value, sep);
-            std::getline(lineStream, time, sep);
-            std::getline(lineStream, type, sep);
-            
+            vector<string> cols(4); 
+            std::getline(lineStream, cols.at(0), sep);
+            std::getline(lineStream, cols.at(1), sep);
+            std::getline(lineStream, cols.at(2), sep);
+            std::getline(lineStream, cols.at(3), sep);
+           
+            sampleNo = cols.at(head_to_col["id"]);
+            time = cols.at(head_to_col["date"]);
+            value = cols.at(head_to_col["value"]);
+            type = cols.at(head_to_col["name"]);
+
             type = trim(type);
             
             if(!firstKey.compare(""))
@@ -157,6 +193,100 @@ namespace FT{
         }
     }
     
+    /*!
+     * load partial longitudinal csv file into matrix according to idx vector
+     */
+    void load_partial_longitudinal(const std::string & path,
+                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
+                           char sep, vector<int> idx)
+    {
+        /* loads data from the longitudinal file, with idx providing the id numbers of each row in
+         * the main data (X and y).
+         * I.e., idx[k] = the id of samples in Z associated with sample k in X and y
+         */
+        std::map<int, bool> idMap;
+        std::map<int, int> idLoc;
+        unsigned i = 0;
+        for(const auto& id : idx){
+            idMap[id] = true;
+            idLoc[id] = i;
+            ++i;
+        }
+        std::map<string, std::map<int, std::pair<std::vector<double>, std::vector<double> > > > dataMap;
+        std::ifstream indata;
+        indata.open(path);
+        if (!indata.good())
+        { 
+            std::cerr << "Invalid input file " + path + "\n"; 
+            exit(1);
+        }
+        std::string line, firstKey = "";
+       
+        // get header
+        string header;
+        std::getline(indata, header); 
+    
+        std::stringstream lineStream(header);
+        
+        std::map<string,int> head_to_col;
+        for (int i = 0; i<4; ++i)
+        {
+            string tmp; 
+            std::getline(lineStream,tmp, sep);
+            head_to_col[tmp] = i;
+        }
+        
+        while (std::getline(indata, line)) 
+        {
+            std::stringstream lineStream(line);
+            std::string sampleNo, value, time, type;
+            
+            vector<string> cols(4); 
+            std::getline(lineStream, cols.at(0), sep);
+            std::getline(lineStream, cols.at(1), sep);
+            std::getline(lineStream, cols.at(2), sep);
+            std::getline(lineStream, cols.at(3), sep);
+           
+            sampleNo = cols.at(head_to_col["id"]);
+            time = cols.at(head_to_col["date"]);
+            value = cols.at(head_to_col["value"]);
+            type = cols.at(head_to_col["name"]);
+
+            type = trim(type);
+            
+            if(!firstKey.compare(""))
+                firstKey = type;
+            
+            int sNo = std::stoi(sampleNo);
+            if(idMap.find(sNo) != idMap.end())
+            {
+                if(idMap[sNo] == true)
+                {
+                    dataMap[type][idLoc[sNo]].first.push_back(std::stod(value));
+                    dataMap[type][idLoc[sNo]].second.push_back(std::stod(time));
+                    ++i;
+                }
+            }
+        }
+        
+        int numSamples = dataMap[firstKey].size();
+        int numTypes = dataMap.size();	
+        
+        int x;
+        
+        for ( const auto &val: dataMap )
+        {
+            for(x = 0; x < numSamples; x++)
+            {
+                ArrayXd arr1 = Map<ArrayXd>(dataMap[val.first][x].first.data(), dataMap[val.first][x].first.size());
+                ArrayXd arr2 = Map<ArrayXd>(dataMap[val.first][x].second.data(), dataMap[val.first][x].second.size());
+                Z[val.first].first.push_back(arr1);
+                Z[val.first].second.push_back(arr2);
+            }
+            
+        }
+    }
+
     /// check if element is in vector.
     template<typename T>
     bool in(const vector<T> v, const T& i)
@@ -300,7 +430,7 @@ namespace FT{
 			
     };
     
-    void reorder_logitudinal(vector<ArrayXd> &vec1,
+    void reorder_longitudinal(vector<ArrayXd> &vec1,
                              vector<ArrayXd> &vec2,
                              vector<int> const &order) 
     {   
@@ -386,7 +516,7 @@ namespace FT{
                 zidx.assign(((int*)zw.data()), (((int*)zw.data())+zw.size()));
                 
                 for(auto &val : Z)
-                    reorder_logitudinal(val.second.first, val.second.second, zidx);
+                    reorder_longitudinal(val.second.first, val.second.second, zidx);
             }
             
         }
@@ -524,5 +654,14 @@ namespace FT{
     {
         vector<T> wv( w.data(), w.data()+w.rows());
         return unique(wv);
+    }
+
+    void printProgress (double percentage)
+    {
+        int val = (int) (percentage * 100);
+        int lpad = (int) (percentage * PBWIDTH);
+        int rpad = PBWIDTH - lpad;
+        printf ("\rCompleted %3d%% [%.*s%*s]", val, lpad, PBSTR.c_str(), rpad, "");
+        fflush (stdout);
     }
 } 
