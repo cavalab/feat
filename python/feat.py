@@ -13,39 +13,41 @@ import pandas as pd
 import pyfeat
 from sklearn.metrics import mean_squared_error as mse
 from sklearn.model_selection import train_test_split
-from metrics import balanced_accuracy_score
+from sklearn.metrics import log_loss
 
 class Feat(BaseEstimator):
     """Feat uses GP to find a data representation that improves the performance of a given ML
     method."""
-    def __init__(self, pop_size=100,  gens=100,  ml="LinearRidgeRegression", 
+    def __init__(self, pop_size=100,  gens=100,  ml = "LinearRidgeRegression", 
                 classification=False,  verbosity=0,  max_stall=0,
-                sel="lexicase",  surv="pareto",  cross_rate=0.5,
-                otype='a',  functions="+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite", 
+                sel ="lexicase",  surv ="nsga2",  cross_rate=0.5,
+                otype ='a',  functions ="+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite", 
                 max_depth=3,   max_dim=10,  random_state=0, 
-                erc = False,  obj="fitness,complexity", shuffle=False,  split=0.75,  fb=0.5,
-                scorer=''):
+                erc = False,  obj ="fitness,complexity", shuffle=False,  split=0.75,  fb=0.5,
+                scorer =''):
         self.pop_size = pop_size
         self.gens = gens
-        self.ml = ml.encode()
+        self.ml = ml.encode() if( isinstance(ml,str) )  else ml
+
         self.classification = classification
         self.verbosity = verbosity
         self.max_stall = max_stall
-        self.sel = sel.encode()
-        self.surv = surv.encode()
+        self.sel = sel.encode() if( isinstance(sel,str) )  else sel
+        self.surv = surv.encode() if( isinstance(surv,str) )  else surv
         self.cross_rate = cross_rate
-        self.otype = otype.encode()
-        self.functions = functions.encode()
+        self.otype = otype.encode() if( isinstance(otype,str) )  else otype
+        self.functions = functions.encode() if( isinstance(functions,str) )  else functions
         self.max_depth = max_depth
         self.max_dim = max_dim
         self.random_state = random_state
         self.erc = erc      
-        self.obj = obj.encode()
+        self.obj = obj.encode() if( isinstance(obj,str) )  else obj
         self.shuffle = shuffle
         self.split = split
         self.fb = fb
-        self.scorer = scorer.encode()
-        
+        self.scorer = scorer.encode() if( isinstance(scorer,str) )  else scorer
+       
+ 
         self._pyfeat = pyfeat.PyFeat( self.pop_size,  self.gens,  self.ml, 
                 self.classification,  self.verbosity,  self.max_stall,
                 self.sel,  self.surv,  self.cross_rate,
@@ -58,11 +60,19 @@ class Feat(BaseEstimator):
                 self.fb,
                 self.scorer)
 
-    def fit(self,X,y):
-        self._pyfeat.fit(X,y)
+    def fit(self,X,y,zfile=None,zids=None):
+        if zfile:
+            zfile = zfile.encode() if isinstance(zfile,str) else zfile
+            self._pyfeat.fit_with_z(X,y,zfile,zids)
+        else:
+            self._pyfeat.fit(X,y)
 
-    def predict(self,X):
-        return self._pyfeat.predict(X)
+    def predict(self,X,zfile=None,zids=None):
+        if zfile:
+            zfile = zfile.encode() if isinstance(zfile,str) else zfile
+            return self._pyfeat.predict_with_z(X,zfile,zids)
+        else:
+            return self._pyfeat.predict(X)
 
     def transform(self,X):
         return self._pyfeat.transform(X)
@@ -73,11 +83,15 @@ class Feat(BaseEstimator):
     def fit_transform(self,X,y):
         return self._pyfeat.fit_transform(X,y)
 
-    def score(self,features,labels):
-        labels_pred = self.predict(features).flatten()
+    def score(self,features,labels,zfile=None,zids=None):
+        if zfile:
+            zfile = zfile.encode() if isinstance(zfile,str) else zfile
+            labels_pred = self._pyfeat.predict_with_z(features,zfile,zids).flatten()
+        else:
+            labels_pred = self.predict(features).flatten()
         print('labels_pred:',labels_pred)
         if ( self.classification ):
-            return balanced_accuracy_score(labels,labels_pred)
+            return log_loss(labels,labels_pred)
         else:
             return mse(labels,labels_pred)
 
@@ -109,7 +123,7 @@ def main():
                         type=str, help='Selection Method')  
     parser.add_argument('-sep', action='store', dest='SEP', default=',', type=str, help='separator used on input file.')
     parser.add_argument('-surv', action='store', dest='SURVIVAL_METHOD',
-                        default='pareto',
+                        default='nsga2',
                         type=str, help='Survival Method')
     parser.add_argument('-xr', action='store', dest='CROSS_OVER',default=0.5,type=float, help='Cross over Rate in [0,1]')
     parser.add_argument('-otype', action='store', dest='O_TYPE',default="a",type=str, help='OType')

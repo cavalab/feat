@@ -30,11 +30,10 @@ namespace FT{
                 ArrayXd tmp(stack.z.top().first.size());
                 
                 int x;
-                double mean;
                 ArrayXd tmp1;
                 
                 for(x = 0; x < stack.z.top().first.size(); x++)
-                    tmp(x) = variance(stack.z.top().first[x]);
+                    tmp(x) = variance(limited(stack.z.top().first[x]));
                     
                 stack.z.pop();
 

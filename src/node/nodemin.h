@@ -18,7 +18,7 @@ namespace FT{
     			otype = 'f';
     			arity['f'] = 0;
     			arity['b'] = 0;
-    			arity['l'] = 1;
+    			arity['z'] = 1;
     			complexity = 1;
     		}
     		
@@ -32,7 +32,7 @@ namespace FT{
                 int x;
                 
                 for(x = 0; x < stack.z.top().first.size(); x++)
-                    tmp(x) = stack.z.top().first[x].minCoeff();
+                    tmp(x) = limited(stack.z.top().first[x]).minCoeff();
                     
                 stack.z.pop();
 

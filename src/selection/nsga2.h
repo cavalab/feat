@@ -8,15 +8,15 @@ license: GNU/GPL v3
 namespace FT{
     ////////////////////////////////////////////////////////////////////////////////// Declarations
     /*!
-     * @class Pareto
+     * @class NSGA2
      */
-    struct Pareto : SelectionOperator
+    struct NSGA2 : SelectionOperator
     {
         /** NSGA-II based selection and survival methods. */
 
-        Pareto(bool surv){ name = "pareto"; survival = surv; };
+        NSGA2(bool surv){ name = "nsga2"; survival = surv; };
         
-        ~Pareto(){}
+        ~NSGA2(){}
 
         /// selection according to the survival scheme of NSGA-II
         vector<size_t> survive(Population& pop, const MatrixXd& F, const Parameters& p);
@@ -57,7 +57,7 @@ namespace FT{
     
     /////////////////////////////////////////////////////////////////////////////////// Definitions
 
-    vector<size_t> Pareto::survive(Population& pop, const MatrixXd& F, const Parameters& params)
+    vector<size_t> NSGA2::survive(Population& pop, const MatrixXd& F, const Parameters& params)
     {
         /* Selection using the survival scheme of NSGA-II. 
          *
@@ -105,7 +105,7 @@ namespace FT{
         return selected;
     }
 
-    void Pareto::fast_nds(Population& pop) 
+    void NSGA2::fast_nds(Population& pop) 
     {
         front.resize(1);
         front[0].clear();
@@ -181,7 +181,7 @@ namespace FT{
 
     }
 
-    void Pareto::crowding_distance(Population& pop, int fronti)
+    void NSGA2::crowding_distance(Population& pop, int fronti)
     {
         std::vector<int> F = front[fronti];
         if (F.size() == 0 ) return;

@@ -52,7 +52,8 @@ if (NOT CMAKE_BUILD_TYPE)
     message(STATUS "Setting build type to '${default_build_type}' since none was specified.")
     set(CMAKE_BUILD_TYPE "${default_build_type}")
 endif()
-
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+#set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 # add OpenMP support
 option(OMP "use OpenMP" ON)
 if (OMP)

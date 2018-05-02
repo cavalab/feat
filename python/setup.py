@@ -1,4 +1,5 @@
 #from distutils.core import setup
+import sys
 from setuptools import setup, find_packages
 from setuptools.extension import Extension
 from Cython.Build import cythonize
@@ -30,6 +31,7 @@ else:
 shogun_include_dir = '/usr/include/'
 shogun_lib = '/usr/lib/'
 if 'SHOGUN_DIR' in env_params:
+    print('SHOGUN_DIR=',os.environ['SHOGUN_DIR'])
     shogun_include_dir = os.environ['SHOGUN_DIR']
 if 'SHOGUN_LIB' in env_params:
     shogun_lib = os.environ['SHOGUN_LIB']
@@ -50,7 +52,7 @@ setup(
        sources = ["pyfeat.pyx"],    # our cython source
        include_dirs = ['../src/',eigen_dir,shogun_include_dir]
                       +eigency.get_includes(include_eigen=False),
-       extra_compile_args = ['-std=c++14','-fopenmp','-Wno-sign-compare',
+       extra_compile_args = ['-std=c++1y','-fopenmp','-Wno-sign-compare',
                              '-Wno-reorder'],
        library_dirs = [shogun_lib],
        extra_link_args = ['-lshogun'],      
