@@ -79,11 +79,11 @@ namespace FT{
                    char otype='a', string functions = "+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite", 
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
                    bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
-                   double split=0.75, double fb=0.5, string scorer=""):
+                   double split=0.75, double fb=0.5, string scorer="", string feature_names=""):
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
                              functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, 
-                             fb, scorer), 
+                             fb, scorer, feature_names), 
                       p_sel( make_shared<Selection>(sel) ),
                       p_surv( make_shared<Selection>(surv, true) ),
                       p_variation( make_shared<Variation>(cross_rate) )                      
@@ -161,6 +161,9 @@ namespace FT{
 
             ///set scoring function
             void set_scorer(string s){scorer=s; params.scorer=s;}
+            
+            void set_feature_names(string s){params.set_feature_names(s);}
+            void set_feature_names(vector<string>& s){params.feature_names = s;}
             /*                                                      
              * getting functions
              */
