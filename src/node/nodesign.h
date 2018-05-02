@@ -31,7 +31,7 @@ namespace FT{
 			              Stacks& stack)
             {
         		ArrayXd x = stack.f.pop();
-        	    ArrayXd::Ones ones(s.size());
+        	    ArrayXd ones = ArrayXd::Ones(x.size());
 
         		ArrayXd res = (W[0] * x > 0).select(ones, 
                                                     (x == 0).select(ArrayXd::Zero(x.size()), 
@@ -45,7 +45,7 @@ namespace FT{
                 stack.fs.push("sign("+ stack.fs.pop() +")");
             }
 
-            ArrayXd getDerivative(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
+            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
                 // Might want to experiment with using a perceptron update rule or estimating with some other function
                 switch (loc) {
                     case 1: // d/dw0
