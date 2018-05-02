@@ -29,6 +29,8 @@
 
 // Non differentiable nodes
 #include "../src/node/nodemax.h"
+#include "../src/node/nodexor.h"
+#include "../src/node/nodestep.h"
 
 // Backprop progam
 #include "../src/auto_backprop.h"
@@ -534,6 +536,10 @@ Node* parseToNode(std::string token) {
     	return new FT::NodeExponent();
     } else if (token == "max") {
     	return new FT::NodeMax();
+    } else if (token == "xor") {
+    	return new FT::NodeXor();
+    } else if (token == "step") {
+    	return new FT::NodeStep();
     }
 }
 
@@ -570,6 +576,7 @@ vector<Node*> programGen() {
 }
 
 int testDummyProgram(vector<Node*> p0, int iters) {
+	std::cout << "Initializing testDummy...\n";
 	std::cout << "Testing program: [";
 	
 	for (Node* n : p0) {
