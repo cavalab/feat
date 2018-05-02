@@ -67,6 +67,10 @@ namespace FT{
             feedback(fb)
         {
             set_verbosity(verbosity);
+            if (fs.empty())
+                fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
+                      "step,sign,logit,tanh,gauss,gauss2d,"
+                      "and,or,not,xor,=,<,<=,>,>=,if,ite";
             set_functions(fs);
             set_objectives(obj);
             updateSize();     

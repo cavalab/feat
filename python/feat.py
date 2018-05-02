@@ -21,7 +21,7 @@ class Feat(BaseEstimator):
     def __init__(self, pop_size=100,  gens=100,  ml = "LinearRidgeRegression", 
                 classification=False,  verbosity=0,  max_stall=0,
                 sel ="lexicase",  surv ="nsga2",  cross_rate=0.5,
-                otype ='a',  functions ="+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite", 
+                otype ='a',  functions ="", 
                 max_depth=3,   max_dim=10,  random_state=0, 
                 erc = False,  obj ="fitness,complexity", shuffle=False,  split=0.75,  fb=0.5,
                 scorer =''):
