@@ -38,7 +38,6 @@ license: GNU/GPL v3
 #include "./node/nodemultiply.h"
 #include "./node/nodenot.h"
 #include "./node/nodeor.h"
-#include "./node/noderoot.h"
 #include "./node/nodesign.h"
 #include "./node/nodesin.h"
 #include "./node/nodeskew.h"
