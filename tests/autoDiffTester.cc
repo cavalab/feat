@@ -41,11 +41,11 @@
 // Stacks
 #include "../src/stack.h"
 
+// Nodevector
+#include "../src/nodevector.h"
+
 /**
 Notes
-===========================
-In 3 layer program last layer has some inconsistencies at 3-4 decimal places with tensorflow
-Ask bill about what order arguments should be in since its mixed across nodes
 Add import from util for 2d Gauss
 **/
 
@@ -543,8 +543,8 @@ Node* parseToNode(std::string token) {
     }
 }
 
-vector<Node*> programGen() {
-	vector<Node*> program;
+FT::NodeVector programGen() {
+	FT::NodeVector program;
 	std::string txt;
 
 	std::cout << "Please input test program. ex: x0 x1 + cos" << "\n";
@@ -559,7 +559,7 @@ vector<Node*> programGen() {
     	token = txt.substr( initialPos, pos - initialPos );
         std::cout << token << "\n";
 
-        program.push_back(parseToNode(token));
+        program.push_back(unique_ptr<Node>(parseToNode(token)));
 
         initialPos = pos + 1;
 
@@ -569,17 +569,17 @@ vector<Node*> programGen() {
     // Add the last one
     token = txt.substr( initialPos, std::min( pos, txt.size() ) - initialPos + 1 );
     std::cout << token << "\n";
-    program.push_back(parseToNode(token));
+    program.push_back(unique_ptr<Node>(parseToNode(token)));
     std::cout << "ProgramGen done";
 
     return program;
 }
 
-int testDummyProgram(vector<Node*> p0, int iters) {
+int testDummyProgram(FT::NodeVector p0, int iters) {
 	std::cout << "Initializing testDummy...\n";
 	std::cout << "Testing program: [";
 	
-	for (Node* n : p0) {
+	for (unique_ptr<Node>& n : p0) {
 		std::cout << n->name << ", ";
 	}
 	std::cout << "]\n";
@@ -600,13 +600,27 @@ int testDummyProgram(vector<Node*> p0, int iters) {
 	std::cout << "Initialized dummy program. Running auto backprop\n";
 	// Auto_backprop(PROGRAM, COST_FUNCTION, D_COST_FUNCTION, INPUT_DATA, LABELS, ITERS, LEARNING RATE);
 	FT::Auto_backprop* engine = new FT::Auto_backprop(p0, FT::metrics::d_squared_difference, x, y, iters, learning_rate);
-	vector<Node*> predictor = engine->run();
+	engine->run(); // Update pointer to NodeVector internally
+
+	for (unique_ptr<Node>& n : p0) {
+		std::cout << n->name << ": ";
+		NodeDx* nd = dynamic_cast<NodeDx*>(n.get());
+		if (nd != NULL) {
+			std::cout << " with weight";
+			for (int i = 0; i < nd->arity['f']; i++) {
+				std::cout << " " << nd->W[i];
+			}
+		}
+		std::cout << "\n";
+	}
+
+	// Make sure internal NodeVector updated
 }
 
 int main() {
 	int myNumber = 0;
 	string input = "";
-	vector<Node*> program = programGen();
+	FT::NodeVector program = programGen();
 	while (true) {
 		cout << "Please enter nubmer of iterations: ";
 	   	getline(cin, input);
