@@ -8,7 +8,6 @@ license: GNU/GPL v3
 #include <numeric>
 
 #include "nodeDx.h"
-#include "../utils.h"
 
 namespace FT{
 	class Node2dGaussian : public NodeDx
@@ -24,7 +23,7 @@ namespace FT{
     			complexity = 4;
 
                 for (int i = 0; i < arity['f']; i++) {
-                    W.push_back(r());
+                    W.push_back(r.rnd_dbl());
                 }
     		}
     		

@@ -7,7 +7,10 @@
 // Need to remember for implementing auto-backprop that the arguments are in reverse order (top of the stack is the last argument)
 
 namespace FT{
-	class NodeDx : public Node
+    
+    extern Rnd r;   // forward declaration of random number generator
+
+    class NodeDx : public Node
     {
     	public:
     		std::vector<double> W;

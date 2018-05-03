@@ -5,8 +5,6 @@ license: GNU/GPL v3
 #ifndef NODE_LOG
 #define NODE_LOG
 
-#define NEAR_ZERO 0.000001
-
 #include "nodeDx.h"
 
 namespace FT{
@@ -23,7 +21,7 @@ namespace FT{
     			complexity = 4;
 
                 for (int i = 0; i < arity['f']; i++) {
-                    W.push_back(r());
+                    W.push_back(r.rnd_dbl());
                 }
     		}
 

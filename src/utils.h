@@ -9,19 +9,16 @@ license: GNU/GPL v3
 #include <chrono>
 #include <ostream>
 #include <map>
+#include "init.h"
 
 using namespace Eigen;
 
 namespace FT{
  
-    double NEAR_ZERO = 0.0000001;
     string PBSTR = "============================================================================"
                    "========================";
     int PBWIDTH = 100;
     
-    static double MAX_DBL = std::numeric_limits<double>::max();
-    static double MIN_DBL = std::numeric_limits<double>::lowest();
-
     /// limits node output to be between MIN_DBL and MAX_DBL
     void clean(ArrayXd& x)
     {
