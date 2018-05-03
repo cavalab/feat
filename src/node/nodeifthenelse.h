@@ -26,16 +26,16 @@ namespace FT{
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)
             {
-                ArrayXd f2 = stack.f.pop();
                 ArrayXd f1 = stack.f.pop();
+                ArrayXd f2 = stack.f.pop();
                 stack.f.push(limited(stack.b.pop().select(f1,f2)));
             }
 
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-                string f2 = stack.fs.pop();
                 string f1 = stack.fs.pop();
+                string f2 = stack.fs.pop();
                 stack.fs.push("if-then-else(" + stack.bs.pop() + "," + f1 + "," + f2 + ")");
             }
         protected:

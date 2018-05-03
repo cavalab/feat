@@ -47,11 +47,12 @@ namespace FT{
         vector<float> class_weights;                ///< weights for each class
         vector<float> sample_weights;               ///< weights for each sample 
         string scorer;                              ///< loss function
+        vector<string> feature_names;               ///< names of features
 
         Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
                    char ot, int verbosity, string fs, float cr, unsigned int max_depth, 
                    unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
-                   double fb, string sc):    
+                   double fb, string sc, string fn):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
@@ -67,8 +68,13 @@ namespace FT{
             feedback(fb)
         {
             set_verbosity(verbosity);
+            if (fs.empty())
+                fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
+                      "step,sign,logit,tanh,gauss,gauss2d,"
+                      "and,or,not,xor,=,<,<=,>,>=,if,ite";
             set_functions(fs);
             set_objectives(obj);
+            set_feature_names(fn);
             updateSize();     
             set_otypes();
             n_classes = 2;
@@ -190,6 +196,7 @@ namespace FT{
                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > ());
 
+        void set_feature_names(string fn); 
         /// set the objectives
         void set_objectives(string obj);
         
@@ -362,9 +369,17 @@ namespace FT{
         else if (str.compare("x") == 0)
         {
             if(dtypes.size() == 0)
-                return std::unique_ptr<Node>(new NodeVariable(loc));
-            else
+            {
+                if (feature_names.size() == 0)
+                    return std::unique_ptr<Node>(new NodeVariable(loc));
+                else
+                    return std::unique_ptr<Node>(new NodeVariable(loc,'f', feature_names.at(loc)));
+            }
+            else if (feature_names.size() == 0)
                 return std::unique_ptr<Node>(new NodeVariable(loc, dtypes[loc]));
+            else
+                return std::unique_ptr<Node>(new NodeVariable(loc, dtypes[loc], 
+                                                              feature_names.at(loc)));
         }
             
         else if (str.compare("kb")==0)
@@ -388,6 +403,23 @@ namespace FT{
     	
     }
 
+    void Parameters::set_feature_names(string fn)
+    {
+        if (fn.empty())
+            feature_names.clear();
+        else
+        {
+            string delim=",";
+            size_t pos = 0;
+            string token;
+            while ((pos = fn.find(delim)) != string::npos) 
+            {
+                token = fn.substr(0, pos);
+                feature_names.push_back(token);
+                fn.erase(0, pos + delim.length());
+            }
+        }
+    }
     void Parameters::set_functions(string fs)
     {
         /*! 
