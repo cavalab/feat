@@ -7,4 +7,5 @@ tags
 *.ipynb_checkpoint
 __pycache__
 *.so
+*.exe
 feat.egg-info
