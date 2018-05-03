@@ -14,7 +14,8 @@ namespace FT {
 	public:
 		typedef void (*callback)(ArrayXd, ArrayXd);
 		// Add a proper constructor
-		Auto_backprop(vector<Node> program, callback cost_func, MatrixXd X, VectorXd labels, int iters=1000, double n=0.1) {
+		Auto_backprop(vector<Node> program, callback cost_func, MatrixXd X, VectorXd labels, 
+                      int iters=1000, double n=0.1) {
 			this.program = program;
 			this.cost_func = cost_func;
 			this.X = X;
