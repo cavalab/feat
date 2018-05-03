@@ -21,7 +21,7 @@ namespace FT{
     			complexity = 3;
 
                 for (int i = 0; i < arity['f']; i++) {
-                    W.push_back(r());
+                    W.push_back(r.rnd_dbl());
                 }
     		}
     		
@@ -48,24 +48,6 @@ namespace FT{
                        return W[0] * -sin(W[0] * stack_f[stack_f.size() - 1]);
                 } 
             }
-
-            // void derivative(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
-            //     switch (loc) {
-            //         case 0:
-            //         default:
-            //             gradients.push_back(W[0] * -sin(W[0] * stack_f[stack_f.size() - 1]));
-            //     } 
-            // }
-
-            // void update(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
-            //     update_value = 1
-            //     for(auto g : gradients) {
-            //         update_value *= g;
-            //     }
-                 
-            //     d_w = stack_f[stack_f.size()-1] * -sin(W[0] * stack_f[stack_f-1])
-            //     W[0] = W[0] - n/update_value.size * sum(d_w * update_value);
-            // }
 
         protected:
             NodeCos* clone_impl() const override { return new NodeCos(*this); };  

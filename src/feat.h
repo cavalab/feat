@@ -11,12 +11,7 @@ license: GNU/GPL v3
 #include <Eigen/Dense>
 #include <memory>
 #include <shogun/base/init.h>
-#ifdef _OPENMP
-    #include <omp.h>
-#else
-    #define omp_get_thread_num() 0
-    #define omp_get_max_threads() 1
-#endif
+
 // stuff being used
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -29,6 +24,7 @@ using std::make_shared;
 using std::cout; 
  
 // internal includes
+#include "init.h"
 #include "rnd.h"
 #include "utils.h"
 #include "params.h"

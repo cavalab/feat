@@ -21,7 +21,7 @@ namespace FT{
     			complexity = 33;
 
                 for (int i = 0; i < arity['f']; i++) {
-                    W.push_back(r());
+                    W.push_back(r.rnd_dbl());
                 }
     		}
     		

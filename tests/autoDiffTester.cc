@@ -594,14 +594,15 @@ int testDummyProgram(FT::NodeVector p0, int iters) {
 	y << 9.0, 
 		 8.0;
 
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
 	// Params
 	// int iters = 100;
 	double learning_rate = 0.1;
 
 	std::cout << "Initialized dummy program. Running auto backprop\n";
-	// Auto_backprop(PROGRAM, COST_FUNCTION, D_COST_FUNCTION, INPUT_DATA, LABELS, ITERS, LEARNING RATE);
-	FT::Auto_backprop* engine = new FT::Auto_backprop(p0, FT::metrics::d_squared_difference, x, y, iters, learning_rate);
-    p0 = engine->run(); // Update pointer to NodeVector internally
+	// AutoBackProp(PROGRAM, COST_FUNCTION, D_COST_FUNCTION, INPUT_DATA, LABELS, ITERS, LEARNING RATE);
+	FT::AutoBackProp* engine = new FT::AutoBackProp(FT::metrics::d_squared_difference, iters, learning_rate);
+    engine->run(p0, x, y, Z); // Update pointer to NodeVector internally
 
     std::cout << "test program returned:\n";
 	for (const auto& n : p0) {
@@ -624,7 +625,7 @@ int main() {
 	string input = "";
 	FT::NodeVector program = programGen();
 	while (true) {
-		cout << "Please enter nubmer of iterations: ";
+		cout << "Please enter number of iterations: ";
 	   	getline(cin, input);
 
 	   	// This code converts from string to number safely.
