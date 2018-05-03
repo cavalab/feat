@@ -14,7 +14,7 @@ namespace FT{
     	  	
     		NodeRelu()
     		{
-    			name = "/";
+    			name = "relu";
     			otype = 'f';
     			arity['f'] = 2;
     			arity['b'] = 0;
@@ -26,21 +26,21 @@ namespace FT{
     		}
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
-                    vector<ArrayXb>& stack_b)
+             void evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+                          Stacks& stack)
             {
-                ArrayXd x = stack_f.back(); stack_f.pop_back();
+                ArrayXd x = stack.f.pop();
                 
                 // ArrayXd res = (W[0] * x > 0).select((W[0] * x == 0).select(ArrayXd::Zero(x.size()), -1*ArrayXd::Ones(x.size()))); 
                 ArrayXd res = x; // Need to replace with above line
-                stack_f.push_back(res);
+                stack.f.push(res);
             }
 
             /// Evaluates the node symbolically
-            void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
+             void eval_eqn(Stacks& stack)
             {
-        		string x = stack_f.back(); stack_f.pop_back();
-                stack_f.push_back("relu("+ x +")");         	
+                stack.fs.push("relu("+ stack.fs.pop() +")");         	
             }
 
             ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
@@ -53,31 +53,6 @@ namespace FT{
                         return -W[1] * stack_f[stack_f.size() - 1]/(W[0] * pow(stack_f[stack_f.size()], 2));
                 } 
             }
-
-            // void derivative(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
-            //     switch (loc) {
-            //         case 1:
-            //             gradients.push_back(-W[0] * stack_f[stack_f.size() - 1]/
-            //                 (W[1] * pow(stack_f[stack_f.size()], 2)));
-            //             break;
-            //         case 0:
-            //         default:
-            //             gradients.push_back(W[0]/(W[1] * fwd_stack[-2]));
-            //     } 
-            // }
-
-            // void update(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
-            //     update_value = 1
-            //     for(auto g : gradients) {
-            //         update_value *= g;
-            //     }
-                 
-            //     W_temp = W[:]
-            //     d_w = stack_f[stack_f.size()-1]/(W_temp[1] * stack_f[stack_f.size()-2]);
-            //     W[0] = W_temp[0] - n/update_value.size * sum(d_w * update_value);
-            //     d_w = -W_temp[0] * stack_f[stack_f.size()-1]/(stack_f[stack_f.size()-2] * pow(W[1], 2));
-            //     W[1] = W_temp[1] - n/update_value.size * sum(d_w * update_value); 
-            // }
 
             protected:
             NodeRelu* clone_impl() const override { return new NodeRelu(*this); };  

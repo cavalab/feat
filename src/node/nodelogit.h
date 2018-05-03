@@ -54,28 +54,6 @@ namespace FT{
                 } 
             }
 
-            // void derivative(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
-            //     switch (loc) {
-            //         case 0:
-            //         default:
-            //             numerator = W[0] * exp(-W[0] * stack_f[stack_f.size() - 1]);
-            //             denom = pow(1 + exp(-W[0] * stack_f[stack_f.size() - 1]), 2);
-            //             gradients.push_back(numerator/denom);
-            //     } 
-            // }
-
-            // void update(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
-            //     update_value = 1
-            //     for(auto g : gradients) {
-            //         update_value *= g;
-            //     }
-                 
-            //     numerator = stack_f[stack_f.size() -1] * exp(-W[0] * stack_f[stack_f.size() -1]);
-            //     denom = pow(1 + np.exp(-W[0] * stack_f[stack_f.size()-1]), 2);
-            //     d_w = numerator/denom;
-            //     W[0] = W[0] - n/update_value.size * sum(d_w * update_value);
-            // }
-
         protected:
             NodeLogit* clone_impl() const override { return new NodeLogit(*this); };  
     };

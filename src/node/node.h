@@ -5,9 +5,10 @@ license: GNU/GPL v3
 #ifndef NODE_H
 #define NODE_H
 
-#include<map>
+#include <map>
 #include <memory>
 #include <vector>
+#include <iostream>
 #include <Eigen/Dense>
 #include "../stack.h"
 using std::vector;
@@ -33,6 +34,7 @@ namespace FT{
             char otype;             				///< output type
             std::map<char, unsigned int> arity;		///< floating arity of the operator 
             int complexity;         ///< complexity of node
+            int visits = 0;
 
             virtual ~Node(){}
            
