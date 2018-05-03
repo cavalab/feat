@@ -3,8 +3,8 @@ all: autoBP
 sample: ../src/node/node.h ../src/node/nodeDx.h trigNodes arithNodes powerNodes eNodes miscNodes
 	g++ -o sample ../src/node/node.h ../src/node/nodeDx.h ../src/node/nodecos.h
 
-autoBP: autoDiffTester.cc ../src/auto_backprop.h nodes
-	g++ -o autoBP autoDiffTester.cc ../src/auto_backprop.h
+autoBP: autoDiffTester.cc ../src/auto_backprop.h ../src/testMetrics.h nodes
+	g++ -o autoBP autoDiffTester.cc ../src/auto_backprop.h ../src/testMetrics.h
 
 nodes: ../src/node/node.h ../src/node/nodeDx.h trigNodes arithNodes powerNodes eNodes miscNodes
 	g++ -o nodes ../src/node/node.h ../src/node/nodeDx.h
@@ -21,5 +21,5 @@ powerNodes: ../src/node/nodecube.h ../src/node/nodeexponent.h ../src/node/nodesq
 eNodes: ../src/node/nodeexponential.h ../src/node/nodelog.h
 	g++ -o eNodes ../src/node/nodeexponential.h ../src/node/nodelog.h
 
-miscNodes: ../src/node/nodelogit.h ../src/node/noderelu.h ../src/node/nodevariable.h ../src/node/nodegaussian.h ../src/node/node2dgaussian.h
-	g++ -o miscNodes ../src/node/nodelogit.h ../src/node/noderelu.h ../src/node/nodevariable.h ../src/node/nodegaussian.h ../src/node/node2dgaussian.h
+miscNodes: ../src/node/nodelogit.h ../src/node/noderelu.h ../src/node/nodevariable.h ../src/node/nodegaussian.h
+	g++ -o miscNodes ../src/node/nodelogit.h ../src/node/noderelu.h ../src/node/nodevariable.h ../src/node/nodegaussian.h

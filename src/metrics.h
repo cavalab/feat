@@ -10,6 +10,17 @@ namespace FT{
 namespace metrics{
 
     /* Scoring functions */
+
+    // Squared difference
+    VectorXd squared_difference(const VectorXd& y, const VectorXd& yhat)
+    {
+        return pow(yhat - y, 2);
+    }
+
+    // Derivative of squared difference with respec to yhat
+    VectorXd d_squared_difference(const VectorXd& y, const VectorXd& yhat) {
+        return 2 * (yhat - y);
+    }
     
     /// mean squared error
     double mse(const VectorXd& y, const VectorXd& yhat, VectorXd& loss, 
