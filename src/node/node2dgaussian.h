@@ -5,7 +5,10 @@ license: GNU/GPL v3
 #ifndef NODE_2DGAUSSIAN
 #define NODE_2DGAUSSIAN
 
+#include <numeric>
+
 #include "nodeDx.h"
+#include "../utils.h"
 
 namespace FT{
 	class Node2dGaussian : public NodeDx
