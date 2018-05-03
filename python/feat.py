@@ -21,10 +21,10 @@ class Feat(BaseEstimator):
     def __init__(self, pop_size=100,  gens=100,  ml = "LinearRidgeRegression", 
                 classification=False,  verbosity=0,  max_stall=0,
                 sel ="lexicase",  surv ="nsga2",  cross_rate=0.5,
-                otype ='a',  functions ="+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite", 
+                otype ='a',  functions ="", 
                 max_depth=3,   max_dim=10,  random_state=0, 
                 erc = False,  obj ="fitness,complexity", shuffle=False,  split=0.75,  fb=0.5,
-                scorer =''):
+                scorer ='',feature_names=""):
         self.pop_size = pop_size
         self.gens = gens
         self.ml = ml.encode() if( isinstance(ml,str) )  else ml
@@ -46,7 +46,7 @@ class Feat(BaseEstimator):
         self.split = split
         self.fb = fb
         self.scorer = scorer.encode() if( isinstance(scorer,str) )  else scorer
-       
+        self.feature_names = feature_names.encode() if isinstance(feature_names,str) else feature_names 
  
         self._pyfeat = pyfeat.PyFeat( self.pop_size,  self.gens,  self.ml, 
                 self.classification,  self.verbosity,  self.max_stall,
@@ -58,7 +58,8 @@ class Feat(BaseEstimator):
                 self.shuffle,  
                 self.split,  
                 self.fb,
-                self.scorer)
+                self.scorer,
+                self.feature_names)
 
     def fit(self,X,y,zfile=None,zids=None):
         if zfile:
@@ -73,6 +74,14 @@ class Feat(BaseEstimator):
             return self._pyfeat.predict_with_z(X,zfile,zids)
         else:
             return self._pyfeat.predict(X)
+
+    def predict_proba(self,X,zfile=None,zids=None):
+        if zfile:
+            zfile = zfile.encode() if isinstance(zfile,str) else zfile
+            return self._pyfeat.predict_proba_with_z(X,zfile,zids)
+        else:
+            return self._pyfeat.predict_proba(X)
+
 
     def transform(self,X):
         return self._pyfeat.transform(X)

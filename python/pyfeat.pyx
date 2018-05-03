@@ -22,9 +22,11 @@ cdef extern from "feat.h" namespace "FT":
                char otype, string functions, 
                unsigned int max_depth, unsigned int max_dim, int random_state, 
                bool erc, string obj,bool shuffle, 
-               double split, double fb, string scorer) except + 
+               double split, double fb, string scorer, 
+               string feature_names) except + 
         void fit(double * X, int rowsX, int colsX, double*  y , int lenY)
         VectorXd predict(double * X, int rowsX,int colsX)
+        ArrayXXd predict_proba(double * X, int rowsX,int colsX)
         MatrixXd transform(double * X, int rowsX,int colsX)
         VectorXd fit_predict(double * X, int rowsX,int colsX, double*  y , int lenY)
         MatrixXd fit_transform(double * X, int rowsX,int colsX, double*  y , int lenY)
@@ -34,6 +36,8 @@ cdef extern from "feat.h" namespace "FT":
                             int * train_idx, int train_size)
         VectorXd predict_with_z(double * X,int rowsX,int colsX, string s, 
                             int * idx, int idx_size)
+        ArrayXXd predict_proba_with_z(double * X,int rowsX,int colsX, string s, 
+                            int * idx, int idx_size)
 
 cdef class PyFeat:
     cdef Feat ft  # hold a c++ instance which we're wrapping
@@ -41,14 +45,15 @@ cdef class PyFeat:
                   int max_stall,string sel, string surv, float cross_rate,string otype, 
                   string functions, unsigned int max_depth, unsigned int max_dim, 
                   int random_state, bool erc , string obj,bool shuffle, double split, double fb,
-                  string scorer):
+                  string scorer, string feature_names):
         cdef char otype_char
         if ( len(otype) == 0):
             otype_char = 'a' #Defaut Value
         else:
             otype_char = ord(otype)
         self.ft = Feat(pop_size,gens,ml,classification,verbosity,max_stall,sel,surv,cross_rate,
-        otype_char, functions, max_depth, max_dim, random_state, erc, obj, shuffle, split, fb, scorer)
+        otype_char, functions, max_depth, max_dim, random_state, erc, obj, shuffle, split, fb, scorer,
+        feature_names)
 
     def fit(self,np.ndarray X,np.ndarray y):
         cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
@@ -90,6 +95,25 @@ cdef class PyFeat:
         arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
         
         res = ndarray(self.ft.predict_with_z(&arr_x[0,0],X.shape[0],X.shape[1],
+                                             zfile, &arr_z_id[0], len(arr_z_id)))
+        return res.flatten()
+
+    def predict_proba(self,np.ndarray X):
+        cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
+        X = X.transpose()
+        arr_x = np.asfortranarray(X, dtype=np.double)
+
+        res = ndarray(self.ft.predict_proba(&arr_x[0,0],X.shape[0],X.shape[1]))
+        return res.flatten()
+
+    def predict_proba_with_z(self,np.ndarray X, string zfile, np.ndarray zids):
+        cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
+        cdef np.ndarray[int, ndim=1, mode="fortran"] arr_z_id
+        X = X.transpose()
+        arr_x = np.asfortranarray(X, dtype=np.double)
+        arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
+        
+        res = ndarray(self.ft.predict_proba_with_z(&arr_x[0,0],X.shape[0],X.shape[1],
                                              zfile, &arr_z_id[0], len(arr_z_id)))
         return res.flatten()
 

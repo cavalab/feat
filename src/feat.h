@@ -76,14 +76,14 @@ namespace FT{
             Feat(int pop_size=100, int gens = 100, string ml = "LinearRidgeRegression", 
                    bool classification = false, int verbosity = 1, int max_stall = 0,
                    string sel ="lexicase", string surv="nsga2", float cross_rate = 0.5,
-                   char otype='a', string functions = "+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite", 
+                   char otype='a', string functions = "", 
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
                    bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
-                   double split=0.75, double fb=0.5, string scorer=""):
+                   double split=0.75, double fb=0.5, string scorer="", string feature_names=""):
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
                              functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, 
-                             fb, scorer), 
+                             fb, scorer, feature_names), 
                       p_sel( make_shared<Selection>(sel) ),
                       p_surv( make_shared<Selection>(surv, true) ),
                       p_variation( make_shared<Variation>(cross_rate) )                      
@@ -161,6 +161,9 @@ namespace FT{
 
             ///set scoring function
             void set_scorer(string s){scorer=s; params.scorer=s;}
+            
+            void set_feature_names(string s){params.set_feature_names(s);}
+            void set_feature_names(vector<string>& s){params.feature_names = s;}
             /*                                                      
              * getting functions
              */
@@ -303,10 +306,25 @@ namespace FT{
             shared_ptr<CLabels> predict_labels(MatrixXd& X,
                              std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
                               std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());  
-           
+
+            /// predict probabilities of each class.
+            ArrayXXd predict_proba(MatrixXd& X,
+                             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
+                              std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());  
+            
+            ArrayXXd predict_proba(double * X, int rows_x, int cols_x) 
+            {			    
+                MatrixXd matX = Map<MatrixXd>(X,rows_x,cols_x);
+                return predict_proba(matX);
+            }
+	
             /// predict on unseen data, loading longitudinal samples (Z) from file.
             VectorXd predict_with_z(double * X, int rowsX,int colsX, 
                                     string s, int * idx, int idx_size);
+
+            /// predict probabilities of each class.
+            ArrayXXd predict_proba_with_z(double * X, int rowsX,int colsX, 
+                                    string s, int * idx, int idx_size);  
 
             /// predict on unseen data.             
             VectorXd predict(double * X, int rowsX, int colsX);      
@@ -668,6 +686,24 @@ namespace FT{
         /* string longfns = "mean,median,max,min,variance,skew,kurtosis,slope,count"; */
 
         return predict(matX,Z); 
+    }
+
+    ArrayXXd Feat::predict_proba(MatrixXd& X,
+                             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
+    {
+        MatrixXd Phi = transform(X, Z);
+        return p_ml->predict_proba(Phi);        
+    }
+ 
+    ArrayXXd Feat::predict_proba_with_z(double * X, int rowsX,int colsX, 
+                                    string s, int * idx, int idx_size)
+    {
+        MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
+        auto Z = get_Z(s, idx, idx_size);
+        // TODO: make sure long fns are set
+        /* string longfns = "mean,median,max,min,variance,skew,kurtosis,slope,count"; */
+
+        return predict_proba(matX,Z); 
     }
 
 

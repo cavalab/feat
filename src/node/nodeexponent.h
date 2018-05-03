@@ -30,8 +30,8 @@ namespace FT{
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)
             {
-           		ArrayXd x2 = stack.f.pop();
-                ArrayXd x1 = stack.f.pop();
+           		ArrayXd x1 = stack.f.pop();
+                ArrayXd x2 = stack.f.pop();
 
                 stack.f.push(limited(pow(this->W[1] * x1, this->W[0] * x2)));
             }
@@ -39,8 +39,8 @@ namespace FT{
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-        		string x2 = stack.fs.pop();
-                string x1 = stack.fs.pop();
+        		string x1 = stack.fs.pop();
+                string x2 = stack.fs.pop();
                 stack.fs.push("(" + x1 + ")^(" + x2 + ")");
             }
 
