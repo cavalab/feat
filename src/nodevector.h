@@ -4,6 +4,8 @@ license: GNU/GPL v3
 */
 #ifndef NODEVECTOR_H
 #define NODEVECTOR_H
+#include <memory>
+#include "node/node.h"
 
 namespace FT{
     
@@ -41,7 +43,14 @@ namespace FT{
         }        
         NodeVector& operator=(NodeVector && other) = default;
          
+        vector<Node*> get_data()
+        {
+            vector<Node*> v;
+            for (unsigned i = 0; i<this->size(); ++i)
+                v.push_back(this->at(i).get());
 
+            return v;
+        }
     }; //NodeVector
 } // FT
 #endif

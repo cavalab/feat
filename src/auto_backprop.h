@@ -5,7 +5,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
-
+#include "nodevector.h"
 #include "stack.h"
 #include "node/node.h"
 #include "node/nodeDx.h"
@@ -13,7 +13,7 @@
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
-
+using std::cout;
 /**
 TODO
 ------------------------
@@ -33,7 +33,7 @@ namespace FT {
 		MatrixXd X;
 		VectorXd labels;
 		int iters;
-		vector<Node*> program;
+		NodeVector program;
 
 		struct BP_NODE
 		{
@@ -42,23 +42,25 @@ namespace FT {
 		};
 
 		void print_weights() {
-			for (Node* p : this->program) {
-				std::cout << "Node: " << p->name;
+			for (const auto& p : this->program) {
+				cout << "(46) Node: " << p->name;
 				if (isNodeDx(p)) {
-					NodeDx* dNode = dynamic_cast<NodeDx*>(p);
-					std::cout << " with weight";
+                    
+					NodeDx* dNode = dynamic_cast<NodeDx*>(p.get());
+                    cout << " with weight";
 					for (int i = 0; i < dNode->arity['f']; i++) {
-						std::cout << " " << dNode->W[i];
+						cout << " " << dNode->W.at(i);
 					}
+                    dNode = nullptr;
 				}
-				std::cout << "\n";
+				cout << "\n";
 			}
 		}
 
 		// Return the f_stack
 		vector<ArrayXd> forward_prop() 
 		{
-			std::cout << "Forward pass\n";
+			cout << "Forward pass\n";
 			// Iterate through all the nodes evaluating and tracking ouputs
 			vector<ArrayXd> stack_f; // Tracks output values
 			vector<ArrayXd> execution_stack; // Tracks output values and groups them based on input to functions
@@ -68,8 +70,8 @@ namespace FT {
 			std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z; 
 
 			// Use stack_f and execution stack to avoid issue of branches affecting what elements appear before a node 
-			for (Node* p : this->program) { // Can think about changing with call to Node for cases with nodes that aren't differentiable
-				std::cout << "Evaluating node: " << p->name << "\n";
+			for (const auto& p : this->program) { // Can think about changing with call to Node for cases with nodes that aren't differentiable
+				cout << "Evaluating node: " << p->name << "\n";
 				for (int i = 0; i < p->arity['f']; i++) {
 					stack_f.push_back(stack.f.at(stack.f.size() - (p->arity['f'] - i)));
 					// stack_f.push_back(execution_stack[execution_stack.size() - (p->arity['f'] - i)]);
@@ -82,7 +84,7 @@ namespace FT {
 			stack_f.push_back(stack.f.pop());
 			//stack_f.push_back(pop<ArrayXd>(&execution_stack)); // Would be nice to create a general "pop" function that does both these steps at once
 
-			std::cout << "Returning forward pass.\n";
+			cout << "Returning forward pass.\n";
 			return stack_f;
 		}
 
@@ -114,22 +116,22 @@ namespace FT {
 
 		// Compute gradients and update weights 
 		void backprop(vector<ArrayXd> f_stack) {
-			std::cout << "---------------------------\n";
+			cout << "---------------------------\n";
 			vector<ArrayXd> derivatives;
 			derivatives.push_back(this->d_cost_func(this->labels, f_stack[f_stack.size() - 1])); // Might need a cost function node (still need to address this)
-			std::cout << "Cost derivative: " << this->d_cost_func(this->labels, f_stack[f_stack.size() - 1]) << "\n"; // Working according to test program
+			cout << "Cost derivative: " << this->d_cost_func(this->labels, f_stack[f_stack.size() - 1]) << "\n"; // Working according to test program
 			pop<ArrayXd>(&f_stack); // Get rid of input to cost function
 
 			vector<BP_NODE> executing; // Stores node and its associated derivatves
 			// Currently I don't think updates will be saved, might want a pointer of nodes so don't have to restock the list
-			vector<Node*> bp_program(this->program); // Program we loop through and edit during algorithm (is this a shallow or deep copy?)
+			vector<Node*> bp_program = this->program.get_data(); // Program we loop through and edit during algorithm (is this a shallow or deep copy?)
 
-			// std::cout << "Initializing backprop systems.\n";
+			cout << "Initializing backprop systems.\n";
 			while (bp_program.size() > 0) {
 				Node* node = pop<Node*>(&bp_program);
-				// std::cout << "Size of program: " << bp_program.size() << "\n";
-				std::cout << "Evaluating: " << node->name << "\n";
-				// print_weights();
+				cout << "Size of program: " << bp_program.size() << "\n";
+				cout << "(132) Evaluating: " << node->name << "\n";
+				print_weights();
 
 				vector<ArrayXd> n_derivatives;
 
@@ -168,12 +170,20 @@ namespace FT {
 				}
 			}
 
-			// std::cout << "Backprop terminated\n";
+			cout << "Backprop terminated\n";
 			print_weights();
 		}
+        
+        bool isNodeDx(Node* n)
+        {
+            return NULL != dynamic_cast<NodeDx*>(n); ; 
+        }
 
-		bool isNodeDx(Node* n) {
-			return NULL != dynamic_cast<NodeDx*>(n); ;
+		bool isNodeDx(const std::unique_ptr<Node>& n) {
+            Node * tmp = n.get();
+			bool answer = isNodeDx(tmp); 
+            tmp = nullptr;
+            return answer;
 		}
 
 		template <class T>
@@ -191,7 +201,7 @@ namespace FT {
 		}
 
 	public:
-		Auto_backprop(vector<Node*>& program, callback d_cost_func, MatrixXd& X, VectorXd& labels, int iters=1000, double n=0.1) {
+		Auto_backprop(NodeVector& program, callback d_cost_func, MatrixXd& X, VectorXd& labels, int iters=1000, double n=0.1) {
 			this->program = program;
 			this->d_cost_func = d_cost_func;
 			this->X = X;
@@ -200,20 +210,22 @@ namespace FT {
 			this->n = n;
 		}
 
-		vector<Node*> run() 
+		NodeVector run() 
 		{
-			std::cout << "Starting up Auto_backprop with " << this->iters << " iterations.";
+			cout << "Starting up Auto_backprop with " << this->iters << " iterations.";
 			// Computes weights via backprop
 	        for (int x = 0; x < this->iters; x++) {
 	        	// Evaluate forward pass
 	        	vector<ArrayXd> stack_f = forward_prop();
 	            // if ((x % round(this->iters/4)) == 0 or x == this->iters - 1) {
-	            // 	std::cout << "Iters are happening!\n"; // print("Currently on iter: " + str(x)); // TODO change to C++ print statement
+	            cout << "Iters are happening!\n"; // print("Currently on iter: " + str(x)); // TODO change to C++ print statement
 	            // }
 	            
 	            // Evaluate backward pass
 	            backprop(stack_f);
 	        }
+            cout << "Finished backprop. returning program:\n";
+            print_weights();    
 	        return this->program;
 		}
 	};

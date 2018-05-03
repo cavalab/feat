@@ -5,7 +5,7 @@
 #include <Eigen/Dense>
 #include <math.h>
 #include <sstream>
-
+#include <memory>
 // Include node and node children
 #include "../src/node/node.h"
 #include "../src/node/nodeDx.h"
@@ -50,13 +50,14 @@ Add import from util for 2d Gauss
 **/
 
 using namespace std;
-
+using std::unique_ptr;
 using std::vector;
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 using Eigen::ArrayXd;
 using FT::Node;
 using FT::NodeDx;
+using FT::NodeVector;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
 
 template <class G>
@@ -77,7 +78,7 @@ bool isNodeDx(Node* n) {
 	return NULL != dynamic_cast<NodeDx*>(n); 
 }
 
-ArrayXd evaluateProgram(vector<Node*> program, MatrixXd data, VectorXd labels) {
+ArrayXd evaluateProgram(NodeVector& program, MatrixXd data, VectorXd labels) {
 	// Create stack for storing execution
 	vector<ArrayXd> stack_f;
 	vector<ArrayXb> stack_b;
@@ -87,7 +88,7 @@ ArrayXd evaluateProgram(vector<Node*> program, MatrixXd data, VectorXd labels) {
 
 	std::cout << "Running evaluation.\n";
 	// Iterate through program and calculate results 
-	for (Node* n : program) {
+	for (const auto& n : program) {
 		std::cout << "Running: " << n->name << "\n";
 		n->evaluate(data, labels, z, stack);
 		std::cout << "result:" << stack_f[stack_f.size() - 1] << "\n--";
@@ -600,9 +601,10 @@ int testDummyProgram(FT::NodeVector p0, int iters) {
 	std::cout << "Initialized dummy program. Running auto backprop\n";
 	// Auto_backprop(PROGRAM, COST_FUNCTION, D_COST_FUNCTION, INPUT_DATA, LABELS, ITERS, LEARNING RATE);
 	FT::Auto_backprop* engine = new FT::Auto_backprop(p0, FT::metrics::d_squared_difference, x, y, iters, learning_rate);
-	engine->run(); // Update pointer to NodeVector internally
+    p0 = engine->run(); // Update pointer to NodeVector internally
 
-	for (unique_ptr<Node>& n : p0) {
+    std::cout << "test program returned:\n";
+	for (const auto& n : p0) {
 		std::cout << n->name << ": ";
 		NodeDx* nd = dynamic_cast<NodeDx*>(n.get());
 		if (nd != NULL) {
