@@ -167,7 +167,7 @@ int main(int argc, char** argv){
     
     cout << "load_csv...";
     FT::load_csv(input.dataset,X,y,names,dtypes,binary_endpoint,delim);
-    //feat.set_dtypes(dtypes);
+    feat.set_feature_names(names);
     
     if (binary_endpoint)
     {

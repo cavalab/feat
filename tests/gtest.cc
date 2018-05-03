@@ -959,7 +959,8 @@ TEST(Parameters, ParamsTests)
                       false,                            //shuffle
                       0.75,								//train/test split
                       0.5,                             // feedback 
-                      "mse");                           //scoring function
+                      "mse",                           //scoring function
+                      "");
 					  
 	params.set_max_dim(12);
 	ASSERT_EQ(params.max_dim, 12);
@@ -1116,7 +1117,8 @@ TEST(Evaluation, mse)
                   false,                            //shuffle
                   0.75,								//train/test split
                   0.5,                             // feedback 
-                  "mse");                           //scoring function
+                  "mse",                           //scoring function
+                  "");
 	
     VectorXd yhat(10), y(10), res(10);
 	yhat << 0.0,
@@ -1186,7 +1188,8 @@ TEST(Evaluation, bal_accuracy)
               false,                            //shuffle
               0.75,								//train/test split
               0.5,                             // feedback 
-              "bal_zero_one");                           //scoring function
+              "bal_zero_one",                           //scoring function
+              "");
 	
     VectorXd yhat(10), y(10), res(10), loss(10);
 	
@@ -1257,7 +1260,8 @@ TEST(Evaluation, log_loss)
               false,                            //shuffle
               0.75,								//train/test split
               0.5,                             // feedback 
-              "bal_zero_one");                           //scoring function
+              "bal_zero_one",                           //scoring function
+              "");
 	
     VectorXd yhat(10), y(10), loss(10);
     ArrayXXd confidences(10,2);
@@ -1323,7 +1327,7 @@ TEST(Evaluation, multi_log_loss)
               false,                            //shuffle
               0.75,								//train/test split
               0.5,                             // feedback 
-              "bal_zero_one");                           //scoring function
+              "bal_zero_one","");                           //scoring function
 	
     VectorXd y(10), loss(10);
     ArrayXXd confidences(10,3);
@@ -1379,7 +1383,8 @@ TEST(Evaluation, fitness)
                       false,                            //shuffle
                       0.75,								//train/test split
                       0.5,                             // feedback 
-                      "mse");                           // scoring function
+                      "mse",                           // scoring function
+                      "");
                         
 	MatrixXd X(10,1); 
     X << 0.0,  
@@ -1446,7 +1451,8 @@ TEST(Evaluation, out_ml)
                       false,                            //shuffle
                       0.75,								//train/test split
                       0.5,                             // feedback                 
-                      "mse");                           // scoring function
+                      "mse",                           // scoring function
+                      "");
 	MatrixXd X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  

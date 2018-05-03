@@ -51,7 +51,7 @@ namespace FT{
      * load csv file into matrix. 
      */
     
-    void load_csv (const std::string & path, MatrixXd& X, VectorXd& y, vector<string> names, 
+    void load_csv (const std::string & path, MatrixXd& X, VectorXd& y, vector<string>& names, 
                    vector<char> &dtypes, bool& binary_endpoint, char sep=',') 
     {
         std::ifstream indata;
