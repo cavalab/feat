@@ -129,6 +129,11 @@ namespace FT{
             else
             {
                     // assign weights to individual
+                    auto tmp = ml->get_weights();
+                    cout << "weights: ";
+                    for (auto t : tmp)
+                        cout << t << " " ; 
+                    cout << "\n";
                     pop.individuals[i].set_p(ml->get_weights(),params.feedback);
                     assign_fit(pop.individuals[i],F,yhat,y,params);
 
