@@ -211,6 +211,7 @@ namespace FT {
         vector<ArrayXd> derivatives;
         derivatives.push_back(this->d_cost_func(y, f_stack[f_stack.size() - 1])); // Might need a cost function node (still need to address this)
         cout << "Cost derivative: " << this->d_cost_func(y, f_stack[f_stack.size() - 1]) << "\n"; // Working according to test program
+        cout << "MSE: " << (y.array()-f_stack[f_stack.size() - 1]).array().pow(2).mean() << "\n";
         pop<ArrayXd>(&f_stack); // Get rid of input to cost function
 
         vector<BP_NODE> executing; // Stores node and its associated derivatves
@@ -220,9 +221,9 @@ namespace FT {
         cout << "Initializing backprop systems.\n";
         while (bp_program.size() > 0) {
             Node* node = pop<Node*>(&bp_program);
-            cout << "Size of program: " << bp_program.size() << "\n";
-            cout << "(132) Evaluating: " << node->name << "\n";
-            print_weights(program);
+            /* cout << "Size of program: " << bp_program.size() << "\n"; */
+            /* cout << "(132) Evaluating: " << node->name << "\n"; */
+            /* print_weights(program); */
 
             vector<ArrayXd> n_derivatives;
 
