@@ -578,7 +578,7 @@ namespace FT{
 
         shared_ptr<CLabels> yhat = p_ml->fit(Phi,y,params,pass,best_ind.dtypes);
         VectorXd tmp;
-        double score = p_eval->score(y,yhat,tmp,params.class_weights);
+        double score = p_eval->score(y,yhat,tmp,params.sample_weights);
         params.msg("final_model score: " + std::to_string(score),1);
     }
     
@@ -593,12 +593,12 @@ namespace FT{
         // set terminal weights based on model
         params.set_term_weights(p_ml->get_weights());
         VectorXd tmp;
-        best_score = p_eval->score(y_t, yhat,tmp, params.class_weights);
+        best_score = p_eval->score(y_t, yhat,tmp, params.sample_weights);
         
         if (params.split < 1.0)
         {
             shared_ptr<CLabels> yhat_v = p_ml->predict(X_v);
-            best_score_v = p_eval->score(y_v, yhat_v,tmp, params.class_weights); 
+            best_score_v = p_eval->score(y_v, yhat_v,tmp, params.sample_weights); 
         }
         else
             best_score_v = best_score;
@@ -729,7 +729,7 @@ namespace FT{
     {
         shared_ptr<CLabels> labels = predict_labels(X, Z);
         VectorXd loss; 
-        return p_eval->score(y,labels,loss,params.class_weights);
+        return p_eval->score(y,labels,loss,params.sample_weights);
 
         /* if (params.classification) */
         /*     return p_eval->bal_accuracy(y,yhat,vector<int>(),false); */

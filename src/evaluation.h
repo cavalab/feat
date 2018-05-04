@@ -159,7 +159,7 @@ namespace FT{
         */ 
         assert(F.cols()>ind.loc);
         VectorXd loss;
-        ind.fitness = score(y, yhat, loss, params.class_weights);
+        ind.fitness = score(y, yhat, loss, params.sample_weights);
         F.col(ind.loc) = loss;  
          
         params.msg("ind " + std::to_string(ind.loc) + " fitness: " + std::to_string(ind.fitness),2);
