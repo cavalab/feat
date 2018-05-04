@@ -204,28 +204,33 @@ namespace FT{
         if (!ml_type.compare("LeastAngleRegression") || !ml_type.compare("LinearRidgeRegression")||
         	!ml_type.compare("SVM") || (!ml_type.compare("LR")))
         {
-            if(prob_type == PT_MULTICLASS && ( !ml_type.compare("LR") || !ml_type.compare("SVM") ) ) {
-		
-		vector<SGVector<float64_t>> weights;
+            if(prob_type == PT_MULTICLASS && ( !ml_type.compare("LR") || !ml_type.compare("SVM") ) ) 
+            {
+	
+                cout << "in get_weights(), multiclass LR\n";
+                vector<SGVector<float64_t>> weights;
 
-		if( !ml_type.compare("LR"))
-	            weights = dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(p_est)->get_w();
-		else //SVM
-	          weights = dynamic_pointer_cast<sh::CMyMulticlassLibLinear>(p_est)->get_w();
-        
-                
-            for( int j = 0;j<weights[0].size(); j++) 
-                w.push_back(0);
-            
-            for( int i = 0 ; i < weights.size(); i++ ){ 
-                for( int j = 0;j<weights[i].size(); j++) {
-                    w[j] += fabs(weights[i][j]);
+                if( !ml_type.compare("LR"))
+                    weights = dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(p_est)->get_w();
+                else //SVM
+                      weights = dynamic_pointer_cast<sh::CMyMulticlassLibLinear>(p_est)->get_w();
+           
+                cout << "set weights from get_w()\n";
+                    
+                for( int j = 0;j<weights.at(0).size(); j++) 
+                    w.push_back(0);
+               
+                cout << "getting abs weights\n";
+                for( int i = 0 ; i < weights.size(); i++ ){ 
+                    for( int j = 0;j<weights[i].size(); j++) {
+                        w[j] += fabs(weights[i][j]);
+                    }
                 }
-            }
-            
-            for( int i = 0; i < weights.size() ; i++) 
-                w[i] = w[i]/weights.size();; 
-            return w;		
+                
+                for( int i = 0; i < weights.size() ; i++) 
+                    w[i] = w[i]/weights.size();; 
+                cout << "returning weights\n";
+                return w;		
 	        }
 	        
             auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_w();
@@ -241,7 +246,9 @@ namespace FT{
             std::cerr << "ERROR: ML::get_weights not implemented for " + ml_type << "\n";
             
         }
-        
+        cout << "get_weights(): w: ";
+        for (auto tmp : w) cout << tmp << " " ;
+        cout << "\n";
         return w;
     }
 
