@@ -27,13 +27,13 @@ namespace FT{
 
             void update(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, double n) 
             {
-                std::cout << "***************************\n";
-                std::cout << "Updating " << this->name << "\n";
+                /* std::cout << "***************************\n"; */
+                /* std::cout << "Updating " << this->name << "\n"; */
                 ArrayXd update_value = ArrayXd::Ones(stack_f[0].size());
-                for(ArrayXd g : gradients) {
-                    std::cout << "Using gradient: " << g << "\n";
-                    update_value *= g;
-                }
+                /* for(ArrayXd g : gradients) { */
+                /*     std::cout << "Using gradient: " << g << "\n"; */
+                /*     update_value *= g; */
+                /* } */
 
                 // Update all weights
                 // std::cout << "Update value: " << update_value << "\n";
@@ -46,8 +46,8 @@ namespace FT{
                     // std::cout << "Updated with " << (d_w * update_value).sum() << "\n";
                 }
                 this->W = W_temp;
-                std::cout << "Updated\n";
-                std::cout << "***************************\n";
+                /* std::cout << "Updated\n"; */
+                /* std::cout << "***************************\n"; */
                 // print_weight();
             }
 
