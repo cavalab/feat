@@ -672,7 +672,7 @@ int testDummyProgram(FT::NodeVector p0, int iters) {
 	std::cout << "Initializing testDummy...\n";
 	std::cout << "Testing program: [";
 	
-	for (unique_ptr<Node>& n : p0) {
+	for (const auto& n : p0) {
 		std::cout << n->name << ", ";
 	}
 	std::cout << "]\n";
