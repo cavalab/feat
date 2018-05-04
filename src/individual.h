@@ -304,48 +304,7 @@ namespace FT{
         return eqn;
     }
     
-    size_t Individual::subtree(size_t i, char otype='0') const 
-    {
 
-       /*!
-        * finds index of the end of subtree in program with root i.
-        
-        * Input:
-        
-        *		i, root index of subtree
-        
-        * Output:
-        
-        *		last index in subtree, <= i
-        
-        * note that this function assumes a subtree's arguments to be contiguous in the program.
-        */
-       
-       size_t tmp = i;
-       assert(i>=0 && "attempting to grab subtree with index < 0");
-              
-       if (program[i]->total_arity()==0)    // return this index if it is a terminal
-           return i;
-       
-       std::map<char, unsigned int> arity = program[i]->arity;
-
-       if (otype!='0')  // if we are recursing (otype!='0'), we need to find 
-                        // where the nodes to recurse are.  
-       {
-           while (i>0 && program[i]->otype != otype) --i;    
-           assert(program[i]->otype == otype && "invalid subtree arguments");
-       }
-              
-       for (unsigned int j = 0; j<arity['f']; ++j)  
-           i = subtree(--i,'f');                   // recurse for floating arguments      
-       size_t i2 = i;                              // index for second recursion
-       for (unsigned int j = 0; j<arity['b']; ++j)
-           i2 = subtree(--i2,'b');
-       size_t i3 = i2;                 // recurse for boolean arguments
-       for (unsigned int j = 0; j<arity['z']; ++j)
-           i3 = subtree(--i3,'z'); 
-       return std::min(i,i3);
-    }
    
     // get program dimensionality
     unsigned int Individual::get_dim()
@@ -450,29 +409,7 @@ namespace FT{
         return c;
     }
 
-    vector<size_t> Individual::roots()
-    {
-        // find "root" nodes of program, where roots are final values that output 
-        // something directly to the stack
-        // assumes a program's subtrees to be contiguous
-         
-        vector<size_t> indices;     // returned root indices
-        int total_arity = -1;       //end node is always a root
-        for (size_t i = program.size(); i>0; --i)   // reverse loop thru program
-        {    
-            if (total_arity <= 0 ){ // root node
-                indices.push_back(i-1);
-                total_arity=0;
-            }
-            else
-                --total_arity;
-           
-            total_arity += program[i-1]->total_arity(); 
-           
-        }
-       
-        return indices; 
-    }
+
 
     string Individual::program_str() const
     {
