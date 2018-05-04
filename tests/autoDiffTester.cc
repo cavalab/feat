@@ -128,7 +128,7 @@ int testNodes() {
 	expectedDerivative(4,0) = toTest->W[0];
 	std::cout << "Initialized derivatves.\n";
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 0).matrix()).norm() > 0.0001) {
-		std::cout << "Add node failed! (wrt to first input)\n";
+		std::cout << "Add node FAILED! (wrt to first input)\n";
 	}
     else
 		std::cout << "Add node passed! (wrt to first input)\n";
@@ -140,7 +140,7 @@ int testNodes() {
 
 	// Derivative wrt to second input
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 1).matrix()).norm() > 0.0001) {
-		std::cout << "Add node (wrt to second input) failed!\n";
+		std::cout << "Add node (wrt to second input) FAILED!\n";
 	}
     else
 		std::cout << "Add node passed! (wrt to second input)\n";
@@ -152,8 +152,10 @@ int testNodes() {
 	expectedDerivative(3,0) = 3;
 	expectedDerivative(4,0) = 4;
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 3).matrix()).norm() > 0.0001) {
-		std::cout << "Add node (wrt to weight on first input) failed!\n";
+		std::cout << "Add node (wrt to weight on first input) FAILED!\n";
 	}
+    else
+		std::cout << "Add node (wrt to weight on first input) passed!\n";
 
 	// Derivative wrt to second weight
 	expectedDerivative(0,0) = 4;
@@ -162,19 +164,24 @@ int testNodes() {
 	expectedDerivative(3,0) = 1;
 	expectedDerivative(4,0) = 0;
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 2).matrix()).norm() > 0.0001) {
-		std::cout << "Add node (wrt to weight on second input) failed!\n";
+		std::cout << "Add node (wrt to weight on second input) FAILED!\n";
 	}
+    else
+		std::cout << "Add node (wrt to weight on second input) passed!\n";
 
 	// SUB NODE CHECK -------------------------------------------------------------------------------
-	toTest = new FT::NodeSubtract();
+	toTest = new FT::NodeSubtract({1,1});
+    std::cout << "Subtract weights: " << toTest->W[0] << ", " << toTest->W[1] << "\n";
 	expectedDerivative(0,0) = 1;
 	expectedDerivative(1,0) = 1;
 	expectedDerivative(2,0) = 1;
 	expectedDerivative(3,0) = 1;
 	expectedDerivative(4,0) = 1;
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 0).matrix()).norm() > 0.0001) {
-		std::cout << "Subtract node (wrt to first input) failed!\n";
+		std::cout << "Subtract node (wrt to first input) FAILED!\n";
 	}
+    else
+		std::cout << "Subtract node (wrt to first input) passed!\n";
 
 	expectedDerivative(0,0) = -1;
 	expectedDerivative(1,0) = -1;
@@ -182,37 +189,49 @@ int testNodes() {
 	expectedDerivative(3,0) = -1;
 	expectedDerivative(4,0) = -1;
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 1).matrix()).norm() > 0.0001) {
-		std::cout << "Subtract node (wrt to second input) failed!\n";
+		std::cout << "Subtract node (wrt to second input) FAILED!\n";
 	}
-
-	expectedDerivative(0,0) = 0;
-	expectedDerivative(1,0) = 1;
+    else
+		std::cout << "Subtract node (wrt to second input) passed!\n";
+	
+    expectedDerivative(0,0) = 4;
+	expectedDerivative(1,0) = 3;
 	expectedDerivative(2,0) = 2;
-	expectedDerivative(3,0) = 3;
-	expectedDerivative(4,0) = 4;
-	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 3).matrix()).norm() > 0.0001) {
-		std::cout << "Subtract node (wrt to weight on first input) failed!\n";
-	}
+	expectedDerivative(3,0) = 1;
+	expectedDerivative(4,0) = 0;
 
-	expectedDerivative(0,0) = -4;
-	expectedDerivative(1,0) = -3;
-	expectedDerivative(2,0) = -2;
-	expectedDerivative(3,0) = -1;
-	expectedDerivative(4,0) = -0;
+    auto tmp = toTest->getDerivative(inputs, 2);
+    cout << "subtract wrt to weight on first input: " << tmp << "\n";
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 2).matrix()).norm() > 0.0001) {
-		std::cout << "Subtract node (wrt to weight on second input) failed!\n";
+		std::cout << "Subtract node (wrt to weight on first input) FAILED!\n";
 	}
+    else
+		std::cout << "Subtract node (wrt to weight on first input) passed!\n";
+
+    expectedDerivative(0,0) = -0;
+	expectedDerivative(1,0) = -1;
+	expectedDerivative(2,0) = -2;
+	expectedDerivative(3,0) = -3;
+	expectedDerivative(4,0) = -4;
+
+	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 3).matrix()).norm() > 0.0001) {
+		std::cout << "Subtract node (wrt to weight on second input) FAILED!\n";
+	}
+    else
+		std::cout << "Subtract node (wrt to weight on second input) passed!\n";
 
 	// MULT NODE CHECK-------------------------------------------------------------------------------
-	toTest = new FT::NodeMultiply();
+	toTest = new FT::NodeMultiply({1,1});
 	expectedDerivative(0,0) = 4;
 	expectedDerivative(1,0) = 3;
 	expectedDerivative(2,0) = 2;
 	expectedDerivative(3,0) = 1;
 	expectedDerivative(4,0) = 0;
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 0).matrix()).norm() > 0.0001) {
-		std::cout << "Multiply node (wrt to first input) failed!\n";
+		std::cout << "Multiply node (wrt to first input) FAILED!\n";
 	}
+    else
+		std::cout << "Multiply node (wrt to first input) passed!\n";
 
 	expectedDerivative(0,0) = 0;
 	expectedDerivative(1,0) = 1;
@@ -220,8 +239,10 @@ int testNodes() {
 	expectedDerivative(3,0) = 3;
 	expectedDerivative(4,0) = 4;
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 1).matrix()).norm() > 0.0001) {
-		std::cout << "Multiply node (wrt to second input) failed!\n";
+		std::cout << "Multiply node (wrt to second input) FAILED!\n";
 	}
+    else
+		std::cout << "Multiply node (wrt to second input) passed!\n";
 
 	expectedDerivative(0,0) = 0;
 	expectedDerivative(1,0) = 3;
@@ -229,99 +250,125 @@ int testNodes() {
 	expectedDerivative(3,0) = 3;
 	expectedDerivative(4,0) = 0;
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 2).matrix()).norm() > 0.0001) {
-		std::cout << "Multiply node (wrt to weight on first input) failed!\n";
+		std::cout << "Multiply node (wrt to weight on first input) FAILED!\n";
 	}
+    else
+		std::cout << "Multiply node (wrt to weight on first input) passed!\n";
 
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 3).matrix()).norm() > 0.0001) {
-		std::cout << "Multiply node (wrt to weight on second input) failed!\n";
+		std::cout << "Multiply node (wrt to weight on second input) FAILED!\n";
 	}
+    else
+		std::cout << "Multiply node (wrt to weight on second input) passed!\n";
 
 	// DIV NODE CHECK -------------------------------------------------------------------------------
-	toTest = new FT::NodeDivide();
+	toTest = new FT::NodeDivide({1,1});
 	expectedDerivative(0,0) = MAX_DBL;	// Div by 0 (limited to 0)
 	expectedDerivative(1,0) = 1.0/1;
 	expectedDerivative(2,0) = 1.0/2;
 	expectedDerivative(3,0) = 1.0/3;
 	expectedDerivative(4,0) = 1.0/4; 
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 0).matrix()).norm() > 0.0001) {
-		std::cout << "Divide node (wrt to first input) failed!\n";
+		std::cout << "Divide node (wrt to first input) FAILED!\n";
 	}
+    else
+		std::cout << "Divide node (wrt to first input) passed!\n";
 
-	expectedDerivative(0,0) = -MAX_DBL;	// Div by 0
+	expectedDerivative(0,0) = MIN_DBL;	// Div by 0
 	expectedDerivative(1,0) = -3.0/1;
 	expectedDerivative(2,0) = -2.0/4;
 	expectedDerivative(3,0) = -1.0/9;
 	expectedDerivative(4,0) = -0.0/16; 
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 1).matrix()).norm() > 0.0001) {
-		std::cout << "Divide node (wrt to second input) failed!\n";
+		std::cout << "Divide node (wrt to second input) FAILED!\n";
+        std::cout << "derivative: " << toTest->getDerivative(inputs,1) << "\n";
+        std::cout << "expected: " << expectedDerivative << "\n";
 	}
+    else
+		std::cout << "Divide node (wrt to second input) passed!\n";
 
 	expectedDerivative(0,0) = MAX_DBL;	// Div by 0
 	expectedDerivative(1,0) = 3.0/1;
 	expectedDerivative(2,0) = 2.0/2;
 	expectedDerivative(3,0) = 1.0/3;
 	expectedDerivative(4,0) = 0.0/4;
-	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 3).matrix()).norm() > 0.0001) {
-		std::cout << "Divide node (wrt to weight on first input) failed!\n";
+	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 2).matrix()).norm() > 0.0001) {
+		std::cout << "Divide node (wrt to weight on first input) FAILED!\n";
 	}
+    else
+		std::cout << "Divide node (wrt to weight on first input) passed!\n";
 
 	expectedDerivative(0,0) = -MAX_DBL;	//Div by 0
 	expectedDerivative(1,0) = -3.0/1;
 	expectedDerivative(2,0) = -2.0/2;
 	expectedDerivative(3,0) = -1.0/3;
 	expectedDerivative(4,0) = -0.0/4;
-	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 2).matrix()).norm() > 0.0001) {
-		std::cout << "Divide node (wrt to weight on second input) failed!\n";
+	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 3).matrix()).norm() > 0.0001) {
+		std::cout << "Divide node (wrt to weight on second input) FAILED!\n";
 	}
+    else
+		std::cout << "Divide node (wrt to weight on second input) passed!\n";
 
 	// x^y NODE CHECK -------------------------------------------------------------------------------
-	toTest = new FT::NodeExponent();
-	expectedDerivative(0,0) = 4 * pow(0,4)/0; // Div by 0
-	expectedDerivative(1,0) = 3 * pow(1,3)/1;
+	toTest = new FT::NodeExponent({1.0,1.0});
+	expectedDerivative(0,0) = 0 * pow(4,0)/4; 
+	expectedDerivative(1,0) = 1 * pow(3,1)/3;
 	expectedDerivative(2,0) = 2 * pow(2,2)/2;
-	expectedDerivative(3,0) = 1 * pow(3,1)/3;
-	expectedDerivative(4,0) = 0 * pow(4,0)/4;
+	expectedDerivative(3,0) = 3 * pow(1,3)/1;
+	expectedDerivative(4,0) = 4 * pow(0,4)/0; // div by 0
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 0).matrix()).norm() > 0.0001) {
-		std::cout << "Exponent node (wrt to first input) failed!\n";
+		std::cout << "Exponent node (wrt to first input) FAILED!\n";
 	}
+    else
+		std::cout << "Exponent node (wrt to first input) passed!\n";
 
-	expectedDerivative(0,0) = 1 * pow(0,4) * log(0); // Log by 0
-	expectedDerivative(1,0) = 1 * pow(1,3) * log(1);
+	expectedDerivative(0,0) = 1 * pow(4,0) * log(4); 
+    expectedDerivative(1,0) = 1 * pow(3,1) * log(3);
 	expectedDerivative(2,0) = 1 * pow(2,2) * log(2);
-	expectedDerivative(3,0) = 1 * pow(3,1) * log(3);
-	expectedDerivative(4,0) = 1 * pow(4,0) * log(4);
+	expectedDerivative(3,0) = 1 * pow(1,3) * log(1);
+	expectedDerivative(4,0) = 1 * pow(0,4) * log(0); // log 0
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 1).matrix()).norm() > 0.0001) {
-		std::cout << "Exponent node (wrt to second input) failed!\n";
+		std::cout << "Exponent node (wrt to second input) FAILED!\n";
 	}
+    else
+		std::cout << "Exponent node (wrt to second input) passed!\n";
 
-	expectedDerivative(0,0) = 4 * pow(0,4)/1;
-	expectedDerivative(1,0) = 3 * pow(1,3)/1;
+	expectedDerivative(0,0) = 0 * pow(4,0)/1;
+	expectedDerivative(1,0) = 1 * pow(3,1)/1;
 	expectedDerivative(2,0) = 2 * pow(2,2)/1;
-	expectedDerivative(3,0) = 1 * pow(3,1)/1;
-	expectedDerivative(4,0) = 0 * pow(4,0)/1;
-	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 3).matrix()).norm() > 0.0001) {
-		std::cout << "Exponent node (wrt to weight on first input) failed!\n";
+	expectedDerivative(3,0) = 3 * pow(1,3)/1;
+	expectedDerivative(4,0) = 4 * pow(0,4)/1;
+	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 2).matrix()).norm() > 0.0001) {
+		std::cout << "Exponent node (wrt to weight on first input) FAILED!\n";
+        std::cout << "derivative: " << toTest->getDerivative(inputs,2) << "\n";
+        std::cout << "expected: " << expectedDerivative << "\n";
 	}
+    else
+		std::cout << "Exponent node (wrt to weight on first input) passed!\n";
 
 	expectedDerivative(0,0) = 4 * pow(0,4) * log(0); // Log by 0
 	expectedDerivative(1,0) = 3 * pow(1,3) * log(1);
 	expectedDerivative(2,0) = 2 * pow(2,2) * log(2);
 	expectedDerivative(3,0) = 1 * pow(3,1) * log(3);
 	expectedDerivative(4,0) = 0 * pow(4,0) * log(4);
-	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 2).matrix()).norm() > 0.0001) {
-		std::cout << "Exponent node (wrt to weight on second input) failed!\n";
+	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 3).matrix()).norm() > 0.0001) {
+		std::cout << "Exponent node (wrt to weight on second input) FAILED!\n";
 	}
+    else
+		std::cout << "Exponent node (wrt to weight on second input) passed!\n";
 
 	// COS NODE CHECK -------------------------------------------------------------------------------
-	toTest = new FT::NodeCos();
+	toTest = new FT::NodeCos({1.0});
 	expectedDerivative(0,0) = -1 * sin(4);
 	expectedDerivative(1,0) = -1 * sin(3);
 	expectedDerivative(2,0) = -1 * sin(2);
 	expectedDerivative(3,0) = -1 * sin(1);
 	expectedDerivative(4,0) = -1 * sin(0);
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 0).matrix()).norm() > 0.0001) {
-		std::cout << "Cos node (wrt to input) failed!\n";
+		std::cout << "Cos node (wrt to input) FAILED!\n";
 	}
+    else
+		std::cout << "Cos node (wrt to input) passed!\n";
 
 	expectedDerivative(0,0) = -4 * sin(4);
 	expectedDerivative(1,0) = -3 * sin(3);
@@ -329,19 +376,23 @@ int testNodes() {
 	expectedDerivative(3,0) = -1 * sin(1);
 	expectedDerivative(4,0) = -0 * sin(0);
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 1).matrix()).norm() > 0.0001) {
-		std::cout << "Cos node (wrt to weight) failed!\n";
+		std::cout << "Cos node (wrt to weight) FAILED!\n";
 	}
+    else
+		std::cout << "Cos node (wrt to weight) passed!\n";
 
 	// SIN NODE CHECK -------------------------------------------------------------------------------
-	toTest = new FT::NodeSin();
+	toTest = new FT::NodeSin({1.0});
 	expectedDerivative(0,0) = 1 * cos(4);
 	expectedDerivative(1,0) = 1 * cos(3);
 	expectedDerivative(2,0) = 1 * cos(2);
 	expectedDerivative(3,0) = 1 * cos(1);
 	expectedDerivative(4,0) = 1 * cos(0);
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 0).matrix()).norm() > 0.0001) {
-		std::cout << "Sin node (wrt to input) failed!\n";
+		std::cout << "Sin node (wrt to input) FAILED!\n";
 	}
+    else
+		std::cout << "Sin node (wrt to input) passed!\n";
 
 	expectedDerivative(0,0) = 4 * cos(4);
 	expectedDerivative(1,0) = 3 * cos(3);
@@ -349,19 +400,23 @@ int testNodes() {
 	expectedDerivative(3,0) = 1 * cos(1);
 	expectedDerivative(4,0) = 0 * cos(0);
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 1).matrix()).norm() > 0.0001) {
-		std::cout << "Sin node (wrt to weight) failed!\n";
+		std::cout << "Sin node (wrt to weight) FAILED!\n";
 	}
+    else
+		std::cout << "Sin node (wrt to weight) passed!\n";
 
 	// ^3 NODE CHECK  -------------------------------------------------------------------------------
-	toTest = new FT::NodeCube();
+	toTest = new FT::NodeCube({1.0});
 	expectedDerivative(0,0) = 3 * pow(4,2);
 	expectedDerivative(1,0) = 3 * pow(3,2);
 	expectedDerivative(2,0) = 3 * pow(2,2);
 	expectedDerivative(3,0) = 3 * pow(1,2);
 	expectedDerivative(4,0) = 3 * pow(0,2);
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 0).matrix()).norm() > 0.0001) {
-		std::cout << "Cube node (wrt to input) failed!\n";
+		std::cout << "Cube node (wrt to input) FAILED!\n";
 	}
+    else
+		std::cout << "Cube node (wrt to input) passed!\n";
 
 	expectedDerivative(0,0) = 3 * 64;
 	expectedDerivative(1,0) = 3 * 27;
@@ -369,19 +424,23 @@ int testNodes() {
 	expectedDerivative(3,0) = 3 *  1;
 	expectedDerivative(4,0) = 3 *  0;
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 1).matrix()).norm() > 0.0001) {
-		std::cout << "Cube node (wrt to weight) failed!\n";
+		std::cout << "Cube node (wrt to weight) FAILED!\n";
 	}
+    else
+		std::cout << "Cube node (wrt to weight) passed!\n";
 
 	// e^x NODE CHECK -------------------------------------------------------------------------------
-	toTest = new FT::NodeExponential();
+	toTest = new FT::NodeExponential({1.0});
 	expectedDerivative(0,0) = 1 * exp(4);
 	expectedDerivative(1,0) = 1 * exp(3);
 	expectedDerivative(2,0) = 1 * exp(2);
 	expectedDerivative(3,0) = 1 * exp(1);
 	expectedDerivative(4,0) = 1 * exp(0);
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 0).matrix()).norm() > 0.0001) {
-		std::cout << "Exponential node (wrt to input) failed!\n";
+		std::cout << "Exponential node (wrt to input) FAILED!\n";
 	}
+    else
+		std::cout << "Exponential node (wrt to input) passed!\n";
 
 	expectedDerivative(0,0) = 4 * exp(4);
 	expectedDerivative(1,0) = 3 * exp(3);
@@ -389,19 +448,23 @@ int testNodes() {
 	expectedDerivative(3,0) = 1 * exp(1);
 	expectedDerivative(4,0) = 0 * exp(0);
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 1).matrix()).norm() > 0.0001) {
-		std::cout << "Exponential node (wrt to weight) failed!\n";
+		std::cout << "Exponential node (wrt to weight) FAILED!\n";
 	}
+    else
+		std::cout << "Exponential node (wrt to weight) passed!\n";
 
 	// GAUS NODE CHECK-------------------------------------------------------------------------------
-	toTest = new FT::NodeGaussian();
+	toTest = new FT::NodeGaussian({1.0});
 	expectedDerivative(0,0) = -2 * 1 * 4 * exp(-16);
 	expectedDerivative(1,0) = -2 * 1 * 3 * exp(-9);
 	expectedDerivative(2,0) = -2 * 1 * 2 * exp(-4);
 	expectedDerivative(3,0) = -2 * 1 * 1 * exp(-1);
 	expectedDerivative(4,0) = -2 * 1 * 0 * exp(0);
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 0).matrix()).norm() > 0.0001) {
-		std::cout << "Gaussian node (wrt to input) failed!\n";
+		std::cout << "Gaussian node (wrt to input) FAILED!\n";
 	}
+    else
+		std::cout << "Gaussian node (wrt to input) passed!\n";
 
 	expectedDerivative(0,0) = -2 * 1 * 16 * exp(-16);
 	expectedDerivative(1,0) = -2 * 1 * 9 * exp(-9);
@@ -409,19 +472,23 @@ int testNodes() {
 	expectedDerivative(3,0) = -2 * 1 * 1 * exp(-1);
 	expectedDerivative(4,0) = -2 * 1 * 0 * exp(0);
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 1).matrix()).norm() > 0.0001) {
-		std::cout << "Gaussian node (wrt to weight) failed!\n";
+		std::cout << "Gaussian node (wrt to weight) FAILED!\n";
 	}
+    else
+		std::cout << "Gaussian node (wrt to weight) passed!\n";
 
 	// LOG NODE CHECK -------------------------------------------------------------------------------
-	toTest = new FT::NodeLog();
+	toTest = new FT::NodeLog({1.0});
 	expectedDerivative(0,0) = 1.0/4;
 	expectedDerivative(1,0) = 1.0/3;
 	expectedDerivative(2,0) = 1.0/2;
 	expectedDerivative(3,0) = 1;
 	expectedDerivative(4,0) = MAX_DBL; // Check if this is intended
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 0).matrix()).norm() > 0.0001) { // Currently pseudocode
-		std::cout << "Log node (wrt to input) failed!\n";
+		std::cout << "Log node (wrt to input) FAILED!\n";
 	}
+    else
+		std::cout << "Log node (wrt to input) passed!\n";
 
 	expectedDerivative(0,0) = 1;
 	expectedDerivative(1,0) = 1;
@@ -429,19 +496,23 @@ int testNodes() {
 	expectedDerivative(3,0) = 1;
 	expectedDerivative(4,0) = 1;
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 1).matrix()).norm() > 0.0001) { // Currently pseudocode
-		std::cout << "Log node (wrt to weight) failed!\n";
+		std::cout << "Log node (wrt to weight) FAILED!\n";
 	}
+    else
+		std::cout << "Log node (wrt to weight) passed!\n";
 
 	// LOGIT NODE CHECK------------------------------------------------------------------------------
-	toTest = new FT::NodeLogit();
+	toTest = new FT::NodeLogit({1.0});
 	expectedDerivative(0,0) = (1 * exp(1 * 4))/pow(exp(1 * 4) + 1, 2);
 	expectedDerivative(1,0) = (1 * exp(1 * 3))/pow(exp(1 * 3) + 1, 2);
 	expectedDerivative(2,0) = (1 * exp(1 * 2))/pow(exp(1 * 2) + 1, 2);
 	expectedDerivative(3,0) = (1 * exp(1 * 1))/pow(exp(1 * 1) + 1, 2);
 	expectedDerivative(4,0) = (1 * exp(1 * 0))/pow(exp(1 * 0) + 1, 2);
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 0).matrix()).norm() > 0.0001) { // Currently pseudocode
-		std::cout << "Logit node (wrt to input) failed!\n";
+		std::cout << "Logit node (wrt to input) FAILED!\n";
 	}
+    else
+		std::cout << "Logit node (wrt to input) passed!\n";
 
 	expectedDerivative(0,0) = (4 * exp(1 * 4))/pow(exp(1 * 4) + 1, 2);
 	expectedDerivative(1,0) = (3 * exp(1 * 3))/pow(exp(1 * 3) + 1, 2);
@@ -449,31 +520,35 @@ int testNodes() {
 	expectedDerivative(3,0) = (1 * exp(1 * 1))/pow(exp(1 * 1) + 1, 2);
 	expectedDerivative(4,0) = (0 * exp(1 * 0))/pow(exp(1 * 0) + 1, 2);
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 1).matrix()).norm() > 0.0001) { // Currently pseudocode
-		std::cout << "Logit node (wrt to weight) failed!\n";
+		std::cout << "Logit node (wrt to weight) FAILED!\n";
 	}
+    else
+		std::cout << "Logit node (wrt to weight) passed!\n";
 
 	// RELU NODE CHECK------------------------------------------------------------------------------
 	// TODO
-	// toTest = new FT::NodeRelu();
+	// toTest = new FT::NodeRelu({1.0});
 	// expectedDerivative(0,0) = 1;
 	// expectedDerivative(1,0) = 1;
 	// expectedDerivative(2,0) = 1;
 	// expectedDerivative(3,0) = 1;
 	// expectedDerivative(4,0) = 1;
 	// if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 0).matrix()).norm() > 0.0001) { // Currently pseudocode
-	// 	std::cout << "Relu node failed!\n";
+	// 	std::cout << "Relu node FAILED!\n";
 	// }
 
 	// SQRT NODE CHECK-------------------------------------------------------------------------------
-	toTest = new FT::NodeSqrt();
+	toTest = new FT::NodeSqrt({1.0});
 	expectedDerivative(0,0) = 1/(2 * sqrt(4));
 	expectedDerivative(1,0) = 1/(2 * sqrt(3));
 	expectedDerivative(2,0) = 1/(2 * sqrt(2));
 	expectedDerivative(3,0) = 1/(2 * sqrt(1));
 	expectedDerivative(4,0) = 1/(2 * sqrt(0));
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 0).matrix()).norm() > 0.0001) { // Currently pseudocode
-		std::cout << "Sqrt node (wrt to input) failed!\n";
+		std::cout << "Sqrt node (wrt to input) FAILED!\n";
 	}
+    else
+		std::cout << "Sqrt node (wrt to input) passed!\n";
 
 	expectedDerivative(0,0) = 4/(2 * sqrt(4));
 	expectedDerivative(1,0) = 3/(2 * sqrt(3));
@@ -481,19 +556,21 @@ int testNodes() {
 	expectedDerivative(3,0) = 1/(2 * sqrt(1));
 	expectedDerivative(4,0) = 0/(2 * sqrt(0));
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 1).matrix()).norm() > 0.0001) { // Currently pseudocode
-		std::cout << "Sqrt node(wrt to weight) failed!\n";
+		std::cout << "Sqrt node(wrt to weight) FAILED!\n";
 	}
 
 	// ^2  NODE CHECK -------------------------------------------------------------------------------
-	toTest = new FT::NodeSquare();
+	toTest = new FT::NodeSquare({1.0});
 	expectedDerivative(0,0) = 2 * 1 * 4;
 	expectedDerivative(1,0) = 2 * 1 * 3;
 	expectedDerivative(2,0) = 2 * 1 * 2;
 	expectedDerivative(3,0) = 2 * 1 * 1;
 	expectedDerivative(4,0) = 2 * 1 * 0;
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 0).matrix()).norm() > 0.0001) { // Currently pseudocode
-		std::cout << "Square node (wrt to input) failed!\n";
+		std::cout << "Square node (wrt to input) FAILED!\n";
 	}
+    else
+		std::cout << "Square node (wrt to input) passed!\n";
 
 	expectedDerivative(0,0) = 2 * 16;
 	expectedDerivative(1,0) = 2 *  9;
@@ -501,19 +578,23 @@ int testNodes() {
 	expectedDerivative(3,0) = 2 *  1;
 	expectedDerivative(4,0) = 2 *  0;
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 1).matrix()).norm() > 0.0001) { // Currently pseudocode
-		std::cout << "Square node (wrt to weight) failed!\n";
+		std::cout << "Square node (wrt to weight) FAILED!\n";
 	}
+    else
+		std::cout << "Square node (wrt to weight) passed!\n";
 
 	// TANH NODE CHECK-------------------------------------------------------------------------------
-	toTest = new FT::NodeTanh();
+	toTest = new FT::NodeTanh({1.0});
 	expectedDerivative(0,0) = 0.0013409506830258968799702;
 	expectedDerivative(1,0) = 0.00986603716544019127315616968;
 	expectedDerivative(2,0) = 0.07065082485316446568624765586105;
 	expectedDerivative(3,0) = 0.41997434161402606939449673904170;
 	expectedDerivative(4,0) = 1;
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 0).matrix()).norm() > 0.0001) { // Currently pseudocode
-		std::cout << "Tanh node (wrt to input) failed!\n";
+		std::cout << "Tanh node (wrt to input) FAILED!\n";
 	}
+    else
+		std::cout << "Tanh node (wrt to input) passed!\n";
 
 	expectedDerivative(0,0) = 4 * 0.0013409506830258968799702;
 	expectedDerivative(1,0) = 3 * 0.00986603716544019127315616968;
@@ -521,8 +602,10 @@ int testNodes() {
 	expectedDerivative(3,0) = 1 * 0.41997434161402606939449673904170;
 	expectedDerivative(4,0) = 0;
 	if ((expectedDerivative.matrix() - toTest->getDerivative(inputs, 1).matrix()).norm() > 0.0001) { // Currently pseudocode
-		std::cout << "Tanh node (wrt to weight) failed!\n";
+		std::cout << "Tanh node (wrt to weight) FAILED!\n";
 	}
+    else
+		std::cout << "Tanh node (wrt to weight) passed!\n";
 }
 
 Node* parseToNode(std::string token) {

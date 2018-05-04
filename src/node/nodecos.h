@@ -12,7 +12,7 @@ namespace FT{
     {
     	public:
     	  	
-    		NodeCos()
+    		NodeCos(vector<double> W0 = vector<double>())
     		{
     			name = "cos";
     			otype = 'f';
@@ -20,9 +20,14 @@ namespace FT{
     			arity['b'] = 0;
     			complexity = 3;
 
-                for (int i = 0; i < arity['f']; i++) {
-                    W.push_back(r.rnd_dbl());
+                if (W0.empty())
+                {
+                    for (int i = 0; i < arity['f']; i++) {
+                        W.push_back(r.rnd_dbl());
+                    }
                 }
+                else
+                    W = W0;
     		}
     		
             /// Evaluates the node and updates the stack states. 

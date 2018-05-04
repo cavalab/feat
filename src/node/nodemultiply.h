@@ -12,7 +12,7 @@ namespace FT{
     {
     	public:
     	
-    		NodeMultiply()
+    		NodeMultiply(vector<double> W0 = vector<double>())
        		{
     			name = "*";
     			otype = 'f';
@@ -20,9 +20,14 @@ namespace FT{
     			arity['b'] = 0;
     			complexity = 2;
 
-                for (int i = 0; i < arity['f']; i++) {
-                    W.push_back(r.rnd_dbl());
+                if (W0.empty())
+                {
+                    for (int i = 0; i < arity['f']; i++) {
+                        W.push_back(r.rnd_dbl());
+                    }
                 }
+                else
+                    W = W0;
     		}
 
             /// Evaluates the node and updates the stack states. 
@@ -46,10 +51,10 @@ namespace FT{
                     case 2: // d/dW[0] 
                         return stack_f[stack_f.size()-1] * this->W[1] * stack_f[stack_f.size()-2];
                     case 1: // d/dx2
-                        return this->W[0] * this->W[1] * stack_f[stack_f.size() - 1];
+                        return this->W[0] * this->W[1] * stack_f[stack_f.size() - 2];
                     case 0: // d/dx1
                     default:
-                        return this->W[1] * this->W[0] * stack_f[stack_f.size() - 2];
+                        return this->W[1] * this->W[0] * stack_f[stack_f.size() - 1];
                 } 
             }
 
