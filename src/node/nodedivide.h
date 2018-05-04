@@ -12,7 +12,7 @@ namespace FT{
     {
     	public:
     	  	
-    		NodeDivide()
+    		NodeDivide(vector<double> W0 = vector<double>())
     		{
     			name = "/";
     			otype = 'f';
@@ -20,9 +20,14 @@ namespace FT{
     			arity['b'] = 0;
     			complexity = 2;
 
-                for (int i = 0; i < arity['f']; i++) {
-                    W.push_back(r.rnd_dbl());
+                if (W0.empty())
+                {
+                    for (int i = 0; i < arity['f']; i++) {
+                        W.push_back(r.rnd_dbl());
+                    }
                 }
+                else
+                    W = W0;
     		}
     		
             /// Evaluates the node and updates the stack states. 
@@ -54,10 +59,11 @@ namespace FT{
                         return limited(x1/(this->W[1] * x2));
                     case 1: // d/dx2 
                     {
-                        ArrayXd num = -this->W[0] * x1;
-                        ArrayXd denom = limited(this->W[1] * pow(x2, 2));
-                        ArrayXd val = num/denom;
-                        return val;
+                        std::cout << "x1: " << x1.transpose() << "\n";
+                        /* ArrayXd num = -this->W[0] * x1; */
+                        /* ArrayXd denom = limited(this->W[1] * pow(x2, 2)); */
+                        /* ArrayXd val = num/denom; */
+                        return limited((-this->W[0] * x1)/(this->W[1] * pow(x2, 2)));
                     }
                     case 0: // d/dx1 
                     default:

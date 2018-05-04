@@ -21,7 +21,7 @@ using Eigen::VectorXd;
 using Eigen::ArrayXd;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
 #define MAX_DBL std::numeric_limits<double>::max()
-#define MIN_DBL std::numeric_limits<double>::min()
+#define MIN_DBL std::numeric_limits<double>::lowest()
 namespace FT{
 
     //////////////////////////////////////////////////////////////////////////////// Declarations
@@ -67,9 +67,9 @@ namespace FT{
             /// limits node output to be between MIN_DBL and MAX_DBL
             ArrayXd limited(ArrayXd x)
             {
-                x = (isinf(x)).select(MAX_DBL,x);
                 x = (isnan(x)).select(0,x);
-                //x = (x < MIN_DBL).select(MIN_DBL,x);
+                x = (x < MIN_DBL).select(MIN_DBL,x);
+                x = (x > MAX_DBL).select(MAX_DBL,x);
                 return x;
             };
 
