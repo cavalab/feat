@@ -42,6 +42,8 @@ namespace FT{
                 for (int i = 0; i < arity['f']; ++i) {
                 	ArrayXd d_w = getDerivative(stack_f, arity['f'] + i);
                     // std::cout << "Derivative: " << d_w << "\n";
+                    /* dW[i] = a*dW[i] + (1-a)*( n/update_value.size() * (d_w * update_value).sum()); */
+                	/* W_temp[i] = W[i] + dW_temp[i]; */
                 	W_temp[i] = W[i] - n/update_value.size() * (d_w * update_value).sum();
                     // std::cout << "Updated with " << (d_w * update_value).sum() << "\n";
                 }

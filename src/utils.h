@@ -530,7 +530,7 @@ namespace FT{
 
     
     }
-    
+ 
     /// return the softmax transformation of a vector.
     template <typename T>
     vector<T> softmax(const vector<T>& w)

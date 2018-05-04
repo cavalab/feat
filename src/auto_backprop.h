@@ -127,13 +127,13 @@ namespace FT {
     {
         cout << "Starting up AutoBackProp with " << this->iters << " iterations.";
         // Computes weights via backprop
-        cout << "\nIteration\tLoss\tGrad\t\n";
         // grab subtrees to backprop over
         for (int s : program.roots())
         {
             if (isNodeDx(program[s]))
             {
-                cout << "training sub-program " << program.subtree(s) << " to " << s << "\n";
+                cout << "\ntraining sub-program " << program.subtree(s) << " to " << s << "\n";
+                cout << "\nIteration\tLoss\tGrad\t\n";
                 for (int x = 0; x < this->iters; x++) {
                     // Evaluate forward pass
                     vector<ArrayXd> stack_f = forward_prop(program, program.subtree(s), s, X, y, Z);
@@ -158,7 +158,7 @@ namespace FT {
                                                 MatrixXd& X, VectorXd& y, 
                                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z) 
     {
-        cout << "Forward pass\n";
+        /* cout << "Forward pass\n"; */
         // Iterate through all the nodes evaluating and tracking ouputs
         vector<ArrayXd> stack_f; // Tracks output values
         vector<ArrayXd> execution_stack; // Tracks output values and groups them based on input to functions
@@ -166,11 +166,12 @@ namespace FT {
 
         FT::Stacks stack;
 
-        // Use stack_f and execution stack to avoid issue of branches affecting what elements appear before a node 
+        // Use stack_f and execution stack to avoid issue of branches affecting what elements 
+        // appear before a node 
         /* for (const auto& p : program) */ 
         for (int s = start; s <= end; ++s) 
         { // Can think about changing with call to Node for cases with nodes that aren't differentiable
-            cout << "Evaluating node: " << program[s]->name << "\n";
+            /* cout << "Evaluating node: " << program[s]->name << "\n"; */
             for (int i = 0; i < program[s]->arity['f']; i++) {
                 stack_f.push_back(stack.f.at(stack.f.size() - (program[s]->arity['f'] - i)));
                 // stack_f.push_back(execution_stack[execution_stack.size() - (p->arity['f'] - i)]);
@@ -181,9 +182,8 @@ namespace FT {
         }
 
         stack_f.push_back(stack.f.pop());
-        //stack_f.push_back(pop<ArrayXd>(&execution_stack)); // Would be nice to create a general "pop" function that does both these steps at once
 
-        cout << "Returning forward pass.\n";
+        /* cout << "Returning forward pass.\n"; */
         return stack_f;
     }
     
@@ -207,10 +207,13 @@ namespace FT {
             }
             
             // Should now have the next parent node and derivatves (stored in bp_node)
-            if (!bp_node.deriv_list.empty()) {
+            if (!bp_node.deriv_list.empty()) 
+            {
                 bp_program.push_back(bp_node.n);
-                derivatives.push_back(pop_front<ArrayXd>(&(bp_node.deriv_list))); // Pull derivative from front of list due to how we stored them earlier
-                executing.push_back(bp_node); // Push it back on the stack in order to sync all the stacks
+                // Pull derivative from front of list due to how we stored them earlier
+                derivatives.push_back(pop_front<ArrayXd>(&(bp_node.deriv_list)));                 
+                // Push it back on the stack in order to sync all the stacks
+                executing.push_back(bp_node);             
             }
         }
     }
@@ -220,7 +223,7 @@ namespace FT {
                                 MatrixXd& X, VectorXd& y, 
                                 std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z)    
     {
-        cout << "Backward pass \n";
+        /* cout << "Backward pass \n"; */
         vector<ArrayXd> derivatives;
         derivatives.push_back(this->d_cost_func(y, f_stack[f_stack.size() - 1])); 
         // Might need a cost function node (still need to address this)
@@ -231,27 +234,28 @@ namespace FT {
         // Currently I don't think updates will be saved, might want a pointer of nodes so don't 
         // have to restock the list
         // Program we loop through and edit during algorithm (is this a shallow or deep copy?)
-        cout << "copy program \n";
-        vector<Node*> bp_program = program.get_data(start, end);         /* cout << "Initializing backprop systems.\n"; */
+        /* cout << "copy program \n"; */
+        vector<Node*> bp_program = program.get_data(start, end);         
+        /* cout << "Initializing backprop systems.\n"; */
         while (bp_program.size() > 0) {
-            cout << "Size of program: " << bp_program.size() << "\n";
+            /* cout << "Size of program: " << bp_program.size() << "\n"; */
             Node* node = pop<Node*>(&bp_program);
-            cout << "(132) Evaluating: " << node->name << "\n";
+            /* cout << "(132) Evaluating: " << node->name << "\n"; */
             /* print_weights(program); */
 
             vector<ArrayXd> n_derivatives;
 
             if (isNodeDx(node) && node->visits == 0 && node->arity['f'] > 0) {
                 NodeDx* dNode = dynamic_cast<NodeDx*>(node); // Could probably put this up one and have the if condition check if null
-                cout << "evaluating derivative\n";
+                /* cout << "evaluating derivative\n"; */
                 // Calculate all the derivatives and store them, then update all the weights and throw away the node
                 for (int i = 0; i < node->arity['f']; i++) {
                     dNode->derivative(n_derivatives, f_stack, i);
                 }
-                cout << "updating derivatives\n";
+                /* cout << "updating derivatives\n"; */
                 dNode->update(derivatives, f_stack, this->n);
                 // dNode->print_weight();
-                cout << "popping input arguments\n";
+                /* cout << "popping input arguments\n"; */
                 // Get rid of the input arguments for the node
                 for (int i = 0; i < dNode->arity['f']; i++) {
                     pop<ArrayXd>(&f_stack);
@@ -263,7 +267,7 @@ namespace FT {
 
                 executing.push_back({dNode, n_derivatives});
             }
-            cout << "next branch\n";
+            /* cout << "next branch\n"; */
             // Choosing how to move through tree
             if (node->arity['f'] == 0 || !isNodeDx(node)) {
                 // Clean up gradients and find the parent node
@@ -281,7 +285,7 @@ namespace FT {
         for (unsigned i = 0; i < bp_program.size(); ++i)
             bp_program[i] = nullptr;
 
-        cout << "Backprop terminated\n";
+        /* cout << "Backprop terminated\n"; */
         //print_weights(program);
     }
 }

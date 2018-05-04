@@ -14,13 +14,15 @@ namespace metrics{
     // Squared difference
     VectorXd squared_difference(const VectorXd& y, const VectorXd& yhat)
     {
-        return pow(yhat - y, 2);
+        return (yhat - y).array().pow(2);
     }
 
     // Derivative of squared difference with respec to yhat
-    VectorXd d_squared_difference(const VectorXd& y, const VectorXd& yhat) {
+    VectorXd d_squared_difference(const VectorXd& y, const VectorXd& yhat)
+    {
         return 2 * (yhat - y);
     }
+   
     
     /// mean squared error
     double mse(const VectorXd& y, const VectorXd& yhat, VectorXd& loss, 
@@ -37,36 +39,71 @@ namespace metrics{
         Map<VectorXd> yhat(tmp.data(),tmp.size());
         return mse(y,yhat,loss,weights);
     }
-    
-    /// log loss
-    double log_loss(const VectorXd& y, const VectorXd& yhat, VectorXd& loss,
-                      const vector<float>& weights={1.0,1.0})
+ 
+    VectorXd log_loss(const VectorXd& y, const VectorXd& yhat)
     {
         double eps = pow(10,-10);
-
+        
+        VectorXd loss;
+        
         loss.resize(y.rows());  
         for (unsigned i = 0; i < y.rows(); ++i)
         {
             if (yhat(i) < eps || 1 - yhat(i) < eps)
                 // clip probabilities since log loss is undefined for yhat=0 or yhat=1
-                loss(i) = -(y(i)*log(eps) + (1-y(i))*log(1-eps))*weights.at(y(i));
+                loss(i) = -(y(i)*log(eps) + (1-y(i))*log(1-eps));
             else
-                loss(i) = -(y(i)*log(yhat(i)) + (1-y(i))*log(1-yhat(i)))*weights.at(y(i));
-        }   
+                loss(i) = -(y(i)*log(yhat(i)) + (1-y(i))*log(1-yhat(i)));
+        }
+       
+        return loss;
+    }   
+    
+    /// log loss
+    double mean_log_loss(const VectorXd& y, const VectorXd& yhat, VectorXd& loss,
+                      const vector<float>& sample_weights = vector<float>())
+    {
+           
         /* std::cout << "loss: " << loss.transpose() << "\n"; */
+        loss = log_loss(y,yhat);
+        if (!sample_weights.empty())
+        {
+            ArrayXd sw = Map<ArrayXd>(sample_weights.data(), sample_weights.size());
+            loss = loss.array() * sw ; 
+        }
         return loss.mean();
     }
 
     /// log loss
     double log_loss_label(const VectorXd& y, const shared_ptr<CLabels>& labels, VectorXd& loss,
-                      const vector<float>& weights={1.0,1.0})
+                      const vector<float>& weights=vector<float>())
     {
         dynamic_pointer_cast<sh::CBinaryLabels>(labels)->scores_to_probabilities();
         SGVector<double> tmp = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_values();
         Map<VectorXd> yhat(tmp.data(),tmp.size());
         return log_loss(y,yhat,loss,weights);
     }
- 
+
+    VectorXd sigmoid(VectorXd x)
+    {
+        return exp(x.array()) / (1 + exp(x.array()));
+    }
+
+    VectorXd log_loss_sigmoid(const VectorXd& y, const VectorXd& yhat)
+    {
+        double eps = pow(10,-10);
+        
+        // convert yhat via sigmoid
+        VectorXd yhats = sigmoid(yhat); 
+        VectorXd loss; 
+        return log_loss(y, yhats);
+    }
+
+    Vectord d_log_loss(const VectorXd& y, const VectorXd& yhat)
+    {
+        return (-(yhat - y) / ( (yhat.array()-1)*y.array() ) ).matrix(); 
+    }
+
     /// multinomial log loss
     double multi_log_loss(const VectorXd& y, const ArrayXXd& confidences, VectorXd& loss,
                       const vector<float>& weights=vector<float>())
@@ -75,7 +112,7 @@ namespace metrics{
         vector<double> uc = unique(y);
         vector<float> w;
         if (weights.empty())
-            w = vector<float>(1.0,uc.size());
+            w = vector<float>(1.0,y.size());
         else
             w = weights;
 
@@ -108,7 +145,7 @@ namespace metrics{
                 /* std::cout << "\n"; */
             }   
             /* std::cout << "w.at(y(" << i << ")): " << w.at(y(i)) << "\n"; */
-            loss(i) = loss(i)*w.at(y(i));
+            loss(i) = loss(i)*w.at(i);
         }
         /* std::cout << "loss: " << loss.transpose() << "\n"; */
         /* std::cout << "mean loss: " << loss.mean() << "\n"; */
