@@ -16,7 +16,7 @@ namespace FT{
     		{
     			name = "relu";
     			otype = 'f';
-    			arity['f'] = 2;
+    			arity['f'] = 1;
     			arity['b'] = 0;
     			complexity = 2;
 
@@ -36,9 +36,7 @@ namespace FT{
                           Stacks& stack)
             {
                 ArrayXd x = stack.f.pop();
-                
-                // ArrayXd res = (W[0] * x > 0).select((W[0] * x == 0).select(ArrayXd::Zero(x.size()), -1*ArrayXd::Ones(x.size()))); 
-                ArrayXd res = x; // Need to replace with above line
+                ArrayXd res = (W[0] * x > 0).select(W[0]*x, ArrayXd::Zero(x.size())); 
                 stack.f.push(res);
             }
 
@@ -50,12 +48,13 @@ namespace FT{
 
             ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
 
+                ArrayXd x = stack_f[stack_f.size()-1];
                 switch (loc) {
-                    case 1: // d/dx1
-                        return W[1]/(W[0] * stack_f[stack_f.size()-2]);
-                    case 0: // d/dx0
+                    case 1: // d/dW
+                        return (x>0).select(x,ArrayXd::Zero(x.size()));
+                    case 0: // d/dx
                     default:
-                        return -W[1] * stack_f[stack_f.size() - 1]/(W[0] * pow(stack_f[stack_f.size()], 2));
+                        return (x>0).select(W[0],ArrayXd::Zero(x.size()));
                 } 
             }
 

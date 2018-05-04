@@ -70,7 +70,7 @@ namespace FT{
             set_verbosity(verbosity);
             if (fs.empty())
                 fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
-                      "step,sign,logit,tanh,gauss,gauss2d,"
+                      "step,sign,logit,tanh,gauss,relu,"
                       "and,or,not,xor,=,<,<=,>,>=,if,ite";
             set_functions(fs);
             set_objectives(obj);
@@ -296,6 +296,9 @@ namespace FT{
     		
     	else if (str.compare("logit")==0)
             return std::unique_ptr<Node>(new NodeLogit());
+
+        else if (str.compare("relu")==0)
+            return std::unique_ptr<Node>(new NodeRelu());
 
         // logical operators
         else if (str.compare("and") == 0)

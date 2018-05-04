@@ -55,7 +55,7 @@ namespace FT{
         int size() const { return program.size(); }
         
         /// grab sub-tree locations given starting point.
-        size_t subtree(size_t i, char otype) const;
+        /* size_t subtree(size_t i, char otype) const; */
 
         // // get program depth.
         // unsigned int depth();
@@ -73,7 +73,7 @@ namespace FT{
         unsigned int complexity();
       
         /// find root locations in program.
-        vector<size_t> roots();
+        /* vector<size_t> roots(); */
         
         ///// get weighted probabilities
         //vector<double> get_w(){ return w;}
@@ -147,14 +147,14 @@ namespace FT{
     {   
         //cout<<"Weights size = "<<weights.size()<<"\n";
         //cout<<"Roots size = "<<roots().size()<<"\n";
-        if(weights.size() != roots().size())
+        if(weights.size() != program.roots().size())
         {
             cout<<"Weights are\n";
             for(double weight : weights)
                 cout<<weight<<"\n";
                 
             cout<<"Roots are\n";
-            auto root1 = roots();
+            auto root1 = program.roots();
             for(auto root : root1)
                 cout<<root<<"\n";
             
@@ -163,7 +163,7 @@ namespace FT{
             cout<<"\n";
                 
         }
-        assert(weights.size() == roots().size());     
+        assert(weights.size() == program.roots().size());     
         p = weights;
         for (unsigned i=0; i<p.size(); ++i)
             p[i] = 1-p[i];
@@ -176,7 +176,7 @@ namespace FT{
     {
         /*! @param i index in program 
          * @returns weight associated with node */
-        vector<size_t> rts = roots();
+        vector<size_t> rts = program.roots();
         std::reverse(rts.begin(),rts.end()); 
         size_t j = 0;
         double size = rts[0];

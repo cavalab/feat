@@ -338,10 +338,10 @@ namespace FT{
          * */
         params.msg("\tdeletion mutation",2);
         params.msg("\t\tprogram: " + child.program_str(),2);
-        vector<size_t> roots = child.roots();
+        vector<size_t> roots = child.program.roots();
         
         size_t end = r.random_choice(roots,child.p); 
-        size_t start = child.subtree(end);  
+        size_t start = child.program.subtree(end);  
         if (params.verbosity >=2)
         { 
             std::string s="";
@@ -405,17 +405,17 @@ namespace FT{
         else             // half the time, pick a root node
         {
             params.msg("\troot xo",2);
-            mlocs = mom.roots();
-            dlocs = dad.roots();
+            mlocs = mom.program.roots();
+            dlocs = dad.program.roots();
             params.msg("\t\trandom choice mlocs (size "+std::to_string(mlocs.size())+")",2);
             j1 = r.random_choice(mlocs,mom.get_p(mlocs));   // weighted probability choice    
         }
         // get subtree              
-        i1 = mom.subtree(j1);
+        i1 = mom.program.subtree(j1);
                              
         // get dad subtree
         j2 = r.random_choice(dlocs);
-        i2 = dad.subtree(j2); 
+        i2 = dad.program.subtree(j2); 
                
         // make child program by splicing mom and dad
         splice_programs(child.program, mom.program, i1, j1, dad.program, i2, j2 );

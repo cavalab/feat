@@ -1046,10 +1046,10 @@ TEST(Individual, Subtree)
 	a.program.push_back(std::unique_ptr<Node>(new NodeSubtract()));
 	a.program.push_back(std::unique_ptr<Node>(new NodeMultiply()));
 	
-	ASSERT_EQ(a.subtree(5), 3);
-	ASSERT_EQ(a.subtree(2), 0);
-	ASSERT_EQ(a.subtree(1), 1);
-	ASSERT_EQ(a.subtree(6), 0);
+	ASSERT_EQ(a.program.subtree(5), 3);
+	ASSERT_EQ(a.program.subtree(2), 0);
+	ASSERT_EQ(a.program.subtree(1), 1);
+	ASSERT_EQ(a.program.subtree(6), 0);
 	
 	a.program.clear();
 	
@@ -1060,9 +1060,9 @@ TEST(Individual, Subtree)
 	a.program.push_back(std::unique_ptr<Node>(new NodeIfThenElse()));
 	a.program.push_back(std::unique_ptr<Node>(new NodeAdd()));
 	
-	ASSERT_EQ(a.subtree(4), 1);
-	ASSERT_EQ(a.subtree(5), 0);
-	ASSERT_EQ(a.subtree(2), 2);
+	ASSERT_EQ(a.program.subtree(4), 1);
+	ASSERT_EQ(a.program.subtree(5), 0);
+	ASSERT_EQ(a.program.subtree(2), 2);
 }
 
 TEST(Individual, Complexity)
@@ -1302,7 +1302,7 @@ TEST(Evaluation, log_loss)
              0.4396698295617455 ,
              0.47602999293839676 ;
     
-    double score = metrics::log_loss(y, yhat, loss);
+    double score = metrics::mean_log_loss(y, yhat, loss);
     
     ASSERT_EQ(((int)(score*100000)),45495);
 }
@@ -1359,8 +1359,10 @@ TEST(Evaluation, multi_log_loss)
     
     cout << "running multi_log_loss\n";
 	/* vector<float> weights = {0.4*3.0, 0.4*3.0, 0.3*3.0}; */
-	vector<float> weights = {1, 1, 1};
-    double score = metrics::multi_log_loss(y, confidences, loss, weights);
+	vector<float> weights; 
+    for (int i = 0; i < y.size(); ++i)
+        weights.push_back(1.0);
+    double score = metrics::mean_multi_log_loss(y, confidences, loss, weights);
     cout << "assertion\n";
 
     ASSERT_EQ(((int)(score*100000)),61236);
@@ -1411,9 +1413,9 @@ TEST(Evaluation, fitness)
     Population pop(2);
     // individual 0 = [sin(x0) cos(x0)]
     pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeVariable(0)));
-    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeSin()));
+    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeSin({1.0})));
     pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeVariable(0)));
-    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeCos()));
+    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeCos({1.0})));
     pop.individuals[0].loc = 0;
     std::cout << pop.individuals[0].get_eqn() + "\n";
     // individual 1 = [x0] 
@@ -1428,6 +1430,7 @@ TEST(Evaluation, fitness)
     eval.fitness(pop, X, z, y, F, params);
     
     // check results
+    cout << pop.individuals[0].fitness << " , should be near zero\n";
     ASSERT_TRUE(pop.individuals[0].fitness < NEAR_ZERO);
     ASSERT_TRUE(pop.individuals[1].fitness - 60.442868924187906 < NEAR_ZERO);
 
