@@ -208,30 +208,42 @@ namespace FT{
             {
 	
                 cout << "in get_weights(), multiclass LR\n";
-                vector<SGVector<float64_t>> weights;
+                vector<SGVector<double>> weights;
 
                 if( !ml_type.compare("LR"))
                     weights = dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(p_est)->get_w();
                 else //SVM
-                      weights = dynamic_pointer_cast<sh::CMyMulticlassLibLinear>(p_est)->get_w();
+                    weights = dynamic_pointer_cast<sh::CMyMulticlassLibLinear>(p_est)->get_w();
            
                 cout << "set weights from get_w()\n";
                     
-                for( int j = 0;j<weights.at(0).size(); j++) 
-                    w.push_back(0);
-               
+                /* for( int j = 0;j<weights.at(0).size(); j++) */ 
+                /*     w.push_back(0); */
+                w = vector<double>(0.0,weights.size());
+
                 cout << "getting abs weights\n";
-                for( int i = 0 ; i < weights.size(); i++ ){ 
-                    for( int j = 0;j<weights[i].size(); j++) {
-                        w[j] += fabs(weights[i][j]);
+                for( int i = 0 ; i < weights.size(); ++i )
+                { 
+                    for( int j = 0;j<weights.at(j).size(); ++j) 
+                    {
+                        w.at(j) += fabs(weights.at(i)[j]);
                     }
                 }
+                cout << "normalizing weights\n"; 
+                for( int i = 0; i < w.size() ; i++) 
+                    w[i] = w[i]/weights.size(); 
                 
-                for( int i = 0; i < weights.size() ; i++) 
-                    w[i] = w[i]/weights.size();; 
+                cout << "get_weights(): w: " << w.size() << ":";
+                for (auto tmp : w) cout << tmp << " " ;
+                cout << "\n";                 
                 cout << "returning weights\n";
-                return w;		
-	        }
+                cout << "freeing SGVector weights\n";
+                /* weights.clear(); */
+                /* for (unsigned i =0; i<weights.size(); ++i) */
+                /*     weights[i].unref(); */
+
+	            return w;		
+            }
 	        
             auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_w();
             
@@ -246,9 +258,7 @@ namespace FT{
             std::cerr << "ERROR: ML::get_weights not implemented for " + ml_type << "\n";
             
         }
-        cout << "get_weights(): w: ";
-        for (auto tmp : w) cout << tmp << " " ;
-        cout << "\n";
+
         return w;
     }
 

@@ -16,6 +16,7 @@ license: GNU/GPL v3
 #else
     #define omp_get_thread_num() 0
     #define omp_get_max_threads() 1
+    #define omp_set_num_threads( x ) 0
 #endif
 // stuff being used
 using Eigen::MatrixXd;
@@ -79,7 +80,8 @@ namespace FT{
                    char otype='a', string functions = "", 
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
                    bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
-                   double split=0.75, double fb=0.5, string scorer="", string feature_names=""):
+                   double split=0.75, double fb=0.5, string scorer="", string feature_names="",
+                   unsigned n_threads=0):
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
                              functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, 
@@ -92,6 +94,8 @@ namespace FT{
                 str_dim = "";
                 name="";
                 scorer=scorer;
+                if (n_threads!=0)
+                    omp_set_num_threads(n_threads);
             }
             
             /// set size of population 
@@ -164,6 +168,9 @@ namespace FT{
             
             void set_feature_names(string s){params.set_feature_names(s);}
             void set_feature_names(vector<string>& s){params.feature_names = s;}
+
+            ///set number of threads
+            void set_n_threads(unsigned t){ omp_set_num_threads(t); }
             /*                                                      
              * getting functions
              */

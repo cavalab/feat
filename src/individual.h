@@ -168,9 +168,13 @@ namespace FT{
         for (unsigned i=0; i<p.size(); ++i)
             p[i] = 1-p[i];
         double u = 1.0/double(p.size());    // uniform probability
+        std::cout << "p: ";
+        for (auto tmp : p) cout << tmp << " " ; cout << "\n";
+        std::cout << "softmax(p)\n";
         p = softmax(p);
         for (unsigned i=0; i<p.size(); ++i)
             p[i] = u + fb*(u-p[i]);
+        cout << "exiting set_p\n";
     }
     double Individual::get_p(const size_t i)
     {
