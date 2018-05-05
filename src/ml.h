@@ -51,7 +51,7 @@ namespace FT{
     {
         public:
         	
-            ML(const Parameters& params)
+            ML(const Parameters& params, bool normalize=true)
             {
                 /*!
                  * use string to specify a desired ML algorithm from shogun.
@@ -60,6 +60,7 @@ namespace FT{
                 ml_type = params.ml;
                 prob_type = PT_REGRESSION;
                 max_train_time=60; 
+                normalize = normalize;
                 if (params.classification)
                 { 
                     if (params.n_classes==2)
@@ -191,6 +192,8 @@ namespace FT{
                                                 ///  or regression 
             Normalizer N;                       ///< normalization
             int max_train_time;                 ///< max seconds allowed for training
+            bool normalize;                     ///< control whether ML normalizes its input before 
+                                                ///  training
     };
 /////////////////////////////////////////////////////////////////////////////////////// Definitions
 
@@ -219,7 +222,8 @@ namespace FT{
             
             for( int i = 0 ; i < weights.size(); i++ ){ 
                 for( int j = 0;j<weights[i].size(); j++) {
-                    w[j] += fabs(weights[i][j]);
+                    /* w[j] += fabs(weights[i][j]); */
+                    w[j] += weights[i][j];
                 }
             }
             
@@ -231,8 +235,8 @@ namespace FT{
             auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_w();
             
             w.assign(tmp.data(), tmp.data()+tmp.size());          
-            for (unsigned i =0; i<w.size(); ++i)    // take absolute value of weights
-                w[i] = fabs(w[i]);
+            /* for (unsigned i =0; i<w.size(); ++i)    // take absolute value of weights */
+            /*     w[i] = fabs(w[i]); */
 	    }
         else if (!ml_type.compare("CART"))           
             w = dynamic_pointer_cast<sh::CMyCARTree>(p_est)->feature_importances();
@@ -282,12 +286,15 @@ namespace FT{
             else
                 set_dtypes(dtypes);
         }
-        
-        if (dtypes.empty())
-            N.fit_normalize(X, params.dtypes);  
-        else 
-            N.fit_normalize(X, dtypes);
-         
+       
+        if (normalize)
+        {
+            if (dtypes.empty())
+                N.fit_normalize(X, params.dtypes);  
+            else 
+                N.fit_normalize(X, dtypes);
+        }
+
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
         /* cout << "Phi:\n"; */
         /* for (int i = 0; i < 10 ; ++i) */
@@ -368,10 +375,12 @@ namespace FT{
         
         return labels_to_vector(labels);     
     }
+
     shared_ptr<CLabels> ML::predict(MatrixXd& X)
     {
 
-        N.normalize(X);
+        if (normalize)
+            N.normalize(X);
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
         
         shared_ptr<CLabels> labels;

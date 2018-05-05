@@ -164,9 +164,10 @@ namespace FT{
                 
         }
         assert(weights.size() == program.roots().size());     
-        p = weights;
-        for (unsigned i=0; i<p.size(); ++i)
-            p[i] = 1-p[i];
+        for (unsigned i=0; i< weights.size(); ++i)
+            p[i] = 1 - fabs(weights[i]);
+        /* for (unsigned i=0; i<p.size(); ++i) */
+        /*     p[i] = 1-p[i]; */
         double u = 1.0/double(p.size());    // uniform probability
         p = softmax(p);
         for (unsigned i=0; i<p.size(); ++i)
@@ -274,6 +275,106 @@ namespace FT{
         return Phi;
     }
 
+    // calculate program output matrix
+    MatrixXd Individual::out_trace(const MatrixXd& X,
+                             const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
+                             const Parameters& params,
+                             vector<vector<ArrayXd>>& stack_f_trace,
+                             const VectorXd& y = VectorXd())
+    {
+        /*!
+         * @params X: n_features x n_samples data
+         * @params Z: longitudinal nodes for samples
+         * @params y: target data
+         * @params: Feat parameters
+         * @returns Phi: n_features x n_samples transformation
+         */
+
+        Stacks stack;
+        params.msg("evaluating program " + get_eqn(),2);
+        params.msg("program length: " + std::to_string(program.size()),2);
+
+        vector<size_t> roots = program.roots();
+        size_t root = 0;
+        bool trace=false;
+        size_t trace_idx=0;
+        if isNodeDx(program.at(roots.at(root)))
+        {
+            trace=true;
+            stack_f_trace.push_back(vector<ArrayXd>());
+        }
+        // evaluate each node in program
+        for (unsigned i = 0; i<program.size(); ++i)
+        {
+            if (i > roots.at(root)){
+                ++root;
+                if isNodeDx(program.at(roots.at(root)))
+                {
+                    trace=true;
+                    stack_f_trace.push_back(vector<ArrayXd>());
+                    ++trace_idx;
+                }
+                else
+                    trace=false;
+            }
+            if(stack.check(program.at(i)->arity))
+        	{
+                if (trace)
+                {
+                    for (int i = 0; i < program.at(i)->arity['f']; i++) {
+                        stack_f_trace.at(trace_idx).push_back(stack.f.at(stack.f.size() - 
+                                                         (program.at(i)->arity['f'] - i)));
+                    }
+                }
+        	    //cout<<"***enter here "<<n->name<<"\n";
+	            program.at(i)->evaluate(X, y, Z, stack);
+                program.at(i)->visits = 0;
+	            //cout<<"***exit here "<<n->name<<"\n";
+	        }
+            else
+            {
+                std::cout << "out() error: node " << n->name << " in " + program_str() + 
+                             " is invalid\n";
+                exit(1);
+            }
+        }
+        
+        // convert stack_f to Phi
+        params.msg("converting stacks to Phi",2);
+        int cols;
+        if (stack.f.size()==0)
+        {
+            if (stack.b.size() == 0)
+            {   std::cout << "Error: no outputs in stacks\n"; throw;}
+            
+            cols = stack.b.top().size();
+        }
+        else
+            cols = stack.f.top().size();
+               
+        int rows_f = stack.f.size();
+        int rows_b = stack.b.size();
+        
+        dtypes.clear();        
+        Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
+        // add stack_f to Phi
+       
+        for (unsigned int i=0; i<rows_f; ++i)
+        {    
+             ArrayXd Row = ArrayXd::Map(stack.f.at(i).data(),cols);
+             clean(Row); // remove nans, set infs to max and min
+             Phi.row(i) = Row;
+             dtypes.push_back('f'); 
+        }
+        // convert stack_b to Phi       
+        for (unsigned int i=0; i<rows_b; ++i)
+        {
+            Phi.row(i+rows_f) = ArrayXb::Map(stack.b.at(i).data(),cols).cast<double>();
+            dtypes.push_back('b');
+        }       
+        //Phi.transposeInPlace();
+        return Phi;
+    }
     // return symbolic representation of program 
     string Individual::get_eqn()
     {

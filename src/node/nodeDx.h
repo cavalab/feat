@@ -38,7 +38,8 @@ namespace FT{
                 // Update all weights
                 // std::cout << "Update value: " << update_value << "\n";
                 // std::cout << "Input: " << stack_f[stack_f.size() - 1] << "\n";
-                vector<double> W_temp(W);	// Have to use temporary weights so as not to compute updates with updated weights
+                vector<double> W_temp(W);	
+                // Have to use temporary weights so as not to compute updates with updated weights
                 for (int i = 0; i < arity['f']; ++i) {
                 	ArrayXd d_w = getDerivative(stack_f, arity['f'] + i);
                     // std::cout << "Derivative: " << d_w << "\n";
