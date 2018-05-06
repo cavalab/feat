@@ -4,7 +4,6 @@ license: GNU/GPL v3
 */
 #ifndef EVALUATION_H
 #define EVALUATION_H
-                                                                                                                                      
 // internal includes
 #include "ml.h"
 #include "metrics.h"
@@ -101,11 +100,20 @@ namespace FT{
         
         unsigned start =0;
         if (offspring) start = F.cols()/2;
+
         // loop through individuals
         #pragma omp parallel for
         for (unsigned i = start; i<pop.size(); ++i)
         {
-                        // calculate program output matrix Phi
+            
+            if (params.backprop)
+            {
+                AutoBackProp backprop(params.scorer, params.bp.iters, params.bp.learning_rate);
+                params.msg("Running backprop on " + pop.individuals[i].get_eqn(), 2);
+                backprop.run(pop.individuals[i], X, y, Z, params);
+            }            
+
+            // calculate program output matrix Phi
             params.msg("Generating output for " + pop.individuals[i].get_eqn(), 2);
             MatrixXd Phi = pop.individuals.at(i).out(X, Z, params, y);            
 
@@ -128,10 +136,15 @@ namespace FT{
             }
             else
             {
-                    // assign weights to individual
-                    pop.individuals[i].set_p(ml->get_weights(),params.feedback);
-                    assign_fit(pop.individuals[i],F,yhat,y,params);
+                // assign weights to individual
+                pop.individuals[i].set_p(ml->get_weights(),params.feedback);
+                assign_fit(pop.individuals[i],F,yhat,y,params);
 
+                /* if (params.hillclimb) */
+                /* { */
+                /*     HillClimb hc(params.hc.iters); */
+                /*     hc.run(pop.individuals.at(i), X, y, z, params); */
+                /* } */
             }
 
                             

@@ -30,12 +30,23 @@ namespace FT {
          */
 	public:
 	
-        typedef VectorXd (*callback)(const VectorXd&, const VectorXd&);
+        typedef VectorXd (*callback)(const VectorXd&, shared_ptr<CLabels>&, const vector<float>&);
         
-        AutoBackProp(callback d_cost_func, int iters=1000, double n=0.1) 
+        std::map<string, callback> d_score_hash;
+        std::map<string, callback> score_hash;
+        
+        AutoBackProp(string scorer, int iters=1000, double n=0.1) 
         {
 			/* this->program = program.get_data(); */
-			this->d_cost_func = d_cost_func;
+            score_hash["mse"] = & metrics::mse;
+            score_hash["log"] =  & metrics::log_loss; 
+            score_hash["multi_log"] =  & metrics::multi_log_loss;
+	        d_score_hash["mse"] = & metrics::d_squared_difference;
+            d_score_hash["log"] =  & metrics::d_log_loss; 
+            d_score_hash["multi_log"] =  & metrics::d_multi_log_loss;
+			
+            this->d_cost_func = d_score_hash[scorer]; 
+            this->cost_func = score_hash[scorer]; 
 			/* this->X = X; */
 			/* this->labels = labels; */
 			this->iters = iters;
@@ -172,11 +183,14 @@ namespace FT {
 
             shared_ptr<CLabels> yhat = ml->fit(Phi,y,params,pass,ind.dtypes);
 
+            if (!pass)
+                continue;
+
             vector<double> Beta = ml->get_weights();
 
             cout << x << "\t" 
                  << (y.array()-stack_f[stack_f.size() - 1]).array().pow(2).mean() << "\t"
-                 << this->d_cost_func(y, stack_f[stack_f.size() - 1]).mean() << "\n"; 
+                 << this->d_cost_func(y, yhat, params.sample_weights).mean() << "\n"; 
            
             // TODO: add ML output and weight/normalization of subtree to stack
             // Evaluate backward pass
@@ -270,7 +284,8 @@ namespace FT {
 
     // Compute gradients and update weights 
     void AutoBackProp::backprop(vector<ArrayXd>& f_stack, NodeVector& program, int start, int end, 
-                                VectorXd& phi, double Beta, VectorXd& yhat, MatrixXd& X, VectorXd& y, 
+                                VectorXd& phi, double Beta, shared_ptr<CLabels>& yhat, 
+                                MatrixXd& X, VectorXd& y, 
                                 std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z)    
     {
         /* cout << "Backward pass \n"; */
@@ -278,8 +293,7 @@ namespace FT {
         // start with derivative of cost function wrt ML output times dyhat/dprogram output, which
         // is equal to the weight the model assigned to this subprogram (Beta)
         // push back derivative of cost function wrt ML output
-        derivatives.push_back(this->d_cost_func(y, yhat).array() * 
-                              Beta*phi.array()); 
+        derivatives.push_back(this->d_cost_func(y, yhat).array() * Beta*phi.array()); 
         /* cout << "Cost derivative: " << this->d_cost_func(y, f_stack[f_stack.size() - 1]) << "\n"; 
         // Working according to test program */
         /* pop<ArrayXd>(&f_stack); // Get rid of input to cost function */
