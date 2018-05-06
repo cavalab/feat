@@ -7,7 +7,7 @@ license: GNU/GPL v3
 // internal includes
 #include "ml.h"
 #include "metrics.h"
-
+#include "auto_backprop.h"
 using namespace shogun;
 using Eigen::Map;
 

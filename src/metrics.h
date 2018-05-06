@@ -5,6 +5,12 @@ license: GNU/GPL v3
 #ifndef METRICS_H
 #define METRIC_H
 #include <shogun/labels/Labels.h>
+#include <shogun/labels/RegressionLabels.h>                                                         
+#include <shogun/labels/MulticlassLabels.h>
+#include <shogun/labels/BinaryLabels.h>
+namespace sh = shogun;
+using sh::CLabels;
+using sh::SGVector; 
 
 namespace FT{
 namespace metrics{
@@ -17,6 +23,21 @@ namespace metrics{
         return (yhat - y).array().pow(2);
     }
 
+    VectorXd squared_difference(const VectorXd& y, shared_ptr<CLabels>& labels,  
+               const vector<float>& weights=vector<float>())
+    {
+        SGVector<double> tmp = dynamic_pointer_cast<sh::CRegressionLabels>(labels)->get_labels();
+        Map<VectorXd> yhat(tmp.data(),tmp.size());
+
+        if (weights.empty())
+            return (yhat - y).array().pow(2);
+        else
+        {
+            assert(weights.size() == yhat.size());
+            ArrayXf w = ArrayXf::Map(weights.data(),weights.size());
+            return (yhat - y).array().pow(2) * w.cast<double>() ;
+        }
+    }
     // Derivative of squared difference with respec to yhat
     VectorXd d_squared_difference(const VectorXd& y, const VectorXd& yhat)
     {
@@ -24,7 +45,7 @@ namespace metrics{
     }
    
     // Derivative of squared difference with respec to yhat
-    VectorXd d_squared_difference(const VectorXd& y, shared_ptr<CLabels>& label,
+    VectorXd d_squared_difference(const VectorXd& y, shared_ptr<CLabels>& labels,
                            const vector<float>& weights=vector<float>())
     {
         SGVector<double> tmp = dynamic_pointer_cast<sh::CRegressionLabels>(labels)->get_labels();
@@ -35,8 +56,8 @@ namespace metrics{
         else
         {
             assert(weights.size() == yhat.size());
-            ArrayXd w = ArrayXd::Map(weights.data(),weights.size();
-            return 2 * (yhat - y).array() * w ;
+            ArrayXf w = ArrayXf::Map(weights.data(),weights.size());
+            return 2 * (yhat - y).array() * w.cast<double>() ;
         }
     }
     /// mean squared error
@@ -73,6 +94,24 @@ namespace metrics{
        
         return loss;
     }   
+   
+    VectorXd log_loss(const VectorXd& y, shared_ptr<CLabels>& labels, 
+                      const vector<float>& weights=vector<float>())
+    {
+        dynamic_pointer_cast<sh::CBinaryLabels>(labels)->scores_to_probabilities();
+        SGVector<double> tmp = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_values();
+        Map<VectorXd> yhat(tmp.data(),tmp.size());
+       
+        VectorXd loss = log_loss(y,yhat);
+    
+        if (weights.empty())
+            return loss;
+        else
+        {
+            ArrayXf w = ArrayXf::Map(weights.data(),weights.size());
+            return loss.array() * w.cast<double>();
+        }
+    }
     
     /// log loss
     double mean_log_loss(const VectorXd& y, const VectorXd& yhat, VectorXd& loss,
@@ -119,8 +158,8 @@ namespace metrics{
         return (-(yhat - y).array() / ( (yhat.array()-1)*y.array() ) ).matrix(); 
     }
 
-    VectorXd d_log_loss(const VectorXd& y, shared_ptr<CLabels>& yhat, 
-                        const vector<float>& sample_weights=vector<float>())
+    VectorXd d_log_loss(const VectorXd& y, shared_ptr<CLabels>& labels, 
+                        const vector<float>& weights=vector<float>())
     {
         dynamic_pointer_cast<sh::CBinaryLabels>(labels)->scores_to_probabilities();
         SGVector<double> tmp = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_values();
@@ -212,10 +251,42 @@ namespace metrics{
 
     }
 
-    /// derivative of multinomial log loss
-    VectorXd d_multi_log_loss(const VectorXd& y, const shared_ptr<CLabels>& labels, 
+    VectorXd multi_log_loss(const VectorXd& y, shared_ptr<CLabels>& labels, 
                       const vector<float>& weights=vector<float>())
     {
+        ArrayXXd confidences(y.size(),unique(y).size());
+        /* std::cout << "confidences:\n"; */ 
+        for (unsigned i =0; i<y.size(); ++i)
+        {
+            SGVector<double> tmp = dynamic_pointer_cast<sh::CMulticlassLabels>(labels)->
+                                                            get_multiclass_confidences(int(i));
+            confidences.row(i) = Map<ArrayXd>(tmp.data(),tmp.size());
+            /* std::cout << confidences.row(i) << "\n"; */
+        }
+        
+        VectorXd loss = multi_log_loss(y, confidences);
+        if (weights.empty())
+            return loss;
+        else
+        {
+            ArrayXf w = ArrayXf::Map(weights.data(), weights.size());
+            return loss.array() * w.cast<double>();
+        }        
+    }
+    /// derivative of multinomial log loss
+    VectorXd d_multi_log_loss(const VectorXd& y, shared_ptr<CLabels>& labels, 
+                      const vector<float>& weights=vector<float>())
+    {
+        ArrayXXd confidences(y.size(),unique(y).size());
+        /* std::cout << "confidences:\n"; */ 
+        for (unsigned i =0; i<y.size(); ++i)
+        {
+            SGVector<double> tmp = dynamic_pointer_cast<sh::CMulticlassLabels>(labels)->
+                                                            get_multiclass_confidences(int(i));
+            confidences.row(i) = Map<ArrayXd>(tmp.data(),tmp.size());
+            /* std::cout << confidences.row(i) << "\n"; */
+        }
+       
         VectorXd loss = VectorXd::Zero(y.rows());  
         
         // get class labels
