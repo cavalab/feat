@@ -23,7 +23,22 @@ namespace metrics{
         return 2 * (yhat - y);
     }
    
-    
+    // Derivative of squared difference with respec to yhat
+    VectorXd d_squared_difference(const VectorXd& y, shared_ptr<CLabels>& label,
+                           const vector<float>& weights=vector<float>())
+    {
+        SGVector<double> tmp = dynamic_pointer_cast<sh::CRegressionLabels>(labels)->get_labels();
+        Map<VectorXd> yhat(tmp.data(),tmp.size());
+
+        if (weights.empty())
+            return 2 * (yhat - y);
+        else
+        {
+            assert(weights.size() == yhat.size());
+            ArrayXd w = ArrayXd::Map(weights.data(),weights.size();
+            return 2 * (yhat - y).array() * w ;
+        }
+    }
     /// mean squared error
     double mse(const VectorXd& y, const VectorXd& yhat, VectorXd& loss, 
                const vector<float>& weights=vector<float>() )
@@ -104,6 +119,23 @@ namespace metrics{
         return (-(yhat - y).array() / ( (yhat.array()-1)*y.array() ) ).matrix(); 
     }
 
+    VectorXd d_log_loss(const VectorXd& y, shared_ptr<CLabels>& yhat, 
+                        const vector<float>& sample_weights=vector<float>())
+    {
+        dynamic_pointer_cast<sh::CBinaryLabels>(labels)->scores_to_probabilities();
+        SGVector<double> tmp = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_values();
+        Map<VectorXd> yhat(tmp.data(),tmp.size());
+
+        if (weights.empty())
+            return d_log_loss(y,yhat);
+        else
+        {
+            ArrayXf w = ArrayXf::Map(weights.data(), weights.size());
+            return d_log_loss(y,yhat).array() * w.cast<double>() ; 
+
+        }
+    }
+
     /// multinomial log loss
     VectorXd multi_log_loss(const VectorXd& y, const ArrayXXd& confidences)
     {
@@ -148,15 +180,6 @@ namespace metrics{
     double mean_multi_log_loss(const VectorXd& y, const ArrayXXd& confidences, VectorXd& loss,
                       const vector<float>& weights=vector<float>())
     {
-        // get class labels
-        /* vector<double> uc = unique(y); */
-        /* vector<float> w; */
-        /* if (weights.empty()) */
-        /*     w = vector<float>(1.0,y.size()); */
-        /* else */
-        /*     w = weights; */
-
-
         loss = multi_log_loss(y, confidences);
         if (!weights.empty())
         {
@@ -172,27 +195,6 @@ namespace metrics{
     double multi_log_loss_label(const VectorXd& y, const shared_ptr<CLabels>& labels, VectorXd& loss,
                       const vector<float>& weights=vector<float>())
     {
-        /* // get class labels */
-        /* vector<double> uc = unique(y); */
-        /* vector<float> w; */
-        /* if (weights.empty()) */
-        /*     w = vector<float>(1.0,uc.size()); */
-        /* else */
-        /*     w = weights; */
-
-        /* SGVector<double> labs = dynamic_pointer_cast<sh::CMulticlassLabels>(labels)-> */
-        /*                                                     get_unique_labels(); */
-        /* /1* std::cout << "unique labels: \n"; *1/ */ 
-        /* /1* for (int i = 0; i < labs.size(); ++i) std::cout << labs[i] << " " ; std::cout << "\n"; *1/ */
-
-        /* /1* int nclasses = dynamic_pointer_cast<sh::CMulticlassLabels>(labels)->get_num_classes(); *1/ */
-        /* /1* std::cout << "nclasses: " << nclasses << "\n"; *1/ */
-
-        /* SGVector<double> ypred = dynamic_pointer_cast<sh::CMulticlassLabels>(labels)-> */
-        /*                                                     get_labels(); */
-        /* Map<ArrayXd> yhat(ypred.data(),y.size()); */
-        /* /1* std::cout << "yhat: " << yhat.transpose() << "\n"; *1/ */
-
         ArrayXXd confidences(y.size(),unique(y).size());
         /* std::cout << "confidences:\n"; */ 
         for (unsigned i =0; i<y.size(); ++i)
@@ -210,6 +212,47 @@ namespace metrics{
 
     }
 
+    /// derivative of multinomial log loss
+    VectorXd d_multi_log_loss(const VectorXd& y, const shared_ptr<CLabels>& labels, 
+                      const vector<float>& weights=vector<float>())
+    {
+        VectorXd loss = VectorXd::Zero(y.rows());  
+        
+        // get class labels
+        vector<double> uc = unique(y);
+
+        double eps = pow(10,-10);
+        
+        for (unsigned i = 0; i < y.rows(); ++i)
+        {
+            for (const auto& c : uc)
+            {
+                ArrayXd yhat = confidences.col(int(c));
+                /* std::cout << "class " << c << "\n"; */
+
+                /* double yi = y(i) == c ? 1.0 : 0.0 ; */ 
+                /* std::cout << "yi: " << yi << ", yhat(" << i << "): " << yhat(i) ; */  
+                if (y(i) == c)
+                {
+                    if (yhat(i) < eps) 
+                    {
+                        // clip probabilities since log loss is undefined for yhat=0 or yhat=1
+                        loss(i) += -1/eps;
+                        /* std::cout << ", loss(" << i << ") += " << -yi*log(eps); */
+                    }
+                    else
+                    {
+                        loss(i) += -1/yhat(i);
+                        /* std::cout << ", loss(" << i << ") += " << -yi*log(yhat(i)); */
+                    }
+                }
+                /* std::cout << "\n"; */
+            }   
+            /* std::cout << "w.at(y(" << i << ")): " << w.at(y(i)) << "\n"; */
+            /* loss(i) = loss(i)*w.at(i); */
+        }
+        return loss;
+    }
     /// 1 - balanced accuracy 
     double bal_zero_one_loss(const VectorXd& y, const VectorXd& yhat, VectorXd& loss, 
                const vector<float>& weights=vector<float>() )
