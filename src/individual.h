@@ -39,6 +39,13 @@ namespace FT{
                      const Parameters& params,
                      const VectorXd& y);
 
+        /// calculate program output while maintaining stack trace
+        MatrixXd out_trace(const MatrixXd& X, 
+                     const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
+                     const Parameters& params, vector<vector<ArrayXd>>& stack_trace,
+                     const VectorXd& y);
+
+
         /// return symbolic representation of program
         string get_eqn();
         
@@ -75,6 +82,16 @@ namespace FT{
         /// find root locations in program.
         /* vector<size_t> roots(); */
         
+        /// check if differentiable node    
+        bool isNodeDx(Node* n){ return NULL != dynamic_cast<NodeDx*>(n); ; }
+        
+        bool isNodeDx(const std::unique_ptr<Node>& n) 
+        {
+            Node * tmp = n.get();
+            bool answer = isNodeDx(tmp); 
+            tmp = nullptr;
+            return answer;
+        }
         ///// get weighted probabilities
         //vector<double> get_w(){ return w;}
         ///// get weight probability for program location i 
@@ -298,7 +315,8 @@ namespace FT{
         size_t root = 0;
         bool trace=false;
         size_t trace_idx=0;
-        if isNodeDx(program.at(roots.at(root)))
+
+        if (isNodeDx(program.at(roots.at(root))))
         {
             trace=true;
             stack_f_trace.push_back(vector<ArrayXd>());
@@ -308,7 +326,7 @@ namespace FT{
         {
             if (i > roots.at(root)){
                 ++root;
-                if isNodeDx(program.at(roots.at(root)))
+                if (isNodeDx(program.at(roots.at(root))))
                 {
                     trace=true;
                     stack_f_trace.push_back(vector<ArrayXd>());
@@ -333,7 +351,7 @@ namespace FT{
 	        }
             else
             {
-                std::cout << "out() error: node " << n->name << " in " + program_str() + 
+                std::cout << "out() error: node " << program.at(i)->name << " in " + program_str() + 
                              " is invalid\n";
                 exit(1);
             }

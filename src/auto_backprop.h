@@ -9,7 +9,12 @@
 #include "stack.h"
 #include "node/node.h"
 #include "node/nodeDx.h"
+//#include "metrics.h"
+#include "individual.h"
 
+#include <shogun/labels/Labels.h>
+
+using shogun::CLabels;
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
@@ -38,7 +43,7 @@ namespace FT {
         AutoBackProp(string scorer, int iters=1000, double n=0.1) 
         {
 			/* this->program = program.get_data(); */
-            score_hash["mse"] = & metrics::mse;
+            score_hash["mse"] = & metrics::squared_difference;
             score_hash["log"] =  & metrics::log_loss; 
             score_hash["multi_log"] =  & metrics::multi_log_loss;
 	        d_score_hash["mse"] = & metrics::d_squared_difference;
@@ -53,8 +58,9 @@ namespace FT {
 			this->n = n;
 		}
         /// adapt weights
-		void run(NodeVector& program, MatrixXd& X, VectorXd& y,
-                 std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z);
+		void run(Individual& ind, const MatrixXd& X, VectorXd& y,
+                 const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z,
+                 const Parameters& params);
 
         /* ~AutoBackProp() */
         /* { */
@@ -91,29 +97,33 @@ namespace FT {
 			}
 		}
 		/// Return the f_stack
-		vector<ArrayXd> forward_prop(NodeVector& program, int start, int end, 
-                                     MatrixXd& X, VectorXd& y, 
-                               std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z);
+		vector<vector<ArrayXd>> forward_prop(Individual& ind, const MatrixXd& X, VectorXd& y, 
+                               const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z,
+                               MatrixXd& Phi, const Parameters& params);
 
 		/// Updates stacks to have proper value on top
 		void next_branch(vector<BP_NODE>& executing, vector<Node*>& bp_program, 
                          vector<ArrayXd>& derivatives);
 
         /// Compute gradients and update weights 
-		void backprop(vector<ArrayXd>& f_stack, NodeVector& program, int start, int end,
-                      MatrixXd& X, VectorXd& y, 
-                               std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z);
+		/* void backprop(vector<ArrayXd>& f_stack, NodeVector& program, int start, int end, */
+                      /* MatrixXd& X, VectorXd& y, */ 
+                               /* std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z); */
+        void backprop(vector<ArrayXd>& f_stack, NodeVector& program, int start, int end, 
+                                VectorXd& phi, double Beta, shared_ptr<CLabels>& yhat, 
+                                const MatrixXd& X, VectorXd& y, 
+                               const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z,
+                               vector<float> sw);
 
-        /// check if differentiable node    
+        
         bool isNodeDx(Node* n){ return NULL != dynamic_cast<NodeDx*>(n); ; }
-
-		bool isNodeDx(const std::unique_ptr<Node>& n) {
+        bool isNodeDx(const std::unique_ptr<Node>& n) 
+        {
             Node * tmp = n.get();
-			bool answer = isNodeDx(tmp); 
+            bool answer = isNodeDx(tmp); 
             tmp = nullptr;
             return answer;
-		}
-
+        }
 		template <class T>
 		T pop(vector<T>* v) {
 			T value = v->back();
@@ -133,40 +143,40 @@ namespace FT {
 
 /////////////////////////////////////////////////////////////////////////////////////// Definitions
     // adapt weights 
-    void AutoBackProp::run(NodeVector& program, MatrixXd& X, VectorXd& y, 
-                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z)
-    {
-        cout << "Starting up AutoBackProp with " << this->iters << " iterations.";
-        // Computes weights via backprop
-        // grab subtrees to backprop over
-        for (int s : program.roots())
-        {
-            if (isNodeDx(program[s]))
-            {
-                cout << "\ntraining sub-program " << program.subtree(s) << " to " << s << "\n";
-                cout << "\nIteration\tLoss\tGrad\t\n";
-                for (int x = 0; x < this->iters; x++) {
-                    // Evaluate forward pass
-                    vector<ArrayXd> stack_f = forward_prop(program, program.subtree(s), s, X, y, Z);
-                    // if ((x % round(this->iters/4)) == 0 or x == this->iters - 1) {
-                    // }
-                    cout << x << "\t" 
-                         << (y.array()-stack_f[stack_f.size() - 1]).array().pow(2).mean() << "\t"
-                         << this->d_cost_func(y, stack_f[stack_f.size() - 1]).mean() << "\n"; 
+    /* void AutoBackProp::run(NodeVector& program, MatrixXd& X, VectorXd& y, */ 
+    /*                         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z) */
+    /* { */
+    /*     cout << "Starting up AutoBackProp with " << this->iters << " iterations."; */
+    /*     // Computes weights via backprop */
+    /*     // grab subtrees to backprop over */
+    /*     for (int s : program.roots()) */
+    /*     { */
+    /*         if (isNodeDx(program[s])) */
+    /*         { */
+    /*             cout << "\ntraining sub-program " << program.subtree(s) << " to " << s << "\n"; */
+    /*             cout << "\nIteration\tLoss\tGrad\t\n"; */
+    /*             for (int x = 0; x < this->iters; x++) { */
+    /*                 // Evaluate forward pass */
+    /*                 vector<ArrayXd> stack_f = forward_prop(program, program.subtree(s), s, X, y, Z); */
+    /*                 // if ((x % round(this->iters/4)) == 0 or x == this->iters - 1) { */
+    /*                 // } */
+    /*                 cout << x << "\t" */ 
+    /*                      << (y.array()-stack_f[stack_f.size() - 1]).array().pow(2).mean() << "\t" */
+    /*                      << this->d_cost_func(y, stack_f[stack_f.size() - 1]).mean() << "\n"; */ 
                    
-                    // TODO: add ML output and weight/normalization of subtree to stack
-                    // Evaluate backward pass
-                    backprop(stack_f, program, program.subtree(s), s, X, y, Z);
-                }
-            }
-        }
-        cout << "Finished backprop. returning program:\n";
-        print_weights(program);    
-        /* return this->program; */
-    }
+    /*                 // TODO: add ML output and weight/normalization of subtree to stack */
+    /*                 // Evaluate backward pass */
+    /*                 backprop(stack_f, program, program.subtree(s), s, X, y, Z); */
+    /*             } */
+    /*         } */
+    /*     } */
+    /*     cout << "Finished backprop. returning program:\n"; */
+    /*     print_weights(program); */    
+    /*     /1* return this->program; *1/ */
+    /* } */
  
-    void AutoBackProp::run(Individual& ind, MatrixXd& X, VectorXd& y, 
-                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z,
+    void AutoBackProp::run(Individual& ind, const MatrixXd& X, VectorXd& y, 
+                            const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z,
                             const Parameters& params)
     {
         vector<size_t> roots = ind.program.roots();
@@ -175,7 +185,7 @@ namespace FT {
         {
             // Evaluate forward pass
             MatrixXd Phi; 
-            vector<vector<ArrayXd>> stack_f = forward_prop(ind.program, X, y, Z, Phi, params);
+            vector<vector<ArrayXd>> stack_f = forward_prop(ind, X, y, Z, Phi, params);
         
             // Evaluate ML model on Phi
             bool pass = true;
@@ -189,7 +199,7 @@ namespace FT {
             vector<double> Beta = ml->get_weights();
 
             cout << x << "\t" 
-                 << (y.array()-stack_f[stack_f.size() - 1]).array().pow(2).mean() << "\t"
+                 << this->cost_func(y,yhat, params.sample_weights) << "\t"
                  << this->d_cost_func(y, yhat, params.sample_weights).mean() << "\n"; 
            
             // TODO: add ML output and weight/normalization of subtree to stack
@@ -197,10 +207,11 @@ namespace FT {
             size_t s = 0;
             for (int i = 0; i < stack_f.size(); ++i)
             {
-                while (!isNodeDx(ind.program.at(roots[s]))
-                        ++s;
-                backprop(stack_f.at(i), yhat, Phi.row(i), Beta.at(i), 
-                         ind.program, ind.program.subtree(s), s, X, y, Z);
+                while (!isNodeDx(ind.program.at(roots[s]))) ++s;
+                VectorXd phi = Phi.row(i);
+                backprop(stack_f.at(i), ind.program, ind.program.subtree(s), s,  
+                         phi, Beta.at(i), yhat,
+                         X, y, Z, params.sample_weights);
             }
         }
     }
@@ -238,14 +249,14 @@ namespace FT {
     /*     return stack_f; */
     /* } */
  
-    vector<vector<ArrayXd>> AutoBackProp::forward_prop(Individual& ind, MatrixXd& X, VectorXd& y, 
-                               std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z,
+    vector<vector<ArrayXd>> AutoBackProp::forward_prop(Individual& ind, const MatrixXd& X, VectorXd& y, 
+                               const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z,
                                MatrixXd& Phi, const Parameters& params) 
     {
         /* cout << "Forward pass\n"; */
         // Iterate through all the nodes evaluating and tracking ouputs
         vector<vector<ArrayXd>> stack_f_trace;
-        MatrixXd Phi = ind.out_trace(X, Z, params, stack_f_trace, y);
+        Phi = ind.out_trace(X, Z, params, stack_f_trace, y);
         // Use stack_f and execution stack to avoid issue of branches affecting what elements 
         // appear before a node 
         /* cout << "Returning forward pass.\n"; */
@@ -285,15 +296,16 @@ namespace FT {
     // Compute gradients and update weights 
     void AutoBackProp::backprop(vector<ArrayXd>& f_stack, NodeVector& program, int start, int end, 
                                 VectorXd& phi, double Beta, shared_ptr<CLabels>& yhat, 
-                                MatrixXd& X, VectorXd& y, 
-                                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z)    
+                                const MatrixXd& X, VectorXd& y, 
+                                const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z,
+                                vector<float> sw)    
     {
         /* cout << "Backward pass \n"; */
         vector<ArrayXd> derivatives;
         // start with derivative of cost function wrt ML output times dyhat/dprogram output, which
         // is equal to the weight the model assigned to this subprogram (Beta)
         // push back derivative of cost function wrt ML output
-        derivatives.push_back(this->d_cost_func(y, yhat).array() * Beta*phi.array()); 
+        derivatives.push_back(this->d_cost_func(y, yhat, sw).array() * Beta*phi.array()); 
         /* cout << "Cost derivative: " << this->d_cost_func(y, f_stack[f_stack.size() - 1]) << "\n"; 
         // Working according to test program */
         /* pop<ArrayXd>(&f_stack); // Get rid of input to cost function */

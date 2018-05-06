@@ -48,19 +48,21 @@ namespace FT{
         vector<float> sample_weights;               ///< weights for each sample 
         string scorer;                              ///< loss function
         vector<string> feature_names;               ///< names of features
-        BP bp;                                      ///< backprop parameters
+        bool backprop;                              ///< turns on backpropagation
 
         struct BP 
         {
            int iters;
            double learning_rate;
            BP(int i, double l): iters(i), learning_rate(l) {}
-        }
+        };
 
+        BP bp;                                      ///< backprop parameters
+        
         Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
                    char ot, int verbosity, string fs, float cr, unsigned int max_depth, 
                    unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
-                   double fb, string sc, string fn, int iters, double lr):    
+                   double fb, string sc, string fn, bool bckprp, int iters, double lr):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
@@ -74,6 +76,7 @@ namespace FT{
             split(sp),
             otype(ot),
             feedback(fb),
+            backprop(bckprp),
             bp(iters, lr)
         {
             set_verbosity(verbosity);
