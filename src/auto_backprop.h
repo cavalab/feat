@@ -195,13 +195,6 @@ namespace FT {
             MatrixXd Phi; 
             vector<vector<ArrayXd>> stack_f = forward_prop(ind, X, y, Z, Phi, params);
        
-            /* cout << "stack_f size: " << stack_f.size() << "\n"; */
-            /* int i = 0; */
-            /* for (auto sf : stack_f) */
-            /* { */
-            /*     cout << "stack_f[" << i << "].size(): " << sf.size() << "\n"; */
-            /*     ++i; */
-            /* } */ 
             // Evaluate ML model on Phi
             bool pass = true;
             auto ml = std::make_shared<ML>(params, false);
@@ -210,11 +203,13 @@ namespace FT {
 
             if (!pass)
                 continue;
+            if (stack_f.size() ==0)
+                break;
 
             vector<double> Beta = ml->get_weights();
 
             cout << x << "," 
-                 << this->cost_func(y,yhat, params.sample_weights).sum() << ",";
+                 << this->cost_func(y,yhat, params.sample_weights).mean() << ",";
                   print_weights(ind.program);
             cout << "\n";
                  /* << this->d_cost_func(y, yhat, params.sample_weights).std() << "\n"; */ 
@@ -237,40 +232,8 @@ namespace FT {
         cout << "done=====================\n";
         cout << "=========================\n";
     }
-    /* // Return the f_stack */
-    /* vector<ArrayXd> AutoBackProp::forward_prop(NodeVector& program, int start, int end, */ 
-    /*                                             MatrixXd& X, VectorXd& y, */ 
-    /*                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z) */ 
-    /* { */
-    /*     /1* cout << "Forward pass\n"; *1/ */
-    /*     // Iterate through all the nodes evaluating and tracking ouputs */
-    /*     vector<ArrayXd> stack_f; // Tracks output values */
-    /*     vector<ArrayXd> execution_stack; // Tracks output values and groups them based on input to functions */
-    /*     vector<ArrayXb> tmp; */
 
-    /*     FT::Stacks stack; */
-
-    /*     // Use stack_f and execution stack to avoid issue of branches affecting what elements */ 
-    /*     // appear before a node */ 
-    /*     /1* for (const auto& p : program) *1/ */ 
-    /*     for (int s = start; s <= end; ++s) */ 
-    /*     { // Can think about changing with call to Node for cases with nodes that aren't differentiable */
-    /*         /1* cout << "Evaluating node: " << program[s]->name << "\n"; *1/ */
-    /*         for (int i = 0; i < program[s]->arity['f']; i++) { */
-    /*             stack_f.push_back(stack.f.at(stack.f.size() - (program[s]->arity['f'] - i))); */
-    /*             // stack_f.push_back(execution_stack[execution_stack.size() - (p->arity['f'] - i)]); */
-    /*         } */
-
-    /*         program[s]->evaluate(X, y, Z, stack); // execution_stack, tmp); */
-    /*         program[s]->visits = 0; */
-    /*     } */
-
-    /*     stack_f.push_back(stack.f.pop()); */
-
-    /*     /1* cout << "Returning forward pass.\n"; *1/ */
-    /*     return stack_f; */
-    /* } */
- 
+    // forward pass
     vector<vector<ArrayXd>> AutoBackProp::forward_prop(Individual& ind, const MatrixXd& X, VectorXd& y, 
                                const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z,
                                MatrixXd& Phi, const Parameters& params) 
@@ -328,7 +291,7 @@ namespace FT {
         // is equal to the weight the model assigned to this subprogram (Beta)
         // push back derivative of cost function wrt ML output
         /* cout << "Beta: " << Beta << "\n"; */ 
-        derivatives.push_back(this->d_cost_func(y, yhat, sw).array() * Beta*phi.array()); 
+        derivatives.push_back(this->d_cost_func(y, yhat, sw).array() * Beta); //*phi.array()); 
         /* cout << "Cost derivative: " << this->d_cost_func(y, f_stack[f_stack.size() - 1]) << "\n"; 
         // Working according to test program */
         /* pop<ArrayXd>(&f_stack); // Get rid of input to cost function */
@@ -343,7 +306,6 @@ namespace FT {
             /* cout << "Size of program: " << bp_program.size() << "\n"; */
             Node* node = pop<Node*>(&bp_program);
             /* cout << "(132) Evaluating: " << node->name << "\n"; */
-            /* print_weights(program); */
 
             vector<ArrayXd> n_derivatives;
 
@@ -355,7 +317,8 @@ namespace FT {
                     dNode->derivative(n_derivatives, f_stack, i);
                 }
                 /* cout << "updating derivatives\n"; */
-                dNode->update(derivatives, f_stack, this->n);
+                /* dNode->update(derivatives, f_stack, this->n); */
+                dNode->update(f_stack, this->n);
                 // dNode->print_weight();
                 /* cout << "popping input arguments\n"; */
                 // Get rid of the input arguments for the node
@@ -372,10 +335,20 @@ namespace FT {
             /* cout << "next branch\n"; */
             // Choosing how to move through tree
             if (node->arity['f'] == 0 || !isNodeDx(node)) {
-                /* // if this node has arguments on the stack, pop them? */ 
-                /* for (int i = 0; i < Node->arity['f']; i++) */ 
-                /*     pop<ArrayXd>(&f_stack); */
-                
+                if (node->arity['f'] >0)
+                {
+                    cout << node->name << " is not NodeDx but has float arity > 1\n";
+                    cout << "f_stack size: " << f_stack.size() << "\n";
+                    cout << "bp_program size: " << bp_program.size() << "\n";
+                    for (const auto& p : bp_program)
+                        cout << p->name << " " ; 
+                    cout << "\n";
+                    /* // if this node has arguments on the stack, pop them? */ 
+                    /* for (int i = 0; i < node->arity['f']; i++) */ 
+                    /*     pop<ArrayXd>(&f_stack); */
+
+                    
+                }
                 // Clean up gradients and find the parent node
                 pop<ArrayXd>(&derivatives);	// TODO check if this fixed
                 next_branch(executing, bp_program, derivatives);
