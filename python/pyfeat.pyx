@@ -36,7 +36,7 @@ cdef extern from "feat.h" namespace "FT":
                             int * train_idx, int train_size)
         VectorXd predict_with_z(double * X,int rowsX,int colsX, string s, 
                             int * idx, int idx_size)
-        void transform_with_z(double * X,int rowsX,int colsX, string s, 
+        MatrixXd transform_with_z(double * X,int rowsX,int colsX, string s, 
                             int * train_idx, int train_size)
         ArrayXXd predict_proba_with_z(double * X,int rowsX,int colsX, string s, 
                             int * idx, int idx_size)
