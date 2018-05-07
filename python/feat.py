@@ -100,7 +100,7 @@ class Feat(BaseEstimator):
             labels_pred = self.predict(features).flatten()
         print('labels_pred:',labels_pred)
         if ( self.classification ):
-            return log_loss(labels,labels_pred)
+            return log_loss(labels,labels_pred, labels=labels)
         else:
             return mse(labels,labels_pred)
 
