@@ -25,7 +25,8 @@ namespace FT{
                 gradients.push_back(getDerivative(stack_f, loc));
             }
 
-            void update(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, double n) 
+            /* void update(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, double n) */ 
+            void update(vector<ArrayXd>& stack_f, double n) 
             {
                 /* std::cout << "***************************\n"; */
                 /* std::cout << "Updating " << this->name << "\n"; */

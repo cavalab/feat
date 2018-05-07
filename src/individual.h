@@ -322,7 +322,6 @@ namespace FT{
         {
             trace=true;
             stack_f_trace.push_back(vector<ArrayXd>());
-            cout << "trace set to true\n";
         }
         
         // evaluate each node in program
