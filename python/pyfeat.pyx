@@ -38,6 +38,7 @@ cdef extern from "feat.h" namespace "FT":
                             int * idx, int idx_size)
         ArrayXXd predict_proba_with_z(double * X,int rowsX,int colsX, string s, 
                             int * idx, int idx_size)
+        ArrayXd get_coefs()
 
 cdef class PyFeat:
     cdef Feat ft  # hold a c++ instance which we're wrapping
@@ -117,7 +118,6 @@ cdef class PyFeat:
                                              zfile, &arr_z_id[0], len(arr_z_id)))
         return res.flatten()
 
-
     def transform(self,np.ndarray X):
         cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
         X = X.transpose()
@@ -152,3 +152,6 @@ cdef class PyFeat:
 
     def get_archive(self):
         return self.ft.get_eqns().decode()
+
+    def get_coefs(self):
+        return ndarray(self.ft.get_coefs()).flatten()

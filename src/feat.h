@@ -264,7 +264,16 @@ namespace FT{
                 }
                 return r;
             }
-            
+           
+            /// return the coefficients or importance scores of the best model. 
+            ArrayXd get_coefs()
+            {
+                auto tmpw = p_ml->get_weights();
+                ArrayXd w = ArrayXd::Map(tmpw.data(), tmpw.size());
+                return w;
+            }
+
+            /// get longitudinal data from file s
             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>> get_Z(string s, 
                     int * idx, int idx_size)
             {

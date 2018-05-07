@@ -112,6 +112,9 @@ class Feat(BaseEstimator):
     def get_archive(self):
         return self._pyfeat.get_archive()
 
+    def get_coefs(self):
+        return self._pyfeat.get_coefs()
+
 def main():
     """Main function that is called when Fewtwo is run from the command line"""
     parser = argparse.ArgumentParser(description="A feature engineering wrapper for ML.",

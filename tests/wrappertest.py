@@ -69,6 +69,13 @@ class TestFeatWrapper(unittest.TestCase):
         if ( self.v > 0 ):
             print (message)
 
+    def test_coefs(self):
+        self.debug("In wrappertest.py...Calling test_coefs")
+        self.clf.fit(self.X,self.y)
+        coefs = self.clf.get_coefs()
+        print('coefs:',coefs)
+        self.assertTrue( len(coefs)>0 )
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="",add_help=False)
    
