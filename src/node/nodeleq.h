@@ -34,9 +34,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-            	string x1 = stack.fs.pop();
-                string x2 = stack.fs.pop();
-                stack.bs.push("(" + x1 + "<=" + x2 + ")");
+                stack.bs.push("(" + stack.fs.pop() + "<=" + stack.fs.pop() + ")");
             }
         protected:
             NodeLEQ* clone_impl() const override { return new NodeLEQ(*this); };  
