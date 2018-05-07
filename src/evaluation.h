@@ -130,15 +130,15 @@ namespace FT{
             {
                     // assign weights to individual
                     auto tmp = ml->get_weights();
-                    cout << "weights have been returned: ";
-                    for (auto t : tmp)
-                        cout << t << " " ; 
-                    cout << "\n";
-                    cout << "pop.individuals[i].set_p\n";
+                    /* cout << "weights have been returned: "; */
+                    /* for (auto t : tmp) */
+                    /*     cout << t << " " ; */ 
+                    /* cout << "\n"; */
+                    /* cout << "pop.individuals[i].set_p\n"; */
                     pop.individuals[i].set_p(tmp,params.feedback);
-                    cout << "assigning fit\n";
+                    /* cout << "assigning fit\n"; */
                     assign_fit(pop.individuals[i],F,yhat,y,params);
-                    cout << "done\n";
+                    /* cout << "done\n"; */
             }
 
                             

@@ -207,7 +207,7 @@ namespace FT{
             if(prob_type == PT_MULTICLASS && ( !ml_type.compare("LR") || !ml_type.compare("SVM") ) ) 
             {
 	
-                cout << "in get_weights(), multiclass LR\n";
+                /* cout << "in get_weights(), multiclass LR\n"; */
                 vector<SGVector<double>> weights;
 
                 if( !ml_type.compare("LR"))
@@ -215,34 +215,34 @@ namespace FT{
                 else //SVM
                     weights = dynamic_pointer_cast<sh::CMyMulticlassLibLinear>(p_est)->get_w();
            
-                cout << "set weights from get_w()\n";
+                /* cout << "set weights from get_w()\n"; */
                     
                 /* for( int j = 0;j<weights.at(0).size(); j++) */ 
                 /*     w.push_back(0); */
                 w = vector<double>(weights[0].size());
-                cout << "weights.size(): " << weights.size() << "\n";
-                cout << "w size: " << w.size() << "\n";
-                cout << "getting abs weights\n";
+                /* cout << "weights.size(): " << weights.size() << "\n"; */
+                /* cout << "w size: " << w.size() << "\n"; */
+                /* cout << "getting abs weights\n"; */
                 
                 for( int i = 0 ; i < weights.size(); ++i )
                 {
-                    cout << "weights:\n";
-                    weights.at(i).display_vector();
+                    /* cout << "weights:\n"; */
+                    /* weights.at(i).display_vector(); */
 
                     for( int j = 0;j<weights.at(i).size(); ++j) 
                     {
                         w.at(j) += fabs(weights.at(i)[j]);
                     }
                 }
-                cout << "normalizing weights\n"; 
+                /* cout << "normalizing weights\n"; */ 
                 for( int i = 0; i < w.size() ; i++) 
                     w[i] = w[i]/weights.size(); 
                 
-                cout << "get_weights(): w: " << w.size() << ":";
-                for (auto tmp : w) cout << tmp << " " ;
-                cout << "\n";                 
-                cout << "returning weights\n";
-                cout << "freeing SGVector weights\n";
+                /* cout << "get_weights(): w: " << w.size() << ":"; */
+                /* for (auto tmp : w) cout << tmp << " " ; */
+                /* cout << "\n"; */                 
+                /* cout << "returning weights\n"; */
+                /* cout << "freeing SGVector weights\n"; */
                 /* weights.clear(); */
                 /* for (unsigned i =0; i<weights.size(); ++i) */
                 /*     weights[i].unref(); */
