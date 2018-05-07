@@ -98,6 +98,8 @@ int main(int argc, char** argv){
         cout << "-n\tname to append to files\n";
         cout << "-ldata\tpath to longitudinal data file\n";
         cout << "-scorer\tscoring function [mse, zero_one, bal_zero_one, log, multi_log]\n"; 
+        cout << "-bp\tbackpropagation iterations (zero)\n"; 
+        cout << "-bp_lr\tbackpropagation learning rate (zero)\n"; 
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
     }
@@ -150,7 +152,14 @@ int main(int argc, char** argv){
         ldataFile = input.getCmdOption("-ldata");
     if(input.cmdOptionExists("-scorer"))
         feat.set_scorer(input.getCmdOption("-scorer"));
-    //cout << "done.\n";
+    if(input.cmdOptionExists("-bp"))
+    {
+        feat.set_backprop(true);
+        feat.set_iters(std::stoi(input.getCmdOption("-bp")));
+    }
+    if(input.cmdOptionExists("-bp_lr"))
+        feat.set_lr(std::stod(input.getCmdOption("-bp_lr")));
+   //cout << "done.\n";
     ///////////////////////////////////////
 
     // read in dataset

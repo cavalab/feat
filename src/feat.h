@@ -161,6 +161,12 @@ namespace FT{
             
             void set_feature_names(string s){params.set_feature_names(s);}
             void set_feature_names(vector<string>& s){params.feature_names = s;}
+ 
+            ///set name for files
+            void set_backprop(bool bp){params.backprop=bp;}
+            void set_iters(int iters){params.bp.iters = iters;}
+            void set_lr(double lr){params.bp.learning_rate = lr;}
+             
             /*                                                      
              * getting functions
              */

@@ -82,19 +82,21 @@ namespace FT {
 		};
 
 		void print_weights(NodeVector& program) {
-			for (const auto& p : program) {
-				cout << "Node: " << p->name;
+			for (const auto& p : program) 
+            {
+				cout << "( " << p->name;
 				if (isNodeDx(p)) {
                     
 					NodeDx* dNode = dynamic_cast<NodeDx*>(p.get());
-                    cout << " with weight";
 					for (int i = 0; i < dNode->arity['f']; i++) {
-						cout << " " << dNode->W.at(i);
+						cout << "," << dNode->W.at(i);
 					}
                     dNode = nullptr;
 				}
-				cout << "\n";
+
+				cout << " ) ";
 			}
+            /* cout << "\n"; */
 		}
 		/// Return the f_stack
 		vector<vector<ArrayXd>> forward_prop(Individual& ind, const MatrixXd& X, VectorXd& y, 
@@ -181,12 +183,25 @@ namespace FT {
     {
         vector<size_t> roots = ind.program.roots();
 
+        cout << "running backprop on " << ind.get_eqn() << "\n";
+        cout << "params.sample_weights: " << params.sample_weights.size() << "\n";
+        cout << "params.scorer: " << params.scorer << "\n";       
+        cout << "=========================\n";
+        cout << "Iteration,Loss,Weights\n";
+        cout << "=========================\n";
         for (int x = 0; x < this->iters; x++)
         {
             // Evaluate forward pass
             MatrixXd Phi; 
             vector<vector<ArrayXd>> stack_f = forward_prop(ind, X, y, Z, Phi, params);
-        
+       
+            /* cout << "stack_f size: " << stack_f.size() << "\n"; */
+            /* int i = 0; */
+            /* for (auto sf : stack_f) */
+            /* { */
+            /*     cout << "stack_f[" << i << "].size(): " << sf.size() << "\n"; */
+            /*     ++i; */
+            /* } */ 
             // Evaluate ML model on Phi
             bool pass = true;
             auto ml = std::make_shared<ML>(params, false);
@@ -198,9 +213,11 @@ namespace FT {
 
             vector<double> Beta = ml->get_weights();
 
-            cout << x << "\t" 
-                 << this->cost_func(y,yhat, params.sample_weights) << "\t"
-                 << this->d_cost_func(y, yhat, params.sample_weights).mean() << "\n"; 
+            cout << x << "," 
+                 << this->cost_func(y,yhat, params.sample_weights).sum() << ",";
+                  print_weights(ind.program);
+            cout << "\n";
+                 /* << this->d_cost_func(y, yhat, params.sample_weights).std() << "\n"; */ 
            
             // TODO: add ML output and weight/normalization of subtree to stack
             // Evaluate backward pass
@@ -208,12 +225,17 @@ namespace FT {
             for (int i = 0; i < stack_f.size(); ++i)
             {
                 while (!isNodeDx(ind.program.at(roots[s]))) ++s;
+                /* cout << "running backprop on " << ind.program_str() << " from " << roots.at(s) << " to " */ 
+                /*     << ind.program.subtree(roots.at(s)) << "\n"; */
                 VectorXd phi = Phi.row(i);
-                backprop(stack_f.at(i), ind.program, ind.program.subtree(s), s,  
+                backprop(stack_f.at(i), ind.program, ind.program.subtree(roots.at(s)), roots.at(s),  
                          phi, Beta.at(i), yhat,
                          X, y, Z, params.sample_weights);
             }
         }
+        cout << "=========================\n";
+        cout << "done=====================\n";
+        cout << "=========================\n";
     }
     /* // Return the f_stack */
     /* vector<ArrayXd> AutoBackProp::forward_prop(NodeVector& program, int start, int end, */ 
@@ -305,6 +327,7 @@ namespace FT {
         // start with derivative of cost function wrt ML output times dyhat/dprogram output, which
         // is equal to the weight the model assigned to this subprogram (Beta)
         // push back derivative of cost function wrt ML output
+        /* cout << "Beta: " << Beta << "\n"; */ 
         derivatives.push_back(this->d_cost_func(y, yhat, sw).array() * Beta*phi.array()); 
         /* cout << "Cost derivative: " << this->d_cost_func(y, f_stack[f_stack.size() - 1]) << "\n"; 
         // Working according to test program */
@@ -349,6 +372,10 @@ namespace FT {
             /* cout << "next branch\n"; */
             // Choosing how to move through tree
             if (node->arity['f'] == 0 || !isNodeDx(node)) {
+                /* // if this node has arguments on the stack, pop them? */ 
+                /* for (int i = 0; i < Node->arity['f']; i++) */ 
+                /*     pop<ArrayXd>(&f_stack); */
+                
                 // Clean up gradients and find the parent node
                 pop<ArrayXd>(&derivatives);	// TODO check if this fixed
                 next_branch(executing, bp_program, derivatives);
