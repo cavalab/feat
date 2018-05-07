@@ -64,6 +64,17 @@ class TestFeatWrapper(unittest.TestCase):
         expected_value = self.X.shape[0]
         actual_value = trans_X.shape[0]
         self.assertEqual( actual_value , expected_value )
+        
+    #Test 5:  Transform with Z
+    def test_transform_length_z(self,zfile=None,zids=None):
+        self.debug("Calling fit")
+        self.clf.transform(self.X,self.y)
+        trans_X = self.clf.transform(self.X,zfile,zids)
+
+        self.debug("Comparing the length of labls in transform vs actual feature set ")
+        expected_value = self.X.shape[0]
+        actual_value = trans_X.shape[0]
+        self.assertEqual( actual_value , expected_value )
 
     def debug(self,message):
         if ( self.v > 0 ):
