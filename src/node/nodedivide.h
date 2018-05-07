@@ -59,7 +59,7 @@ namespace FT{
                         return limited(x1/(this->W[1] * x2));
                     case 1: // d/dx2 
                     {
-                        std::cout << "x1: " << x1.transpose() << "\n";
+                        /* std::cout << "x1: " << x1.transpose() << "\n"; */
                         /* ArrayXd num = -this->W[0] * x1; */
                         /* ArrayXd denom = limited(this->W[1] * pow(x2, 2)); */
                         /* ArrayXd val = num/denom; */

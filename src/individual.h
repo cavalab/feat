@@ -181,6 +181,8 @@ namespace FT{
                 
         }
         assert(weights.size() == program.roots().size());     
+        p.resize(0);
+        p.resize(weights.size());
         for (unsigned i=0; i< weights.size(); ++i)
             p[i] = 1 - fabs(weights[i]);
         /* for (unsigned i=0; i<p.size(); ++i) */
@@ -320,7 +322,9 @@ namespace FT{
         {
             trace=true;
             stack_f_trace.push_back(vector<ArrayXd>());
+            cout << "trace set to true\n";
         }
+        
         // evaluate each node in program
         for (unsigned i = 0; i<program.size(); ++i)
         {
@@ -339,9 +343,12 @@ namespace FT{
         	{
                 if (trace)
                 {
-                    for (int i = 0; i < program.at(i)->arity['f']; i++) {
+                    /* cout << "storing trace of " << program.at(i)->name << "with " << */
+                    /*        program.at(i)->arity['f'] << " arguments\n"; */
+                    for (int j = 0; j < program.at(i)->arity['f']; j++) {
+                        /* cout << "push back arg for " << program.at(i)->name << "\n"; */
                         stack_f_trace.at(trace_idx).push_back(stack.f.at(stack.f.size() - 
-                                                         (program.at(i)->arity['f'] - i)));
+                                                         (program.at(i)->arity['f'] - j)));
                     }
                 }
         	    //cout<<"***enter here "<<n->name<<"\n";

@@ -40,6 +40,7 @@ using sh::EProbHeuristicType;
 using sh::CBinaryLabels;
 using sh::CMulticlassLabels;
 using sh::CLabels;
+
 namespace FT{
 	
 	/*!
@@ -207,34 +208,39 @@ namespace FT{
         if (!ml_type.compare("LeastAngleRegression") || !ml_type.compare("LinearRidgeRegression")||
         	!ml_type.compare("SVM") || (!ml_type.compare("LR")))
         {
-            if(prob_type == PT_MULTICLASS && ( !ml_type.compare("LR") || !ml_type.compare("SVM") ) ) {
+            if(prob_type == PT_MULTICLASS && ( !ml_type.compare("LR") || !ml_type.compare("SVM") ) ) 
+            {
 		
-		vector<SGVector<float64_t>> weights;
+                vector<SGVector<float64_t>> weights;
 
-		if( !ml_type.compare("LR"))
-	            weights = dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(p_est)->get_w();
-		else //SVM
-	          weights = dynamic_pointer_cast<sh::CMyMulticlassLibLinear>(p_est)->get_w();
-        
+                if( !ml_type.compare("LR"))
+                        weights = dynamic_pointer_cast<sh::CMulticlassLogisticRegression>
+                            (p_est)->get_w();
+                else //SVM
+                      weights = dynamic_pointer_cast<sh::CMyMulticlassLibLinear>(p_est)->get_w();
                 
-            for( int j = 0;j<weights[0].size(); j++) 
-                w.push_back(0);
-            
-            for( int i = 0 ; i < weights.size(); i++ ){ 
-                for( int j = 0;j<weights[i].size(); j++) {
-                    /* w[j] += fabs(weights[i][j]); */
-                    w[j] += weights[i][j];
+                        
+                for( int j = 0;j<weights[0].size(); j++) 
+                    w.push_back(0);
+                    
+                for( int i = 0 ; i < weights.size(); i++ ){ 
+                    for( int j = 0;j<weights[i].size(); j++) {
+                        /* w[j] += fabs(weights[i][j]); */
+                        w[j] += weights[i][j];
+                    }
                 }
+                    
+                for( int i = 0; i < weights.size() ; i++) 
+                    w[i] = w[i]/weights.size(); 
+                /* return w; */		
+                    
             }
-            
-            for( int i = 0; i < weights.size() ; i++) 
-                w[i] = w[i]/weights.size();; 
-            return w;		
-	        }
-	        
-            auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_w();
-            
-            w.assign(tmp.data(), tmp.data()+tmp.size());          
+	        else
+            {
+                auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_w();
+                w.assign(tmp.data(), tmp.data()+tmp.size());          
+                /* return w; */
+            }
             /* for (unsigned i =0; i<w.size(); ++i)    // take absolute value of weights */
             /*     w[i] = fabs(w[i]); */
 	    }
@@ -245,7 +251,8 @@ namespace FT{
             std::cerr << "ERROR: ML::get_weights not implemented for " + ml_type << "\n";
             
         }
-        
+        /* cout << "weights: "; */
+        /* for (auto i : w) cout << i << " " ; cout << "\n"; */
         return w;
     }
 
