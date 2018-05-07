@@ -96,6 +96,7 @@ int main(int argc, char** argv){
         cout << "-isplit\tInternal slit for Feat's training procedure (0.75)\n";
         cout << "-f\tfeedback strength of ML on variation probabilities (0.5)\n";
         cout << "-n\tname to append to files\n";
+        cout << "-n_threads\tmaximum number of threads\n";
         cout << "-ldata\tpath to longitudinal data file\n";
         cout << "-scorer\tscoring function [mse, zero_one, bal_zero_one, log, multi_log]\n"; 
         cout << "-bp\tbackpropagation iterations (zero)\n"; 
@@ -159,7 +160,9 @@ int main(int argc, char** argv){
     }
     if(input.cmdOptionExists("-bp_lr"))
         feat.set_lr(std::stod(input.getCmdOption("-bp_lr")));
-   //cout << "done.\n";
+    if(input.cmdOptionExists("-n_threads"))
+        feat.set_n_threads(std::stoi(input.getCmdOption("-n_threads")));
+    //cout << "done.\n";
     ///////////////////////////////////////
 
     // read in dataset

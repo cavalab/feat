@@ -210,37 +210,54 @@ namespace FT{
         {
             if(prob_type == PT_MULTICLASS && ( !ml_type.compare("LR") || !ml_type.compare("SVM") ) ) 
             {
-		
-                vector<SGVector<float64_t>> weights;
+                /* cout << "in get_weights(), multiclass LR\n"; */
+                vector<SGVector<double>> weights;
 
                 if( !ml_type.compare("LR"))
-                        weights = dynamic_pointer_cast<sh::CMulticlassLogisticRegression>
-                            (p_est)->get_w();
+                    weights = dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(p_est)
+                                                                                        ->get_w();
                 else //SVM
-                      weights = dynamic_pointer_cast<sh::CMyMulticlassLibLinear>(p_est)->get_w();
-                
-                        
-                for( int j = 0;j<weights[0].size(); j++) 
-                    w.push_back(0);
+                    weights = dynamic_pointer_cast<sh::CMyMulticlassLibLinear>(p_est)->get_w();
+           
+                /* cout << "set weights from get_w()\n"; */
                     
-                for( int i = 0 ; i < weights.size(); i++ ){ 
-                    for( int j = 0;j<weights[i].size(); j++) {
-                        /* w[j] += fabs(weights[i][j]); */
-                        w[j] += weights[i][j];
+                /* for( int j = 0;j<weights.at(0).size(); j++) */ 
+                /*     w.push_back(0); */
+                w = vector<double>(weights[0].size());
+                /* cout << "weights.size(): " << weights.size() << "\n"; */
+                /* cout << "w size: " << w.size() << "\n"; */
+                /* cout << "getting abs weights\n"; */
+                
+                for( int i = 0 ; i < weights.size(); ++i )
+                {
+                    /* cout << "weights:\n"; */
+                    /* weights.at(i).display_vector(); */
+
+                    for( int j = 0;j<weights.at(i).size(); ++j) 
+                    {
+                        w.at(j) += fabs(weights.at(i)[j]);
+                        w.at(j) += weights.at(i)[j];
                     }
                 }
-                    
-                for( int i = 0; i < weights.size() ; i++) 
+                /* cout << "normalizing weights\n"; */ 
+                for( int i = 0; i < w.size() ; i++) 
                     w[i] = w[i]/weights.size(); 
-                /* return w; */		
-                    
+                
+                /* cout << "get_weights(): w: " << w.size() << ":"; */
+                /* for (auto tmp : w) cout << tmp << " " ; */
+                /* cout << "\n"; */                 
+                /* cout << "returning weights\n"; */
+                /* cout << "freeing SGVector weights\n"; */
+                /* weights.clear(); */
+                /* for (unsigned i =0; i<weights.size(); ++i) */
+                /*     weights[i].unref(); */
+
+	            return w;		
             }
-	        else
-            {
-                auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_w();
-                w.assign(tmp.data(), tmp.data()+tmp.size());          
-                /* return w; */
-            }
+	        
+            auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_w();
+            
+            w.assign(tmp.data(), tmp.data()+tmp.size());          
             /* for (unsigned i =0; i<w.size(); ++i)    // take absolute value of weights */
             /*     w[i] = fabs(w[i]); */
 	    }
@@ -251,8 +268,6 @@ namespace FT{
             std::cerr << "ERROR: ML::get_weights not implemented for " + ml_type << "\n";
             
         }
-        /* cout << "weights: "; */
-        /* for (auto i : w) cout << i << " " ; cout << "\n"; */
         return w;
     }
 
