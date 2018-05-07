@@ -228,6 +228,7 @@ namespace FT {
                          X, y, Z, params.sample_weights);
             }
         }
+        cout << "\n";
         cout << "=========================\n";
         cout << "done=====================\n";
         cout << "=========================\n";
@@ -317,8 +318,7 @@ namespace FT {
                     dNode->derivative(n_derivatives, f_stack, i);
                 }
                 /* cout << "updating derivatives\n"; */
-                /* dNode->update(derivatives, f_stack, this->n); */
-                dNode->update(f_stack, this->n);
+                dNode->update(derivatives, f_stack, this->n);
                 // dNode->print_weight();
                 /* cout << "popping input arguments\n"; */
                 // Get rid of the input arguments for the node
@@ -337,12 +337,14 @@ namespace FT {
             if (node->arity['f'] == 0 || !isNodeDx(node)) {
                 if (node->arity['f'] >0)
                 {
-                    cout << node->name << " is not NodeDx but has float arity > 1\n";
-                    cout << "f_stack size: " << f_stack.size() << "\n";
-                    cout << "bp_program size: " << bp_program.size() << "\n";
-                    for (const auto& p : bp_program)
-                        cout << p->name << " " ; 
-                    cout << "\n";
+                    /* cout << node->name << " is not NodeDx but has float arity > 1\n"; */
+                    /* cout << "f_stack size: " << f_stack.size() << "\n"; */
+                    /* cout << "bp_program size: " << bp_program.size() << "\n"; */
+                    /* cout << "executing size: " << executing.size() << "\n"; */
+                    /* cout << "derivatives size: " << derivatives.size() << "\n"; */
+                    /* for (const auto& p : bp_program) */
+                    /*     cout << p->name << " " ; */ 
+                    /* cout << "\n"; */
                     /* // if this node has arguments on the stack, pop them? */ 
                     /* for (int i = 0; i < node->arity['f']; i++) */ 
                     /*     pop<ArrayXd>(&f_stack); */

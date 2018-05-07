@@ -536,6 +536,10 @@ namespace FT{
                 print_stats(g+1);
             else
                 printProgress(((g+1)*1.0)/params.gens);
+            if (params.backprop){
+                params.bp.learning_rate = (1-1/(1+double(params.gens)))*params.bp.learning_rate;
+                cout << "learning rate: " << params.bp.learning_rate << "\n";
+            }
                 //cout<<"\rCompleted "<<((g+1)*100/params.gens)<<"%"<< std::flush;
         }
         cout<<"\n";
