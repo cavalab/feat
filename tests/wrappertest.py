@@ -68,7 +68,7 @@ class TestFeatWrapper(unittest.TestCase):
     #Test 5:  Transform with Z
     def test_transform_length_z(self,zfile=None,zids=None):
         self.debug("Calling fit")
-        self.clf.transform(self.X,self.y)
+        self.clf.fit(self.X,self.y)
         trans_X = self.clf.transform(self.X,zfile,zids)
 
         self.debug("Comparing the length of labls in transform vs actual feature set ")
