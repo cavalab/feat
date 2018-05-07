@@ -87,7 +87,7 @@ class Feat(BaseEstimator):
         if zfile:
             zfile = zfile.encode() if isinstance(zfile,str) else zfile
             return self._pyfeat.transform_with_z(X,zfile,zids)
-        else
+        else:
             return self._pyfeat.transform(X)
 
     def fit_predict(self,X,y):
