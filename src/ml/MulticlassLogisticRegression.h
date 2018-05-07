@@ -163,6 +163,7 @@ CMulticlassLogisticRegression::~CMulticlassLogisticRegression()
 	{
 		CLinearMachine* machine = (CLinearMachine*)m_machines->get_element(i);
 		weights_vector.push_back(machine->get_w());
+        cout << "CMulticlass: pushed back into weights_vector \n";
 	}
 	
      return weights_vector;	

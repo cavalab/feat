@@ -219,12 +219,17 @@ namespace FT{
                     
                 /* for( int j = 0;j<weights.at(0).size(); j++) */ 
                 /*     w.push_back(0); */
-                w = vector<double>(0.0,weights.size());
-
+                w = vector<double>(weights[0].size());
+                cout << "weights.size(): " << weights.size() << "\n";
+                cout << "w size: " << w.size() << "\n";
                 cout << "getting abs weights\n";
+                
                 for( int i = 0 ; i < weights.size(); ++i )
-                { 
-                    for( int j = 0;j<weights.at(j).size(); ++j) 
+                {
+                    cout << "weights:\n";
+                    weights.at(i).display_vector();
+
+                    for( int j = 0;j<weights.at(i).size(); ++j) 
                     {
                         w.at(j) += fabs(weights.at(i)[j]);
                     }
