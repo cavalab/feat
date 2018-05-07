@@ -85,8 +85,12 @@ class Feat(BaseEstimator):
             return self._pyfeat.predict_proba(X)
 
 
-    def transform(self,X):
-        return self._pyfeat.transform(X)
+    def transform(self,X,zfile=None,zids=None):
+        if zfile:
+            zfile = zfile.encode() if isinstance(zfile,str) else zfile
+            return self._pyfeat.transform_with_z(X,zfile,zids)
+        else:
+            return self._pyfeat.transform(X)
 
     def fit_predict(self,X,y):
         return self._pyfeat.fit_predict(X,y)

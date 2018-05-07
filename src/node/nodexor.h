@@ -38,9 +38,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-        		string x1 = stack.bs.pop();
-                string x2 = stack.bs.pop();
-                stack.bs.push("(" + x1 + " XOR " + x2 + ")");
+                stack.bs.push("(" + stack.bs.pop() + " XOR " + stack.bs.pop() + ")");
             }
         protected:
             NodeXor* clone_impl() const override { return new NodeXor(*this); };  
