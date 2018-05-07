@@ -651,12 +651,12 @@ namespace FT{
         
     }
     
-    MatrixXd transform_with_z(double * X, int rowsX, int colsX, string s, int * idx, int idx_size)
+    MatrixXd Feat::transform_with_z(double * X, int rowsX, int colsX, string s, int * idx, int idx_size)
     {
         MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
         auto Z = get_Z(s, idx, idx_size);
         
-        return transform(X, Z);
+        return transform(matX, Z);
         
     }
 
