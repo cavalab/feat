@@ -211,7 +211,8 @@ namespace FT{
                 vector<SGVector<double>> weights;
 
                 if( !ml_type.compare("LR"))
-                    weights = dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(p_est)->get_w();
+                    weights = dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(p_est)
+                                                                                        ->get_w();
                 else //SVM
                     weights = dynamic_pointer_cast<sh::CMyMulticlassLibLinear>(p_est)->get_w();
            
