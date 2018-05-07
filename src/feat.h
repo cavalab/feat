@@ -338,7 +338,7 @@ namespace FT{
             MatrixXd transform(double * X,  int rows_x, int cols_x);
             
             /// train a model, first loading longitudinal samples (Z) from file.
-            void transform_with_z(double * X, int rowsX, int colsX, string s, int * idx, int idx_size);
+            MatrixXd transform_with_z(double * X, int rowsX, int colsX, string s, int * idx, int idx_size);
             
             /// convenience function calls fit then predict.            
             VectorXd fit_predict(MatrixXd& X,
@@ -651,7 +651,7 @@ namespace FT{
         
     }
     
-    void transform_with_z(double * X, int rowsX, int colsX, string s, int * idx, int idx_size)
+    MatrixXd transform_with_z(double * X, int rowsX, int colsX, string s, int * idx, int idx_size)
     {
         MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
         auto Z = get_Z(s, idx, idx_size);
