@@ -35,7 +35,7 @@ namespace FT{
                           const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
 			              Stacks& stack)
             {
-                stack.f.push(sqrt(abs(W[0]*stack.f.pop())));
+                stack.f.push(sqrt(W[0]*stack.f.pop().abs()));
             }
 
             /// Evaluates the node symbolically
