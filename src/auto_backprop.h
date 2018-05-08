@@ -185,7 +185,7 @@ namespace FT {
                             const Parameters& params)
     {
         vector<size_t> roots = ind.program.roots();
-        double min_score;
+        double min_loss;
         vector<vector<double>> best_weights;
         cout << "running backprop on " << ind.get_eqn() << "\n";
         cout << "params.sample_weights: " << params.sample_weights.size() << "\n";
@@ -211,17 +211,19 @@ namespace FT {
                 break;
 
             vector<double> Beta = ml->get_weights();
-            if (x==0 || this->cost_func(y,yhat, params.sample_weights).mean() < min_score)
-            {
-                min_score = this->cost_func(y,yhat, params.sample_weights).mean();
-                best_weights = ind.program.get_weights();
-            }
+
             cout << x << "," 
                  << this->cost_func(y,yhat, params.sample_weights).mean() << ",";
                   print_weights(ind.program);
-            cout << "\n";
                  /* << this->d_cost_func(y, yhat, params.sample_weights).std() << "\n"; */ 
-           
+            if (x==0 || this->cost_func(y,yhat, params.sample_weights).mean() < min_loss)
+            {
+                min_loss = this->cost_func(y,yhat, params.sample_weights).mean();
+                best_weights = ind.program.get_weights();
+                cout << "new min loss: " << min_loss << "\n";
+            }
+            else
+                cout << "\n";
             // TODO: add ML output and weight/normalization of subtree to stack
             // Evaluate backward pass
             size_t s = 0;

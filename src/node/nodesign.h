@@ -57,7 +57,7 @@ namespace FT{
                         return stack_f[stack_f.size()-1] / (2 * sqrt(W[0] * stack_f[stack_f.size()-1]));
                     case 0: // d/dx0
                     default:
-                        return W[0] / (2 * sqrt(W[0] * stack_f[stack_f.size()-1]));
+                        return W[0] / (2 * sqrt((W[0] * stack_f[stack_f.size()-1]).abs()));
                 } 
             }
         protected:

@@ -6,7 +6,7 @@ license: GNU/GPL v3
 #define NODEVECTOR_H
 #include <memory>
 #include "node/node.h"
-
+#include "node/nodeDx.h"
 namespace FT{
     
     ////////////////////////////////////////////////////////////////////////////////// Declarations
@@ -129,18 +129,24 @@ namespace FT{
         }
         void set_weights(vector<vector<double>>& weights)
         {
-            for (unsigned i = 0; i< weights.size(); ++i)
+            if (weights.size()==0) return;
+            int count = 0;
+            for (unsigned i = 0; i< this->size(); ++i)
             {
                 if (this->at(i)->isNodeDx())
                 {
                     NodeDx* nd = dynamic_cast<NodeDx*>(this->at(i).get());
-                    if (weights.at(i).size() == nd->W.size())
-                        nd->W = weights.at(i);
+                    
+                    if (weights.at(count).size() == nd->W.size())
+                        nd->W = weights.at(count);
                     else
                     {
-                        std::cerr << "mismatch in size btw weights[" << i << "] and W\n";
+                        std::cerr << "mismatch in size btw weights[" << count << "] and W\n";
+                        std::cerr << "weights[" << count << "].size() (" << 
+                            weights[count].size() << ") != W.size() (" << nd->W.size() << "\n";
                         exit(1);
                     }
+                    ++count;
                 }
             }
         }
