@@ -122,9 +122,12 @@ namespace FT{
                 }
             }
 
+            /// check of node type
+            bool isNodeDx(){ return false;}
+
             /// makes a unique copy of this node
             auto clone() const { return std::unique_ptr<Node>(clone_impl()); }
-        
+                  
         protected:
             virtual Node* clone_impl() const = 0;
     };

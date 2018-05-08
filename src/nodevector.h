@@ -48,7 +48,12 @@ namespace FT{
         {
             vector<Node*> v;
             if (end == 0)
-                end = this->size();
+            {
+                if (start == 0)
+                    end = this->size();
+                else
+                    end = start;
+            }
             for (unsigned i = start; i<=end; ++i)
                 v.push_back(this->at(i).get());
 
@@ -121,6 +126,35 @@ namespace FT{
            for (unsigned int j = 0; j<arity['z']; ++j)
                i3 = subtree(--i3,'z'); 
            return std::min(i,i3);
+        }
+        void set_weights(vector<vector<double>>& weights)
+        {
+            for (unsigned i = 0; i< weights.size(); ++i)
+            {
+                if (this->at(i)->isNodeDx())
+                {
+                    NodeDx* nd = dynamic_cast<NodeDx*>(this->at(i).get());
+                    if (weights.at(i).size() == nd->W.size())
+                        nd->W = weights.at(i);
+                    else
+                    {
+                        std::cerr << "mismatch in size btw weights[" << i << "] and W\n";
+                        exit(1);
+                    }
+                }
+            }
+        }
+        vector<vector<double>> get_weights()
+        {
+            vector<vector<double>> weights;
+            for (unsigned i = 0; i< this->size(); ++i)
+            {
+                if (this->at(i)->isNodeDx())
+                {
+                    weights.push_back(dynamic_cast<NodeDx*>(this->at(i).get())->W); 
+                }
+            }
+            return weights;
         }
     }; //NodeVector
 } // FT
