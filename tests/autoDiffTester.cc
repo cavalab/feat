@@ -705,7 +705,7 @@ int testDummyProgram(FT::NodeVector p0, int iters) {
 					  false,							//classification
 					  0,								//max_stall
 					  'f',								//otype
-					  1,								//verbosity
+					  2,								//verbosity
 					  "+,-,*,/,exp,log",				//functions
 					  0.5,                              //cross_rate
 					  3,								//max_depth
