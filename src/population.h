@@ -168,7 +168,7 @@ namespace FT{
             {
                 auto t = terminals[r.random_choice(ti,tw)]->clone();
                 //std::cout << t->name << " ";
-                program.push_back(t->clone());
+                program.push_back(t->rnd_clone());
             }
             else
             {
@@ -209,9 +209,9 @@ namespace FT{
             assert(fi.size() > 0 && "The operator set specified results in incomplete programs.");
             
             // append a random choice from fs            
-            auto t = functions[r.random_choice(fi)]->clone();
+            /* auto t = functions[r.random_choice(fi)]->rnd_clone(); */
             //std::cout << t->name << " ";
-            program.push_back(t->clone());
+            program.push_back(functions[r.random_choice(fi)]->rnd_clone());
             
             std::unique_ptr<Node> chosen(program.back()->clone());
             // recurse to fulfill the arity of the chosen function

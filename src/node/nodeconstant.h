@@ -65,6 +65,7 @@ namespace FT{
     		
         protected:
             NodeConstant* clone_impl() const override { return new NodeConstant(*this); };  
+            NodeConstant* rnd_clone_impl() const override { return new NodeConstant(); };  
     };
 }	
 

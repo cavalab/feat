@@ -38,6 +38,7 @@ namespace FT{
             }
         protected:
             NodeSubtract* clone_impl() const override { return new NodeSubtract(*this); };  
+            NodeSubtract* rnd_clone_impl() const override { return new NodeSubtract(); };  
     };
 }	
 

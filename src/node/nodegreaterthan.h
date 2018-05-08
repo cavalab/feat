@@ -38,6 +38,7 @@ namespace FT{
             }
         protected:
             NodeGreaterThan* clone_impl() const override { return new NodeGreaterThan(*this); };  
+            NodeGreaterThan* rnd_clone_impl() const override { return new NodeGreaterThan(); };  
     };
 }	
 

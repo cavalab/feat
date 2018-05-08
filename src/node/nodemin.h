@@ -47,6 +47,7 @@ namespace FT{
             }
         protected:
             NodeMin* clone_impl() const override { return new NodeMin(*this); }; 
+            NodeMin* rnd_clone_impl() const override { return new NodeMin(); }; 
     };
 }	
 

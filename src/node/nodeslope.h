@@ -47,6 +47,7 @@ namespace FT{
             }
         protected:
             NodeSlope* clone_impl() const override { return new NodeSlope(*this); }; 
+            NodeSlope* rnd_clone_impl() const override { return new NodeSlope(); }; 
     };
 }	
 

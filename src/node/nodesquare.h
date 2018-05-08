@@ -36,6 +36,7 @@ namespace FT{
             }
         protected:
             NodeSquare* clone_impl() const override { return new NodeSquare(*this); };  
+            NodeSquare* rnd_clone_impl() const override { return new NodeSquare(); };  
     };
 }	
 

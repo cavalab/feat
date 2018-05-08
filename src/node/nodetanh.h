@@ -36,6 +36,7 @@ namespace FT{
             }
         protected:
             NodeTanh* clone_impl() const override { return new NodeTanh(*this); };  
+            NodeTanh* rnd_clone_impl() const override { return new NodeTanh(); };  
     };
 }	
 

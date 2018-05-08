@@ -36,6 +36,7 @@ namespace FT{
             }
         protected:
             NodeLogit* clone_impl() const override { return new NodeLogit(*this); };  
+            NodeLogit* rnd_clone_impl() const override { return new NodeLogit(); };  
     };
 }	
 

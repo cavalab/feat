@@ -48,6 +48,7 @@ namespace FT{
             }
         protected:
             NodeVar* clone_impl() const override { return new NodeVar(*this); }; 
+            NodeVar* rnd_clone_impl() const override { return new NodeVar(); }; 
     };
 }	
 

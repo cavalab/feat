@@ -38,6 +38,7 @@ namespace FT{
             }
         protected:
             NodeLessThan* clone_impl() const override { return new NodeLessThan(*this); };  
+            NodeLessThan* rnd_clone_impl() const override { return new NodeLessThan(); };  
     };
 }	
 

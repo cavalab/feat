@@ -38,6 +38,7 @@ namespace FT{
             }
         protected:
             NodeLEQ* clone_impl() const override { return new NodeLEQ(*this); };  
+            NodeLEQ* rnd_clone_impl() const override { return new NodeLEQ(); };  
     };
 }	
 
