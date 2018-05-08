@@ -187,12 +187,10 @@ namespace FT {
         vector<size_t> roots = ind.program.roots();
         double min_loss;
         vector<vector<double>> best_weights;
-        cout << "running backprop on " << ind.get_eqn() << "\n";
-        cout << "params.sample_weights: " << params.sample_weights.size() << "\n";
-        cout << "params.scorer: " << params.scorer << "\n";       
-        cout << "=========================\n";
-        cout << "Iteration,Loss,Weights\n";
-        cout << "=========================\n";
+        params.msg("running backprop on " + ind.get_eqn(), 2);
+        params.msg("=========================",2);
+        params.msg("Iteration,Loss,Weights",2);
+        params.msg("=========================",2);
         for (int x = 0; x < this->iters; x++)
         {
             // Evaluate forward pass
@@ -212,18 +210,21 @@ namespace FT {
 
             vector<double> Beta = ml->get_weights();
 
-            cout << x << "," 
+            if (params.verbosity>1)
+            {
+                cout << x << "," 
                  << this->cost_func(y,yhat, params.sample_weights).mean() << ",";
                   print_weights(ind.program);
+            }
                  /* << this->d_cost_func(y, yhat, params.sample_weights).std() << "\n"; */ 
             if (x==0 || this->cost_func(y,yhat, params.sample_weights).mean() < min_loss)
             {
                 min_loss = this->cost_func(y,yhat, params.sample_weights).mean();
                 best_weights = ind.program.get_weights();
-                cout << "new min loss: " << min_loss << "\n";
+                params.msg("new min loss: " + std::to_string(min_loss), 2);
             }
             else
-                cout << "\n";
+                params.msg("",2);
             // TODO: add ML output and weight/normalization of subtree to stack
             // Evaluate backward pass
             size_t s = 0;
@@ -238,10 +239,10 @@ namespace FT {
                          X, y, Z, params.sample_weights);
             }
         }
-        cout << "\n";
-        cout << "=========================\n";
-        cout << "done=====================\n";
-        cout << "=========================\n";
+        params.msg("",2);
+        params.msg("=========================",2);
+        params.msg("done=====================",2);
+        params.msg("=========================",2);
         ind.program.set_weights(best_weights);
     }
 
