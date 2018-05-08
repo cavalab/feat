@@ -596,6 +596,7 @@ namespace FT{
             normalize(X);
         }
     };
+
     /// returns true for elements of x that are infinite
     ArrayXb isinf(const ArrayXd& x)
     {

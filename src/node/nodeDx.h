@@ -34,8 +34,10 @@ namespace FT{
                  * w(t+1) = w(t) + v(t+1)
                  * */
                 if (V.empty())  // first time through, V is zeros
-                    V = vector<double>(0.0,W.size());
-
+                {
+                    for (const auto& w : W)
+                        V.push_back(0.0);
+                }
                 /* std::cout << "***************************\n"; */
                 /* std::cout << "Updating " << this->name << "\n"; */
                 ArrayXd update_value = ArrayXd::Ones(stack_f[0].size());
@@ -52,10 +54,10 @@ namespace FT{
                 // Have to use temporary weights so as not to compute updates with updated weights
                 for (int i = 0; i < arity['f']; ++i) {
                 	ArrayXd d_w = getDerivative(stack_f, arity['f'] + i);
-                    std::cout << "Derivative: " << d_w << "\n";
-                    std::cout << "V[i]: " << V[i] << "\n";
+                    /* std::cout << "Derivative: " << (d_w*update_value).sum() << "\n"; */
+                    /* std::cout << "V[i]: " << V[i] << "\n"; */
                     V_temp[i] = a * V[i] - n/update_value.size() * (d_w * update_value).sum();
-                    std::cout << "V_temp: " << V_temp[i] << "\n";
+                    /* std::cout << "V_temp: " << V_temp[i] << "\n"; */
                     /* dW[i] = a*dW[i] + (1-a)*( n/update_value.size() * (d_w * update_value).sum()); */
                 	/* W_temp[i] = W[i] + dW_temp[i]; */
                 	/* W_temp[i] = W[i] - n/update_value.size() * (d_w * update_value).sum(); */
@@ -63,6 +65,7 @@ namespace FT{
                 }
                 for (int i = 0; i < W.size(); ++i)
                     this->W[i] += V_temp[i];
+
                 this->V = V_temp;
                 /* std::cout << "Updated\n"; */
                 /* std::cout << "***************************\n"; */
