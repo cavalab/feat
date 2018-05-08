@@ -3,6 +3,9 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 
+#ifndef UTILS_H
+#define UTILS_H
+
 #include <Eigen/Dense>
 #include <vector>
 #include <fstream>
@@ -662,3 +665,4 @@ namespace FT{
         fflush (stdout);
     }
 } 
+#endif

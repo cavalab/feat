@@ -62,6 +62,8 @@ namespace FT{
                 }
                 std::cout << "\n";
             }
+
+            bool isNodeDx(){ return true;}
     };
 }	
 

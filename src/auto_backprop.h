@@ -9,8 +9,11 @@
 #include "stack.h"
 #include "node/node.h"
 #include "node/nodeDx.h"
-//#include "metrics.h"
+#include "metrics.h"
 #include "individual.h"
+#include "ml.h"
+#include "init.h"
+#include "params.h"
 
 #include <shogun/labels/Labels.h>
 
@@ -85,7 +88,7 @@ namespace FT {
 			for (const auto& p : program) 
             {
 				cout << "( " << p->name;
-				if (isNodeDx(p)) {
+				if (p->isNodeDx()) {
                     
 					NodeDx* dNode = dynamic_cast<NodeDx*>(p.get());
 					for (int i = 0; i < dNode->arity['f']; i++) {
@@ -118,14 +121,14 @@ namespace FT {
                                vector<float> sw);
 
         
-        bool isNodeDx(Node* n){ return NULL != dynamic_cast<NodeDx*>(n); ; }
-        bool isNodeDx(const std::unique_ptr<Node>& n) 
-        {
-            Node * tmp = n.get();
-            bool answer = isNodeDx(tmp); 
-            tmp = nullptr;
-            return answer;
-        }
+        /* bool isNodeDx(Node* n){ return NULL != dynamic_cast<NodeDx*>(n); ; } */
+        /* bool isNodeDx(const std::unique_ptr<Node>& n) */ 
+        /* { */
+        /*     Node * tmp = n.get(); */
+        /*     bool answer = isNodeDx(tmp); */ 
+        /*     tmp = nullptr; */
+        /*     return answer; */
+        /* } */
 		template <class T>
 		T pop(vector<T>* v) {
 			T value = v->back();
@@ -182,7 +185,8 @@ namespace FT {
                             const Parameters& params)
     {
         vector<size_t> roots = ind.program.roots();
-
+        double min_score;
+        vector<vector<double>> best_weights;
         cout << "running backprop on " << ind.get_eqn() << "\n";
         cout << "params.sample_weights: " << params.sample_weights.size() << "\n";
         cout << "params.scorer: " << params.scorer << "\n";       
@@ -207,7 +211,11 @@ namespace FT {
                 break;
 
             vector<double> Beta = ml->get_weights();
-
+            if (x==0 || this->cost_func(y,yhat, params.sample_weights).mean() < min_score)
+            {
+                min_score = this->cost_func(y,yhat, params.sample_weights).mean();
+                best_weights = ind.program.get_weights();
+            }
             cout << x << "," 
                  << this->cost_func(y,yhat, params.sample_weights).mean() << ",";
                   print_weights(ind.program);
@@ -219,7 +227,7 @@ namespace FT {
             size_t s = 0;
             for (int i = 0; i < stack_f.size(); ++i)
             {
-                while (!isNodeDx(ind.program.at(roots[s]))) ++s;
+                while (!ind.program.at(roots[s])->isNodeDx()) ++s;
                 /* cout << "running backprop on " << ind.program_str() << " from " << roots.at(s) << " to " */ 
                 /*     << ind.program.subtree(roots.at(s)) << "\n"; */
                 VectorXd phi = Phi.row(i);
@@ -232,6 +240,7 @@ namespace FT {
         cout << "=========================\n";
         cout << "done=====================\n";
         cout << "=========================\n";
+        ind.program.set_weights(best_weights);
     }
 
     // forward pass
@@ -310,7 +319,7 @@ namespace FT {
 
             vector<ArrayXd> n_derivatives;
 
-            if (isNodeDx(node) && node->visits == 0 && node->arity['f'] > 0) {
+            if (node->isNodeDx() && node->visits == 0 && node->arity['f'] > 0) {
                 NodeDx* dNode = dynamic_cast<NodeDx*>(node); // Could probably put this up one and have the if condition check if null
                 /* cout << "evaluating derivative\n"; */
                 // Calculate all the derivatives and store them, then update all the weights and throw away the node
@@ -334,23 +343,23 @@ namespace FT {
             }
             /* cout << "next branch\n"; */
             // Choosing how to move through tree
-            if (node->arity['f'] == 0 || !isNodeDx(node)) {
-                if (node->arity['f'] >0)
-                {
-                    /* cout << node->name << " is not NodeDx but has float arity > 1\n"; */
-                    /* cout << "f_stack size: " << f_stack.size() << "\n"; */
-                    /* cout << "bp_program size: " << bp_program.size() << "\n"; */
-                    /* cout << "executing size: " << executing.size() << "\n"; */
-                    /* cout << "derivatives size: " << derivatives.size() << "\n"; */
-                    /* for (const auto& p : bp_program) */
-                    /*     cout << p->name << " " ; */ 
-                    /* cout << "\n"; */
-                    /* // if this node has arguments on the stack, pop them? */ 
-                    /* for (int i = 0; i < node->arity['f']; i++) */ 
-                    /*     pop<ArrayXd>(&f_stack); */
+            if (node->arity['f'] == 0 || !node->isNodeDx()) {
+                /* if (node->arity['f'] >0) */
+                /* { */
+                /*     /1* cout << node->name << " is not NodeDx but has float arity > 1\n"; *1/ */
+                /*     /1* cout << "f_stack size: " << f_stack.size() << "\n"; *1/ */
+                /*     /1* cout << "bp_program size: " << bp_program.size() << "\n"; *1/ */
+                /*     /1* cout << "executing size: " << executing.size() << "\n"; *1/ */
+                /*     /1* cout << "derivatives size: " << derivatives.size() << "\n"; *1/ */
+                /*     /1* for (const auto& p : bp_program) *1/ */
+                /*     /1*     cout << p->name << " " ; *1/ */ 
+                /*     /1* cout << "\n"; *1/ */
+                /*     /1* // if this node has arguments on the stack, pop them? *1/ */ 
+                /*     /1* for (int i = 0; i < node->arity['f']; i++) *1/ */ 
+                /*     /1*     pop<ArrayXd>(&f_stack); *1/ */
 
                     
-                }
+                /* } */
                 // Clean up gradients and find the parent node
                 pop<ArrayXd>(&derivatives);	// TODO check if this fixed
                 next_branch(executing, bp_program, derivatives);

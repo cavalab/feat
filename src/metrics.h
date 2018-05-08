@@ -3,14 +3,17 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 #ifndef METRICS_H
-#define METRIC_H
+#define METRICS_H
 #include <shogun/labels/Labels.h>
 #include <shogun/labels/RegressionLabels.h>                                                         
 #include <shogun/labels/MulticlassLabels.h>
 #include <shogun/labels/BinaryLabels.h>
+#include "utils.h"
 namespace sh = shogun;
 using sh::CLabels;
 using sh::SGVector; 
+using Eigen::Map;
+using Eigen::ArrayXf;
 
 namespace FT{
 namespace metrics{

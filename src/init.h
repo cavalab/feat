@@ -12,6 +12,18 @@ license: GNU/GPL v3
     #define omp_get_thread_num() 0
     #define omp_get_max_threads() 1
 #endif
+// stuff being used
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
+typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
+using std::vector;
+using std::string;
+using std::unique_ptr;
+using std::shared_ptr;
+using std::make_shared;
+using std::cout; 
+ 
+// internal includes
 
 namespace FT{
 
@@ -20,4 +32,5 @@ namespace FT{
     static double MIN_DBL = std::numeric_limits<double>::lowest();
 
 }
+
 #endif

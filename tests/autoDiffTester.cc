@@ -32,11 +32,16 @@
 #include "../src/node/nodexor.h"
 #include "../src/node/nodestep.h"
 
+#include "../src/utils.h"
+#include "../src/params.h"
+#include "../src/individual.h"
+//#include "../src/metrics.h"
+#include "../src/ml.h"
 // Backprop progam
 #include "../src/auto_backprop.h"
 
 // Cost function
-#include "../src/testMetrics.h"
+/* #include "../src/testMetrics.h" */
 
 // Stacks
 #include "../src/stack.h"
@@ -44,6 +49,7 @@
 // Nodevector
 #include "../src/nodevector.h"
 
+#include <shogun/base/init.h>
 /**
 Notes
 Add import from util for 2d Gauss
@@ -691,13 +697,36 @@ int testDummyProgram(FT::NodeVector p0, int iters) {
 	// int iters = 100;
 	double learning_rate = 0.1;
 
+    FT::Individual ind;
+    ind.program = p0;
+    FT::Parameters params(100, 								//pop_size
+					  100,								//gens
+					  "LinearRidgeRegression",			//ml
+					  false,							//classification
+					  0,								//max_stall
+					  'f',								//otype
+					  1,								//verbosity
+					  "+,-,*,/,exp,log",				//functions
+					  0.5,                              //cross_rate
+					  3,								//max_depth
+					  10,								//max_dim
+					  false,							//erc
+					  "fitness,complexity",  			//obj
+                      false,                            //shuffle
+                      0.75,								//train/test split
+                      0.5,                             // feedback 
+                      "mse",                           //scoring function
+                      "",                               // feature names
+                      true,                             // backprop
+                      iters,                            // iterations
+                      learning_rate);
 	std::cout << "Initialized dummy program. Running auto backprop\n";
 	// AutoBackProp(PROGRAM, COST_FUNCTION, D_COST_FUNCTION, INPUT_DATA, LABELS, ITERS, LEARNING RATE);
-	FT::AutoBackProp* engine = new FT::AutoBackProp(FT::metrics::d_squared_difference, iters, learning_rate);
-    engine->run(p0, x, y, Z); // Update pointer to NodeVector internally
+	FT::AutoBackProp* engine = new FT::AutoBackProp("mse", iters, learning_rate);
+    engine->run(ind, x, y, Z, params); // Update pointer to NodeVector internally
 
     std::cout << "test program returned:\n";
-	for (const auto& n : p0) {
+	for (const auto& n : ind.program) {
 		std::cout << n->name << ": ";
 		NodeDx* nd = dynamic_cast<NodeDx*>(n.get());
 		if (nd != NULL) {
@@ -713,6 +742,8 @@ int testDummyProgram(FT::NodeVector p0, int iters) {
 }
 
 int main() {
+    
+    init_shogun_with_defaults();
     testNodes();
 	int myNumber = 0;
 	string input = "";
@@ -729,5 +760,6 @@ int main() {
 	}
  	cout << "Running with : " << myNumber << endl << endl;
 	testDummyProgram(program, myNumber);
+    exit_shogun();
 	return 1;
 }

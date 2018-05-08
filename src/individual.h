@@ -6,6 +6,7 @@ license: GNU/GPL v3
 #define INDIVIDUAL_H
 
 #include "stack.h"
+#include "params.h"
 
 namespace FT{
     
@@ -83,15 +84,15 @@ namespace FT{
         /* vector<size_t> roots(); */
         
         /// check if differentiable node    
-        bool isNodeDx(Node* n){ return NULL != dynamic_cast<NodeDx*>(n); ; }
+        /* bool isNodeDx(Node* n){ return NULL != dynamic_cast<NodeDx*>(n); ; } */
         
-        bool isNodeDx(const std::unique_ptr<Node>& n) 
-        {
-            Node * tmp = n.get();
-            bool answer = isNodeDx(tmp); 
-            tmp = nullptr;
-            return answer;
-        }
+        /* bool isNodeDx(const std::unique_ptr<Node>& n) */ 
+        /* { */
+        /*     Node * tmp = n.get(); */
+        /*     bool answer = isNodeDx(tmp); */ 
+        /*     tmp = nullptr; */
+        /*     return answer; */
+        /* } */
         ///// get weighted probabilities
         //vector<double> get_w(){ return w;}
         ///// get weight probability for program location i 
@@ -322,7 +323,7 @@ namespace FT{
         bool trace=false;
         size_t trace_idx=0;
 
-        if (isNodeDx(program.at(roots.at(root))))
+        if (program.at(roots.at(root))->isNodeDx())
         {
             trace=true;
             stack_f_trace.push_back(vector<ArrayXd>());
@@ -333,7 +334,7 @@ namespace FT{
         {
             if (i > roots.at(root)){
                 ++root;
-                if (isNodeDx(program.at(roots.at(root))))
+                if (program.at(roots.at(root))->isNodeDx())
                 {
                     trace=true;
                     stack_f_trace.push_back(vector<ArrayXd>());
