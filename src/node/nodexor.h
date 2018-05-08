@@ -42,6 +42,7 @@ namespace FT{
             }
         protected:
             NodeXor* clone_impl() const override { return new NodeXor(*this); };  
+            NodeXor* rnd_clone_impl() const override { return new NodeXor(); };  
     };
 }	
 

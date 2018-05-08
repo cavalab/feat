@@ -37,6 +37,7 @@ namespace FT{
             }
         protected:
             virtual NodeAnd* clone_impl() const override { return new NodeAnd(*this); };  
+            virtual NodeAnd* rnd_clone_impl() const override { return new NodeAnd(); };  
     };
 }	
 

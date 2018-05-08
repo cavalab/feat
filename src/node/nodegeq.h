@@ -38,6 +38,7 @@ namespace FT{
             }
         protected:
             NodeGEQ* clone_impl() const override { return new NodeGEQ(*this); };  
+            NodeGEQ* rnd_clone_impl() const override { return new NodeGEQ(); };  
     };
 }	
 

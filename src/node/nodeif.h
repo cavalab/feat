@@ -36,6 +36,7 @@ namespace FT{
             }
         protected:
             NodeIf* clone_impl() const override { return new NodeIf(*this); };  
+            NodeIf* rnd_clone_impl() const override { return new NodeIf(); };  
     };
 }	
 

@@ -37,6 +37,7 @@ namespace FT{
             }
         protected:
             NodeOr* clone_impl() const override { return new NodeOr(*this); };  
+            NodeOr* rnd_clone_impl() const override { return new NodeOr(); };  
     };
     
 }	

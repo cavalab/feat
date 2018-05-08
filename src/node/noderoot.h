@@ -42,6 +42,7 @@ namespace FT{
             }
         protected:
             NodeRoot* clone_impl() const override { return new NodeRoot(*this); };  
+            NodeRoot* rnd_clone_impl() const override { return new NodeRoot(); };  
     };
 }	
 

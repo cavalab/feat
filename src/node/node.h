@@ -114,9 +114,12 @@ namespace FT{
 
             /// makes a unique copy of this node
             auto clone() const { return std::unique_ptr<Node>(clone_impl()); }
+            /// makes a randomized unique copy ofnode
+            auto rnd_clone() const { return std::unique_ptr<Node>(rnd_clone_impl()); }
         
         protected:
             virtual Node* clone_impl() const = 0;
+            virtual Node* rnd_clone_impl() const = 0;
     };
 }
 #endif

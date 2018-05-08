@@ -36,6 +36,7 @@ namespace FT{
             }
         protected:
             NodeGaussian* clone_impl() const override { return new NodeGaussian(*this); };  
+            NodeGaussian* rnd_clone_impl() const override { return new NodeGaussian(); };  
     };
 }	
 

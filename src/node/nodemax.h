@@ -46,6 +46,7 @@ namespace FT{
             }
         protected:
             NodeMax* clone_impl() const override { return new NodeMax(*this); }; 
+            NodeMax* rnd_clone_impl() const override { return new NodeMax(); }; 
     };
 }	
 
