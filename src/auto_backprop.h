@@ -43,7 +43,7 @@ namespace FT {
         std::map<string, callback> d_score_hash;
         std::map<string, callback> score_hash;
         
-        AutoBackProp(string scorer, int iters=1000, double n=0.1) 
+        AutoBackProp(string scorer, int iters=1000, double n=0.1, double a=0.9) 
         {
 			/* this->program = program.get_data(); */
             score_hash["mse"] = & metrics::squared_difference;
@@ -59,6 +59,7 @@ namespace FT {
 			/* this->labels = labels; */
 			this->iters = iters;
 			this->n = n;
+			this->a = a;
 		}
         /// adapt weights
 		void run(Individual& ind, const MatrixXd& X, VectorXd& y,
@@ -74,7 +75,8 @@ namespace FT {
 
 	private:
 		double n;                   //< learning rate
-		callback d_cost_func;       //< derivative of cost function pointer
+        double a;                   //< momentum
+        callback d_cost_func;       //< derivative of cost function pointer
         callback cost_func;         //< cost function pointer
         int iters;                  //< iterations
 
@@ -115,12 +117,18 @@ namespace FT {
                       /* MatrixXd& X, VectorXd& y, */ 
                                /* std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z); */
         void backprop(vector<ArrayXd>& f_stack, NodeVector& program, int start, int end, 
-                                VectorXd& phi, double Beta, shared_ptr<CLabels>& yhat, 
+                                double Beta, shared_ptr<CLabels>& yhat, 
                                 const MatrixXd& X, VectorXd& y, 
                                const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z,
                                vector<float> sw);
 
-        
+        /// select random subset of data for training weights.
+        void get_batch(const MatrixXd& X, VectorXd& y,  
+                       const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z, 
+                                MatrixXd& Xb, VectorXd& yb,  
+                                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Zb, 
+                                int batch_size);
+       
         /* bool isNodeDx(Node* n){ return NULL != dynamic_cast<NodeDx*>(n); ; } */
         /* bool isNodeDx(const std::unique_ptr<Node>& n) */ 
         /* { */
@@ -179,7 +187,38 @@ namespace FT {
     /*     print_weights(program); */    
     /*     /1* return this->program; *1/ */
     /* } */
- 
+
+    void AutoBackProp::get_batch(const MatrixXd& X, VectorXd& y,  
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z, 
+                                MatrixXd& Xb, VectorXd& yb,  
+                                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Zb, 
+                                int batch_size)
+    {
+        vector<size_t> idx(y.size());
+        std::iota(idx.begin(), idx.end(), 0);
+        r.shuffle(idx.begin(), idx.end());
+        Xb.resize(X.rows(),batch_size);
+        yb.resize(batch_size);
+        
+        for (const auto& val: Z )
+        {
+            Zb[val.first].first.resize(batch_size);
+            Zb[val.first].second.resize(batch_size);
+        }
+        for (unsigned i = 0; i<batch_size; ++i)
+        {
+           
+           Xb.col(i) = X.col(idx.at(i)); 
+           yb(i) = y(idx.at(i)); 
+
+           for (const auto& val: Z )
+           {
+                Zb[val.first] = Z.at(val.first); //.first.at(idx.at(i));
+                /* Zb[val.first].second.at(i) = Z[val.first].second.at(idx.at(i)); */
+           }
+        }
+    }
+
     void AutoBackProp::run(Individual& ind, const MatrixXd& X, VectorXd& y, 
                             const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z,
                             const Parameters& params)
@@ -187,6 +226,10 @@ namespace FT {
         vector<size_t> roots = ind.program.roots();
         double min_loss;
         vector<vector<double>> best_weights;
+        // get batch data for training
+        MatrixXd Xb; VectorXd yb;
+        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Zb;
+        get_batch(X,y,Z, Xb,yb,Zb, params.bp.batch_size); 
         params.msg("running backprop on " + ind.get_eqn(), 2);
         params.msg("=========================",2);
         params.msg("Iteration,Loss,Weights",2);
@@ -195,13 +238,13 @@ namespace FT {
         {
             // Evaluate forward pass
             MatrixXd Phi; 
-            vector<vector<ArrayXd>> stack_f = forward_prop(ind, X, y, Z, Phi, params);
+            vector<vector<ArrayXd>> stack_f = forward_prop(ind, Xb, yb, Zb, Phi, params);
        
             // Evaluate ML model on Phi
             bool pass = true;
             auto ml = std::make_shared<ML>(params, false);
 
-            shared_ptr<CLabels> yhat = ml->fit(Phi,y,params,pass,ind.dtypes);
+            shared_ptr<CLabels> yhat = ml->fit(Phi,yb,params,pass,ind.dtypes);
 
             if (!pass)
                 continue;
@@ -233,10 +276,9 @@ namespace FT {
                 while (!ind.program.at(roots[s])->isNodeDx()) ++s;
                 /* cout << "running backprop on " << ind.program_str() << " from " << roots.at(s) << " to " */ 
                 /*     << ind.program.subtree(roots.at(s)) << "\n"; */
-                VectorXd phi = Phi.row(i);
                 backprop(stack_f.at(i), ind.program, ind.program.subtree(roots.at(s)), roots.at(s),  
-                         phi, Beta.at(i), yhat,
-                         X, y, Z, params.sample_weights);
+                         Beta.at(i), yhat,
+                         Xb, yb, Zb, params.sample_weights);
             }
         }
         params.msg("",2);
@@ -293,7 +335,7 @@ namespace FT {
 
     // Compute gradients and update weights 
     void AutoBackProp::backprop(vector<ArrayXd>& f_stack, NodeVector& program, int start, int end, 
-                                VectorXd& phi, double Beta, shared_ptr<CLabels>& yhat, 
+                                double Beta, shared_ptr<CLabels>& yhat, 
                                 const MatrixXd& X, VectorXd& y, 
                                 const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z,
                                 vector<float> sw)    
@@ -330,7 +372,7 @@ namespace FT {
                     dNode->derivative(n_derivatives, f_stack, i);
                 }
                 /* cout << "updating derivatives\n"; */
-                dNode->update(derivatives, f_stack, this->n);
+                dNode->update(derivatives, f_stack, this->n, this->a);
                 // dNode->print_weight();
                 /* cout << "popping input arguments\n"; */
                 // Get rid of the input arguments for the node

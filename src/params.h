@@ -54,7 +54,8 @@ namespace FT{
         {
            int iters;
            double learning_rate;
-           BP(int i, double l): iters(i), learning_rate(l) {}
+           int batch_size;
+           BP(int i, double l, int bs): iters(i), learning_rate(l), batch_size(bs) {}
         };
 
         BP bp;                                      ///< backprop parameters
@@ -62,7 +63,8 @@ namespace FT{
         Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
                    char ot, int verbosity, string fs, float cr, unsigned int max_depth, 
                    unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
-                   double fb, string sc, string fn, bool bckprp, int iters, double lr):    
+                   double fb, string sc, string fn, bool bckprp, int iters, double lr,
+                   int bs):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
@@ -77,7 +79,7 @@ namespace FT{
             otype(ot),
             feedback(fb),
             backprop(bckprp),
-            bp(iters, lr)
+            bp(iters, lr, bs)
         {
             set_verbosity(verbosity);
             if (fs.empty())
