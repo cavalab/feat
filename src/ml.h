@@ -53,7 +53,7 @@ namespace FT{
     {
         public:
         	
-            ML(const Parameters& params, bool normalize=true)
+            ML(const Parameters& params, bool norm=true)
             {
                 /*!
                  * use string to specify a desired ML algorithm from shogun.
@@ -62,7 +62,7 @@ namespace FT{
                 ml_type = params.ml;
                 prob_type = PT_REGRESSION;
                 max_train_time=60; 
-                normalize = normalize;
+                normalize = norm;
                 if (params.classification)
                 { 
                     if (params.n_classes==2)
@@ -317,6 +317,8 @@ namespace FT{
             else 
                 N.fit_normalize(X, dtypes);
         }
+        /* else */
+            /* cout << "normlize is false\n"; */
 
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
         /* cout << "Phi:\n"; */
@@ -383,7 +385,7 @@ namespace FT{
        
         /* std::cout << "yhat: " << yhat.transpose() << "\n"; */ 
 
-        if (isinf(yhat.array()).any() || isnan(yhat.array()).any())
+        if (isinf(yhat.array()).any() || isnan(yhat.array()).any() || yhat.size()==0)
         {
             pass = false;
         }

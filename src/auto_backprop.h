@@ -15,6 +15,7 @@
 #include "init.h"
 #include "params.h"
 
+#include <cmath>
 #include <shogun/labels/Labels.h>
 
 using shogun::CLabels;
@@ -242,17 +243,12 @@ namespace FT {
        
             // Evaluate ML model on Phi
             bool pass = true;
-            auto ml = std::make_shared<ML>(params, false);
+            auto ml = std::make_shared<ML>(params, true);
 
             shared_ptr<CLabels> yhat = ml->fit(Phi,yb,params,pass,ind.dtypes);
 
-            if (!pass)
-                continue;
-            if (stack_f.size() ==0)
-                break;
-
             vector<double> Beta = ml->get_weights();
-
+            
             if (params.verbosity>1)
             {
                 cout << x << "," 
@@ -268,7 +264,25 @@ namespace FT {
             }
             else
                 params.msg("",2);
-            // TODO: add ML output and weight/normalization of subtree to stack
+            
+            if (!pass || stack_f.size() ==0 || std::isnan(min_loss) || std::isinf(min_loss) )
+                break;
+
+            /* if (ml->N.scale.size() == 0) */
+            /* { */
+            /*     cout << "N.scale is zero\n"; */
+            /*     cout << "Beta: "; */
+            /*     for (auto b : Beta) cout << b << " " ; */ 
+            /*     cout << "\n"; */
+            /*     cout << "Phi: " ; */ 
+            /*     cout << Phi.transpose() << "\n;"; */
+            /*     cout << "ind.dtypes: "; */
+            /*     for (auto d : ind.dtypes) cout << d << " "; */
+            /*     cout << "\n"; */
+            /*     cout << "yhat: "; */
+            /*     auto yyhat = ml->labels_to_vector(yhat); */
+            /*     cout << yyhat.transpose() << "\n"; */
+            /* } */
             // Evaluate backward pass
             size_t s = 0;
             for (int i = 0; i < stack_f.size(); ++i)
@@ -276,8 +290,8 @@ namespace FT {
                 while (!ind.program.at(roots[s])->isNodeDx()) ++s;
                 /* cout << "running backprop on " << ind.program_str() << " from " << roots.at(s) << " to " */ 
                 /*     << ind.program.subtree(roots.at(s)) << "\n"; */
-                backprop(stack_f.at(i), ind.program, ind.program.subtree(roots.at(s)), roots.at(s),  
-                         Beta.at(i), yhat,
+                backprop(stack_f.at(i), ind.program, ind.program.subtree(roots.at(s)), roots.at(s), 
+                         Beta.at(s)/ml->N.scale.at(s), yhat,
                          Xb, yb, Zb, params.sample_weights);
             }
         }

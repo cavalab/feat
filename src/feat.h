@@ -600,7 +600,7 @@ namespace FT{
         /* MatrixXd Phi = transform(X); */
         MatrixXd Phi = best_ind.out(X, Z,params);        
 
-        shared_ptr<CLabels> yhat = p_ml->fit(Phi,y,params,pass,best_ind.dtypes);
+        shared_ptr<CLabels> yhat = p_ml->fit(Phi, y, params, pass, best_ind.dtypes);
         VectorXd tmp;
         double score = p_eval->score(y,yhat,tmp,params.sample_weights);
         params.msg("final_model score: " + std::to_string(score),1);
