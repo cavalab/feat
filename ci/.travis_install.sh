@@ -1,3 +1,8 @@
+
+echo "installing cmake"
+sudo apt-get install cmake
+
+
 echo "installing eigen..."
 wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"
 tar xzf 3.3.4.tar.gz 
@@ -18,10 +23,6 @@ conda update --yes conda
 conda install --yes -c conda-forge shogun-cpp
 export SHOGUN_LIB=/home/travis/miniconda/lib/
 export SHOGUN_DIR=/home/travis/miniconda/include/
-
-echo "installing cmake"
-sudo apt-get install cmake
-
 echo "installing cython using conda..."
 conda install --yes cython
 
