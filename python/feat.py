@@ -24,7 +24,7 @@ class Feat(BaseEstimator):
                 otype ='a',  functions ="", 
                 max_depth=3,   max_dim=10,  random_state=0, 
                 erc = False,  obj ="fitness,complexity", shuffle=False,  split=0.75,  fb=0.5,
-                scorer ='',feature_names="", backprop=False, iters=10, lr=0.1, n_threads=0):
+                scorer ='',feature_names="", backprop=False, iters=10, lr=0.1, bs=100, n_threads=0):
         self.pop_size = pop_size
         self.gens = gens
         self.ml = ml.encode() if( isinstance(ml,str) )  else ml
@@ -51,6 +51,7 @@ class Feat(BaseEstimator):
         self.backprop = backprop
         self.iters = iters
         self.lr = lr
+        self.batch_size= bs
 
         self._pyfeat = pyfeat.PyFeat( self.pop_size,  self.gens,  self.ml, 
                 self.classification,  self.verbosity,  self.max_stall,
@@ -67,6 +68,7 @@ class Feat(BaseEstimator):
                 self.backprop,
                 self.iters,
                 self.lr,
+                self.batch_size,
                 self.n_threads)
 
     def fit(self,X,y,zfile=None,zids=None):
