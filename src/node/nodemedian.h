@@ -47,6 +47,7 @@ namespace FT{
             }
         protected:
             NodeMedian* clone_impl() const override { return new NodeMedian(*this); }; 
+            NodeMedian* rnd_clone_impl() const override { return new NodeMedian(); }; 
     };
 }	
 

@@ -41,6 +41,8 @@ namespace FT{
 		    }
         protected:
             NodeLongitudinal* clone_impl() const override { return new NodeLongitudinal(*this); }; 
+
+            NodeLongitudinal* rnd_clone_impl() const override { return clone_impl(); }; 
     };
 }
 

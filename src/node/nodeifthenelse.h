@@ -34,12 +34,11 @@ namespace FT{
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-                string f1 = stack.fs.pop();
-                string f2 = stack.fs.pop();
-                stack.fs.push("if-then-else(" + stack.bs.pop() + "," + f1 + "," + f2 + ")");
+                stack.fs.push("if-then-else(" + stack.bs.pop() + "," + stack.fs.pop() + "," + stack.fs.pop() + ")");
             }
         protected:
             NodeIfThenElse* clone_impl() const override { return new NodeIfThenElse(*this); };  
+            NodeIfThenElse* rnd_clone_impl() const override { return new NodeIfThenElse(); };  
     };
 
 }	

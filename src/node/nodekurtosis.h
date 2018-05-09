@@ -46,6 +46,7 @@ namespace FT{
             }
         protected:
             NodeKurtosis* clone_impl() const override { return new NodeKurtosis(*this); }; 
+            NodeKurtosis* rnd_clone_impl() const override { return new NodeKurtosis(); }; 
     };
 }	
 

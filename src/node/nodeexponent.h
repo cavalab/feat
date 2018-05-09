@@ -64,6 +64,7 @@ namespace FT{
             }
         protected:
             NodeExponent* clone_impl() const override { return new NodeExponent(*this); };  
+            NodeExponent* rnd_clone_impl() const override { return new NodeExponent(); };  
     };
 }	
 

@@ -62,6 +62,7 @@ namespace FT{
             }
         protected:
             NodeSign* clone_impl() const override { return new NodeSign(*this); };  
+            NodeSign* rnd_clone_impl() const override { return new NodeSign(); };  
     };
 }	
 

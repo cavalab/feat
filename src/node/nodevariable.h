@@ -47,6 +47,8 @@ namespace FT{
 		    }
 	    protected:
             NodeVariable* clone_impl() const override { return new NodeVariable(*this); };  
+            // rnd_clone is just clone_impl() for variable, since rand vars not supported
+            NodeVariable* rnd_clone_impl() const override { return new NodeVariable(*this); };  
     };
 }
 

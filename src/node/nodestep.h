@@ -38,6 +38,7 @@ namespace FT{
             }
         protected:
             NodeStep* clone_impl() const override { return new NodeStep(*this); };  
+            NodeStep* rnd_clone_impl() const override { return new NodeStep(); };  
     };
 }	
 

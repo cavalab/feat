@@ -209,7 +209,7 @@ namespace FT{
                     {
                         if (f->otype == p->otype && f->arity['f']==p->arity['f'] && 
                                 f->arity['b']==p->arity['b'] && f->arity['z']==p->arity['z'])
-                            replacements.push_back(f->clone());
+                            replacements.push_back(f->rnd_clone());
                     }
                 }
                 else                    // otherwise it is a terminal
@@ -266,10 +266,10 @@ namespace FT{
                             // args
                             if (child.program[i]->otype=='b')
                                 if (in(params.dtypes,'b') || f->arity['b']==1)
-                                    fns.push_back(f->clone());
+                                    fns.push_back(f->rnd_clone());
                             else if (child.program[i]->otype=='f')
                                 if (f->arity['b']==0 || in(params.dtypes,'b') )
-                                    fns.push_back(f->clone());              
+                                    fns.push_back(f->rnd_clone());              
                         }
                     }
 

@@ -74,6 +74,7 @@ namespace FT{
             // }
         protected:
             NodeSin* clone_impl() const override { return new NodeSin(*this); };  
+            NodeSin* rnd_clone_impl() const override { return new NodeSin(); };  
     };
 }	
 

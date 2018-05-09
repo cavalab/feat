@@ -47,6 +47,7 @@ namespace FT{
             }
         protected:
             NodeSkew* clone_impl() const override { return new NodeSkew(*this); }; 
+            NodeSkew* rnd_clone_impl() const override { return new NodeSkew(); }; 
     };
 }	
 

@@ -34,12 +34,11 @@ namespace FT{
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-                string x1 = stack.fs.pop();
-                string x2 = stack.fs.pop();
-                stack.bs.push("(" + x1 + "<" + x2 + ")");
+                stack.bs.push("(" + stack.fs.pop() + "<" + stack.fs.pop() + ")");
             }
         protected:
             NodeLessThan* clone_impl() const override { return new NodeLessThan(*this); };  
+            NodeLessThan* rnd_clone_impl() const override { return new NodeLessThan(); };  
     };
 }	
 

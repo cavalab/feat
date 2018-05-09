@@ -41,9 +41,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-        		string x1 = stack.fs.pop();
-                string x2 = stack.fs.pop();
-                stack.fs.push("(" + x1 + "-" + x2 + ")");
+                stack.fs.push("(" + stack.fs.pop() + "-" + stack.fs.pop() + ")");
             }
 
             ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
@@ -62,6 +60,7 @@ namespace FT{
 
         protected:
             NodeSubtract* clone_impl() const override { return new NodeSubtract(*this); };  
+            NodeSubtract* rnd_clone_impl() const override { return new NodeSubtract(); };  
     };
 }	
 
