@@ -1,7 +1,7 @@
 
 echo "installing cmake"
-sudo add-apt-repository ppa:george-edison55/cmake-3.x
-sudo apt-get update
+sudo add-apt-repository -y ppa:george-edison55/cmake-3.x
+sudo apt-get update -y
 sudo apt-get install cmake
 
 echo "installing eigen..."
