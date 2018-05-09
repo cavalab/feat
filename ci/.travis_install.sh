@@ -19,6 +19,9 @@ conda install --yes -c conda-forge shogun-cpp
 export SHOGUN_LIB=/home/travis/miniconda/lib/
 export SHOGUN_DIR=/home/travis/miniconda/include/
 
+echo "installing cmake"
+sudo apt-get install cmake
+
 echo "installing cython using conda..."
 conda install --yes cython
 
@@ -28,9 +31,7 @@ conda install --yes scikit-learn
 echo "installing pandas via conda..."
 conda install --yes pandas
 
-
 #building and installing google tests
-sudo apt-get install cmake
 echo "installing google test"
 sudo apt-get install libgtest-dev
 old_path=$(pwd)
