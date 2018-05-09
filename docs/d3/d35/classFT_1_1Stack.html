@@ -47,6 +47,7 @@ var searchBox = new SearchBox("searchBox", "../../search",false,'Search');
     <ul class="tablist">
       <li><a href="../../index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="../../pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="../../namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="../../annotated.html"><span>Classes</span></a></li>
       <li><a href="../../files.html"><span>Files</span></a></li>
       <li>
@@ -113,6 +114,11 @@ $(document).ready(function(){initNavTree('d3/d35/classFT_1_1Stack.html','../../'
 <div class="title">FT::Stack&lt; type &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>template stack class which holds various stack types for feat  
+ <a href="../../d3/d35/classFT_1_1Stack.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="../../d7/de0/stack_8h_source.html">stack.h</a>&gt;</code></p>
 <div class="dynheader">
 Collaboration diagram for FT::Stack&lt; type &gt;:</div>
 <div class="dyncontent">
@@ -123,35 +129,48 @@ Collaboration diagram for FT::Stack&lt; type &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:ab00e738aca3a48ce47de28124c4bd6ab"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d35/classFT_1_1Stack.html#ab00e738aca3a48ce47de28124c4bd6ab">Stack</a> ()</td></tr>
+<tr class="memdesc:ab00e738aca3a48ce47de28124c4bd6ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">&lt; constructor initializing the vector  <a href="#ab00e738aca3a48ce47de28124c4bd6ab">More...</a><br /></td></tr>
+<tr class="separator:ab00e738aca3a48ce47de28124c4bd6ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a21ed279d8135e428e4a49a30814e42ad"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a21ed279d8135e428e4a49a30814e42ad"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>push</b> (type element)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d35/classFT_1_1Stack.html#a21ed279d8135e428e4a49a30814e42ad">push</a> (type element)</td></tr>
+<tr class="memdesc:a21ed279d8135e428e4a49a30814e42ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">pops element from back of vector and removes it <br /></td></tr>
 <tr class="separator:a21ed279d8135e428e4a49a30814e42ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c2a94d26f7773721aaa6b988c73fa67"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1c2a94d26f7773721aaa6b988c73fa67"></a>
-type&#160;</td><td class="memItemRight" valign="bottom"><b>pop</b> ()</td></tr>
+type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d35/classFT_1_1Stack.html#a1c2a94d26f7773721aaa6b988c73fa67">pop</a> ()</td></tr>
+<tr class="memdesc:a1c2a94d26f7773721aaa6b988c73fa67"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns true or false depending on stack is empty or not <br /></td></tr>
 <tr class="separator:a1c2a94d26f7773721aaa6b988c73fa67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7eab0f551cb592bc8a09e58053095795"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7eab0f551cb592bc8a09e58053095795"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>empty</b> ()</td></tr>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d35/classFT_1_1Stack.html#a7eab0f551cb592bc8a09e58053095795">empty</a> ()</td></tr>
+<tr class="memdesc:a7eab0f551cb592bc8a09e58053095795"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns size of stack <br /></td></tr>
 <tr class="separator:a7eab0f551cb592bc8a09e58053095795"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48bdd3cf41f0f76fb077fd21673c6df2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a48bdd3cf41f0f76fb077fd21673c6df2"></a>
-unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>size</b> ()</td></tr>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d35/classFT_1_1Stack.html#a48bdd3cf41f0f76fb077fd21673c6df2">size</a> ()</td></tr>
+<tr class="memdesc:a48bdd3cf41f0f76fb077fd21673c6df2"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns top element of stack <br /></td></tr>
 <tr class="separator:a48bdd3cf41f0f76fb077fd21673c6df2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac3190a774af53ba3e1bea6205ddba547"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac3190a774af53ba3e1bea6205ddba547"></a>
-type &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>top</b> ()</td></tr>
+type &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d35/classFT_1_1Stack.html#ac3190a774af53ba3e1bea6205ddba547">top</a> ()</td></tr>
+<tr class="memdesc:ac3190a774af53ba3e1bea6205ddba547"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns element at particular location in stack <br /></td></tr>
 <tr class="separator:ac3190a774af53ba3e1bea6205ddba547"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a950831ef551e327dd283a88fbedf6701"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a950831ef551e327dd283a88fbedf6701"></a>
-type &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>at</b> (int i)</td></tr>
+type &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d35/classFT_1_1Stack.html#a950831ef551e327dd283a88fbedf6701">at</a> (int i)</td></tr>
+<tr class="memdesc:a950831ef551e327dd283a88fbedf6701"><td class="mdescLeft">&#160;</td><td class="mdescRight">clears the stack <br /></td></tr>
 <tr class="separator:a950831ef551e327dd283a88fbedf6701"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a66b5efa24de785ad1f16ed0ef54e7187"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a66b5efa24de785ad1f16ed0ef54e7187"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>clear</b> ()</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d35/classFT_1_1Stack.html#a66b5efa24de785ad1f16ed0ef54e7187">clear</a> ()</td></tr>
+<tr class="memdesc:a66b5efa24de785ad1f16ed0ef54e7187"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns start iterator of stack <br /></td></tr>
 <tr class="separator:a66b5efa24de785ad1f16ed0ef54e7187"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2fa8bc0afab80e3c507601760a40a892"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2fa8bc0afab80e3c507601760a40a892"></a>
-vector&lt; type &gt;::iterator&#160;</td><td class="memItemRight" valign="bottom"><b>begin</b> ()</td></tr>
+vector&lt; type &gt;::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d35/classFT_1_1Stack.html#a2fa8bc0afab80e3c507601760a40a892">begin</a> ()</td></tr>
+<tr class="memdesc:a2fa8bc0afab80e3c507601760a40a892"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns end iterator of stack <br /></td></tr>
 <tr class="separator:a2fa8bc0afab80e3c507601760a40a892"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae8e56e9215bfa2586eedb43b890ff200"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae8e56e9215bfa2586eedb43b890ff200"></a>
-vector&lt; type &gt;::iterator&#160;</td><td class="memItemRight" valign="bottom"><b>end</b> ()</td></tr>
+vector&lt; type &gt;::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d35/classFT_1_1Stack.html#ae8e56e9215bfa2586eedb43b890ff200">end</a> ()</td></tr>
+<tr class="memdesc:ae8e56e9215bfa2586eedb43b890ff200"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns const start iterator of stack <br /></td></tr>
 <tr class="separator:ae8e56e9215bfa2586eedb43b890ff200"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa93ecce2320aca05cb59915f8dcf3869"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa93ecce2320aca05cb59915f8dcf3869"></a>
-vector&lt; type &gt;::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><b>begin</b> () const </td></tr>
+vector&lt; type &gt;::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d35/classFT_1_1Stack.html#aa93ecce2320aca05cb59915f8dcf3869">begin</a> () const </td></tr>
+<tr class="memdesc:aa93ecce2320aca05cb59915f8dcf3869"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns const iterator of stack <br /></td></tr>
 <tr class="separator:aa93ecce2320aca05cb59915f8dcf3869"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3a7561bcf3dd47a7af5eb2cf3d809be"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa3a7561bcf3dd47a7af5eb2cf3d809be"></a>
 vector&lt; type &gt;::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><b>end</b> () const </td></tr>
@@ -160,9 +179,44 @@ vector&lt; type &gt;::const_iterator&#160;</td><td class="memItemRight" valign="
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a8e2478af53c0f2517808ea0a0fa90a90"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8e2478af53c0f2517808ea0a0fa90a90"></a>
-std::vector&lt; type &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>st</b></td></tr>
+std::vector&lt; type &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d35/classFT_1_1Stack.html#a8e2478af53c0f2517808ea0a0fa90a90">st</a></td></tr>
+<tr class="memdesc:a8e2478af53c0f2517808ea0a0fa90a90"><td class="mdescLeft">&#160;</td><td class="mdescRight">vector representing the stack <br /></td></tr>
 <tr class="separator:a8e2478af53c0f2517808ea0a0fa90a90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename type&gt;<br />
+class FT::Stack&lt; type &gt;</h3>
+
+<p>template stack class which holds various stack types for feat </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="ab00e738aca3a48ce47de28124c4bd6ab"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename type&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../d3/d35/classFT_1_1Stack.html">FT::Stack</a>&lt; type &gt;::<a class="el" href="../../d3/d35/classFT_1_1Stack.html">Stack</a> </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>&lt; constructor initializing the vector </p>
+<p>population pushes element at back of vector </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="../../d7/de0/stack_8h_source.html">stack.h</a></li>
 </ul>
@@ -171,7 +225,7 @@ std::vector&lt; type &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>FT</b></li><li class="navelem"><a class="el" href="../../d3/d35/classFT_1_1Stack.html">Stack</a></li>
+    <li class="navelem"><a class="el" href="../../d2/d35/namespaceFT.html">FT</a></li><li class="navelem"><a class="el" href="../../d3/d35/classFT_1_1Stack.html">Stack</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.11 </li>

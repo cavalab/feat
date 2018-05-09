@@ -47,6 +47,7 @@ var searchBox = new SearchBox("searchBox", "../../search",false,'Search');
     <ul class="tablist">
       <li><a href="../../index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="../../pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="../../namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="../../annotated.html"><span>Classes</span></a></li>
       <li><a href="../../files.html"><span>Files</span></a></li>
       <li>
@@ -123,26 +124,39 @@ Collaboration diagram for FT::ML:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../de/dbe/classFT_1_1ML__coll__graph.png" border="0" usemap="#FT_1_1ML_coll__map" alt="Collaboration graph"/></div>
 <map name="FT_1_1ML_coll__map" id="FT_1_1ML_coll__map">
-<area shape="rect" id="node4" title="STL class. " alt="" coords="350,96,430,123"/>
-<area shape="rect" id="node5" title="STL class. " alt="" coords="327,5,453,47"/>
-<area shape="rect" id="node6" href="../../dd/db4/structFT_1_1Normalizer.html" title="FT::Normalizer" alt="" coords="454,96,563,123"/>
+<area shape="rect" id="node4" title="STL class. " alt="" coords="350,124,430,151"/>
+<area shape="rect" id="node5" title="STL class. " alt="" coords="308,5,435,47"/>
+<area shape="rect" id="node6" href="../../dd/db4/structFT_1_1Normalizer.html" title="FT::Normalizer" alt="" coords="471,124,581,151"/>
 </map>
 <center><span class="legend">[<a target="top" href="../../graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ae46f491cb0656cf64334f76d5ac07b9a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#ae46f491cb0656cf64334f76d5ac07b9a">ML</a> (const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params)</td></tr>
-<tr class="separator:ae46f491cb0656cf64334f76d5ac07b9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad82443da121d551ee297a2cdf2e224c9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#ad82443da121d551ee297a2cdf2e224c9">ML</a> (const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params, bool norm=true)</td></tr>
+<tr class="separator:ad82443da121d551ee297a2cdf2e224c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2ee8ca95a179f4cbe3c3ab87d9066147"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2ee8ca95a179f4cbe3c3ab87d9066147"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> ()</td></tr>
 <tr class="separator:a2ee8ca95a179f4cbe3c3ab87d9066147"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27fa984d19c8826c2fcbe81edb6a3417"><td class="memItemLeft" align="right" valign="top">vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#a27fa984d19c8826c2fcbe81edb6a3417">get_weights</a> ()</td></tr>
 <tr class="separator:a27fa984d19c8826c2fcbe81edb6a3417"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad01762995cbd4d7a950fba2e6312c11d"><td class="memItemLeft" align="right" valign="top">VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#ad01762995cbd4d7a950fba2e6312c11d">fit</a> (MatrixXd &amp;X, VectorXd &amp;y, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params, bool &amp;pass, const vector&lt; char &gt; &amp;dtypes=vector&lt; char &gt;())</td></tr>
-<tr class="separator:ad01762995cbd4d7a950fba2e6312c11d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a14a77631ce0d1567dc4a15cbcc64e682"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a14a77631ce0d1567dc4a15cbcc64e682"></a>
-VectorXd&#160;</td><td class="memItemRight" valign="bottom"><b>predict</b> (MatrixXd &amp;X)</td></tr>
-<tr class="separator:a14a77631ce0d1567dc4a15cbcc64e682"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a83dc0a9b4e7070f1835824b5eac134"><td class="memItemLeft" align="right" valign="top">shared_ptr&lt; CLabels &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#a8a83dc0a9b4e7070f1835824b5eac134">fit</a> (MatrixXd &amp;X, VectorXd &amp;y, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params, bool &amp;pass, const vector&lt; char &gt; &amp;dtypes=vector&lt; char &gt;())</td></tr>
+<tr class="separator:a8a83dc0a9b4e7070f1835824b5eac134"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a874c6c77a9c5d466505795ea83e239cd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a874c6c77a9c5d466505795ea83e239cd"></a>
+VectorXd&#160;</td><td class="memItemRight" valign="bottom"><b>fit_vector</b> (MatrixXd &amp;X, VectorXd &amp;y, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params, bool &amp;pass, const vector&lt; char &gt; &amp;dtypes=vector&lt; char &gt;())</td></tr>
+<tr class="separator:a874c6c77a9c5d466505795ea83e239cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d420bae8ccaccc519ee236b7556dea5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3d420bae8ccaccc519ee236b7556dea5"></a>
+shared_ptr&lt; CLabels &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>predict</b> (MatrixXd &amp;X)</td></tr>
+<tr class="separator:a3d420bae8ccaccc519ee236b7556dea5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a32c7f6d2eac0de798d067eb42b871bf9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a32c7f6d2eac0de798d067eb42b871bf9"></a>
+VectorXd&#160;</td><td class="memItemRight" valign="bottom"><b>predict_vector</b> (MatrixXd &amp;X)</td></tr>
+<tr class="separator:a32c7f6d2eac0de798d067eb42b871bf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77409ad5a41a56c5aa6d98d9f698038d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a77409ad5a41a56c5aa6d98d9f698038d"></a>
+ArrayXXd&#160;</td><td class="memItemRight" valign="bottom"><b>predict_proba</b> (MatrixXd &amp;X)</td></tr>
+<tr class="separator:a77409ad5a41a56c5aa6d98d9f698038d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50e74bfae7344ef534a74ec5bdee5e60"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a50e74bfae7344ef534a74ec5bdee5e60"></a>
+VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#a50e74bfae7344ef534a74ec5bdee5e60">labels_to_vector</a> (shared_ptr&lt; CLabels &gt; &amp;labels)</td></tr>
+<tr class="memdesc:a50e74bfae7344ef534a74ec5bdee5e60"><td class="mdescLeft">&#160;</td><td class="mdescRight">utility function to convert CLabels types to VectorXd types. <br /></td></tr>
+<tr class="separator:a50e74bfae7344ef534a74ec5bdee5e60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d56b10a53a3a7a5896edf7dedc00111"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8d56b10a53a3a7a5896edf7dedc00111"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>set_dtypes</b> (const vector&lt; char &gt; &amp;dtypes)</td></tr>
 <tr class="separator:a8d56b10a53a3a7a5896edf7dedc00111"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -162,13 +176,22 @@ sh::EProblemType&#160;</td><td class="memItemRight" valign="bottom"><a class="el
 <tr class="memdesc:a156f86502b4359b5fc9e264f9543183a"><td class="mdescLeft">&#160;</td><td class="mdescRight">type of learning problem; binary, multiclass or regression <br /></td></tr>
 <tr class="separator:a156f86502b4359b5fc9e264f9543183a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74f0d745069698615ff59ab1f7249714"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a74f0d745069698615ff59ab1f7249714"></a>
-<a class="el" href="../../dd/db4/structFT_1_1Normalizer.html">Normalizer</a>&#160;</td><td class="memItemRight" valign="bottom"><b>N</b></td></tr>
+<a class="el" href="../../dd/db4/structFT_1_1Normalizer.html">Normalizer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#a74f0d745069698615ff59ab1f7249714">N</a></td></tr>
+<tr class="memdesc:a74f0d745069698615ff59ab1f7249714"><td class="mdescLeft">&#160;</td><td class="mdescRight">normalization <br /></td></tr>
 <tr class="separator:a74f0d745069698615ff59ab1f7249714"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a14d721bea3ac40720bcf05b9daf49ffc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a14d721bea3ac40720bcf05b9daf49ffc"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#a14d721bea3ac40720bcf05b9daf49ffc">max_train_time</a></td></tr>
+<tr class="memdesc:a14d721bea3ac40720bcf05b9daf49ffc"><td class="mdescLeft">&#160;</td><td class="mdescRight">max seconds allowed for training <br /></td></tr>
+<tr class="separator:a14d721bea3ac40720bcf05b9daf49ffc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a128b36706b0f393a96d8f29c536d0f92"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a128b36706b0f393a96d8f29c536d0f92"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dfa/classFT_1_1ML.html#a128b36706b0f393a96d8f29c536d0f92">normalize</a></td></tr>
+<tr class="memdesc:a128b36706b0f393a96d8f29c536d0f92"><td class="mdescLeft">&#160;</td><td class="mdescRight">control whether <a class="el" href="../../df/dfa/classFT_1_1ML.html" title="class that specifies the machine learning algorithm to pair with Feat. ">ML</a> normalizes its input before training <br /></td></tr>
+<tr class="separator:a128b36706b0f393a96d8f29c536d0f92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>class that specifies the machine learning algorithm to pair with <a class="el" href="../../db/dff/classFT_1_1Feat.html" title="main class for the Feat learner. ">Feat</a>. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="ae46f491cb0656cf64334f76d5ac07b9a"></a>
+<a class="anchor" id="ad82443da121d551ee297a2cdf2e224c9"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -179,8 +202,18 @@ sh::EProblemType&#160;</td><td class="memItemRight" valign="bottom"><a class="el
           <td class="memname">FT::ML::ML </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;&#160;</td>
-          <td class="paramname"><em>params</em></td><td>)</td>
+          <td class="paramname"><em>params</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>norm</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -194,12 +227,12 @@ sh::EProblemType&#160;</td><td class="memItemRight" valign="bottom"><a class="el
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="ad01762995cbd4d7a950fba2e6312c11d"></a>
+<a class="anchor" id="a8a83dc0a9b4e7070f1835824b5eac134"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">VectorXd FT::ML::fit </td>
+          <td class="memname">shared_ptr&lt; CLabels &gt; FT::ML::fit </td>
           <td>(</td>
           <td class="paramtype">MatrixXd &amp;&#160;</td>
           <td class="paramname"><em>X</em>, </td>
@@ -268,7 +301,7 @@ sh::EProblemType&#160;</td><td class="memItemRight" valign="bottom"><a class="el
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>FT</b></li><li class="navelem"><a class="el" href="../../df/dfa/classFT_1_1ML.html">ML</a></li>
+    <li class="navelem"><a class="el" href="../../d2/d35/namespaceFT.html">FT</a></li><li class="navelem"><a class="el" href="../../df/dfa/classFT_1_1ML.html">ML</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.11 </li>
