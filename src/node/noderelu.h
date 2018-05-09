@@ -60,6 +60,7 @@ namespace FT{
 
             protected:
             NodeRelu* clone_impl() const override { return new NodeRelu(*this); };  
+            NodeRelu* rnd_clone_impl() const override { return new NodeRelu(); };  
     };
 }	
 
