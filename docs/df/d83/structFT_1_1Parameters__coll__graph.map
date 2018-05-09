@@ -1,6 +1,7 @@
 <map id="FT::Parameters" name="FT::Parameters">
-<area shape="rect" id="node3" href="$dd/d15/structFT_1_1NodeVector.html" title="an extension of a vector of unique pointers to nodes " alt="" coords="529,73,643,100"/>
-<area shape="rect" id="node4" title="STL class. " alt="" coords="237,66,397,107"/>
-<area shape="rect" id="node7" title="STL class. " alt="" coords="277,201,357,228"/>
-<area shape="rect" id="node8" title="STL class. " alt="" coords="5,194,132,235"/>
+<area shape="rect" id="node3" href="$dd/d15/structFT_1_1NodeVector.html" title="an extension of a vector of unique pointers to nodes " alt="" coords="529,76,643,103"/>
+<area shape="rect" id="node4" title="STL class. " alt="" coords="237,69,397,110"/>
+<area shape="rect" id="node7" title="STL class. " alt="" coords="277,204,357,231"/>
+<area shape="rect" id="node8" title="STL class. " alt="" coords="5,197,132,238"/>
+<area shape="rect" id="node11" href="$d4/d04/structFT_1_1Parameters_1_1BP.html" title="FT::Parameters::BP" alt="" coords="517,407,655,433"/>
 </map>
