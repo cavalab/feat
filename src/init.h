@@ -27,7 +27,7 @@ using std::cout;
 
 namespace FT{
 
-    double NEAR_ZERO = 0.0000001;
+    static double NEAR_ZERO = 0.0000001;
     static double MAX_DBL = std::numeric_limits<double>::max();
     static double MIN_DBL = std::numeric_limits<double>::lowest();
 

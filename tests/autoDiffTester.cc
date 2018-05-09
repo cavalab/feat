@@ -694,9 +694,8 @@ int testDummyProgram(FT::NodeVector p0, int iters) {
 
     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
 	// Params
-	// int iters = 100;
 	double learning_rate = 0.1;
-
+    int bs = 1; 
     FT::Individual ind;
     ind.program = p0;
     FT::Parameters params(100, 								//pop_size
@@ -719,7 +718,8 @@ int testDummyProgram(FT::NodeVector p0, int iters) {
                       "",                               // feature names
                       true,                             // backprop
                       iters,                            // iterations
-                      learning_rate);
+                      learning_rate,
+                      bs);
 	std::cout << "Initialized dummy program. Running auto backprop\n";
 	// AutoBackProp(PROGRAM, COST_FUNCTION, D_COST_FUNCTION, INPUT_DATA, LABELS, ITERS, LEARNING RATE);
 	FT::AutoBackProp* engine = new FT::AutoBackProp("mse", iters, learning_rate);

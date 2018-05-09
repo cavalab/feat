@@ -195,6 +195,7 @@ namespace FT {
                                 std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Zb, 
                                 int batch_size)
     {
+        cout << "getting batch\n";
         vector<size_t> idx(y.size());
         std::iota(idx.begin(), idx.end(), 0);
         r.shuffle(idx.begin(), idx.end());
@@ -214,10 +215,11 @@ namespace FT {
 
            for (const auto& val: Z )
            {
-                Zb[val.first] = Z.at(val.first); //.first.at(idx.at(i));
-                /* Zb[val.first].second.at(i) = Z[val.first].second.at(idx.at(i)); */
+                Zb[val.first].first.at(i) = Z.at(val.first).first.at(idx.at(i));
+                Zb[val.first].second.at(i) = Z.at(val.first).second.at(idx.at(i));
            }
         }
+        cout << "exiting batch\n";
     }
 
     void AutoBackProp::run(Individual& ind, const MatrixXd& X, VectorXd& y, 
@@ -226,6 +228,7 @@ namespace FT {
     {
         vector<size_t> roots = ind.program.roots();
         double min_loss;
+        double current_loss;
         vector<vector<double>> best_weights;
         // get batch data for training
         MatrixXd Xb; VectorXd yb;
@@ -248,24 +251,25 @@ namespace FT {
             shared_ptr<CLabels> yhat = ml->fit(Phi,yb,params,pass,ind.dtypes);
 
             vector<double> Beta = ml->get_weights();
-            
+            current_loss = this->cost_func(yb,yhat, params.sample_weights).mean();
             if (params.verbosity>1)
             {
                 cout << x << "," 
-                 << this->cost_func(y,yhat, params.sample_weights).mean() << ",";
+                 << current_loss << ",";
                   print_weights(ind.program);
             }
                  /* << this->d_cost_func(y, yhat, params.sample_weights).std() << "\n"; */ 
-            if (x==0 || this->cost_func(y,yhat, params.sample_weights).mean() < min_loss)
+            if (x==0 || current_loss < min_loss)
             {
-                min_loss = this->cost_func(y,yhat, params.sample_weights).mean();
+                min_loss = current_loss;
                 best_weights = ind.program.get_weights();
                 params.msg("new min loss: " + std::to_string(min_loss), 2);
             }
             else
                 params.msg("",2);
             
-            if (!pass || stack_f.size() ==0 || std::isnan(min_loss) || std::isinf(min_loss) )
+            if (!pass || stack_f.size() ==0 || std::isnan(min_loss) || std::isinf(min_loss)
+                    || min_loss <= NEAR_ZERO)
                 break;
 
             /* if (ml->N.scale.size() == 0) */
@@ -283,6 +287,7 @@ namespace FT {
             /*     auto yyhat = ml->labels_to_vector(yhat); */
             /*     cout << yyhat.transpose() << "\n"; */
             /* } */
+            cout << "backward pass...\n";
             // Evaluate backward pass
             size_t s = 0;
             for (int i = 0; i < stack_f.size(); ++i)
