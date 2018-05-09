@@ -1,5 +1,7 @@
-cd ./build
-./tests
+# feat c++ tests
+./build/tests
 
-cd ../python/
-/home/travis/miniconda/bin/python wrappertest.py -v 0
+# python tests
+python tests/wrappertest.py
+
+#/home/travis/miniconda/bin/python wrappertest.py -v 0
