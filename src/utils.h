@@ -3,25 +3,25 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 
+#ifndef UTILS_H
+#define UTILS_H
+
 #include <Eigen/Dense>
 #include <vector>
 #include <fstream>
 #include <chrono>
 #include <ostream>
 #include <map>
+#include "init.h"
 
 using namespace Eigen;
 
 namespace FT{
  
-    double NEAR_ZERO = 0.0000001;
     string PBSTR = "============================================================================"
                    "========================";
     int PBWIDTH = 100;
-    
-    static double MAX_DBL = std::numeric_limits<double>::max();
-    static double MIN_DBL = std::numeric_limits<double>::lowest();
-
+ 
     /// limits node output to be between MIN_DBL and MAX_DBL
     void clean(ArrayXd& x)
     {
@@ -533,7 +533,7 @@ namespace FT{
 
     
     }
-    
+ 
     /// return the softmax transformation of a vector.
     template <typename T>
     vector<T> softmax(const vector<T>& w)
@@ -596,6 +596,7 @@ namespace FT{
             normalize(X);
         }
     };
+
     /// returns true for elements of x that are infinite
     ArrayXb isinf(const ArrayXd& x)
     {
@@ -665,3 +666,4 @@ namespace FT{
         fflush (stdout);
     }
 } 
+#endif

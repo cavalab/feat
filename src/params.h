@@ -48,11 +48,23 @@ namespace FT{
         vector<float> sample_weights;               ///< weights for each sample 
         string scorer;                              ///< loss function
         vector<string> feature_names;               ///< names of features
+        bool backprop;                              ///< turns on backpropagation
 
+        struct BP 
+        {
+           int iters;
+           double learning_rate;
+           int batch_size;
+           BP(int i, double l, int bs): iters(i), learning_rate(l), batch_size(bs) {}
+        };
+
+        BP bp;                                      ///< backprop parameters
+        
         Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
                    char ot, int verbosity, string fs, float cr, unsigned int max_depth, 
                    unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
-                   double fb, string sc, string fn):    
+                   double fb, string sc, string fn, bool bckprp, int iters, double lr,
+                   int bs):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
@@ -65,13 +77,15 @@ namespace FT{
             shuffle(sh),
             split(sp),
             otype(ot),
-            feedback(fb)
+            feedback(fb),
+            backprop(bckprp),
+            bp(iters, lr, bs)
         {
             set_verbosity(verbosity);
             if (fs.empty())
                 fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
-                      "step,sign,logit,tanh,gauss,gauss2d,"
-                      "and,or,not,xor,=,<,<=,>,>=,if,ite";
+                      "logit,tanh,gauss,relu,"
+                      "and,or,not,xor,=,<,<=,>,>="; //sign,step,if,ite";
             set_functions(fs);
             set_objectives(obj);
             set_feature_names(fn);
@@ -296,6 +310,9 @@ namespace FT{
     		
     	else if (str.compare("logit")==0)
             return std::unique_ptr<Node>(new NodeLogit());
+
+        else if (str.compare("relu")==0)
+            return std::unique_ptr<Node>(new NodeRelu());
 
         // logical operators
         else if (str.compare("and") == 0)

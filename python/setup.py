@@ -44,7 +44,7 @@ setup(
     url = 'https://lacava.github.io/feat',
     download_url='https://github.com/lacava/feat/releases/tag/'+package_version,
     license='GNU/GPLv3',
-    description='Another feature engineering wrapper for ML.',
+    description='A Feature Engineering Automation Tool',
     zip_safe=True,
     install_requires=['Numpy>=1.8.2','SciPy>=0.13.3','scikit-learn','Cython'],
     py_modules=['feat','metrics'],
