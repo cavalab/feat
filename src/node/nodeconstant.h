@@ -62,6 +62,8 @@ namespace FT{
                 else 	
                     stack.fs.push(std::to_string(d_value));
             }
+
+            // Make the derivative 1
     		
         protected:
             NodeConstant* clone_impl() const override { return new NodeConstant(*this); };  

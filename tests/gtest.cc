@@ -960,7 +960,12 @@ TEST(Parameters, ParamsTests)
                       0.75,								//train/test split
                       0.5,                             // feedback 
                       "mse",                           //scoring function
-                      "");
+                      "",                              // feature names
+                      false,                            // backprop
+                      0,                                // backprop iterations
+                      0.1,                              // iterations
+                      1                                // batch size
+                      );
 					  
 	params.set_max_dim(12);
 	ASSERT_EQ(params.max_dim, 12);
@@ -1046,10 +1051,10 @@ TEST(Individual, Subtree)
 	a.program.push_back(std::unique_ptr<Node>(new NodeSubtract()));
 	a.program.push_back(std::unique_ptr<Node>(new NodeMultiply()));
 	
-	ASSERT_EQ(a.subtree(5), 3);
-	ASSERT_EQ(a.subtree(2), 0);
-	ASSERT_EQ(a.subtree(1), 1);
-	ASSERT_EQ(a.subtree(6), 0);
+	ASSERT_EQ(a.program.subtree(5), 3);
+	ASSERT_EQ(a.program.subtree(2), 0);
+	ASSERT_EQ(a.program.subtree(1), 1);
+	ASSERT_EQ(a.program.subtree(6), 0);
 	
 	a.program.clear();
 	
@@ -1060,9 +1065,9 @@ TEST(Individual, Subtree)
 	a.program.push_back(std::unique_ptr<Node>(new NodeIfThenElse()));
 	a.program.push_back(std::unique_ptr<Node>(new NodeAdd()));
 	
-	ASSERT_EQ(a.subtree(4), 1);
-	ASSERT_EQ(a.subtree(5), 0);
-	ASSERT_EQ(a.subtree(2), 2);
+	ASSERT_EQ(a.program.subtree(4), 1);
+	ASSERT_EQ(a.program.subtree(5), 0);
+	ASSERT_EQ(a.program.subtree(2), 2);
 }
 
 TEST(Individual, Complexity)
@@ -1118,7 +1123,12 @@ TEST(Evaluation, mse)
                   0.75,								//train/test split
                   0.5,                             // feedback 
                   "mse",                           //scoring function
-                  "");
+                  "",                              // feature names
+                  false,                            // backprop
+                  0,                                // backprop iterations
+                  0.1,                              // iterations
+                  1                                // batch size
+                  );
 	
     VectorXd yhat(10), y(10), res(10);
 	yhat << 0.0,
@@ -1189,7 +1199,12 @@ TEST(Evaluation, bal_accuracy)
               0.75,								//train/test split
               0.5,                             // feedback 
               "bal_zero_one",                           //scoring function
-              "");
+              "",                              // feature names
+              false,                            // backprop
+              0,                                // backprop iterations
+              0.1,                              // iterations
+              1                                // batch size
+              );
 	
     VectorXd yhat(10), y(10), res(10), loss(10);
 	
@@ -1261,7 +1276,12 @@ TEST(Evaluation, log_loss)
               0.75,								//train/test split
               0.5,                             // feedback 
               "bal_zero_one",                           //scoring function
-              "");
+              "",                              // feature names
+              false,                            // backprop
+              0,                                // backprop iterations
+              0.1,                              // iterations
+              1                                // batch size
+              );
 	
     VectorXd yhat(10), y(10), loss(10);
     ArrayXXd confidences(10,2);
@@ -1302,7 +1322,7 @@ TEST(Evaluation, log_loss)
              0.4396698295617455 ,
              0.47602999293839676 ;
     
-    double score = metrics::log_loss(y, yhat, loss);
+    double score = metrics::mean_log_loss(y, yhat, loss);
     
     ASSERT_EQ(((int)(score*100000)),45495);
 }
@@ -1327,7 +1347,13 @@ TEST(Evaluation, multi_log_loss)
               false,                            //shuffle
               0.75,								//train/test split
               0.5,                             // feedback 
-              "bal_zero_one","");                           //scoring function
+              "bal_zero_one",
+              "",                              // feature names
+              false,                            // backprop
+              0,                                // backprop iterations
+              0.1,                              // iterations
+              1                                // batch size
+              );                           //scoring function
 	
     VectorXd y(10), loss(10);
     ArrayXXd confidences(10,3);
@@ -1359,8 +1385,10 @@ TEST(Evaluation, multi_log_loss)
     
     cout << "running multi_log_loss\n";
 	/* vector<float> weights = {0.4*3.0, 0.4*3.0, 0.3*3.0}; */
-	vector<float> weights = {1, 1, 1};
-    double score = metrics::multi_log_loss(y, confidences, loss, weights);
+	vector<float> weights; 
+    for (int i = 0; i < y.size(); ++i)
+        weights.push_back(1.0);
+    double score = metrics::mean_multi_log_loss(y, confidences, loss, weights);
     cout << "assertion\n";
 
     ASSERT_EQ(((int)(score*100000)),61236);
@@ -1384,7 +1412,12 @@ TEST(Evaluation, fitness)
                       0.75,								//train/test split
                       0.5,                             // feedback 
                       "mse",                           // scoring function
-                      "");
+                      "",                              // feature names
+                      false,                            // backprop
+                      0,                                // backprop iterations
+                      0.1,                              // iterations
+                      1                                // batch size
+                      );
                         
 	MatrixXd X(10,1); 
     X << 0.0,  
@@ -1411,9 +1444,9 @@ TEST(Evaluation, fitness)
     Population pop(2);
     // individual 0 = [sin(x0) cos(x0)]
     pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeVariable(0)));
-    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeSin()));
+    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeSin({1.0})));
     pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeVariable(0)));
-    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeCos()));
+    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeCos({1.0})));
     pop.individuals[0].loc = 0;
     std::cout << pop.individuals[0].get_eqn() + "\n";
     // individual 1 = [x0] 
@@ -1428,6 +1461,7 @@ TEST(Evaluation, fitness)
     eval.fitness(pop, X, z, y, F, params);
     
     // check results
+    cout << pop.individuals[0].fitness << " , should be near zero\n";
     ASSERT_TRUE(pop.individuals[0].fitness < NEAR_ZERO);
     ASSERT_TRUE(pop.individuals[1].fitness - 60.442868924187906 < NEAR_ZERO);
 
@@ -1452,7 +1486,12 @@ TEST(Evaluation, out_ml)
                       0.75,								//train/test split
                       0.5,                             // feedback                 
                       "mse",                           // scoring function
-                      "");
+                      "",                              // feature names
+                      false,                            // backprop
+                      0,                                // backprop iterations
+                      0.1,                              // iterations
+                      1                                // batch size
+                      );
 	MatrixXd X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  

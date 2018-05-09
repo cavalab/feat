@@ -32,7 +32,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-              stack.fs.push("if-then-else(" + stack.bs.pop() + "," + stack.fs.pop() + "," + "0)");
+              stack.fs.push("if(" + stack.bs.pop() + "," + stack.fs.pop() + "," + "0)");
             }
         protected:
             NodeIf* clone_impl() const override { return new NodeIf(*this); };  

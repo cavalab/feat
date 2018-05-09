@@ -11,6 +11,7 @@ license: GNU/GPL v3
 #include <Eigen/Dense>
 #include <memory>
 #include <shogun/base/init.h>
+
 #ifdef _OPENMP
     #include <omp.h>
 #else
@@ -30,6 +31,7 @@ using std::make_shared;
 using std::cout; 
  
 // internal includes
+#include "init.h"
 #include "rnd.h"
 #include "utils.h"
 #include "params.h"
@@ -81,11 +83,11 @@ namespace FT{
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
                    bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
                    double split=0.75, double fb=0.5, string scorer="", string feature_names="",
-                   unsigned n_threads=0):
+                   bool backprop=false,int iters=10, double lr=0.1, int bs=100, int n_threads=0):
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
                              functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, 
-                             fb, scorer, feature_names), 
+                             fb, scorer, feature_names, backprop, iters, lr, bs), 
                       p_sel( make_shared<Selection>(sel) ),
                       p_surv( make_shared<Selection>(surv, true) ),
                       p_variation( make_shared<Variation>(cross_rate) )                      
@@ -168,9 +170,16 @@ namespace FT{
             
             void set_feature_names(string s){params.set_feature_names(s);}
             void set_feature_names(vector<string>& s){params.feature_names = s;}
-
+ 
+            ///set name for files
+            void set_backprop(bool bp){params.backprop=bp;}
+            void set_iters(int iters){params.bp.iters = iters;}
+            void set_lr(double lr){params.bp.learning_rate = lr;}
+            void set_batch_size(int bs){params.bp.batch_size = bs;}
+             
             ///set number of threads
             void set_n_threads(unsigned t){ omp_set_num_threads(t); }
+            
             /*                                                      
              * getting functions
              */
@@ -540,6 +549,10 @@ namespace FT{
                 print_stats(g+1);
             else
                 printProgress(((g+1)*1.0)/params.gens);
+            if (params.backprop){
+                params.bp.learning_rate = (1-1/(1+double(params.gens)))*params.bp.learning_rate;
+                cout << "learning rate: " << params.bp.learning_rate << "\n";
+            }
                 //cout<<"\rCompleted "<<((g+1)*100/params.gens)<<"%"<< std::flush;
         }
         cout<<"\n";
@@ -599,9 +612,9 @@ namespace FT{
         /* MatrixXd Phi = transform(X); */
         MatrixXd Phi = best_ind.out(X, Z,params);        
 
-        shared_ptr<CLabels> yhat = p_ml->fit(Phi,y,params,pass,best_ind.dtypes);
+        shared_ptr<CLabels> yhat = p_ml->fit(Phi, y, params, pass, best_ind.dtypes);
         VectorXd tmp;
-        double score = p_eval->score(y,yhat,tmp,params.class_weights);
+        double score = p_eval->score(y,yhat,tmp,params.sample_weights);
         params.msg("final_model score: " + std::to_string(score),1);
     }
     
@@ -616,12 +629,12 @@ namespace FT{
         // set terminal weights based on model
         params.set_term_weights(p_ml->get_weights());
         VectorXd tmp;
-        best_score = p_eval->score(y_t, yhat,tmp, params.class_weights);
+        best_score = p_eval->score(y_t, yhat,tmp, params.sample_weights);
         
         if (params.split < 1.0)
         {
             shared_ptr<CLabels> yhat_v = p_ml->predict(X_v);
-            best_score_v = p_eval->score(y_v, yhat_v,tmp, params.class_weights); 
+            best_score_v = p_eval->score(y_v, yhat_v,tmp, params.sample_weights); 
         }
         else
             best_score_v = best_score;
@@ -761,7 +774,7 @@ namespace FT{
     {
         shared_ptr<CLabels> labels = predict_labels(X, Z);
         VectorXd loss; 
-        return p_eval->score(y,labels,loss,params.class_weights);
+        return p_eval->score(y,labels,loss,params.sample_weights);
 
         /* if (params.classification) */
         /*     return p_eval->bal_accuracy(y,yhat,vector<int>(),false); */

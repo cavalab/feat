@@ -27,6 +27,7 @@ license: GNU/GPL v3
 #include "ml/MyCARTree.h"
 #include "ml/MulticlassLogisticRegression.h"
 #include "ml/MyMulticlassLibLinear.h"
+#include "params.h"
 
 // stuff being used
 using std::string;
@@ -40,6 +41,7 @@ using sh::EProbHeuristicType;
 using sh::CBinaryLabels;
 using sh::CMulticlassLabels;
 using sh::CLabels;
+
 namespace FT{
 	
 	/*!
@@ -51,7 +53,7 @@ namespace FT{
     {
         public:
         	
-            ML(const Parameters& params)
+            ML(const Parameters& params, bool norm=true)
             {
                 /*!
                  * use string to specify a desired ML algorithm from shogun.
@@ -60,6 +62,7 @@ namespace FT{
                 ml_type = params.ml;
                 prob_type = PT_REGRESSION;
                 max_train_time=60; 
+                normalize = norm;
                 if (params.classification)
                 { 
                     if (params.n_classes==2)
@@ -191,6 +194,8 @@ namespace FT{
                                                 ///  or regression 
             Normalizer N;                       ///< normalization
             int max_train_time;                 ///< max seconds allowed for training
+            bool normalize;                     ///< control whether ML normalizes its input before 
+                                                ///  training
     };
 /////////////////////////////////////////////////////////////////////////////////////// Definitions
 
@@ -206,7 +211,6 @@ namespace FT{
         {
             if(prob_type == PT_MULTICLASS && ( !ml_type.compare("LR") || !ml_type.compare("SVM") ) ) 
             {
-	
                 /* cout << "in get_weights(), multiclass LR\n"; */
                 vector<SGVector<double>> weights;
 
@@ -233,6 +237,7 @@ namespace FT{
                     for( int j = 0;j<weights.at(i).size(); ++j) 
                     {
                         w.at(j) += fabs(weights.at(i)[j]);
+                        w.at(j) += weights.at(i)[j];
                     }
                 }
                 /* cout << "normalizing weights\n"; */ 
@@ -254,8 +259,8 @@ namespace FT{
             auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_w();
             
             w.assign(tmp.data(), tmp.data()+tmp.size());          
-            for (unsigned i =0; i<w.size(); ++i)    // take absolute value of weights
-                w[i] = fabs(w[i]);
+            /* for (unsigned i =0; i<w.size(); ++i)    // take absolute value of weights */
+            /*     w[i] = fabs(w[i]); */
 	    }
         else if (!ml_type.compare("CART"))           
             w = dynamic_pointer_cast<sh::CMyCARTree>(p_est)->feature_importances();
@@ -264,7 +269,6 @@ namespace FT{
             std::cerr << "ERROR: ML::get_weights not implemented for " + ml_type << "\n";
             
         }
-
         return w;
     }
 
@@ -305,12 +309,17 @@ namespace FT{
             else
                 set_dtypes(dtypes);
         }
-        
-        if (dtypes.empty())
-            N.fit_normalize(X, params.dtypes);  
-        else 
-            N.fit_normalize(X, dtypes);
-         
+       
+        if (normalize)
+        {
+            if (dtypes.empty())
+                N.fit_normalize(X, params.dtypes);  
+            else 
+                N.fit_normalize(X, dtypes);
+        }
+        /* else */
+            /* cout << "normlize is false\n"; */
+
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
         /* cout << "Phi:\n"; */
         /* for (int i = 0; i < 10 ; ++i) */
@@ -376,7 +385,7 @@ namespace FT{
        
         /* std::cout << "yhat: " << yhat.transpose() << "\n"; */ 
 
-        if (isinf(yhat.array()).any() || isnan(yhat.array()).any())
+        if (isinf(yhat.array()).any() || isnan(yhat.array()).any() || yhat.size()==0)
         {
             pass = false;
         }
@@ -391,10 +400,12 @@ namespace FT{
         
         return labels_to_vector(labels);     
     }
+
     shared_ptr<CLabels> ML::predict(MatrixXd& X)
     {
 
-        N.normalize(X);
+        if (normalize)
+            N.normalize(X);
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
         
         shared_ptr<CLabels> labels;

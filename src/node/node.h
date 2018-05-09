@@ -5,14 +5,23 @@ license: GNU/GPL v3
 #ifndef NODE_H
 #define NODE_H
 
-#include<map>
+#include <map>
+#include <memory>
+#include <vector>
+#include <iostream>
+#include <Eigen/Dense>
+#include "../init.h"
 #include "../stack.h"
+#include "../rnd.h"
 using std::vector;
 using std::string;
 using std::map;
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
 using Eigen::ArrayXd;
+typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
 #define MAX_DBL std::numeric_limits<double>::max()
-#define MIN_DBL std::numeric_limits<double>::min()
+#define MIN_DBL std::numeric_limits<double>::lowest()
 namespace FT{
 
     //////////////////////////////////////////////////////////////////////////////// Declarations
@@ -27,6 +36,7 @@ namespace FT{
             char otype;             				///< output type
             std::map<char, unsigned int> arity;		///< floating arity of the operator 
             int complexity;         ///< complexity of node
+            int visits = 0;
 
             virtual ~Node(){}
            
@@ -57,9 +67,9 @@ namespace FT{
             /// limits node output to be between MIN_DBL and MAX_DBL
             ArrayXd limited(ArrayXd x)
             {
-                x = (isinf(x)).select(MAX_DBL,x);
                 x = (isnan(x)).select(0,x);
-                //x = (x < MIN_DBL).select(MIN_DBL,x);
+                x = (x < MIN_DBL).select(MIN_DBL,x);
+                x = (x > MAX_DBL).select(MAX_DBL,x);
                 return x;
             };
 
@@ -112,8 +122,12 @@ namespace FT{
                 }
             }
 
+            /// check of node type
+            virtual bool isNodeDx(){ return false;}
+
             /// makes a unique copy of this node
             auto clone() const { return std::unique_ptr<Node>(clone_impl()); }
+            
             /// makes a randomized unique copy ofnode
             auto rnd_clone() const { return std::unique_ptr<Node>(rnd_clone_impl()); }
         
