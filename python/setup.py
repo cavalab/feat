@@ -46,7 +46,7 @@ setup(
     license='GNU/GPLv3',
     description='A Feature Engineering Automation Tool',
     zip_safe=True,
-    install_requires=['Numpy>=1.8.2','SciPy>=0.13.3','scikit-learn','Cython'],
+    install_requires=['Numpy>=1.8.2','SciPy>=0.13.3','scikit-learn','Cython','pandas'],
     py_modules=['feat','metrics'],
     ext_modules = cythonize([Extension(name='pyfeat',
        sources = ["pyfeat.pyx"],    # our cython source

@@ -1,7 +1,8 @@
 
 echo "installing cmake"
+sudo add-apt-repository ppa:george-edison55/cmake-3.x
+sudo apt-get update
 sudo apt-get install cmake
-
 
 echo "installing eigen..."
 wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"
@@ -23,14 +24,16 @@ conda update --yes conda
 conda install --yes -c conda-forge shogun-cpp
 export SHOGUN_LIB=/home/travis/miniconda/lib/
 export SHOGUN_DIR=/home/travis/miniconda/include/
-echo "installing cython using conda..."
-conda install --yes cython
+# commending out the following installs which should be triggered
+# by call to setup.py
+# echo "installing cython using conda..."
+# conda install --yes cython
 
-echo "installing scikit-learn via conda..."
-conda install --yes scikit-learn
+# echo "installing scikit-learn via conda..."
+# conda install --yes scikit-learn
 
-echo "installing pandas via conda..."
-conda install --yes pandas
+# echo "installing pandas via conda..."
+# conda install --yes pandas
 
 #building and installing google tests
 echo "installing google test"
