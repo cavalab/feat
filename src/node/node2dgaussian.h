@@ -40,9 +40,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-        		string x1 = stack.fs.pop();
-                string x2 = stack.fs.pop();
-                stack.fs.push("gauss2d(" + x1 + "," + x2 + ")");
+                stack.fs.push("gauss2d(" + stack.fs.pop() + "," + stack.fs.pop() + ")");
             }
 
             ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
@@ -59,6 +57,7 @@ namespace FT{
             
         protected:
                 Node2dGaussian* clone_impl() const override { return new Node2dGaussian(*this); };  
+                Node2dGaussian* rnd_clone_impl() const override { return new Node2dGaussian(); };  
     };
 #ifndef USE_CUDA
 void Node2dGaussian::evaluate(const MatrixXd& X, const VectorXd& y,

@@ -36,6 +36,7 @@ namespace FT{
             }
         protected:
             NodeNot* clone_impl() const override { return new NodeNot(*this); };  
+            NodeNot* rnd_clone_impl() const override { return new NodeNot(); };  
     };
     
 }	

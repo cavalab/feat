@@ -93,8 +93,12 @@ class Feat(BaseEstimator):
             return self._pyfeat.predict_proba(X)
 
 
-    def transform(self,X):
-        return self._pyfeat.transform(X)
+    def transform(self,X,zfile=None,zids=None):
+        if zfile:
+            zfile = zfile.encode() if isinstance(zfile,str) else zfile
+            return self._pyfeat.transform_with_z(X,zfile,zids)
+        else:
+            return self._pyfeat.transform(X)
 
     def fit_predict(self,X,y):
         return self._pyfeat.fit_predict(X,y)
@@ -119,6 +123,9 @@ class Feat(BaseEstimator):
 
     def get_archive(self):
         return self._pyfeat.get_archive()
+
+    def get_coefs(self):
+        return self._pyfeat.get_coefs()
 
 def main():
     """Main function that is called when Fewtwo is run from the command line"""

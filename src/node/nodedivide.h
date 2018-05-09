@@ -74,6 +74,7 @@ namespace FT{
             
         protected:
             NodeDivide* clone_impl() const override { return new NodeDivide(*this); };  
+            NodeDivide* rnd_clone_impl() const override { return new NodeDivide(); };  
     };
 }	
 

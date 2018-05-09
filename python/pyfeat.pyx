@@ -37,8 +37,11 @@ cdef extern from "feat.h" namespace "FT":
                             int * train_idx, int train_size)
         VectorXd predict_with_z(double * X,int rowsX,int colsX, string s, 
                             int * idx, int idx_size)
+        MatrixXd transform_with_z(double * X,int rowsX,int colsX, string s, 
+                            int * train_idx, int train_size)
         ArrayXXd predict_proba_with_z(double * X,int rowsX,int colsX, string s, 
                             int * idx, int idx_size)
+        ArrayXd get_coefs()
 
 cdef class PyFeat:
     cdef Feat ft  # hold a c++ instance which we're wrapping
@@ -79,6 +82,15 @@ cdef class PyFeat:
 
         self.ft.fit_with_z(&arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y),
                            zfile, &arr_z_id[0], len(arr_z_id))
+                           
+    def transform_with_z(self,np.ndarray X, string zfile, np.ndarray zids):
+        cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
+        cdef np.ndarray[int, ndim=1, mode="fortran"] arr_z_id
+        X = X.transpose()
+        arr_x = np.asfortranarray(X, dtype=np.double)
+        arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
+        res = ndarray(self.ft.transform_with_z(&arr_x[0,0],X.shape[0],X.shape[1], zfile, &arr_z_id[0], len(arr_z_id)))
+        return res.transpose()
 
 
     def predict(self,np.ndarray X):
@@ -119,7 +131,6 @@ cdef class PyFeat:
                                              zfile, &arr_z_id[0], len(arr_z_id)))
         return res.flatten()
 
-
     def transform(self,np.ndarray X):
         cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
         X = X.transpose()
@@ -154,3 +165,6 @@ cdef class PyFeat:
 
     def get_archive(self):
         return self.ft.get_eqns().decode()
+
+    def get_coefs(self):
+        return ndarray(self.ft.get_coefs()).flatten()

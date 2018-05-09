@@ -46,6 +46,7 @@ namespace FT{
             }
         protected:
             NodeCount* clone_impl() const override { return new NodeCount(*this); }; 
+            NodeCount* rnd_clone_impl() const override { return new NodeCount(); }; 
     };
 }	
 

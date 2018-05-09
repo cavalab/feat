@@ -46,6 +46,7 @@ namespace FT{
             }
         protected:
             NodeMean* clone_impl() const override { return new NodeMean(*this); }; 
+            NodeMean* rnd_clone_impl() const override { return new NodeMean(); }; 
     };
 }	
 

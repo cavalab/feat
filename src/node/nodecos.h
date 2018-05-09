@@ -56,6 +56,7 @@ namespace FT{
 
         protected:
             NodeCos* clone_impl() const override { return new NodeCos(*this); };  
+            NodeCos* rnd_clone_impl() const override { return new NodeCos(); };  
     };
 }	
 
