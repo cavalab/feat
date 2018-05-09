@@ -21,12 +21,11 @@ namespace FT{
         /// selection according to the survival scheme of NSGA-II
         vector<size_t> survive(Population& pop, const MatrixXd& F, const Parameters& p);
 
-        private:
-            vector<vector<int>> front;                //< the Pareto fronts
-            void fast_nds(Population&);               //< Fast non-dominated sorting 
-            void crowding_distance(Population&, int); //< crowding distance of a front i
+        vector<vector<int>> front;                //< the Pareto fronts
+        void fast_nds(vector<Individual>&);               //< Fast non-dominated sorting 
+        void crowding_distance(Population&, int); //< crowding distance of a front i
             
-           
+        private:    
             /// sort based on rank, breaking ties with crowding distance
             struct sort_n 
             {
@@ -79,7 +78,7 @@ namespace FT{
             pop.individuals[i].set_obj(params.objectives);
 
         // fast non-dominated sort
-        fast_nds(pop);
+        fast_nds(pop.individuals);
         
         // Push back selected individuals until full
         vector<size_t> selected;
@@ -105,24 +104,24 @@ namespace FT{
         return selected;
     }
 
-    void NSGA2::fast_nds(Population& pop) 
+    void NSGA2::fast_nds(vector<Individual>& individuals) 
     {
         front.resize(1);
         front[0].clear();
         //std::vector< std::vector<int> >  F(1);
         #pragma omp parallel for
-        for (int i = 0; i < pop.size(); ++i) {
+        for (int i = 0; i < individuals.size(); ++i) {
         
             std::vector<unsigned int> dom;
             int dcount = 0;
         
-            Individual& p = pop.individuals[i];
+            Individual& p = individuals[i];
             // p.dcounter  = 0;
             // p.dominated.clear();
         
-            for (int j = 0; j < pop.size(); ++j) {
+            for (int j = 0; j < individuals.size(); ++j) {
             
-                Individual& q = pop.individuals[j];
+                Individual& q = individuals[j];
             
                 int compare = p.check_dominance(q);
                 if (compare == 1) { // p dominates q
@@ -161,11 +160,11 @@ namespace FT{
             std::vector<int> Q;
             for (int i = 0; i < fronti.size(); ++i) {
 
-                Individual& p = pop.individuals[fronti[i]];
+                Individual& p = individuals[fronti[i]];
 
                 for (int j = 0; j < p.dominated.size() ; ++j) {
 
-                    Individual& q = pop.individuals[p.dominated[j]];
+                    Individual& q = individuals[p.dominated[j]];
                     q.dcounter -= 1;
 
                     if (q.dcounter == 0) {

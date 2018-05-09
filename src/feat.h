@@ -41,7 +41,7 @@ using std::cout;
 #include "variation.h"
 #include "ml.h"
 #include "node/node.h"
- 
+#include "archive.h" 
 
 //shogun initialization
 void __attribute__ ((constructor)) ctor()
@@ -98,6 +98,7 @@ namespace FT{
                 scorer=scorer;
                 if (n_threads!=0)
                     omp_set_num_threads(n_threads);
+                survival = surv;
             }
             
             /// set size of population 
@@ -122,7 +123,11 @@ namespace FT{
             void set_selection(string sel){ p_sel = make_shared<Selection>(sel); }
                         
             /// set survivability              
-            void set_survival(string surv){ p_surv = make_shared<Selection>(surv, true); }
+            void set_survival(string surv)
+            { 
+                survival=surv; 
+                p_surv = make_shared<Selection>(surv, true);
+            }
                         
             /// set cross rate in variation              
             void set_cross_rate(float cross_rate){ params.cross_rate = cross_rate; p_variation->set_cross_rate(cross_rate); }
@@ -409,6 +414,9 @@ namespace FT{
             shared_ptr<Variation> p_variation;  	///< variation operators
             shared_ptr<Selection> p_surv;       	///< survival algorithm
             shared_ptr<ML> p_ml;                	///< pointer to machine learning class
+            Archive arch;                           ///< pareto front archive
+            bool use_arch;                          ///< internal control over use of archive
+            string survival;                        ///< stores survival mode
             Normalizer N;                           ///< scales training data.
             string scorer;                          ///< scoring function name.
             // performance tracking
@@ -481,6 +489,12 @@ namespace FT{
         p_pop = make_shared<Population>(params.pop_size);
         p_eval = make_shared<Evaluation>(params.scorer);
 
+        // create an archive to save Pareto front, unless NSGA-2 is being used for survival 
+        if (!survival.compare("nsga2"))
+            use_arch = false;
+        else
+            use_arch = true;
+        
         // split data into training and test sets
         MatrixXd X_t(X.rows(),int(X.cols()*params.split));
         MatrixXd X_v(X.rows(),int(X.cols()*(1-params.split)));
@@ -506,13 +520,17 @@ namespace FT{
         
         p_pop->init(best_ind,params);
         params.msg("Initial population:\n"+p_pop->print_eqns(),2);
-        
+
+        if (use_arch){
+            params.msg("Initializing archive...",2);
+            arch.init(*p_pop);
+        }
         // resize F to be twice the pop-size x number of samples
         F.resize(X_t.cols(),int(2*params.pop_size));
        
         // evaluate initial population
         params.msg("Evaluating initial population",1);
-        p_eval->fitness(*p_pop,X_t, Z_t, y_t,F,params);
+        p_eval->fitness(p_pop->individuals,X_t, Z_t, y_t,F,params);
         
         params.msg("Initial population done",1);
         
@@ -533,7 +551,7 @@ namespace FT{
 
             // evaluate offspring
             params.msg("evaluating offspring...", 2);
-            p_eval->fitness(*p_pop, X_t, Z_t, y_t, F, params, true);
+            p_eval->fitness(p_pop->individuals, X_t, Z_t, y_t, F, params, true);
 
             // select survivors from combined pool of parents and offspring
             params.msg("survival...", 2);
@@ -545,13 +563,19 @@ namespace FT{
             params.msg("survivors:\n" + p_pop->print_eqns(), 2);
 
             update_best();
+            
+            if (use_arch) 
+                arch.update(*p_pop,params);
+
             if(params.verbosity>0)
                 print_stats(g+1);
             else
                 printProgress(((g+1)*1.0)/params.gens);
-            if (params.backprop){
+            
+            if (params.backprop)
+            {
                 params.bp.learning_rate = (1-1/(1+double(params.gens)))*params.bp.learning_rate;
-                cout << "learning rate: " << params.bp.learning_rate << "\n";
+                params.msg("learning rate: " + std::to_string(params.bp.learning_rate),2);
             }
                 //cout<<"\rCompleted "<<((g+1)*100/params.gens)<<"%"<< std::flush;
         }
@@ -563,7 +587,12 @@ namespace FT{
         if (params.split < 1.0)
         {
             F_v.resize(X_v.cols(),int(2*params.pop_size)); 
-            p_eval->val_fitness(*p_pop, X_t, Z_t, y_t, F_v, X_v, Z_v, y_v, params);
+            if (use_arch){
+                cout << "running p_eval with archive\n";
+                p_eval->val_fitness(arch.archive, X_t, Z_t, y_t, F_v, X_v, Z_v, y_v, params);
+            }
+            else
+                p_eval->val_fitness(p_pop->individuals, X_t, Z_t, y_t, F_v, X_v, Z_v, y_v, params);
             update_best(true);                  // get the best validation model
         }
         else
@@ -572,7 +601,7 @@ namespace FT{
         params.msg("validation score: " + std::to_string(best_score_v), 1);
         params.msg("fitting final model to all training data...",2);
 
-        final_model(X,y, Z);   // fit final model to best features
+        final_model(X, y, Z);   // fit final model to best features
 
         
         /* // write model to file */
@@ -752,16 +781,29 @@ namespace FT{
     {
         double bs;
         bs = validation ? best_score_v : best_score ; 
-        
-        for (const auto& i: p_pop->individuals)
+        if (use_arch && validation)
         {
-            if (i.fitness < bs)
+            for (const auto& i: arch.archive)
             {
-                bs = i.fitness;
-                best_ind = i;
+                if (i.fitness < bs)
+                {
+                    bs = i.fitness;
+                    best_ind = i;
+                }
             }
         }
-        
+        else
+        {
+            for (const auto& i: p_pop->individuals)
+            {
+                if (i.fitness < bs)
+                {
+                    bs = i.fitness;
+                    best_ind = i;
+                }
+            }
+        }
+
         if (validation) 
             best_score_v = bs; 
         else 
@@ -784,7 +826,7 @@ namespace FT{
     
     void Feat::print_stats(unsigned int g)
     {
-        unsigned num_models = std::min(100,p_pop->size());
+        unsigned num_models = std::min(20,p_pop->size());
         double med_score = median(F.colwise().mean().array());  // median loss
         ArrayXd Sizes(p_pop->size()); unsigned i = 0;           // collect program sizes
         for (const auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;}
