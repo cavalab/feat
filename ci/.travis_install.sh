@@ -30,8 +30,8 @@ export SHOGUN_LIB=/home/travis/miniconda/lib/
 export SHOGUN_DIR=/home/travis/miniconda/include/
 # commending out the following installs which should be triggered
 # by call to setup.py
-# echo "installing cython using conda..."
-# conda install --yes cython
+echo "installing cython using conda..."
+conda install --yes cython
 
 # echo "installing scikit-learn via conda..."
 # conda install --yes scikit-learn
