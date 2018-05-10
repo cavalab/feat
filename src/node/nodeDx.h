@@ -64,9 +64,14 @@ namespace FT{
                     // std::cout << "Updated with " << (d_w * update_value).sum() << "\n";
                 }
                 for (int i = 0; i < W.size(); ++i)
-                    this->W[i] += V_temp[i];
+                {
+                    if (std::isfinite(V_temp[i]) && !std::isnan(V_temp[i]))
+                    {
+                        this->W[i] += V_temp[i];
+                        this->V[i] = V_temp[i];
+                    }
+                }
 
-                this->V = V_temp;
                 /* std::cout << "Updated\n"; */
                 /* std::cout << "***************************\n"; */
                 // print_weight();

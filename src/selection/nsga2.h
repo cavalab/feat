@@ -14,11 +14,13 @@ namespace FT{
     {
         /** NSGA-II based selection and survival methods. */
 
-        NSGA2(bool surv){ name = "nsga2"; survival = surv; };
+        NSGA2(bool surv){ name = "nsga2"; survival = surv; gen = 0;};
         
         ~NSGA2(){}
 
         /// selection according to the survival scheme of NSGA-II
+        vector<size_t> select(Population& pop, const MatrixXd& F, const Parameters& p);
+        /// survival according to the survival scheme of NSGA-II
         vector<size_t> survive(Population& pop, const MatrixXd& F, const Parameters& p);
 
         vector<vector<int>> front;                //< the Pareto fronts
@@ -26,6 +28,8 @@ namespace FT{
         void crowding_distance(Population&, int); //< crowding distance of a front i
             
         private:    
+            int gen;        //> keeps track of current generation
+
             /// sort based on rank, breaking ties with crowding distance
             struct sort_n 
             {
@@ -52,9 +56,60 @@ namespace FT{
                     : pop(population), m(index) {};
                 bool operator() (int i, int j) { return pop[i].obj[m] < pop[j].obj[m]; };
             };
+        
+            size_t tournament(vector<Individual>& pop, size_t i, size_t j) const 
+            {
+                Individual& ind1 = pop.at(i);
+                Individual& ind2 = pop.at(j);
+
+                int flag = ind1.check_dominance(ind2);
+                
+                if (flag == 1) // ind1 dominates ind2
+                    return i;
+                else if (flag == -1) // ind2 dominates ind1
+                    return j;
+                else if (ind1.crowd_dist > ind2.crowd_dist)
+                    return i;
+                else if (ind2.crowd_dist > ind1.crowd_dist)
+                    return j;
+                else 
+                    return i; 
+            }
     };
     
     /////////////////////////////////////////////////////////////////////////////////// Definitions
+    
+    vector<size_t> NSGA2::select(Population& pop, const MatrixXd& F, const Parameters& params)
+    {
+        /* Selection using Pareto tournaments. 
+         *
+         * Input: 
+         *
+         *      pop: population of programs.
+         *      params: parameters.
+         *      r: random number generator
+         *
+         * Output:
+         *
+         *      selected: vector of indices corresponding to pop that are selected.
+         *      modifies individual ranks, objectives and dominations.
+         */
+        vector<size_t> pool(pop.size());
+        std::iota(pool.begin(), pool.end(), 0);
+        // if this is first generation, just return indices to pop
+        if (gen==0)
+            return pool;
+
+        vector<size_t> selected(pop.size());
+
+        for (int i = 0; i < pop.size(); ++i)
+        {
+            size_t winner = tournament(pop.individuals, r.random_choice(pool), 
+                                       r.random_choice(pool));
+            selected.push_back(winner);
+        }
+        return selected;
+    }
 
     vector<size_t> NSGA2::survive(Population& pop, const MatrixXd& F, const Parameters& params)
     {
