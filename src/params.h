@@ -49,6 +49,7 @@ namespace FT{
         string scorer;                              ///< loss function
         vector<string> feature_names;               ///< names of features
         bool backprop;                              ///< turns on backpropagation
+        bool hillclimb;                             ///< turns on parameter hill climbing
 
         struct BP 
         {
@@ -60,11 +61,20 @@ namespace FT{
 
         BP bp;                                      ///< backprop parameters
         
+        struct HC 
+        {
+           int iters;
+           double step;
+           HC(int i, double s): iters(i), step(s) {}
+        };
+        
+        HC hc;                                      ///< stochastic hill climbing parameters       
+        
         Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
                    char ot, int verbosity, string fs, float cr, unsigned int max_depth, 
                    unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
                    double fb, string sc, string fn, bool bckprp, int iters, double lr,
-                   int bs):    
+                   int bs, bool hclimb):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
@@ -79,7 +89,9 @@ namespace FT{
             otype(ot),
             feedback(fb),
             backprop(bckprp),
-            bp(iters, lr, bs)
+            bp(iters, lr, bs),
+            hillclimb(hclimb),
+            hc(iters, lr)
         {
             set_verbosity(verbosity);
             if (fs.empty())

@@ -8,6 +8,7 @@ license: GNU/GPL v3
 #include "ml.h"
 #include "metrics.h"
 #include "auto_backprop.h"
+#include "hillclimb.h"
 using namespace shogun;
 using Eigen::Map;
 
@@ -104,15 +105,13 @@ namespace FT{
         #pragma omp parallel for
         for (unsigned i = start; i<individuals.size(); ++i)
         {
-            try
-            {
+            
             if (params.backprop)
             {
                 AutoBackProp backprop(params.scorer, params.bp.iters, params.bp.learning_rate);
                 params.msg("Running backprop on " + individuals[i].get_eqn(), 2);
                 backprop.run(individuals[i], X, y, Z, params);
             }            
-            }catch(...){cout << "exception occurs in backprop\n";}
             // calculate program output matrix Phi
             params.msg("Generating output for " + individuals[i].get_eqn(), 2);
             MatrixXd Phi = individuals.at(i).out(X, Z, params, y);            
@@ -140,11 +139,18 @@ namespace FT{
                 individuals[i].set_p(ml->get_weights(),params.feedback);
                 assign_fit(individuals[i],F,yhat,y,params);
 
-                /* if (params.hillclimb) */
-                /* { */
-                /*     HillClimb hc(params.hc.iters); */
-                /*     hc.run(individuals.at(i), X, y, z, params); */
-                /* } */
+                if (params.hillclimb)
+                {
+                    HillClimb hc(params.scorer, params.hc.iters, params.hc.step);
+                    bool updated = false;
+                    shared_ptr<CLabels> yhat2 = hc.run(individuals.at(i), X, y, Z, params,
+                                          updated);
+                    if (updated)    // update the fitness of this individual
+                    {
+                        assign_fit(individuals[i], F, yhat2, y, params);
+                    }
+
+                }
             }
         }
     }    
