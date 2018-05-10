@@ -519,7 +519,7 @@ namespace FT{
         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_v;
         
         train_test_split(X,y,Z,X_t,X_v,y_t,y_v,Z_t,Z_v,params.shuffle, params.split);
-        
+         
         if (params.classification) 
             params.set_sample_weights(y_t); 
        
@@ -658,7 +658,9 @@ namespace FT{
 
         shared_ptr<CLabels> yhat = p_ml->fit(Phi, y, params, pass, best_ind.dtypes);
         VectorXd tmp;
-        double score = p_eval->score(y,yhat,tmp,params.sample_weights);
+        /* params.set_sample_weights(y);   // need to set new sample weights for y, */ 
+                                        // which is probably from a validation set
+        double score = p_eval->score(y,yhat,tmp,params.class_weights);
         params.msg("final_model score: " + std::to_string(score),1);
     }
     
@@ -673,12 +675,12 @@ namespace FT{
         // set terminal weights based on model
         params.set_term_weights(p_ml->get_weights());
         VectorXd tmp;
-        best_score = p_eval->score(y_t, yhat,tmp, params.sample_weights);
+        best_score = p_eval->score(y_t, yhat,tmp, params.class_weights);
         
         if (params.split < 1.0)
         {
             shared_ptr<CLabels> yhat_v = p_ml->predict(X_v);
-            best_score_v = p_eval->score(y_v, yhat_v,tmp, params.sample_weights); 
+            best_score_v = p_eval->score(y_v, yhat_v,tmp, params.class_weights); 
         }
         else
             best_score_v = best_score;
@@ -796,6 +798,7 @@ namespace FT{
     {
         double bs;
         bs = validation ? best_score_v : best_score ; 
+        
         if (use_arch && validation)
         {
             for (const auto& i: arch.archive)
@@ -831,7 +834,7 @@ namespace FT{
     {
         shared_ptr<CLabels> labels = predict_labels(X, Z);
         VectorXd loss; 
-        return p_eval->score(y,labels,loss,params.sample_weights);
+        return p_eval->score(y,labels,loss,params.class_weights);
 
         /* if (params.classification) */
         /*     return p_eval->bal_accuracy(y,yhat,vector<int>(),false); */

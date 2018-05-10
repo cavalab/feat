@@ -18,7 +18,7 @@ namespace FT{
      */
     class Individual{
     public:        
-        NodeVector program;                            ///< executable data structure
+        NodeVector program;                         ///< executable data structure
         double fitness;             				///< aggregate fitness score
         size_t loc;                 				///< index of individual in semantic matrix F
         string eqn;                 				///< symbolic representation of program
@@ -30,7 +30,10 @@ namespace FT{
         vector<unsigned int> dominated;             ///< individual indices this dominates
         unsigned int rank;                          ///< pareto front rank
         float crowd_dist;                           ///< crowding distance on the Pareto front
-        
+        unsigned int c;                             ///< the complexity of the program.    
+        vector<char> dtypes;                        ///< the data types of each column of the 
+                                                      // program output
+       
         
         Individual(){c = 0; dim = 0; eqn="";}
 
@@ -79,6 +82,7 @@ namespace FT{
         
         /// calculate program complexity. 
         unsigned int complexity();
+        unsigned int get_complexity() const {return c;};
       
         /// find root locations in program.
         /* vector<size_t> roots(); */
@@ -120,8 +124,6 @@ namespace FT{
         /// get probability of variation for program locations locs
         vector<double> get_p(const vector<size_t>& locs); 
 
-        unsigned int c;            ///< the complexity of the program.    
-        vector<char> dtypes;       ///< the data types of each column of the program output
     
         /// set probabilities
         void set_p(const vector<double>& weights, const double& fb);

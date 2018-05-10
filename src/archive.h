@@ -29,13 +29,13 @@ namespace FT{
         /// Sort population in increasing complexity.
         static bool sortComplexity(Individual& lhs, Individual& rhs)
         {
-            return lhs.complexity() < rhs.complexity();
+            return lhs.get_complexity() < rhs.get_complexity();
         }
 
         static bool sameFitComplexity(Individual& lhs, Individual& rhs)
         {
             return (lhs.fitness == rhs.fitness &&
-                   lhs.complexity() == rhs.complexity());
+                   lhs.get_complexity() == rhs.get_complexity());
         }
 
         void init(Population& pop) 
@@ -70,8 +70,10 @@ namespace FT{
           
             archive.resize(0);  // clear archive
             for (const auto& i : pf)   // refill archive with new pareto front
+            {
                 archive.push_back(tmp.at(i));
-             
+                archive[archive.size()-1].complexity();
+            }
             std::sort(archive.begin(),archive.end(),&sortComplexity); 
             auto it = std::unique(archive.begin(),archive.end(), &sameFitComplexity);
             archive.resize(std::distance(archive.begin(),it));
