@@ -4,11 +4,13 @@ language: cpp
   
 addons:
   apt:
-    sources:
+      update: true
+    
+  sources:
         # Newer GCC
         #- george-edison55-precise-backports
         - ubuntu-toolchain-r-test
-    packages:
+  packages:
         #        - cmake 
         #        - cmake-data
         #        - gcc-5

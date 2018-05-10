@@ -1,9 +1,9 @@
-/* FEWTWO
+/* FEAT
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
-#ifndef FEWTWO_H
-#define FEWTWO_H
+#ifndef FEAT_H
+#define FEAT_H
 
 //external includes
 #include <iostream>
