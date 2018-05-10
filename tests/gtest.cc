@@ -775,7 +775,7 @@ TEST(Variation, MutationTests)
     
     feat.F.resize(X.cols(),int(2*feat.params.pop_size));
     
-    feat.p_eval->fitness(*(feat.p_pop),X,z, y,feat.F,feat.params);
+    feat.p_eval->fitness(feat.p_pop->individuals,X,z, y,feat.F,feat.params);
     
     vector<size_t> parents;
     parents.push_back(2);
@@ -849,7 +849,7 @@ TEST(Variation, CrossoverTests)
     
     feat.F.resize(X.cols(),int(2*feat.params.pop_size));
     
-    feat.p_eval->fitness(*(feat.p_pop),X,z, y,feat.F,feat.params);
+    feat.p_eval->fitness(feat.p_pop->individuals,X,z, y,feat.F,feat.params);
     
     vector<size_t> parents;
     parents.push_back(2);
@@ -1458,7 +1458,7 @@ TEST(Evaluation, fitness)
     // get fitness
     Evaluation eval("mse"); 
 
-    eval.fitness(pop, X, z, y, F, params);
+    eval.fitness(pop.individuals, X, z, y, F, params);
     
     // check results
     cout << pop.individuals[0].fitness << " , should be near zero\n";
@@ -1571,7 +1571,7 @@ TEST(Selection, SelectionOperator)
     feat.p_pop->init(feat.best_ind, feat.params);
     
     feat.F.resize(X_t.cols(),int(2*feat.params.pop_size));
-    feat.p_eval->fitness(*(feat.p_pop), X_t, Z_t, y_t, feat.F, feat.params);
+    feat.p_eval->fitness(feat.p_pop->individuals, X_t, Z_t, y_t, feat.F, feat.params);
     vector<size_t> parents = feat.p_sel->select(*(feat.p_pop), feat.F, feat.params);
     
     ASSERT_EQ(parents.size(), feat.get_pop_size());

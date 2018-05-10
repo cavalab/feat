@@ -275,21 +275,21 @@ namespace FT {
                     || min_loss <= NEAR_ZERO)
                 break;
 
-            /* if (ml->N.scale.size() == 0) */
-            /* { */
-            /*     cout << "N.scale is zero\n"; */
-            /*     cout << "Beta: "; */
-            /*     for (auto b : Beta) cout << b << " " ; */ 
-            /*     cout << "\n"; */
-            /*     cout << "Phi: " ; */ 
-            /*     cout << Phi.transpose() << "\n;"; */
-            /*     cout << "ind.dtypes: "; */
-            /*     for (auto d : ind.dtypes) cout << d << " "; */
-            /*     cout << "\n"; */
-            /*     cout << "yhat: "; */
-            /*     auto yyhat = ml->labels_to_vector(yhat); */
-            /*     cout << yyhat.transpose() << "\n"; */
-            /* } */
+            if (ml->N.scale.size() == 0)
+            {
+                cout << "N.scale is zero\n";
+                cout << "Beta: ";
+                for (auto b : Beta) cout << b << " " ; 
+                cout << "\n";
+                cout << "Phi: " ; 
+                cout << Phi.transpose() << "\n;";
+                cout << "ind.dtypes: ";
+                for (auto d : ind.dtypes) cout << d << " ";
+                cout << "\n";
+                cout << "yhat: ";
+                auto yyhat = ml->labels_to_vector(yhat);
+                cout << yyhat.transpose() << "\n";
+            }
             // Evaluate backward pass
             size_t s = 0;
             for (int i = 0; i < stack_f.size(); ++i)
@@ -301,7 +301,7 @@ namespace FT {
                          Beta.at(s)/ml->N.scale.at(s), yhat,
                          Xb, yb, Zb, params.sample_weights);
             }
-            // update learning ratA
+            // update learning rate
             double alpha = double(x)/double(iters);
             this->epk = (1 - alpha)*this->epk + alpha*this->epT;  
             /* this->epk = this->epk + this->epT; */ 
