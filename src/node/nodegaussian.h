@@ -41,7 +41,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-                stack.fs.push("exp(-(" + stack.fs.pop() + " ^ 2))");
+                stack.fs.push("exp(-(" + stack.fs.pop() + ")^2)");
             }
 
             ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {

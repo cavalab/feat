@@ -60,7 +60,6 @@ namespace FT {
 			/* this->labels = labels; */
 			this->iters = iters;
 			this->n = n;
-            this->epk = n;
             this->epT = 0.01*this->n;   // min learning rate
 			this->a = a;
 		}
@@ -235,6 +234,7 @@ namespace FT {
         // batch data
         MatrixXd Xb; VectorXd yb;
         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Zb;
+        this->epk = n;  // starting learning rate
         params.msg("running backprop on " + ind.get_eqn(), 2);
         params.msg("=========================",2);
         params.msg("Iteration,Loss,Weights",2);
@@ -301,9 +301,11 @@ namespace FT {
                          Beta.at(s)/ml->N.scale.at(s), yhat,
                          Xb, yb, Zb, params.sample_weights);
             }
-            // update learning rate
-            this->epk = double(1-x/iters)*this->epk + double(x/iters)*this->epT; 
-            cout << "epk: " << this->epk << "\n";
+            // update learning ratA
+            double alpha = double(x)/double(iters);
+            this->epk = (1 - alpha)*this->epk + alpha*this->epT;  
+            /* this->epk = this->epk + this->epT; */ 
+            /* cout << "epk: " << this->epk << "\n"; */
         }
         params.msg("",2);
         params.msg("=========================",2);

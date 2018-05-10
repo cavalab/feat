@@ -536,10 +536,10 @@ namespace FT{
         p_pop->init(best_ind,params);
         params.msg("Initial population:\n"+p_pop->print_eqns(),2);
 
-        if (use_arch){
-            params.msg("Initializing archive...",2);
-            arch.init(*p_pop);
-        }
+        /* if (use_arch){ */
+            /* params.msg("Initializing archive...",2); */
+            /* arch.init(*p_pop); */
+        /* } */
         // resize F to be twice the pop-size x number of samples
         F.resize(X_t.cols(),int(2*params.pop_size));
        
