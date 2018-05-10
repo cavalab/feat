@@ -33,11 +33,11 @@ export SHOGUN_DIR=/home/travis/miniconda/include/
 echo "installing cython using conda..."
 conda install --yes cython
 
-# echo "installing scikit-learn via conda..."
-# conda install --yes scikit-learn
+echo "installing scikit-learn via conda..."
+conda install --yes scikit-learn
 
-# echo "installing pandas via conda..."
-# conda install --yes pandas
+echo "installing pandas via conda..."
+conda install --yes pandas
 
 #building and installing google tests
 echo "installing google test"
