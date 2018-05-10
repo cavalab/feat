@@ -29,7 +29,7 @@ namespace FT{
         /// Sort population in increasing complexity.
         static bool sortComplexity(Individual& lhs, Individual& rhs)
         {
-            return lhs.get_complexity() < rhs.get_complexity();
+            return lhs.c < rhs.c;
         }
 
         static bool sameFitComplexity(Individual& lhs, Individual& rhs)
