@@ -9,6 +9,8 @@ license: GNU/GPL v3
 #include "selection/selection_operator.h"
 #include "selection/lexicase.h"
 #include "selection/nsga2.h"
+#include "selection/offspring.h"
+
 namespace FT{
     struct Parameters; // forward declaration of Parameters       
     ////////////////////////////////////////////////////////////////////////////////// Declarations
@@ -32,6 +34,8 @@ namespace FT{
                 pselector = std::make_shared<Lexicase>(survival); 
             else if (!type.compare("nsga2"))
                 pselector = std::make_shared<NSGA2>(survival);
+            else if (!type.compare("offspring"))    // offspring survival
+                pselector = std::make_shared<Offspring>(survival);
             else
                 std::cerr << "Undefined Selection Operator " + type + "\n";
                 
