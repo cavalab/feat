@@ -68,7 +68,7 @@ namespace FT{
          *
          * Output:
          *
-         *      selected: vector of indices corresponding to columns of F that are selected.
+         *      selected: vector of indices corresponding to pop that are selected.
          *      modifies individual ranks, objectives and dominations.
          */
         

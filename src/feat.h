@@ -255,16 +255,31 @@ namespace FT{
                 string r="complexity,fitness,eqn\n";
                 if (front)  // only return individuals on the Pareto front
                 {
-                    // printing individuals from the pareto front
-                    unsigned n = 1;
-                    vector<size_t> f = p_pop->sorted_front(n);
-                   
-                    
-                    for (unsigned j = 0; j < f.size(); ++j)
-                    {          
-                        r += std::to_string(p_pop->individuals[f[j]].complexity()) + "," 
-                            + std::to_string((*p_pop)[f[j]].fitness) + "," 
-                            + p_pop->individuals[f[j]].get_eqn() + "\n";  
+                    if (use_arch)
+                    {
+                        // printing individuals from the archive 
+                        unsigned n = 1;
+                        
+                        for (auto& a : arch.archive)
+                        {          
+                            r += std::to_string(a.complexity()) + "," 
+                                + std::to_string(a.fitness) + "," 
+                                + a.get_eqn() + "\n";  
+                        }
+                    }
+                    else
+                    {
+                        // printing individuals from the pareto front
+                        unsigned n = 1;
+                        vector<size_t> f = p_pop->sorted_front(n);
+                       
+                        
+                        for (unsigned j = 0; j < f.size(); ++j)
+                        {          
+                            r += std::to_string(p_pop->individuals[f[j]].complexity()) + "," 
+                                + std::to_string((*p_pop)[f[j]].fitness) + "," 
+                                + p_pop->individuals[f[j]].get_eqn() + "\n";  
+                        }
                     }
                 }
                 else
@@ -572,11 +587,11 @@ namespace FT{
             else
                 printProgress(((g+1)*1.0)/params.gens);
             
-            if (params.backprop)
-            {
-                params.bp.learning_rate = (1-1/(1+double(params.gens)))*params.bp.learning_rate;
-                params.msg("learning rate: " + std::to_string(params.bp.learning_rate),2);
-            }
+            /* if (params.backprop) */
+            /* { */
+            /*     params.bp.learning_rate = (1-1/(1+double(params.gens)))*params.bp.learning_rate; */
+            /*     params.msg("learning rate: " + std::to_string(params.bp.learning_rate),2); */
+            /* } */
                 //cout<<"\rCompleted "<<((g+1)*100/params.gens)<<"%"<< std::flush;
         }
         cout<<"\n";
@@ -848,19 +863,35 @@ namespace FT{
         std::cout << std::scientific;
         // printing 10 individuals from the pareto front
         unsigned n = 1;
-        vector<size_t> f = p_pop->sorted_front(n);
-        vector<size_t> fnew(2,0);
-        while (f.size() < num_models && fnew.size()>1)
+        if (use_arch)
         {
-            fnew = p_pop->sorted_front(++n);                
-            f.insert(f.end(),fnew.begin(),fnew.end());
+            num_models = std::min(20, int(arch.archive.size()));
+
+            for (unsigned i = 0; i < num_models; ++i)
+            {
+                
+                std::cout <<  arch.archive[i].rank << "\t" 
+                          <<  arch.archive[i].complexity() << "\t" 
+                          <<  arch.archive[i].fitness << "\t" 
+                          <<  arch.archive[i].get_eqn() << "\n";  
+            }
         }
-        
-        for (unsigned j = 0; j < std::min(num_models,unsigned(f.size())); ++j)
-        {          
-            std::cout << p_pop->individuals[f[j]].rank << "\t" 
-                      <<  p_pop->individuals[f[j]].complexity() << "\t" << (*p_pop)[f[j]].fitness 
-                      << "\t" << p_pop->individuals[f[j]].get_eqn() << "\n";  
+        else
+        {
+            vector<size_t> f = p_pop->sorted_front(n);
+            vector<size_t> fnew(2,0);
+            while (f.size() < num_models && fnew.size()>1)
+            {
+                fnew = p_pop->sorted_front(++n);                
+                f.insert(f.end(),fnew.begin(),fnew.end());
+            }
+            
+            for (unsigned j = 0; j < std::min(num_models,unsigned(f.size())); ++j)
+            {          
+                std::cout << p_pop->individuals[f[j]].rank << "\t" 
+                          <<  p_pop->individuals[f[j]].complexity() << "\t" << (*p_pop)[f[j]].fitness 
+                          << "\t" << p_pop->individuals[f[j]].get_eqn() << "\n";  
+            }
         }
        
        
