@@ -1,8 +1,12 @@
 
 echo "installing cmake"
-sudo add-apt-repository -y ppa:george-edison55/cmake-3.x
-sudo apt-get update -y
+# sudo add-apt-repository -y ppa:george-edison55/cmake-3.x
+# sudo apt-get update -y
 sudo apt-get install cmake
+echo "cmake version:"
+cmake --version
+echo "sudo cmake version:"
+sudo cmake --version
 
 echo "installing eigen..."
 wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"
