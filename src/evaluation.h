@@ -97,7 +97,6 @@ namespace FT{
          *      pop[:].fitness is modified
          */
         
-        
         unsigned start =0;
         if (offspring) start = F.cols()/2;
 
@@ -105,14 +104,15 @@ namespace FT{
         #pragma omp parallel for
         for (unsigned i = start; i<individuals.size(); ++i)
         {
-            
+            try
+            {
             if (params.backprop)
             {
                 AutoBackProp backprop(params.scorer, params.bp.iters, params.bp.learning_rate);
                 params.msg("Running backprop on " + individuals[i].get_eqn(), 2);
                 backprop.run(individuals[i], X, y, Z, params);
             }            
-
+            }catch(...){cout << "exception occurs in backprop\n";}
             // calculate program output matrix Phi
             params.msg("Generating output for " + individuals[i].get_eqn(), 2);
             MatrixXd Phi = individuals.at(i).out(X, Z, params, y);            
@@ -146,9 +146,7 @@ namespace FT{
                 /*     hc.run(individuals.at(i), X, y, z, params); */
                 /* } */
             }
-
-                            
-            }
+        }
     }    
     
     // assign fitness to program
