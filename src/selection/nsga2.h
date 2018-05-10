@@ -141,7 +141,7 @@ namespace FT{
         while ( selected.size() + front[i].size() < params.pop_size)
         {
             std::vector<int>& Fi = front[i];        // indices in front i
-            //crowding_distance(i);                   // calculate crowding in Fi
+            crowding_distance(pop,i);                   // calculate crowding in Fi
 
             for (int j = 0; j < Fi.size(); ++j)     // Pt+1 = Pt+1 U Fi
                 selected.push_back(Fi[j]);
