@@ -535,12 +535,17 @@ namespace FT{
     void Parameters::set_sample_weights(VectorXd& y)
     {
         // set class weights
+        cout << "setting sample weights\n";
         class_weights.resize(n_classes);
         sample_weights.clear();
-        for (unsigned i = 0; i < n_classes; ++i)
-            class_weights.at(i) = float(n_classes*(y.cast<int>().array() == int(classes.at(i))).count())/y.size(); 
+        for (unsigned i = 0; i < n_classes; ++i){
+            class_weights.at(i) = float((y.cast<int>().array() == int(classes.at(i))).count())/y.size(); 
+            class_weights.at(i) = (1 - class_weights.at(i))*float(n_classes);
+        }
+        cout << "y size: " << y.size() << "\n";
         for (unsigned i = 0; i < y.size(); ++i)
             sample_weights.push_back(class_weights.at(int(y(i))));
+        std::cout << "sample weights size: " << sample_weights.size() << "\n";
         std::cout << "class weights: "; 
         for (auto c : class_weights) std::cout << c << " " ; std::cout << "\n";
         std::cout << "number of classes: " << n_classes << "\n";

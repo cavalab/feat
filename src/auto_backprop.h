@@ -254,7 +254,7 @@ namespace FT {
 
             shared_ptr<CLabels> yhat = ml->fit(Phi,yb,params,pass,ind.dtypes);
             vector<double> Beta = ml->get_weights();
-            current_loss = this->cost_func(yb,yhat, params.sample_weights).mean();
+            current_loss = this->cost_func(yb,yhat, params.class_weights).mean();
 
             if (params.verbosity>1)
             {
@@ -262,7 +262,7 @@ namespace FT {
                  << current_loss << ",";
                   print_weights(ind.program);
             }
-                 /* << this->d_cost_func(y, yhat, params.sample_weights).std() << "\n"; */ 
+                 /* << this->d_cost_func(y, yhat, params.class_weights).std() << "\n"; */ 
             if (x==0 || current_loss < min_loss)
             {
                 min_loss = current_loss;
@@ -301,7 +301,7 @@ namespace FT {
                 
                 backprop(stack_f.at(i), ind.program, ind.program.subtree(roots.at(s)), roots.at(s), 
                      Beta.at(s)/ml->N.scale.at(s), yhat,
-                     Xb, yb, Zb, params.sample_weights);
+                     Xb, yb, Zb, params.class_weights);
             }
             // update learning rate
             double alpha = double(x)/double(iters);

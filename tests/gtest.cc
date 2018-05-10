@@ -1384,14 +1384,15 @@ TEST(Evaluation, multi_log_loss)
 					0.2686577572168724,0.449670901690872,0.2816713410922557;
     
     cout << "running multi_log_loss\n";
-	/* vector<float> weights = {0.4*3.0, 0.4*3.0, 0.3*3.0}; */
-	vector<float> weights; 
-    for (int i = 0; i < y.size(); ++i)
-        weights.push_back(1.0);
+	vector<float> weights = {(1-0.4)*3.0, (1-0.4)*3.0, (1-0.3)*3.0};
+	/* vector<float> weights; */ 
+    /* for (int i = 0; i < y.size(); ++i) */
+        /* weights.push_back(1.0); */
+
     double score = metrics::mean_multi_log_loss(y, confidences, loss, weights);
     cout << "assertion\n";
 
-    ASSERT_EQ(((int)(score*100000)),61236);
+    ASSERT_EQ(((int)(score*100000)),62344);
 }
 TEST(Evaluation, fitness)
 {
