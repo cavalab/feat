@@ -587,11 +587,11 @@ namespace FT{
             else
                 printProgress(((g+1)*1.0)/params.gens);
             
-            /* if (params.backprop) */
-            /* { */
-            /*     params.bp.learning_rate = (1-1/(1+double(params.gens)))*params.bp.learning_rate; */
-            /*     params.msg("learning rate: " + std::to_string(params.bp.learning_rate),2); */
-            /* } */
+            if (params.backprop)
+            {
+                params.bp.learning_rate = (1-1/(1+double(params.gens)))*params.bp.learning_rate;
+                params.msg("learning rate: " + std::to_string(params.bp.learning_rate),2);
+            }
                 //cout<<"\rCompleted "<<((g+1)*100/params.gens)<<"%"<< std::flush;
         }
         cout<<"\n";
