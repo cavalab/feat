@@ -83,11 +83,12 @@ namespace FT{
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
                    bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
                    double split=0.75, double fb=0.5, string scorer="", string feature_names="",
-                   bool backprop=false,int iters=10, double lr=0.1, int bs=100, int n_threads=0):
+                   bool backprop=false,int iters=10, double lr=0.1, int bs=100, int n_threads=0,
+                   bool hillclimb=false):
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
                              functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, 
-                             fb, scorer, feature_names, backprop, iters, lr, bs), 
+                             fb, scorer, feature_names, backprop, iters, lr, bs, hillclimb), 
                       p_sel( make_shared<Selection>(sel) ),
                       p_surv( make_shared<Selection>(surv, true) ),
                       p_variation( make_shared<Variation>(cross_rate) )                      
@@ -175,10 +176,11 @@ namespace FT{
             
             void set_feature_names(string s){params.set_feature_names(s);}
             void set_feature_names(vector<string>& s){params.feature_names = s;}
- 
-            ///set name for files
+
+            /// set constant optimization options
             void set_backprop(bool bp){params.backprop=bp;}
-            void set_iters(int iters){params.bp.iters = iters;}
+            void set_hillclimb(bool hc){params.hillclimb=hc;}
+            void set_iters(int iters){params.bp.iters = iters; params.hc.iters=iters;}
             void set_lr(double lr){params.bp.learning_rate = lr;}
             void set_batch_size(int bs){params.bp.batch_size = bs;}
              

@@ -100,8 +100,9 @@ int main(int argc, char** argv){
         cout << "-ldata\tpath to longitudinal data file\n";
         cout << "-scorer\tscoring function [mse, zero_one, bal_zero_one, log, multi_log]\n"; 
         cout << "-bp\tbackpropagation iterations (zero)\n"; 
-        cout << "-lr\tbackpropagation learning rate (zero)\n"; 
-        cout << "-batch\tbatch size for stochastic gradient descent\n"; 
+        cout << "-hc\tstochastic hill climbing iterations (zero)\n"; 
+        cout << "-lr\tbackpropagation learning rate or hill climbing step size(zero)\n"; 
+        cout << "-batch\tminibatch size for stochastic gradient descent\n"; 
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
     }
@@ -159,6 +160,11 @@ int main(int argc, char** argv){
         feat.set_backprop(true);
         feat.set_iters(std::stoi(input.getCmdOption("-bp")));
     }
+    if(input.cmdOptionExists("-hc"))
+    {
+        feat.set_hillclimb(true);
+        feat.set_iters(std::stoi(input.getCmdOption("-hc")));
+    }   
     if(input.cmdOptionExists("-lr"))
         feat.set_lr(std::stod(input.getCmdOption("-lr")));
     if(input.cmdOptionExists("-batch"))

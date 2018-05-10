@@ -27,12 +27,12 @@ namespace FT{
         Archive() : selector(true) {}
 
         /// Sort population in increasing complexity.
-        static bool sortComplexity(Individual& lhs, Individual& rhs)
+        static bool sortComplexity(const Individual& lhs, const Individual& rhs) 
         {
             return lhs.c < rhs.c;
         }
 
-        static bool sameFitComplexity(Individual& lhs, Individual& rhs)
+        static bool sameFitComplexity(const Individual& lhs, const Individual& rhs) 
         {
             return (lhs.fitness == rhs.fitness &&
                    lhs.get_complexity() == rhs.get_complexity());
