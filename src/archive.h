@@ -45,7 +45,10 @@ namespace FT{
            /* vector<size_t> front = this->sorted_front(); */
            for (const auto& t : tmp )
            {
-               if (t.rank ==1) archive.push_back(t);
+               if (t.rank ==1){
+                   archive.push_back(t);
+                   archive[archive.size()-1].complexity();
+               }
            } 
            cout << "intializing archive with " << archive.size() << " inds\n"; 
 
