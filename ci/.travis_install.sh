@@ -1,4 +1,3 @@
-
 echo "installing cmake"
 # sudo add-apt-repository -y ppa:george-edison55/cmake-3.x
 # sudo apt-get update -y
@@ -77,7 +76,6 @@ cd ./python
 python setup.py install
 
 #_____Run the Python Tests for the wrapper_____#
-
 
 echo "copying wrapper test to the python folder"
 cd ../tests
