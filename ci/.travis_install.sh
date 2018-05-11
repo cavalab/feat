@@ -78,6 +78,5 @@ python setup.py install
 #_____Run the Python Tests for the wrapper_____#
 
 echo "copying wrapper test to the python folder"
-cd ../tests
-sudo cp wrappertest.py ../python/ #Copy the file to python folder
+sudo cp ../tests/wrappertest.py ./ #Copy the file to python folder
 
