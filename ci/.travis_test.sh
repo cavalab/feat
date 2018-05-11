@@ -2,6 +2,5 @@
 ./build/tests
 
 # python tests
-#python tests/wrappertest.py
+python python/wrappertest.py
 
-/home/travis/miniconda/bin/python wrappertest.py -v 0
