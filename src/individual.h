@@ -7,8 +7,8 @@ license: GNU/GPL v3
 
 #include "stack.h"
 #include "params.h"
-#include "boost/uuid/uuid.hpp"
-#include "boost/uuid/uuid_generators.hpp"
+/* #include "boost/uuid/uuid.hpp" */
+/* #include "boost/uuid/uuid_generators.hpp" */
 
 namespace FT{
     
@@ -34,11 +34,11 @@ namespace FT{
         float crowd_dist;                           ///< crowding distance on the Pareto front
         unsigned int c;                             ///< the complexity of the program.    
         vector<char> dtypes;                        ///< the data types of each column of the 
-                                                      // program output
-	    boost::uuids::uuid id; // uuid for graph database tracking
-        vector<boost::uuids::uuid> parent_id;
+                                                     // program output
+        unsigned id;                                ///< tracking id                                                     
+        vector<unsigned> parent_id;                 ///< ids of parents
        
-        Individual():id(boost::uuids::random_generator()()){c = 0; dim = 0; eqn="";}
+        Individual(){c = 0; dim = 0; eqn="";}
 
         /// calculate program output matrix Phi
         MatrixXd out(const MatrixXd& X, 
@@ -95,12 +95,12 @@ namespace FT{
             if (sameid)
                 cpy.id = id;
         }
-
+        void set_id(unsigned i) { id = i; }
         void set_parents(const vector<Individual>& parents)
         {
             parent_id.clear();
             for (const auto& p : parents)
-                parent_id.push_back(parents.id);
+                parent_id.push_back(p.id);
         }
         /// get probabilities of variation
         vector<double> get_p(){ return p; }     

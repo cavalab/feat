@@ -61,7 +61,7 @@ namespace FT{
                 
                 ml_type = params.ml;
                 prob_type = PT_REGRESSION;
-                max_train_time=60; 
+                max_train_time=5; 
                 normalize = norm;
                 if (params.classification)
                 { 
@@ -196,9 +196,20 @@ namespace FT{
             int max_train_time;                 ///< max seconds allowed for training
             bool normalize;                     ///< control whether ML normalizes its input before 
                                                 ///  training
+            /* double get_bias(int i) */
+            /* {   // get bias at feature i. only works with linear machines */
+            /*     auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_bias(); */
+            /*     if (i < tmp.size()) */
+            /*         return tmp[i]; */
+            /*     else */
+            /*     { */
+            /*         std::cerr << "ERROR: invalid location access in get_bias()\n"; */
+            /*         throw; */
+            /*     } */
+            /* } */
     };
 /////////////////////////////////////////////////////////////////////////////////////// Definitions
-
+    
     vector<double> ML::get_weights()
     {    
         /*!
