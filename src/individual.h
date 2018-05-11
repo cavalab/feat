@@ -7,6 +7,8 @@ license: GNU/GPL v3
 
 #include "stack.h"
 #include "params.h"
+#include "boost/uuid/uuid.hpp"
+#include "boost/uuid/uuid_generators.hpp"
 
 namespace FT{
     
@@ -33,9 +35,10 @@ namespace FT{
         unsigned int c;                             ///< the complexity of the program.    
         vector<char> dtypes;                        ///< the data types of each column of the 
                                                       // program output
+	    boost::uuids::uuid id; // uuid for graph database tracking
+        vector<boost::uuids::uuid> parent_id;
        
-        
-        Individual(){c = 0; dim = 0; eqn="";}
+        Individual():id(boost::uuids::random_generator()()){c = 0; dim = 0; eqn="";}
 
         /// calculate program output matrix Phi
         MatrixXd out(const MatrixXd& X, 
@@ -84,38 +87,20 @@ namespace FT{
         unsigned int complexity();
         unsigned int get_complexity() const {return c;};
       
-        /// find root locations in program.
-        /* vector<size_t> roots(); */
-        
-        /// check if differentiable node    
-        /* bool isNodeDx(Node* n){ return NULL != dynamic_cast<NodeDx*>(n); ; } */
-        
-        /* bool isNodeDx(const std::unique_ptr<Node>& n) */ 
-        /* { */
-        /*     Node * tmp = n.get(); */
-        /*     bool answer = isNodeDx(tmp); */ 
-        /*     tmp = nullptr; */
-        /*     return answer; */
-        /* } */
-        ///// get weighted probabilities
-        //vector<double> get_w(){ return w;}
-        ///// get weight probability for program location i 
-        //double get_w(const size_t i);
-        ///// set weighted probabilities
-        //void set_w(vector<double>& weights);
-
-        /// make a deep copy of the underlying program 
-        /* void program_copy(vector<std::unique_ptr<Node>>& cpy) const */
-        /* { */
-        /*     cpy.clear(); */
-        /*     for (const auto& p : program) */
-        /*         cpy.push_back(p->clone()); */
-        /* } */
         /// clone this individual 
-        void clone(Individual& cpy)
+        void clone(Individual& cpy, bool sameid=true)
         {
             cpy.program = program;
             cpy.p = p;
+            if (sameid)
+                cpy.id = id;
+        }
+
+        void set_parents(const vector<Individual>& parents)
+        {
+            parent_id.clear();
+            for (const auto& p : parents)
+                parent_id.push_back(parents.id);
         }
         /// get probabilities of variation
         vector<double> get_p(){ return p; }     
