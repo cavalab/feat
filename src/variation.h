@@ -94,7 +94,7 @@ namespace FT{
          *
          * @return  appends params.pop_size offspring derived from parent variation
          */
-              unsigned start= pop.size();
+        unsigned start= pop.size();
         pop.resize(2*params.pop_size);
         #pragma omp parallel for
         for (unsigned i = start; i<pop.size(); ++i)
@@ -103,7 +103,8 @@ namespace FT{
    
             while (!pass)
             {
-                Individual child;           // new individual
+                Individual child; // new individual
+                child.set_id(params.current_gen*params.pop_size+i-start);           
 
                 if ( r() < cross_rate)      // crossover
                 {
