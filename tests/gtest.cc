@@ -775,7 +775,7 @@ TEST(Variation, MutationTests)
     
     feat.F.resize(X.cols(),int(2*feat.params.pop_size));
     
-    feat.p_eval->fitness(*(feat.p_pop),X,z, y,feat.F,feat.params);
+    feat.p_eval->fitness(feat.p_pop->individuals,X,z, y,feat.F,feat.params);
     
     vector<size_t> parents;
     parents.push_back(2);
@@ -849,7 +849,7 @@ TEST(Variation, CrossoverTests)
     
     feat.F.resize(X.cols(),int(2*feat.params.pop_size));
     
-    feat.p_eval->fitness(*(feat.p_pop),X,z, y,feat.F,feat.params);
+    feat.p_eval->fitness(feat.p_pop->individuals,X,z, y,feat.F,feat.params);
     
     vector<size_t> parents;
     parents.push_back(2);
@@ -964,8 +964,9 @@ TEST(Parameters, ParamsTests)
                       false,                            // backprop
                       0,                                // backprop iterations
                       0.1,                              // iterations
-                      1                                // batch size
-                      );
+                      1,                                // batch size
+                      false                             // hill climbing
+                          );
 					  
 	params.set_max_dim(12);
 	ASSERT_EQ(params.max_dim, 12);
@@ -1127,8 +1128,9 @@ TEST(Evaluation, mse)
                   false,                            // backprop
                   0,                                // backprop iterations
                   0.1,                              // iterations
-                  1                                // batch size
-                  );
+                  1,                                // batch size
+                  false                             // hill climbing
+                      );
 	
     VectorXd yhat(10), y(10), res(10);
 	yhat << 0.0,
@@ -1203,8 +1205,9 @@ TEST(Evaluation, bal_accuracy)
               false,                            // backprop
               0,                                // backprop iterations
               0.1,                              // iterations
-              1                                // batch size
-              );
+              1,                                // batch size
+              false                             // hill climbing
+                  );
 	
     VectorXd yhat(10), y(10), res(10), loss(10);
 	
@@ -1280,8 +1283,9 @@ TEST(Evaluation, log_loss)
               false,                            // backprop
               0,                                // backprop iterations
               0.1,                              // iterations
-              1                                // batch size
-              );
+              1,                                // batch size
+              false                             // hill climbing
+                  );
 	
     VectorXd yhat(10), y(10), loss(10);
     ArrayXXd confidences(10,2);
@@ -1352,8 +1356,9 @@ TEST(Evaluation, multi_log_loss)
               false,                            // backprop
               0,                                // backprop iterations
               0.1,                              // iterations
-              1                                // batch size
-              );                           //scoring function
+              1,                                // batch size
+              false                             // hill climbing
+                  );                           //scoring function
 	
     VectorXd y(10), loss(10);
     ArrayXXd confidences(10,3);
@@ -1384,14 +1389,15 @@ TEST(Evaluation, multi_log_loss)
 					0.2686577572168724,0.449670901690872,0.2816713410922557;
     
     cout << "running multi_log_loss\n";
-	/* vector<float> weights = {0.4*3.0, 0.4*3.0, 0.3*3.0}; */
-	vector<float> weights; 
-    for (int i = 0; i < y.size(); ++i)
-        weights.push_back(1.0);
+	vector<float> weights = {(1-0.4)*3.0, (1-0.4)*3.0, (1-0.3)*3.0};
+	/* vector<float> weights; */ 
+    /* for (int i = 0; i < y.size(); ++i) */
+        /* weights.push_back(1.0); */
+
     double score = metrics::mean_multi_log_loss(y, confidences, loss, weights);
     cout << "assertion\n";
 
-    ASSERT_EQ(((int)(score*100000)),61236);
+    ASSERT_EQ(((int)(score*100000)),62344);
 }
 TEST(Evaluation, fitness)
 {
@@ -1416,8 +1422,9 @@ TEST(Evaluation, fitness)
                       false,                            // backprop
                       0,                                // backprop iterations
                       0.1,                              // iterations
-                      1                                // batch size
-                      );
+                      1,                                // batch size
+                      false                             // hill climbing
+                          );
                         
 	MatrixXd X(10,1); 
     X << 0.0,  
@@ -1458,7 +1465,7 @@ TEST(Evaluation, fitness)
     // get fitness
     Evaluation eval("mse"); 
 
-    eval.fitness(pop, X, z, y, F, params);
+    eval.fitness(pop.individuals, X, z, y, F, params);
     
     // check results
     cout << pop.individuals[0].fitness << " , should be near zero\n";
@@ -1490,8 +1497,9 @@ TEST(Evaluation, out_ml)
                       false,                            // backprop
                       0,                                // backprop iterations
                       0.1,                              // iterations
-                      1                                // batch size
-                      );
+                      1,                                // batch size
+                      false                             // hill climbing
+                          );
 	MatrixXd X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
@@ -1571,7 +1579,7 @@ TEST(Selection, SelectionOperator)
     feat.p_pop->init(feat.best_ind, feat.params);
     
     feat.F.resize(X_t.cols(),int(2*feat.params.pop_size));
-    feat.p_eval->fitness(*(feat.p_pop), X_t, Z_t, y_t, feat.F, feat.params);
+    feat.p_eval->fitness(feat.p_pop->individuals, X_t, Z_t, y_t, feat.F, feat.params);
     vector<size_t> parents = feat.p_sel->select(*(feat.p_pop), feat.F, feat.params);
     
     ASSERT_EQ(parents.size(), feat.get_pop_size());

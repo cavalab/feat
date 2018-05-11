@@ -1,4 +1,4 @@
-/* FEWTWO
+/* FEAT
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
@@ -41,7 +41,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-                stack.fs.push("1/(1+exp(-1*" + stack.fs.pop() + "))");
+                stack.fs.push("1/(1+exp(-" + stack.fs.pop() + "))");
             }
 
             ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {

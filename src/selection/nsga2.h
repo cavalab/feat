@@ -14,19 +14,22 @@ namespace FT{
     {
         /** NSGA-II based selection and survival methods. */
 
-        NSGA2(bool surv){ name = "nsga2"; survival = surv; };
+        NSGA2(bool surv){ name = "nsga2"; survival = surv; gen = 0;};
         
         ~NSGA2(){}
 
         /// selection according to the survival scheme of NSGA-II
+        vector<size_t> select(Population& pop, const MatrixXd& F, const Parameters& p);
+        /// survival according to the survival scheme of NSGA-II
         vector<size_t> survive(Population& pop, const MatrixXd& F, const Parameters& p);
 
-        private:
-            vector<vector<int>> front;                //< the Pareto fronts
-            void fast_nds(Population&);               //< Fast non-dominated sorting 
-            void crowding_distance(Population&, int); //< crowding distance of a front i
+        vector<vector<int>> front;                //< the Pareto fronts
+        void fast_nds(vector<Individual>&);               //< Fast non-dominated sorting 
+        void crowding_distance(Population&, int); //< crowding distance of a front i
             
-           
+        private:    
+            int gen;        //> keeps track of current generation
+
             /// sort based on rank, breaking ties with crowding distance
             struct sort_n 
             {
@@ -53,9 +56,60 @@ namespace FT{
                     : pop(population), m(index) {};
                 bool operator() (int i, int j) { return pop[i].obj[m] < pop[j].obj[m]; };
             };
+        
+            size_t tournament(vector<Individual>& pop, size_t i, size_t j) const 
+            {
+                Individual& ind1 = pop.at(i);
+                Individual& ind2 = pop.at(j);
+
+                int flag = ind1.check_dominance(ind2);
+                
+                if (flag == 1) // ind1 dominates ind2
+                    return i;
+                else if (flag == -1) // ind2 dominates ind1
+                    return j;
+                else if (ind1.crowd_dist > ind2.crowd_dist)
+                    return i;
+                else if (ind2.crowd_dist > ind1.crowd_dist)
+                    return j;
+                else 
+                    return i; 
+            }
     };
     
     /////////////////////////////////////////////////////////////////////////////////// Definitions
+    
+    vector<size_t> NSGA2::select(Population& pop, const MatrixXd& F, const Parameters& params)
+    {
+        /* Selection using Pareto tournaments. 
+         *
+         * Input: 
+         *
+         *      pop: population of programs.
+         *      params: parameters.
+         *      r: random number generator
+         *
+         * Output:
+         *
+         *      selected: vector of indices corresponding to pop that are selected.
+         *      modifies individual ranks, objectives and dominations.
+         */
+        vector<size_t> pool(pop.size());
+        std::iota(pool.begin(), pool.end(), 0);
+        // if this is first generation, just return indices to pop
+        if (gen==0)
+            return pool;
+
+        vector<size_t> selected(pop.size());
+
+        for (int i = 0; i < pop.size(); ++i)
+        {
+            size_t winner = tournament(pop.individuals, r.random_choice(pool), 
+                                       r.random_choice(pool));
+            selected.push_back(winner);
+        }
+        return selected;
+    }
 
     vector<size_t> NSGA2::survive(Population& pop, const MatrixXd& F, const Parameters& params)
     {
@@ -69,7 +123,7 @@ namespace FT{
          *
          * Output:
          *
-         *      selected: vector of indices corresponding to columns of F that are selected.
+         *      selected: vector of indices corresponding to pop that are selected.
          *      modifies individual ranks, objectives and dominations.
          */
         
@@ -79,7 +133,7 @@ namespace FT{
             pop.individuals[i].set_obj(params.objectives);
 
         // fast non-dominated sort
-        fast_nds(pop);
+        fast_nds(pop.individuals);
         
         // Push back selected individuals until full
         vector<size_t> selected;
@@ -87,7 +141,7 @@ namespace FT{
         while ( selected.size() + front[i].size() < params.pop_size)
         {
             std::vector<int>& Fi = front[i];        // indices in front i
-            //crowding_distance(i);                   // calculate crowding in Fi
+            crowding_distance(pop,i);                   // calculate crowding in Fi
 
             for (int j = 0; j < Fi.size(); ++j)     // Pt+1 = Pt+1 U Fi
                 selected.push_back(Fi[j]);
@@ -105,24 +159,24 @@ namespace FT{
         return selected;
     }
 
-    void NSGA2::fast_nds(Population& pop) 
+    void NSGA2::fast_nds(vector<Individual>& individuals) 
     {
         front.resize(1);
         front[0].clear();
         //std::vector< std::vector<int> >  F(1);
         #pragma omp parallel for
-        for (int i = 0; i < pop.size(); ++i) {
+        for (int i = 0; i < individuals.size(); ++i) {
         
             std::vector<unsigned int> dom;
             int dcount = 0;
         
-            Individual& p = pop.individuals[i];
+            Individual& p = individuals[i];
             // p.dcounter  = 0;
             // p.dominated.clear();
         
-            for (int j = 0; j < pop.size(); ++j) {
+            for (int j = 0; j < individuals.size(); ++j) {
             
-                Individual& q = pop.individuals[j];
+                Individual& q = individuals[j];
             
                 int compare = p.check_dominance(q);
                 if (compare == 1) { // p dominates q
@@ -161,11 +215,11 @@ namespace FT{
             std::vector<int> Q;
             for (int i = 0; i < fronti.size(); ++i) {
 
-                Individual& p = pop.individuals[fronti[i]];
+                Individual& p = individuals[fronti[i]];
 
                 for (int j = 0; j < p.dominated.size() ; ++j) {
 
-                    Individual& q = pop.individuals[p.dominated[j]];
+                    Individual& q = individuals[p.dominated[j]];
                     q.dcounter -= 1;
 
                     if (q.dcounter == 0) {
