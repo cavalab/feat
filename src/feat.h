@@ -1,9 +1,9 @@
-/* FEWTWO
+/* FEAT
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
-#ifndef FEWTWO_H
-#define FEWTWO_H
+#ifndef FEAT_H
+#define FEAT_H
 
 //external includes
 #include <iostream>
@@ -41,7 +41,7 @@ using std::cout;
 #include "variation.h"
 #include "ml.h"
 #include "node/node.h"
- 
+#include "archive.h" 
 
 //shogun initialization
 void __attribute__ ((constructor)) ctor()
@@ -83,11 +83,12 @@ namespace FT{
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
                    bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
                    double split=0.75, double fb=0.5, string scorer="", string feature_names="",
-                   bool backprop=false,int iters=10, double lr=0.1, int bs=100, int n_threads=0):
+                   bool backprop=false,int iters=10, double lr=0.1, int bs=100, int n_threads=0,
+                   bool hillclimb=false):
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
                              functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, 
-                             fb, scorer, feature_names, backprop, iters, lr, bs), 
+                             fb, scorer, feature_names, backprop, iters, lr, bs, hillclimb), 
                       p_sel( make_shared<Selection>(sel) ),
                       p_surv( make_shared<Selection>(surv, true) ),
                       p_variation( make_shared<Variation>(cross_rate) )                      
@@ -98,6 +99,7 @@ namespace FT{
                 scorer=scorer;
                 if (n_threads!=0)
                     omp_set_num_threads(n_threads);
+                survival = surv;
             }
             
             /// set size of population 
@@ -122,7 +124,11 @@ namespace FT{
             void set_selection(string sel){ p_sel = make_shared<Selection>(sel); }
                         
             /// set survivability              
-            void set_survival(string surv){ p_surv = make_shared<Selection>(surv, true); }
+            void set_survival(string surv)
+            { 
+                survival=surv; 
+                p_surv = make_shared<Selection>(surv, true);
+            }
                         
             /// set cross rate in variation              
             void set_cross_rate(float cross_rate){ params.cross_rate = cross_rate; p_variation->set_cross_rate(cross_rate); }
@@ -170,10 +176,11 @@ namespace FT{
             
             void set_feature_names(string s){params.set_feature_names(s);}
             void set_feature_names(vector<string>& s){params.feature_names = s;}
- 
-            ///set name for files
+
+            /// set constant optimization options
             void set_backprop(bool bp){params.backprop=bp;}
-            void set_iters(int iters){params.bp.iters = iters;}
+            void set_hillclimb(bool hc){params.hillclimb=hc;}
+            void set_iters(int iters){params.bp.iters = iters; params.hc.iters=iters;}
             void set_lr(double lr){params.bp.learning_rate = lr;}
             void set_batch_size(int bs){params.bp.batch_size = bs;}
              
@@ -250,16 +257,31 @@ namespace FT{
                 string r="complexity,fitness,eqn\n";
                 if (front)  // only return individuals on the Pareto front
                 {
-                    // printing individuals from the pareto front
-                    unsigned n = 1;
-                    vector<size_t> f = p_pop->sorted_front(n);
-                   
-                    
-                    for (unsigned j = 0; j < f.size(); ++j)
-                    {          
-                        r += std::to_string(p_pop->individuals[f[j]].complexity()) + "," 
-                            + std::to_string((*p_pop)[f[j]].fitness) + "," 
-                            + p_pop->individuals[f[j]].get_eqn() + "\n";  
+                    if (use_arch)
+                    {
+                        // printing individuals from the archive 
+                        unsigned n = 1;
+                        
+                        for (auto& a : arch.archive)
+                        {          
+                            r += std::to_string(a.complexity()) + "," 
+                                + std::to_string(a.fitness) + "," 
+                                + a.get_eqn() + "\n";  
+                        }
+                    }
+                    else
+                    {
+                        // printing individuals from the pareto front
+                        unsigned n = 1;
+                        vector<size_t> f = p_pop->sorted_front(n);
+                       
+                        
+                        for (unsigned j = 0; j < f.size(); ++j)
+                        {          
+                            r += std::to_string(p_pop->individuals[f[j]].complexity()) + "," 
+                                + std::to_string((*p_pop)[f[j]].fitness) + "," 
+                                + p_pop->individuals[f[j]].get_eqn() + "\n";  
+                        }
                     }
                 }
                 else
@@ -409,6 +431,9 @@ namespace FT{
             shared_ptr<Variation> p_variation;  	///< variation operators
             shared_ptr<Selection> p_surv;       	///< survival algorithm
             shared_ptr<ML> p_ml;                	///< pointer to machine learning class
+            Archive arch;                           ///< pareto front archive
+            bool use_arch;                          ///< internal control over use of archive
+            string survival;                        ///< stores survival mode
             Normalizer N;                           ///< scales training data.
             string scorer;                          ///< scoring function name.
             // performance tracking
@@ -481,6 +506,12 @@ namespace FT{
         p_pop = make_shared<Population>(params.pop_size);
         p_eval = make_shared<Evaluation>(params.scorer);
 
+        // create an archive to save Pareto front, unless NSGA-2 is being used for survival 
+        if (!survival.compare("nsga2"))
+            use_arch = false;
+        else
+            use_arch = true;
+        
         // split data into training and test sets
         MatrixXd X_t(X.rows(),int(X.cols()*params.split));
         MatrixXd X_v(X.rows(),int(X.cols()*(1-params.split)));
@@ -490,7 +521,7 @@ namespace FT{
         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_v;
         
         train_test_split(X,y,Z,X_t,X_v,y_t,y_v,Z_t,Z_v,params.shuffle, params.split);
-        
+         
         if (params.classification) 
             params.set_sample_weights(y_t); 
        
@@ -506,13 +537,17 @@ namespace FT{
         
         p_pop->init(best_ind,params);
         params.msg("Initial population:\n"+p_pop->print_eqns(),2);
-        
+
+        /* if (use_arch){ */
+            /* params.msg("Initializing archive...",2); */
+            /* arch.init(*p_pop); */
+        /* } */
         // resize F to be twice the pop-size x number of samples
         F.resize(X_t.cols(),int(2*params.pop_size));
        
         // evaluate initial population
         params.msg("Evaluating initial population",1);
-        p_eval->fitness(*p_pop,X_t, Z_t, y_t,F,params);
+        p_eval->fitness(p_pop->individuals,X_t, Z_t, y_t,F,params);
         
         params.msg("Initial population done",1);
         
@@ -533,7 +568,7 @@ namespace FT{
 
             // evaluate offspring
             params.msg("evaluating offspring...", 2);
-            p_eval->fitness(*p_pop, X_t, Z_t, y_t, F, params, true);
+            p_eval->fitness(p_pop->individuals, X_t, Z_t, y_t, F, params, true);
 
             // select survivors from combined pool of parents and offspring
             params.msg("survival...", 2);
@@ -545,13 +580,19 @@ namespace FT{
             params.msg("survivors:\n" + p_pop->print_eqns(), 2);
 
             update_best();
+            
+            if (use_arch) 
+                arch.update(*p_pop,params);
+
             if(params.verbosity>0)
                 print_stats(g+1);
             else
                 printProgress(((g+1)*1.0)/params.gens);
-            if (params.backprop){
+            
+            if (params.backprop)
+            {
                 params.bp.learning_rate = (1-1/(1+double(params.gens)))*params.bp.learning_rate;
-                cout << "learning rate: " << params.bp.learning_rate << "\n";
+                params.msg("learning rate: " + std::to_string(params.bp.learning_rate),2);
             }
                 //cout<<"\rCompleted "<<((g+1)*100/params.gens)<<"%"<< std::flush;
         }
@@ -563,7 +604,12 @@ namespace FT{
         if (params.split < 1.0)
         {
             F_v.resize(X_v.cols(),int(2*params.pop_size)); 
-            p_eval->val_fitness(*p_pop, X_t, Z_t, y_t, F_v, X_v, Z_v, y_v, params);
+            if (use_arch){
+                cout << "running p_eval with archive\n";
+                p_eval->val_fitness(arch.archive, X_t, Z_t, y_t, F_v, X_v, Z_v, y_v, params);
+            }
+            else
+                p_eval->val_fitness(p_pop->individuals, X_t, Z_t, y_t, F_v, X_v, Z_v, y_v, params);
             update_best(true);                  // get the best validation model
         }
         else
@@ -572,7 +618,7 @@ namespace FT{
         params.msg("validation score: " + std::to_string(best_score_v), 1);
         params.msg("fitting final model to all training data...",2);
 
-        final_model(X,y, Z);   // fit final model to best features
+        final_model(X, y, Z);   // fit final model to best features
 
         
         /* // write model to file */
@@ -614,7 +660,9 @@ namespace FT{
 
         shared_ptr<CLabels> yhat = p_ml->fit(Phi, y, params, pass, best_ind.dtypes);
         VectorXd tmp;
-        double score = p_eval->score(y,yhat,tmp,params.sample_weights);
+        /* params.set_sample_weights(y);   // need to set new sample weights for y, */ 
+                                        // which is probably from a validation set
+        double score = p_eval->score(y,yhat,tmp,params.class_weights);
         params.msg("final_model score: " + std::to_string(score),1);
     }
     
@@ -629,12 +677,12 @@ namespace FT{
         // set terminal weights based on model
         params.set_term_weights(p_ml->get_weights());
         VectorXd tmp;
-        best_score = p_eval->score(y_t, yhat,tmp, params.sample_weights);
+        best_score = p_eval->score(y_t, yhat,tmp, params.class_weights);
         
         if (params.split < 1.0)
         {
             shared_ptr<CLabels> yhat_v = p_ml->predict(X_v);
-            best_score_v = p_eval->score(y_v, yhat_v,tmp, params.sample_weights); 
+            best_score_v = p_eval->score(y_v, yhat_v,tmp, params.class_weights); 
         }
         else
             best_score_v = best_score;
@@ -753,15 +801,29 @@ namespace FT{
         double bs;
         bs = validation ? best_score_v : best_score ; 
         
-        for (const auto& i: p_pop->individuals)
+        if (use_arch && validation)
         {
-            if (i.fitness < bs)
+            for (const auto& i: arch.archive)
             {
-                bs = i.fitness;
-                best_ind = i;
+                if (i.fitness < bs)
+                {
+                    bs = i.fitness;
+                    best_ind = i;
+                }
             }
         }
-        
+        else
+        {
+            for (const auto& i: p_pop->individuals)
+            {
+                if (i.fitness < bs)
+                {
+                    bs = i.fitness;
+                    best_ind = i;
+                }
+            }
+        }
+
         if (validation) 
             best_score_v = bs; 
         else 
@@ -774,7 +836,7 @@ namespace FT{
     {
         shared_ptr<CLabels> labels = predict_labels(X, Z);
         VectorXd loss; 
-        return p_eval->score(y,labels,loss,params.sample_weights);
+        return p_eval->score(y,labels,loss,params.class_weights);
 
         /* if (params.classification) */
         /*     return p_eval->bal_accuracy(y,yhat,vector<int>(),false); */
@@ -784,7 +846,7 @@ namespace FT{
     
     void Feat::print_stats(unsigned int g)
     {
-        unsigned num_models = std::min(100,p_pop->size());
+        unsigned num_models = std::min(20,p_pop->size());
         double med_score = median(F.colwise().mean().array());  // median loss
         ArrayXd Sizes(p_pop->size()); unsigned i = 0;           // collect program sizes
         for (const auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;}
@@ -806,19 +868,35 @@ namespace FT{
         std::cout << std::scientific;
         // printing 10 individuals from the pareto front
         unsigned n = 1;
-        vector<size_t> f = p_pop->sorted_front(n);
-        vector<size_t> fnew(2,0);
-        while (f.size() < num_models && fnew.size()>1)
+        if (use_arch)
         {
-            fnew = p_pop->sorted_front(++n);                
-            f.insert(f.end(),fnew.begin(),fnew.end());
+            num_models = std::min(20, int(arch.archive.size()));
+
+            for (unsigned i = 0; i < num_models; ++i)
+            {
+                
+                std::cout <<  arch.archive[i].rank << "\t" 
+                          <<  arch.archive[i].complexity() << "\t" 
+                          <<  arch.archive[i].fitness << "\t" 
+                          <<  arch.archive[i].get_eqn() << "\n";  
+            }
         }
-        
-        for (unsigned j = 0; j < std::min(num_models,unsigned(f.size())); ++j)
-        {          
-            std::cout << p_pop->individuals[f[j]].rank << "\t" 
-                      <<  p_pop->individuals[f[j]].complexity() << "\t" << (*p_pop)[f[j]].fitness 
-                      << "\t" << p_pop->individuals[f[j]].get_eqn() << "\n";  
+        else
+        {
+            vector<size_t> f = p_pop->sorted_front(n);
+            vector<size_t> fnew(2,0);
+            while (f.size() < num_models && fnew.size()>1)
+            {
+                fnew = p_pop->sorted_front(++n);                
+                f.insert(f.end(),fnew.begin(),fnew.end());
+            }
+            
+            for (unsigned j = 0; j < std::min(num_models,unsigned(f.size())); ++j)
+            {          
+                std::cout << p_pop->individuals[f[j]].rank << "\t" 
+                          <<  p_pop->individuals[f[j]].complexity() << "\t" << (*p_pop)[f[j]].fitness 
+                          << "\t" << p_pop->individuals[f[j]].get_eqn() << "\n";  
+            }
         }
        
        

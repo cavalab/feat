@@ -1,4 +1,4 @@
-/* FEWTWO
+/* FEAT
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
@@ -60,6 +60,7 @@ namespace FT{
 
             protected:
             NodeRelu* clone_impl() const override { return new NodeRelu(*this); };  
+            NodeRelu* rnd_clone_impl() const override { return new NodeRelu(); };  
     };
 }	
 

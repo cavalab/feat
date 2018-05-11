@@ -1,4 +1,4 @@
-/* FEWTWO
+/* FEAT
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
@@ -49,6 +49,7 @@ namespace FT{
         string scorer;                              ///< loss function
         vector<string> feature_names;               ///< names of features
         bool backprop;                              ///< turns on backpropagation
+        bool hillclimb;                             ///< turns on parameter hill climbing
 
         struct BP 
         {
@@ -60,11 +61,20 @@ namespace FT{
 
         BP bp;                                      ///< backprop parameters
         
+        struct HC 
+        {
+           int iters;
+           double step;
+           HC(int i, double s): iters(i), step(s) {}
+        };
+        
+        HC hc;                                      ///< stochastic hill climbing parameters       
+        
         Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
                    char ot, int verbosity, string fs, float cr, unsigned int max_depth, 
                    unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
                    double fb, string sc, string fn, bool bckprp, int iters, double lr,
-                   int bs):    
+                   int bs, bool hclimb):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
@@ -79,7 +89,9 @@ namespace FT{
             otype(ot),
             feedback(fb),
             backprop(bckprp),
-            bp(iters, lr, bs)
+            bp(iters, lr, bs),
+            hillclimb(hclimb),
+            hc(iters, lr)
         {
             set_verbosity(verbosity);
             if (fs.empty())
@@ -535,12 +547,17 @@ namespace FT{
     void Parameters::set_sample_weights(VectorXd& y)
     {
         // set class weights
+        cout << "setting sample weights\n";
         class_weights.resize(n_classes);
         sample_weights.clear();
-        for (unsigned i = 0; i < n_classes; ++i)
-            class_weights.at(i) = float(n_classes*(y.cast<int>().array() == int(classes.at(i))).count())/y.size(); 
+        for (unsigned i = 0; i < n_classes; ++i){
+            class_weights.at(i) = float((y.cast<int>().array() == int(classes.at(i))).count())/y.size(); 
+            class_weights.at(i) = (1 - class_weights.at(i))*float(n_classes);
+        }
+        cout << "y size: " << y.size() << "\n";
         for (unsigned i = 0; i < y.size(); ++i)
             sample_weights.push_back(class_weights.at(int(y(i))));
+        std::cout << "sample weights size: " << sample_weights.size() << "\n";
         std::cout << "class weights: "; 
         for (auto c : class_weights) std::cout << c << " " ; std::cout << "\n";
         std::cout << "number of classes: " << n_classes << "\n";

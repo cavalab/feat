@@ -1,4 +1,4 @@
-/* FEWTWO
+/* FEAT
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
@@ -31,16 +31,17 @@ namespace metrics{
     {
         SGVector<double> tmp = dynamic_pointer_cast<sh::CRegressionLabels>(labels)->get_labels();
         Map<VectorXd> yhat(tmp.data(),tmp.size());
-
-        if (weights.empty())
-            return (yhat - y).array().pow(2);
-        else
-        {
-            assert(weights.size() == yhat.size());
-            ArrayXf w = ArrayXf::Map(weights.data(),weights.size());
-            return (yhat - y).array().pow(2) * w.cast<double>() ;
-        }
+        return squared_difference(y,yhat);
+        /* if (weights.empty()) */
+        /*     return (yhat - y).array().pow(2); */
+        /* else */
+        /* { */
+        /*     assert(weights.size() == yhat.size()); */
+        /*     ArrayXf w = ArrayXf::Map(weights.data(),weights.size()); */
+        /*     return (yhat - y).array().pow(2) * w.cast<double>() ; */
+        /* } */
     }
+
     // Derivative of squared difference with respec to yhat
     VectorXd d_squared_difference(const VectorXd& y, const VectorXd& yhat)
     {
@@ -54,15 +55,17 @@ namespace metrics{
         SGVector<double> tmp = dynamic_pointer_cast<sh::CRegressionLabels>(labels)->get_labels();
         Map<VectorXd> yhat(tmp.data(),tmp.size());
 
-        if (weights.empty())
-            return 2 * (yhat - y);
-        else
-        {
-            assert(weights.size() == yhat.size());
-            ArrayXf w = ArrayXf::Map(weights.data(),weights.size());
-            return 2 * (yhat - y).array() * w.cast<double>() ;
-        }
+        return d_squared_difference(y,yhat);
+        /* if (weights.empty()) */
+        /*     return 2 * (yhat - y); */
+        /* else */
+        /* { */
+        /*     assert(weights.size() == yhat.size()); */
+        /*     ArrayXf w = ArrayXf::Map(weights.data(),weights.size()); */
+        /*     return 2 * (yhat - y).array() * w.cast<double>() ; */
+        /* } */
     }
+
     /// mean squared error
     double mse(const VectorXd& y, const VectorXd& yhat, VectorXd& loss, 
                const vector<float>& weights=vector<float>() )
@@ -79,12 +82,14 @@ namespace metrics{
         return mse(y,yhat,loss,weights);
     }
  
-    VectorXd log_loss(const VectorXd& y, const VectorXd& yhat)
+    VectorXd log_loss(const VectorXd& y, const VectorXd& yhat, 
+                      const vector<float>& class_weights=vector<float>())
     {
         double eps = pow(10,-10);
         
         VectorXd loss;
         
+        double sum_weights = 0; 
         loss.resize(y.rows());  
         for (unsigned i = 0; i < y.rows(); ++i)
         {
@@ -93,93 +98,133 @@ namespace metrics{
                 loss(i) = -(y(i)*log(eps) + (1-y(i))*log(1-eps));
             else
                 loss(i) = -(y(i)*log(yhat(i)) + (1-y(i))*log(1-yhat(i)));
+            if (loss(i)<0){
+                cout << "ERROR line 100 metrics.h:\n";
+                cout << "loss(i)= " << loss(i) << ". y = " << y(i) 
+                     << ", yhat(i) = " << yhat(i) << "\n";
+                throw;
+            }
+            if (!class_weights.empty())
+            {
+                loss(i) = loss(i) * class_weights.at(y(i));
+                sum_weights += class_weights.at(y(i));
+            }
         }
-       
+        
+        if (sum_weights > 0)
+            loss = loss.array() / sum_weights * y.size(); // normalize weight contributions
+        
         return loss;
     }   
    
     VectorXd log_loss(const VectorXd& y, shared_ptr<CLabels>& labels, 
-                      const vector<float>& weights=vector<float>())
+                      const vector<float>& class_weights=vector<float>())
     {
         dynamic_pointer_cast<sh::CBinaryLabels>(labels)->scores_to_probabilities();
         SGVector<double> tmp = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_values();
         Map<VectorXd> yhat(tmp.data(),tmp.size());
        
-        VectorXd loss = log_loss(y,yhat);
-    
-        if (weights.empty())
-            return loss;
-        else
-        {
-            ArrayXf w = ArrayXf::Map(weights.data(),weights.size());
-            return loss.array() * w.cast<double>();
-        }
+        VectorXd loss = log_loss(y,yhat,class_weights);
+        return loss; 
+        /* if (weights.empty()) */
+        /*     return loss; */
+        /* else */
+        /* { */
+        /*     ArrayXb w(y.size()); */
+        /*     for (int i = 0; i < class_weights.size(); ++i) */
+        /*     { */
+        /*         w = (y.cast<int>() == i).select(class_weights[i], w); */
+        /*     } */
+        /*     cout << "w: " << w.transpose(); */ 
+        /*     return loss.array() * w; */
+        /* } */
     }
     
     /// log loss
     double mean_log_loss(const VectorXd& y, const VectorXd& yhat, VectorXd& loss,
-                      const vector<float>& sample_weights = vector<float>())
+                      const vector<float>& class_weights = vector<float>())
     {
            
         /* std::cout << "loss: " << loss.transpose() << "\n"; */
-        loss = log_loss(y,yhat);
-        if (!sample_weights.empty())
+        loss = log_loss(y,yhat,class_weights);
+        if (loss.mean() < 0)
         {
-            ArrayXf sw = ArrayXf::Map(sample_weights.data(), sample_weights.size());
-            loss = loss.array() * sw.cast<double>() ; 
+            cout << "LOG LOSS MEAN < 0 !!!!!!\n";
+            cout << "loss: " << loss.transpose() << "\n";
+            cout << "y: " << y.transpose() << "\n";
+            cout << "yhat: " << yhat.transpose() << "\n";
+
         }
+        /* if (!sample_weights.empty()) */
+        /* { */
+        /*     ArrayXf sw = ArrayXf::Map(sample_weights.data(), sample_weights.size()); */
+        /*     if (sw.size() != loss.size() ){ */
+        /*         std::cerr << "Error: sample_weights size(" << sw.size() << ") different than" */
+        /*                   << " loss size(" << loss.size() << ")\n"; */
+        /*         std::cout << "y size: " << y.size() <<"\n"; */
+        /*         std::cout << "yhat size: "<< yhat.size() << "\n"; */
+        /*         exit(1); */
+        /*     } */
+        /*     loss = loss.array() * sw.cast<double>() ; */ 
+        /*     if ((sw < 0).any()) */
+        /*     { */
+        /*         cout << "NEGATIVE SAMPLE WEIGHTS\n"; */
+        /*         cout << "sample_weights: " << sw.transpose() << "\n"; */
+        /*     } */
+        /* } */
+        
+        /* if (loss.mean() < 0) */
+        /* { */
+        /*     cout << "LOG LOSS MEAN < 0 !!!!!!\n"; */
+        /*     cout << "loss: " << loss.transpose() << "\n"; */
+        /*     cout << "y: " << y.transpose() << "\n"; */
+        /*     cout << "yhat: " << yhat.transpose() << "\n"; */
+
+        /* } */
         return loss.mean();
     }
 
     /// log loss
     double log_loss_label(const VectorXd& y, const shared_ptr<CLabels>& labels, VectorXd& loss,
-                      const vector<float>& weights=vector<float>())
+                      const vector<float>& class_weights=vector<float>())
     {
         dynamic_pointer_cast<sh::CBinaryLabels>(labels)->scores_to_probabilities();
         SGVector<double> tmp = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_values();
         Map<VectorXd> yhat(tmp.data(),tmp.size());
-        return mean_log_loss(y,yhat,loss,weights);
+        return mean_log_loss(y,yhat,loss,class_weights);
     }
 
-    VectorXd sigmoid(VectorXd x)
+    VectorXd d_log_loss(const VectorXd& y, const VectorXd& yhat, 
+                        const vector<float>& class_weights=vector<float>())
     {
-        return exp(x.array()) / (1 + exp(x.array()));
-    }
-
-    VectorXd log_loss_sigmoid(const VectorXd& y, const VectorXd& yhat)
-    {
-        double eps = pow(10,-10);
-        
-        // convert yhat via sigmoid
-        VectorXd yhats = sigmoid(yhat); 
-        VectorXd loss; 
-        return log_loss(y, yhats);
-    }
-
-    VectorXd d_log_loss(const VectorXd& y, const VectorXd& yhat)
-    {
-        return (-(yhat - y).array() / ( (yhat.array()-1)*y.array() ) ).matrix(); 
+        VectorXd dll(y.size()); 
+        for (int i = 0; i < y.size(); ++i)
+        {
+            dll(i) = (-(yhat(i) - y(i)) / ( (yhat(i)-1)*y(i) ) );
+            if (!class_weights.empty())
+                dll(i) = dll(i) * class_weights.at(y(i));
+        }
+        return dll;
     }
 
     VectorXd d_log_loss(const VectorXd& y, shared_ptr<CLabels>& labels, 
-                        const vector<float>& weights=vector<float>())
+                        const vector<float>& class_weights=vector<float>())
     {
         dynamic_pointer_cast<sh::CBinaryLabels>(labels)->scores_to_probabilities();
         SGVector<double> tmp = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_values();
         Map<VectorXd> yhat(tmp.data(),tmp.size());
 
-        if (weights.empty())
-            return d_log_loss(y,yhat);
-        else
-        {
-            ArrayXf w = ArrayXf::Map(weights.data(), weights.size());
-            return d_log_loss(y,yhat).array() * w.cast<double>() ; 
-
-        }
+        return d_log_loss(y,yhat,class_weights);
     }
 
+    /* double weighted_average(const VectorXd& y, const VectorXd& w) */
+    /* { */
+    /*     w = w.array() / w.sum(); */
+    /*     return (y.array() * w.array()).mean(); */
+    /* } */
     /// multinomial log loss
-    VectorXd multi_log_loss(const VectorXd& y, const ArrayXXd& confidences)
+    VectorXd multi_log_loss(const VectorXd& y, const ArrayXXd& confidences, 
+            const vector<float>& class_weights=vector<float>())
     {
         VectorXd loss = VectorXd::Zero(y.rows());  
         
@@ -187,7 +232,7 @@ namespace metrics{
         vector<double> uc = unique(y);
 
         double eps = pow(10,-10);
-        
+        double sum_weights = 0; 
         for (unsigned i = 0; i < y.rows(); ++i)
         {
             for (const auto& c : uc)
@@ -203,31 +248,33 @@ namespace metrics{
                     {
                         // clip probabilities since log loss is undefined for yhat=0 or yhat=1
                         loss(i) += -log(eps);
-                        /* std::cout << ", loss(" << i << ") += " << -yi*log(eps); */
                     }
                     else
                     {
                         loss(i) += -log(yhat(i));
-                        /* std::cout << ", loss(" << i << ") += " << -yi*log(yhat(i)); */
                     }
+                    /* std::cout << ", loss(" << i << ") = " << loss(i); */
                 }
                 /* std::cout << "\n"; */
-            }   
-            /* std::cout << "w.at(y(" << i << ")): " << w.at(y(i)) << "\n"; */
-            /* loss(i) = loss(i)*w.at(i); */
+             }
+            if (!class_weights.empty()){
+                /* std::cout << "weights.at(y(" << i << ")): " << class_weights.at(y(i)) << "\n"; */
+                loss(i) = loss(i)*class_weights.at(y(i));
+                sum_weights += class_weights.at(y(i));
+            }
         }
+        if (sum_weights > 0)
+            loss = loss.array() / sum_weights * y.size(); 
+        /* cout << "loss.mean(): " << loss.mean() << "\n"; */
+        /* cout << "loss.sum(): " << loss.sum() << "\n"; */
         return loss;
     }
 
     double mean_multi_log_loss(const VectorXd& y, const ArrayXXd& confidences, VectorXd& loss,
-                      const vector<float>& weights=vector<float>())
+                      const vector<float>& class_weights=vector<float>())
     {
-        loss = multi_log_loss(y, confidences);
-        if (!weights.empty())
-        {
-            ArrayXf sw = ArrayXf::Map(weights.data(), weights.size());
-            loss = loss.array() * sw.cast<double>();
-        } 
+        loss = multi_log_loss(y, confidences, class_weights);
+ 
         /* std::cout << "loss: " << loss.transpose() << "\n"; */
         /* std::cout << "mean loss: " << loss.mean() << "\n"; */
         return loss.mean();
@@ -235,7 +282,7 @@ namespace metrics{
 
     /// multinomial log loss
     double multi_log_loss_label(const VectorXd& y, const shared_ptr<CLabels>& labels, VectorXd& loss,
-                      const vector<float>& weights=vector<float>())
+                      const vector<float>& class_weights=vector<float>())
     {
         ArrayXXd confidences(y.size(),unique(y).size());
         /* std::cout << "confidences:\n"; */ 
@@ -250,12 +297,12 @@ namespace metrics{
         /*     std::cout << "class " << int(c) << ": " << confidences.col(int(c)).transpose() << "\n"; */
         /* std::cout << "in log loss\n"; */
 
-        return mean_multi_log_loss(y, confidences, loss, weights); 
+        return mean_multi_log_loss(y, confidences, loss, class_weights); 
 
     }
 
     VectorXd multi_log_loss(const VectorXd& y, shared_ptr<CLabels>& labels, 
-                      const vector<float>& weights=vector<float>())
+                      const vector<float>& class_weights=vector<float>())
     {
         ArrayXXd confidences(y.size(),unique(y).size());
         /* std::cout << "confidences:\n"; */ 
@@ -267,18 +314,12 @@ namespace metrics{
             /* std::cout << confidences.row(i) << "\n"; */
         }
         
-        VectorXd loss = multi_log_loss(y, confidences);
-        if (weights.empty())
-            return loss;
-        else
-        {
-            ArrayXf w = ArrayXf::Map(weights.data(), weights.size());
-            return loss.array() * w.cast<double>();
-        }        
+        VectorXd loss = multi_log_loss(y, confidences, class_weights);
+        return loss;        
     }
     /// derivative of multinomial log loss
     VectorXd d_multi_log_loss(const VectorXd& y, shared_ptr<CLabels>& labels, 
-                      const vector<float>& weights=vector<float>())
+                      const vector<float>& class_weights=vector<float>())
     {
         ArrayXXd confidences(y.size(),unique(y).size());
         /* std::cout << "confidences:\n"; */ 
@@ -296,7 +337,7 @@ namespace metrics{
         vector<double> uc = unique(y);
 
         double eps = pow(10,-10);
-        
+        double sum_weights = 0; 
         for (unsigned i = 0; i < y.rows(); ++i)
         {
             for (const auto& c : uc)
@@ -322,14 +363,23 @@ namespace metrics{
                 }
                 /* std::cout << "\n"; */
             }   
+            if (!class_weights.empty())
+            {
             /* std::cout << "w.at(y(" << i << ")): " << w.at(y(i)) << "\n"; */
+                loss(i) = loss(i)*class_weights.at(y(i));
+                sum_weights += class_weights.at(y(i));
+           /* std::cout << "w.at(y(" << i << ")): " << w.at(y(i)) << "\n"; */
             /* loss(i) = loss(i)*w.at(i); */
+            }
         }
+        if (sum_weights > 0)
+            loss = loss.array() / sum_weights * y.size(); // normalize weight contributions
+
         return loss;
     }
     /// 1 - balanced accuracy 
     double bal_zero_one_loss(const VectorXd& y, const VectorXd& yhat, VectorXd& loss, 
-               const vector<float>& weights=vector<float>() )
+               const vector<float>& class_weights=vector<float>() )
     {
         vector<double> uc = unique(y);
         vector<int> c;
@@ -375,16 +425,16 @@ namespace metrics{
     }
 
     double bal_zero_one_loss_label(const VectorXd& y, const shared_ptr<CLabels>& labels, 
-                                   VectorXd& loss, const vector<float>& weights=vector<float>() )
+                                   VectorXd& loss, const vector<float>& class_weights=vector<float>() )
     {
         SGVector<double> tmp = dynamic_pointer_cast<sh::CMulticlassLabels>(labels)->get_labels();
         Map<VectorXd> yhat(tmp.data(),tmp.size());
 
-        return bal_zero_one_loss(y, yhat, loss, weights);
+        return bal_zero_one_loss(y, yhat, loss, class_weights);
     }
 
     double zero_one_loss(const VectorXd& y, const VectorXd& yhat, VectorXd& loss, 
-               const vector<float>& weights=vector<float>() )
+               const vector<float>& class_weights=vector<float>() )
     {
         loss = (yhat.cast<int>().array() != y.cast<int>().array()).cast<double>();
         //TODO: weight loss by sample weights
@@ -393,12 +443,12 @@ namespace metrics{
     
     /// 1 - accuracy 
     double zero_one_loss_label(const VectorXd& y, const shared_ptr<CLabels>& labels, VectorXd& loss, 
-               const vector<float>& weights=vector<float>() )
+               const vector<float>& class_weights=vector<float>() )
     {
         SGVector<double> tmp = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_labels();
         Map<VectorXd> yhat(tmp.data(),tmp.size());
 
-        return zero_one_loss(y,yhat,loss,weights);
+        return zero_one_loss(y,yhat,loss,class_weights);
     }
    
 

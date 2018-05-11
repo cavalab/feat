@@ -60,6 +60,7 @@ namespace FT {
 			/* this->labels = labels; */
 			this->iters = iters;
 			this->n = n;
+            this->epT = 0.01*this->n;   // min learning rate
 			this->a = a;
 		}
         /// adapt weights
@@ -80,6 +81,8 @@ namespace FT {
         callback d_cost_func;       //< derivative of cost function pointer
         callback cost_func;         //< cost function pointer
         int iters;                  //< iterations
+        double epk;                 //< current learning rate 
+        double epT;                  //< min learning rate
 
 		struct BP_NODE
 		{
@@ -195,13 +198,13 @@ namespace FT {
                                 std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Zb, 
                                 int batch_size)
     {
-        cout << "getting batch\n";
+        /* std::cout << "getting batch\n"; */
         vector<size_t> idx(y.size());
         std::iota(idx.begin(), idx.end(), 0);
         r.shuffle(idx.begin(), idx.end());
         Xb.resize(X.rows(),batch_size);
         yb.resize(batch_size);
-        
+         
         for (const auto& val: Z )
         {
             Zb[val.first].first.resize(batch_size);
@@ -219,7 +222,7 @@ namespace FT {
                 Zb[val.first].second.at(i) = Z.at(val.first).second.at(idx.at(i));
            }
         }
-        cout << "exiting batch\n";
+        /* std::cout << "exiting batch\n"; */
     }
 
     void AutoBackProp::run(Individual& ind, const MatrixXd& X, VectorXd& y, 
@@ -230,35 +233,36 @@ namespace FT {
         double min_loss;
         double current_loss;
         vector<vector<double>> best_weights;
-        // get batch data for training
+        // batch data
         MatrixXd Xb; VectorXd yb;
         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Zb;
-        get_batch(X,y,Z, Xb,yb,Zb, params.bp.batch_size); 
+        this->epk = n;  // starting learning rate
         params.msg("running backprop on " + ind.get_eqn(), 2);
         params.msg("=========================",2);
         params.msg("Iteration,Loss,Weights",2);
         params.msg("=========================",2);
         for (int x = 0; x < this->iters; x++)
         {
+            // get batch data for training
+            get_batch(X,y,Z, Xb,yb,Zb, params.bp.batch_size); 
             // Evaluate forward pass
             MatrixXd Phi; 
             vector<vector<ArrayXd>> stack_f = forward_prop(ind, Xb, yb, Zb, Phi, params);
-       
             // Evaluate ML model on Phi
             bool pass = true;
             auto ml = std::make_shared<ML>(params, true);
 
             shared_ptr<CLabels> yhat = ml->fit(Phi,yb,params,pass,ind.dtypes);
-
             vector<double> Beta = ml->get_weights();
-            current_loss = this->cost_func(yb,yhat, params.sample_weights).mean();
+            current_loss = this->cost_func(yb,yhat, params.class_weights).mean();
+
             if (params.verbosity>1)
             {
                 cout << x << "," 
                  << current_loss << ",";
                   print_weights(ind.program);
             }
-                 /* << this->d_cost_func(y, yhat, params.sample_weights).std() << "\n"; */ 
+                 /* << this->d_cost_func(y, yhat, params.class_weights).std() << "\n"; */ 
             if (x==0 || current_loss < min_loss)
             {
                 min_loss = current_loss;
@@ -287,7 +291,6 @@ namespace FT {
             /*     auto yyhat = ml->labels_to_vector(yhat); */
             /*     cout << yyhat.transpose() << "\n"; */
             /* } */
-            cout << "backward pass...\n";
             // Evaluate backward pass
             size_t s = 0;
             for (int i = 0; i < stack_f.size(); ++i)
@@ -295,10 +298,16 @@ namespace FT {
                 while (!ind.program.at(roots[s])->isNodeDx()) ++s;
                 /* cout << "running backprop on " << ind.program_str() << " from " << roots.at(s) << " to " */ 
                 /*     << ind.program.subtree(roots.at(s)) << "\n"; */
+                
                 backprop(stack_f.at(i), ind.program, ind.program.subtree(roots.at(s)), roots.at(s), 
-                         Beta.at(s)/ml->N.scale.at(s), yhat,
-                         Xb, yb, Zb, params.sample_weights);
+                     Beta.at(s)/ml->N.scale.at(s), yhat,
+                     Xb, yb, Zb, params.class_weights);
             }
+            // update learning rate
+            double alpha = double(x)/double(iters);
+            this->epk = (1 - alpha)*this->epk + alpha*this->epT;  
+            /* this->epk = this->epk + this->epT; */ 
+            /* cout << "epk: " << this->epk << "\n"; */
         }
         params.msg("",2);
         params.msg("=========================",2);
@@ -391,7 +400,7 @@ namespace FT {
                     dNode->derivative(n_derivatives, f_stack, i);
                 }
                 /* cout << "updating derivatives\n"; */
-                dNode->update(derivatives, f_stack, this->n, this->a);
+                dNode->update(derivatives, f_stack, this->epk, this->a);
                 // dNode->print_weight();
                 /* cout << "popping input arguments\n"; */
                 // Get rid of the input arguments for the node
