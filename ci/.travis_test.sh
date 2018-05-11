@@ -2,5 +2,4 @@
 ./build/tests
 
 # python tests
-python python/wrappertest.py
-
+/home/travis/miniconda/bin/python python/wrappertest.py
