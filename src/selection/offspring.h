@@ -56,7 +56,7 @@ namespace FT{
 
             for (unsigned i = 0; i < pop.individuals.size(); ++i)
             {
-                if (pop.individuals.at(i).fitness < min_fit)
+                if (pop.individuals.at(i).fitness < min_fit || i == 0)
                 {
                     min_fit = pop.individuals.at(i).fitness;
                     best_idx = i;

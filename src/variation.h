@@ -118,6 +118,8 @@ namespace FT{
                     params.msg("crossing " + pop.individuals[mom].get_eqn() + " with " + 
                            pop.individuals[dad].get_eqn() + " produced " + child.get_eqn() + 
                            ", pass: " + std::to_string(pass),2);    
+
+                    child.set_parents({pop.individuals[mom], pop.individuals[dad]});
                 }
                 else                        // mutation
                 {
@@ -130,6 +132,7 @@ namespace FT{
                     
                     params.msg("mutating " + pop.individuals[mom].get_eqn() + " produced " + 
                             child.get_eqn() + ", pass: " + std::to_string(pass),2);
+                    child.set_parents({pop.individuals[mom]});
                 }
                 if (pass)
                 {
@@ -161,7 +164,7 @@ namespace FT{
          */    
 
         // make child a copy of mom
-        mom.clone(child);  
+        mom.clone(child, false);  
         
         float rf = r();
         if (rf < 1.0/3.0 && child.get_dim() > 1){
