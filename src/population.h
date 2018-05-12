@@ -257,7 +257,8 @@ namespace FT{
             // pick a dimensionality for this individual
             int dim = r.rnd_int(1,params.max_dim);      
             // pick depth from [params.min_depth, params.max_depth]
-            int depth =  r.rnd_int(1, params.max_depth);
+            /* unsigned init_max = std::min(params.max_depth, unsigned int(3)); */
+            int depth =  r.rnd_int(1, std::min(params.max_depth,unsigned(3)));
             // make a program for each individual
             char ot = r.random_choice(params.otypes);
             //cout<<"Passing otype as "<<ot<<"\n";

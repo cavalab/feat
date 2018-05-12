@@ -44,10 +44,12 @@ namespace FT{
         vector<size_t> all_idx(pop.size());
         std::iota(all_idx.begin(), all_idx.end(), 0);
 
+        cout << "selecting randoms\n";       
         vector<size_t> selected;
         for (unsigned i = 0; i < P; ++i)    
             selected.push_back(r.random_choice(all_idx));   // select randomly
        
+        cout << "getting elite\n";       
         if (elitism)
             enforce_elite(pop, selected); 
         
@@ -71,10 +73,11 @@ namespace FT{
         vector<size_t> all_idx(pop.size());
         std::iota(all_idx.begin(), all_idx.end(), 0);
 
+        cout << "selecting randoms\n";       
         vector<size_t> selected;
         for (unsigned i = 0; i < P; ++i)    
             selected.push_back(r.random_choice(all_idx));   // select randomly
-       
+        cout << "getting elite\n";       
         if (elitism)
             enforce_elite(pop, selected); 
         
@@ -94,16 +97,19 @@ namespace FT{
                 min_fit = pop.individuals.at(i).fitness;
                 best_idx = i;
             }
-            
-            if (pop.individuals.at(i).fitness > max_fit || i == 0)
-            {
-                max_fit = pop.individuals.at(i).fitness;
-                worst_idx = i;
-            }
-            
-        }
+        }    
+        
         if (!in(selected, best_idx) )   // add best individual to selected
         {
+            for (unsigned i = 0; i < selected.size(); ++i)
+            {
+                if (pop.individuals.at(selected.at(i)).fitness > max_fit || i == 0)
+                {
+                    max_fit = pop.individuals.at(selected.at(i)).fitness;
+                    worst_idx = i;
+                }
+                
+            }
             selected.at(worst_idx) = best_idx;
         }
         
