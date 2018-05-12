@@ -7,8 +7,6 @@ license: GNU/GPL v3
 
 #include "stack.h"
 #include "params.h"
-/* #include "boost/uuid/uuid.hpp" */
-/* #include "boost/uuid/uuid_generators.hpp" */
 
 namespace FT{
     
