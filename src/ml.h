@@ -61,7 +61,7 @@ namespace FT{
                 
                 ml_type = params.ml;
                 prob_type = PT_REGRESSION;
-                max_train_time=5; 
+                max_train_time=30; 
                 normalize = norm;
                 if (params.classification)
                 { 
@@ -127,7 +127,7 @@ namespace FT{
                     if (prob_type == PT_BINARY){
 	            	    p_est = make_shared<sh::CLibLinear>(sh::L2R_LR);
                         // setting parameters to match sklearn defaults
-                        dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_compute_bias(true);
+                        dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_compute_bias(false);
                         dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_epsilon(0.0001);
                         //cout << "set ml type to CLibLinear\n";
                     }
