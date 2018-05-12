@@ -25,6 +25,7 @@ cdef extern from "feat.h" namespace "FT":
                double split, double fb, string scorer, 
                string feature_names, bool backprop, int iters, double lr, int bs,
                int n_threads, bool hillclimb) except + 
+
         void fit(double * X, int rowsX, int colsX, double*  y , int lenY)
         VectorXd predict(double * X, int rowsX,int colsX)
         ArrayXXd predict_proba(double * X, int rowsX,int colsX)
@@ -48,9 +49,13 @@ cdef class PyFeat:
     def __cinit__(self,int pop_size, int gens, string ml, bool classification, int verbosity, 
                   int max_stall,string sel, string surv, float cross_rate,string otype, 
                   string functions, unsigned int max_depth, unsigned int max_dim, 
-                  int random_state, bool erc , string obj,bool shuffle, double split, double fb,
+
+                  int random_state, 
+                  
+                  bool erc , string obj, bool shuffle, double split, double fb,
                   string scorer, string feature_names, bool backprop, int iters, double lr, int bs,
                   int n_threads, bool hillclimb):
+        
         cdef char otype_char
         if ( len(otype) == 0):
             otype_char = 'a' #Defaut Value

@@ -65,7 +65,19 @@ namespace FT{
         void set_rank(unsigned r){rank=r;}
         /// return size of program
         int size() const { return program.size(); }
-        
+        /// get number of params in program
+        int get_n_params()
+        {
+            int n_params =0;
+            for (unsigned int i =0; i< program.size(); ++i)
+            {
+                if (program.at(i)->isNodeDx())
+                {
+                    n_params += program.at(i)->arity['f'];
+                }
+            }
+            return n_params;
+        }
         /// grab sub-tree locations given starting point.
         /* size_t subtree(size_t i, char otype) const; */
 
@@ -191,6 +203,8 @@ namespace FT{
         size_t j = 0;
         double size = rts[0];
         
+        
+
         while ( j < rts.size())
         {
             if (j > 1) 
@@ -201,7 +215,11 @@ namespace FT{
             else
                 ++j;
         }
-        
+        if (i >= rts.size() || j == rts.size()) 
+        {
+            cout << "WARN: bad root index attempt in get_p()\n";
+            return 0.0;
+        }
         // normalize weight by size of subtree
         double norm_weight = p.at(j)/size;
         return norm_weight;

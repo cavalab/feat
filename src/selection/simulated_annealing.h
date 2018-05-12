@@ -67,7 +67,7 @@ namespace FT{
         // decrease temperature linearly based on current generation
         // cooling schedule: Tg = (0.9)^g * t0, g = current generation
         this->t = pow(0.9, double(params.current_gen))*this->t0;  
-        cout << "t: " << this->t << "\n";
+        /* cout << "t: " << this->t << "\n"; */
 
         int P = F.cols()/2; // index P is where the offspring begin, and also the size of the pop
         vector<size_t> selected(P); 
@@ -75,7 +75,7 @@ namespace FT{
         for (unsigned i = P; i < F.cols(); ++i)
         {
             Individual& offspring = pop.individuals.at(i);
-            cout << "offspring: " << offspring.get_eqn() << "\n";
+            /* cout << "offspring: " << offspring.get_eqn() << "\n"; */
             int pid = offspring.parent_id.at(0);
             bool found = false;
             int j = 0;
@@ -87,12 +87,12 @@ namespace FT{
                     ++j;
             }
             Individual& parent = pop.individuals.at(j);
-            cout << "parent: " << parent.get_eqn() << "\n";
-            cout << "offspring fitness: " << offspring.fitness << "\n";
-            cout << "parent fitness: " << parent.fitness << "\n";           
+            /* cout << "parent: " << parent.get_eqn() << "\n"; */
+            /* cout << "offspring fitness: " << offspring.fitness << "\n"; */
+            /* cout << "parent fitness: " << parent.fitness << "\n"; */           
             double probability = exp ( (parent.fitness - offspring.fitness)/this->t );
 
-            cout << "probability: " << probability << "\n";
+            /* cout << "probability: " << probability << "\n"; */
             if (r() < probability)
                 selected.at(i-P) = i;
             else

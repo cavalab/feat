@@ -126,6 +126,12 @@ namespace FT {
                     cout<<"random_choice() w.size() = 0 Calling random_choice(v)\n";
                     return random_choice(v);
                 }
+                if(w.size() != v.size())
+                {   
+                    cout<<"WARN! random_choice() w.size() " << w.size() << "!= v.size() " 
+                        << v.size() << ", Calling random_choice(v)\n";
+                    return random_choice(v);
+                }
                 else
                 {
                     assert(v.size() == w.size());
