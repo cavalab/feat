@@ -32,9 +32,10 @@ namespace FT{
         float crowd_dist;                           ///< crowding distance on the Pareto front
         unsigned int c;                             ///< the complexity of the program.    
         vector<char> dtypes;                        ///< the data types of each column of the 
-                                                      // program output
+                                                     // program output
+        unsigned id;                                ///< tracking id                                                     
+        vector<unsigned> parent_id;                 ///< ids of parents
        
-        
         Individual(){c = 0; dim = 0; eqn="";}
 
         /// calculate program output matrix Phi
@@ -84,38 +85,20 @@ namespace FT{
         unsigned int complexity();
         unsigned int get_complexity() const {return c;};
       
-        /// find root locations in program.
-        /* vector<size_t> roots(); */
-        
-        /// check if differentiable node    
-        /* bool isNodeDx(Node* n){ return NULL != dynamic_cast<NodeDx*>(n); ; } */
-        
-        /* bool isNodeDx(const std::unique_ptr<Node>& n) */ 
-        /* { */
-        /*     Node * tmp = n.get(); */
-        /*     bool answer = isNodeDx(tmp); */ 
-        /*     tmp = nullptr; */
-        /*     return answer; */
-        /* } */
-        ///// get weighted probabilities
-        //vector<double> get_w(){ return w;}
-        ///// get weight probability for program location i 
-        //double get_w(const size_t i);
-        ///// set weighted probabilities
-        //void set_w(vector<double>& weights);
-
-        /// make a deep copy of the underlying program 
-        /* void program_copy(vector<std::unique_ptr<Node>>& cpy) const */
-        /* { */
-        /*     cpy.clear(); */
-        /*     for (const auto& p : program) */
-        /*         cpy.push_back(p->clone()); */
-        /* } */
         /// clone this individual 
-        void clone(Individual& cpy)
+        void clone(Individual& cpy, bool sameid=true)
         {
             cpy.program = program;
             cpy.p = p;
+            if (sameid)
+                cpy.id = id;
+        }
+        void set_id(unsigned i) { id = i; }
+        void set_parents(const vector<Individual>& parents)
+        {
+            parent_id.clear();
+            for (const auto& p : parents)
+                parent_id.push_back(p.id);
         }
         /// get probabilities of variation
         vector<double> get_p(){ return p; }     

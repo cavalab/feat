@@ -14,7 +14,7 @@ namespace FT{
     {
         /** NSGA-II based selection and survival methods. */
 
-        NSGA2(bool surv){ name = "nsga2"; survival = surv; gen = 0;};
+        NSGA2(bool surv){ name = "nsga2"; survival = surv; };
         
         ~NSGA2(){}
 
@@ -28,7 +28,6 @@ namespace FT{
         void crowding_distance(Population&, int); //< crowding distance of a front i
             
         private:    
-            int gen;        //> keeps track of current generation
 
             /// sort based on rank, breaking ties with crowding distance
             struct sort_n 
@@ -97,7 +96,7 @@ namespace FT{
         vector<size_t> pool(pop.size());
         std::iota(pool.begin(), pool.end(), 0);
         // if this is first generation, just return indices to pop
-        if (gen==0)
+        if (params.current_gen==0)
             return pool;
 
         vector<size_t> selected(pop.size());

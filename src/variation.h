@@ -94,7 +94,7 @@ namespace FT{
          *
          * @return  appends params.pop_size offspring derived from parent variation
          */
-              unsigned start= pop.size();
+        unsigned start= pop.size();
         pop.resize(2*params.pop_size);
         #pragma omp parallel for
         for (unsigned i = start; i<pop.size(); ++i)
@@ -103,7 +103,8 @@ namespace FT{
    
             while (!pass)
             {
-                Individual child;           // new individual
+                Individual child; // new individual
+                child.set_id(params.current_gen*params.pop_size+i-start);           
 
                 if ( r() < cross_rate)      // crossover
                 {
@@ -118,6 +119,8 @@ namespace FT{
                     params.msg("crossing " + pop.individuals[mom].get_eqn() + " with " + 
                            pop.individuals[dad].get_eqn() + " produced " + child.get_eqn() + 
                            ", pass: " + std::to_string(pass),2);    
+
+                    child.set_parents({pop.individuals[mom], pop.individuals[dad]});
                 }
                 else                        // mutation
                 {
@@ -130,6 +133,7 @@ namespace FT{
                     
                     params.msg("mutating " + pop.individuals[mom].get_eqn() + " produced " + 
                             child.get_eqn() + ", pass: " + std::to_string(pass),2);
+                    child.set_parents({pop.individuals[mom]});
                 }
                 if (pass)
                 {
@@ -161,7 +165,7 @@ namespace FT{
          */    
 
         // make child a copy of mom
-        mom.clone(child);  
+        mom.clone(child, false);  
         
         float rf = r();
         if (rf < 1.0/3.0 && child.get_dim() > 1){

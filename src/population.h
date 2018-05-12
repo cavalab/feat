@@ -32,6 +32,8 @@ namespace FT{
             individuals.resize(p); 
             locs.resize(2*p); 
             std::iota(locs.begin(),locs.end(),0);
+            for (unsigned i = 0; i < individuals.size(); ++i)
+                individuals[i].set_id(locs[i]);
         }
         ~Population(){}
         
