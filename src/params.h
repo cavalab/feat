@@ -19,6 +19,7 @@ namespace FT{
     {
         int pop_size;                   			///< population size
         int gens;                       			///< max generations
+        int current_gen;                            ///< holds current generation
         string ml;                      			///< machine learner used with Feat
         bool classification;            			///< flag to conduct classification rather than 
         int max_stall;                  			///< maximum stall in learning, in generations
@@ -136,7 +137,9 @@ namespace FT{
             }
             return msg;
         }
-       
+      
+        /// sets current generation
+        void set_current_gen(int g) { current_gen = g; }
         /// sets scorer type
         void set_scorer(string sc)
         {

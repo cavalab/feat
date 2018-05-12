@@ -61,7 +61,7 @@ namespace FT{
                 
                 ml_type = params.ml;
                 prob_type = PT_REGRESSION;
-                max_train_time=60; 
+                max_train_time=30; 
                 normalize = norm;
                 if (params.classification)
                 { 
@@ -127,7 +127,7 @@ namespace FT{
                     if (prob_type == PT_BINARY){
 	            	    p_est = make_shared<sh::CLibLinear>(sh::L2R_LR);
                         // setting parameters to match sklearn defaults
-                        dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_compute_bias(true);
+                        dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_compute_bias(false);
                         dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_epsilon(0.0001);
                         //cout << "set ml type to CLibLinear\n";
                     }
@@ -196,9 +196,20 @@ namespace FT{
             int max_train_time;                 ///< max seconds allowed for training
             bool normalize;                     ///< control whether ML normalizes its input before 
                                                 ///  training
+            /* double get_bias(int i) */
+            /* {   // get bias at feature i. only works with linear machines */
+            /*     auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_bias(); */
+            /*     if (i < tmp.size()) */
+            /*         return tmp[i]; */
+            /*     else */
+            /*     { */
+            /*         std::cerr << "ERROR: invalid location access in get_bias()\n"; */
+            /*         throw; */
+            /*     } */
+            /* } */
     };
 /////////////////////////////////////////////////////////////////////////////////////// Definitions
-
+    
     vector<double> ML::get_weights()
     {    
         /*!

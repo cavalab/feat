@@ -200,7 +200,9 @@ namespace metrics{
         VectorXd dll(y.size()); 
         for (int i = 0; i < y.size(); ++i)
         {
-            dll(i) = (-(yhat(i) - y(i)) / ( (yhat(i)-1)*y(i) ) );
+            /* dll(i) = (-(yhat(i) - y(i)) / ( (yhat(i)-1)*yhat(i) ) ); */
+            // note this derivative assumes a logistic form for yhat, i.e. yhat = 1/(1+exp(-o))
+            dll(i) = (yhat(i) - y(i));
             if (!class_weights.empty())
                 dll(i) = dll(i) * class_weights.at(y(i));
         }

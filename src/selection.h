@@ -10,6 +10,8 @@ license: GNU/GPL v3
 #include "selection/lexicase.h"
 #include "selection/nsga2.h"
 #include "selection/offspring.h"
+#include "selection/random.h"
+#include "selection/simulated_annealing.h"
 
 namespace FT{
     struct Parameters; // forward declaration of Parameters       
@@ -36,6 +38,10 @@ namespace FT{
                 pselector = std::make_shared<NSGA2>(survival);
             else if (!type.compare("offspring"))    // offspring survival
                 pselector = std::make_shared<Offspring>(survival);
+            else if (!type.compare("random"))    // offspring survival
+                pselector = std::make_shared<Random>(survival);
+            else if (!type.compare("simanneal"))    // offspring survival
+                pselector = std::make_shared<SimAnneal>(survival);
             else
                 std::cerr << "Undefined Selection Operator " + type + "\n";
                 

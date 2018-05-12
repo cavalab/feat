@@ -538,10 +538,6 @@ namespace FT{
         p_pop->init(best_ind,params);
         params.msg("Initial population:\n"+p_pop->print_eqns(),2);
 
-        /* if (use_arch){ */
-            /* params.msg("Initializing archive...",2); */
-            /* arch.init(*p_pop); */
-        /* } */
         // resize F to be twice the pop-size x number of samples
         F.resize(X_t.cols(),int(2*params.pop_size));
        
@@ -555,7 +551,8 @@ namespace FT{
 
         // main generational loop
         for (unsigned int g = 0; g<params.gens; ++g)
-        {        
+        {   
+            params.set_current_gen(g);
             // select parents
             params.msg("selection..", 2);
             vector<size_t> parents = p_sel->select(*p_pop, F, params);
@@ -689,6 +686,7 @@ namespace FT{
         
         // initialize best_ind to be all the features
         best_ind = Individual();
+        best_ind.set_id(0);
         for (unsigned i =0; i<X_t.rows(); ++i)
             best_ind.program.push_back(params.terminals[i]->clone());
         best_ind.fitness = best_score;
