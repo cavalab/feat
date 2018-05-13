@@ -84,7 +84,7 @@ namespace FT{
                    bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
                    double split=0.75, double fb=0.5, string scorer="", string feature_names="",
                    bool backprop=false,int iters=10, double lr=0.1, int bs=100, int n_threads=0,
-                   bool hillclimb=false):
+                   bool hillclimb=false, string logfile="Feat.log"):
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
                              functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, 
@@ -95,7 +95,7 @@ namespace FT{
             {
                 r.set_seed(random_state);
                 str_dim = "";
-                name="";
+                set_logfile(logfile);
                 scorer=scorer;
                 if (n_threads!=0)
                     omp_set_num_threads(n_threads);
@@ -169,7 +169,7 @@ namespace FT{
             void set_feedback(double fb){ params.feedback = fb;}
 
             ///set name for files
-            void set_name(string s){name = s;}
+            void set_logfile(string s){logfile = s;}
 
             ///set scoring function
             void set_scorer(string s){scorer=s; params.scorer=s;}
@@ -228,7 +228,7 @@ namespace FT{
             bool get_erc(){ return params.erc; }
            
             /// get name
-            string get_name(){ return name; }
+            string get_logfile(){ return logfile; }
 
             ///return number of features
             int get_num_features(){ return params.num_features; }
@@ -423,7 +423,6 @@ namespace FT{
             MatrixXd F;                 			///< matrix of fitness values for population
             MatrixXd F_v;                           ///< matrix of validation scores
             Timer timer;                            ///< start time of training
-            string name;                            ///< name to append to files
             // subclasses for main steps of the evolutionary computation routine
             shared_ptr<Population> p_pop;       	///< population of programs
             shared_ptr<Selection> p_sel;        	///< selection algorithm
@@ -441,8 +440,9 @@ namespace FT{
             double best_score_v;                    ///< best validation score
             string str_dim;                         ///< dimensionality as multiple of number of columns 
             void update_best(bool val=false);       ///< updates best score   
-            void print_stats();         ///< prints stats
+            void print_stats(std::ofstream& log);         ///< prints stats
             Individual best_ind;                    ///< best individual
+            string logfile;                         ///< log filename
             /// method to fit inital ml model            
             void initial_model(MatrixXd& X_t, VectorXd& y_t, MatrixXd& X_v, VectorXd& y_v);
             /// fits final model to best transformation
@@ -478,6 +478,10 @@ namespace FT{
 
         // start the clock
         timer.Reset();
+
+        std::ofstream log;                      ///< log file stream
+        if (params.verbosity>0)
+            log.open(logfile, std::ofstream::app);
         
         if(str_dim.compare("") != 0)
         {
@@ -534,8 +538,12 @@ namespace FT{
         
         // initialize population 
         params.msg("Initializing population", 1);
-        
-        p_pop->init(best_ind,params);
+       
+        bool random = false;
+        if (!p_sel->get_type().compare("random"))
+            random = true;
+
+        p_pop->init(best_ind,params,random);
         params.msg("Initial population:\n"+p_pop->print_eqns(),2);
 
         // resize F to be twice the pop-size x number of samples
@@ -582,7 +590,7 @@ namespace FT{
                 arch.update(*p_pop,params);
 
             if(params.verbosity>0)
-                print_stats();
+                print_stats(log);
             else
                 printProgress(((g+1)*1.0)/params.gens);
             
@@ -622,6 +630,8 @@ namespace FT{
         /* out_model.open("model_" + name + ".txt"); */
         /* out_model << best_ind.get_eqn() ; */ 
         /* out_model.close(); */
+        if (log.is_open())
+            log.close();
     }
 
     void Feat::fit(double * X, int rowsX, int colsX, double * Y, int lenY)
@@ -840,7 +850,7 @@ namespace FT{
         /*     return p_eval->se(y,yhat).mean(); */
     }
     
-    void Feat::print_stats()
+    void Feat::print_stats(std::ofstream& log)
     {
         /* unsigned num_models = std::min(20,p_pop->size()); */
         /* double med_score = median(F.colwise().mean().array());  // median loss */
@@ -898,11 +908,16 @@ namespace FT{
         /* std::cout <<"\n\n"; */
 
         // print stats in tabular format
-
+        string sep = ",";
         if (params.current_gen == 0) // print header
         {
-            cout << "generation,min_loss,med_loss,med_size,med_complexity,med_num_params,"
-                    "med_dim\n";
+            log << "generation" << sep
+                << "min_loss"   << sep 
+                << "med_loss"   << sep 
+                << "med_size"   << sep 
+                << "med_complexity" << sep 
+                << "med_num_params" << sep
+                <<  "med_dim\n";
         }
         double med_score = median(F.colwise().mean().array());  // median loss
         ArrayXd Sizes(p_pop->size());                           // collect program sizes
@@ -920,16 +935,15 @@ namespace FT{
         unsigned med_num_params = median(Nparams);                // median program size
         unsigned med_dim = median(Dims);                          // median program size
 
-        cout << params.current_gen   <<  "\t"
-             << best_score << "\t"
-             << med_score   << "\t"
-             << med_size   << "\t"
-             << med_complexity   << "\t"
-             << med_num_params   << "\t"
-             << med_dim   << "\t"
+        log << params.current_gen   <<  sep
+             << best_score << sep
+             << med_score   << sep
+             << med_size   << sep
+             << med_complexity   << sep
+             << med_num_params   << sep
+             << med_dim   << sep
              << "\n"; 
         
-
     }
     
 }
