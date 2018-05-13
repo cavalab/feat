@@ -38,7 +38,7 @@ namespace FT{
         ~Population(){}
         
         /// initialize population of programs. 
-        void init(const Individual& starting_model, const Parameters& params);
+        void init(const Individual& starting_model, const Parameters& params, bool random);
         
         /// update individual vector size 
         void resize(int pop_size, bool resize_locs=false)
@@ -243,7 +243,8 @@ namespace FT{
     }
 
 
-    void Population::init(const Individual& starting_model, const Parameters& params)
+    void Population::init(const Individual& starting_model, const Parameters& params,
+                          bool random=false)
     {
         /*!
          *create random programs in the population, seeded by initial model weights 
@@ -258,7 +259,11 @@ namespace FT{
             int dim = r.rnd_int(1,params.max_dim);      
             // pick depth from [params.min_depth, params.max_depth]
             /* unsigned init_max = std::min(params.max_depth, unsigned int(3)); */
-            int depth =  r.rnd_int(1, std::min(params.max_depth,unsigned(3)));
+            int depth;
+            if (random)
+                depth = r.rnd_int(1, params.max_depth);
+            else
+                depth =  r.rnd_int(1, std::min(params.max_depth,unsigned(3)));
             // make a program for each individual
             char ot = r.random_choice(params.otypes);
             //cout<<"Passing otype as "<<ot<<"\n";
