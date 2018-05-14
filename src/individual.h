@@ -275,7 +275,7 @@ namespace FT{
         if (stack.f.size()==0)
         {
             if (stack.b.size() == 0)
-            {   std::cout << "Error: no outputs in stacks\n"; throw;}
+                HANDLE_ERROR_THROW("Error: no outputs in stacks");
             
             cols = stack.b.top().size();
         }
@@ -383,7 +383,7 @@ namespace FT{
         if (stack.f.size()==0)
         {
             if (stack.b.size() == 0)
-            {   std::cout << "Error: no outputs in stacks\n"; throw;}
+                HANDLE_ERROR_THROW("Error: no outputs in stacks");
             
             cols = stack.b.top().size();
         }
