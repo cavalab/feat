@@ -590,9 +590,10 @@ namespace FT{
                 arch.update(*p_pop,params);
 
             if(params.verbosity>0)
+            {
                 print_stats(log);
-            else
                 printProgress(((g+1)*1.0)/params.gens);
+            }
             
             if (params.backprop)
             {
@@ -717,6 +718,7 @@ namespace FT{
         if (ind == 0)        // if ind is empty, predict with best_ind
         {
             if (best_ind.program.size()==0){
+                //HANDLE_ERROR_THROW("You need to train a model using fit() before making predictions.");
                 std::cerr << "You need to train a model using fit() before making predictions.\n";
                 throw;
             }

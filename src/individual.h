@@ -6,6 +6,7 @@ license: GNU/GPL v3
 #define INDIVIDUAL_H
 
 #include "stack.h"
+#include "data.h"
 #include "params.h"
 
 namespace FT{
@@ -246,6 +247,9 @@ namespace FT{
          */
 
         Stacks stack;
+
+        Data data(X, y, Z);
+        
         params.msg("evaluating program " + get_eqn(),2);
         params.msg("program length: " + std::to_string(program.size()),2);
         // evaluate each node in program
@@ -254,7 +258,7 @@ namespace FT{
         	if(stack.check(n->arity))
         	{
         	    //cout<<"***enter here "<<n->name<<"\n";
-	            n->evaluate(X, y, Z, stack);
+	            n->evaluate(data, stack);
 	            //cout<<"***exit here "<<n->name<<"\n";
 	        }
             else
@@ -320,6 +324,8 @@ namespace FT{
         Stacks stack;
         params.msg("evaluating program " + get_eqn(),2);
         params.msg("program length: " + std::to_string(program.size()),2);
+        
+        Data data(X, y, Z);
 
         vector<size_t> roots = program.roots();
         size_t root = 0;
@@ -359,7 +365,7 @@ namespace FT{
                     }
                 }
         	    //cout<<"***enter here "<<n->name<<"\n";
-	            program.at(i)->evaluate(X, y, Z, stack);
+	            program.at(i)->evaluate(data, stack);
                 program.at(i)->visits = 0;
 	            //cout<<"***exit here "<<n->name<<"\n";
 	        }
