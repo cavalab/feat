@@ -174,7 +174,9 @@ namespace FT{
             }
             else
             {
-                std::cout << "Error: Using longitudinal nodes when no longitudinal data available\n";
+                std::cout << "Error: can't develop proper terminals\n";
+                std::cout << "terminals size: " << terminals.size();
+                std::cout << "ti size: " << ti.size();
                 throw;
             }
         }

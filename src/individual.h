@@ -180,9 +180,15 @@ namespace FT{
         }
         assert(weights.size() == program.roots().size());     
         p.resize(0);
+        
+        // normalize the sum of the weights
+        double sum = 0;
+        for (unsigned i =0; i<weights.size(); ++i)
+            sum += fabs(weights.at(i));
+
         p.resize(weights.size());
         for (unsigned i=0; i< weights.size(); ++i)
-            p[i] = 1 - fabs(weights[i]);
+            p[i] = 1 - fabs(weights[i]/sum);
         /* for (unsigned i=0; i<p.size(); ++i) */
         /*     p[i] = 1-p[i]; */
         double u = 1.0/double(p.size());    // uniform probability
