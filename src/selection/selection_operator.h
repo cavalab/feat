@@ -20,13 +20,11 @@ namespace FT{
         
         virtual vector<size_t> select(Population& pop, const MatrixXd& F, const Parameters& p) 
         {   
-            std::cerr << "Undefined select() operation\n";
-            throw;
+            HANDLE_ERROR_THROW("Undefined select() operation");
         }
         virtual vector<size_t> survive(Population& pop, const MatrixXd& F, const Parameters& p)
         {
-            std::cerr << "Undefined select() operation\n";
-            throw;
+            HANDLE_ERROR_THROW("Undefined select() operation");
         };
 
     };

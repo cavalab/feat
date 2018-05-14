@@ -152,7 +152,6 @@ TEST(Feat, predict)
          0.5, -0.8,
          0.1,-0.9;
     
-    cout << "Done till here\n";
     ASSERT_EQ(feat.predict(X).size(), 7);             //TODO had to remove !bzero ASSERT in set_termincal weights
 }
 
@@ -329,6 +328,8 @@ TEST(NodeTest, Evaluate)
     VectorXd Y(6); 
     Y << 3.0, 4.0, 5.0, 6.0, 7.0, 8.0;
     
+    Data data(X, Y, z1);
+    
 	std::unique_ptr<Node> addObj = std::unique_ptr<Node>(new NodeAdd());
 	
 	stack.f.clear();
@@ -336,7 +337,7 @@ TEST(NodeTest, Evaluate)
 	stack.f.push(X.row(0));
 	stack.f.push(X.row(1));
 	
-	addObj->evaluate(X, Y, z1, stack);	
+	addObj->evaluate(data, stack);	
 	
 	x = stack.f.pop(); 
 	
@@ -350,7 +351,7 @@ TEST(NodeTest, Evaluate)
 	stack.f.push(X.row(0));
 	stack.f.push(X.row(1));
 	
-	subObj->evaluate(X, Y, z1, stack);
+	subObj->evaluate(data, stack);
 	
 	x = stack.f.pop(); 
 	
@@ -364,7 +365,7 @@ TEST(NodeTest, Evaluate)
 	stack.f.push(X.row(0));
 	stack.f.push(X.row(1));
 	
-	mulObj->evaluate(X, Y, z1, stack);
+	mulObj->evaluate(data, stack);
 	
 	x = stack.f.pop(); 
 	
@@ -378,7 +379,7 @@ TEST(NodeTest, Evaluate)
 	stack.f.push(X.row(0));
 	stack.f.push(X.row(1));
 	
-	divObj->evaluate(X, Y, z1, stack);
+	divObj->evaluate(data, stack);
 	
 	x = stack.f.pop(); 
 	
@@ -391,7 +392,7 @@ TEST(NodeTest, Evaluate)
 	stack.b.clear();
 	stack.f.push(X.row(0));
 	
-	sqrtObj->evaluate(X, Y, z1, stack);
+	sqrtObj->evaluate(data, stack);
 	
 	x = stack.f.pop(); 
 	
@@ -404,7 +405,7 @@ TEST(NodeTest, Evaluate)
 	stack.b.clear();
 	stack.f.push(X.row(0));
 	
-	sinObj->evaluate(X, Y, z1, stack);	
+	sinObj->evaluate(data, stack);	
 	
 	x = stack.f.pop(); 
 	
@@ -417,7 +418,7 @@ TEST(NodeTest, Evaluate)
 	stack.b.clear();
 	stack.f.push(X.row(0));
 	
-	cosObj->evaluate(X, Y, z1, stack);
+	cosObj->evaluate(data, stack);
 	
 	x = stack.f.pop(); 
 	
@@ -430,7 +431,7 @@ TEST(NodeTest, Evaluate)
 	stack.b.clear();
 	stack.f.push(X.row(0));
 	
-	squareObj->evaluate(X, Y, z1, stack);
+	squareObj->evaluate(data, stack);
 	
 	x = stack.f.pop(); 
 	
@@ -444,7 +445,7 @@ TEST(NodeTest, Evaluate)
 	stack.f.push(X.row(0));
 	stack.f.push(X.row(1));
 	
-	expObj->evaluate(X, Y, z1, stack);
+	expObj->evaluate(data, stack);
 	
 	x = stack.f.pop(); 
 	
@@ -457,7 +458,7 @@ TEST(NodeTest, Evaluate)
 	stack.b.clear();
 	stack.f.push(X.row(0));
 	
-	exptObj->evaluate(X, Y, z1, stack);
+	exptObj->evaluate(data, stack);
 	
 	x = stack.f.pop(); 
 	
@@ -470,7 +471,7 @@ TEST(NodeTest, Evaluate)
 	stack.b.clear();
 	stack.f.push(X.row(0));
 	
-	logObj->evaluate(X, Y, z1, stack);
+	logObj->evaluate(data, stack);
 	
 	x = stack.f.pop(); 
 	
@@ -484,7 +485,7 @@ TEST(NodeTest, Evaluate)
 	stack.b.push(Z1);
 	stack.b.push(Z2);
 	
-	andObj->evaluate(X, Y, z1, stack);
+	andObj->evaluate(data, stack);
 	
 	z = stack.b.pop();
 	
@@ -498,7 +499,7 @@ TEST(NodeTest, Evaluate)
 	stack.b.push(Z1);
 	stack.b.push(Z2);
 	
-	orObj->evaluate(X, Y, z1, stack);
+	orObj->evaluate(data, stack);
 	
 	z = stack.b.pop(); 
 	
@@ -511,7 +512,7 @@ TEST(NodeTest, Evaluate)
 	stack.b.clear();
 	stack.b.push(Z1);
 	
-	notObj->evaluate(X, Y, z1, stack);
+	notObj->evaluate(data, stack);
 	
 	z = stack.b.pop(); 
 	
@@ -525,7 +526,7 @@ TEST(NodeTest, Evaluate)
 	stack.f.push(X.row(0));
 	stack.f.push(X.row(1));
 	
-	eqObj->evaluate(X, Y, z1, stack);
+	eqObj->evaluate(data, stack);
 	
 	z = stack.b.pop(); 
 	
@@ -539,7 +540,7 @@ TEST(NodeTest, Evaluate)
 	stack.f.push(X.row(0));
 	stack.f.push(X.row(1));
 	
-	gtObj->evaluate(X, Y, z1, stack);
+	gtObj->evaluate(data, stack);
 	
 	z = stack.b.pop(); 
 	
@@ -553,7 +554,7 @@ TEST(NodeTest, Evaluate)
 	stack.f.push(X.row(0));
 	stack.f.push(X.row(1));
 	
-	geqObj->evaluate(X, Y, z1, stack);
+	geqObj->evaluate(data, stack);
 	
 	z = stack.b.pop(); 
 	
@@ -567,7 +568,7 @@ TEST(NodeTest, Evaluate)
 	stack.f.push(X.row(0));
 	stack.f.push(X.row(1));
 	
-	ltObj->evaluate(X, Y, z1, stack);
+	ltObj->evaluate(data, stack);
 	
 	z = stack.b.pop(); 
 	
@@ -581,7 +582,7 @@ TEST(NodeTest, Evaluate)
 	stack.f.push(X.row(0));
 	stack.f.push(X.row(1));
 	
-	leqObj->evaluate(X, Y, z1, stack);
+	leqObj->evaluate(data, stack);
 	
 	z = stack.b.pop(); 
 	
@@ -595,7 +596,7 @@ TEST(NodeTest, Evaluate)
 	stack.f.push(X.row(0));
 	stack.b.push(Z1);
 	
-	ifObj->evaluate(X, Y, z1, stack);
+	ifObj->evaluate(data, stack);
 	
 	x = stack.f.pop(); 
 	
@@ -610,7 +611,7 @@ TEST(NodeTest, Evaluate)
 	stack.f.push(X.row(1));
 	stack.b.push(Z1);
 	
-	iteObj->evaluate(X, Y, z1, stack);
+	iteObj->evaluate(data, stack);
 	
 	x = stack.f.pop(); 
 	
@@ -624,7 +625,7 @@ TEST(NodeTest, Evaluate)
 	stack.b.clear();
 	stack.f.push(X.row(0));
 	
-	tanObj->evaluate(X, Y, z1, stack);
+	tanObj->evaluate(data, stack);
 	
 	x = stack.f.pop(); 
 	
@@ -637,7 +638,7 @@ TEST(NodeTest, Evaluate)
 	stack.b.clear();
 	stack.f.push(X.row(0));
 	
-	logitObj->evaluate(X, Y, z1, stack);
+	logitObj->evaluate(data, stack);
 	
 	x = stack.f.pop(); 
 	
@@ -650,7 +651,7 @@ TEST(NodeTest, Evaluate)
 	stack.b.clear();
 	stack.f.push(X.row(0));
 	
-	stepObj->evaluate(X, Y, z1, stack);
+	stepObj->evaluate(data, stack);
 	
 	x = stack.f.pop(); 
 	
@@ -663,7 +664,7 @@ TEST(NodeTest, Evaluate)
 	stack.b.clear();
 	stack.f.push(X.row(0));
 	
-	signObj->evaluate(X, Y, z1, stack);
+	signObj->evaluate(data, stack);
 	
 	x = stack.f.pop(); 
 	
@@ -678,7 +679,7 @@ TEST(NodeTest, Evaluate)
 	stack.b.push(Z1);
 	stack.b.push(Z2);
 	
-	xorObj->evaluate(X, Y, z1, stack);
+	xorObj->evaluate(data, stack);
 	
 	z = stack.b.pop(); 
 	
@@ -691,7 +692,7 @@ TEST(NodeTest, Evaluate)
 	stack.b.clear();
 	stack.f.push(X.row(0));
 	
-	gausObj->evaluate(X, Y, z1, stack);
+	gausObj->evaluate(data, stack);
 	
 	x = stack.f.pop(); 
 	
@@ -705,7 +706,7 @@ TEST(NodeTest, Evaluate)
 	stack.f.push(X.row(0));
 	stack.f.push(X.row(1));
 	
-	gaus2dObj->evaluate(X, Y, z1, stack);
+	gaus2dObj->evaluate(data, stack);
 	
 	x = stack.f.pop(); 
 	
@@ -723,10 +724,11 @@ bool isValidProgram(NodeVector& program, unsigned num_features)
     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z; 
     
     Stacks stack;
+    Data data(X, y, z);
    
     for (const auto& n : program){
         if ( stack.f.size() >= n->arity['f'] && stack.b.size() >= n->arity['b'])
-            n->evaluate(X, y, z, stack);
+            n->evaluate(data, stack);
         else
             return false; 
     }

@@ -225,10 +225,11 @@ namespace FT{
             bool pass = true;
             auto ml = std::make_shared<ML>(params);
             shared_ptr<CLabels> yhat_t = ml->fit(Phi,y_t,params,pass,individuals[i].dtypes);
-            if (!pass){
-                std::cerr << "Error training eqn " + individuals[i].get_eqn() + "\n";
-                std::cerr << "with raw output " << individuals[i].out(X_t, Z_t,params,y_t) << "\n";
-                throw;
+            if (!pass)
+            {
+                HANDLE_ERROR_THROW("Error training eqn " + individuals[i].get_eqn() + 
+                                    "\nwith raw output " + 
+                                    to_string(individuals[i].out(X_t, Z_t,params,y_t)) + "\n");
             }
             
             // calculate program output matrix Phi on validation data
