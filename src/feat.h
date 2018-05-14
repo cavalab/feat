@@ -717,10 +717,8 @@ namespace FT{
         
         if (ind == 0)        // if ind is empty, predict with best_ind
         {
-            if (best_ind.program.size()==0){
-                std::cerr << "You need to train a model using fit() before making predictions.\n";
-                throw;
-            }
+            if (best_ind.program.size()==0)
+                HANDLE_ERROR_THROW("You need to train a model using fit() before making predictions.");
             
             return best_ind.out(X, Z, params);
         }

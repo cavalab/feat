@@ -13,6 +13,7 @@ license: GNU/GPL v3
 #include <ostream>
 #include <map>
 #include "init.h"
+#include "error.h"
 
 using namespace Eigen;
 
@@ -664,6 +665,15 @@ namespace FT{
         int rpad = PBWIDTH - lpad;
         printf ("\rCompleted %3d%% [%.*s%*s]", val, lpad, PBSTR.c_str(), rpad, "");
         fflush (stdout);
+    }
+    
+    ///template function to convert objects to string for logging
+    template <typename T>
+    string to_string(const T& value)
+    {
+        std::stringstream ss;
+        ss << value;
+        return ss.str();
     }
 } 
 #endif

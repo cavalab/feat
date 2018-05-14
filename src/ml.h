@@ -465,10 +465,7 @@ namespace FT{
             return confidences;
         }
         else
-        {
-            std::cerr << "Error: predict_proba not defined for problem type or ML method\n";
-            throw;
-        }
+            HANDLE_ERROR_THROW("Error: predict_proba not defined for problem type or ML method");
     }
 
     VectorXd ML::labels_to_vector(shared_ptr<CLabels>& labels)
