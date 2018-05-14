@@ -98,12 +98,9 @@ namespace metrics{
                 loss(i) = -(y(i)*log(eps) + (1-y(i))*log(1-eps));
             else
                 loss(i) = -(y(i)*log(yhat(i)) + (1-y(i))*log(1-yhat(i)));
-            if (loss(i)<0){
-                cout << "ERROR line 100 metrics.h:\n";
-                cout << "loss(i)= " << loss(i) << ". y = " << y(i) 
-                     << ", yhat(i) = " << yhat(i) << "\n";
-                throw;
-            }
+            if (loss(i)<0)
+                HANDLE_ERROR_THROW("loss(i)= " + to_string(loss(i)) + ". y = " + to_string(y(i)) + ", yhat(i) = " + to_string(yhat(i)));
+
             if (!class_weights.empty())
             {
                 loss(i) = loss(i) * class_weights.at(y(i));

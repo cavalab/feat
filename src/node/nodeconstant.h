@@ -17,8 +17,7 @@ namespace FT{
     		
     		NodeConstant()
     		{
-    			std::cerr << "error in nodeconstant.h : invalid constructor called";
-				throw;
+    		    HANDLE_ERROR_THROW("error in nodeconstant.h : invalid constructor called");
     		}
 
             /// declares a boolean constant

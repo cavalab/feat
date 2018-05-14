@@ -177,10 +177,7 @@ namespace FT{
                 program.push_back(t->rnd_clone());
             }
             else
-            {
-                std::cout << "Error: Using longitudinal nodes when no longitudinal data available\n";
-                throw;
-            }
+                HANDLE_ERROR_THROW("Error: Using longitudinal nodes when no longitudinal data available");
         }
         else
         {

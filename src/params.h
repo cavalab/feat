@@ -428,8 +428,7 @@ namespace FT{
             
         else
         {
-            std::cerr << "Error: no node named '" << str << "' exists.\n"; 
-            throw;
+            HANDLE_ERROR_THROW("Error: no node named '" + str + "' exists."); 
         }
         //TODO: add squashing functions, time delay functions, and stats functions
     	
