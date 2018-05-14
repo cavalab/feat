@@ -95,7 +95,7 @@ int main(int argc, char** argv){
         cout << "-split\tFraction of data to use for training (0.75)\n";
         cout << "-isplit\tInternal slit for Feat's training procedure (0.75)\n";
         cout << "-f\tfeedback strength of ML on variation probabilities (0.5)\n";
-        cout << "-n\tname to append to files\n";
+        cout << "-log\tlog file name\n";
         cout << "-n_threads\tmaximum number of threads\n";
         cout << "-ldata\tpath to longitudinal data file\n";
         cout << "-scorer\tscoring function [mse, zero_one, bal_zero_one, log, multi_log]\n"; 
@@ -149,8 +149,8 @@ int main(int argc, char** argv){
         feat.set_split(std::stod(input.getCmdOption("-isplit")));
     if(input.cmdOptionExists("-f"))
         feat.set_feedback(std::stod(input.getCmdOption("-f")));
-    if(input.cmdOptionExists("-n"))
-        feat.set_name(input.getCmdOption("-n"));
+    if(input.cmdOptionExists("-log"))
+        feat.set_logfile(input.getCmdOption("-log"));
     if(input.cmdOptionExists("-ldata"))
         ldataFile = input.getCmdOption("-ldata");
     if(input.cmdOptionExists("-scorer"))

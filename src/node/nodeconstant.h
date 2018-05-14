@@ -44,14 +44,12 @@ namespace FT{
     		}
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
+            void evaluate(Data& data, Stacks& stack)
             {
         		if (otype == 'b')
-                    stack.b.push(ArrayXb::Constant(X.cols(),int(b_value)));
+                    stack.b.push(ArrayXb::Constant(data.X.cols(),int(b_value)));
                 else 	
-                    stack.f.push(limited(ArrayXd::Constant(X.cols(),d_value)));
+                    stack.f.push(limited(ArrayXd::Constant(data.X.cols(),d_value)));
             }
 
             /// Evaluates the node symbolically
