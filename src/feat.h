@@ -853,60 +853,69 @@ namespace FT{
     
     void Feat::print_stats(std::ofstream& log)
     {
-        /* unsigned num_models = std::min(20,p_pop->size()); */
-        /* double med_score = median(F.colwise().mean().array());  // median loss */
-        /* ArrayXd Sizes(p_pop->size()); unsigned i = 0;           // collect program sizes */
-        /* for (const auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;} */
-        /* unsigned med_size = median(Sizes);                        // median program size */
-        /* unsigned max_size = Sizes.maxCoeff(); */
-        /* string bar, space = "";                                 // progress bar */
-        /* for (unsigned int i = 0; i<50; ++i){ */
-        /*     if (i <= 50*g/params.gens) bar += "/"; */
-        /*     else space += " "; */
-        /* } */
-        /* std::cout.precision(5); */
-        /* std::cout << std::scientific; */
-        /* std::cout << "Generation " << g << "/" << params.gens << " [" + bar + space + "]\n"; */
-        /* std::cout << "Min Loss\tMedian Loss\tMedian (Max) Size\tTime (s)\n" */
-        /*           <<  best_score << "\t" << med_score << "\t" ; */
-        /* std::cout << std::fixed  << med_size << " (" << max_size << ") \t\t" << timer << "\n"; */
-        /* std::cout << "Representation Pareto Front--------------------------------------\n"; */
-        /* std::cout << "Rank\tComplexity\tLoss\tRepresentation\n"; */
-        /* std::cout << std::scientific; */
-        /* // printing 10 individuals from the pareto front */
-        /* unsigned n = 1; */
-        /* if (use_arch) */
-        /* { */
-        /*     num_models = std::min(20, int(arch.archive.size())); */
+        unsigned num_models = std::min(50,p_pop->size());
+        double med_score = median(F.colwise().mean().array());  // median loss
+        ArrayXd Sizes(p_pop->size()); unsigned i = 0;           // collect program sizes
+        for (const auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;}
+        unsigned med_size = median(Sizes);                        // median program size
+        unsigned max_size = Sizes.maxCoeff();
+        string bar, space = "";                                 // progress bar
+        for (unsigned int i = 0; i<50; ++i){
+            if (i <= 50*params.current_gen/params.gens) bar += "/";
+            else space += " ";
+        }
+        std::cout.precision(5);
+        std::cout << std::scientific;
+        std::cout << "Generation " << params.current_gen << "/" << params.gens << " [" + bar + space + "]\n";
+        std::cout << "Min Loss\tMedian Loss\tMedian (Max) Size\tTime (s)\n"
+                  <<  best_score << "\t" << med_score << "\t" ;
+        std::cout << std::fixed  << med_size << " (" << max_size << ") \t\t" << timer << "\n";
+        std::cout << "Representation Pareto Front--------------------------------------\n";
+        std::cout << "Rank\tComplexity\tLoss\tRepresentation\n";
+        std::cout << std::scientific;
+        // printing 10 individuals from the pareto front
+        unsigned n = 1;
+        if (use_arch)
+        {
+            num_models = std::min(40, int(arch.archive.size()));
 
-        /*     for (unsigned i = 0; i < num_models; ++i) */
-        /*     { */
-                
-        /*         std::cout <<  arch.archive[i].rank << "\t" */ 
-        /*                   <<  arch.archive[i].complexity() << "\t" */ 
-        /*                   <<  arch.archive[i].fitness << "\t" */ 
-        /*                   <<  arch.archive[i].get_eqn() << "\n"; */  
-        /*     } */
-        /* } */
-        /* else */
-        /* { */
-        /*     vector<size_t> f = p_pop->sorted_front(n); */
-        /*     vector<size_t> fnew(2,0); */
-        /*     while (f.size() < num_models && fnew.size()>1) */
-        /*     { */
-        /*         fnew = p_pop->sorted_front(++n); */                
-        /*         f.insert(f.end(),fnew.begin(),fnew.end()); */
-        /*     } */
+            for (unsigned i = 0; i < num_models; ++i)
+            {
+                std::string lim_model;
+                std::string model = arch.archive[i].get_eqn();
+                for (unsigned j = 0; j< std::min(model.size(),size_t(20)); ++j)
+                    lim_model.push_back(model.at(j));
+                lim_model += "...";
+                std::cout <<  arch.archive[i].rank << "\t" 
+                          <<  arch.archive[i].complexity() << "\t" 
+                          <<  arch.archive[i].fitness << "\t" 
+                          <<  lim_model << "\n";  
+            }
+        }
+        else
+        {
+            vector<size_t> f = p_pop->sorted_front(n);
+            vector<size_t> fnew(2,0);
+            while (f.size() < num_models && fnew.size()>1)
+            {
+                fnew = p_pop->sorted_front(++n);                
+                f.insert(f.end(),fnew.begin(),fnew.end());
+            }
             
-        /*     for (unsigned j = 0; j < std::min(num_models,unsigned(f.size())); ++j) */
-        /*     { */          
-        /*         std::cout << p_pop->individuals[f[j]].rank << "\t" */ 
-        /*                   <<  p_pop->individuals[f[j]].complexity() << "\t" << (*p_pop)[f[j]].fitness */ 
-        /*                   << "\t" << p_pop->individuals[f[j]].get_eqn() << "\n"; */  
-        /*     } */
-        /* } */
+            for (unsigned j = 0; j < std::min(num_models,unsigned(f.size())); ++j)
+            {     
+                std::string lim_model;
+                std::string model = p_pop->individuals[f[j]].get_eqn();
+                for (unsigned j = 0; j< std::min(model.size(),size_t(20)); ++j)
+                    lim_model.push_back(model.at(j));
+                lim_model += "...";     
+                std::cout << p_pop->individuals[f[j]].rank << "\t" 
+                          <<  p_pop->individuals[f[j]].complexity() << "\t" << (*p_pop)[f[j]].fitness 
+                          << "\t" << lim_model << "\n";  
+            }
+        }
        
-        /* std::cout <<"\n\n"; */
+        std::cout <<"\n\n";
 
         // print stats in tabular format
         string sep = ",";
@@ -920,9 +929,9 @@ namespace FT{
                 << "med_num_params" << sep
                 <<  "med_dim\n";
         }
-        double med_score = median(F.colwise().mean().array());  // median loss
-        ArrayXd Sizes(p_pop->size());                           // collect program sizes
-        unsigned i = 0; for (auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;}
+        /* double med_score = median(F.colwise().mean().array());  // median loss */
+        /* ArrayXd Sizes(p_pop->size());                           // collect program sizes */
+        /* i = 0; for (auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;} */
         ArrayXd Complexities(p_pop->size()); 
         i = 0; for (auto& p : p_pop->individuals){ Complexities(i) = p.get_complexity(); ++i;}
         ArrayXd Nparams(p_pop->size()); 
@@ -931,7 +940,7 @@ namespace FT{
         i = 0; for (auto& p : p_pop->individuals){ Dims(i) = p.get_dim(); ++i;}
 
         
-        unsigned med_size = median(Sizes);                        // median program size
+        /* unsigned med_size = median(Sizes);                        // median program size */
         unsigned med_complexity = median(Complexities);           // median 
         unsigned med_num_params = median(Nparams);                // median program size
         unsigned med_dim = median(Dims);                          // median program size
