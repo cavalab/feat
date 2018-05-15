@@ -63,6 +63,10 @@ class Feat(BaseEstimator):
 
         # if self.verbosity>0:
         print('self.__dict__: ' , self.__dict__)
+        self._pyfeat=None 
+
+    def _init_pyfeat(self):
+        # set up pyfeat glue class object
         self._pyfeat = pyfeat.PyFeat( self.pop_size,  self.gens,  self.ml, 
                 self.classification,  self.verbosity,  self.max_stall,
                 self.sel,  self.surv,  self.cross_rate,
@@ -82,8 +86,9 @@ class Feat(BaseEstimator):
                 self.n_threads,
                 self.hillclimb,
                 self.logfile)
-
+   
     def fit(self,X,y,zfile=None,zids=None):
+        self._init_pyfeat()    
         if zfile:
             zfile = zfile.encode() if isinstance(zfile,str) else zfile
             self._pyfeat.fit_with_z(X,y,zfile,zids)
@@ -113,9 +118,11 @@ class Feat(BaseEstimator):
             return self._pyfeat.transform(X)
 
     def fit_predict(self,X,y):
+        self._init_pyfeat()    
         return self._pyfeat.fit_predict(X,y)
 
     def fit_transform(self,X,y):
+        self._init_pyfeat()    
         return self._pyfeat.fit_transform(X,y)
 
     def score(self,features,labels,zfile=None,zids=None):
