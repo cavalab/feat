@@ -43,12 +43,10 @@ namespace FT{
         vector<size_t> selected(P);
         // select F/2 to F individuals
         std::iota(selected.begin(),selected.end(),P);
+        
         if (selected[selected.size()-1] > pop.size())
-        {
-            cout << "error: selected includes " << selected.at(selected.size()-1) 
-                << ", pop size is " << pop.size() << "\n";
-            exit(1);
-        }
+            HANDLE_ERROR_THROW("error: selected includes " + to_string(selected.at(selected.size()-1)) + ", pop size is " + to_string(pop.size()) + "\n");
+          
         if (elitism)
         {   // find best and worst inds and if best is not in selected, replace worst with it
             size_t best_idx, worst_idx;

@@ -236,8 +236,8 @@ namespace FT{
                 this->verbosity = verbosity;
             else
             {
-                std::cerr << "'" + std::to_string(verbosity) + "' is not a valid verbosity. Setting to default 1\n";
-                std::cerr << "Valid Values :\n\t0 - none\n\t1 - minimal\n\t2 - all\n";
+                HANDLE_ERROR_NO_THROW("'" + std::to_string(verbosity) + "' is not a valid verbosity. Setting to default 1\n");
+                HANDLE_ERROR_NO_THROW("Valid Values :\n\t0 - none\n\t1 - minimal\n\t2 - all\n");
                 this->verbosity = 1;
             }
         } 
@@ -425,11 +425,9 @@ namespace FT{
             //std::cout<<"******CALLED with name "<<name<<"\n";
             return std::unique_ptr<Node>(new NodeLongitudinal(name));
         }
-            
         else
-        {
             HANDLE_ERROR_THROW("Error: no node named '" + str + "' exists."); 
-        }
+        
         //TODO: add squashing functions, time delay functions, and stats functions
     	
     }
