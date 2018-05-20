@@ -72,7 +72,7 @@ int main(int argc, char** argv){
     //////////////////////////////////////// parse arguments
     InputParser input(argc, argv);
     if(input.cmdOptionExists("-h") || input.dataset.empty()){
-        if (input.dataset.empty()) std::cerr << "Error: no dataset specified.\n---\n";
+        if (input.dataset.empty()) HANDLE_ERROR_NO_THROW("Error: no dataset specified.\n---\n");
         // Print help and exit. 
         cout << "Feat is a feature engineering wrapper for learning intelligible models.\n";
         cout << "Usage:\tfeat path/to/dataset [options]\n";
@@ -193,7 +193,7 @@ int main(int argc, char** argv){
     if (binary_endpoint)
     {
         if (!feat.get_classification())
-            std::cerr << "WARNING: binary endpoint detected. Feat is set for regression.";
+            HANDLE_ERROR_NO_THROW("WARNING: binary endpoint detected. Feat is set for regression.");
         else
             std::cout << "setting binary endpoint\n";
                       

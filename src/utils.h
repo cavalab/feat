@@ -58,10 +58,8 @@ namespace FT{
         std::ifstream indata;
         indata.open(path);
         if (!indata.good())
-        { 
-            std::cerr << "Invalid input file " + path + "\n"; 
-            exit(1);
-        }
+            HANDLE_ERROR_THROW("Invalid input file " + path + "\n"); 
+            
         std::string line;
         std::vector<double> values, targets;
         unsigned rows=0, col=0, target_col = 0;
@@ -132,10 +130,8 @@ namespace FT{
         std::ifstream indata;
         indata.open(path);
         if (!indata.good())
-        { 
-            std::cerr << "Invalid input file " + path + "\n"; 
-            exit(1);
-        }
+            HANDLE_ERROR_THROW("Invalid input file " + path + "\n"); 
+            
         std::string line, firstKey = "";
        
         string header;
@@ -217,10 +213,8 @@ namespace FT{
         std::ifstream indata;
         indata.open(path);
         if (!indata.good())
-        { 
-            std::cerr << "Invalid input file " + path + "\n"; 
-            exit(1);
-        }
+            HANDLE_ERROR_THROW("Invalid input file " + path + "\n");
+        
         std::string line, firstKey = "";
        
         // get header

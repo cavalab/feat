@@ -262,11 +262,7 @@ namespace FT{
 	            //cout<<"***exit here "<<n->name<<"\n";
 	        }
             else
-            {
-                std::cout << "out() error: node " << n->name << " in " + program_str() + 
-                             " is invalid\n";
-                exit(1);
-            }
+                HANDLE_ERROR_THROW("out() error: node " + n->name + " in " + program_str() + " is invalid\n");
         }
         
         // convert stack_f to Phi
@@ -370,11 +366,7 @@ namespace FT{
 	            //cout<<"***exit here "<<n->name<<"\n";
 	        }
             else
-            {
-                std::cout << "out() error: node " << program.at(i)->name << " in " + program_str() + 
-                             " is invalid\n";
-                exit(1);
-            }
+                HANDLE_ERROR_THROW("out() error: node " + program.at(i)->name + " in " + program_str() + " is invalid\n");
         }
         
         // convert stack_f to Phi
@@ -424,12 +416,7 @@ namespace FT{
             	if(stack.check_s(n->arity))
                 	n->eval_eqn(stack);
                 else
-                {
-                    std::cout << "get_eqn() error: node " << n->name 
-                              << " in " + program_str() + " is invalid\n";
-                    exit(1);
-                }
-
+                    HANDLE_ERROR_THROW("get_eqn() error: node " + n->name + " in " + program_str() + " is invalid\n");
             }
             // tie stack outputs together to return representation
             for (auto s : stack.fs) 

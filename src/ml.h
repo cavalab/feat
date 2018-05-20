@@ -141,7 +141,7 @@ namespace FT{
                 
                 }
 	            else
-                	std::cerr << "'" + ml_type + "' is not a valid ml choice\n";
+	                HANDLE_ERROR_NO_THROW("'" + ml_type + "' is not a valid ml choice\n");
                 
                 p_est->set_max_train_time(max_train_time);  // set maximum training time per model
             }
@@ -276,10 +276,8 @@ namespace FT{
         else if (!ml_type.compare("CART"))           
             w = dynamic_pointer_cast<sh::CMyCARTree>(p_est)->feature_importances();
         else
-        {
-            std::cerr << "ERROR: ML::get_weights not implemented for " + ml_type << "\n";
+            HANDLE_ERROR_NO_THROW("ERROR: ML::get_weights not implemented for " + ml_type + "\n");
             
-        }
         return w;
     }
 
