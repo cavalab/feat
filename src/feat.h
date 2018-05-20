@@ -593,7 +593,7 @@ namespace FT{
             {
                 print_stats(log);
                 printProgress(((g+1)*1.0)/params.gens);
-            }
+            }            
             
             if (params.backprop)
             {
