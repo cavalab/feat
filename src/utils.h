@@ -14,6 +14,7 @@ license: GNU/GPL v3
 #include <map>
 #include "init.h"
 #include "error.h"
+#include "data.h"
 
 using namespace Eigen;
 
@@ -58,10 +59,8 @@ namespace FT{
         std::ifstream indata;
         indata.open(path);
         if (!indata.good())
-        { 
-            std::cerr << "Invalid input file " + path + "\n"; 
-            exit(1);
-        }
+            HANDLE_ERROR_THROW("Invalid input file " + path + "\n"); 
+            
         std::string line;
         std::vector<double> values, targets;
         unsigned rows=0, col=0, target_col = 0;
@@ -132,10 +131,8 @@ namespace FT{
         std::ifstream indata;
         indata.open(path);
         if (!indata.good())
-        { 
-            std::cerr << "Invalid input file " + path + "\n"; 
-            exit(1);
-        }
+            HANDLE_ERROR_THROW("Invalid input file " + path + "\n"); 
+            
         std::string line, firstKey = "";
        
         string header;
@@ -217,10 +214,8 @@ namespace FT{
         std::ifstream indata;
         indata.open(path);
         if (!indata.good())
-        { 
-            std::cerr << "Invalid input file " + path + "\n"; 
-            exit(1);
-        }
+            HANDLE_ERROR_THROW("Invalid input file " + path + "\n");
+        
         std::string line, firstKey = "";
        
         // get header
@@ -480,20 +475,7 @@ namespace FT{
         }
     }
 
-
-
-    /// split input data into training and validation sets. 
-    void train_test_split(MatrixXd& X,
-                          VectorXd& y,
-                          std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
-                          MatrixXd& X_t,
-                          MatrixXd& X_v,
-                          VectorXd& y_t, 
-                          VectorXd& y_v,
-                          std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_t,
-                          std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_v,
-                          bool shuffle,
-                          double split)
+    void train_test_split(DataRef& d, bool shuffle, double split)
     {
         /* @params X: n_features x n_samples matrix of training data
          * @params y: n_samples vector of training labels
@@ -502,35 +484,35 @@ namespace FT{
          */
         if (shuffle)     // generate shuffle index for the split
         {
-            Eigen::PermutationMatrix<Dynamic,Dynamic> perm(X.cols());
+            Eigen::PermutationMatrix<Dynamic,Dynamic> perm(d.o->X.cols());
             perm.setIdentity();
             r.shuffle(perm.indices().data(), perm.indices().data()+perm.indices().size());
-            X = X * perm;       // shuffles columns of X
-            y = (y.transpose() * perm).transpose() ;       // shuffle y too
+            d.o->X = d.o->X * perm;       // shuffles columns of X
+            d.o->y = (d.o->y.transpose() * perm).transpose() ;       // shuffle y too
             
-            if(Z.size() > 0)
+            if(d.o->Z.size() > 0)
             {
-                std::vector<int> zidx(y.size());
+                std::vector<int> zidx(d.o->y.size());
                 std::iota(zidx.begin(), zidx.end(), 0);
                 Eigen::VectorXi zw = Map<VectorXi>(zidx.data(), zidx.size());
                 zw = (zw.transpose()*perm).transpose();       // shuffle zw too
                 zidx.assign(((int*)zw.data()), (((int*)zw.data())+zw.size()));
                 
-                for(auto &val : Z)
+                for(auto &val : d.o->Z)
                     reorder_longitudinal(val.second.first, val.second.second, zidx);
             }
             
         }
         
         // map training and test sets  
-        X_t = MatrixXd::Map(X.data(),X_t.rows(),X_t.cols());
-        X_v = MatrixXd::Map(X.data()+X_t.rows()*X_t.cols(),X_v.rows(),X_v.cols());
+        d.t->X = MatrixXd::Map(d.o->X.data(),d.t->X.rows(),d.t->X.cols());
+        d.v->X = MatrixXd::Map(d.o->X.data()+d.t->X.rows()*d.t->X.cols(),d.v->X.rows(),d.v->X.cols());
 
-        y_t = VectorXd::Map(y.data(),y_t.size());
-        y_v = VectorXd::Map(y.data()+y_t.size(),y_v.size());
+        d.t->y = VectorXd::Map(d.o->y.data(),d.t->y.size());
+        d.v->y = VectorXd::Map(d.o->y.data()+d.t->y.size(),d.v->y.size());
         
-        if(Z.size() > 0)
-            split_longitudinal(Z, Z_t, Z_v, split);
+        if(d.o->Z.size() > 0)
+            split_longitudinal(d.o->Z, d.t->Z, d.v->Z, split);
 
     
     }

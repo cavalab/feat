@@ -40,16 +40,12 @@ namespace FT{
         Individual(){c = 0; dim = 0; eqn="";}
 
         /// calculate program output matrix Phi
-        MatrixXd out(const MatrixXd& X, 
-                     const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
-                     const Parameters& params,
-                     const VectorXd& y);
+        MatrixXd out(Data d,
+                     const Parameters& params);
 
         /// calculate program output while maintaining stack trace
-        MatrixXd out_trace(const MatrixXd& X, 
-                     const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
-                     const Parameters& params, vector<vector<ArrayXd>>& stack_trace,
-                     const VectorXd& y);
+        MatrixXd out_trace(Data d,
+                     const Parameters& params, vector<vector<ArrayXd>>& stack_trace);
 
 
         /// return symbolic representation of program
@@ -233,10 +229,8 @@ namespace FT{
         return ps;
     }
     // calculate program output matrix
-    MatrixXd Individual::out(const MatrixXd& X,
-                             const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
-                             const Parameters& params, 
-                             const VectorXd& y = VectorXd())
+    MatrixXd Individual::out(Data d,
+                             const Parameters& params)
     {
         /*!
          * @params X: n_features x n_samples data
@@ -247,8 +241,6 @@ namespace FT{
          */
 
         Stacks stack;
-
-        Data data(X, y, Z);
         
         params.msg("evaluating program " + get_eqn(),2);
         params.msg("program length: " + std::to_string(program.size()),2);
@@ -258,15 +250,11 @@ namespace FT{
         	if(stack.check(n->arity))
         	{
         	    //cout<<"***enter here "<<n->name<<"\n";
-	            n->evaluate(data, stack);
+	            n->evaluate(d, stack);
 	            //cout<<"***exit here "<<n->name<<"\n";
 	        }
             else
-            {
-                std::cout << "out() error: node " << n->name << " in " + program_str() + 
-                             " is invalid\n";
-                exit(1);
-            }
+                HANDLE_ERROR_THROW("out() error: node " + n->name + " in " + program_str() + " is invalid\n");
         }
         
         // convert stack_f to Phi
@@ -307,11 +295,9 @@ namespace FT{
     }
 
     // calculate program output matrix
-    MatrixXd Individual::out_trace(const MatrixXd& X,
-                             const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
+    MatrixXd Individual::out_trace(Data d,
                              const Parameters& params,
-                             vector<vector<ArrayXd>>& stack_f_trace,
-                             const VectorXd& y = VectorXd())
+                             vector<vector<ArrayXd>>& stack_f_trace)
     {
         /*!
          * @params X: n_features x n_samples data
@@ -324,8 +310,6 @@ namespace FT{
         Stacks stack;
         params.msg("evaluating program " + get_eqn(),2);
         params.msg("program length: " + std::to_string(program.size()),2);
-        
-        Data data(X, y, Z);
 
         vector<size_t> roots = program.roots();
         size_t root = 0;
@@ -365,16 +349,12 @@ namespace FT{
                     }
                 }
         	    //cout<<"***enter here "<<n->name<<"\n";
-	            program.at(i)->evaluate(data, stack);
+	            program.at(i)->evaluate(d, stack);
                 program.at(i)->visits = 0;
 	            //cout<<"***exit here "<<n->name<<"\n";
 	        }
             else
-            {
-                std::cout << "out() error: node " << program.at(i)->name << " in " + program_str() + 
-                             " is invalid\n";
-                exit(1);
-            }
+                HANDLE_ERROR_THROW("out() error: node " + program.at(i)->name + " in " + program_str() + " is invalid\n");
         }
         
         // convert stack_f to Phi
@@ -424,12 +404,7 @@ namespace FT{
             	if(stack.check_s(n->arity))
                 	n->eval_eqn(stack);
                 else
-                {
-                    std::cout << "get_eqn() error: node " << n->name 
-                              << " in " + program_str() + " is invalid\n";
-                    exit(1);
-                }
-
+                    HANDLE_ERROR_THROW("get_eqn() error: node " + n->name + " in " + program_str() + " is invalid\n");
             }
             // tie stack outputs together to return representation
             for (auto s : stack.fs) 

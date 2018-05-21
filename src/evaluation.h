@@ -49,21 +49,15 @@ namespace FT{
 
             /// fitness of population.
             void fitness(vector<Individual>& individuals,
-                         const MatrixXd& X, 
-                         const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-                         VectorXd& y, 
+                         Data d, 
                          MatrixXd& F, 
                          const Parameters& params, 
                          bool offspring);
           
             void val_fitness(vector<Individual>& individuals,
-                             const MatrixXd& X_t,
-                             const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_t,
-                             VectorXd& y_t,
+                             Data dt,
                              MatrixXd& F, 
-                             const MatrixXd& X_v,
-                             const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_v,
-                             VectorXd& y_v,
+                             Data dv,
                              const Parameters& params, 
                              bool offspring);
          
@@ -76,9 +70,7 @@ namespace FT{
     
     // fitness of population
     void Evaluation::fitness(vector<Individual>& individuals,
-                             const MatrixXd& X,
-                             const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-                             VectorXd& y, 
+                             Data d, 
                              MatrixXd& F, 
                              const Parameters& params, 
                              bool offspring=false)
@@ -110,18 +102,18 @@ namespace FT{
             {
                 AutoBackProp backprop(params.scorer, params.bp.iters, params.bp.learning_rate);
                 params.msg("Running backprop on " + individuals[i].get_eqn(), 2);
-                backprop.run(individuals[i], X, y, Z, params);
+                backprop.run(individuals[i], d, params);
             }            
             // calculate program output matrix Phi
             params.msg("Generating output for " + individuals[i].get_eqn(), 2);
-            MatrixXd Phi = individuals.at(i).out(X, Z, params, y);            
+            MatrixXd Phi = individuals.at(i).out(d, params);            
 
             // calculate ML model from Phi
             params.msg("ML training on " + individuals[i].get_eqn(), 2);
             bool pass = true;
             auto ml = std::make_shared<ML>(params);
 
-            shared_ptr<CLabels> yhat = ml->fit(Phi,y,params,pass,individuals[i].dtypes);
+            shared_ptr<CLabels> yhat = ml->fit(Phi,d.y,params,pass,individuals[i].dtypes);
 
             // assign F and aggregate fitness
             params.msg("Assigning fitness to " + individuals[i].get_eqn(), 2);
@@ -131,23 +123,23 @@ namespace FT{
                 vector<double> w(0,Phi.rows());     // set weights to zero
                 individuals[i].set_p(w,params.feedback);
                 individuals[i].fitness = MAX_DBL;
-                F.col(individuals[i].loc) = MAX_DBL*VectorXd::Ones(y.size());
+                F.col(individuals[i].loc) = MAX_DBL*VectorXd::Ones(d.y.size());
             }
             else
             {
                 // assign weights to individual
                 individuals[i].set_p(ml->get_weights(),params.feedback);
-                assign_fit(individuals[i],F,yhat,y,params);
+                assign_fit(individuals[i],F,yhat,d.y,params);
 
                 if (params.hillclimb)
                 {
                     HillClimb hc(params.scorer, params.hc.iters, params.hc.step);
                     bool updated = false;
-                    shared_ptr<CLabels> yhat2 = hc.run(individuals.at(i), X, y, Z, params,
+                    shared_ptr<CLabels> yhat2 = hc.run(individuals.at(i), d, params,
                                           updated);
                     if (updated)    // update the fitness of this individual
                     {
-                        assign_fit(individuals[i], F, yhat2, y, params);
+                        assign_fit(individuals[i], F, yhat2, d.y, params);
                     }
 
                 }
@@ -184,13 +176,9 @@ namespace FT{
 
     // validation fitness of population                            
     void Evaluation::val_fitness(vector<Individual>& individuals,
-                             const MatrixXd& X_t,
-                             const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_t,
-                             VectorXd& y_t,
+                             Data dt,
                              MatrixXd& F, 
-                             const MatrixXd& X_v,
-                             const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_v,
-                             VectorXd& y_v,
+                             Data dv,
                              const Parameters& params, 
                              bool offspring = false)
     {
@@ -218,23 +206,23 @@ namespace FT{
         {
             // calculate program output matrix Phi
             params.msg("Generating output for " + individuals[i].get_eqn(), 2);
-            MatrixXd Phi = individuals.at(i).out(X_t, Z_t, params, y_t);            
+            MatrixXd Phi = individuals.at(i).out(dt, params);            
 
             // calculate ML model from Phi
             params.msg("ML training on " + individuals[i].get_eqn(), 2);
             bool pass = true;
             auto ml = std::make_shared<ML>(params);
-            shared_ptr<CLabels> yhat_t = ml->fit(Phi,y_t,params,pass,individuals[i].dtypes);
+            shared_ptr<CLabels> yhat_t = ml->fit(Phi,dt.y,params,pass,individuals[i].dtypes);
             if (!pass)
             {
                 HANDLE_ERROR_THROW("Error training eqn " + individuals[i].get_eqn() + 
                                     "\nwith raw output " + 
-                                    to_string(individuals[i].out(X_t, Z_t,params,y_t)) + "\n");
+                                    to_string(individuals[i].out(dt, params)) + "\n");
             }
             
             // calculate program output matrix Phi on validation data
             params.msg("Generating validation output for " + individuals[i].get_eqn(), 2);
-            MatrixXd Phi_v = individuals.at(i).out(X_v, Z_v, params, y_v);            
+            MatrixXd Phi_v = individuals.at(i).out(dv, params);            
 
             // calculate ML model from Phi
             params.msg("ML predicting on " + individuals[i].get_eqn(), 2);
@@ -243,7 +231,7 @@ namespace FT{
             // assign F and aggregate fitness
             params.msg("Assigning val fitness to " + individuals[i].get_eqn(), 2);
             
-            assign_fit(individuals[i],F,yhat_v,y_v,params);
+            assign_fit(individuals[i],F,yhat_v,dv.y,params);
                         
         }
     }
