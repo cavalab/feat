@@ -43,7 +43,7 @@ namespace FT{
             else if (!type.compare("simanneal"))    // offspring survival
                 pselector = std::make_shared<SimAnneal>(survival);
             else
-                std::cerr << "Undefined Selection Operator " + type + "\n";
+                HANDLE_ERROR_NO_THROW("Undefined Selection Operator " + type + "\n");
                 
         };
 
