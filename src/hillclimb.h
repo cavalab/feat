@@ -33,8 +33,7 @@ namespace FT {
         }
 
         /// adapt weights
-		shared_ptr<CLabels> run(Individual& ind, const MatrixXd& X, VectorXd& y,
-                 const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z,
+		shared_ptr<CLabels> run(Individual& ind, Data d,
                  const Parameters& params, bool& updated);
 
     private:
@@ -45,8 +44,7 @@ namespace FT {
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
     
-    shared_ptr<CLabels> HillClimb::run(Individual& ind, const MatrixXd& X, VectorXd& y,
-                 const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z,
+    shared_ptr<CLabels> HillClimb::run(Individual& ind, Data d,
                  const Parameters& params, bool& updated)
     {
         updated = false;    // keep track of whether we update this individual
@@ -77,19 +75,19 @@ namespace FT {
                 break;
             // evaluate perturbed program 
             params.msg("Generating output for " + tmp.get_eqn(), 2);
-            MatrixXd Phi = tmp.out(X, Z, params, y);            
+            MatrixXd Phi = tmp.out(d, params);            
 
             // calculate ML model from Phi
             params.msg("ML training on " + tmp.get_eqn(), 2);
             bool pass = true;
             auto ml = std::make_shared<ML>(params);
 
-            shared_ptr<CLabels> yhat = ml->fit(Phi,y,params,pass,tmp.dtypes);
+            shared_ptr<CLabels> yhat = ml->fit(Phi,d.y,params,pass,tmp.dtypes);
             
             if (!pass)
                 continue;
 
-            double new_loss = this->cost_func(y,yhat, params.class_weights).mean();
+            double new_loss = this->cost_func(d.y,yhat, params.class_weights).mean();
             /* cout << "old loss: " << min_loss << ", new_loss: " << new_loss << "\n"; */
             if (new_loss < min_loss)
             {
