@@ -217,7 +217,11 @@ int main(int argc, char** argv){
         if(ldataFile.compare(""))
             FT::split_longitudinal(Z, Z_t, Z_v, split);
         
-        FT::train_test_split(X,y,Z,X_t,X_v,y_t,y_v,Z_t,Z_v,feat.get_shuffle(), split);      
+        FT::DataRef d(X, y, Z, X_v, y_v, Z_v, X_t, y_t, Z_t);
+        
+        FT::train_test_split(d, feat.get_shuffle(), split);
+        
+        //FT::train_test_split(X,y,Z,X_t,X_v,y_t,y_v,Z_t,Z_v,feat.get_shuffle(), split);      
         
         MatrixXd X_tcopy = X_t;     
         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_tcopy = Z_t;

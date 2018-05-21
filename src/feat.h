@@ -444,10 +444,9 @@ namespace FT{
             Individual best_ind;                    ///< best individual
             string logfile;                         ///< log filename
             /// method to fit inital ml model            
-            void initial_model(MatrixXd& X_t, VectorXd& y_t, MatrixXd& X_v, VectorXd& y_v);
+            void initial_model(DataRef &d);
             /// fits final model to best transformation
-            void final_model(MatrixXd& X, VectorXd& y,
-                             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z);
+            void final_model(DataRef& d);
     };
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
@@ -524,17 +523,21 @@ namespace FT{
         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_t;
         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_v;
         
-        train_test_split(X,y,Z,X_t,X_v,y_t,y_v,Z_t,Z_v,params.shuffle, params.split);
+        DataRef d(X, y, Z, X_t, y_t, Z_t, X_v, y_v, Z_v);
+        
+        train_test_split(d, params.shuffle, params.split);
+        
+        //train_test_split(X,y,Z,X_t,X_v,y_t,y_v,Z_t,Z_v,params.shuffle, params.split);
          
         if (params.classification) 
-            params.set_sample_weights(y_t); 
+            params.set_sample_weights(d.t->y); 
        
         // define terminals based on size of X
-        params.set_terminals(X.rows(), Z);        
+        params.set_terminals(d.o->X.rows(), d.o->Z);        
 
         // initial model on raw input
         params.msg("Fitting initial model", 1);
-        initial_model(X_t,y_t,X_v,y_v);  
+        initial_model(d);  
         
         // initialize population 
         params.msg("Initializing population", 1);
@@ -551,7 +554,7 @@ namespace FT{
        
         // evaluate initial population
         params.msg("Evaluating initial population",1);
-        p_eval->fitness(p_pop->individuals,X_t, Z_t, y_t,F,params);
+        p_eval->fitness(p_pop->individuals,*d.t,F,params);
         
         params.msg("Initial population done",1);
         
@@ -573,7 +576,7 @@ namespace FT{
 
             // evaluate offspring
             params.msg("evaluating offspring...", 2);
-            p_eval->fitness(p_pop->individuals, X_t, Z_t, y_t, F, params, true);
+            p_eval->fitness(p_pop->individuals, *d.t, F, params, true);
 
             // select survivors from combined pool of parents and offspring
             params.msg("survival...", 2);
@@ -611,10 +614,10 @@ namespace FT{
         {
             F_v.resize(X_v.cols(),int(2*params.pop_size)); 
             if (use_arch){
-                p_eval->val_fitness(arch.archive, X_t, Z_t, y_t, F_v, X_v, Z_v, y_v, params);
+                p_eval->val_fitness(arch.archive, *d.t, F_v, *d.v, params);
             }
             else
-                p_eval->val_fitness(p_pop->individuals, X_t, Z_t, y_t, F_v, X_v, Z_v, y_v, params);
+                p_eval->val_fitness(p_pop->individuals, *d.t, F_v, *d.v, params);
             update_best(true);                  // get the best validation model
         }
         else
@@ -623,7 +626,7 @@ namespace FT{
         params.msg("validation score: " + std::to_string(best_score_v), 1);
         params.msg("fitting final model to all training data...",2);
 
-        final_model(X, y, Z);   // fit final model to best features
+        final_model(d);   // fit final model to best features
 
         
         /* // write model to file */
@@ -656,40 +659,40 @@ namespace FT{
         fit(matX,vectY,Z); 
     }
 
-    void Feat::final_model(MatrixXd& X, VectorXd& y,
-                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z)	
+    void Feat::final_model(DataRef& d)	
     {
         // fits final model to best tranformation found.
         bool pass = true;
 
         /* MatrixXd Phi = transform(X); */
-        MatrixXd Phi = best_ind.out(X, Z,params);        
+        MatrixXd Phi = best_ind.out(*d.o, params);        
 
-        shared_ptr<CLabels> yhat = p_ml->fit(Phi, y, params, pass, best_ind.dtypes);
+        shared_ptr<CLabels> yhat = p_ml->fit(Phi, d.o->y, params, pass, best_ind.dtypes);
         VectorXd tmp;
         /* params.set_sample_weights(y);   // need to set new sample weights for y, */ 
                                         // which is probably from a validation set
-        double score = p_eval->score(y,yhat,tmp,params.class_weights);
+        double score = p_eval->score(d.o->y,yhat,tmp,params.class_weights);
         params.msg("final_model score: " + std::to_string(score),1);
     }
     
-    void Feat::initial_model(MatrixXd& X_t, VectorXd& y_t, MatrixXd& X_v, VectorXd& y_v)
+    void Feat::initial_model(DataRef &d)
     {
         /*!
          * fits an ML model to the raw data as a starting point.
          */
         bool pass = true;
-        shared_ptr<CLabels> yhat = p_ml->fit(X_t,y_t,params,pass);
+        shared_ptr<CLabels> yhat = p_ml->fit(d.t->X,d.t->y,params,pass);
 
         // set terminal weights based on model
         params.set_term_weights(p_ml->get_weights());
+        
         VectorXd tmp;
-        best_score = p_eval->score(y_t, yhat,tmp, params.class_weights);
+        best_score = p_eval->score(d.t->y, yhat,tmp, params.class_weights);
         
         if (params.split < 1.0)
         {
-            shared_ptr<CLabels> yhat_v = p_ml->predict(X_v);
-            best_score_v = p_eval->score(y_v, yhat_v,tmp, params.class_weights); 
+            shared_ptr<CLabels> yhat_v = p_ml->predict(d.v->X);
+            best_score_v = p_eval->score(d.v->y, yhat_v,tmp, params.class_weights); 
         }
         else
             best_score_v = best_score;
@@ -697,7 +700,7 @@ namespace FT{
         // initialize best_ind to be all the features
         best_ind = Individual();
         best_ind.set_id(0);
-        for (unsigned i =0; i<X_t.rows(); ++i)
+        for (unsigned i =0; i<d.t->X.rows(); ++i)
             best_ind.program.push_back(params.terminals[i]->clone());
         best_ind.fitness = best_score;
         
@@ -715,15 +718,19 @@ namespace FT{
         
         N.normalize(X);       
         
+        VectorXd y = VectorXd();
+        
+        Data d(X, y, Z);
+        
         if (ind == 0)        // if ind is empty, predict with best_ind
         {
             if (best_ind.program.size()==0)
                 HANDLE_ERROR_THROW("You need to train a model using fit() before making predictions.");
             
-            return best_ind.out(X, Z, params);
+            return best_ind.out(d, params);
         }
     
-        return ind->out(X, Z, params);
+        return ind->out(d, params);
     }
 
     MatrixXd Feat::transform(double * X, int rows_x, int cols_x)
