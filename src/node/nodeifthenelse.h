@@ -1,4 +1,4 @@
-/* FEWTWO
+/* FEAT
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
@@ -22,23 +22,23 @@ namespace FT{
     		}
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, 
-                    vector<ArrayXb>& stack_b)
+            void evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
             {
-                ArrayXb b = stack_b.back(); stack_b.pop_back();
-                ArrayXd f2 = stack_f.back(); stack_f.pop_back();
-                ArrayXd f1 = stack_f.back(); stack_f.pop_back();
-                stack_f.push_back(b.select(f1,f2));
+                ArrayXd f1 = stack.f.pop();
+                ArrayXd f2 = stack.f.pop();
+                stack.f.push(limited(stack.b.pop().select(f1,f2)));
             }
 
             /// Evaluates the node symbolically
-            void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
+            void eval_eqn(Stacks& stack)
             {
-            	string b = stack_b.back(); stack_b.pop_back();
-                string f2 = stack_f.back(); stack_f.pop_back();
-                string f1 = stack_f.back(); stack_f.pop_back();
-                stack_f.push_back("if-then-else(" + b + "," + f1 + "," + f2 + ")");
+                stack.fs.push("if-then-else(" + stack.bs.pop() + "," + stack.fs.pop() + "," + stack.fs.pop() + ")");
             }
+        protected:
+            NodeIfThenElse* clone_impl() const override { return new NodeIfThenElse(*this); };  
+            NodeIfThenElse* rnd_clone_impl() const override { return new NodeIfThenElse(); };  
     };
 
 }	

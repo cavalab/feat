@@ -47,6 +47,7 @@ var searchBox = new SearchBox("searchBox", "../../search",false,'Search');
     <ul class="tablist">
       <li><a href="../../index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="../../pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="../../namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="../../annotated.html"><span>Classes</span></a></li>
       <li><a href="../../files.html"><span>Files</span></a></li>
       <li>
@@ -123,14 +124,21 @@ Collaboration diagram for FT::Individual:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../d8/d47/classFT_1_1Individual__coll__graph.png" border="0" usemap="#FT_1_1Individual_coll__map" alt="Collaboration graph"/></div>
 <map name="FT_1_1Individual_coll__map" id="FT_1_1Individual_coll__map">
+<area shape="rect" id="node3" href="../../dd/d15/structFT_1_1NodeVector.html" title="an extension of a vector of unique pointers to nodes " alt="" coords="375,56,490,83"/>
+<area shape="rect" id="node4" title="STL class. " alt="" coords="149,41,309,82"/>
+<area shape="rect" id="node6" title="STL class. " alt="" coords="393,107,473,133"/>
+<area shape="rect" id="node7" title="STL class. " alt="" coords="166,106,293,147"/>
 </map>
 <center><span class="legend">[<a target="top" href="../../graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:addf1bd4f1dffb3c39cccde405863197e"><td class="memItemLeft" align="right" valign="top">MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d25/classFT_1_1Individual.html#addf1bd4f1dffb3c39cccde405863197e">out</a> (const MatrixXd &amp;X, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params, const VectorXd &amp;y)</td></tr>
-<tr class="memdesc:addf1bd4f1dffb3c39cccde405863197e"><td class="mdescLeft">&#160;</td><td class="mdescRight">calculate program output matrix Phi  <a href="#addf1bd4f1dffb3c39cccde405863197e">More...</a><br /></td></tr>
-<tr class="separator:addf1bd4f1dffb3c39cccde405863197e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43da70efe67544da1f1b29a4c01572cb"><td class="memItemLeft" align="right" valign="top">MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d25/classFT_1_1Individual.html#a43da70efe67544da1f1b29a4c01572cb">out</a> (const MatrixXd &amp;X, const std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; &amp;Z, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params, const VectorXd &amp;y)</td></tr>
+<tr class="memdesc:a43da70efe67544da1f1b29a4c01572cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">calculate program output matrix Phi  <a href="#a43da70efe67544da1f1b29a4c01572cb">More...</a><br /></td></tr>
+<tr class="separator:a43da70efe67544da1f1b29a4c01572cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ba0bf998a2efb1b0a46d42c808a8a02"><td class="memItemLeft" align="right" valign="top">MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d25/classFT_1_1Individual.html#a2ba0bf998a2efb1b0a46d42c808a8a02">out_trace</a> (const MatrixXd &amp;X, const std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; &amp;Z, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params, vector&lt; vector&lt; ArrayXd &gt;&gt; &amp;stack_trace, const VectorXd &amp;y)</td></tr>
+<tr class="memdesc:a2ba0bf998a2efb1b0a46d42c808a8a02"><td class="mdescLeft">&#160;</td><td class="mdescRight">calculate program output while maintaining stack trace  <a href="#a2ba0bf998a2efb1b0a46d42c808a8a02">More...</a><br /></td></tr>
+<tr class="separator:a2ba0bf998a2efb1b0a46d42c808a8a02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa6c6aa88497a97a76679b2e58a5b0b72"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa6c6aa88497a97a76679b2e58a5b0b72"></a>
 string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d25/classFT_1_1Individual.html#aa6c6aa88497a97a76679b2e58a5b0b72">get_eqn</a> ()</td></tr>
 <tr class="memdesc:aa6c6aa88497a97a76679b2e58a5b0b72"><td class="mdescLeft">&#160;</td><td class="mdescRight">return symbolic representation of program <br /></td></tr>
@@ -139,26 +147,15 @@ string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="..
 string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d25/classFT_1_1Individual.html#a92d292ab7bebbd42426d006c34e125b6">program_str</a> () const </td></tr>
 <tr class="memdesc:a92d292ab7bebbd42426d006c34e125b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">return program name list <br /></td></tr>
 <tr class="separator:a92d292ab7bebbd42426d006c34e125b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a793b6ed78accb13b241aa7c2b8a9f2f8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a793b6ed78accb13b241aa7c2b8a9f2f8"></a>
-const std::shared_ptr&lt; <a class="el" href="../../d3/daf/classFT_1_1Node.html">Node</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d25/classFT_1_1Individual.html#a793b6ed78accb13b241aa7c2b8a9f2f8">operator[]</a> (int i) const </td></tr>
-<tr class="memdesc:a793b6ed78accb13b241aa7c2b8a9f2f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">setting and getting from individuals vector <br /></td></tr>
-<tr class="separator:a793b6ed78accb13b241aa7c2b8a9f2f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae13709aaf6e688e8c9122cfac9a83cb8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae13709aaf6e688e8c9122cfac9a83cb8"></a>
-const std::shared_ptr&lt; <a class="el" href="../../d3/daf/classFT_1_1Node.html">Node</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator[]</b> (int i)</td></tr>
-<tr class="separator:ae13709aaf6e688e8c9122cfac9a83cb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9666a8a42ba35a5c26d8fdd1233578b2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9666a8a42ba35a5c26d8fdd1233578b2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d25/classFT_1_1Individual.html#a9666a8a42ba35a5c26d8fdd1233578b2">set_rank</a> (unsigned r)</td></tr>
-<tr class="memdesc:a9666a8a42ba35a5c26d8fdd1233578b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">set rank <br /></td></tr>
+<tr class="memitem:a9666a8a42ba35a5c26d8fdd1233578b2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d25/classFT_1_1Individual.html#a9666a8a42ba35a5c26d8fdd1233578b2">set_rank</a> (unsigned r)</td></tr>
+<tr class="memdesc:a9666a8a42ba35a5c26d8fdd1233578b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">setting and getting from individuals vector  <a href="#a9666a8a42ba35a5c26d8fdd1233578b2">More...</a><br /></td></tr>
 <tr class="separator:a9666a8a42ba35a5c26d8fdd1233578b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a88f92374fb49027eb175cc60d24a3f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2a88f92374fb49027eb175cc60d24a3f"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d25/classFT_1_1Individual.html#a2a88f92374fb49027eb175cc60d24a3f">size</a> () const </td></tr>
 <tr class="memdesc:a2a88f92374fb49027eb175cc60d24a3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">return size of program <br /></td></tr>
 <tr class="separator:a2a88f92374fb49027eb175cc60d24a3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2c51e7460dc1671a42187b533390482"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d25/classFT_1_1Individual.html#ae2c51e7460dc1671a42187b533390482">subtree</a> (size_t i, char otype) const </td></tr>
-<tr class="memdesc:ae2c51e7460dc1671a42187b533390482"><td class="mdescLeft">&#160;</td><td class="mdescRight">grab sub-tree locations given starting point.  <a href="#ae2c51e7460dc1671a42187b533390482">More...</a><br /></td></tr>
-<tr class="separator:ae2c51e7460dc1671a42187b533390482"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a22bf1f1016d87a21c8f21da1a59ef11e"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d25/classFT_1_1Individual.html#a22bf1f1016d87a21c8f21da1a59ef11e">get_dim</a> ()</td></tr>
-<tr class="memdesc:a22bf1f1016d87a21c8f21da1a59ef11e"><td class="mdescLeft">&#160;</td><td class="mdescRight">get program dimensionality  <a href="#a22bf1f1016d87a21c8f21da1a59ef11e">More...</a><br /></td></tr>
+<tr class="memdesc:a22bf1f1016d87a21c8f21da1a59ef11e"><td class="mdescLeft">&#160;</td><td class="mdescRight">grab sub-tree locations given starting point.  <a href="#a22bf1f1016d87a21c8f21da1a59ef11e">More...</a><br /></td></tr>
 <tr class="separator:a22bf1f1016d87a21c8f21da1a59ef11e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae5ac74778b83724565615c6a2ed7f13a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae5ac74778b83724565615c6a2ed7f13a"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d25/classFT_1_1Individual.html#ae5ac74778b83724565615c6a2ed7f13a">check_dominance</a> (const <a class="el" href="../../d8/d25/classFT_1_1Individual.html">Individual</a> &amp;b) const </td></tr>
@@ -171,10 +168,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../..
 unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d25/classFT_1_1Individual.html#a2629cc2ed230acb3d819bb068026d437">complexity</a> ()</td></tr>
 <tr class="memdesc:a2629cc2ed230acb3d819bb068026d437"><td class="mdescLeft">&#160;</td><td class="mdescRight">calculate program complexity. <br /></td></tr>
 <tr class="separator:a2629cc2ed230acb3d819bb068026d437"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeda128e1e7f8cc9ea98dac8c1ce73b9d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aeda128e1e7f8cc9ea98dac8c1ce73b9d"></a>
-vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d25/classFT_1_1Individual.html#aeda128e1e7f8cc9ea98dac8c1ce73b9d">roots</a> ()</td></tr>
-<tr class="memdesc:aeda128e1e7f8cc9ea98dac8c1ce73b9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">find root locations in program. <br /></td></tr>
-<tr class="separator:aeda128e1e7f8cc9ea98dac8c1ce73b9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a666895bd7c69001ce5708336152f2bc6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d25/classFT_1_1Individual.html#a666895bd7c69001ce5708336152f2bc6">clone</a> (<a class="el" href="../../d8/d25/classFT_1_1Individual.html">Individual</a> &amp;cpy)</td></tr>
+<tr class="memdesc:a666895bd7c69001ce5708336152f2bc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">find root locations in program.  <a href="#a666895bd7c69001ce5708336152f2bc6">More...</a><br /></td></tr>
+<tr class="separator:a666895bd7c69001ce5708336152f2bc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae899b349b404b58b56ee6b0273e83793"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae899b349b404b58b56ee6b0273e83793"></a>
 vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d25/classFT_1_1Individual.html#ae899b349b404b58b56ee6b0273e83793">get_p</a> ()</td></tr>
 <tr class="memdesc:ae899b349b404b58b56ee6b0273e83793"><td class="mdescLeft">&#160;</td><td class="mdescRight">get probabilities of variation <br /></td></tr>
@@ -192,10 +188,10 @@ vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a cla
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a0f0a3f7999def3fbe04095e6908b29df"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0f0a3f7999def3fbe04095e6908b29df"></a>
-vector&lt; std::shared_ptr&lt; <a class="el" href="../../d3/daf/classFT_1_1Node.html">Node</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d25/classFT_1_1Individual.html#a0f0a3f7999def3fbe04095e6908b29df">program</a></td></tr>
-<tr class="memdesc:a0f0a3f7999def3fbe04095e6908b29df"><td class="mdescLeft">&#160;</td><td class="mdescRight">executable data structure <br /></td></tr>
-<tr class="separator:a0f0a3f7999def3fbe04095e6908b29df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:affe711676aaae675e65e3dc24f6e7ea4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="affe711676aaae675e65e3dc24f6e7ea4"></a>
+<a class="el" href="../../dd/d15/structFT_1_1NodeVector.html">NodeVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d25/classFT_1_1Individual.html#affe711676aaae675e65e3dc24f6e7ea4">program</a></td></tr>
+<tr class="memdesc:affe711676aaae675e65e3dc24f6e7ea4"><td class="mdescLeft">&#160;</td><td class="mdescRight">executable data structure <br /></td></tr>
+<tr class="separator:affe711676aaae675e65e3dc24f6e7ea4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4af553c06f662e1a53cba465247a63c3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4af553c06f662e1a53cba465247a63c3"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d25/classFT_1_1Individual.html#a4af553c06f662e1a53cba465247a63c3">fitness</a></td></tr>
 <tr class="memdesc:a4af553c06f662e1a53cba465247a63c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">aggregate fitness score <br /></td></tr>
@@ -222,7 +218,7 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="separator:a69c0b64218cdf44d9e134192acd1e8a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a621f4a2b42f5d6b4f45e6cac4911e818"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a621f4a2b42f5d6b4f45e6cac4911e818"></a>
 vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d25/classFT_1_1Individual.html#a621f4a2b42f5d6b4f45e6cac4911e818">obj</a></td></tr>
-<tr class="memdesc:a621f4a2b42f5d6b4f45e6cac4911e818"><td class="mdescLeft">&#160;</td><td class="mdescRight">objectives for use with <a class="el" href="../../de/d2e/structFT_1_1Pareto.html">Pareto</a> selection <br /></td></tr>
+<tr class="memdesc:a621f4a2b42f5d6b4f45e6cac4911e818"><td class="mdescLeft">&#160;</td><td class="mdescRight">objectives for use with Pareto selection <br /></td></tr>
 <tr class="separator:a621f4a2b42f5d6b4f45e6cac4911e818"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a817beb35bab98210707436bf541c8839"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a817beb35bab98210707436bf541c8839"></a>
 unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d25/classFT_1_1Individual.html#a817beb35bab98210707436bf541c8839">dcounter</a></td></tr>
@@ -238,7 +234,7 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="separator:a2489fd4b74262ccb09f517723b088d84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0fe40d91c2f011c0b167bb4e8e9868da"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0fe40d91c2f011c0b167bb4e8e9868da"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d25/classFT_1_1Individual.html#a0fe40d91c2f011c0b167bb4e8e9868da">crowd_dist</a></td></tr>
-<tr class="memdesc:a0fe40d91c2f011c0b167bb4e8e9868da"><td class="mdescLeft">&#160;</td><td class="mdescRight">crowding distance on the <a class="el" href="../../de/d2e/structFT_1_1Pareto.html">Pareto</a> front <br /></td></tr>
+<tr class="memdesc:a0fe40d91c2f011c0b167bb4e8e9868da"><td class="mdescLeft">&#160;</td><td class="mdescRight">crowding distance on the Pareto front <br /></td></tr>
 <tr class="separator:a0fe40d91c2f011c0b167bb4e8e9868da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae4485290e0d8bd8565e8abc2a18c4bed"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae4485290e0d8bd8565e8abc2a18c4bed"></a>
 unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d8/d25/classFT_1_1Individual.html#ae4485290e0d8bd8565e8abc2a18c4bed">c</a></td></tr>
@@ -252,6 +248,33 @@ vector&lt; char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>individual programs in the population </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a666895bd7c69001ce5708336152f2bc6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void FT::Individual::clone </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d8/d25/classFT_1_1Individual.html">Individual</a> &amp;&#160;</td>
+          <td class="paramname"><em>cpy</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>find root locations in program. </p>
+<p>check if differentiable node make a deep copy of the underlying program clone this individual </p>
+
+</div>
+</div>
 <a class="anchor" id="a22bf1f1016d87a21c8f21da1a59ef11e"></a>
 <div class="memitem">
 <div class="memproto">
@@ -265,6 +288,7 @@ vector&lt; char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class
       </table>
 </div><div class="memdoc">
 
+<p>grab sub-tree locations given starting point. </p>
 <p>get program dimensionality </p>
 <p>Output: </p><pre class="fragment">returns the dimensionality, i.e. number of outputs, of a program.
 the dimensionality is equal to the number of times the program arities are fully
@@ -297,7 +321,7 @@ satisfied.
 
 </div>
 </div>
-<a class="anchor" id="addf1bd4f1dffb3c39cccde405863197e"></a>
+<a class="anchor" id="a43da70efe67544da1f1b29a4c01572cb"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -306,6 +330,12 @@ satisfied.
           <td>(</td>
           <td class="paramtype">const MatrixXd &amp;&#160;</td>
           <td class="paramname"><em>X</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; &amp;&#160;</td>
+          <td class="paramname"><em>Z</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -328,7 +358,54 @@ satisfied.
 </div><div class="memdoc">
 
 <p>calculate program output matrix Phi </p>
-<p>X: n_features x n_samples data  y: target data : <a class="el" href="../../db/dff/classFT_1_1Feat.html" title="main class for the Feat learner. ">Feat</a> parameters </p><dl class="section return"><dt>Returns</dt><dd>Phi: n_features x n_samples transformation</dd></dl>
+<p>X: n_features x n_samples data  Z: longitudinal nodes for samples  y: target data : <a class="el" href="../../db/dff/classFT_1_1Feat.html" title="main class for the Feat learner. ">Feat</a> parameters </p><dl class="section return"><dt>Returns</dt><dd>Phi: n_features x n_samples transformation</dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a2ba0bf998a2efb1b0a46d42c808a8a02"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">MatrixXd FT::Individual::out_trace </td>
+          <td>(</td>
+          <td class="paramtype">const MatrixXd &amp;&#160;</td>
+          <td class="paramname"><em>X</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; &amp;&#160;</td>
+          <td class="paramname"><em>Z</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;&#160;</td>
+          <td class="paramname"><em>params</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vector&lt; vector&lt; ArrayXd &gt;&gt; &amp;&#160;</td>
+          <td class="paramname"><em>stack_trace</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>y</em> = <code>VectorXd()</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>calculate program output while maintaining stack trace </p>
+<p>X: n_features x n_samples data  Z: longitudinal nodes for samples  y: target data : <a class="el" href="../../db/dff/classFT_1_1Feat.html" title="main class for the Feat learner. ">Feat</a> parameters </p><dl class="section return"><dt>Returns</dt><dd>Phi: n_features x n_samples transformation</dd></dl>
 
 </div>
 </div>
@@ -386,35 +463,30 @@ satisfied.
 
 </div>
 </div>
-<a class="anchor" id="ae2c51e7460dc1671a42187b533390482"></a>
+<a class="anchor" id="a9666a8a42ba35a5c26d8fdd1233578b2"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">size_t FT::Individual::subtree </td>
+          <td class="memname">void FT::Individual::set_rank </td>
           <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>i</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>r</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">char&#160;</td>
-          <td class="paramname"><em>otype</em> = <code>'0'</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>grab sub-tree locations given starting point. </p>
-<p>finds index of the end of subtree in program with root i.</p>
-<p>Input: </p><pre class="fragment">i, root index of subtree
-</pre><p>Output: </p><pre class="fragment">last index in subtree, &lt;= i
-</pre><p>note that this function assumes a subtree's arguments to be contiguous in the program.</p>
+<p>setting and getting from individuals vector </p>
+<p>set rank </p>
 
 </div>
 </div>
@@ -426,7 +498,7 @@ satisfied.
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>FT</b></li><li class="navelem"><a class="el" href="../../d8/d25/classFT_1_1Individual.html">Individual</a></li>
+    <li class="navelem"><a class="el" href="../../d2/d35/namespaceFT.html">FT</a></li><li class="navelem"><a class="el" href="../../d8/d25/classFT_1_1Individual.html">Individual</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.11 </li>

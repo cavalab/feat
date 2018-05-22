@@ -63,7 +63,7 @@ bool checkBrackets(string str)
 
 TEST(Feat, SettingFunctions)
 {
-	Feat feat(100);
+	Feat feat(100); feat.set_random_state(666);
     
     feat.set_pop_size(200);
     ASSERT_EQ(200, feat.params.pop_size);
@@ -86,8 +86,8 @@ TEST(Feat, SettingFunctions)
     feat.set_max_stall(2);
     ASSERT_EQ(2, feat.params.max_stall);
     
-    feat.set_selection("pareto");
-    ASSERT_STREQ("pareto", feat.p_sel->get_type().c_str());
+    feat.set_selection("nsga2");
+    ASSERT_STREQ("nsga2", feat.p_sel->get_type().c_str());
     
     feat.set_survival("lexicase");
     ASSERT_STREQ("lexicase", feat.p_surv->get_type().c_str());
@@ -119,7 +119,8 @@ TEST(Feat, SettingFunctions)
 
 TEST(Feat, predict)
 {
-    Feat feat(100);
+    Feat feat(100); feat.set_random_state(666);
+
     
     MatrixXd X(7,2); 
     X << 0,1,  
@@ -138,8 +139,10 @@ TEST(Feat, predict)
              -1.20648656, -2.68773747;
     
     feat.set_verbosity(0);
-    
+  
+    /* cout << "line 143: predict\n"; */
     feat.fit(X, y);
+    /* cout << "line 145: done with fit\n"; */
     
     X << 0,1,  
          0.4,0.8,  
@@ -149,12 +152,13 @@ TEST(Feat, predict)
          0.5, -0.8,
          0.1,-0.9;
     
+    cout << "Done till here\n";
     ASSERT_EQ(feat.predict(X).size(), 7);             //TODO had to remove !bzero ASSERT in set_termincal weights
 }
 
 TEST(Feat, transform)
 {
-    Feat feat(100);
+    Feat feat(100); feat.set_random_state(666);
     
     MatrixXd X(7,2); 
     X << 0,1,  
@@ -183,15 +187,22 @@ TEST(Feat, transform)
          0.9, -0.4,
          0.5, -0.8,
          0.1,-0.9;
-        
+       
+    feat.set_verbosity(2);
     MatrixXd res = feat.transform(X);
     ASSERT_EQ(res.cols(), 7);
+
+    if (res.rows() > feat.params.max_dim){
+        std::cout << "res.rows(): " << res.rows() << 
+                    ", res.cols(): " << res.cols() << 
+                    ", params.max_dim: " << feat.params.max_dim << "\n";
+    }
     ASSERT_TRUE(res.rows() <= feat.params.max_dim);
 }
 
 TEST(Feat, fit_predict)
 {
-    Feat feat(100);
+    Feat feat(100); feat.set_random_state(666);
     
     MatrixXd X(7,2); 
     X << 0,1,  
@@ -216,8 +227,10 @@ TEST(Feat, fit_predict)
 
 TEST(Feat, fit_transform)
 {
-    Feat feat(100);
-    
+    Feat feat(100); feat.set_random_state(666);
+   
+    feat.set_verbosity(0);
+
     MatrixXd X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
@@ -238,13 +251,19 @@ TEST(Feat, fit_transform)
     
     MatrixXd res = feat.fit_transform(X, y);
     ASSERT_EQ(res.cols(), 7);
+    
+    if (res.rows() > feat.params.max_dim)
+        std::cout << "res.rows(): " << res.rows() << 
+                    ", res.cols(): " << res.cols() << 
+                    ", params.max_dim: " << feat.params.max_dim << "\n";
+
     ASSERT_TRUE(res.rows() <= feat.params.max_dim);
 }
 
 
 TEST(Individual, EvalEquation)
 {
-	Feat feat(100);
+	Feat feat(100); feat.set_random_state(666);
     MatrixXd X(4,2); 
     MatrixXd X_v(3,2); 
     X << 0,1,  
@@ -289,11 +308,12 @@ TEST(Individual, EvalEquation)
 
 TEST(NodeTest, Evaluate)
 {
-	vector<ArrayXd> stack_f;
 	vector<ArrayXd> output;
-	vector<ArrayXb> stack_b;
 	ArrayXd x;
 	ArrayXb z;
+	std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z1;
+	
+	Stacks stack;
 	
 	MatrixXd X(3,2); 
     X << -2.0, 0.0, 10.0,
@@ -309,385 +329,385 @@ TEST(NodeTest, Evaluate)
     VectorXd Y(6); 
     Y << 3.0, 4.0, 5.0, 6.0, 7.0, 8.0;
     
-	std::shared_ptr<Node> addObj = std::shared_ptr<Node>(new NodeAdd());
+	std::unique_ptr<Node> addObj = std::unique_ptr<Node>(new NodeAdd());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
 	
-	addObj->evaluate(X, Y, stack_f, stack_b);	
+	addObj->evaluate(X, Y, z1, stack);	
 	
-	x = stack_f.back(); stack_f.pop_back();
-	
-	ASSERT_FALSE((isinf(x)).any());
-	ASSERT_FALSE((isnan(abs(x)).any()));
-	
-	std::shared_ptr<Node> subObj = std::shared_ptr<Node>(new NodeSubtract());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
-	
-	subObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	x = stack_f.back(); stack_f.pop_back();
+	x = stack.f.pop(); 
 	
 	ASSERT_FALSE((isinf(x)).any());
 	ASSERT_FALSE((isnan(abs(x)).any()));
 	
-	std::shared_ptr<Node> mulObj = std::shared_ptr<Node>(new NodeMultiply());
+	std::unique_ptr<Node> subObj = std::unique_ptr<Node>(new NodeSubtract());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
 	
-	mulObj->evaluate(X, Y, stack_f, stack_b);	
+	subObj->evaluate(X, Y, z1, stack);
 	
-	x = stack_f.back(); stack_f.pop_back();
-	
-	ASSERT_FALSE((isinf(x)).any());
-	ASSERT_FALSE((isnan(abs(x)).any()));
-	
-	std::shared_ptr<Node> divObj = std::shared_ptr<Node>(new NodeDivide());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
-	
-	divObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	x = stack_f.back(); stack_f.pop_back();
+	x = stack.f.pop(); 
 	
 	ASSERT_FALSE((isinf(x)).any());
 	ASSERT_FALSE((isnan(abs(x)).any()));
 	
-	std::shared_ptr<Node> sqrtObj = std::shared_ptr<Node>(new NodeSqrt());
+	std::unique_ptr<Node> mulObj = std::unique_ptr<Node>(new NodeMultiply());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
 	
-	sqrtObj->evaluate(X, Y, stack_f, stack_b);	
+	mulObj->evaluate(X, Y, z1, stack);
 	
-	x = stack_f.back(); stack_f.pop_back();
-	
-	ASSERT_FALSE((isinf(x)).any());
-	ASSERT_FALSE((isnan(abs(x)).any()));
-	
-	std::shared_ptr<Node> sinObj = std::shared_ptr<Node>(new NodeSin());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	
-	sinObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	x = stack_f.back(); stack_f.pop_back();
+	x = stack.f.pop(); 
 	
 	ASSERT_FALSE((isinf(x)).any());
 	ASSERT_FALSE((isnan(abs(x)).any()));
 	
-	std::shared_ptr<Node> cosObj = std::shared_ptr<Node>(new NodeCos());
+	std::unique_ptr<Node> divObj = std::unique_ptr<Node>(new NodeDivide());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
 	
-	cosObj->evaluate(X, Y, stack_f, stack_b);	
+	divObj->evaluate(X, Y, z1, stack);
 	
-	x = stack_f.back(); stack_f.pop_back();
-	
-	ASSERT_FALSE((isinf(x)).any());
-	ASSERT_FALSE((isnan(abs(x)).any()));
-	
-	std::shared_ptr<Node> squareObj = std::shared_ptr<Node>(new NodeSquare());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	
-	squareObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	x = stack_f.back(); stack_f.pop_back();
+	x = stack.f.pop(); 
 	
 	ASSERT_FALSE((isinf(x)).any());
 	ASSERT_FALSE((isnan(abs(x)).any()));
 	
-	std::shared_ptr<Node> expObj = std::shared_ptr<Node>(new NodeExponent());
+	std::unique_ptr<Node> sqrtObj = std::unique_ptr<Node>(new NodeSqrt());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
 	
-	expObj->evaluate(X, Y, stack_f, stack_b);	
+	sqrtObj->evaluate(X, Y, z1, stack);
 	
-	x = stack_f.back(); stack_f.pop_back();
-	
-	ASSERT_FALSE((isinf(x)).any());
-	ASSERT_FALSE((isnan(abs(x)).any()));
-	
-	std::shared_ptr<Node> exptObj = std::shared_ptr<Node>(new NodeExponential());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	
-	exptObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	x = stack_f.back(); stack_f.pop_back();
+	x = stack.f.pop(); 
 	
 	ASSERT_FALSE((isinf(x)).any());
 	ASSERT_FALSE((isnan(abs(x)).any()));
 	
-	std::shared_ptr<Node> logObj = std::shared_ptr<Node>(new NodeLog());
+	std::unique_ptr<Node> sinObj = std::unique_ptr<Node>(new NodeSin());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
 	
-	logObj->evaluate(X, Y, stack_f, stack_b);	
+	sinObj->evaluate(X, Y, z1, stack);	
 	
-	x = stack_f.back(); stack_f.pop_back();
+	x = stack.f.pop(); 
 	
 	ASSERT_FALSE((isinf(x)).any());
 	ASSERT_FALSE((isnan(abs(x)).any()));
 	
-	std::shared_ptr<Node> andObj = std::shared_ptr<Node>(new NodeAnd());
+	std::unique_ptr<Node> cosObj = std::unique_ptr<Node>(new NodeCos());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_b.push_back(Z1);
-	stack_b.push_back(Z2);
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
 	
-	andObj->evaluate(X, Y, stack_f, stack_b);	
+	cosObj->evaluate(X, Y, z1, stack);
 	
-	z = stack_b.back(); stack_b.pop_back();
+	x = stack.f.pop(); 
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::unique_ptr<Node> squareObj = std::unique_ptr<Node>(new NodeSquare());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	
+	squareObj->evaluate(X, Y, z1, stack);
+	
+	x = stack.f.pop(); 
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::unique_ptr<Node> expObj = std::unique_ptr<Node>(new NodeExponent());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
+	
+	expObj->evaluate(X, Y, z1, stack);
+	
+	x = stack.f.pop(); 
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::unique_ptr<Node> exptObj = std::unique_ptr<Node>(new NodeExponential());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	
+	exptObj->evaluate(X, Y, z1, stack);
+	
+	x = stack.f.pop(); 
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::unique_ptr<Node> logObj = std::unique_ptr<Node>(new NodeLog());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	
+	logObj->evaluate(X, Y, z1, stack);
+	
+	x = stack.f.pop(); 
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::unique_ptr<Node> andObj = std::unique_ptr<Node>(new NodeAnd());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.b.push(Z1);
+	stack.b.push(Z2);
+	
+	andObj->evaluate(X, Y, z1, stack);
+	
+	z = stack.b.pop();
 	
 	ASSERT_FALSE((isinf(z)).any());
 	ASSERT_FALSE((isnan(abs(z)).any()));
 	
-	std::shared_ptr<Node> orObj = std::shared_ptr<Node>(new NodeOr());
+	std::unique_ptr<Node> orObj = std::unique_ptr<Node>(new NodeOr());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_b.push_back(Z1);
-	stack_b.push_back(Z2);
+	stack.f.clear();
+	stack.b.clear();
+	stack.b.push(Z1);
+	stack.b.push(Z2);
 	
-	orObj->evaluate(X, Y, stack_f, stack_b);	
+	orObj->evaluate(X, Y, z1, stack);
 	
-	z = stack_b.back(); stack_b.pop_back();
-	
-	ASSERT_FALSE((isinf(z)).any());
-	ASSERT_FALSE((isnan(abs(z)).any()));
-	
-	std::shared_ptr<Node> notObj = std::shared_ptr<Node>(new NodeNot());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_b.push_back(Z1);
-	
-	notObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	z = stack_b.back(); stack_b.pop_back();
+	z = stack.b.pop(); 
 	
 	ASSERT_FALSE((isinf(z)).any());
 	ASSERT_FALSE((isnan(abs(z)).any()));
 	
-	std::shared_ptr<Node> eqObj = std::shared_ptr<Node>(new NodeEqual());
+	std::unique_ptr<Node> notObj = std::unique_ptr<Node>(new NodeNot());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
+	stack.f.clear();
+	stack.b.clear();
+	stack.b.push(Z1);
 	
-	eqObj->evaluate(X, Y, stack_f, stack_b);	
+	notObj->evaluate(X, Y, z1, stack);
 	
-	z = stack_b.back(); stack_b.pop_back();
+	z = stack.b.pop(); 
+	
+	ASSERT_FALSE((isinf(z)).any());
+	ASSERT_FALSE((isnan(abs(z)).any()));
+	
+	std::unique_ptr<Node> eqObj = std::unique_ptr<Node>(new NodeEqual());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
+	
+	eqObj->evaluate(X, Y, z1, stack);
+	
+	z = stack.b.pop(); 
 	
 	ASSERT_FALSE((isinf(z)).any());
 	ASSERT_FALSE((isnan(abs(z)).any()));
 	 
-	std::shared_ptr<Node> gtObj = std::shared_ptr<Node>(new NodeGreaterThan());
+	std::unique_ptr<Node> gtObj = std::unique_ptr<Node>(new NodeGreaterThan());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
 	
-	gtObj->evaluate(X, Y, stack_f, stack_b);	
+	gtObj->evaluate(X, Y, z1, stack);
 	
-	z = stack_b.back(); stack_b.pop_back();
-	
-	ASSERT_FALSE((isinf(z)).any());
-	ASSERT_FALSE((isnan(abs(z)).any()));
-	
-	std::shared_ptr<Node> geqObj = std::shared_ptr<Node>(new NodeGEQ());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
-	
-	geqObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	z = stack_b.back(); stack_b.pop_back();
+	z = stack.b.pop(); 
 	
 	ASSERT_FALSE((isinf(z)).any());
 	ASSERT_FALSE((isnan(abs(z)).any()));
 	
-	std::shared_ptr<Node> ltObj = std::shared_ptr<Node>(new NodeLessThan());
+	std::unique_ptr<Node> geqObj = std::unique_ptr<Node>(new NodeGEQ());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
 	
-	ltObj->evaluate(X, Y, stack_f, stack_b);	
+	geqObj->evaluate(X, Y, z1, stack);
 	
-	z = stack_b.back(); stack_b.pop_back();
-	
-	ASSERT_FALSE((isinf(z)).any());
-	ASSERT_FALSE((isnan(abs(z)).any()));
-	
-	std::shared_ptr<Node> leqObj = std::shared_ptr<Node>(new NodeLEQ());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
-	
-	leqObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	z = stack_b.back(); stack_b.pop_back();
+	z = stack.b.pop(); 
 	
 	ASSERT_FALSE((isinf(z)).any());
 	ASSERT_FALSE((isnan(abs(z)).any()));
 	
-	std::shared_ptr<Node> ifObj = std::shared_ptr<Node>(new NodeIf());
+	std::unique_ptr<Node> ltObj = std::unique_ptr<Node>(new NodeLessThan());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_b.push_back(Z1);
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
 	
-	ifObj->evaluate(X, Y, stack_f, stack_b);	
+	ltObj->evaluate(X, Y, z1, stack);
 	
-	x = stack_f.back(); stack_f.pop_back();
-	
-	ASSERT_FALSE((isinf(x)).any());
-	ASSERT_FALSE((isnan(abs(x)).any()));
-	
-	std::shared_ptr<Node> iteObj = std::shared_ptr<Node>(new NodeIfThenElse());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
-	stack_b.push_back(Z1);
-	
-	iteObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	x = stack_f.back(); stack_f.pop_back();
-	
-	ASSERT_FALSE((isinf(x)).any());
-	ASSERT_FALSE((isnan(abs(x)).any()));
-	
-	
-	std::shared_ptr<Node> tanObj = std::shared_ptr<Node>(new NodeTanh());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	
-	tanObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	x = stack_f.back(); stack_f.pop_back();
-	
-	ASSERT_FALSE((isinf(x)).any());
-	ASSERT_FALSE((isnan(abs(x)).any()));
-	
-	std::shared_ptr<Node> logitObj = std::shared_ptr<Node>(new NodeLogit());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	
-	logitObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	x = stack_f.back(); stack_f.pop_back();
-	
-	ASSERT_FALSE((isinf(x)).any());
-	ASSERT_FALSE((isnan(abs(x)).any()));
-	
-	std::shared_ptr<Node> stepObj = std::shared_ptr<Node>(new NodeStep());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	
-	stepObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	x = stack_f.back(); stack_f.pop_back();
-	
-	ASSERT_FALSE((isinf(x)).any());
-	ASSERT_FALSE((isnan(abs(x)).any()));
-	
-	std::shared_ptr<Node> signObj = std::shared_ptr<Node>(new NodeSign());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	
-	signObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	x = stack_f.back(); stack_f.pop_back();
-	
-	ASSERT_FALSE((isinf(x)).any());
-	ASSERT_FALSE((isnan(abs(x)).any()));
-	
-	
-	std::shared_ptr<Node> xorObj = std::shared_ptr<Node>(new NodeXor());
-	
-	stack_f.clear();
-	stack_b.clear();
-	stack_b.push_back(Z1);
-	stack_b.push_back(Z2);
-	
-	xorObj->evaluate(X, Y, stack_f, stack_b);	
-	
-	z = stack_b.back(); stack_b.pop_back();
+	z = stack.b.pop(); 
 	
 	ASSERT_FALSE((isinf(z)).any());
 	ASSERT_FALSE((isnan(abs(z)).any()));
 	
-	std::shared_ptr<Node> gausObj = std::shared_ptr<Node>(new NodeGaussian());
+	std::unique_ptr<Node> leqObj = std::unique_ptr<Node>(new NodeLEQ());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
 	
-	gausObj->evaluate(X, Y, stack_f, stack_b);	
+	leqObj->evaluate(X, Y, z1, stack);
 	
-	x = stack_f.back(); stack_f.pop_back();
+	z = stack.b.pop(); 
+	
+	ASSERT_FALSE((isinf(z)).any());
+	ASSERT_FALSE((isnan(abs(z)).any()));
+	
+	std::unique_ptr<Node> ifObj = std::unique_ptr<Node>(new NodeIf());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.b.push(Z1);
+	
+	ifObj->evaluate(X, Y, z1, stack);
+	
+	x = stack.f.pop(); 
 	
 	ASSERT_FALSE((isinf(x)).any());
 	ASSERT_FALSE((isnan(abs(x)).any()));
 	
-	std::shared_ptr<Node> gaus2dObj = std::shared_ptr<Node>(new Node2dGaussian());
+	std::unique_ptr<Node> iteObj = std::unique_ptr<Node>(new NodeIfThenElse());
 	
-	stack_f.clear();
-	stack_b.clear();
-	stack_f.push_back(X.row(0));
-	stack_f.push_back(X.row(1));
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
+	stack.b.push(Z1);
 	
-	gaus2dObj->evaluate(X, Y, stack_f, stack_b);	
+	iteObj->evaluate(X, Y, z1, stack);
 	
-	x = stack_f.back(); stack_f.pop_back();
+	x = stack.f.pop(); 
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	
+	std::unique_ptr<Node> tanObj = std::unique_ptr<Node>(new NodeTanh());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	
+	tanObj->evaluate(X, Y, z1, stack);
+	
+	x = stack.f.pop(); 
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::unique_ptr<Node> logitObj = std::unique_ptr<Node>(new NodeLogit());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	
+	logitObj->evaluate(X, Y, z1, stack);
+	
+	x = stack.f.pop(); 
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::unique_ptr<Node> stepObj = std::unique_ptr<Node>(new NodeStep());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	
+	stepObj->evaluate(X, Y, z1, stack);
+	
+	x = stack.f.pop(); 
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::unique_ptr<Node> signObj = std::unique_ptr<Node>(new NodeSign());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	
+	signObj->evaluate(X, Y, z1, stack);
+	
+	x = stack.f.pop(); 
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	
+	std::unique_ptr<Node> xorObj = std::unique_ptr<Node>(new NodeXor());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.b.push(Z1);
+	stack.b.push(Z2);
+	
+	xorObj->evaluate(X, Y, z1, stack);
+	
+	z = stack.b.pop(); 
+	
+	ASSERT_FALSE((isinf(z)).any());
+	ASSERT_FALSE((isnan(abs(z)).any()));
+	
+	std::unique_ptr<Node> gausObj = std::unique_ptr<Node>(new NodeGaussian());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	
+	gausObj->evaluate(X, Y, z1, stack);
+	
+	x = stack.f.pop(); 
+	
+	ASSERT_FALSE((isinf(x)).any());
+	ASSERT_FALSE((isnan(abs(x)).any()));
+	
+	std::unique_ptr<Node> gaus2dObj = std::unique_ptr<Node>(new Node2dGaussian());
+	
+	stack.f.clear();
+	stack.b.clear();
+	stack.f.push(X.row(0));
+	stack.f.push(X.row(1));
+	
+	gaus2dObj->evaluate(X, Y, z1, stack);
+	
+	x = stack.f.pop(); 
 	
 	ASSERT_FALSE((isinf(x)).any());
 	ASSERT_FALSE((isnan(abs(x)).any()));
@@ -695,17 +715,18 @@ TEST(NodeTest, Evaluate)
 	//TODO NodeVariable, NodeConstant(both types)
 }
 
-bool isValidProgram(vector<std::shared_ptr<Node>>& program, unsigned num_features)
+bool isValidProgram(NodeVector& program, unsigned num_features)
 {
     //checks whether program fulfills all its arities.
-    vector<ArrayXd> stack_f; 
-    vector<ArrayXb> stack_b;
     MatrixXd X = MatrixXd::Zero(num_features,2); 
-    VectorXd y = VectorXd::Zero(2); 
+    VectorXd y = VectorXd::Zero(2);
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z; 
+    
+    Stacks stack;
    
     for (const auto& n : program){
-        if ( stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
-            n->evaluate(X, y, stack_f, stack_b);
+        if ( stack.f.size() >= n->arity['f'] && stack.b.size() >= n->arity['b'])
+            n->evaluate(X, y, z, stack);
         else
             return false; 
     }
@@ -714,7 +735,7 @@ bool isValidProgram(vector<std::shared_ptr<Node>>& program, unsigned num_feature
 
 TEST(Variation, MutationTests)
 {
-	Feat feat(100);
+	Feat feat(100); feat.set_random_state(666);
     MatrixXd X(4,2); 
     MatrixXd X_v(3,2); 
     X << 0,1,  
@@ -727,6 +748,8 @@ TEST(Variation, MutationTests)
 
     X.transposeInPlace();
     X_v.transposeInPlace();
+
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z;
 
     VectorXd y(4); 
     VectorXd y_v(3); 
@@ -752,7 +775,7 @@ TEST(Variation, MutationTests)
     
     feat.F.resize(X.cols(),int(2*feat.params.pop_size));
     
-    feat.p_eval->fitness(*(feat.p_pop),X,y,feat.F,feat.params);
+    feat.p_eval->fitness(feat.p_pop->individuals,X,z, y,feat.F,feat.params);
     
     vector<size_t> parents;
     parents.push_back(2);
@@ -784,7 +807,7 @@ TEST(Variation, MutationTests)
 
 TEST(Variation, CrossoverTests)
 {
-	Feat feat(100);
+	Feat feat(100); feat.set_random_state(666);
     MatrixXd X(4,2); 
     MatrixXd X_v(3,2); 
     X << 0,1,  
@@ -803,6 +826,9 @@ TEST(Variation, CrossoverTests)
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158;
     y_v << 0.57015434, -1.20648656, -2.68773747;
+
+
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z; 
 
     feat.params.init();       
   
@@ -823,7 +849,7 @@ TEST(Variation, CrossoverTests)
     
     feat.F.resize(X.cols(),int(2*feat.params.pop_size));
     
-    feat.p_eval->fitness(*(feat.p_pop),X,y,feat.F,feat.params);
+    feat.p_eval->fitness(feat.p_pop->individuals,X,z, y,feat.F,feat.params);
     
     vector<size_t> parents;
     parents.push_back(2);
@@ -856,7 +882,7 @@ TEST(Variation, CrossoverTests)
 
 TEST(Population, PopulationTests)
 {
-	Feat feat(100);
+	Feat feat(100); feat.set_random_state(666);
     MatrixXd X(4,2); 
     MatrixXd X_v(3,2); 
     X << 0,1,  
@@ -933,7 +959,14 @@ TEST(Parameters, ParamsTests)
                       false,                            //shuffle
                       0.75,								//train/test split
                       0.5,                             // feedback 
-                      "mse");                           //scoring function
+                      "mse",                           //scoring function
+                      "",                              // feature names
+                      false,                            // backprop
+                      0,                                // backprop iterations
+                      0.1,                              // iterations
+                      1,                                // batch size
+                      false                             // hill climbing
+                          );
 					  
 	params.set_max_dim(12);
 	ASSERT_EQ(params.max_dim, 12);
@@ -1011,92 +1044,95 @@ TEST(Individual, Subtree)
 {
 	Individual a;
 	
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(1)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(2)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeAdd()));
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(3)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(4)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeSubtract()));
-	a.program.push_back(std::shared_ptr<Node>(new NodeMultiply()));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(1)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(2)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeAdd()));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(3)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(4)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeSubtract()));
+	a.program.push_back(std::unique_ptr<Node>(new NodeMultiply()));
 	
-	ASSERT_EQ(a.subtree(5), 3);
-	ASSERT_EQ(a.subtree(2), 0);
-	ASSERT_EQ(a.subtree(1), 1);
-	ASSERT_EQ(a.subtree(6), 0);
+	ASSERT_EQ(a.program.subtree(5), 3);
+	ASSERT_EQ(a.program.subtree(2), 0);
+	ASSERT_EQ(a.program.subtree(1), 1);
+	ASSERT_EQ(a.program.subtree(6), 0);
 	
 	a.program.clear();
 	
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(1)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(2)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(3)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeConstant(true)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeIfThenElse()));
-	a.program.push_back(std::shared_ptr<Node>(new NodeAdd()));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(1)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(2)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(3)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeConstant(true)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeIfThenElse()));
+	a.program.push_back(std::unique_ptr<Node>(new NodeAdd()));
 	
-	ASSERT_EQ(a.subtree(4), 1);
-	ASSERT_EQ(a.subtree(5), 0);
-	ASSERT_EQ(a.subtree(2), 2);
+	ASSERT_EQ(a.program.subtree(4), 1);
+	ASSERT_EQ(a.program.subtree(5), 0);
+	ASSERT_EQ(a.program.subtree(2), 2);
 }
 
 TEST(Individual, Complexity)
 {
 	Individual a;
 	
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(1)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(2)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeAdd()));
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(3)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(4)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeSubtract()));
-	a.program.push_back(std::shared_ptr<Node>(new NodeMultiply()));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(1)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(2)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeAdd()));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(3)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(4)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeSubtract()));
+	a.program.push_back(std::unique_ptr<Node>(new NodeMultiply()));
 	
 	ASSERT_EQ(a.complexity(), 14);
 	
 	a.program.clear();
 	a.c = 0;
 	
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(1)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(2)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeMultiply()));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(1)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(2)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeMultiply()));
 	
 	ASSERT_EQ(a.complexity(), 6);
 	
 	a.program.clear();
 	a.c = 0;
 	
-	a.program.push_back(std::shared_ptr<Node>(new NodeVariable(1)));
-	a.program.push_back(std::shared_ptr<Node>(new NodeSin()));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(1)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeSin()));
 	
 	ASSERT_EQ(a.complexity(), 6);
 	a.c = 0;
 }
 
-TEST(Evaluation, assign_fit)
+TEST(Evaluation, mse)
 {
 	
-		Parameters params(100, 								//pop_size
-					  100,								//gens
-					  "LinearRidgeRegression",			//ml
-					  false,							//classification
-					  0,								//max_stall
-					  'f',								//otype
-					  1,								//verbosity
-					  "+,-,*,/,exp,log",				//functions
-					  0.5,                              //cross_rate
-					  3,								//max_depth
-					  10,								//max_dim
-					  false,							//erc
-					  "fitness,complexity",  			//obj
-                      false,                            //shuffle
-                      0.75,								//train/test split
-                      0.5,                             // feedback 
-                      "mse");                           //scoring function
-                      
-	Individual ind = Individual();
-	ind.loc = 0;
-	MatrixXd F(10, 1);
+    Parameters params(100, 								//pop_size
+                  100,								//gens
+                  "LinearRidgeRegression",			//ml
+                  false,							//classification
+                  0,								//max_stall
+                  'f',								//otype
+                  1,								//verbosity
+                  "+,-,*,/,exp,log",				//functions
+                  0.5,                              //cross_rate
+                  3,								//max_depth
+                  10,								//max_dim
+                  false,							//erc
+                  "fitness,complexity",  			//obj
+                  false,                            //shuffle
+                  0.75,								//train/test split
+                  0.5,                             // feedback 
+                  "mse",                           //scoring function
+                  "",                              // feature names
+                  false,                            // backprop
+                  0,                                // backprop iterations
+                  0.1,                              // iterations
+                  1,                                // batch size
+                  false                             // hill climbing
+                      );
 	
-	VectorXd yhat(10), y(10), res(10);
+    VectorXd yhat(10), y(10), res(10);
 	yhat << 0.0,
 	        1.0,
 	        2.0,
@@ -1119,8 +1155,6 @@ TEST(Evaluation, assign_fit)
          0.0,
          0.0;
     
-    Evaluation eval = Evaluation("mse");
-    
     res << 0.0,
            1.0,
            4.0,
@@ -1131,21 +1165,53 @@ TEST(Evaluation, assign_fit)
            49.0,
            64.0,
            81.0;
-           
-    eval.assign_fit(ind, F, yhat, y, params);
-    if (F.col(ind.loc) != res)
+
+    // test mean squared error      
+    VectorXd loss; 
+    double score = metrics::mse(y, yhat, loss, params.class_weights);
+
+    if (loss != res)
     {
-        std::cout << "F.col(ind.loc):" << F.col(ind.loc).transpose() << "\n";
+        std::cout << "loss:" << loss << "\n";
         std::cout << "res:" << res.transpose() << "\n";
     }
 
-    ASSERT_TRUE(F.col(ind.loc) == res);
-    ASSERT_TRUE(ind.fitness == 28.5);
-    
-    params.classification = true;
-   
-    Evaluation evalc("bal_accuracy");
+    ASSERT_TRUE(loss == res);
+    ASSERT_TRUE(score == 28.5);
+}
 
+TEST(Evaluation, bal_accuracy)
+{
+    // test balanced zero one loss
+	
+    Parameters params(100, 								//pop_size
+              100,								//gens
+              "LinearRidgeRegression",			//ml
+              true,							//classification
+              0,								//max_stall
+              'f',								//otype
+              1,								//verbosity
+              "+,-,*,/,exp,log",				//functions
+              0.5,                              //cross_rate
+              3,								//max_depth
+              10,								//max_dim
+              false,							//erc
+              "fitness,complexity",  			//obj
+              false,                            //shuffle
+              0.75,								//train/test split
+              0.5,                             // feedback 
+              "bal_zero_one",                           //scoring function
+              "",                              // feature names
+              false,                            // backprop
+              0,                                // backprop iterations
+              0.1,                              // iterations
+              1,                                // batch size
+              false                             // hill climbing
+                  );
+	
+    VectorXd yhat(10), y(10), res(10), loss(10);
+	
+  
     y << 0.0,
          1.0,
          2.0,
@@ -1156,7 +1222,19 @@ TEST(Evaluation, assign_fit)
          1.0,
          2.0,
          0.0;
-         
+    
+    yhat << 0.0,
+	        1.0,
+	        2.0,
+	        3.0,
+	        4.0, 
+	        5.0,
+	        6.0,
+	        7.0,
+	        8.0,
+	        9.0;
+	
+     
     res << 0.0,
            0.0,
            0.0,
@@ -1168,18 +1246,159 @@ TEST(Evaluation, assign_fit)
            1.0,
            1.0;
            
-    evalc.assign_fit(ind, F, yhat, y, params);
+    double score = metrics::bal_zero_one_loss(y, yhat, loss, params.class_weights);
     
-    if (F.col(ind.loc) != res)
+    if (loss != res)
     {
-        std::cout << "F.col(ind.loc):" << F.col(ind.loc).transpose() << "\n";
+        std::cout << "loss:" << loss.transpose() << "\n";
         std::cout << "res:" << res.transpose() << "\n";
     }
-    ASSERT_TRUE(F.col(ind.loc) == res);
-    ASSERT_EQ(((int)(ind.fitness*1000000)), 347222);
-    
+    ASSERT_TRUE(loss == res);
+    ASSERT_EQ(((int)(score*1000000)), 347222);
+   
 }
 
+TEST(Evaluation, log_loss)
+{
+    // test log loss
+	
+    Parameters params(100, 								//pop_size
+              100,								//gens
+              "LinearRidgeRegression",			//ml
+              true,							//classification
+              0,								//max_stall
+              'f',								//otype
+              1,								//verbosity
+              "+,-,*,/,exp,log",				//functions
+              0.5,                              //cross_rate
+              3,								//max_depth
+              10,								//max_dim
+              false,							//erc
+              "fitness,complexity",  			//obj
+              false,                            //shuffle
+              0.75,								//train/test split
+              0.5,                             // feedback 
+              "bal_zero_one",                           //scoring function
+              "",                              // feature names
+              false,                            // backprop
+              0,                                // backprop iterations
+              0.1,                              // iterations
+              1,                                // batch size
+              false                             // hill climbing
+                  );
+	
+    VectorXd yhat(10), y(10), loss(10);
+    ArrayXXd confidences(10,2);
+
+    // test log loss
+    y << 0, 
+         0,
+         0,
+         1,
+         1,
+         1,
+         1,
+         1, 
+         0,
+         0;
+
+    yhat << 0, 
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0;
+   
+    cout << "setting confidences\n";
+    yhat << 0.17299064146709298 ,
+             0.2848611182312323 ,
+             0.4818940550844429 ,
+             0.6225638563373588 ,
+             0.849437595665999 ,
+             0.7758710334865722 ,
+             0.6172182787000485 ,
+             0.4640091939913109 ,
+             0.4396698295617455 ,
+             0.47602999293839676 ;
+    
+    double score = metrics::mean_log_loss(y, yhat, loss);
+    
+    ASSERT_EQ(((int)(score*100000)),45495);
+}
+
+TEST(Evaluation, multi_log_loss)
+{
+    // test log loss
+	
+    Parameters params(100, 								//pop_size
+              100,								//gens
+              "LinearRidgeRegression",			//ml
+              true,							//classification
+              0,								//max_stall
+              'f',								//otype
+              1,								//verbosity
+              "+,-,*,/,exp,log",				//functions
+              0.5,                              //cross_rate
+              3,								//max_depth
+              10,								//max_dim
+              false,							//erc
+              "fitness,complexity",  			//obj
+              false,                            //shuffle
+              0.75,								//train/test split
+              0.5,                             // feedback 
+              "bal_zero_one",
+              "",                              // feature names
+              false,                            // backprop
+              0,                                // backprop iterations
+              0.1,                              // iterations
+              1,                                // batch size
+              false                             // hill climbing
+                  );                           //scoring function
+	
+    VectorXd y(10), loss(10);
+    ArrayXXd confidences(10,3);
+
+    // test log loss
+    y << 0, 
+         0,
+         1,
+		 2,
+		 2,
+		 0,
+		 1,
+		 1,
+		 0,
+		 2;
+
+  
+    cout << "setting confidences\n";
+    confidences << 0.4635044256474209,0.0968001677665267,0.43969540658605233,
+					0.6241231423983534,0.04763759878396275,0.3282392588176838,
+					0.3204639096468384,0.6057958969556588,0.07374019339750265,
+					0.4749388491547049,0.07539667564715603,0.44966447519813907,
+					0.3552503205282328,0.019014184065430532,0.6257354954063368,
+					0.6492498543925875,0.16946198974704466,0.18128815586036792,
+					0.21966902720063683,0.6516907637412063,0.12864020905815685,
+					0.02498948061874484,0.7120963741266988,0.26291414525455636,
+					0.523429658423623,0.2017439717928997,0.2748263697834774,
+					0.2686577572168724,0.449670901690872,0.2816713410922557;
+    
+    cout << "running multi_log_loss\n";
+	vector<float> weights = {(1-0.4)*3.0, (1-0.4)*3.0, (1-0.3)*3.0};
+	/* vector<float> weights; */ 
+    /* for (int i = 0; i < y.size(); ++i) */
+        /* weights.push_back(1.0); */
+
+    double score = metrics::mean_multi_log_loss(y, confidences, loss, weights);
+    cout << "assertion\n";
+
+    ASSERT_EQ(((int)(score*100000)),62344);
+}
 TEST(Evaluation, fitness)
 {
 		Parameters params(100, 								//pop_size
@@ -1198,7 +1417,14 @@ TEST(Evaluation, fitness)
                       false,                            //shuffle
                       0.75,								//train/test split
                       0.5,                             // feedback 
-                      "mse");                           // scoring function
+                      "mse",                           // scoring function
+                      "",                              // feature names
+                      false,                            // backprop
+                      0,                                // backprop iterations
+                      0.1,                              // iterations
+                      1,                                // batch size
+                      false                             // hill climbing
+                          );
                         
 	MatrixXd X(10,1); 
     X << 0.0,  
@@ -1218,26 +1444,31 @@ TEST(Evaluation, fitness)
     // y = 2*sin(x0) + 3*cos(x0)
     y << 3.0,  3.30384889,  0.57015434, -2.68773747, -3.47453585,
              -1.06686199,  2.32167986,  3.57567996,  1.54221639, -1.90915382;
+             
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z; 
 
     // make population 
     Population pop(2);
     // individual 0 = [sin(x0) cos(x0)]
-    pop.individuals[0].program.push_back(std::shared_ptr<Node>(new NodeVariable(0)));
-    pop.individuals[0].program.push_back(std::shared_ptr<Node>(new NodeSin()));
-    pop.individuals[0].program.push_back(std::shared_ptr<Node>(new NodeVariable(0)));
-    pop.individuals[0].program.push_back(std::shared_ptr<Node>(new NodeCos()));
+    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeVariable(0)));
+    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeSin({1.0})));
+    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeVariable(0)));
+    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeCos({1.0})));
     pop.individuals[0].loc = 0;
     std::cout << pop.individuals[0].get_eqn() + "\n";
     // individual 1 = [x0] 
-    pop.individuals[1].program.push_back(std::shared_ptr<Node>(new NodeVariable(0)));
+    pop.individuals[1].program.push_back(std::unique_ptr<Node>(new NodeVariable(0)));
     pop.individuals[1].loc = 1;
     std::cout << pop.individuals[1].get_eqn() + "\n";    
     MatrixXd F(10,2);   // output matrix
 
     // get fitness
     Evaluation eval("mse"); 
-    eval.fitness(pop, X, y, F, params);
+
+    eval.fitness(pop.individuals, X, z, y, F, params);
+    
     // check results
+    cout << pop.individuals[0].fitness << " , should be near zero\n";
     ASSERT_TRUE(pop.individuals[0].fitness < NEAR_ZERO);
     ASSERT_TRUE(pop.individuals[1].fitness - 60.442868924187906 < NEAR_ZERO);
 
@@ -1261,7 +1492,14 @@ TEST(Evaluation, out_ml)
                       false,                            //shuffle
                       0.75,								//train/test split
                       0.5,                             // feedback                 
-                      "mse");                           // scoring function
+                      "mse",                           // scoring function
+                      "",                              // feature names
+                      false,                            // backprop
+                      0,                                // backprop iterations
+                      0.1,                              // iterations
+                      1,                                // batch size
+                      false                             // hill climbing
+                          );
 	MatrixXd X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
@@ -1283,8 +1521,8 @@ TEST(Evaluation, out_ml)
     shared_ptr<ML> p_ml = make_shared<ML>(params);
              
     bool pass = true;
-    VectorXd yhat = p_ml->fit(X, y, params, pass);
-    
+    VectorXd yhat = p_ml->fit_vector(X, y, params, pass);
+     
     double mean = ((yhat - y).array().pow(2)).mean();
     
     cout << "MSE is " << mean;
@@ -1294,7 +1532,7 @@ TEST(Evaluation, out_ml)
 
 TEST(Selection, SelectionOperator)
 {
-    Feat feat(100);
+    Feat feat(100); feat.set_random_state(666);
     MatrixXd X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
@@ -1310,13 +1548,17 @@ TEST(Selection, SelectionOperator)
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
+             
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z;
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_t;
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_v;
 
 	feat.timer.Reset();
 	
 	MatrixXd X_t(X.rows(),int(X.cols()*feat.params.split));
     MatrixXd X_v(X.rows(),int(X.cols()*(1-feat.params.split)));
     VectorXd y_t(int(y.size()*feat.params.split)), y_v(int(y.size()*(1-feat.params.split)));
-    train_test_split(X,y,X_t,X_v,y_t,y_v,feat.params.shuffle);
+    train_test_split(X, y, Z, X_t, X_v, y_t, y_v, Z_t, Z_v, feat.params.shuffle, feat.params.split);
     
     feat.timer.Reset();
 	
@@ -1337,7 +1579,7 @@ TEST(Selection, SelectionOperator)
     feat.p_pop->init(feat.best_ind, feat.params);
     
     feat.F.resize(X_t.cols(),int(2*feat.params.pop_size));
-    feat.p_eval->fitness(*(feat.p_pop), X_t, y_t, feat.F, feat.params);
+    feat.p_eval->fitness(feat.p_pop->individuals, X_t, Z_t, y_t, feat.F, feat.params);
     vector<size_t> parents = feat.p_sel->select(*(feat.p_pop), feat.F, feat.params);
     
     ASSERT_EQ(parents.size(), feat.get_pop_size());

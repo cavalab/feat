@@ -1,25 +1,57 @@
-/* FEWTWO
+/* FEAT
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
+
+#ifndef UTILS_H
+#define UTILS_H
 
 #include <Eigen/Dense>
 #include <vector>
 #include <fstream>
 #include <chrono>
 #include <ostream>
+#include <map>
+#include "init.h"
 
 using namespace Eigen;
 
 namespace FT{
  
-    double NEAR_ZERO = 0.0000001;
+    string PBSTR = "============================================================================"
+                   "========================";
+    int PBWIDTH = 100;
+ 
+    /// limits node output to be between MIN_DBL and MAX_DBL
+    void clean(ArrayXd& x)
+    {
+        x = (x < MIN_DBL).select(MIN_DBL,x);
+        x = (isinf(x)).select(MAX_DBL,x);
+        x = (isnan(x)).select(0,x);
+    };  
+
+    std::string ltrim(std::string str, const std::string& chars = "\t\n\v\f\r ")
+    {
+        str.erase(0, str.find_first_not_of(chars));
+        return str;
+    }
+     
+    std::string rtrim(std::string str, const std::string& chars = "\t\n\v\f\r ")
+    {
+        str.erase(str.find_last_not_of(chars) + 1);
+        return str;
+    }
+     
+    std::string trim(std::string str, const std::string& chars = "\t\n\v\f\r ")
+    {
+        return ltrim(rtrim(str, chars), chars);
+    }
 
     /*!
      * load csv file into matrix. 
      */
     
-    void load_csv (const std::string & path, MatrixXd& X, VectorXd& y, vector<string> names, 
+    void load_csv (const std::string & path, MatrixXd& X, VectorXd& y, vector<string>& names, 
                    vector<char> &dtypes, bool& binary_endpoint, char sep=',') 
     {
         std::ifstream indata;
@@ -39,7 +71,9 @@ namespace FT{
             std::string cell;
             
             while (std::getline(lineStream, cell, sep)) 
-            {                
+            {
+                cell = trim(cell);
+                  
                 if (rows==0) // read in header
                 {
                     if (!cell.compare("class") || !cell.compare("target") 
@@ -52,25 +86,16 @@ namespace FT{
                     values.push_back(std::stod(cell));
                 else
                     targets.push_back(std::stod(cell));
+                
                 ++col;
             }
             ++rows;
             col=0;   
         }
-        //cout<<"Rows read are "<<rows<<std::endl;
-        //cout<<"Data size is "<<values.size()<<std::endl;
         
-        /*cout<<"Values are\n";
-        int x;
-        for(x = 0; x < values.size(); x++)
-            cout<<values[x]<<std::endl;
-        */
-        
-        //X = Map<MatrixXd>(values.data(), rows-1, values.size()/(rows-1));
         X = Map<MatrixXd>(values.data(), values.size()/(rows-1), rows-1);
-        //cout<<"X is\n"<<X<<std::endl;
-        //X.transposeInPlace();
         y = Map<VectorXd>(targets.data(), targets.size());
+        
         assert(X.cols() == y.size() && "different numbers of samples in X and y");
         assert(X.rows() == names.size() && "header missing or incorrect number of feature names");
         
@@ -80,30 +105,188 @@ namespace FT{
         for(i = 0; i < X.rows(); i++)
         {
             isBinary = true;
-            //cout<<"Checking for column "<<i<<std::endl;
             for(j = 0; j < X.cols(); j++)
-            {
-                //cout<<"Value is "<<X(i, j)<<std::endl;
                 if(X(i, j) != 0 && X(i, j) != 1)
                     isBinary = false;
-            }
+        
             if(isBinary)
                 dtypes.push_back('b');
             else
                 dtypes.push_back('f');
         }
+        
         // check if endpoint is binary
         binary_endpoint = (y.array() == 0 || y.array() == 1).all();
         
-       // cout<<"X^T is\n";
-       // for (unsigned i=0; i< dtypes.size(); ++i)
-       //     cout << names[i] << "[" << dtypes[i] << "] ";
-       // cout << "\n" << X.transpose()<<std::endl;
-       // cout<<"Y is\n"<<y<<std::endl;
-
     }
     
+    /*!
+     * load longitudinal csv file into matrix. 
+     */
+    void load_longitudinal(const std::string & path,
+                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
+                           char sep=',')
+    {
+        std::map<string, std::map<int, std::pair<std::vector<double>, std::vector<double> > > > dataMap;
+        std::ifstream indata;
+        indata.open(path);
+        if (!indata.good())
+        { 
+            std::cerr << "Invalid input file " + path + "\n"; 
+            exit(1);
+        }
+        std::string line, firstKey = "";
+       
+        string header;
+        std::getline(indata, header); 
     
+        std::stringstream lineStream(header);
+        
+        std::map<string,int> head_to_col;
+        for (int i = 0; i<4; ++i)
+        {
+            string tmp; 
+            std::getline(lineStream,tmp, sep);
+            head_to_col[tmp] = i;
+        }
+        
+        while (std::getline(indata, line)) 
+        {
+            std::stringstream lineStream(line);
+            std::string sampleNo, value, time, type;
+            
+            vector<string> cols(4); 
+            std::getline(lineStream, cols.at(0), sep);
+            std::getline(lineStream, cols.at(1), sep);
+            std::getline(lineStream, cols.at(2), sep);
+            std::getline(lineStream, cols.at(3), sep);
+           
+            sampleNo = cols.at(head_to_col["id"]);
+            time = cols.at(head_to_col["date"]);
+            value = cols.at(head_to_col["value"]);
+            type = cols.at(head_to_col["name"]);
+
+            type = trim(type);
+            
+            if(!firstKey.compare(""))
+                firstKey = type;
+            
+            dataMap[type][std::stoi(sampleNo)].first.push_back(std::stod(value));
+            dataMap[type][std::stoi(sampleNo)].second.push_back(std::stod(time));
+        }
+        
+        int numTypes = dataMap.size();
+        int numSamples = dataMap[firstKey].size();
+        
+        int x;
+        
+        for ( const auto &val: dataMap )
+        {
+            for(x = 0; x < numSamples; x++)
+            {
+                ArrayXd arr1 = Map<ArrayXd>(dataMap[val.first][x].first.data(), dataMap[val.first][x].first.size());
+                ArrayXd arr2 = Map<ArrayXd>(dataMap[val.first][x].second.data(), dataMap[val.first][x].second.size());
+                Z[val.first].first.push_back(arr1);
+                Z[val.first].second.push_back(arr2);
+            }
+            
+        }
+    }
+    
+    /*!
+     * load partial longitudinal csv file into matrix according to idx vector
+     */
+    void load_partial_longitudinal(const std::string & path,
+                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
+                           char sep, vector<int> idx)
+    {
+        /* loads data from the longitudinal file, with idx providing the id numbers of each row in
+         * the main data (X and y).
+         * I.e., idx[k] = the id of samples in Z associated with sample k in X and y
+         */
+        std::map<int, bool> idMap;
+        std::map<int, int> idLoc;
+        unsigned i = 0;
+        for(const auto& id : idx){
+            idMap[id] = true;
+            idLoc[id] = i;
+            ++i;
+        }
+        std::map<string, std::map<int, std::pair<std::vector<double>, std::vector<double> > > > dataMap;
+        std::ifstream indata;
+        indata.open(path);
+        if (!indata.good())
+        { 
+            std::cerr << "Invalid input file " + path + "\n"; 
+            exit(1);
+        }
+        std::string line, firstKey = "";
+       
+        // get header
+        string header;
+        std::getline(indata, header); 
+    
+        std::stringstream lineStream(header);
+        
+        std::map<string,int> head_to_col;
+        for (int i = 0; i<4; ++i)
+        {
+            string tmp; 
+            std::getline(lineStream,tmp, sep);
+            head_to_col[tmp] = i;
+        }
+        
+        while (std::getline(indata, line)) 
+        {
+            std::stringstream lineStream(line);
+            std::string sampleNo, value, time, type;
+            
+            vector<string> cols(4); 
+            std::getline(lineStream, cols.at(0), sep);
+            std::getline(lineStream, cols.at(1), sep);
+            std::getline(lineStream, cols.at(2), sep);
+            std::getline(lineStream, cols.at(3), sep);
+           
+            sampleNo = cols.at(head_to_col["id"]);
+            time = cols.at(head_to_col["date"]);
+            value = cols.at(head_to_col["value"]);
+            type = cols.at(head_to_col["name"]);
+
+            type = trim(type);
+            
+            if(!firstKey.compare(""))
+                firstKey = type;
+            
+            int sNo = std::stoi(sampleNo);
+            if(idMap.find(sNo) != idMap.end())
+            {
+                if(idMap[sNo] == true)
+                {
+                    dataMap[type][idLoc[sNo]].first.push_back(std::stod(value));
+                    dataMap[type][idLoc[sNo]].second.push_back(std::stod(time));
+                    ++i;
+                }
+            }
+        }
+        
+        int numSamples = dataMap[firstKey].size();
+        int numTypes = dataMap.size();	
+        
+        int x;
+        
+        for ( const auto &val: dataMap )
+        {
+            for(x = 0; x < numSamples; x++)
+            {
+                ArrayXd arr1 = Map<ArrayXd>(dataMap[val.first][x].first.data(), dataMap[val.first][x].first.size());
+                ArrayXd arr2 = Map<ArrayXd>(dataMap[val.first][x].second.data(), dataMap[val.first][x].second.size());
+                Z[val.first].first.push_back(arr1);
+                Z[val.first].second.push_back(arr2);
+            }
+            
+        }
+    }
+
     /// check if element is in vector.
     template<typename T>
     bool in(const vector<T> v, const T& i)
@@ -136,6 +319,57 @@ namespace FT{
         else
             return x[n];
     }
+    
+    /// calculate variance
+    double variance(const ArrayXd& v) 
+    {
+        double mean = v.mean();
+        ArrayXd tmp = mean*ArrayXd::Ones(v.size());
+        return pow((v - tmp), 2).mean();
+    }
+    
+    /// calculate skew
+    double skew(const ArrayXd& v) 
+    {
+        double mean = v.mean();
+        ArrayXd tmp = mean*ArrayXd::Ones(v.size());
+        
+        double thirdMoment = pow((v - tmp), 3).mean();
+        double variance = pow((v - tmp), 2).mean();
+        
+        return thirdMoment/sqrt(pow(variance, 3));
+    }
+    
+    /// calculate kurtosis
+    double kurtosis(const ArrayXd& v) 
+    {
+        double mean = v.mean();
+        ArrayXd tmp = mean*ArrayXd::Ones(v.size());
+        
+        double fourthMoment = pow((v - tmp), 4).mean();
+        double variance = pow((v - tmp), 2).mean();
+        
+        return fourthMoment/pow(variance, 2);
+    }
+    
+    double covariance(const ArrayXd& x, const ArrayXd& y)
+    {
+        double meanX = x.mean();
+        double meanY = y.mean();
+        //double count = x.size();
+        
+        ArrayXd tmp1 = meanX*ArrayXd::Ones(x.size());
+        ArrayXd tmp2 = meanY*ArrayXd::Ones(y.size());
+        
+        return ((x - tmp1)*(y - tmp2)).mean();
+        
+    }
+    
+    double slope(const ArrayXd& x, const ArrayXd& y)
+    {
+        return covariance(x, y)/variance(x);
+    }
+    
 
     /// median absolute deviation
     double mad(const ArrayXd& x) 
@@ -195,10 +429,70 @@ namespace FT{
 			    high_resolution_clock::time_point _start;
 			
     };
+    
+    void reorder_longitudinal(vector<ArrayXd> &vec1,
+                             vector<ArrayXd> &vec2,
+                             vector<int> const &order) 
+    {   
+    
+        for( int s = 1, d; s < order.size(); ++ s )
+        {
+            for ( d = order[s]; d < s; d = order[d] );
+            
+            if ( d == s )
+            {
+                while ( d = order[d], d != s )
+                {
+                    swap(vec1[s], vec1[d]);
+                    swap(vec2[s], vec2[d]);
+                }
+            }
+        }
+    }
+    
+    void split_longitudinal(std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
+                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_t,
+                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_v,
+                            double split)
+    {
+    
+        int size;
+        for ( const auto val: Z )
+        {
+            size = Z[val.first].first.size();
+            break;
+        }
+        
+        int testSize = int(size*split);
+        int validateSize = int(size*(1-split));
+            
+        for ( const auto &val: Z )
+        {
+            vector<ArrayXd> _Z_t_v, _Z_t_t, _Z_v_v, _Z_v_t;
+            _Z_t_v.assign(Z[val.first].first.begin(), Z[val.first].first.begin()+testSize);
+            _Z_t_t.assign(Z[val.first].second.begin(), Z[val.first].second.begin()+testSize);
+            _Z_v_v.assign(Z[val.first].first.begin()+testSize, Z[val.first].first.begin()+testSize+validateSize);
+            _Z_v_t.assign(Z[val.first].second.begin()+testSize, Z[val.first].second.begin()+testSize+validateSize);
+            
+            Z_t[val.first] = make_pair(_Z_t_v, _Z_t_t);
+            Z_v[val.first] = make_pair(_Z_v_v, _Z_v_t);
+        }
+    }
+
+
 
     /// split input data into training and validation sets. 
-    void train_test_split(MatrixXd& X, VectorXd& y, MatrixXd& X_t, MatrixXd& X_v, VectorXd& y_t, 
-                          VectorXd& y_v, bool shuffle)
+    void train_test_split(MatrixXd& X,
+                          VectorXd& y,
+                          std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
+                          MatrixXd& X_t,
+                          MatrixXd& X_v,
+                          VectorXd& y_t, 
+                          VectorXd& y_v,
+                          std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_t,
+                          std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_v,
+                          bool shuffle,
+                          double split)
     {
         /* @params X: n_features x n_samples matrix of training data
          * @params y: n_samples vector of training labels
@@ -210,9 +504,21 @@ namespace FT{
             Eigen::PermutationMatrix<Dynamic,Dynamic> perm(X.cols());
             perm.setIdentity();
             r.shuffle(perm.indices().data(), perm.indices().data()+perm.indices().size());
-            //std::cout << "permutation matrix: " << perm << "\n";
             X = X * perm;       // shuffles columns of X
-            y = (y.transpose() * perm).transpose() ;       // shuffle y too  
+            y = (y.transpose() * perm).transpose() ;       // shuffle y too
+            
+            if(Z.size() > 0)
+            {
+                std::vector<int> zidx(y.size());
+                std::iota(zidx.begin(), zidx.end(), 0);
+                Eigen::VectorXi zw = Map<VectorXi>(zidx.data(), zidx.size());
+                zw = (zw.transpose()*perm).transpose();       // shuffle zw too
+                zidx.assign(((int*)zw.data()), (((int*)zw.data())+zw.size()));
+                
+                for(auto &val : Z)
+                    reorder_longitudinal(val.second.first, val.second.second, zidx);
+            }
+            
         }
         
         // map training and test sets  
@@ -221,10 +527,13 @@ namespace FT{
 
         y_t = VectorXd::Map(y.data(),y_t.size());
         y_v = VectorXd::Map(y.data()+y_t.size(),y_v.size());
+        
+        if(Z.size() > 0)
+            split_longitudinal(Z, Z_t, Z_v, split);
 
     
     }
-
+ 
     /// return the softmax transformation of a vector.
     template <typename T>
     vector<T> softmax(const vector<T>& w)
@@ -287,6 +596,7 @@ namespace FT{
             normalize(X);
         }
     };
+
     /// returns true for elements of x that are infinite
     ArrayXb isinf(const ArrayXd& x)
     {
@@ -316,13 +626,10 @@ namespace FT{
 	    for(i = 0; i < X.rows(); i++)
 	    {
 	        isBinary = true;
-	        //cout<<"Checking for column "<<i<<std::endl;
 	        for(j = 0; j < X.cols(); j++)
-	        {
-	            //cout<<"Value is "<<X(i, j)<<std::endl;
 	            if(X(i, j) != 0 && X(i, j) != 1)
 	                isBinary = false;
-	        }
+	                
 	        if(isBinary)
 	            dtypes.push_back('b');
 	        else
@@ -349,22 +656,14 @@ namespace FT{
         vector<T> wv( w.data(), w.data()+w.rows());
         return unique(wv);
     }
-    
-    std::string ltrim(std::string str, const std::string& chars = "\t\n\v\f\r ")
-    {
-        str.erase(0, str.find_first_not_of(chars));
-        return str;
-    }
-     
-    std::string rtrim(std::string str, const std::string& chars = "\t\n\v\f\r ")
-    {
-        str.erase(str.find_last_not_of(chars) + 1);
-        return str;
-    }
-     
-    std::string trim(std::string str, const std::string& chars = "\t\n\v\f\r ")
-    {
-        return ltrim(rtrim(str, chars), chars);
-    }
 
+    void printProgress (double percentage)
+    {
+        int val = (int) (percentage * 100);
+        int lpad = (int) (percentage * PBWIDTH);
+        int rpad = PBWIDTH - lpad;
+        printf ("\rCompleted %3d%% [%.*s%*s]", val, lpad, PBSTR.c_str(), rpad, "");
+        fflush (stdout);
+    }
 } 
+#endif

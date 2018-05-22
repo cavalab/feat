@@ -1,7 +1,11 @@
 <map id="FT::Feat" name="FT::Feat">
-<area shape="rect" id="node4" href="$de/d2c/structFT_1_1Parameters.html" title="holds the hyperparameters for Feat. " alt="" coords="698,264,811,291"/>
-<area shape="rect" id="node16" href="$d8/d25/classFT_1_1Individual.html" title="individual programs in the population " alt="" coords="704,213,805,240"/>
-<area shape="rect" id="node8" title="STL class. " alt="" coords="181,444,261,471"/>
-<area shape="rect" id="node9" title="STL class. " alt="" coords="5,437,132,478"/>
-<area shape="rect" id="node14" href="$d3/d4e/classFT_1_1Timer.html" title="class for timing things. " alt="" coords="715,416,794,443"/>
+<area shape="rect" id="node4" href="$de/d2c/structFT_1_1Parameters.html" title="holds the hyperparameters for Feat. " alt="" coords="855,585,969,611"/>
+<area shape="rect" id="node21" href="$d8/d25/classFT_1_1Individual.html" title="individual programs in the population " alt="" coords="861,178,963,205"/>
+<area shape="rect" id="node23" href="$dd/db4/structFT_1_1Normalizer.html" title="FT::Normalizer" alt="" coords="857,277,967,303"/>
+<area shape="rect" id="node6" href="$dd/d15/structFT_1_1NodeVector.html" title="an extension of a vector of unique pointers to nodes " alt="" coords="529,71,643,98"/>
+<area shape="rect" id="node7" title="STL class. " alt="" coords="237,64,397,105"/>
+<area shape="rect" id="node10" title="STL class. " alt="" coords="277,695,357,722"/>
+<area shape="rect" id="node11" title="STL class. " alt="" coords="5,688,132,729"/>
+<area shape="rect" id="node14" href="$d4/d04/structFT_1_1Parameters_1_1BP.html" title="FT::Parameters::BP" alt="" coords="517,629,655,655"/>
+<area shape="rect" id="node19" href="$d3/d4e/classFT_1_1Timer.html" title="class for timing things. " alt="" coords="873,435,951,462"/>
 </map>
