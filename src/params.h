@@ -24,6 +24,7 @@ namespace FT{
         bool classification;            			///< flag to conduct classification rather than 
         int max_stall;                  			///< maximum stall in learning, in generations
         vector<char> otypes;                     	///< program output types ('f', 'b')
+        vector<char> ttypes;                     	///< program terminal types ('f', 'b')
         char otype;                                 ///< user parameter for output type setup
         int verbosity;                  			///< amount of printing. 0: none, 1: minimal, 
                                                     // 2: all
@@ -243,26 +244,53 @@ namespace FT{
         } 
 
         void set_otype(char ot){ otype = ot; set_otypes();}
+        
+        void set_ttypes()
+        {
+            ttypes.clear();
+            // set terminal types
+            for (const auto& t: terminals)
+            {
+                if (!in(ttypes,t->otype)) 
+                    ttypes.push_back(t->otype);
+            }
+        }
 
         /// set the output types of programs
         void set_otypes()
         {
             otypes.clear();
+            // set output types
             switch (otype)
             { 
                 case 'b': otypes.push_back('b'); break;
                 case 'f': otypes.push_back('f'); break;
                 default: 
                 {
-                    otypes.push_back('b');
-                    otypes.push_back('f');
-                    /*for (const auto& f: functions)
-                        if (!in(otypes,f->otype)) 
-                            otypes.push_back(f->otype);
-                    for (const auto& t: terminals)
-                        if (!in(otypes,t->otype)) 
-                            otypes.push_back(t->otype);
-                    */
+                    // if terminals are all boolean, remove floating point functions
+                    if (ttypes.size()==1 && ttypes[0]=='b')
+                    {
+                        std::cout << "otypes is size 1 and otypes[0]==b\nerasing functions...\n";
+                        size_t n = functions.size();
+                        for (vector<int>::size_type i =n-1; 
+                             i != (std::vector<int>::size_type) -1; i--){
+                            if (functions.at(i)->arity['f'] >0){
+                                std::cout << "erasing function " << functions.at(i)->name << "\n";
+                                functions.erase(functions.begin()+i);
+                            }
+                        }
+                        std::cout << "functions:\n";
+                        for (const auto& f : functions)
+                            std::cout << f->name << " "; 
+                        std::cout << "\n";
+                        otype = 'b';
+                        otypes.push_back('b');
+                    }                        
+                    else
+                    {
+                        otypes.push_back('b');
+                        otypes.push_back('f');
+                    }
                     break;
                 }
             }
@@ -510,6 +538,7 @@ namespace FT{
         /*     cout << t->name << " " ; */
         /* cout << "\n"; */
         // reset output types
+        set_ttypes();
         set_otypes();
     }
 

@@ -149,7 +149,7 @@ namespace FT{
     void make_tree(NodeVector& program, 
                    const NodeVector& functions, 
                    const NodeVector& terminals, int max_d,  
-                   const vector<double>& term_weights, char otype)
+                   const vector<double>& term_weights, char otype, const vector<char>& term_types)
     {  
                 
         /*!
@@ -177,22 +177,24 @@ namespace FT{
                 program.push_back(t->rnd_clone());
             }
             else
-                HANDLE_ERROR_THROW("Error: Using longitudinal nodes when no longitudinal data available");
+                HANDLE_ERROR_THROW("Error: make_tree couldn't find properly typed terminals");
         }
         else
         {
             // let fi be indices of functions whose output type matches otype and, if max_d==1,
             // with no boolean inputs (assuming all input data is floating point) 
             vector<size_t> fi;
+            bool bterms = in(term_types,'b');   // are there boolean terminals?
+            bool zterms = in(term_types,'z');   // are there boolean terminals?
             for (size_t i = 0; i<functions.size(); ++i)
-                if (functions[i]->otype==otype && (max_d>1 || functions[i]->arity['b']==0) 
-                    && (max_d>1 || functions[i]->arity['z']==0))
+                if (functions[i]->otype==otype && (max_d>1 || functions[i]->arity['b']==0 || bterms) 
+                    && (max_d>1 || functions[i]->arity['z']==0 || zterms))
                     fi.push_back(i);
             
             if (fi.size()==0){
                 if(otype == 'z')
                 {
-                    make_tree(program, functions, terminals, 0, term_weights, 'z');
+                    make_tree(program, functions, terminals, 0, term_weights, 'z', term_types);
                     return;
                 }
                 else{            
@@ -219,11 +221,11 @@ namespace FT{
             std::unique_ptr<Node> chosen(program.back()->clone());
             // recurse to fulfill the arity of the chosen function
             for (size_t i = 0; i < chosen->arity['f']; ++i)
-                make_tree(program, functions, terminals, max_d-1, term_weights,'f');
+                make_tree(program, functions, terminals, max_d-1, term_weights,'f', term_types);
             for (size_t i = 0; i < chosen->arity['b']; ++i)
-                make_tree(program, functions, terminals, max_d-1, term_weights, 'b');
+                make_tree(program, functions, terminals, max_d-1, term_weights, 'b', term_types);
             for (size_t i = 0; i < chosen->arity['z']; ++i)
-                make_tree(program, functions, terminals, max_d-1, term_weights, 'z');
+                make_tree(program, functions, terminals, max_d-1, term_weights, 'z', term_types);
         }
 
     }
@@ -232,11 +234,14 @@ namespace FT{
                       const NodeVector& functions, 
                       const NodeVector& terminals, int max_d, 
                       const vector<double>& term_weights, int dim, char otype, 
-                      vector<string> longitudinalMap)
+                      vector<string> longitudinalMap, const vector<char>& term_types)
     {
-
+        /* cout << "ttypes: \n"; */
+        /* for (const auto& t : term_types) */
+        /*     cout << t << " "; */ 
+        /* cout << "\n"; */
         for (unsigned i = 0; i<dim; ++i)    // build trees
-            make_tree(program, functions, terminals, max_d, term_weights, otype);
+            make_tree(program, functions, terminals, max_d, term_weights, otype, term_types);
         
         // reverse program so that it is post-fix notation
         std::reverse(program.begin(),program.end());
@@ -267,11 +272,11 @@ namespace FT{
                 depth =  r.rnd_int(1, std::min(params.max_depth,unsigned(3)));
             // make a program for each individual
             char ot = r.random_choice(params.otypes);
-            //cout<<"Passing otype as "<<ot<<"\n";
             make_program(individuals[i].program, params.functions, params.terminals, depth,
-                         params.term_weights,dim,ot, params.longitudinalMap);
+                         params.term_weights,dim,ot, params.longitudinalMap, params.ttypes);
             
-            //std::cout << ind.get_eqn() + "\n";
+            /* std::cout << individuals[i].program_str() + " = "; */
+            /* std::cout << individuals[i].get_eqn() + "\n"; */
            
             // set location of individual and increment counter             
             individuals[i].loc = i;   

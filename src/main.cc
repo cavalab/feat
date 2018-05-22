@@ -203,7 +203,7 @@ int main(int argc, char** argv){
    
     if(ldataFile.compare("")) 
         FT::load_longitudinal(ldataFile, Z);
-    
+   
     if (split < 1.0)
     {
         // split data into training and test sets
@@ -214,15 +214,10 @@ int main(int argc, char** argv){
         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_t;
         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_v;
         
-        if(ldataFile.compare(""))
-            FT::split_longitudinal(Z, Z_t, Z_v, split);
-        
-        FT::DataRef d(X, y, Z, X_v, y_v, Z_v, X_t, y_t, Z_t);
+        FT::DataRef d(X, y, Z, X_t, y_t, Z_t, X_v, y_v, Z_v);
         
         FT::train_test_split(d, feat.get_shuffle(), split);
-        
-        //FT::train_test_split(X,y,Z,X_t,X_v,y_t,y_v,Z_t,Z_v,feat.get_shuffle(), split);      
-        
+       
         MatrixXd X_tcopy = X_t;     
         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_tcopy = Z_t;
       
@@ -238,7 +233,7 @@ int main(int argc, char** argv){
         cout << "train score: " << score_t << "\n";
         
         cout << "generating test prediction...\n";
-        double score = feat.score(X_v,y_v);
+        double score = feat.score(X_v,y_v,Z_v);
         cout << "test score: " << score << "\n";
     }
     else

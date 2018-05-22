@@ -63,7 +63,7 @@ namespace FT{
          
             /// assign fitness to an individual and to F.  
             void assign_fit(Individual& ind, MatrixXd& F, const shared_ptr<CLabels>& yhat, const VectorXd& y,
-                            const Parameters& params);       
+                            const Parameters& params,bool val=false);       
     };
     
     /////////////////////////////////////////////////////////////////////////////////// Definitions  
@@ -149,7 +149,7 @@ namespace FT{
     
     // assign fitness to program
     void Evaluation::assign_fit(Individual& ind, MatrixXd& F, const shared_ptr<CLabels>& yhat, 
-                                const VectorXd& y, const Parameters& params)
+                                const VectorXd& y, const Parameters& params, bool val)
     {
         /*!
          * assign raw errors to F, and aggregate fitnesses to individuals. 
@@ -168,7 +168,13 @@ namespace FT{
         */ 
         assert(F.cols()>ind.loc);
         VectorXd loss;
-        ind.fitness = score(y, yhat, loss, params.class_weights);
+        double f = score(y, yhat, loss, params.class_weights);
+        
+        if (val)
+            ind.fitness_v = f;
+        else
+            ind.fitness = f;
+        
         F.col(ind.loc) = loss;  
          
         params.msg("ind " + std::to_string(ind.loc) + " fitness: " + std::to_string(ind.fitness),2);
@@ -215,7 +221,7 @@ namespace FT{
             shared_ptr<CLabels> yhat_t = ml->fit(Phi,dt.y,params,pass,individuals[i].dtypes);
             if (!pass)
             {
-                HANDLE_ERROR_THROW("Error training eqn " + individuals[i].get_eqn() + 
+                HANDLE_ERROR_NO_THROW("Error training eqn " + individuals[i].get_eqn() + 
                                     "\nwith raw output " + 
                                     to_string(individuals[i].out(dt, params)) + "\n");
             }
@@ -231,22 +237,9 @@ namespace FT{
             // assign F and aggregate fitness
             params.msg("Assigning val fitness to " + individuals[i].get_eqn(), 2);
             
-            assign_fit(individuals[i],F,yhat_v,dv.y,params);
+            assign_fit(individuals[i],F,yhat_v,dv.y,params, true);
                         
         }
     }
-    
-    /* double Evaluation::multi_log_loss(const */ 
-    /*         { */
-    /*         if (c.empty())  // determine unique class values */
-    /*     { */
-    /*         vector<double> uc = unique(y); */
-    /*         for (const auto& i : uc) */
-    /*             c.push_back(int(i)); */
-    /*     } */
-
-    /*     //vector<double> class_loss(c.size(),0); */ 
-        
-    /* } */
 }
 #endif

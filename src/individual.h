@@ -21,6 +21,7 @@ namespace FT{
     public:        
         NodeVector program;                         ///< executable data structure
         double fitness;             				///< aggregate fitness score
+        double fitness_v;             				///< aggregate validation fitness score
         size_t loc;                 				///< index of individual in semantic matrix F
         string eqn;                 				///< symbolic representation of program
         vector<double> w;            				///< weights from ML training on program output
@@ -177,9 +178,15 @@ namespace FT{
         }
         assert(weights.size() == program.roots().size());     
         p.resize(0);
+        
+        // normalize the sum of the weights
+        double sum = 0;
+        for (unsigned i =0; i<weights.size(); ++i)
+            sum += fabs(weights.at(i));
+
         p.resize(weights.size());
         for (unsigned i=0; i< weights.size(); ++i)
-            p[i] = 1 - fabs(weights[i]);
+            p[i] = 1 - fabs(weights[i]/sum);
         /* for (unsigned i=0; i<p.size(); ++i) */
         /*     p[i] = 1-p[i]; */
         double u = 1.0/double(p.size());    // uniform probability
@@ -272,11 +279,13 @@ namespace FT{
                
         int rows_f = stack.f.size();
         int rows_b = stack.b.size();
-        
+        /* cout << "rows_f (stack.f.size()): " << rows_f << "\n"; */ 
+        /* cout << "rows_b (stack.b.size()): " << rows_b << "\n"; */ 
         dtypes.clear();        
         Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
         // add stack_f to Phi
-       
+        /* cout << "cols: " << cols << "\n"; */ 
+      
         for (unsigned int i=0; i<rows_f; ++i)
         {    
              ArrayXd Row = ArrayXd::Map(stack.f.at(i).data(),cols);
