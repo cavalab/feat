@@ -84,7 +84,7 @@ namespace FT{
                    bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
                    double split=0.75, double fb=0.5, string scorer="", string feature_names="",
                    bool backprop=false,int iters=10, double lr=0.1, int bs=100, int n_threads=0,
-                   bool hillclimb=false, string logfile="Feat.log"):
+                   bool hillclimb=false, string logfile=""):
                       // construct subclasses
                       params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
                              functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, 
@@ -263,7 +263,7 @@ namespace FT{
             ///return population as string
             string get_eqns(bool front=true)
             {
-                string r="complexity,fitness,eqn\n";
+                string r="complexity,fitness,fitness_v,eqn\n";
                 if (front)  // only return individuals on the Pareto front
                 {
                     if (use_arch)
@@ -275,6 +275,7 @@ namespace FT{
                         {          
                             r += std::to_string(a.complexity()) + "," 
                                 + std::to_string(a.fitness) + "," 
+                                + std::to_string(a.fitness_v) + ","
                                 + a.get_eqn() + "\n";  
                         }
                     }
@@ -289,6 +290,7 @@ namespace FT{
                         {          
                             r += std::to_string(p_pop->individuals[f[j]].complexity()) + "," 
                                 + std::to_string((*p_pop)[f[j]].fitness) + "," 
+                                + std::to_string((*p_pop)[f[j]].fitness_v) + "," 
                                 + p_pop->individuals[f[j]].get_eqn() + "\n";  
                         }
                     }
@@ -299,6 +301,7 @@ namespace FT{
                     {          
                         r += std::to_string(p_pop->individuals[j].complexity()) + "," 
                             + std::to_string((*p_pop)[j].fitness) + "," 
+                            + std::to_string((*p_pop)[j].fitness_v) + "," 
                             + p_pop->individuals[j].get_eqn() + "\n";  
                     }
                 }
@@ -464,7 +467,7 @@ namespace FT{
                    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
     {
 
-        /*!
+        /*! 
          *  Input:
          
          *       X: n_features x n_samples MatrixXd of features
@@ -488,7 +491,7 @@ namespace FT{
         timer.Reset();
 
         std::ofstream log;                      ///< log file stream
-        if (params.verbosity>0)
+        if (!logfile.empty())
             log.open(logfile, std::ofstream::app);
         
         if(str_dim.compare("") != 0)
@@ -535,9 +538,7 @@ namespace FT{
         DataRef d(X, y, Z, X_t, y_t, Z_t, X_v, y_v, Z_v);
         
         train_test_split(d, params.shuffle, params.split);
-        
-        //train_test_split(X,y,Z,X_t,X_v,y_t,y_v,Z_t,Z_v,params.shuffle, params.split);
-         
+       
         if (params.classification) 
             params.set_sample_weights(d.t->y); 
        
@@ -604,8 +605,9 @@ namespace FT{
             if(params.verbosity>0)
             {
                 print_stats(log);
-                printProgress(((g+1)*1.0)/params.gens);
             }            
+            else
+                printProgress(((g+1)*1.0)/params.gens);
             
             if (params.backprop)
             {
@@ -901,9 +903,13 @@ namespace FT{
             {
                 std::string lim_model;
                 std::string model = arch.archive[i].get_eqn();
-                for (unsigned j = 0; j< std::min(model.size(),size_t(20)); ++j)
+                for (unsigned j = 0; j< std::min(model.size(),size_t(60)); ++j)
+                {
                     lim_model.push_back(model.at(j));
-                lim_model += "...";
+                }
+                if (lim_model.size()==60) 
+                    lim_model += "...";
+                
                 std::cout <<  arch.archive[i].rank << "\t" 
                           <<  arch.archive[i].complexity() << "\t" 
                           <<  arch.archive[i].fitness << "\t" 
@@ -924,9 +930,10 @@ namespace FT{
             {     
                 std::string lim_model;
                 std::string model = p_pop->individuals[f[j]].get_eqn();
-                for (unsigned j = 0; j< std::min(model.size(),size_t(20)); ++j)
+                for (unsigned j = 0; j< std::min(model.size(),size_t(60)); ++j)
                     lim_model.push_back(model.at(j));
-                lim_model += "...";     
+                if (lim_model.size()==60) 
+                    lim_model += "...";
                 std::cout << p_pop->individuals[f[j]].rank << "\t" 
                           <<  p_pop->individuals[f[j]].complexity() << "\t" << (*p_pop)[f[j]].fitness 
                           << "\t" << lim_model << "\n";  
@@ -935,43 +942,45 @@ namespace FT{
        
         std::cout <<"\n\n";
 
-        // print stats in tabular format
-        string sep = ",";
-        if (params.current_gen == 0) // print header
+        if (!logfile.empty())
         {
-            log << "generation" << sep
-                << "min_loss"   << sep 
-                << "med_loss"   << sep 
-                << "med_size"   << sep 
-                << "med_complexity" << sep 
-                << "med_num_params" << sep
-                <<  "med_dim\n";
-        }
-        /* double med_score = median(F.colwise().mean().array());  // median loss */
-        /* ArrayXd Sizes(p_pop->size());                           // collect program sizes */
-        /* i = 0; for (auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;} */
-        ArrayXd Complexities(p_pop->size()); 
-        i = 0; for (auto& p : p_pop->individuals){ Complexities(i) = p.get_complexity(); ++i;}
-        ArrayXd Nparams(p_pop->size()); 
-        i = 0; for (auto& p : p_pop->individuals){ Nparams(i) = p.get_n_params(); ++i;}
-        ArrayXd Dims(p_pop->size()); 
-        i = 0; for (auto& p : p_pop->individuals){ Dims(i) = p.get_dim(); ++i;}
+            // print stats in tabular format
+            string sep = ",";
+            if (params.current_gen == 0) // print header
+            {
+                log << "generation" << sep
+                    << "min_loss"   << sep 
+                    << "med_loss"   << sep 
+                    << "med_size"   << sep 
+                    << "med_complexity" << sep 
+                    << "med_num_params" << sep
+                    <<  "med_dim\n";
+            }
+            /* double med_score = median(F.colwise().mean().array());  // median loss */
+            /* ArrayXd Sizes(p_pop->size());                           // collect program sizes */
+            /* i = 0; for (auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;} */
+            ArrayXd Complexities(p_pop->size()); 
+            i = 0; for (auto& p : p_pop->individuals){ Complexities(i) = p.get_complexity(); ++i;}
+            ArrayXd Nparams(p_pop->size()); 
+            i = 0; for (auto& p : p_pop->individuals){ Nparams(i) = p.get_n_params(); ++i;}
+            ArrayXd Dims(p_pop->size()); 
+            i = 0; for (auto& p : p_pop->individuals){ Dims(i) = p.get_dim(); ++i;}
 
-        
-        /* unsigned med_size = median(Sizes);                        // median program size */
-        unsigned med_complexity = median(Complexities);           // median 
-        unsigned med_num_params = median(Nparams);                // median program size
-        unsigned med_dim = median(Dims);                          // median program size
+            
+            /* unsigned med_size = median(Sizes);                        // median program size */
+            unsigned med_complexity = median(Complexities);           // median 
+            unsigned med_num_params = median(Nparams);                // median program size
+            unsigned med_dim = median(Dims);                          // median program size
 
-        log << params.current_gen   <<  sep
-             << best_score << sep
-             << med_score   << sep
-             << med_size   << sep
-             << med_complexity   << sep
-             << med_num_params   << sep
-             << med_dim   << sep
-             << "\n"; 
-        
+            log << params.current_gen   <<  sep
+                 << best_score << sep
+                 << med_score   << sep
+                 << med_size   << sep
+                 << med_complexity   << sep
+                 << med_num_params   << sep
+                 << med_dim   << sep
+                 << "\n"; 
+        } 
     }
     
 }

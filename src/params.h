@@ -254,17 +254,11 @@ namespace FT{
                 if (!in(ttypes,t->otype)) 
                     ttypes.push_back(t->otype);
             }
-            cout << "set_ttypes: \n";
-            for (const auto& t : ttypes)
-                cout << t << " "; 
-            cout << "\n";
-
         }
 
         /// set the output types of programs
         void set_otypes()
         {
-            std::cout << "in set otypes\n";
             otypes.clear();
             // set output types
             switch (otype)
@@ -281,7 +275,7 @@ namespace FT{
                         for (vector<int>::size_type i =n-1; 
                              i != (std::vector<int>::size_type) -1; i--){
                             if (functions.at(i)->arity['f'] >0){
-                                std::cout << "erasing function" << functions.at(i)->name << "\n";
+                                std::cout << "erasing function " << functions.at(i)->name << "\n";
                                 functions.erase(functions.begin()+i);
                             }
                         }

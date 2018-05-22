@@ -255,7 +255,6 @@ namespace FT{
         /*!
          *create random programs in the population, seeded by initial model weights 
          */
-        cout << "init(). set best..\n";
         individuals[0] = starting_model;
         individuals[0].loc = 0;
         
@@ -272,14 +271,12 @@ namespace FT{
             else
                 depth =  r.rnd_int(1, std::min(params.max_depth,unsigned(3)));
             // make a program for each individual
-            cout << "params.otypes size: " << params.otypes.size() << "\n";
             char ot = r.random_choice(params.otypes);
-            cout<<"Passing otype as "<<ot<<"\n";
             make_program(individuals[i].program, params.functions, params.terminals, depth,
                          params.term_weights,dim,ot, params.longitudinalMap, params.ttypes);
             
-            std::cout << individuals[i].program_str() + " = ";
-            std::cout << individuals[i].get_eqn() + "\n";
+            /* std::cout << individuals[i].program_str() + " = "; */
+            /* std::cout << individuals[i].get_eqn() + "\n"; */
            
             // set location of individual and increment counter             
             individuals[i].loc = i;   
