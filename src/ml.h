@@ -300,6 +300,8 @@ namespace FT{
         */ 
         
                 // for random forest we need to set the number of features per bag
+        cout << "ML::fit X: " << X << "\n";
+        cout << "ML::fit y: " << y << "\n";
 
         init();
         if (!ml_type.compare("RandomForest"))

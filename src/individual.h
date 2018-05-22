@@ -21,6 +21,7 @@ namespace FT{
     public:        
         NodeVector program;                         ///< executable data structure
         double fitness;             				///< aggregate fitness score
+        double fitness_v;             				///< aggregate validation fitness score
         size_t loc;                 				///< index of individual in semantic matrix F
         string eqn;                 				///< symbolic representation of program
         vector<double> w;            				///< weights from ML training on program output
@@ -250,6 +251,8 @@ namespace FT{
         
         params.msg("evaluating program " + get_eqn(),2);
         params.msg("program length: " + std::to_string(program.size()),2);
+        cout << "X: " << d.X << "\n";
+        cout << "y: " << d.y << "\n";
         // evaluate each node in program
         for (const auto& n : program)
         {

@@ -821,29 +821,33 @@ namespace FT{
     {
         double bs;
         bs = validation ? best_score_v : best_score ; 
-        
-        if (use_arch && validation)
+        double f; 
+        vector<Individual>& pop = use_arch && validation ? arch.archive : p_pop->individuals; 
+
+        /* if (use_arch && validation) */
+        /* { */
+        /*     for (const auto& i: arch.archive) */
+        /*     { */
+        /*         f = validation ? i.fitness_v : i.fitness ; */
+        /*         if (f < bs) */
+        /*         { */
+        /*             bs = i.fitness; */
+        /*             best_ind = i; */
+        /*         } */
+        /*     } */
+        /* } */
+        /* else */
+        /* { */
+        for (const auto& i: pop)
         {
-            for (const auto& i: arch.archive)
+            f = validation ? i.fitness_v : i.fitness ;
+            if (f < bs)
             {
-                if (i.fitness < bs)
-                {
-                    bs = i.fitness;
-                    best_ind = i;
-                }
+                bs = f;
+                best_ind = i;
             }
         }
-        else
-        {
-            for (const auto& i: p_pop->individuals)
-            {
-                if (i.fitness < bs)
-                {
-                    bs = i.fitness;
-                    best_ind = i;
-                }
-            }
-        }
+        /* } */
 
         if (validation) 
             best_score_v = bs; 
