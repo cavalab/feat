@@ -251,6 +251,15 @@ namespace FT{
             ///return best model
             string get_representation(){ return best_ind.get_eqn();}
 
+            ///get number of parameters in best
+            int get_n_params(){ return best_ind.get_n_params(); } 
+
+            ///get dimensionality of best
+            int get_dim(){ return best_ind.get_dim(); } 
+
+            ///get dimensionality of best
+            int get_complexity(){ return best_ind.get_complexity(); } 
+
             ///return population as string
             string get_eqns(bool front=true)
             {
