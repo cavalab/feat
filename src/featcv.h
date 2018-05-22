@@ -213,7 +213,7 @@ namespace FT{
                     case erc :          fillVector(ercVec, values, Bool); break;
                     case objectives :   fillVector(obj, values); break;
                     case feedBack :     fillVector(fb, values, Double); break;
-                    case unknown:       cout<<"Unknown token type "<<token<<std::endl; throw;
+                    case unknown:       HANDLE_ERROR_THROW("Unknown token type " + token);
                 }
                 
                 tokenStart = curParams.find('\'', valueEnd + 1);
@@ -506,10 +506,7 @@ namespace FT{
     {
         // report error if data not trained first
     	if(bestScoreIndex == -1)
-    	{
-    		std::cerr << "You need to call fit first to cross validate first.\n";
-    		throw;
-    	}
+    		HANDLE_ERROR_THROW("You need to call fit first to cross validate first.");
     	
     	// prediciting values based on the best model found
     	return featObjs[bestScoreIndex].obj.predict(x);

@@ -72,7 +72,7 @@ int main(int argc, char** argv){
     //////////////////////////////////////// parse arguments
     InputParser input(argc, argv);
     if(input.cmdOptionExists("-h") || input.dataset.empty()){
-        if (input.dataset.empty()) std::cerr << "Error: no dataset specified.\n---\n";
+        if (input.dataset.empty()) HANDLE_ERROR_NO_THROW("Error: no dataset specified.\n---\n");
         // Print help and exit. 
         cout << "Feat is a feature engineering wrapper for learning intelligible models.\n";
         cout << "Usage:\tfeat path/to/dataset [options]\n";
@@ -193,7 +193,7 @@ int main(int argc, char** argv){
     if (binary_endpoint)
     {
         if (!feat.get_classification())
-            std::cerr << "WARNING: binary endpoint detected. Feat is set for regression.";
+            HANDLE_ERROR_NO_THROW("WARNING: binary endpoint detected. Feat is set for regression.");
         else
             std::cout << "setting binary endpoint\n";
                       
@@ -217,7 +217,11 @@ int main(int argc, char** argv){
         if(ldataFile.compare(""))
             FT::split_longitudinal(Z, Z_t, Z_v, split);
         
-        FT::train_test_split(X,y,Z,X_t,X_v,y_t,y_v,Z_t,Z_v,feat.get_shuffle(), split);      
+        FT::DataRef d(X, y, Z, X_v, y_v, Z_v, X_t, y_t, Z_t);
+        
+        FT::train_test_split(d, feat.get_shuffle(), split);
+        
+        //FT::train_test_split(X,y,Z,X_t,X_v,y_t,y_v,Z_t,Z_v,feat.get_shuffle(), split);      
         
         MatrixXd X_tcopy = X_t;     
         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_tcopy = Z_t;
