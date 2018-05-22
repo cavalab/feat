@@ -107,9 +107,11 @@ namespace FT{
     {
         /*! checks whether program fulfills all its arities. */
         Stacks stack;
+        
+        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>> Z;
+        
         MatrixXd X = MatrixXd::Zero(num_features,2); 
-        VectorXd y = VectorXd::Zero(2); 
-        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z;
+        VectorXd y = VectorXd::Zero(2);
         
          for(auto key : longitudinalMap)
          {
@@ -118,6 +120,8 @@ namespace FT{
             Z[key].second.push_back(ArrayXd::Zero(2));
             Z[key].second.push_back(ArrayXd::Zero(2));
          }
+         
+        Data data(X, y, Z);
         
         //cout<<"Enter\n";  
         unsigned i = 0; 
@@ -126,7 +130,7 @@ namespace FT{
             if (stack.check(n->arity))
             {
                 //cout<<"\nEvaluating\n";
-                n->evaluate(X, y, Z, stack);
+                n->evaluate(data, stack);
                 //cout<<"Evaluation done\n";
             }
             else{
@@ -173,12 +177,7 @@ namespace FT{
                 program.push_back(t->rnd_clone());
             }
             else
-            {
-                std::cout << "Error: can't develop proper terminals\n";
-                std::cout << "terminals size: " << terminals.size();
-                std::cout << "ti size: " << ti.size();
-                throw;
-            }
+                HANDLE_ERROR_THROW("Error: make_tree couldn't find properly typed terminals");
         }
         else
         {

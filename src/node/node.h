@@ -12,6 +12,7 @@ license: GNU/GPL v3
 #include <Eigen/Dense>
 #include "../init.h"
 #include "../stack.h"
+#include "../data.h"
 #include "../rnd.h"
 using std::vector;
 using std::string;
@@ -41,10 +42,7 @@ namespace FT{
             virtual ~Node(){}
            
             /// Evaluates the node and updates the stack states. 
-            virtual void evaluate(const MatrixXd& X, const VectorXd& y,
-                                  const std::map<string, 
-                                                 std::pair<vector<ArrayXd>, vector<ArrayXd>>>&Z, 
-			                      Stacks& stack) = 0; 
+            virtual void evaluate(Data& data, Stacks& stack) = 0; 
 
             /// evaluates the node symbolically
             virtual void eval_eqn(Stacks& stack) = 0;

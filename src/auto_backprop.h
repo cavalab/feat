@@ -64,8 +64,7 @@ namespace FT {
 			this->a = a;
 		}
         /// adapt weights
-		void run(Individual& ind, const MatrixXd& X, VectorXd& y,
-                 const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z,
+		void run(Individual& ind, Data d,
                  const Parameters& params);
 
         /* ~AutoBackProp() */
@@ -108,8 +107,7 @@ namespace FT {
             /* cout << "\n"; */
 		}
 		/// Return the f_stack
-		vector<vector<ArrayXd>> forward_prop(Individual& ind, const MatrixXd& X, VectorXd& y, 
-                               const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z,
+		vector<vector<ArrayXd>> forward_prop(Individual& ind, Data d,
                                MatrixXd& Phi, const Parameters& params);
 
 		/// Updates stacks to have proper value on top
@@ -122,16 +120,11 @@ namespace FT {
                                /* std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z); */
         void backprop(vector<ArrayXd>& f_stack, NodeVector& program, int start, int end, 
                                 double Beta, shared_ptr<CLabels>& yhat, 
-                                const MatrixXd& X, VectorXd& y, 
-                               const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z,
+                                Data d,
                                vector<float> sw);
 
         /// select random subset of data for training weights.
-        void get_batch(const MatrixXd& X, VectorXd& y,  
-                       const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z, 
-                                MatrixXd& Xb, VectorXd& yb,  
-                                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Zb, 
-                                int batch_size);
+        void get_batch(Data d, Data db, int batch_size);
        
         /* bool isNodeDx(Node* n){ return NULL != dynamic_cast<NodeDx*>(n); ; } */
         /* bool isNodeDx(const std::unique_ptr<Node>& n) */ 
@@ -192,41 +185,36 @@ namespace FT {
     /*     /1* return this->program; *1/ */
     /* } */
 
-    void AutoBackProp::get_batch(const MatrixXd& X, VectorXd& y,  
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z, 
-                                MatrixXd& Xb, VectorXd& yb,  
-                                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Zb, 
-                                int batch_size)
+    void AutoBackProp::get_batch(Data d, Data db, int batch_size)
     {
         /* std::cout << "getting batch\n"; */
-        vector<size_t> idx(y.size());
+        vector<size_t> idx(d.y.size());
         std::iota(idx.begin(), idx.end(), 0);
         r.shuffle(idx.begin(), idx.end());
-        Xb.resize(X.rows(),batch_size);
-        yb.resize(batch_size);
+        db.X.resize(d.X.rows(),batch_size);
+        db.y.resize(batch_size);
          
-        for (const auto& val: Z )
+        for (const auto& val: d.Z )
         {
-            Zb[val.first].first.resize(batch_size);
-            Zb[val.first].second.resize(batch_size);
+            db.Z[val.first].first.resize(batch_size);
+            db.Z[val.first].second.resize(batch_size);
         }
         for (unsigned i = 0; i<batch_size; ++i)
         {
            
-           Xb.col(i) = X.col(idx.at(i)); 
-           yb(i) = y(idx.at(i)); 
+           db.X.col(i) = d.X.col(idx.at(i)); 
+           db.y(i) = d.y(idx.at(i)); 
 
-           for (const auto& val: Z )
+           for (const auto& val: d.Z )
            {
-                Zb[val.first].first.at(i) = Z.at(val.first).first.at(idx.at(i));
-                Zb[val.first].second.at(i) = Z.at(val.first).second.at(idx.at(i));
+                db.Z[val.first].first.at(i) = d.Z.at(val.first).first.at(idx.at(i));
+                db.Z[val.first].second.at(i) = d.Z.at(val.first).second.at(idx.at(i));
            }
         }
         /* std::cout << "exiting batch\n"; */
     }
 
-    void AutoBackProp::run(Individual& ind, const MatrixXd& X, VectorXd& y, 
-                            const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z,
+    void AutoBackProp::run(Individual& ind, Data d,
                             const Parameters& params)
     {
         vector<size_t> roots = ind.program.roots();
@@ -236,6 +224,9 @@ namespace FT {
         // batch data
         MatrixXd Xb; VectorXd yb;
         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Zb;
+        
+        Data db(Xb, yb, Zb);
+        
         this->epk = n;  // starting learning rate
         params.msg("running backprop on " + ind.get_eqn(), 2);
         params.msg("=========================",2);
@@ -244,17 +235,17 @@ namespace FT {
         for (int x = 0; x < this->iters; x++)
         {
             // get batch data for training
-            get_batch(X,y,Z, Xb,yb,Zb, params.bp.batch_size); 
+            get_batch(d, db, params.bp.batch_size); 
             // Evaluate forward pass
             MatrixXd Phi; 
-            vector<vector<ArrayXd>> stack_f = forward_prop(ind, Xb, yb, Zb, Phi, params);
+            vector<vector<ArrayXd>> stack_f = forward_prop(ind, db, Phi, params);
             // Evaluate ML model on Phi
             bool pass = true;
             auto ml = std::make_shared<ML>(params, true);
 
-            shared_ptr<CLabels> yhat = ml->fit(Phi,yb,params,pass,ind.dtypes);
+            shared_ptr<CLabels> yhat = ml->fit(Phi,db.y,params,pass,ind.dtypes);
             vector<double> Beta = ml->get_weights();
-            current_loss = this->cost_func(yb,yhat, params.class_weights).mean();
+            current_loss = this->cost_func(db.y,yhat, params.class_weights).mean();
 
             if (params.verbosity>1)
             {
@@ -301,7 +292,7 @@ namespace FT {
                 
                 backprop(stack_f.at(i), ind.program, ind.program.subtree(roots.at(s)), roots.at(s), 
                      Beta.at(s)/ml->N.scale.at(s), yhat,
-                     Xb, yb, Zb, params.class_weights);
+                     db, params.class_weights);
             }
             // update learning rate
             double alpha = double(x)/double(iters);
@@ -317,14 +308,13 @@ namespace FT {
     }
 
     // forward pass
-    vector<vector<ArrayXd>> AutoBackProp::forward_prop(Individual& ind, const MatrixXd& X, VectorXd& y, 
-                               const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z,
+    vector<vector<ArrayXd>> AutoBackProp::forward_prop(Individual& ind, Data d,
                                MatrixXd& Phi, const Parameters& params) 
     {
         /* cout << "Forward pass\n"; */
         // Iterate through all the nodes evaluating and tracking ouputs
         vector<vector<ArrayXd>> stack_f_trace;
-        Phi = ind.out_trace(X, Z, params, stack_f_trace, y);
+        Phi = ind.out_trace(d, params, stack_f_trace);
         // Use stack_f and execution stack to avoid issue of branches affecting what elements 
         // appear before a node 
         /* cout << "Returning forward pass.\n"; */
@@ -364,8 +354,7 @@ namespace FT {
     // Compute gradients and update weights 
     void AutoBackProp::backprop(vector<ArrayXd>& f_stack, NodeVector& program, int start, int end, 
                                 double Beta, shared_ptr<CLabels>& yhat, 
-                                const MatrixXd& X, VectorXd& y, 
-                                const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z,
+                                Data d,
                                 vector<float> sw)    
     {
         /* cout << "Backward pass \n"; */
@@ -374,7 +363,7 @@ namespace FT {
         // is equal to the weight the model assigned to this subprogram (Beta)
         // push back derivative of cost function wrt ML output
         /* cout << "Beta: " << Beta << "\n"; */ 
-        derivatives.push_back(this->d_cost_func(y, yhat, sw).array() * Beta); //*phi.array()); 
+        derivatives.push_back(this->d_cost_func(d.y, yhat, sw).array() * Beta); //*phi.array()); 
         /* cout << "Cost derivative: " << this->d_cost_func(y, f_stack[f_stack.size() - 1]) << "\n"; 
         // Working according to test program */
         /* pop<ArrayXd>(&f_stack); // Get rid of input to cost function */
