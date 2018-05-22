@@ -1,20 +1,24 @@
 var searchData=
 [
-  ['m',['m',['../d5/d3d/structFT_1_1Pareto_1_1comparator__obj.html#a11d341ec04fdffec782310fde6e3d954',1,'FT::Pareto::comparator_obj']]],
+  ['m',['m',['../d1/d92/structFT_1_1NSGA2_1_1comparator__obj.html#a5ac675116ab0f797f590862e6bc968de',1,'FT::NSGA2::comparator_obj']]],
   ['m_5falphas',['m_alphas',['../db/dff/classshogun_1_1CMyCARTree.html#a0177205fad542ccac5a2f199981e3fe3',1,'shogun::CMyCARTree']]],
   ['m_5fapply_5fcv_5fpruning',['m_apply_cv_pruning',['../db/dff/classshogun_1_1CMyCARTree.html#a37e6b4bd0968364625d9886e21581a2e',1,'shogun::CMyCARTree']]],
-  ['m_5fepsilon',['m_epsilon',['../db/d4e/classshogun_1_1CMulticlassLogisticRegression.html#a1b2770da7b9faa1992263603dfe37a32',1,'shogun::CMulticlassLogisticRegression']]],
+  ['m_5fc',['m_C',['../df/d62/classshogun_1_1CMyMulticlassLibLinear.html#ae24a49a56a10e75e0e12f1d5e10e5db2',1,'shogun::CMyMulticlassLibLinear']]],
+  ['m_5fepsilon',['m_epsilon',['../db/d4e/classshogun_1_1CMulticlassLogisticRegression.html#a1b2770da7b9faa1992263603dfe37a32',1,'shogun::CMulticlassLogisticRegression::m_epsilon()'],['../df/d62/classshogun_1_1CMyMulticlassLibLinear.html#a07d68d1ef9c905eb7b225e9a4c71bcce',1,'shogun::CMyMulticlassLibLinear::m_epsilon()']]],
   ['m_5ffolds',['m_folds',['../db/dff/classshogun_1_1CMyCARTree.html#adb5488448adf329fe004865880cca2dd',1,'shogun::CMyCARTree']]],
   ['m_5flabel_5fepsilon',['m_label_epsilon',['../db/dff/classshogun_1_1CMyCARTree.html#a09d4852996e99895742fe5f90b5faffb',1,'shogun::CMyCARTree']]],
   ['m_5fmax_5fdepth',['m_max_depth',['../db/dff/classshogun_1_1CMyCARTree.html#a557b7e78d423a5059c1790f3d125db8c',1,'shogun::CMyCARTree']]],
-  ['m_5fmax_5fiter',['m_max_iter',['../db/d4e/classshogun_1_1CMulticlassLogisticRegression.html#adffd29731a7db67a4b9a77aaa310133b',1,'shogun::CMulticlassLogisticRegression']]],
+  ['m_5fmax_5fiter',['m_max_iter',['../db/d4e/classshogun_1_1CMulticlassLogisticRegression.html#adffd29731a7db67a4b9a77aaa310133b',1,'shogun::CMulticlassLogisticRegression::m_max_iter()'],['../df/d62/classshogun_1_1CMyMulticlassLibLinear.html#a591f778bb164f344cca369560b193f35',1,'shogun::CMyMulticlassLibLinear::m_max_iter()']]],
   ['m_5fmin_5fnode_5fsize',['m_min_node_size',['../db/dff/classshogun_1_1CMyCARTree.html#a5cee8d3495aff77632a6ee820498ba56',1,'shogun::CMyCARTree']]],
   ['m_5fmode',['m_mode',['../db/dff/classshogun_1_1CMyCARTree.html#a465976f2b757a9f5f5c055955995ecc4',1,'shogun::CMyCARTree']]],
   ['m_5fnominal',['m_nominal',['../db/dff/classshogun_1_1CMyCARTree.html#af4a29ff465c12e2325a085bd9fb8cb6a',1,'shogun::CMyCARTree']]],
   ['m_5fpre_5fsort',['m_pre_sort',['../db/dff/classshogun_1_1CMyCARTree.html#a35ff64f75c87966a5afffd21efd90c53',1,'shogun::CMyCARTree']]],
+  ['m_5fsave_5ftrain_5fstate',['m_save_train_state',['../df/d62/classshogun_1_1CMyMulticlassLibLinear.html#a694d882da74786559c3e421dca9f0e59',1,'shogun::CMyMulticlassLibLinear']]],
   ['m_5fsorted_5ffeatures',['m_sorted_features',['../db/dff/classshogun_1_1CMyCARTree.html#aadbde9d0c98f7ff92bd103b4ac5a5fbc',1,'shogun::CMyCARTree']]],
   ['m_5fsorted_5findices',['m_sorted_indices',['../db/dff/classshogun_1_1CMyCARTree.html#ab4ed691ee0e00bc54855c71ad63d6188',1,'shogun::CMyCARTree']]],
+  ['m_5ftrain_5fstate',['m_train_state',['../df/d62/classshogun_1_1CMyMulticlassLibLinear.html#aa1a825948668a318d6e450a60fa0c7e2',1,'shogun::CMyMulticlassLibLinear']]],
   ['m_5ftypes_5fset',['m_types_set',['../db/dff/classshogun_1_1CMyCARTree.html#a1648886afa379889179523998fe12738',1,'shogun::CMyCARTree']]],
+  ['m_5fuse_5fbias',['m_use_bias',['../df/d62/classshogun_1_1CMyMulticlassLibLinear.html#ad995efd678f81f35d347f3b2f970ce86',1,'shogun::CMyMulticlassLibLinear']]],
   ['m_5fweights',['m_weights',['../db/dff/classshogun_1_1CMyCARTree.html#a5b69f493ebe5d49b16b2506fa3ee4614',1,'shogun::CMyCARTree']]],
   ['m_5fweights_5fset',['m_weights_set',['../db/dff/classshogun_1_1CMyCARTree.html#a2ad2d2429748c8bb7737afeedc3af95c',1,'shogun::CMyCARTree']]],
   ['m_5fz',['m_z',['../db/d4e/classshogun_1_1CMulticlassLogisticRegression.html#a355e3f94e1743e61c2bfd48140397ebf',1,'shogun::CMulticlassLogisticRegression']]],
@@ -22,7 +26,9 @@ var searchData=
   ['max_5fdim',['max_dim',['../de/d2c/structFT_1_1Parameters.html#a1f87c96a8192d9e12a551beede8f9f5d',1,'FT::Parameters']]],
   ['max_5fsize',['max_size',['../de/d2c/structFT_1_1Parameters.html#a147504c4440fdb76d5609035d504bd82',1,'FT::Parameters']]],
   ['max_5fstall',['max_stall',['../de/d2c/structFT_1_1Parameters.html#a30f7f95ef22a0228e87e297ab1305ca2',1,'FT::Parameters']]],
+  ['max_5ftrain_5ftime',['max_train_time',['../df/dfa/classFT_1_1ML.html#a14d721bea3ac40720bcf05b9daf49ffc',1,'FT::ML']]],
   ['min_5fsplit_5fgain',['MIN_SPLIT_GAIN',['../db/dff/classshogun_1_1CMyCARTree.html#a470c47e13d68d22929c515489ecc3e7f',1,'shogun::CMyCARTree']]],
   ['missing',['MISSING',['../db/dff/classshogun_1_1CMyCARTree.html#a24f3fd6ba041039c69b7c24a2555a3fa',1,'shogun::CMyCARTree']]],
-  ['ml',['ml',['../de/d2c/structFT_1_1Parameters.html#a7e11bd6f94c1474b695cc9c823e8ea46',1,'FT::Parameters']]]
+  ['ml',['ml',['../de/d2c/structFT_1_1Parameters.html#a7e11bd6f94c1474b695cc9c823e8ea46',1,'FT::Parameters']]],
+  ['ml_5ftype',['ml_type',['../df/dfa/classFT_1_1ML.html#a0a75b03c805745d54fb50c85d4e59bf6',1,'FT::ML']]]
 ];

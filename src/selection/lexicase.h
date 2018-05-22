@@ -40,7 +40,7 @@ namespace FT{
          *
          * Output:
          *
-         *      selected: vector of indices corresponding to columns of F that are selected.
+         *      selected: vector of indices corresponding to pop that are selected.
          *      In selection mode, parents are selected among the first half of columns of F since
          *      it is assumed that we are selecting for offspring to fill the remaining columns. 
          */            
@@ -52,12 +52,13 @@ namespace FT{
         ArrayXd epsilon = ArrayXd::Zero(N);
       
         // if output is continuous, use epsilon lexicase            
-        /* if (!params.classification) */
-        /* { */
-        // for columns of F, calculate epsilon
-        for (int i = 0; i<epsilon.size(); ++i)
-            epsilon(i) = mad(F.row(i));
-        /* } */
+        if (!params.classification || params.scorer.compare("log")==0 
+                || params.scorer.compare("multi_log")==0)
+        {
+            // for columns of F, calculate epsilon
+            for (int i = 0; i<epsilon.size(); ++i)
+                epsilon(i) = mad(F.row(i));
+        }
 
         // individual locations in F
         vector<size_t> starting_pool;
@@ -74,12 +75,31 @@ namespace FT{
         #pragma omp parallel for 
         for (unsigned int i = 0; i<P; ++i)  // selection loop
         {
- 
-            vector<size_t> cases(N);                // cases
-            iota(cases.begin(),cases.end(),0);
+            vector<size_t> cases; // cases (samples)
+            if (params.classification && !params.class_weights.empty()) 
+            {
+                // for classification problems, weight case selection by class weights
+                vector<size_t> choices(N);
+                iota(choices.begin(), choices.end(),0);
+                vector<float> sample_weights = params.sample_weights;
+                for (unsigned i = 0; i<N; ++i)
+                {
+                    vector<size_t> choice_idxs(N-i);
+                    iota(choice_idxs.begin(),choice_idxs.end(),0);
+                    size_t idx = r.random_choice(choice_idxs,sample_weights);
+                    cases.push_back(choices.at(idx));
+                    choices.erase(choices.begin() + idx);
+                    sample_weights.erase(sample_weights.begin() + idx);
+                }
+            }
+            else
+            {   // otherwise, choose cases randomly
+                cases.resize(N); 
+                iota(cases.begin(),cases.end(),0);
+                r.shuffle(cases.begin(),cases.end());   // shuffle cases
+            }
             vector<size_t> pool = starting_pool;    // initial pool   
             vector<size_t> winner;                  // winners
-            r.shuffle(cases.begin(),cases.end());   // shuffle cases
     
             bool pass = true;     // checks pool size and number of cases
             unsigned int h = 0;   // case count

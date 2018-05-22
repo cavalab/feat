@@ -1,4 +1,4 @@
-/* FEWTWO
+/* FEAT
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
@@ -22,21 +22,23 @@ namespace FT{
     		}
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, vector<ArrayXb>& stack_b)
+            void evaluate(const MatrixXd& X, const VectorXd& y,
+                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
+			              Stacks& stack)
             {
-        		ArrayXd x = stack_f.back(); stack_f.pop_back();
-        		
+        		ArrayXd x = stack.f.pop();
         		ArrayXd res = (x > 0).select(ArrayXd::Ones(x.size()), ArrayXd::Zero(x.size())); 
-                stack_f.push_back(res);
-                
+                stack.f.push(res);
             }
 
             /// Evaluates the node symbolically
-            void eval_eqn(vector<string>& stack_f, vector<string>& stack_b)
+            void eval_eqn(Stacks& stack)
             {
-        		string x = stack_f.back(); stack_f.pop_back();
-                stack_f.push_back("step("+ x +")");
+                stack.fs.push("step("+ stack.fs.pop() +")");
             }
+        protected:
+            NodeStep* clone_impl() const override { return new NodeStep(*this); };  
+            NodeStep* rnd_clone_impl() const override { return new NodeStep(); };  
     };
 }	
 

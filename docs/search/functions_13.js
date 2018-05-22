@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['_7ecmulticlasslogisticregression',['~CMulticlassLogisticRegression',['../db/d4e/classshogun_1_1CMulticlassLogisticRegression.html#a62a1f32bf8686d7f18360f3aaa1a56ad',1,'shogun::CMulticlassLogisticRegression']]],
-  ['_7ecmycartree',['~CMyCARTree',['../db/dff/classshogun_1_1CMyCARTree.html#aead1f0cb2584dc0c26a6763ca101c5a5',1,'shogun::CMyCARTree']]],
-  ['_7efeat',['~Feat',['../db/dff/classFT_1_1Feat.html#a166dedefa8457a89aeab55c95e4dad28',1,'FT::Feat']]],
-  ['_7evariation',['~Variation',['../d3/d01/classFT_1_1Variation.html#a27960762b51461b2af543b2999e4f012',1,'FT::Variation']]]
+  ['val_5ffitness',['val_fitness',['../df/db3/classFT_1_1Evaluation.html#a6184eadb238cf0598efc37e8ec795035',1,'FT::Evaluation']]],
+  ['variance',['variance',['../d2/d35/namespaceFT.html#acc75855426473e43e95211bc127623c4',1,'FT']]],
+  ['variation',['Variation',['../d3/d01/classFT_1_1Variation.html#ad81d8325097f5ed678f8d65ab114953b',1,'FT::Variation']]],
+  ['vary',['vary',['../d3/d01/classFT_1_1Variation.html#a9817723b22bac5a1b27dbf68bb652e22',1,'FT::Variation']]]
 ];

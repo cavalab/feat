@@ -1,4 +1,4 @@
-/* FEWTWO
+/* FEAT
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
@@ -14,7 +14,7 @@ using Eigen::Map;
 namespace FT{    
     ////////////////////////////////////////////////////////////////////////////////// Declarations
     extern Rnd r;
-
+    int last;
     /*!
      * @class Population
      * @brief Defines a population of programs and functions for constructing them. 
@@ -23,7 +23,8 @@ namespace FT{
     {
         vector<Individual> individuals;     ///< individual programs
         vector<size_t> open_loc;            ///< unfilled matrix positions
-        vector<size_t> locs; 
+        vector<size_t> locs;
+        
 
         Population(){}
         Population(int p)
@@ -31,11 +32,13 @@ namespace FT{
             individuals.resize(p); 
             locs.resize(2*p); 
             std::iota(locs.begin(),locs.end(),0);
+            for (unsigned i = 0; i < individuals.size(); ++i)
+                individuals[i].set_id(locs[i]);
         }
         ~Population(){}
         
         /// initialize population of programs. 
-        void init(const Individual& starting_model, const Parameters& params);
+        void init(const Individual& starting_model, const Parameters& params, bool random);
         
         /// update individual vector size 
         void resize(int pop_size, bool resize_locs=false)
@@ -99,17 +102,33 @@ namespace FT{
 
     /////////////////////////////////////////////////////////////////////////////////// Definitions
  
-    bool is_valid_program(vector<std::shared_ptr<Node>>& program, unsigned num_features)
+    bool is_valid_program(NodeVector& program, unsigned num_features, 
+                          vector<string> longitudinalMap)
     {
         /*! checks whether program fulfills all its arities. */
-        vector<ArrayXd> stack_f; 
-        vector<ArrayXb> stack_b;
+        Stacks stack;
         MatrixXd X = MatrixXd::Zero(num_features,2); 
         VectorXd y = VectorXd::Zero(2); 
+        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z;
+        
+         for(auto key : longitudinalMap)
+         {
+            Z[key].first.push_back(ArrayXd::Zero(2));
+            Z[key].first.push_back(ArrayXd::Zero(2));
+            Z[key].second.push_back(ArrayXd::Zero(2));
+            Z[key].second.push_back(ArrayXd::Zero(2));
+         }
+        
+        //cout<<"Enter\n";  
         unsigned i = 0; 
         for (const auto& n : program){
-            if ( stack_f.size() >= n->arity['f'] && stack_b.size() >= n->arity['b'])
-                n->evaluate(X, y, stack_f, stack_b);
+            //cout<<"Evaluating node "<<n->name;
+            if (stack.check(n->arity))
+            {
+                //cout<<"\nEvaluating\n";
+                n->evaluate(X, y, Z, stack);
+                //cout<<"Evaluation done\n";
+            }
             else{
                 std::cout << "Error: ";
                 for (const auto& p: program) std::cout << p->name << " ";
@@ -119,13 +138,14 @@ namespace FT{
             }
             ++i;
         }
+        //cout<<"Exit\n";
         return true;
     }
    
-    void make_tree(vector<std::shared_ptr<Node>>& program, 
-                      const vector<std::shared_ptr<Node>>& functions, 
-                      const vector<std::shared_ptr<Node>>& terminals, int max_d,  
-                      const vector<double>& term_weights, char otype)
+    void make_tree(NodeVector& program, 
+                   const NodeVector& functions, 
+                   const NodeVector& terminals, int max_d,  
+                   const vector<double>& term_weights, char otype, const vector<char>& term_types)
     {  
                 
         /*!
@@ -142,72 +162,101 @@ namespace FT{
                 if (terminals[i]->otype == otype) // grab terminals matching output type
                 {
                     ti.push_back(i);
-                    tw.push_back(term_weights[i]);
+                    tw.push_back(term_weights[i]);                    
                 }
             }
-            auto t = terminals[r.random_choice(ti,tw)];
-            //std::cout << t->name << " ";
-            program.push_back(t);
+            
+            if(ti.size() > 0 && tw.size() > 0)
+            {
+                auto t = terminals[r.random_choice(ti,tw)]->clone();
+                //std::cout << t->name << " ";
+                program.push_back(t->rnd_clone());
+            }
+            else
+            {
+                std::cout << "Error: can't develop proper terminals\n";
+                std::cout << "terminals size: " << terminals.size();
+                std::cout << "ti size: " << ti.size();
+                throw;
+            }
         }
         else
         {
             // let fi be indices of functions whose output type matches otype and, if max_d==1,
             // with no boolean inputs (assuming all input data is floating point) 
             vector<size_t> fi;
+            bool bterms = in(term_types,'b');   // are there boolean terminals?
+            bool zterms = in(term_types,'z');   // are there boolean terminals?
             for (size_t i = 0; i<functions.size(); ++i)
-                if (functions[i]->otype==otype && (max_d>1 || functions[i]->arity['b']==0))
+                if (functions[i]->otype==otype && (max_d>1 || functions[i]->arity['b']==0 || bterms) 
+                    && (max_d>1 || functions[i]->arity['z']==0 || zterms))
                     fi.push_back(i);
             
             if (fi.size()==0){
-                std::cout << "---\n";
-                std::cout << "f1.size()=0. current program: ";
-                for (auto p : program) std::cout << p->name << " ";
-                std::cout << "\n";
-                std::cout << "otype: " << otype << "\n";
-                std::cout << "max_d: " << max_d << "\n";
-                std::cout << "functions: ";
-                for (auto f: functions) std::cout << f->name << " ";
-                std::cout << "\n";
-                std::cout << "---\n";
+                if(otype == 'z')
+                {
+                    make_tree(program, functions, terminals, 0, term_weights, 'z', term_types);
+                    return;
+                }
+                else{            
+                    std::cout << "---\n";
+                    std::cout << "f1.size()=0. current program: ";
+                    for (const auto& p : program) std::cout << p->name << " ";
+                    std::cout << "\n";
+                    std::cout << "otype: " << otype << "\n";
+                    std::cout << "max_d: " << max_d << "\n";
+                    std::cout << "functions: ";
+                    for (const auto& f: functions) std::cout << f->name << " ";
+                    std::cout << "\n";
+                    std::cout << "---\n";
+                }
             }
+            
             assert(fi.size() > 0 && "The operator set specified results in incomplete programs.");
             
             // append a random choice from fs            
-            auto t = functions[r.random_choice(fi)];
+            /* auto t = functions[r.random_choice(fi)]->rnd_clone(); */
             //std::cout << t->name << " ";
-            program.push_back(t);
+            program.push_back(functions[r.random_choice(fi)]->rnd_clone());
             
-            std::shared_ptr<Node> chosen = program.back();
+            std::unique_ptr<Node> chosen(program.back()->clone());
             // recurse to fulfill the arity of the chosen function
             for (size_t i = 0; i < chosen->arity['f']; ++i)
-                make_tree(program, functions, terminals, max_d-1, term_weights,'f');
+                make_tree(program, functions, terminals, max_d-1, term_weights,'f', term_types);
             for (size_t i = 0; i < chosen->arity['b']; ++i)
-                make_tree(program, functions, terminals, max_d-1, term_weights, 'b');
-
+                make_tree(program, functions, terminals, max_d-1, term_weights, 'b', term_types);
+            for (size_t i = 0; i < chosen->arity['z']; ++i)
+                make_tree(program, functions, terminals, max_d-1, term_weights, 'z', term_types);
         }
 
     }
 
-    void make_program(vector<std::shared_ptr<Node>>& program, 
-                      const vector<std::shared_ptr<Node>>& functions, 
-                      const vector<std::shared_ptr<Node>>& terminals, int max_d, 
-                      const vector<double>& term_weights, int dim, char otype)
+    void make_program(NodeVector& program, 
+                      const NodeVector& functions, 
+                      const NodeVector& terminals, int max_d, 
+                      const vector<double>& term_weights, int dim, char otype, 
+                      vector<string> longitudinalMap, const vector<char>& term_types)
     {
-
+        /* cout << "ttypes: \n"; */
+        /* for (const auto& t : term_types) */
+        /*     cout << t << " "; */ 
+        /* cout << "\n"; */
         for (unsigned i = 0; i<dim; ++i)    // build trees
-            make_tree(program, functions, terminals, max_d, term_weights, otype);
+            make_tree(program, functions, terminals, max_d, term_weights, otype, term_types);
         
         // reverse program so that it is post-fix notation
         std::reverse(program.begin(),program.end());
-        assert(is_valid_program(program,terminals.size()));
+        assert(is_valid_program(program,terminals.size(), longitudinalMap));
     }
 
 
-    void Population::init(const Individual& starting_model, const Parameters& params)
+    void Population::init(const Individual& starting_model, const Parameters& params,
+                          bool random=false)
     {
         /*!
          *create random programs in the population, seeded by initial model weights 
          */
+        cout << "init(). set best..\n";
         individuals[0] = starting_model;
         individuals[0].loc = 0;
         
@@ -217,12 +266,21 @@ namespace FT{
             // pick a dimensionality for this individual
             int dim = r.rnd_int(1,params.max_dim);      
             // pick depth from [params.min_depth, params.max_depth]
-            int depth =  r.rnd_int(1, params.max_depth);
+            /* unsigned init_max = std::min(params.max_depth, unsigned int(3)); */
+            int depth;
+            if (random)
+                depth = r.rnd_int(1, params.max_depth);
+            else
+                depth =  r.rnd_int(1, std::min(params.max_depth,unsigned(3)));
             // make a program for each individual
+            cout << "params.otypes size: " << params.otypes.size() << "\n";
+            char ot = r.random_choice(params.otypes);
+            cout<<"Passing otype as "<<ot<<"\n";
             make_program(individuals[i].program, params.functions, params.terminals, depth,
-                         params.term_weights,dim,r.random_choice(params.otypes));
+                         params.term_weights,dim,ot, params.longitudinalMap, params.ttypes);
             
-            //std::cout << ind.get_eqn() + "\n";
+            std::cout << individuals[i].program_str() + " = ";
+            std::cout << individuals[i].get_eqn() + "\n";
            
             // set location of individual and increment counter             
             individuals[i].loc = i;   

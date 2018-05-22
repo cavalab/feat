@@ -52,7 +52,8 @@ if (NOT CMAKE_BUILD_TYPE)
     message(STATUS "Setting build type to '${default_build_type}' since none was specified.")
     set(CMAKE_BUILD_TYPE "${default_build_type}")
 endif()
-
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+#set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 # add OpenMP support
 option(OMP "use OpenMP" ON)
 if (OMP)
@@ -70,7 +71,7 @@ file(GLOB_RECURSE src_cv_files "src/cv_main.cc")
 
 # executable
 add_executable(feat ${src_main_files})
-add_executable(feat_cv ${src_cv_files})
+add_executable(feat_cv ${src_cv_files}) 
 
 #link libraries for different executables
 target_link_libraries(feat shogun)

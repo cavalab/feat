@@ -47,6 +47,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -104,6 +105,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="functions_u.html#index_u"><span>u</span></a></li>
       <li><a href="functions_v.html#index_v"><span>v</span></a></li>
       <li><a href="functions_w.html#index_w"><span>w</span></a></li>
+      <li><a href="functions_z.html#index_z"><span>z</span></a></li>
       <li><a href="functions_0x7e.html#index_0x7e"><span>~</span></a></li>
     </ul>
   </div>
@@ -167,9 +169,6 @@ $(document).ready(function(){initNavTree('functions_p.html','');});
 <li>params
 : <a class="el" href="db/dff/classFT_1_1Feat.html#abb9d09572b0bb378a16b810a6dcc3491">FT::Feat</a>
 </li>
-<li>Pareto()
-: <a class="el" href="de/d2e/structFT_1_1Pareto.html#a88069fd3f28240b8a5c53607f74ffae8">FT::Pareto</a>
-</li>
 <li>parse()
 : <a class="el" href="df/de2/classFT_1_1FeatCV.html#a72e2789be4eb9aa91834ab63e37c05b2">FT::FeatCV</a>
 </li>
@@ -177,15 +176,28 @@ $(document).ready(function(){initNavTree('functions_p.html','');});
 : <a class="el" href="d3/d01/classFT_1_1Variation.html#a719266961099d87281761315e4c830d5">FT::Variation</a>
 </li>
 <li>pop
-: <a class="el" href="d5/d3d/structFT_1_1Pareto_1_1comparator__obj.html#accc21e5d6c0cd3415049f06ea10e3d31">FT::Pareto::comparator_obj</a>
-, <a class="el" href="d2/dbc/structFT_1_1Pareto_1_1sort__n.html#a6c192d2f20e95e952a6da83ffb899d02">FT::Pareto::sort_n</a>
+: <a class="el" href="d1/d92/structFT_1_1NSGA2_1_1comparator__obj.html#a8813535a8e2d666713416ea3ee3038e5">FT::NSGA2::comparator_obj</a>
+, <a class="el" href="d5/d93/structFT_1_1NSGA2_1_1sort__n.html#a4bd066e9b590532a099268c99f3772d1">FT::NSGA2::sort_n</a>
+, <a class="el" href="d3/d35/classFT_1_1Stack.html#a1c2a94d26f7773721aaa6b988c73fa67">FT::Stack&lt; type &gt;</a>
 </li>
 <li>pop_size
 : <a class="el" href="de/d2c/structFT_1_1Parameters.html#a8253360dc4ad47b3f94f813daa13867a">FT::Parameters</a>
 </li>
 <li>predict()
-: <a class="el" href="db/dff/classFT_1_1Feat.html#a53c438f9bdd679412b05dd26b24ac5ac">FT::Feat</a>
+: <a class="el" href="db/dff/classFT_1_1Feat.html#ab74f7552efa5db52170f037cfc52d399">FT::Feat</a>
 , <a class="el" href="df/de2/classFT_1_1FeatCV.html#a90947d62c32a75953d90ad68fed6ea7b">FT::FeatCV</a>
+</li>
+<li>predict_labels()
+: <a class="el" href="db/dff/classFT_1_1Feat.html#a3d546550665319a1a51195f6e777b6d0">FT::Feat</a>
+</li>
+<li>predict_proba()
+: <a class="el" href="db/dff/classFT_1_1Feat.html#a68e94b89784cf924fa951ccb6fe7f380">FT::Feat</a>
+</li>
+<li>predict_proba_with_z()
+: <a class="el" href="db/dff/classFT_1_1Feat.html#a94bbe76ab5ae55895c2272023e249e98">FT::Feat</a>
+</li>
+<li>predict_with_z()
+: <a class="el" href="db/dff/classFT_1_1Feat.html#a82c5be759067a1abe2503022be2c6046">FT::Feat</a>
 </li>
 <li>print_cross()
 : <a class="el" href="d3/d01/classFT_1_1Variation.html#a1234f2de8297962f2f1668f137c4e89c">FT::Variation</a>
@@ -199,8 +211,11 @@ $(document).ready(function(){initNavTree('functions_p.html','');});
 <li>print_stats()
 : <a class="el" href="db/dff/classFT_1_1Feat.html#a41b81ec313e0f53ecf1e095f49bec537">FT::Feat</a>
 </li>
+<li>prob_type
+: <a class="el" href="df/dfa/classFT_1_1ML.html#a156f86502b4359b5fc9e264f9543183a">FT::ML</a>
+</li>
 <li>program
-: <a class="el" href="d8/d25/classFT_1_1Individual.html#a0f0a3f7999def3fbe04095e6908b29df">FT::Individual</a>
+: <a class="el" href="d8/d25/classFT_1_1Individual.html#affe711676aaae675e65e3dc24f6e7ea4">FT::Individual</a>
 </li>
 <li>program_str()
 : <a class="el" href="d8/d25/classFT_1_1Individual.html#a92d292ab7bebbd42426d006c34e125b6">FT::Individual</a>
@@ -213,6 +228,9 @@ $(document).ready(function(){initNavTree('functions_p.html','');});
 </li>
 <li>prune_using_test_dataset()
 : <a class="el" href="db/dff/classshogun_1_1CMyCARTree.html#adc5c4245214a133d9de21a8a50ae2e1d">shogun::CMyCARTree</a>
+</li>
+<li>push()
+: <a class="el" href="d3/d35/classFT_1_1Stack.html#a21ed279d8135e428e4a49a30814e42ad">FT::Stack&lt; type &gt;</a>
 </li>
 <li>pushObjects()
 : <a class="el" href="df/de2/classFT_1_1FeatCV.html#a1bb52bc351a52610bb563ee3847d6f99">FT::FeatCV</a>

@@ -47,6 +47,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -104,6 +105,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="functions_u.html#index_u"><span>u</span></a></li>
       <li><a href="functions_v.html#index_v"><span>v</span></a></li>
       <li><a href="functions_w.html#index_w"><span>w</span></a></li>
+      <li><a href="functions_z.html#index_z"><span>z</span></a></li>
       <li><a href="functions_0x7e.html#index_0x7e"><span>~</span></a></li>
     </ul>
   </div>
@@ -141,7 +143,7 @@ $(document).ready(function(){initNavTree('functions_m.html','');});
 
 <h3><a class="anchor" id="index_m"></a>- m -</h3><ul>
 <li>m
-: <a class="el" href="d5/d3d/structFT_1_1Pareto_1_1comparator__obj.html#a11d341ec04fdffec782310fde6e3d954">FT::Pareto::comparator_obj</a>
+: <a class="el" href="d1/d92/structFT_1_1NSGA2_1_1comparator__obj.html#a5ac675116ab0f797f590862e6bc968de">FT::NSGA2::comparator_obj</a>
 </li>
 <li>m_alphas
 : <a class="el" href="db/dff/classshogun_1_1CMyCARTree.html#a0177205fad542ccac5a2f199981e3fe3">shogun::CMyCARTree</a>
@@ -149,8 +151,12 @@ $(document).ready(function(){initNavTree('functions_m.html','');});
 <li>m_apply_cv_pruning
 : <a class="el" href="db/dff/classshogun_1_1CMyCARTree.html#a37e6b4bd0968364625d9886e21581a2e">shogun::CMyCARTree</a>
 </li>
+<li>m_C
+: <a class="el" href="df/d62/classshogun_1_1CMyMulticlassLibLinear.html#ae24a49a56a10e75e0e12f1d5e10e5db2">shogun::CMyMulticlassLibLinear</a>
+</li>
 <li>m_epsilon
 : <a class="el" href="db/d4e/classshogun_1_1CMulticlassLogisticRegression.html#a1b2770da7b9faa1992263603dfe37a32">shogun::CMulticlassLogisticRegression</a>
+, <a class="el" href="df/d62/classshogun_1_1CMyMulticlassLibLinear.html#a07d68d1ef9c905eb7b225e9a4c71bcce">shogun::CMyMulticlassLibLinear</a>
 </li>
 <li>m_folds
 : <a class="el" href="db/dff/classshogun_1_1CMyCARTree.html#adb5488448adf329fe004865880cca2dd">shogun::CMyCARTree</a>
@@ -163,6 +169,7 @@ $(document).ready(function(){initNavTree('functions_m.html','');});
 </li>
 <li>m_max_iter
 : <a class="el" href="db/d4e/classshogun_1_1CMulticlassLogisticRegression.html#adffd29731a7db67a4b9a77aaa310133b">shogun::CMulticlassLogisticRegression</a>
+, <a class="el" href="df/d62/classshogun_1_1CMyMulticlassLibLinear.html#a591f778bb164f344cca369560b193f35">shogun::CMyMulticlassLibLinear</a>
 </li>
 <li>m_min_node_size
 : <a class="el" href="db/dff/classshogun_1_1CMyCARTree.html#a5cee8d3495aff77632a6ee820498ba56">shogun::CMyCARTree</a>
@@ -176,14 +183,23 @@ $(document).ready(function(){initNavTree('functions_m.html','');});
 <li>m_pre_sort
 : <a class="el" href="db/dff/classshogun_1_1CMyCARTree.html#a35ff64f75c87966a5afffd21efd90c53">shogun::CMyCARTree</a>
 </li>
+<li>m_save_train_state
+: <a class="el" href="df/d62/classshogun_1_1CMyMulticlassLibLinear.html#a694d882da74786559c3e421dca9f0e59">shogun::CMyMulticlassLibLinear</a>
+</li>
 <li>m_sorted_features
 : <a class="el" href="db/dff/classshogun_1_1CMyCARTree.html#aadbde9d0c98f7ff92bd103b4ac5a5fbc">shogun::CMyCARTree</a>
 </li>
 <li>m_sorted_indices
 : <a class="el" href="db/dff/classshogun_1_1CMyCARTree.html#ab4ed691ee0e00bc54855c71ad63d6188">shogun::CMyCARTree</a>
 </li>
+<li>m_train_state
+: <a class="el" href="df/d62/classshogun_1_1CMyMulticlassLibLinear.html#aa1a825948668a318d6e450a60fa0c7e2">shogun::CMyMulticlassLibLinear</a>
+</li>
 <li>m_types_set
 : <a class="el" href="db/dff/classshogun_1_1CMyCARTree.html#a1648886afa379889179523998fe12738">shogun::CMyCARTree</a>
+</li>
+<li>m_use_bias
+: <a class="el" href="df/d62/classshogun_1_1CMyMulticlassLibLinear.html#ad995efd678f81f35d347f3b2f970ce86">shogun::CMyMulticlassLibLinear</a>
 </li>
 <li>m_weights
 : <a class="el" href="db/dff/classshogun_1_1CMyCARTree.html#a5b69f493ebe5d49b16b2506fa3ee4614">shogun::CMyCARTree</a>
@@ -206,6 +222,9 @@ $(document).ready(function(){initNavTree('functions_m.html','');});
 <li>max_stall
 : <a class="el" href="de/d2c/structFT_1_1Parameters.html#a30f7f95ef22a0228e87e297ab1305ca2">FT::Parameters</a>
 </li>
+<li>max_train_time
+: <a class="el" href="df/dfa/classFT_1_1ML.html#a14d721bea3ac40720bcf05b9daf49ffc">FT::ML</a>
+</li>
 <li>MIN_SPLIT_GAIN
 : <a class="el" href="db/dff/classshogun_1_1CMyCARTree.html#a470c47e13d68d22929c515489ecc3e7f">shogun::CMyCARTree</a>
 </li>
@@ -213,10 +232,13 @@ $(document).ready(function(){initNavTree('functions_m.html','');});
 : <a class="el" href="db/dff/classshogun_1_1CMyCARTree.html#a24f3fd6ba041039c69b7c24a2555a3fa">shogun::CMyCARTree</a>
 </li>
 <li>ML()
-: <a class="el" href="df/dfa/classFT_1_1ML.html#ae46f491cb0656cf64334f76d5ac07b9a">FT::ML</a>
+: <a class="el" href="df/dfa/classFT_1_1ML.html#ad82443da121d551ee297a2cdf2e224c9">FT::ML</a>
 </li>
 <li>ml
 : <a class="el" href="de/d2c/structFT_1_1Parameters.html#a7e11bd6f94c1474b695cc9c823e8ea46">FT::Parameters</a>
+</li>
+<li>ml_type
+: <a class="el" href="df/dfa/classFT_1_1ML.html#a0a75b03c805745d54fb50c85d4e59bf6">FT::ML</a>
 </li>
 <li>msg()
 : <a class="el" href="de/d2c/structFT_1_1Parameters.html#abaae697a8ddcb9ddd5e2b190915151ee">FT::Parameters</a>

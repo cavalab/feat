@@ -4,11 +4,13 @@ language: cpp
   
 addons:
   apt:
-    sources:
+      update: true
+    
+  sources:
         # Newer GCC
         #- george-edison55-precise-backports
         - ubuntu-toolchain-r-test
-    packages:
+  packages:
         #        - cmake 
         #        - cmake-data
         #        - gcc-5
@@ -25,6 +27,7 @@ env:
     # test three different compilers
     #- CXX='g++-5' CC='gcc-5' BUILD_TYPE='release'
     
-install: sh ci/.travis_install.sh
+install: 
+    - sh ci/.travis_install.sh
 
 script: sh ci/.travis_test.sh 

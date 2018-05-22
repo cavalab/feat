@@ -1,4 +1,4 @@
-/* FEWTWO
+/* FEAT
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
@@ -404,7 +404,7 @@ namespace FT{
     }
     
     void FeatCV::fit(MatrixXd x, VectorXd &y)
-    {
+    {        
     	parse();
     	create_folds(x.cols());
     	
