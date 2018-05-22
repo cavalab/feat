@@ -141,10 +141,9 @@ namespace FT{
                         nd->W = weights.at(count);
                     else
                     {
-                        std::cerr << "mismatch in size btw weights[" << count << "] and W\n";
-                        std::cerr << "weights[" << count << "].size() (" << 
-                            weights[count].size() << ") != W.size() (" << nd->W.size() << "\n";
-                        exit(1);
+                        string error = "mismatch in size btw weights[" + to_string(count) + "] and W\n";
+                        error += "weights[" + to_string(count) + "].size() (" + to_string(weights[count].size()) + ") != W.size() ("+ to_string(nd->W.size()) + "\n";
+                        HANDLE_ERROR_THROW(error);
                     }
                     ++count;
                 }
