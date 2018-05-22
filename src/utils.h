@@ -168,24 +168,25 @@ namespace FT{
             
             if(!firstKey.compare(""))
                 firstKey = type;
-            
+            /* cout << "sampleNo: " << sampleNo << ", time: " << time << ", value: " << value */ 
+                 /* << ", type: " << type << "\n"; */
             dataMap[type][std::stoi(sampleNo)].first.push_back(std::stod(value));
             dataMap[type][std::stoi(sampleNo)].second.push_back(std::stod(time));
         }
         
         int numTypes = dataMap.size();
         int numSamples = dataMap[firstKey].size();
-        
         int x;
         
         for ( const auto &val: dataMap )
         {
-            for(x = 0; x < numSamples; x++)
+            for(x = 0; x < numSamples; ++x)
             {
                 ArrayXd arr1 = Map<ArrayXd>(dataMap[val.first][x].first.data(), dataMap[val.first][x].first.size());
                 ArrayXd arr2 = Map<ArrayXd>(dataMap[val.first][x].second.data(), dataMap[val.first][x].second.size());
                 Z[val.first].first.push_back(arr1);
                 Z[val.first].second.push_back(arr2);
+
             }
             
         }

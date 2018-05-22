@@ -251,8 +251,6 @@ namespace FT{
         
         params.msg("evaluating program " + get_eqn(),2);
         params.msg("program length: " + std::to_string(program.size()),2);
-        cout << "X: " << d.X << "\n";
-        cout << "y: " << d.y << "\n";
         // evaluate each node in program
         for (const auto& n : program)
         {
@@ -281,11 +279,13 @@ namespace FT{
                
         int rows_f = stack.f.size();
         int rows_b = stack.b.size();
-        
+        /* cout << "rows_f (stack.f.size()): " << rows_f << "\n"; */ 
+        /* cout << "rows_b (stack.b.size()): " << rows_b << "\n"; */ 
         dtypes.clear();        
         Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
         // add stack_f to Phi
-       
+        /* cout << "cols: " << cols << "\n"; */ 
+      
         for (unsigned int i=0; i<rows_f; ++i)
         {    
              ArrayXd Row = ArrayXd::Map(stack.f.at(i).data(),cols);

@@ -237,7 +237,7 @@ namespace FT{
             // assign F and aggregate fitness
             params.msg("Assigning val fitness to " + individuals[i].get_eqn(), 2);
             
-            assign_fit(individuals[i],F,yhat_v,dv.y,params);
+            assign_fit(individuals[i],F,yhat_v,dv.y,params, true);
                         
         }
     }
