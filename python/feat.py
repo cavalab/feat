@@ -105,9 +105,13 @@ class Feat(BaseEstimator):
     def predict_proba(self,X,zfile=None,zids=None):
         if zfile:
             zfile = zfile.encode() if isinstance(zfile,str) else zfile
-            return self._pyfeat.predict_proba_with_z(X,zfile,zids)
+            tmp = self._pyfeat.predict_proba_with_z(X,zfile,zids)
         else:
-            return self._pyfeat.predict_proba(X)
+            tmp = self._pyfeat.predict_proba(X)
+        
+        if len(tmp.shape)<2:
+                tmp  = np.vstack((1-tmp,tmp)).transpose()
+        return tmp         
 
 
     def transform(self,X,zfile=None,zids=None):
@@ -131,7 +135,6 @@ class Feat(BaseEstimator):
             labels_pred = self._pyfeat.predict_with_z(features,zfile,zids).flatten()
         else:
             labels_pred = self.predict(features).flatten()
-        print('labels_pred:',labels_pred)
         if ( self.classification ):
             return log_loss(labels,labels_pred, labels=labels)
         else:
