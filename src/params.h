@@ -466,6 +466,7 @@ namespace FT{
             feature_names.clear();
         else
         {
+            fn += ',';      // add delimiter to end
             string delim=",";
             size_t pos = 0;
             string token;
