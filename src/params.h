@@ -98,8 +98,9 @@ namespace FT{
             set_verbosity(verbosity);
             if (fs.empty())
                 fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
-                      "logit,tanh,gauss,relu,"
+                      "logit,tanh,gauss,relu,split,"
                       "and,or,not,xor,=,<,<=,>,>="; //sign,step,if,ite";
+            cout << "fs: " << fs << "\n";
             set_functions(fs);
             set_objectives(obj);
             set_feature_names(fn);
@@ -384,6 +385,9 @@ namespace FT{
     	
     	else if (str.compare("<=") == 0)
     		return std::unique_ptr<Node>(new NodeLEQ());
+ 
+        else if (str.compare("split") == 0)
+    		return std::unique_ptr<Node>(new NodeSplit());
     	
      	else if (str.compare("if") == 0)
     		return std::unique_ptr<Node>(new NodeIf());   	    		

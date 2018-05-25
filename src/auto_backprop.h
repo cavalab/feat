@@ -225,7 +225,7 @@ namespace FT {
         MatrixXd Xb; VectorXd yb;
         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Zb;
         
-        Data db(Xb, yb, Zb);
+        Data db(Xb, yb, Zb, params.classification);
         
         this->epk = n;  // starting learning rate
         params.msg("running backprop on " + ind.get_eqn(), 2);
