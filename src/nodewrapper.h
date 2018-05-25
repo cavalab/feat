@@ -43,6 +43,7 @@ license: GNU/GPL v3
 #include "node/nodesin.h"
 #include "node/nodeskew.h"
 #include "node/nodeslope.h"
+#include "node/nodesplit.h"
 #include "node/nodesqrt.h"
 #include "node/nodesquare.h"
 #include "node/nodestep.h"
