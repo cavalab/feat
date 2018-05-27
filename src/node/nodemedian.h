@@ -12,40 +12,18 @@ namespace FT{
     {
     	public:
     	
-    		NodeMedian()
-            {
-                name = "median";
-    			otype = 'f';
-    			arity['f'] = 0;
-    			arity['b'] = 0;
-    			arity['z'] = 1;
-    			complexity = 1;
-    		}
+    		NodeMedian();
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(Data& data, Stacks& stack)
-            {
-                ArrayXd tmp(stack.z.top().first.size());
-                
-                int x;
-                
-                for(x = 0; x < stack.z.top().first.size(); x++)
-                    tmp(x) = median(limited(stack.z.top().first[x]));
-                    
-                stack.z.pop();
-
-                stack.f.push(tmp);
-                
-            }
+            void evaluate(Data& data, Stacks& stack);
 
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-                stack.fs.push("median(" + stack.zs.pop() + ")");
-            }
+            void eval_eqn(Stacks& stack);
+            
         protected:
-            NodeMedian* clone_impl() const override { return new NodeMedian(*this); }; 
-            NodeMedian* rnd_clone_impl() const override { return new NodeMedian(); }; 
+            NodeMedian* clone_impl() const override;
+
+            NodeMedian* rnd_clone_impl() const override;
     };
 }	
 

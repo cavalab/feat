@@ -67,6 +67,7 @@ string readInputFile(string file)
     return str;
 }
 
+/*
 int main(int argc, char** argv){
 
     std::string sep = ",";
@@ -140,5 +141,5 @@ int main(int argc, char** argv){
     
 
 }
-
+*/
 

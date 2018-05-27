@@ -12,48 +12,20 @@ namespace FT{
     {
     	public:
    	
-    		NodeExponential(vector<double> W0 = vector<double>())
-    		{
-    			name = "exp";
-    			otype = 'f';
-    			arity['f'] = 1;
-    			arity['b'] = 0;
-    			complexity = 4;
-
-                if (W0.empty())
-                {
-                    for (int i = 0; i < arity['f']; i++) {
-                        W.push_back(r.rnd_dbl());
-                    }
-                }
-                else
-                    W = W0;
-    		}
+    		NodeExponential(vector<double> W0 = vector<double>());
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(Data& data, Stacks& stack)
-            {
-                stack.f.push(limited(exp(this->W[0] * stack.f.pop())));
-            }
+            void evaluate(Data& data, Stacks& stack);
 
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-                stack.fs.push("exp(" + stack.fs.pop() + ")");
-            }
+            void eval_eqn(Stacks& stack);
 
-            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
-                switch (loc) {
-                    case 1: // d/dw0
-                        return stack_f[stack_f.size()-1] * limited(exp(this->W[0] * stack_f[stack_f.size()-1]));
-                    case 0: // d/dx0
-                    default:
-                       return this->W[0] * limited(exp(W[0] * stack_f[stack_f.size()-1]));
-                } 
-            }
+            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc);
+            
         protected:
-            NodeExponential* clone_impl() const override { return new NodeExponential(*this); };  
-            NodeExponential* rnd_clone_impl() const override { return new NodeExponential(); };  
+            NodeExponential* clone_impl() const override;
+      
+            NodeExponential* rnd_clone_impl() const override;
     };
 }	
 

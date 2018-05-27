@@ -12,53 +12,20 @@ namespace FT{
     {
     	public:
     	
-    		NodeMultiply(vector<double> W0 = vector<double>())
-       		{
-    			name = "*";
-    			otype = 'f';
-    			arity['f'] = 2;
-    			arity['b'] = 0;
-    			complexity = 2;
-
-                if (W0.empty())
-                {
-                    for (int i = 0; i < arity['f']; i++) {
-                        W.push_back(r.rnd_dbl());
-                    }
-                }
-                else
-                    W = W0;
-    		}
+    		NodeMultiply(vector<double> W0 = vector<double>());
 
             /// Evaluates the node and updates the stack states. 
-            void evaluate(Data& data, Stacks& stack)
-            {
-                stack.f.push(limited(W[0]*stack.f.pop() * W[1]*stack.f.pop()));
-            }
+            void evaluate(Data& data, Stacks& stack);
 
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-            	stack.fs.push("(" + stack.fs.pop() + "*" + stack.fs.pop() + ")");
-            }
+            void eval_eqn(Stacks& stack);
 
-            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
-                switch (loc) {
-                    case 3: // d/dW[1]
-                        return stack_f[stack_f.size()-1] * this->W[0] * stack_f[stack_f.size()-2];
-                    case 2: // d/dW[0] 
-                        return stack_f[stack_f.size()-1] * this->W[1] * stack_f[stack_f.size()-2];
-                    case 1: // d/dx2
-                        return this->W[0] * this->W[1] * stack_f[stack_f.size() - 2];
-                    case 0: // d/dx1
-                    default:
-                        return this->W[1] * this->W[0] * stack_f[stack_f.size() - 1];
-                } 
-            }
+            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc);
 
         protected:
-            NodeMultiply* clone_impl() const override { return new NodeMultiply(*this); };  
-            NodeMultiply* rnd_clone_impl() const override { return new NodeMultiply(); };  
+            NodeMultiply* clone_impl() const override;
+
+            NodeMultiply* rnd_clone_impl() const override;
     };
 }	
 

@@ -12,31 +12,18 @@ namespace FT{
     {
     	public:
     	
-   		    NodeGEQ()
-    		{
-    			name = ">=";
-    			otype = 'b';
-    			arity['f'] = 2;
-    			arity['b'] = 0;
-    			complexity = 2;
-    		}
+   		    NodeGEQ();
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(Data& data, Stacks& stack)
-            {
-            	ArrayXd x1 = stack.f.pop();
-                ArrayXd x2 = stack.f.pop();
-                stack.b.push(x1 >= x2);
-            }
+            void evaluate(Data& data, Stacks& stack);
 
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-                stack.bs.push("(" + stack.fs.pop() + ">=" + stack.fs.pop() + ")");
-            }
+            void eval_eqn(Stacks& stack);
+            
         protected:
-            NodeGEQ* clone_impl() const override { return new NodeGEQ(*this); };  
-            NodeGEQ* rnd_clone_impl() const override { return new NodeGEQ(); };  
+            NodeGEQ* clone_impl() const override;
+      
+            NodeGEQ* rnd_clone_impl() const override;
     };
 }	
 

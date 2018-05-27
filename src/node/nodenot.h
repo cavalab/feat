@@ -12,29 +12,18 @@ namespace FT{
     {
     	public:
     	
-    		NodeNot()
-       		{
-    			name = "not";
-    			otype = 'b';
-    			arity['f'] = 0;
-    			arity['b'] = 1;
-    			complexity = 1;
-    		}
+    		NodeNot();
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(Data& data, Stacks& stack)
-            {
-                stack.b.push(!stack.b.pop());
-            }
+            void evaluate(Data& data, Stacks& stack);
 
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-                stack.bs.push("NOT(" + stack.bs.pop() + ")");
-            }
+            void eval_eqn(Stacks& stack);
+            
         protected:
-            NodeNot* clone_impl() const override { return new NodeNot(*this); };  
-            NodeNot* rnd_clone_impl() const override { return new NodeNot(); };  
+            NodeNot* clone_impl() const override;
+
+            NodeNot* rnd_clone_impl() const override;
     };
     
 }	

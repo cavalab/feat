@@ -13,6 +13,10 @@ license: GNU/GPL v3
     #define omp_get_max_threads() 1
 #endif
 // stuff being used
+
+#include <memory>
+#include <iostream>
+
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
@@ -22,7 +26,6 @@ using std::unique_ptr;
 using std::shared_ptr;
 using std::make_shared;
 using std::cout; 
- 
 // internal includes
 
 namespace FT{

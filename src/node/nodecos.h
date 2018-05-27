@@ -12,49 +12,20 @@ namespace FT{
     {
     	public:
     	  	
-    		NodeCos(vector<double> W0 = vector<double>())
-    		{
-    			name = "cos";
-    			otype = 'f';
-    			arity['f'] = 1;
-    			arity['b'] = 0;
-    			complexity = 3;
-
-                if (W0.empty())
-                {
-                    for (int i = 0; i < arity['f']; i++) {
-                        W.push_back(r.rnd_dbl());
-                    }
-                }
-                else
-                    W = W0;
-    		}
+    		NodeCos(vector<double> W0 = vector<double>());
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(Data& data, Stacks& stack)
-            {
-                stack.f.push(limited(cos(W[0] * stack.f.pop())));
-            }
+            void evaluate(Data& data, Stacks& stack);
 
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-                stack.fs.push("cos(" + stack.fs.pop() + ")");
-            }
+            void eval_eqn(Stacks& stack);
 
-            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
-                switch (loc) {
-                    case 1: // d/dw0
-                        return stack_f[stack_f.size()-1] * -sin(W[0] * stack_f[stack_f.size() - 1]);
-                    case 0: // d/dx0
-                    default:
-                       return W[0] * -sin(W[0] * stack_f[stack_f.size() - 1]);
-                } 
-            }
+            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc);
 
         protected:
-            NodeCos* clone_impl() const override { return new NodeCos(*this); };  
-            NodeCos* rnd_clone_impl() const override { return new NodeCos(); };  
+            NodeCos* clone_impl() const override;
+      
+            NodeCos* rnd_clone_impl() const override;
     };
 }	
 
