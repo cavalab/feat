@@ -7,6 +7,7 @@
 #include <map>
 #include <cstdlib>
 #include <sstream>
+#include "utils.h"
 
 using namespace std;
 
@@ -97,7 +98,8 @@ vector<string> split(const string &s, char delim) {
     return tokens;
 }
 
-int main(int argc, char *argv[])
+
+/*int main(int argc, char *argv[])
 {
     string icdFile = "./icd9_25000_caseControlStatus.txt";
     string predictFile = "./predict_25000_measures.txt";
@@ -244,6 +246,6 @@ int main(int argc, char *argv[])
 	        noLongitudinal++;
 	        
     printf("Longitudinal present but no X-y %d\n", noLongitudinal);
-}
+}*/
 
 

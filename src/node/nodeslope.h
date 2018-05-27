@@ -12,40 +12,17 @@ namespace FT{
     {
     	public:
     	
-    		NodeSlope()
-            {
-                name = "slope";
-    			otype = 'f';
-    			arity['f'] = 0;
-    			arity['b'] = 0;
-    			arity['z'] = 1;
-    			complexity = 4;
-    		}
+    		NodeSlope();
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(Data& data, Stacks& stack)
-            {
-                ArrayXd tmp(stack.z.top().first.size());
-                
-                int x;
-                
-                for(x = 0; x < stack.z.top().first.size(); x++)                    
-                    tmp(x) = slope(limited(stack.z.top().first[x]), limited(stack.z.top().second[x]));
-                    
-                stack.z.pop();
-
-                stack.f.push(tmp);
-                
-            }
+            void evaluate(Data& data, Stacks& stack);
 
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-                stack.fs.push("slope(" + stack.zs.pop() + ")");
-            }
+            void eval_eqn(Stacks& stack);
+            
         protected:
-            NodeSlope* clone_impl() const override { return new NodeSlope(*this); }; 
-            NodeSlope* rnd_clone_impl() const override { return new NodeSlope(); }; 
+            NodeSlope* clone_impl() const override; 
+            NodeSlope* rnd_clone_impl() const override; 
     };
 }	
 

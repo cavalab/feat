@@ -12,49 +12,20 @@ namespace FT{
     {
     	public:
     	
-    		NodeLog(vector<double> W0 = vector<double>())
-       		{
-    			name = "log";
-    			otype = 'f';
-    			arity['f'] = 1;
-    			arity['b'] = 0;
-    			complexity = 4;
-
-                if (W0.empty())
-                {
-                    for (int i = 0; i < arity['f']; i++) {
-                        W.push_back(r.rnd_dbl());
-                    }
-                }
-                else
-                    W = W0;
-    		}
-
+    		NodeLog(vector<double> W0 = vector<double>());
+    		
             /// Safe log: pushes log(abs(x)) or MIN_DBL if x is near zero. 
-            void evaluate(Data& data, Stacks& stack)
-			{
-           		ArrayXd x = stack.f.pop();
-                stack.f.push( (abs(x) > NEAR_ZERO).select(log(abs(W[0] * x)),MIN_DBL));
-            }
+            void evaluate(Data& data, Stacks& stack);
 
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-                stack.fs.push("log(" + stack.fs.pop() + ")");
-            }
+            void eval_eqn(Stacks& stack);
 
-            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
-                switch (loc) {
-                    case 1: // d/dw0
-                        return limited(1/(W[0] * ArrayXd::Ones(stack_f[stack_f.size()-1].size())));
-                    case 0: // d/dx0
-                    default:
-                        return limited(1/stack_f[stack_f.size()-1]);
-                } 
-            }
+            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc);
+            
         protected:
-            NodeLog* clone_impl() const override { return new NodeLog(*this); };  
-            NodeLog* rnd_clone_impl() const override { return new NodeLog(); };  
+            NodeLog* clone_impl() const override;
+
+            NodeLog* rnd_clone_impl() const override;
     };
 }	
 

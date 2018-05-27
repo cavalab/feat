@@ -12,54 +12,20 @@ namespace FT{
     {
     	public:
     	
-    		NodeLogit(vector<double> W0 = vector<double>())
-            {
-                name = "logit";
-    			otype = 'f';
-    			arity['f'] = 1;
-    			arity['b'] = 0;
-    			complexity = 4;
-
-                if (W0.empty())
-                {
-                    for (int i = 0; i < arity['f']; i++) {
-                        W.push_back(r.rnd_dbl());
-                    }
-                }
-                else
-                    W = W0;
-    		}
+    		NodeLogit(vector<double> W0 = vector<double>());
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(Data& data, Stacks& stack)
-            {
-                stack.f.push(1/(1+(limited(exp(-W[0]*stack.f.pop())))));
-            }
+            void evaluate(Data& data, Stacks& stack);
 
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-                stack.fs.push("1/(1+exp(-" + stack.fs.pop() + "))");
-            }
+            void eval_eqn(Stacks& stack);
 
-            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
-                ArrayXd numerator, denom;
-                switch (loc) {
-                    case 1: // d/dw0
-                        numerator = stack_f[stack_f.size() -1] * exp(-W[0] * stack_f[stack_f.size() -1]);
-                        denom = pow(1 + exp(-W[0] * stack_f[stack_f.size()-1]), 2);
-                        return numerator/denom;
-                    case 0: // d/dx0
-                    default:
-                        numerator = W[0] * exp(-W[0] * stack_f[stack_f.size() - 1]);
-                        denom = pow(1 + exp(-W[0] * stack_f[stack_f.size() - 1]), 2);
-                        return numerator/denom;
-                } 
-            }
+            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc);
 
         protected:
-            NodeLogit* clone_impl() const override { return new NodeLogit(*this); };  
-            NodeLogit* rnd_clone_impl() const override { return new NodeLogit(); };  
+            NodeLogit* clone_impl() const override;
+
+            NodeLogit* rnd_clone_impl() const override;
     };
 }	
 

@@ -12,29 +12,18 @@ namespace FT{
     {
     	public:
     	   	
-    		NodeEqual()
-    		{
-    			name = "=";
-    			otype = 'b';
-    			arity['f'] = 2;
-    			arity['b'] = 0;
-    			complexity = 1;
-    		}
+    		NodeEqual();
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(Data& data, Stacks& stack)
-            {
-                stack.b.push(stack.f.pop() == stack.f.pop());
-            }
+            void evaluate(Data& data, Stacks& stack);
 
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-                stack.bs.push("(" + stack.fs.pop() + "==" + stack.fs.pop() + ")");
-            }
+            void eval_eqn(Stacks& stack);
+            
         protected:
-            NodeEqual* clone_impl() const override { return new NodeEqual(*this); };  
-            NodeEqual* rnd_clone_impl() const override { return new NodeEqual(); };  
+            NodeEqual* clone_impl() const override;
+
+            NodeEqual* rnd_clone_impl() const override;
     };
 }	
 

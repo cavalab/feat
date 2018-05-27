@@ -12,48 +12,19 @@ namespace FT{
     {
     	public:
     	
-    		NodeSquare(vector<double> W0 = vector<double>())
-    		{
-    			name = "^2";
-    			otype = 'f';
-    			arity['f'] = 1;
-    			arity['b'] = 0;
-    			complexity = 2;
-
-                if (W0.empty())
-                {
-                    for (int i = 0; i < arity['f']; i++) {
-                        W.push_back(r.rnd_dbl());
-                    }
-                }
-                else
-                    W = W0;
-    		}
+    		NodeSquare(vector<double> W0 = vector<double>());
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(Data& data, Stacks& stack)
-            {
-                stack.f.push(limited(pow(W[0]*stack.f.pop(),2)));
-            }
+            void evaluate(Data& data, Stacks& stack);
 
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-                stack.fs.push("(" + stack.fs.pop() + "^2)");
-            }
+            void eval_eqn(Stacks& stack);
 
-            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
-                switch (loc) {
-                    case 1: // d/dw0
-                        return 2 * pow(stack_f[stack_f.size()-1], 2) * this->W[0];
-                    case 0: // d/dx0
-                    default:
-                       return 2 * pow(this->W[0], 2) * stack_f[stack_f.size()-1];
-                } 
-            }
+            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc);
+            
         protected:
-            NodeSquare* clone_impl() const override { return new NodeSquare(*this); };  
-            NodeSquare* rnd_clone_impl() const override { return new NodeSquare(); };  
+            NodeSquare* clone_impl() const override;  
+            NodeSquare* rnd_clone_impl() const override;  
     };
 }	
 

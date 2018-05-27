@@ -12,29 +12,18 @@ namespace FT{
     {
     	public:
     	   	
-    		NodeIf()
-    		{
-    			name = "if";
-    			otype = 'f';
-    			arity['f'] = 1;
-    			arity['b'] = 1;
-    			complexity = 5;
-    		}
+    		NodeIf();
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(Data& data, Stacks& stack)
-            {
-                stack.f.push(limited(stack.b.pop().select(stack.f.pop(),0)));
-            }
+            void evaluate(Data& data, Stacks& stack);
 
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-              stack.fs.push("if(" + stack.bs.pop() + "," + stack.fs.pop() + "," + "0)");
-            }
+            void eval_eqn(Stacks& stack);
+            
         protected:
-            NodeIf* clone_impl() const override { return new NodeIf(*this); };  
-            NodeIf* rnd_clone_impl() const override { return new NodeIf(); };  
+            NodeIf* clone_impl() const override;
+      
+            NodeIf* rnd_clone_impl() const override;
     };
 }	
 

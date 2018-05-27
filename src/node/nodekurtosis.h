@@ -12,39 +12,18 @@ namespace FT{
     {
     	public:
     	
-    		NodeKurtosis()
-            {
-                name = "kurtosis";
-    			otype = 'f';
-    			arity['f'] = 0;
-    			arity['b'] = 0;
-    			arity['z'] = 1;
-    			complexity = 1;
-    		}
+    		NodeKurtosis();
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(Data& data, Stacks& stack)
-            {
-                ArrayXd tmp(stack.z.top().first.size());
-                
-                int x;
-                
-                for(x = 0; x < stack.z.top().first.size(); x++)
-                    tmp(x) = kurtosis(limited(stack.z.top().first[x]));
-                    
-                stack.z.pop();
-                stack.f.push(tmp);
-                
-            }
+            void evaluate(Data& data, Stacks& stack);
 
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-                stack.fs.push("kurtosis(" + stack.zs.pop() + ")");
-            }
+            void eval_eqn(Stacks& stack);
+            
         protected:
-            NodeKurtosis* clone_impl() const override { return new NodeKurtosis(*this); }; 
-            NodeKurtosis* rnd_clone_impl() const override { return new NodeKurtosis(); }; 
+            NodeKurtosis* clone_impl() const override;
+
+            NodeKurtosis* rnd_clone_impl() const override;
     };
 }	
 

@@ -13,34 +13,18 @@ namespace FT{
 		public:
 			string zName;
 			
-			NodeLongitudinal(std::string n)
-			{
-                name = "z_"+trim(n);
-                
-                zName = n;
-                    
-    			otype = 'z';
-    			arity['f'] = 0;
-    			arity['b'] = 0;
-    			arity['z'] = 0;
-    			complexity = 1;
-    		}
+			NodeLongitudinal(std::string n);
     		
     		/// Evaluates the node and updates the stack states. 		
-			void evaluate(Data& data, Stacks& stack)
-		    {
-		        stack.z.push(data.Z.at(zName));
-		    }
+			void evaluate(Data& data, Stacks& stack);
 
 		    /// Evaluates the node symbolically
-		    void eval_eqn(Stacks& stack)
-		    {
-		        stack.zs.push(name);
-		    }
+		    void eval_eqn(Stacks& stack);
+		    
         protected:
-            NodeLongitudinal* clone_impl() const override { return new NodeLongitudinal(*this); }; 
+            NodeLongitudinal* clone_impl() const override;
 
-            NodeLongitudinal* rnd_clone_impl() const override { return clone_impl(); }; 
+            NodeLongitudinal* rnd_clone_impl() const override;
     };
 }
 

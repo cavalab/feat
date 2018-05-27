@@ -12,57 +12,20 @@ namespace FT{
     {
     	public:
     	  	
-    		NodeExponent(vector<double> W0 = vector<double>())
-    		{
-    			name = "^";
-    			otype = 'f';
-    			arity['f'] = 2;
-    			arity['b'] = 0;
-    			complexity = 4;
-
-                if (W0.empty())
-                {
-                    for (int i = 0; i < arity['f']; i++) {
-                        W.push_back(r.rnd_dbl());
-                    }
-                }
-                else
-                    W = W0;
-    		}
+    		NodeExponent(vector<double> W0 = vector<double>());
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(Data& data, Stacks& stack)
-            {
-           		/* ArrayXd x1 = stack.f.pop(); */
-                /* ArrayXd x2 = stack.f.pop(); */
-
-                stack.f.push(limited(pow(this->W[0] * stack.f.pop(), this->W[1] * stack.f.pop())));
-            }
+            void evaluate(Data& data, Stacks& stack);
     
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-                stack.fs.push("(" + stack.fs.pop() + ")^(" + stack.fs.pop() + ")");
-            }
+            void eval_eqn(Stacks& stack);
 
-            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
-                ArrayXd x1 = stack_f[stack_f.size() - 1];
-                ArrayXd x2 = stack_f[stack_f.size() - 2];
-                switch (loc) {
-                    case 3: // Weight for the power
-                        return limited(pow(this->W[0] * x1, this->W[1] * x2) * limited(log(this->W[0] * x1)) * x2);
-                    case 2: // Weight for the base
-                        return limited(this->W[1] * x2 * pow(this->W[0] * x1, this->W[1] * x2) / this->W[0]);
-                    case 1: // Power
-                        return limited(this->W[1]*pow(this->W[0] * x1, this->W[1] * x2) * limited(log(this->W[0] * x1)));
-                    case 0: // Base
-                    default:
-                        return limited(this->W[1] * x2 * pow(this->W[0] * x1, this->W[1] * x2) / x1);
-                } 
-            }
+            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc);
+            
         protected:
-            NodeExponent* clone_impl() const override { return new NodeExponent(*this); };  
-            NodeExponent* rnd_clone_impl() const override { return new NodeExponent(); };  
+            NodeExponent* clone_impl() const override;
+      
+            NodeExponent* rnd_clone_impl() const override;
     };
 }	
 

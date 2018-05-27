@@ -26,45 +26,19 @@ namespace FT{
     {
         shared_ptr<SelectionOperator> pselector; 
         
-        Selection(string type="lexicase", bool survival=false)
-        {
-            /*!
-             * set type of selection operator.
-             */
-
-            if (!type.compare("lexicase"))
-                pselector = std::make_shared<Lexicase>(survival); 
-            else if (!type.compare("nsga2"))
-                pselector = std::make_shared<NSGA2>(survival);
-            else if (!type.compare("offspring"))    // offspring survival
-                pselector = std::make_shared<Offspring>(survival);
-            else if (!type.compare("random"))    // offspring survival
-                pselector = std::make_shared<Random>(survival);
-            else if (!type.compare("simanneal"))    // offspring survival
-                pselector = std::make_shared<SimAnneal>(survival);
-            else
-                HANDLE_ERROR_NO_THROW("Undefined Selection Operator " + type + "\n");
-                
-        };
-
-        ~Selection(){}
+        Selection(string type="lexicase", bool survival=false);
+        
+        ~Selection();
         
         /// return type of selectionoperator
-        string get_type(){ return pselector->name; }
+        string get_type();
         
         /// perform selection 
-        vector<size_t> select(Population& pop, const MatrixXd& F, const Parameters& params)
-        {       
-            return pselector->select(pop, F, params);
-        }
+        vector<size_t> select(Population& pop, const MatrixXd& F, const Parameters& params);
+        
         /// perform survival
-        vector<size_t> survive(Population& pop, const MatrixXd& F,  const Parameters& params)
-        {       
-            return pselector->survive(pop, F, params);
-        }
+        vector<size_t> survive(Population& pop, const MatrixXd& F,  const Parameters& params);
     };
-
-    /////////////////////////////////////////////////////////////////////////////////// Definitions
     
 }
 #endif
