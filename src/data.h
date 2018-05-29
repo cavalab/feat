@@ -101,9 +101,9 @@ namespace FT
             void train_test_split(bool shuffle, double split);
 
             /// reorders longitudinal data according to shuffle
-            void reorder_longitudinal(vector<ArrayXd> &vec1,
-                             vector<ArrayXd> &vec2,
-                             vector<int> const &order); 
+            /* void reorder_longitudinal(vector<ArrayXd> &vec1, */
+            /*                  vector<ArrayXd> &vec2, */
+            /*                  vector<int> const &order); */ 
 
             void split_longitudinal(
                         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
@@ -254,25 +254,25 @@ namespace FT
 
     }  
     
-    void DataRef::reorder_longitudinal(vector<ArrayXd> &vec1,
-                             vector<ArrayXd> &vec2,
-                             vector<int> const &order) 
-    {   
+    /* void DataRef::reorder_longitudinal(vector<ArrayXd> &vec1, */
+    /*                          vector<ArrayXd> &vec2, */
+    /*                          vector<int> const &order) */ 
+    /* { */   
     
-        for( int s = 1, d; s < order.size(); ++ s )
-        {
-            for ( d = order[s]; d < s; d = order[d] );
+    /*     for( int s = 1, d; s < order.size(); ++ s ) */
+    /*     { */
+    /*         for ( d = order[s]; d < s; d = order[d] ); */
             
-            if ( d == s )
-            {
-                while ( d = order[d], d != s )
-                {
-                    swap(vec1[s], vec1[d]);
-                    swap(vec2[s], vec2[d]);
-                }
-            }
-        }
-    }
+    /*         if ( d == s ) */
+    /*         { */
+    /*             while ( d = order[d], d != s ) */
+    /*             { */
+    /*                 swap(vec1[s], vec1[d]); */
+    /*                 swap(vec2[s], vec2[d]); */
+    /*             } */
+    /*         } */
+    /*     } */
+    /* } */
     
     void DataRef::split_longitudinal(
                             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,

@@ -187,13 +187,13 @@ namespace FT {
 
     void AutoBackProp::get_batch(Data d, Data db, int batch_size)
     {
-        /* std::cout << "getting batch\n"; */
+
+        batch_size =  std::min(batch_size,int(d.y.size()));
         vector<size_t> idx(d.y.size());
         std::iota(idx.begin(), idx.end(), 0);
         r.shuffle(idx.begin(), idx.end());
         db.X.resize(d.X.rows(),batch_size);
         db.y.resize(batch_size);
-         
         for (const auto& val: d.Z )
         {
             db.Z[val.first].first.resize(batch_size);
@@ -224,27 +224,32 @@ namespace FT {
         // batch data
         MatrixXd Xb; VectorXd yb;
         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Zb;
-        
+        /* cout << "y: " << d.y.transpose() << "\n"; */ 
         Data db(Xb, yb, Zb, params.classification);
         
         this->epk = n;  // starting learning rate
-        params.msg("running backprop on " + ind.get_eqn(), 2);
+        /* params.msg("running backprop on " + ind.get_eqn(), 2); */
         params.msg("=========================",2);
         params.msg("Iteration,Loss,Weights",2);
         params.msg("=========================",2);
         for (int x = 0; x < this->iters; x++)
         {
+            /* cout << "get batch\n"; */
             // get batch data for training
             get_batch(d, db, params.bp.batch_size); 
+            /* cout << "db.y: " << db.y.transpose() << "\n"; */ 
             // Evaluate forward pass
             MatrixXd Phi; 
+            /* cout << "forward pass\n"; */
             vector<vector<ArrayXd>> stack_f = forward_prop(ind, db, Phi, params);
             // Evaluate ML model on Phi
             bool pass = true;
             auto ml = std::make_shared<ML>(params, true);
 
+            /* cout << "ml fit\n"; */
             shared_ptr<CLabels> yhat = ml->fit(Phi,db.y,params,pass,ind.dtypes);
             vector<double> Beta = ml->get_weights();
+            /* cout << "cost func\n"; */
             current_loss = this->cost_func(db.y,yhat, params.class_weights).mean();
 
             if (params.verbosity>1)
@@ -324,6 +329,7 @@ namespace FT {
     void AutoBackProp::next_branch(vector<BP_NODE>& executing, vector<Node*>& bp_program, 
                                    vector<ArrayXd>& derivatives) 
     {
+        cout << "next branch\n";
         // While there are still nodes with branches to explore
         if(!executing.empty()) {
             // Declare variable to hold node and its associated derivatives
@@ -364,7 +370,7 @@ namespace FT {
         // push back derivative of cost function wrt ML output
         /* cout << "Beta: " << Beta << "\n"; */ 
         derivatives.push_back(this->d_cost_func(d.y, yhat, sw).array() * Beta); //*phi.array()); 
-        /* cout << "Cost derivative: " << this->d_cost_func(y, f_stack[f_stack.size() - 1]) << "\n"; 
+        /* cout << "Cost derivative: " << derivatives[derivatives.size() -1 ]<< "\n"; */ 
         // Working according to test program */
         /* pop<ArrayXd>(&f_stack); // Get rid of input to cost function */
         vector<BP_NODE> executing; // Stores node and its associated derivatves
@@ -377,7 +383,7 @@ namespace FT {
         while (bp_program.size() > 0) {
             /* cout << "Size of program: " << bp_program.size() << "\n"; */
             Node* node = pop<Node*>(&bp_program);
-            /* cout << "(132) Evaluating: " << node->name << "\n"; */
+            /* cout << "Evaluating: " << node->name << "\n"; */
 
             vector<ArrayXd> n_derivatives;
 

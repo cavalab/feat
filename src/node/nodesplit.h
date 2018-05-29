@@ -23,7 +23,7 @@ namespace FT{
     			complexity = 2;
     		}
             /// Uses a heuristic to set a splitting threshold.
-            void set_threshold(ArrayXd& x, VectorXd& y);
+            void set_threshold(ArrayXd& x, VectorXd& y, bool classification);
 
             /// returns the gain of a split 
             double gain(const VectorXd& lsplit, const VectorXd& rsplit, bool classification=false);
@@ -32,9 +32,10 @@ namespace FT{
             /// Evaluates the node and updates the stack states. 
             void evaluate(Data& data, Stacks& stack)
             {
+                /* cout << "classification: " << data.classification << "\n"; */
                 ArrayXd x1 = stack.f.pop();
                 if (!data.y.size()==0)
-                    set_threshold(x1,data.y);
+                    set_threshold(x1,data.y, data.classification);
 
                 stack.b.push(x1 < threshold);
             }
@@ -49,7 +50,7 @@ namespace FT{
             NodeSplit* rnd_clone_impl() const override { return new NodeSplit(); };  
     };
     
-    void NodeSplit::set_threshold(ArrayXd& x, VectorXd& y)
+    void NodeSplit::set_threshold(ArrayXd& x, VectorXd& y, bool classification)
     {
         // for each unique value in x, calculate the reduction in the heuristic brought about by
         // splitting between that value and the next. 
@@ -62,8 +63,8 @@ namespace FT{
         s = unique(s);
         double score = 0;
         double best_score = 0;
-        cout << "s: " ; 
-        for (auto ss : s) cout << ss << " " ; cout << "\n";
+        /* cout << "s: " ; */ 
+        /* for (auto ss : s) cout << ss << " " ; cout << "\n"; */
         for (unsigned i =0; i<s.size()-1; ++i)
         {
             double val = (s.at(i) + s.at(i+1)) / 2;
@@ -80,10 +81,10 @@ namespace FT{
 
             Map<VectorXd> map_d1(d1.data(), d1.size());  
             Map<VectorXd> map_d2(d2.data(), d2.size());  
-            cout << "d1: " << map_d1.transpose() << "\n";
-            cout << "d2: " << map_d2.transpose() << "\n";
-            score = gain(map_d1, map_d2);
-            cout << "val: " << val << ", score: " << score << "\n";
+            /* cout << "d1: " << map_d1.transpose() << "\n"; */
+            /* cout << "d2: " << map_d2.transpose() << "\n"; */
+            score = gain(map_d1, map_d2, classification);
+            /* cout << "val: " << val << ", score: " << score << "\n"; */
             if (score < best_score || i == 0)
             {
                 best_score = score;
@@ -91,7 +92,7 @@ namespace FT{
             }
         }
 
-        cout << "final threshold set to " << threshold << "\n";
+        /* cout << "final threshold set to " << threshold << "\n"; */
     }
    
     double NodeSplit::gain(const VectorXd& lsplit, const VectorXd& rsplit, 
