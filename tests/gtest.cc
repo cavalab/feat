@@ -139,7 +139,7 @@ TEST(Feat, predict)
              -1.20648656, -2.68773747;
     
     feat.set_verbosity(0);
-  
+    /* feat.set_n_threads(1); */
     /* cout << "line 143: predict\n"; */
     feat.fit(X, y);
     /* cout << "line 145: done with fit\n"; */
@@ -152,7 +152,7 @@ TEST(Feat, predict)
          0.5, -0.8,
          0.1,-0.9;
     
-    ASSERT_EQ(feat.predict(X).size(), 7);             //TODO had to remove !bzero ASSERT in set_termincal weights
+    ASSERT_EQ(feat.predict(X).size(), 7);      
 }
 
 TEST(Feat, transform)
@@ -1595,13 +1595,13 @@ TEST(Selection, SelectionOperator)
 
 	feat.timer.Reset();
 	
-	MatrixXd X_t(X.rows(),int(X.cols()*feat.params.split));
-    MatrixXd X_v(X.rows(),int(X.cols()*(1-feat.params.split)));
-    VectorXd y_t(int(y.size()*feat.params.split)), y_v(int(y.size()*(1-feat.params.split)));
+	/* MatrixXd X_t(X.rows(),int(X.cols()*feat.params.split)); */
+    /* MatrixXd X_v(X.rows(),int(X.cols()*(1-feat.params.split))); */
+    /* VectorXd y_t(int(y.size()*feat.params.split)), y_v(int(y.size()*(1-feat.params.split))); */
     
-    DataRef d(X, y, Z, X_t, y_t, Z_t, X_v, y_v, Z_v);
+    DataRef d(X, y, Z);
     
-    train_test_split(d, feat.params.shuffle, feat.params.split);
+    d.train_test_split(feat.params.shuffle, feat.params.split);
     
     feat.timer.Reset();
 	
@@ -1621,7 +1621,7 @@ TEST(Selection, SelectionOperator)
     // initialize population 
     feat.p_pop->init(feat.best_ind, feat.params);
     
-    feat.F.resize(X_t.cols(),int(2*feat.params.pop_size));
+    feat.F.resize(d.X_t.cols(),int(2*feat.params.pop_size));
     feat.p_eval->fitness(feat.p_pop->individuals, *d.t, feat.F, feat.params);
     vector<size_t> parents = feat.p_sel->select(*(feat.p_pop), feat.F, feat.params);
     
