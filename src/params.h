@@ -99,7 +99,7 @@ namespace FT{
             if (fs.empty())
                 fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
                       "logit,tanh,gauss,relu,split,"
-                      "and,or,not,xor,=,<,<=,>,>="; //sign,step,if,ite";
+                      "and,or,not,xor,=,<,<=,>,>=,if,ite";
             set_functions(fs);
             set_objectives(obj);
             set_feature_names(fn);
