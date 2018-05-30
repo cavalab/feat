@@ -112,6 +112,15 @@ namespace FT
                         && zs.size() >= arity['z']);
         }
     };
+    /*!
+     * @class Trace
+     * @brief used for tracing stack outputs for backprop algorithm.
+     */
+    struct Trace
+    {
+        vector<ArrayXd> f;
+        vector<ArrayXb> b;
+    };
 }
 
 #endif

@@ -42,13 +42,13 @@ namespace FT{
                 stack.fs.push("exp(-(" + stack.fs.pop() + ")^2)");
             }
 
-            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
+            ArrayXd getDerivative(Trace& stack, int loc) {
                 switch (loc) {
                     case 1: // d/dw0
-                        return -2 * W[0] * pow(stack_f[stack_f.size() - 1], 2) * exp(-pow(W[0] * stack_f[stack_f.size() - 1], 2));
+                        return -2 * W[0] * pow(stack.f[stack.f.size() - 1], 2) * exp(-pow(W[0] * stack.f[stack.f.size() - 1], 2));
                     case 0: // d/dx0
                     default:
-                        return -2 * pow(W[0], 2) * stack_f[stack_f.size() - 1] * exp(-pow(W[0] * stack_f[stack_f.size() - 1], 2));
+                        return -2 * pow(W[0], 2) * stack.f[stack.f.size() - 1] * exp(-pow(W[0] * stack.f[stack.f.size() - 1], 2));
                 } 
             }
         protected:
