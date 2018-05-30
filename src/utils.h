@@ -382,7 +382,11 @@ namespace FT{
     
     double slope(const ArrayXd& x, const ArrayXd& y)
     {
-        return covariance(x, y)/variance(x);
+        double varx = variance(x);
+        if (varx > NEAR_ZERO)
+            return covariance(x, y)/varx;
+        else
+            return 0;
     }
     
 
