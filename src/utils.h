@@ -14,7 +14,7 @@ license: GNU/GPL v3
 #include <map>
 #include "init.h"
 #include "error.h"
-#include "data.h"
+//#include "data.h"
 
 using namespace Eigen;
 
@@ -284,6 +284,24 @@ namespace FT{
         }
     }
 
+    void reorder_longitudinal(vector<ArrayXd> &vec1, vector<ArrayXd> &vec2,
+                             vector<int> const &order) 
+    {   
+    
+        for( int s = 1, d; s < order.size(); ++ s )
+        {
+            for ( d = order[s]; d < s; d = order[d] );
+            
+            if ( d == s )
+            {
+                while ( d = order[d], d != s )
+                {
+                    swap(vec1[s], vec1[d]);
+                    swap(vec2[s], vec2[d]);
+                }
+            }
+        }
+    }
     /// check if element is in vector.
     template<typename T>
     bool in(const vector<T> v, const T& i)
@@ -427,96 +445,9 @@ namespace FT{
 			
     };
     
-    void reorder_longitudinal(vector<ArrayXd> &vec1,
-                             vector<ArrayXd> &vec2,
-                             vector<int> const &order) 
-    {   
-    
-        for( int s = 1, d; s < order.size(); ++ s )
-        {
-            for ( d = order[s]; d < s; d = order[d] );
-            
-            if ( d == s )
-            {
-                while ( d = order[d], d != s )
-                {
-                    swap(vec1[s], vec1[d]);
-                    swap(vec2[s], vec2[d]);
-                }
-            }
-        }
-    }
-    
-    void split_longitudinal(std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
-                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_t,
-                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_v,
-                            double split)
-    {
-    
-        int size;
-        for ( const auto val: Z )
-        {
-            size = Z[val.first].first.size();
-            break;
-        }
-        
-        int testSize = int(size*split);
-        int validateSize = int(size*(1-split));
-            
-        for ( const auto &val: Z )
-        {
-            vector<ArrayXd> _Z_t_v, _Z_t_t, _Z_v_v, _Z_v_t;
-            _Z_t_v.assign(Z[val.first].first.begin(), Z[val.first].first.begin()+testSize);
-            _Z_t_t.assign(Z[val.first].second.begin(), Z[val.first].second.begin()+testSize);
-            _Z_v_v.assign(Z[val.first].first.begin()+testSize, Z[val.first].first.begin()+testSize+validateSize);
-            _Z_v_t.assign(Z[val.first].second.begin()+testSize, Z[val.first].second.begin()+testSize+validateSize);
-            
-            Z_t[val.first] = make_pair(_Z_t_v, _Z_t_t);
-            Z_v[val.first] = make_pair(_Z_v_v, _Z_v_t);
-        }
-    }
 
-    void train_test_split(DataRef& d, bool shuffle, double split)
-    {
-        /* @params X: n_features x n_samples matrix of training data
-         * @params y: n_samples vector of training labels
-         * @params shuffle: whether or not to shuffle X and y
-         * @returns X_t, X_v, y_t, y_v: training and validation matrices
-         */
-        if (shuffle)     // generate shuffle index for the split
-        {
-            Eigen::PermutationMatrix<Dynamic,Dynamic> perm(d.o->X.cols());
-            perm.setIdentity();
-            r.shuffle(perm.indices().data(), perm.indices().data()+perm.indices().size());
-            d.o->X = d.o->X * perm;       // shuffles columns of X
-            d.o->y = (d.o->y.transpose() * perm).transpose() ;       // shuffle y too
-            
-            if(d.o->Z.size() > 0)
-            {
-                std::vector<int> zidx(d.o->y.size());
-                std::iota(zidx.begin(), zidx.end(), 0);
-                Eigen::VectorXi zw = Map<VectorXi>(zidx.data(), zidx.size());
-                zw = (zw.transpose()*perm).transpose();       // shuffle zw too
-                zidx.assign(((int*)zw.data()), (((int*)zw.data())+zw.size()));
-                
-                for(auto &val : d.o->Z)
-                    reorder_longitudinal(val.second.first, val.second.second, zidx);
-            }
-            
-        }
-        
-        // map training and test sets  
-        d.t->X = MatrixXd::Map(d.o->X.data(),d.t->X.rows(),d.t->X.cols());
-        d.v->X = MatrixXd::Map(d.o->X.data()+d.t->X.rows()*d.t->X.cols(),d.v->X.rows(),d.v->X.cols());
 
-        d.t->y = VectorXd::Map(d.o->y.data(),d.t->y.size());
-        d.v->y = VectorXd::Map(d.o->y.data()+d.t->y.size(),d.v->y.size());
-        
-        if(d.o->Z.size() > 0)
-            split_longitudinal(d.o->Z, d.t->Z, d.v->Z, split);
 
-    
-    }
  
     /// return the softmax transformation of a vector.
     template <typename T>
