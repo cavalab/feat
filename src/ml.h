@@ -129,6 +129,8 @@ namespace FT{
                         // setting parameters to match sklearn defaults
                         dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_compute_bias(false);
                         dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_epsilon(0.0001);
+                        /* dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_C(1.0,1.0); */
+                        dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_max_iterations(1000);
                         //cout << "set ml type to CLibLinear\n";
                     }
                     else    // multiclass  

@@ -21,6 +21,7 @@ namespace FT{
     			arity['f'] = 1;
     			arity['b'] = 0;
     			complexity = 2;
+                threshold = 0;
     		}
             /// Uses a heuristic to set a splitting threshold.
             void set_threshold(ArrayXd& x, VectorXd& y, bool classification);
@@ -67,7 +68,9 @@ namespace FT{
         /* for (auto ss : s) cout << ss << " " ; cout << "\n"; */
         for (unsigned i =0; i<s.size()-1; ++i)
         {
+
             double val = (s.at(i) + s.at(i+1)) / 2;
+            /* cout << "split val: " << val << "\n"; */
             ArrayXi split_idx = (x < val).select(midx,-midx-1);
             // split data
             vector<double> d1, d2; 
@@ -78,13 +81,15 @@ namespace FT{
                 else
                     d1.push_back(y(split_idx(j)));
             }
+            if (d1.empty() || d2.empty())
+                continue;
 
             Map<VectorXd> map_d1(d1.data(), d1.size());  
             Map<VectorXd> map_d2(d2.data(), d2.size());  
             /* cout << "d1: " << map_d1.transpose() << "\n"; */
             /* cout << "d2: " << map_d2.transpose() << "\n"; */
             score = gain(map_d1, map_d2, classification);
-            /* cout << "val: " << val << ", score: " << score << "\n"; */
+            /* cout << "score: " << score << "\n"; */
             if (score < best_score || i == 0)
             {
                 best_score = score;
