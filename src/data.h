@@ -38,7 +38,7 @@ namespace FT
         public:
         
             Data(MatrixXd& X, VectorXd& y, std::map<string, std::pair<vector<ArrayXd>, 
-                    vector<ArrayXd>>>& Z, bool c): X(X), y(y), Z(Z), classification(c) {}
+                    vector<ArrayXd>>>& Z, bool c = false): X(X), y(y), Z(Z), classification(c) {}
             
             MatrixXd& X;
             VectorXd& y;
@@ -72,7 +72,7 @@ namespace FT
     
             DataRef(MatrixXd& X, VectorXd& y, 
                              std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z, 
-                             bool c);
+                             bool c=false);
             /* DataRef(MatrixXd& X, VectorXd& y, std::map<string, */ 
             /*         std::pair<vector<ArrayXd>, vector<ArrayXd>>>& Z, */
             /*         MatrixXd& X_t, VectorXd& y_t, std::map<string, */ 

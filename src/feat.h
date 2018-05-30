@@ -589,7 +589,6 @@ namespace FT{
             // evaluate offspring
             params.msg("evaluating offspring...", 2);
             p_eval->fitness(p_pop->individuals, *d.t, F, params, true);
-
             // select survivors from combined pool of parents and offspring
             params.msg("survival...", 2);
             survivors = p_surv->survive(*p_pop, F, params);
@@ -608,9 +607,8 @@ namespace FT{
             {
                 print_stats(log);
             }            
-            else
-                printProgress(((g+1)*1.0)/params.gens);
-            
+            /* else */
+            /*     printProgress(((g+1)*1.0)/params.gens); */
             if (params.backprop)
             {
                 params.bp.learning_rate = (1-1/(1+double(params.gens)))*params.bp.learning_rate;
@@ -618,7 +616,6 @@ namespace FT{
             }
                 //cout<<"\rCompleted "<<((g+1)*100/params.gens)<<"%"<< std::flush;
         }
-        cout<<"\n";
         params.msg("finished",1);
         params.msg("best training representation: " + best_ind.get_eqn(),1);
         params.msg("train score: " + std::to_string(best_score), 1);
