@@ -32,14 +32,6 @@ namespace metrics{
         SGVector<double> tmp = dynamic_pointer_cast<sh::CRegressionLabels>(labels)->get_labels();
         Map<VectorXd> yhat(tmp.data(),tmp.size());
         return squared_difference(y,yhat);
-        /* if (weights.empty()) */
-        /*     return (yhat - y).array().pow(2); */
-        /* else */
-        /* { */
-        /*     assert(weights.size() == yhat.size()); */
-        /*     ArrayXf w = ArrayXf::Map(weights.data(),weights.size()); */
-        /*     return (yhat - y).array().pow(2) * w.cast<double>() ; */
-        /* } */
     }
 
     // Derivative of squared difference with respec to yhat
@@ -56,14 +48,6 @@ namespace metrics{
         Map<VectorXd> yhat(tmp.data(),tmp.size());
 
         return d_squared_difference(y,yhat);
-        /* if (weights.empty()) */
-        /*     return 2 * (yhat - y); */
-        /* else */
-        /* { */
-        /*     assert(weights.size() == yhat.size()); */
-        /*     ArrayXf w = ArrayXf::Map(weights.data(),weights.size()); */
-        /*     return 2 * (yhat - y).array() * w.cast<double>() ; */
-        /* } */
     }
 
     /// mean squared error
@@ -117,24 +101,14 @@ namespace metrics{
     VectorXd log_loss(const VectorXd& y, shared_ptr<CLabels>& labels, 
                       const vector<float>& class_weights=vector<float>())
     {
+        cout << "scores 2 prob\n";
         dynamic_pointer_cast<sh::CBinaryLabels>(labels)->scores_to_probabilities();
+        cout << "get values\n";
         SGVector<double> tmp = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_values();
         Map<VectorXd> yhat(tmp.data(),tmp.size());
-       
+        cout << "log_loss\n"; 
         VectorXd loss = log_loss(y,yhat,class_weights);
         return loss; 
-        /* if (weights.empty()) */
-        /*     return loss; */
-        /* else */
-        /* { */
-        /*     ArrayXb w(y.size()); */
-        /*     for (int i = 0; i < class_weights.size(); ++i) */
-        /*     { */
-        /*         w = (y.cast<int>() == i).select(class_weights[i], w); */
-        /*     } */
-        /*     cout << "w: " << w.transpose(); */ 
-        /*     return loss.array() * w; */
-        /* } */
     }
     
     /// log loss
@@ -152,32 +126,6 @@ namespace metrics{
             cout << "yhat: " << yhat.transpose() << "\n";
 
         }
-        /* if (!sample_weights.empty()) */
-        /* { */
-        /*     ArrayXf sw = ArrayXf::Map(sample_weights.data(), sample_weights.size()); */
-        /*     if (sw.size() != loss.size() ){ */
-        /*         std::cerr << "Error: sample_weights size(" << sw.size() << ") different than" */
-        /*                   << " loss size(" << loss.size() << ")\n"; */
-        /*         std::cout << "y size: " << y.size() <<"\n"; */
-        /*         std::cout << "yhat size: "<< yhat.size() << "\n"; */
-        /*         exit(1); */
-        /*     } */
-        /*     loss = loss.array() * sw.cast<double>() ; */ 
-        /*     if ((sw < 0).any()) */
-        /*     { */
-        /*         cout << "NEGATIVE SAMPLE WEIGHTS\n"; */
-        /*         cout << "sample_weights: " << sw.transpose() << "\n"; */
-        /*     } */
-        /* } */
-        
-        /* if (loss.mean() < 0) */
-        /* { */
-        /*     cout << "LOG LOSS MEAN < 0 !!!!!!\n"; */
-        /*     cout << "loss: " << loss.transpose() << "\n"; */
-        /*     cout << "y: " << y.transpose() << "\n"; */
-        /*     cout << "yhat: " << yhat.transpose() << "\n"; */
-
-        /* } */
         return loss.mean();
     }
 
@@ -185,7 +133,9 @@ namespace metrics{
     double log_loss_label(const VectorXd& y, const shared_ptr<CLabels>& labels, VectorXd& loss,
                       const vector<float>& class_weights=vector<float>())
     {
+        cout << "socres 2 prob\n";
         dynamic_pointer_cast<sh::CBinaryLabels>(labels)->scores_to_probabilities();
+        cout << "get_vals\n";
         SGVector<double> tmp = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_values();
         Map<VectorXd> yhat(tmp.data(),tmp.size());
         return mean_log_loss(y,yhat,loss,class_weights);
@@ -216,11 +166,6 @@ namespace metrics{
         return d_log_loss(y,yhat,class_weights);
     }
 
-    /* double weighted_average(const VectorXd& y, const VectorXd& w) */
-    /* { */
-    /*     w = w.array() / w.sum(); */
-    /*     return (y.array() * w.array()).mean(); */
-    /* } */
     /// multinomial log loss
     VectorXd multi_log_loss(const VectorXd& y, const ArrayXXd& confidences, 
             const vector<float>& class_weights=vector<float>())
@@ -292,12 +237,9 @@ namespace metrics{
             confidences.row(i) = Map<ArrayXd>(tmp.data(),tmp.size());
             /* std::cout << confidences.row(i) << "\n"; */
         }
-        /* for (auto c : uc) */
-        /*     std::cout << "class " << int(c) << ": " << confidences.col(int(c)).transpose() << "\n"; */
         /* std::cout << "in log loss\n"; */
 
         return mean_multi_log_loss(y, confidences, loss, class_weights); 
-
     }
 
     VectorXd multi_log_loss(const VectorXd& y, shared_ptr<CLabels>& labels, 
@@ -450,30 +392,6 @@ namespace metrics{
         return zero_one_loss(y,yhat,loss,class_weights);
     }
    
-
-    /* double bal_log_loss(const VectorXd& y, const shared_ptr<CLabels>& labels, VectorXd& loss, */ 
-    /*            const vector<float>& weights=vector<float>() ) */
-    /* { */
-      
-    /*     loss = log_loss(y,yhat); */
-
-    /*     vector<double> uc = unique(y); */
-    /*     vector<int> c; */ 
-    /*     for (const auto& i : uc) */
-    /*         c.push_back(int(i)); */
-        
-    /*     vector<double> class_loss(c.size(),0); */
-
-    /*     for (unsigned i = 0; i < c.size(); ++i) */
-    /*     { */
-    /*         int n = (y.cast<int>().array() == c[i]).count(); */
-    /*         class_loss[i] = (y.cast<int>().array() == c[i]).select(loss.array(),0).sum()/n; */
-        
-    /*     } */
-    /*     // return balanced class losses */ 
-    /*     Map<ArrayXd> cl(class_loss.data(),class_loss.size()); */        
-    /*     return cl.mean(); */
-    /* } */
 } // metrics
 } // FT
 
