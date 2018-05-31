@@ -248,8 +248,29 @@ namespace FT{
             ///return feedback setting
             double get_feedback(){ return params.feedback; }
            
-            ///return best model
+            ///return best representation
             string get_representation(){ return best_ind.get_eqn();}
+
+            ///return best model: features plus their importances
+            string get_model()
+            {   
+                vector<string> features = best_ind.get_features();
+                vector<double> weights = p_ml->get_weights();
+                vector<double> aweights(weights.size());
+                for (int i =0; i<aweights.size(); ++i) 
+                    aweights[i] = fabs(weights[i]);
+                vector<size_t> order = argsort(aweights);
+                string output;
+                output += "Feature,Weight\n";
+                for (unsigned i = order.size(); --i > 0;)
+                {
+                    output += features.at(order[i]);
+                    output += ",";
+                    output += std::to_string(weights.at(order[i]));
+                    output += "\n";
+                }
+                return output;
+            }
 
             ///get number of parameters in best
             int get_n_params(){ return best_ind.get_n_params(); } 
