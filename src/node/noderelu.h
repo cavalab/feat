@@ -34,7 +34,7 @@ namespace FT{
              void evaluate(Data& data, Stacks& stack)
             {
                 ArrayXd x = stack.f.pop();
-                ArrayXd res = (W[0] * x > 0).select(W[0]*x, ArrayXd::Zero(x.size())); 
+                ArrayXd res = (W[0] * x > 0).select(W[0]*x, ArrayXd::Zero(x.size())+0.01); 
                 stack.f.push(res);
             }
 
@@ -44,15 +44,15 @@ namespace FT{
                 stack.fs.push("relu("+ stack.fs.pop() +")");         	
             }
 
-            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) {
+            ArrayXd getDerivative(Trace& stack, int loc) {
 
-                ArrayXd x = stack_f[stack_f.size()-1];
+                ArrayXd x = stack.f[stack.f.size()-1];
                 switch (loc) {
                     case 1: // d/dW
-                        return (x>0).select(x,ArrayXd::Zero(x.size()));
+                        return (x>0).select(x,ArrayXd::Zero(x.size())+0.01);
                     case 0: // d/dx
                     default:
-                        return (x>0).select(W[0],ArrayXd::Zero(x.size()));
+                        return (x>0).select(W[0],ArrayXd::Zero(x.size())+0.01);
                 } 
             }
 

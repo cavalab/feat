@@ -46,7 +46,7 @@ namespace FT{
 
         /// calculate program output while maintaining stack trace
         MatrixXd out_trace(Data d,
-                     const Parameters& params, vector<vector<ArrayXd>>& stack_trace);
+                     const Parameters& params, vector<Trace>& stack_trace);
 
 
         /// return symbolic representation of program
@@ -306,7 +306,7 @@ namespace FT{
     // calculate program output matrix
     MatrixXd Individual::out_trace(Data d,
                              const Parameters& params,
-                             vector<vector<ArrayXd>>& stack_f_trace)
+                             vector<Trace>& stack_trace)
     {
         /*!
          * @params X: n_features x n_samples data
@@ -317,8 +317,8 @@ namespace FT{
          */
 
         Stacks stack;
-        params.msg("evaluating program " + get_eqn(),2);
-        params.msg("program length: " + std::to_string(program.size()),2);
+        /* params.msg("evaluating program " + get_eqn(),2); */
+        /* params.msg("program length: " + std::to_string(program.size()),2); */
 
         vector<size_t> roots = program.roots();
         size_t root = 0;
@@ -328,7 +328,7 @@ namespace FT{
         if (program.at(roots.at(root))->isNodeDx())
         {
             trace=true;
-            stack_f_trace.push_back(vector<ArrayXd>());
+            stack_trace.push_back(Trace());
         }
         
         // evaluate each node in program
@@ -339,7 +339,7 @@ namespace FT{
                 if (program.at(roots.at(root))->isNodeDx())
                 {
                     trace=true;
-                    stack_f_trace.push_back(vector<ArrayXd>());
+                    stack_trace.push_back(Trace());
                     ++trace_idx;
                 }
                 else
@@ -352,9 +352,14 @@ namespace FT{
                     /* cout << "storing trace of " << program.at(i)->name << "with " << */
                     /*        program.at(i)->arity['f'] << " arguments\n"; */
                     for (int j = 0; j < program.at(i)->arity['f']; j++) {
-                        /* cout << "push back arg for " << program.at(i)->name << "\n"; */
-                        stack_f_trace.at(trace_idx).push_back(stack.f.at(stack.f.size() - 
+                        /* cout << "push back float arg for " << program.at(i)->name << "\n"; */
+                        stack_trace.at(trace_idx).f.push_back(stack.f.at(stack.f.size() - 
                                                          (program.at(i)->arity['f'] - j)));
+                    }
+                    for (int j = 0; j < program.at(i)->arity['b']; j++) {
+                        /* cout << "push back bool arg for " << program.at(i)->name << "\n"; */
+                        stack_trace.at(trace_idx).b.push_back(stack.b.at(stack.b.size() - 
+                                                         (program.at(i)->arity['b'] - j)));
                     }
                 }
         	    //cout<<"***enter here "<<n->name<<"\n";
