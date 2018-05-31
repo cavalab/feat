@@ -693,12 +693,13 @@ namespace FT{
         bool pass = true;
         shared_ptr<CLabels> yhat = p_ml->fit(d.t->X,d.t->y,params,pass);
 
+        cout << "setting term weights\n";
         // set terminal weights based on model
         params.set_term_weights(p_ml->get_weights());
-        
+        cout << "scoring\n"; 
         VectorXd tmp;
         best_score = p_eval->score(d.t->y, yhat,tmp, params.class_weights);
-        
+        cout << "validation\n"; 
         if (params.split < 1.0)
         {
             shared_ptr<CLabels> yhat_v = p_ml->predict(d.v->X);

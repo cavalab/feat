@@ -236,6 +236,9 @@ public:
      */
     std::vector<double> feature_importances();
     
+    /// WGL: get label certainties  
+    SGVector<float64_t> get_certainty_vector() const;
+
 protected:
 	/** train machine - build CART from training data
 	 * @param data training data
@@ -363,9 +366,11 @@ protected:
 	 *
 	 * @param feats data to be classified/regressed
 	 * @param current root of current subtree
+     * @param set_certainty calculates and stores the estimated probability of class at node
 	 * @return classification/regression labels of input data
 	 */
-	CLabels* apply_from_current_node(CDenseFeatures<float64_t>* feats, bnode_t* current);
+	CLabels* apply_from_current_node(CDenseFeatures<float64_t>* feats, bnode_t* current, 
+                                     bool set_certainty=false);
 
 	/** prune by cross validation
 	 *
@@ -471,6 +476,12 @@ protected:
 
 	/** minimum number of feature vectors required in a node **/
 	int32_t m_min_node_size;
+
+    /** percentage of certainty of labels predicted by decision tree
+	 * ie. weight of elements belonging to predicted class in a node/ total weight in a node
+	 */
+	SGVector<float64_t> m_certainty;
+
 };
 } /* namespace shogun */
 /////////////////////////////////////////////////////////////////////////////////////// Definitions
@@ -507,8 +518,11 @@ CMyCARTree::CMyCARTree(SGVector<bool> attribute_types, EProblemType prob_type, i
 	set_feature_types(attribute_types);
 	set_machine_problem_type(prob_type);
 	set_num_folds(num_folds);
+	m_certainty=SGVector<float64_t>();
 	if (cv_prune)
 		set_cv_pruning(cv_prune);
+
+	SG_ADD(&m_certainty,"m_certainty", "certainty", MS_NOT_AVAILABLE);
 }
 
 CMyCARTree::~CMyCARTree()
@@ -553,7 +567,8 @@ CMulticlassLabels* CMyCARTree::apply_multiclass(CFeatures* data)
 	bnode_t* current=dynamic_cast<bnode_t*>(get_root());
 
 	REQUIRE(current, "Tree machine not yet trained.\n");
-	CLabels* ret=apply_from_current_node(dynamic_cast<CDenseFeatures<float64_t>*>(data), current);
+	CLabels* ret=apply_from_current_node(dynamic_cast<CDenseFeatures<float64_t>*>(data), current,
+                                         true);
 
 	SG_UNREF(current);
 	return dynamic_cast<CMulticlassLabels*>(ret);
@@ -1552,10 +1567,14 @@ float64_t CMyCARTree::least_squares_deviation(const SGVector<float64_t>& feats, 
 	return dev/total_weight;
 }
 
-CLabels* CMyCARTree::apply_from_current_node(CDenseFeatures<float64_t>* feats, bnode_t* current)
+CLabels* CMyCARTree::apply_from_current_node(CDenseFeatures<float64_t>* feats, bnode_t* current,
+                                             bool set_certainty)
 {
 	int32_t num_vecs=feats->get_num_vectors();
 	REQUIRE(num_vecs>0, "No data provided in apply\n");
+
+    if (set_certainty)
+		m_certainty=SGVector<float64_t>(num_vecs);
 
 	SGVector<float64_t> labels(num_vecs);
 	for (int32_t i=0;i<num_vecs;i++)
@@ -1613,6 +1632,10 @@ CLabels* CMyCARTree::apply_from_current_node(CDenseFeatures<float64_t>* feats, b
 		}
 
 		labels[i]=node->data.node_label;
+        
+        if (set_certainty)
+			m_certainty[i]=(node->data.total_weight-node->data.weight_minus_node)/node->data.total_weight;
+
 		SG_UNREF(node);
 	}
 
@@ -2005,5 +2028,10 @@ void CMyCARTree::get_importance(bnode_t* node, vector<double>& importances)
        SG_UNREF(left);
        SG_UNREF(right);
    }
+}
+
+SGVector<float64_t> CMyCARTree::get_certainty_vector() const
+{
+	return m_certainty;
 }
 #endif /* _MYCARTREE_H__ */

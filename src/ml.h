@@ -74,6 +74,7 @@ namespace FT{
             
             void init()
             {
+                cout << "init\n";
                 // set up ML based on type
                 if (!ml_type.compare("LeastAngleRegression"))
                     p_est = make_shared<sh::CLeastAngleRegression>();
@@ -314,7 +315,7 @@ namespace FT{
         // for tree-based methods we need to specify data types 
         if (!ml_type.compare("RandomForest") || !ml_type.compare("CART"))
         {            
-            //std::cout << "setting dtypes\n";
+            std::cout << "setting dtypes\n";
             if (dtypes.empty())
                 set_dtypes(params.dtypes);
             else
@@ -332,13 +333,13 @@ namespace FT{
             /* cout << "normlize is false\n"; */
 
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
-        /* cout << "Phi:\n"; */
+        /* cout << "Phi (" << X.rows() << "x" << X.cols() << "):\n"; */
         /* for (int i = 0; i < 10 ; ++i) */
         /* { */
-        /*     cout << X.col(i) << (i < 10 ? " " : "\n"); */ 
+        /*     cout << X.col(i).transpose() << (i < 10 ? " " : "\n"); */ 
         /* } */
         //std::cout << "setting labels (n_classes = " << params.n_classes << ")\n"; 
-        //cout << "y is " << y.transpose() << "\n";
+        cout << "\ny is " << y.transpose() << "\n";
         if(prob_type==PT_BINARY && 
                 (!ml_type.compare("LR") || !ml_type.compare("SVM")))  // binary classification           	
         {
@@ -346,7 +347,9 @@ namespace FT{
         }
         else if (prob_type!=PT_REGRESSION)                         // multiclass classification       
         {
+            cout << "setting labels..";
             p_est->set_labels(some<CMulticlassLabels>(SGVector<float64_t>(y)));
+            cout << " done.\n";
             /* auto labels_train = (CMulticlassLabels *)p_est->get_labels(); */
             /* SGVector<double> labs = labels_train->get_unique_labels(); */
             /* std::cout << "unique labels: \n"; */ 
@@ -360,11 +363,11 @@ namespace FT{
         
         // train ml
         params.msg("ML training on thread" + std::to_string(omp_get_thread_num()) + "...",2," ");       
-
+        cout << "training...";
         // *** Train the model ***  
         p_est->train(features);
         // *** Train the model ***
-        
+        cout << "done.\n"; 
         params.msg("done.",2);
        
         //get output
@@ -394,7 +397,7 @@ namespace FT{
         // map to Eigen vector
         Map<VectorXd> yhat(y_pred.data(),y_pred.size());
        
-        /* std::cout << "yhat: " << yhat.transpose() << "\n"; */ 
+        std::cout << "yhat: " << yhat.transpose() << "\n"; 
 
         if (isinf(yhat.array()).any() || isnan(yhat.array()).any() || yhat.size()==0)
         {
