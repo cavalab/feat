@@ -35,7 +35,7 @@ namespace FT{
             {
                 /* cout << "classification: " << data.classification << "\n"; */
                 ArrayXd x1 = stack.f.pop();
-                if (!data.validation)
+                if (!data.validation && !data.y.size()==0)
                     set_threshold(x1,data.y, data.classification);
 
                 stack.b.push(x1 < threshold);
