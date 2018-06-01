@@ -379,16 +379,6 @@ namespace FT{
         return ((x - tmp1)*(y - tmp2)).mean();
         
     }
-    
-    double slope(const ArrayXd& x, const ArrayXd& y)
-    {
-        double varx = variance(x);
-        if (varx > NEAR_ZERO)
-            return covariance(x, y)/varx;
-        else
-            return 0;
-    }
-    
 
     /// median absolute deviation
     double mad(const ArrayXd& x) 
