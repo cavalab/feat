@@ -36,14 +36,20 @@ namespace FT
         //Data(MatrixXd& X, VectorXd& y, std::map<string, 
         //std::pair<vector<ArrayXd>, vector<ArrayXd>>>& Z): X(X), y(y), Z(Z){}
         public:
-        
-            Data(MatrixXd& X, VectorXd& y, std::map<string, std::pair<vector<ArrayXd>, 
-                    vector<ArrayXd>>>& Z, bool c = false): X(X), y(y), Z(Z), classification(c) {}
-            
+ 
             MatrixXd& X;
             VectorXd& y;
             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>>& Z;
             bool classification;
+            bool validation; 
+
+            Data(MatrixXd& X, VectorXd& y, std::map<string, std::pair<vector<ArrayXd>, 
+                    vector<ArrayXd>>>& Z, bool c = false): X(X), y(y), Z(Z), classification(c) 
+            {
+                validation=false;
+            }
+
+            void set_validation(bool v=true){validation=v;}
     };
     
     class DataRef

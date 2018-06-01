@@ -176,19 +176,26 @@ namespace FT {
     {
         vector<size_t> roots = ind.program.roots();
         double min_loss;
-        double current_loss;
+        double current_loss, current_val_loss;
         vector<vector<double>> best_weights;
         // batch data
-        MatrixXd Xb; VectorXd yb;
-        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Zb;
+        MatrixXd Xb, Xb_v;
+        VectorXd yb, yb_v;
+        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Zb, Zb_v;
         /* cout << "y: " << d.y.transpose() << "\n"; */ 
         Data db(Xb, yb, Zb, params.classification);
+        Data db_val(Xb_v, yb_v, Zb_v, params.classification);
+        db_val.set_validation();    // make this a validation set
+        get_batch(d, db_val, params.bp.batch_size);     // draw a batch for the validation data
         
+        int patience = 3;   // number of iterations to allow validation fitness to not improve
+        int missteps = 0;
+
         this->epk = n;  // starting learning rate
-        /* params.msg("running backprop on " + ind.get_eqn(), 2); */
-        params.msg("=========================",2);
-        params.msg("Iteration,Loss,Weights",2);
-        params.msg("=========================",2);
+        /* params.msg("running backprop on " + ind.get_eqn(), 1); */
+        params.msg("=========================",1);
+        params.msg("Iteration,Train Loss,Val Loss,Weights",1);
+        params.msg("=========================",1);
         for (int x = 0; x < this->iters; x++)
         {
             /* cout << "get batch\n"; */
@@ -208,25 +215,9 @@ namespace FT {
             vector<double> Beta = ml->get_weights();
             /* cout << "cost func\n"; */
             current_loss = this->cost_func(db.y,yhat, params.class_weights).mean();
-
-            if (params.verbosity>1)
-            {
-                cout << x << "," 
-                 << current_loss << ",";
-                  print_weights(ind.program);
-            }
-                 /* << this->d_cost_func(y, yhat, params.class_weights).std() << "\n"; */ 
-            if (x==0 || current_loss < min_loss)
-            {
-                min_loss = current_loss;
-                best_weights = ind.program.get_weights();
-                params.msg("new min loss: " + std::to_string(min_loss), 2);
-            }
-            else
-                params.msg("",2);
             
-            if (!pass || stack_trace.size() ==0 || std::isnan(min_loss) || std::isinf(min_loss)
-                    || min_loss <= NEAR_ZERO)
+            
+            if (!pass || stack_trace.size() ==0 )
                 break;
 
             // Evaluate backward pass
@@ -234,23 +225,51 @@ namespace FT {
             for (int i = 0; i < stack_trace.size(); ++i)
             {
                 while (!ind.program.at(roots[s])->isNodeDx()) ++s;
-                /* cout << "running backprop on " << ind.program_str() << " from " << roots.at(s) << " to " */ 
+                /* cout << "running backprop on " << ind.program_str() << " from " */
+                /*      << roots.at(s) << " to " */ 
                 /*     << ind.program.subtree(roots.at(s)) << "\n"; */
                 
-                backprop(stack_trace.at(i), ind.program, ind.program.subtree(roots.at(s)), roots.at(s), 
-                     Beta.at(s)/ml->N.scale.at(s), yhat,
-                     db, params.class_weights);
+                backprop(stack_trace.at(i), ind.program, ind.program.subtree(roots.at(s)), 
+                        roots.at(s), Beta.at(s)/ml->N.scale.at(s), yhat, db, params.class_weights);
             }
-            // update learning rate
+
+            // check validation fitness for early stopping
+            MatrixXd Phival = ind.out(db_val,params);
+            shared_ptr<CLabels> y_val = ml->predict(Phival);
+            current_val_loss = this->cost_func(db_val.y, y_val, params.class_weights).mean();
+            
+            if (x==0 || current_val_loss < min_loss)
+            {
+                min_loss = current_val_loss;
+                best_weights = ind.program.get_weights();
+                params.msg("new min loss: " + std::to_string(min_loss), 1);
+            }
+            else
+            {
+                ++missteps;
+                cout << "missteps: " << missteps << "\n";
+                params.msg("",1);           // update learning rate
+            }
+            if (missteps == patience || std::isnan(min_loss) || std::isinf(min_loss)
+                    || min_loss <= NEAR_ZERO)       // early stopping trigger
+                break;
+
             double alpha = double(x)/double(iters);
             this->epk = (1 - alpha)*this->epk + alpha*this->epT;  
             /* this->epk = this->epk + this->epT; */ 
             /* cout << "epk: " << this->epk << "\n"; */
+            if (params.verbosity>0)
+            {
+                cout << x << "," 
+                 << current_loss << "," 
+                 << current_val_loss << ",";
+                 print_weights(ind.program);
+            }
         }
-        params.msg("",2);
-        params.msg("=========================",2);
-        params.msg("done=====================",2);
-        params.msg("=========================",2);
+        params.msg("",1);
+        params.msg("=========================",1);
+        params.msg("done=====================",1);
+        params.msg("=========================",1);
         ind.program.set_weights(best_weights);
     }
 
