@@ -239,8 +239,7 @@ namespace FT{
         return ps;
     }
     // calculate program output matrix
-    MatrixXd Individual::out(Data d,
-                             const Parameters& params)
+    MatrixXd Individual::out(Data d, const Parameters& params)
     {
         /*!
          * @params X: n_features x n_samples data
