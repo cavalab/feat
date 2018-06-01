@@ -33,7 +33,9 @@ namespace FT{
             /// Evaluates the node and updates the stack states. 
             void evaluate(Data& data, Stacks& stack)
             {
-                stack.f.push(limited(exp(-1*limited(pow(W[0] * stack.f.pop(), 2)))));
+                ArrayXd x = stack.f.pop();
+                double stddev = sqrt(variance(x));
+                stack.f.push(limited(exp(limited(-1/stddev*pow(W[0] - stack.f.pop(), 2)))));
             }
 
             /// Evaluates the node symbolically
