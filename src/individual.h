@@ -51,7 +51,10 @@ namespace FT{
 
         /// return symbolic representation of program
         string get_eqn();
-        
+
+        /// return vectorized representation of program
+        vector<string> get_features();
+
         /// return program name list 
         string program_str() const;
 
@@ -432,7 +435,26 @@ namespace FT{
         return eqn;
     }
     
+    // return vectorized symbolic representation of program 
+    vector<string> Individual::get_features()
+    {
+        vector<string> features;
+        Stacks stack;
 
+        for (const auto& n : program){
+            if(stack.check_s(n->arity))
+                n->eval_eqn(stack);
+            else
+                HANDLE_ERROR_THROW("get_eqn() error: node " + n->name + " in " + program_str() + " is invalid\n");
+        }
+        // tie stack outputs together to return representation
+        for (auto s : stack.fs) 
+            features.push_back(s);
+        for (auto s : stack.bs) 
+            features.push_back(s);
+
+        return features;
+    }
    
     // get program dimensionality
     unsigned int Individual::get_dim()

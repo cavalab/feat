@@ -271,7 +271,6 @@ namespace FT {
     void AutoBackProp::next_branch(vector<BP_NODE>& executing, vector<Node*>& bp_program, 
                                    vector<ArrayXd>& derivatives) 
     {
-        /* cout << "next branch\n"; */
         // While there are still nodes with branches to explore
         if(!executing.empty()) {
             // Declare variable to hold node and its associated derivatives
