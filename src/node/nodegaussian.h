@@ -11,7 +11,7 @@ namespace FT{
 	class NodeGaussian : public NodeDx
     {
     	public:
-    	
+
     		NodeGaussian(vector<double> W0 = vector<double>())
             {
                 name = "gaussian";
@@ -28,27 +28,32 @@ namespace FT{
                 }
                 else
                     W = W0;
+                
     		}
     		
             /// Evaluates the node and updates the stack states. 
             void evaluate(Data& data, Stacks& stack)
             {
-                stack.f.push(limited(exp(-1*limited(pow(W[0] * stack.f.pop(), 2)))));
+                stack.f.push(limited(exp(-pow(W[0] - stack.f.pop(), 2))));
             }
 
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack)
             {
-                stack.fs.push("exp(-(" + stack.fs.pop() + ")^2)");
+                /* stack.fs.push("exp(-(" +std::to_string(W[0]) + '-' + stack.fs.pop() + ")^2)"); */
+                stack.fs.push("gauss(" + stack.fs.pop() + ")");
             }
 
-            ArrayXd getDerivative(Trace& stack, int loc) {
+            ArrayXd getDerivative(Trace& stack, int loc) 
+            {
+                ArrayXd& x = stack.f[stack.f.size()-1];
+                
                 switch (loc) {
                     case 1: // d/dw0
-                        return -2 * W[0] * pow(stack.f[stack.f.size() - 1], 2) * exp(-pow(W[0] * stack.f[stack.f.size() - 1], 2));
+                        return limited(-2 * (W[0] - 2) * exp(-pow(W[0] - x, 2)));
                     case 0: // d/dx0
                     default:
-                        return -2 * pow(W[0], 2) * stack.f[stack.f.size() - 1] * exp(-pow(W[0] * stack.f[stack.f.size() - 1], 2));
+                        return limited(2 * (W[0] - 2) * exp(-pow(W[0] - x, 2)));
                 } 
             }
         protected:

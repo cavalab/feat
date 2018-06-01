@@ -140,6 +140,9 @@ class Feat(BaseEstimator):
         else:
             return mse(labels,labels_pred)
 
+    def get_model(self):
+        return self._pyfeat.get_model()
+
     def get_representation(self):
         return self._pyfeat.get_representation()
 
