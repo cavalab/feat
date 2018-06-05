@@ -272,18 +272,20 @@ namespace FT{
         }
     }
 
+
+    /*
     /// check if element is in vector.
     template<typename T>
     bool in(const vector<T> v, const T& i)
     {
-        /* true if i is in v, else false. */
+        // true if i is in v, else false.
         for (const auto& el : v)
         {
             if (i == el)
                 return true;
         }
         return false;
-    }
+    }*/
    
     /// calculate median
     double median(const ArrayXd& v) 
@@ -370,6 +372,7 @@ namespace FT{
         return median(dev);
     }
 
+    /*
     /// return indices that sort a vector
 	template <typename T>
 	vector<size_t> argsort(const vector<T> &v) {
@@ -383,7 +386,7 @@ namespace FT{
 		   [&v](size_t i1, size_t i2) {return v[i1] < v[i2];});
 
 		return idx;
-	}
+	}*/
 
 	Timer::Timer(bool run)
 	{
@@ -398,12 +401,13 @@ namespace FT{
 	{
 		return high_resolution_clock::now() - _start;
 	}
-	template <typename T, typename Traits>
+	
+	/*template <typename T, typename Traits>
 	std::basic_ostream<T, Traits>& operator<<(std::basic_ostream<T, Traits>& out, 
                                                      const Timer& timer)
 	{
 		return out << timer.Elapsed().count();
-	}
+	}*/
     
     void reorder_longitudinal(vector<ArrayXd> &vec1,
                              vector<ArrayXd> &vec2,
@@ -496,6 +500,7 @@ namespace FT{
     
     }
  
+    /*
     /// return the softmax transformation of a vector.
     template <typename T>
     vector<T> softmax(const vector<T>& w)
@@ -511,7 +516,7 @@ namespace FT{
             w_new.push_back(exp(w[x])/sum);
             
         return w_new;
-    }
+    }*/
     
     /// fit the scale and offset of data. 
     void Normalizer::fit(MatrixXd& X, const vector<char>& dt)
@@ -596,6 +601,7 @@ namespace FT{
 	    return dtypes;
 	}
 	
+	/*
     /// returns unique elements in vector
     template <typename T>
     vector<T> unique(vector<T> w)   // note intentional copy
@@ -605,15 +611,16 @@ namespace FT{
         it = std::unique(w.begin(),w.end());
         w.resize(std::distance(w.begin(), it));
         return w;
-    }
+    }*/
     
+    /*
     /// returns unique elements in Eigen vector
     template <typename T>
     vector<T> unique(Matrix<T, Dynamic, 1> w)   // note intentional copy
     {
         vector<T> wv( w.data(), w.data()+w.rows());
         return unique(wv);
-    }
+    }*/
 
     void printProgress (double percentage)
     {
@@ -624,6 +631,7 @@ namespace FT{
         fflush (stdout);
     }
     
+    /*
     ///template function to convert objects to string for logging
     template <typename T>
     string to_string(const T& value)
@@ -631,5 +639,5 @@ namespace FT{
         std::stringstream ss;
         ss << value;
         return ss.str();
-    }
+    }*/
 } 

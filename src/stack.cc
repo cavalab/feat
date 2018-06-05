@@ -81,5 +81,10 @@ namespace FT
             return (fs.size() >= arity['f'] && bs.size() >= arity['b'] 
                     && zs.size() >= arity['z']);
     }
+    
+    template class Stack<ArrayXd>;
+    template class Stack<ArrayXb>;
+    template class Stack<std::pair<vector<ArrayXd>, vector<ArrayXd> > >;
+    template class Stack<string>;
 }
 

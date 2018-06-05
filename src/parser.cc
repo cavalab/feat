@@ -99,7 +99,7 @@ vector<string> split(const string &s, char delim) {
 }
 
 
-/*int main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     string icdFile = "./icd9_25000_caseControlStatus.txt";
     string predictFile = "./predict_25000_measures.txt";
@@ -246,6 +246,6 @@ vector<string> split(const string &s, char delim) {
 	        noLongitudinal++;
 	        
     printf("Longitudinal present but no X-y %d\n", noLongitudinal);
-}*/
+}
 
 
