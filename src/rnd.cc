@@ -67,6 +67,7 @@ namespace FT {
     
     float Rnd::operator()() { return rnd_flt(0.0,1.0); }
 
+    /*
 	template <class RandomAccessIterator>
 	void Rnd::shuffle (RandomAccessIterator first, RandomAccessIterator last)
 	{
@@ -75,33 +76,30 @@ namespace FT {
 	        std::uniform_int_distribution<decltype(i)> d(0,i);
 		    swap (first[i], first[d(rg[omp_get_thread_num()])]);
 	    }
-	}            
+	}*/           
     
-    template<typename Iter>                                    
+    /*template<typename Iter>                                    
     Iter Rnd::select_randomly(Iter start, Iter end) 
     {
         std::uniform_int_distribution<> dis(0, distance(start, end) - 1);
         advance(start, dis(rg[omp_get_thread_num()]));
         return start;
-    } 
+    }*/
    
+    /*
     template<typename T>
     T Rnd::random_choice(const vector<T>& v)
     {
-       /*!
-        * return a random element of a vector.
-        */          
+        //return a random element of a vector.          
         assert(v.size()>0 && " attemping to return random choice from empty vector");
         return *select_randomly(v.begin(),v.end());
-    }
+    }*/
 
-   
+    /*
     template<typename T, typename D>
     T Rnd::random_choice(const vector<T>& v, const vector<D>& w )
     {
-        /*!
-         * return a weighted random element of a vector
-         */
+         //return a weighted random element of a vector
          
         if(w.size() == 0)
         {   
@@ -121,7 +119,7 @@ namespace FT {
 
             return v[dis(rg[omp_get_thread_num()])]; 
         }
-    }
+    }*/
     
     float Rnd::gasdev()
     //Returns a normally distributed deviate with zero mean and unit variance
