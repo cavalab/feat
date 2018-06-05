@@ -117,7 +117,7 @@ namespace metrics{
     VectorXd log_loss(const VectorXd& y, shared_ptr<CLabels>& labels, 
                       const vector<float>& class_weights=vector<float>())
     {
-        dynamic_pointer_cast<sh::CBinaryLabels>(labels)->scores_to_probabilities();
+        /* dynamic_pointer_cast<sh::CBinaryLabels>(labels)->scores_to_probabilities(); */
         SGVector<double> tmp = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_values();
         Map<VectorXd> yhat(tmp.data(),tmp.size());
        
@@ -185,9 +185,10 @@ namespace metrics{
     double log_loss_label(const VectorXd& y, const shared_ptr<CLabels>& labels, VectorXd& loss,
                       const vector<float>& class_weights=vector<float>())
     {
-        dynamic_pointer_cast<sh::CBinaryLabels>(labels)->scores_to_probabilities();
+        /* dynamic_pointer_cast<sh::CBinaryLabels>(labels)->scores_to_probabilities(); */
         SGVector<double> tmp = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_values();
         Map<VectorXd> yhat(tmp.data(),tmp.size());
+        /* cout << "log loss yhat: " << yhat.transpose() << "\n"; */
         return mean_log_loss(y,yhat,loss,class_weights);
     }
 
@@ -209,7 +210,7 @@ namespace metrics{
     VectorXd d_log_loss(const VectorXd& y, shared_ptr<CLabels>& labels, 
                         const vector<float>& class_weights=vector<float>())
     {
-        dynamic_pointer_cast<sh::CBinaryLabels>(labels)->scores_to_probabilities();
+        /* dynamic_pointer_cast<sh::CBinaryLabels>(labels)->scores_to_probabilities(); */
         SGVector<double> tmp = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_values();
         Map<VectorXd> yhat(tmp.data(),tmp.size());
 
