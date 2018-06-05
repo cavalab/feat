@@ -67,19 +67,14 @@ endif()
 # gather list of source files
 file(GLOB_RECURSE sources "src/*.cc")
 
-get_filename_component(parser_file ${CMAKE_CURRENT_SOURCE_DIR}/src/parser.cc ABSOLUTE)
-list(REMOVE_ITEM sources "${parser_file}")
-
-get_filename_component(main_file ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cc ABSOLUTE)
-list(REMOVE_ITEM sources "${main_file}")
-
-get_filename_component(cv_main_file ${CMAKE_CURRENT_SOURCE_DIR}/src/cv_main.cc ABSOLUTE)
-list(REMOVE_ITEM sources "${cv_main_file}")
+list(REMOVE_ITEM sources ${CMAKE_CURRENT_SOURCE_DIR}/src/parser.cc)
+list(REMOVE_ITEM sources ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cc)
+list(REMOVE_ITEM sources ${CMAKE_CURRENT_SOURCE_DIR}/src/cv_main.cc)
 
 #feat library
 add_library(feat_lib ${sources})
 
-# executable
+# executables
 
 #feat executable
 add_executable(feat src/main.cc)
