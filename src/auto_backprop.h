@@ -247,7 +247,7 @@ namespace FT {
             else
             {
                 ++missteps;
-                cout << "missteps: " << missteps << "\n";
+                /* cout << "missteps: " << missteps << "\n"; */
                 params.msg("",2);           // update learning rate
             }
             if (missteps == patience || std::isnan(min_loss) || std::isinf(min_loss)
@@ -258,7 +258,7 @@ namespace FT {
             this->epk = (1 - alpha)*this->epk + alpha*this->epT;  
             /* this->epk = this->epk + this->epT; */ 
             /* cout << "epk: " << this->epk << "\n"; */
-            if (params.verbosity>0)
+            if (params.verbosity>1)
             {
                 cout << x << "," 
                  << current_loss << "," 
