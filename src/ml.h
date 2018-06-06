@@ -462,7 +462,7 @@ namespace FT{
                 (!ml_type.compare("SVM") || !ml_type.compare("LR")))
         {
             shared_ptr<CBinaryLabels> BLabels = dynamic_pointer_cast<CBinaryLabels>(labels);
-            BLabels->scores_to_probabilities();
+            /* BLabels->scores_to_probabilities(); */
             SGVector<double> tmp= BLabels->get_values();
             ArrayXXd confidences(1,tmp.size());
             confidences.row(0) = Map<ArrayXd>(tmp.data(),tmp.size()); 
