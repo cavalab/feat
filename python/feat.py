@@ -62,7 +62,7 @@ class Feat(BaseEstimator):
         self.logfile = logfile.encode() if isinstance(logfile,str) else logfile
 
         # if self.verbosity>0:
-        print('self.__dict__: ' , self.__dict__)
+        #print('self.__dict__: ' , self.__dict__)
         self._pyfeat=None 
 
     def _init_pyfeat(self):
