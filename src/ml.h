@@ -18,7 +18,7 @@ license: GNU/GPL v3
 #include <shogun/regression/LinearRidgeRegression.h>
 #include <shogun/machine/RandomForest.h>
 #include <shogun/regression/svr/LibLinearRegression.h>
-#include <shogun/classifier/svm/LibLinear.h>
+/* #include <shogun/classifier/svm/LibLinear.h> */
 #include <shogun/ensemble/MeanRule.h>
 #include <shogun/ensemble/MajorityVote.h>
 #include <cmath>
@@ -27,6 +27,7 @@ license: GNU/GPL v3
 #include "ml/MyCARTree.h"
 #include "ml/MulticlassLogisticRegression.h"
 #include "ml/MyMulticlassLibLinear.h"
+#include "ml/MyLibLinear.h"
 #include "params.h"
 
 // stuff being used
@@ -110,7 +111,7 @@ namespace FT{
                 else if (!ml_type.compare("SVM"))
                 {               
                 	if(prob_type==PT_BINARY)
-                        p_est = make_shared<sh::CLibLinear>(sh::L2R_L2LOSS_SVC_DUAL);       
+                        p_est = make_shared<sh::CMyLibLinear>(sh::L2R_L2LOSS_SVC_DUAL);       
                     else if (prob_type==PT_MULTICLASS){
                         p_est = make_shared<CMyMulticlassLibLinear>();
                         dynamic_pointer_cast<CMyMulticlassLibLinear>(p_est)->
@@ -125,13 +126,13 @@ namespace FT{
                 {
                     assert(prob_type!=PT_REGRESSION && "LR only works with classification.");
                     if (prob_type == PT_BINARY){
-	            	    p_est = make_shared<sh::CLibLinear>(sh::L2R_LR);
+	            	    p_est = make_shared<sh::CMyLibLinear>(sh::L2R_LR);
                         // setting parameters to match sklearn defaults
-                        dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_compute_bias(false);
-                        dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_epsilon(0.0001);
-                        /* dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_C(1.0,1.0); */
-                        dynamic_pointer_cast<sh::CLibLinear>(p_est)->set_max_iterations(1000);
-                        //cout << "set ml type to CLibLinear\n";
+                        dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_compute_bias(false);
+                        dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_epsilon(0.0001);
+                        /* dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_C(1.0,1.0); */
+                        dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_max_iterations(1000);
+                        //cout << "set ml type to CMyLibLinear\n";
                     }
                     else    // multiclass  
                     {
@@ -302,7 +303,6 @@ namespace FT{
         */ 
         
                 // for random forest we need to set the number of features per bag
-
         init();
         if (!ml_type.compare("RandomForest"))
         {
@@ -338,11 +338,13 @@ namespace FT{
         /*     cout << X.col(i) << (i < 10 ? " " : "\n"); */ 
         /* } */
         //std::cout << "setting labels (n_classes = " << params.n_classes << ")\n"; 
-        //cout << "y is " << y.transpose() << "\n";
+        /* cout << "y is " << y.transpose() << "\n"; */
+         
         if(prob_type==PT_BINARY && 
                 (!ml_type.compare("LR") || !ml_type.compare("SVM")))  // binary classification           	
         {
             p_est->set_labels(some<CBinaryLabels>(SGVector<float64_t>(y), 0.5));       	
+            
         }
         else if (prob_type!=PT_REGRESSION)                         // multiclass classification       
         {
@@ -360,24 +362,34 @@ namespace FT{
         
         // train ml
         params.msg("ML training on thread" + std::to_string(omp_get_thread_num()) + "...",2," ");       
-
         // *** Train the model ***  
         p_est->train(features);
         // *** Train the model ***
-        
         params.msg("done.",2);
        
         //get output
         SGVector<double> y_pred; 
         shared_ptr<CLabels> labels;
+
         if (prob_type==PT_BINARY && 
              (!ml_type.compare("LR") || !ml_type.compare("SVM")))     // binary classification
         {
+            bool proba = params.scorer.compare("log")==0;
+
             labels = shared_ptr<CLabels>(p_est->apply_binary(features));
-            /* clf->scores_to_probabilities(0.0,0.0);  // get sigmoid-fn probabilities */
-            /* y_pred = clf->get_values(); */
+            
+            if (proba)
+                dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_probabilities(labels.get(), 
+                                                                                 features);
+
             y_pred = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_labels();
-            /* delete clf; */
+			/* cout << "y_pred: "; */
+			/* y_pred.display_vector(); */
+			
+        	/* SGVector<double> tmp = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_values(); */
+			/* cout << "y_proba:\n"; */
+			/* tmp.display_vector(); */
+           
         }
         else if (params.classification)                         // multiclass classification
         {
@@ -420,9 +432,13 @@ namespace FT{
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
         
         shared_ptr<CLabels> labels;
+       
         if (prob_type==PT_BINARY && 
-                (!ml_type.compare("SVM") || !ml_type.compare("LR")))
+                (!ml_type.compare("SVM") || !ml_type.compare("LR"))){
             labels = std::shared_ptr<CLabels>(p_est->apply_binary(features));
+            dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_probabilities(labels.get(), 
+                                                                             features);
+        }
         else if (prob_type != PT_REGRESSION)
             labels = std::shared_ptr<CLabels>(p_est->apply_multiclass(features));
         else
