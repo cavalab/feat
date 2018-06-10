@@ -36,13 +36,13 @@ namespace FT{
         stack.fs.push("cos(" + stack.fs.pop() + ")");
     }
 
-    ArrayXd NodeCos::getDerivative(vector<ArrayXd>& stack_f, int loc) {
+    ArrayXd NodeCos::getDerivative(Trace& stack, int loc) {
         switch (loc) {
             case 1: // d/dw0
-                return stack_f[stack_f.size()-1] * -sin(W[0] * stack_f[stack_f.size() - 1]);
+                return stack.f[stack.f.size()-1] * -sin(W[0] * stack.f[stack.f.size() - 1]);
             case 0: // d/dx0
             default:
-               return W[0] * -sin(W[0] * stack_f[stack_f.size() - 1]);
+               return W[0] * -sin(W[0] * stack.f[stack.f.size() - 1]);
         } 
     }
     

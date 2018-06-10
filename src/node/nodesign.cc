@@ -42,14 +42,14 @@ namespace FT{
         stack.fs.push("sign("+ stack.fs.pop() +")");
     }
 
-    ArrayXd NodeSign::getDerivative(vector<ArrayXd>& stack_f, int loc) {
+    ArrayXd NodeSign::getDerivative(Trace& stack, int loc) {
         // Might want to experiment with using a perceptron update rule or estimating with some other function
         switch (loc) {
             case 1: // d/dw0
-                return stack_f[stack_f.size()-1] / (2 * sqrt(W[0] * stack_f[stack_f.size()-1]));
+                return stack.f[stack.f.size()-1] / (2 * sqrt(W[0] * stack.f[stack.f.size()-1]));
             case 0: // d/dx0
             default:
-                return W[0] / (2 * sqrt((W[0] * stack_f[stack_f.size()-1]).abs()));
+                return W[0] / (2 * sqrt((W[0] * stack.f[stack.f.size()-1]).abs()));
         } 
     }
     

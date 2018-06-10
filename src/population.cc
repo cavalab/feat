@@ -59,7 +59,7 @@ namespace FT{
             Z[key].second.push_back(ArrayXd::Zero(2));
          }
          
-        Data data(X, y, Z);
+        Data data(X, y, Z, false);
         
         //cout<<"Enter\n";  
         unsigned i = 0; 

@@ -37,10 +37,11 @@ namespace FT{
         stack.fs.push("tanh(" + stack.fs.pop() + ")");
     }
 
-    ArrayXd NodeTanh::getDerivative(vector<ArrayXd>& stack_f, int loc) {
+    ArrayXd NodeTanh::getDerivative(Trace& stack, int loc)
+    {
         ArrayXd numerator;
         ArrayXd denom;
-        ArrayXd x = stack_f[stack_f.size()-1];
+        ArrayXd x = stack.f[stack.f.size()-1];
         switch (loc) {
             case 1: // d/dw0
                 numerator = 4 * x * exp(2 * this->W[0] * x);
@@ -54,8 +55,8 @@ namespace FT{
                 numerator = 4 * this->W[0] * exp(2 * this->W[0] * x);
                 denom = pow(exp(2 * this->W[0] * x) + 1, 2);
 
-                // numerator = 4 * W[0] * exp(2 * W[0] * stack_f[stack_f.size() - 1]);
-                // denom = pow(exp(2 * W[0] * stack_f[stack_f.size()-1]),2);
+                // numerator = 4 * W[0] * exp(2 * W[0] * stack.f[stack.f.size() - 1]);
+                // denom = pow(exp(2 * W[0] * stack.f[stack.f.size()-1]),2);
                 return numerator/denom;
         } 
     }

@@ -33,20 +33,21 @@ namespace FT{
     /// Evaluates the node symbolically
     void NodeLogit::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("1/(1+exp(-" + stack.fs.pop() + "))");
+        /* stack.fs.push("1/(1+exp(-" + stack.fs.pop() + "))"); */
+        stack.fs.push("logit(" + stack.fs.pop() + ")");
     }
 
-    ArrayXd NodeLogit::getDerivative(vector<ArrayXd>& stack_f, int loc) {
+    ArrayXd NodeLogit::getDerivative(Trace& stack, int loc) {
         ArrayXd numerator, denom;
         switch (loc) {
             case 1: // d/dw0
-                numerator = stack_f[stack_f.size() -1] * exp(-W[0] * stack_f[stack_f.size() -1]);
-                denom = pow(1 + exp(-W[0] * stack_f[stack_f.size()-1]), 2);
+                numerator = stack.f[stack.f.size() -1] * exp(-W[0] * stack.f[stack.f.size() -1]);
+                denom = pow(1 + exp(-W[0] * stack.f[stack.f.size()-1]), 2);
                 return numerator/denom;
             case 0: // d/dx0
             default:
-                numerator = W[0] * exp(-W[0] * stack_f[stack_f.size() - 1]);
-                denom = pow(1 + exp(-W[0] * stack_f[stack_f.size() - 1]), 2);
+                numerator = W[0] * exp(-W[0] * stack.f[stack.f.size() - 1]);
+                denom = pow(1 + exp(-W[0] * stack.f[stack.f.size() - 1]), 2);
                 return numerator/denom;
         } 
     }

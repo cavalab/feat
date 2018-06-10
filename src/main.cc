@@ -206,34 +206,35 @@ int main(int argc, char** argv){
    
     if (split < 1.0)
     {
-        // split data into training and test sets
-        MatrixXd X_t(X.rows(),int(X.cols()*split));
-        MatrixXd X_v(X.rows(),int(X.cols()*(1-split)));
-        VectorXd y_t(int(y.size()*split)), y_v(int(y.size()*(1-split)));
+        /* // split data into training and test sets */
+        /* MatrixXd X_t(X.rows(),int(X.cols()*split)); */
+        /* MatrixXd X_v(X.rows(),int(X.cols()*(1-split))); */
+        /* VectorXd y_t(int(y.size()*split)), y_v(int(y.size()*(1-split))); */
  
-        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_t;
-        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_v;
+        /* std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_t; */
+        /* std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_v; */
         
-        FT::DataRef d(X, y, Z, X_t, y_t, Z_t, X_v, y_v, Z_v);
+        FT::DataRef d(X, y, Z, feat.get_classification());
         
-        FT::train_test_split(d, feat.get_shuffle(), split);
+        d.train_test_split(feat.get_shuffle(), split);
        
-        MatrixXd X_tcopy = X_t;     
-        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_tcopy = Z_t;
-      
+        MatrixXd X_tcopy = d.t->X;     
+        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_tcopy = d.t->Z;
+        VectorXd y_tcopy = d.t->y;
+
         cout << "fitting model...\n";
         
-        feat.fit(X_t, y_t, Z_t);
+        feat.fit(d.t->X, d.t->y, d.t->Z);
 
         cout << "generating training prediction...\n";
 
-        double score_t = feat.score(X_tcopy,y_t, Z_tcopy);
+        double score_t = feat.score(X_tcopy, y_tcopy, Z_tcopy);
 
         cout.precision(5);
         cout << "train score: " << score_t << "\n";
         
         cout << "generating test prediction...\n";
-        double score = feat.score(X_v,y_v,Z_v);
+        double score = feat.score(d.v->X,d.v->y,d.v->Z);
         cout << "test score: " << score << "\n";
     }
     else
@@ -243,6 +244,8 @@ int main(int argc, char** argv){
         feat.fit(X, y, Z);
         
     }
+    cout << "printing final model\n";
+    cout << feat.get_model();
     cout << "done!\n";
 	
     return 0;

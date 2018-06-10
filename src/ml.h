@@ -18,7 +18,7 @@ license: GNU/GPL v3
 #include <shogun/regression/LinearRidgeRegression.h>
 #include <shogun/machine/RandomForest.h>
 #include <shogun/regression/svr/LibLinearRegression.h>
-#include <shogun/classifier/svm/LibLinear.h>
+/* #include <shogun/classifier/svm/LibLinear.h> */
 #include <shogun/ensemble/MeanRule.h>
 #include <shogun/ensemble/MajorityVote.h>
 #include <cmath>
@@ -27,6 +27,7 @@ license: GNU/GPL v3
 #include "ml/MyCARTree.h"
 #include "ml/MulticlassLogisticRegression.h"
 #include "ml/MyMulticlassLibLinear.h"
+#include "ml/MyLibLinear.h"
 #include "params.h"
 
 // stuff being used
@@ -106,7 +107,8 @@ namespace FT{
             /*     } */
             /* } */
     };
-    
+/////////////////////////////////////////////////////////////////////////////////////// Definitions
 }
+
 
 #endif

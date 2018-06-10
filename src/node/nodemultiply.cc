@@ -36,17 +36,17 @@ namespace FT{
 	    stack.fs.push("(" + stack.fs.pop() + "*" + stack.fs.pop() + ")");
     }
 
-    ArrayXd NodeMultiply::getDerivative(vector<ArrayXd>& stack_f, int loc) {
+    ArrayXd NodeMultiply::getDerivative(Trace& stack, int loc) {
         switch (loc) {
             case 3: // d/dW[1]
-                return stack_f[stack_f.size()-1] * this->W[0] * stack_f[stack_f.size()-2];
+                return stack.f[stack.f.size()-1] * this->W[0] * stack.f[stack.f.size()-2];
             case 2: // d/dW[0] 
-                return stack_f[stack_f.size()-1] * this->W[1] * stack_f[stack_f.size()-2];
+                return stack.f[stack.f.size()-1] * this->W[1] * stack.f[stack.f.size()-2];
             case 1: // d/dx2
-                return this->W[0] * this->W[1] * stack_f[stack_f.size() - 2];
+                return this->W[0] * this->W[1] * stack.f[stack.f.size() - 2];
             case 0: // d/dx1
             default:
-                return this->W[1] * this->W[0] * stack_f[stack_f.size() - 1];
+                return this->W[1] * this->W[0] * stack.f[stack.f.size() - 1];
         } 
     }
     

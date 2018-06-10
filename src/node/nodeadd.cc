@@ -38,17 +38,18 @@ namespace FT{
     }
 
     // NEED TO MAKE SURE CASE 0 IS TOP OF STACK, CASE 2 IS w[0]
-    ArrayXd NodeAdd::getDerivative(vector<ArrayXd>& stack_f, int loc) {
+    ArrayXd NodeAdd::getDerivative(Trace& stack, int loc) 
+    {
         switch (loc) {
             case 3: // d/dW[1] 
-                return stack_f[stack_f.size()-2];
+                return stack.f[stack.f.size()-2];
             case 2: // d/dW[0]
-                return stack_f[stack_f.size()-1];
+                return stack.f[stack.f.size()-1];
             case 1: // d/dx2
-                return this->W[1] * ArrayXd::Ones(stack_f[stack_f.size()-2].size());
+                return this->W[1] * ArrayXd::Ones(stack.f[stack.f.size()-2].size());
             case 0: // d/dx1
             default:
-                return this->W[0] * ArrayXd::Ones(stack_f[stack_f.size()-1].size());
+                return this->W[0] * ArrayXd::Ones(stack.f[stack.f.size()-1].size());
         } 
     }
     

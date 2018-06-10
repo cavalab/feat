@@ -202,6 +202,26 @@ namespace FT{
    
     ///return best model
     string Feat::get_representation(){ return best_ind.get_eqn();}
+    
+    string Feat::get_model()
+    {   
+        vector<string> features = best_ind.get_features();
+        vector<double> weights = p_ml->get_weights();
+        vector<double> aweights(weights.size());
+        for (int i =0; i<aweights.size(); ++i) 
+            aweights[i] = fabs(weights[i]);
+        vector<size_t> order = argsort(aweights);
+        string output;
+        output += "Feature,Weight\n";
+        for (unsigned i = order.size(); --i > 0;)
+        {
+            output += features.at(order[i]);
+            output += ",";
+            output += std::to_string(weights.at(order[i]));
+            output += "\n";
+        }
+        return output;
+    }
 
     ///get number of parameters in best
     int Feat::get_n_params(){ return best_ind.get_n_params(); } 
@@ -386,17 +406,19 @@ namespace FT{
             use_arch = true;
         
         // split data into training and test sets
-        MatrixXd X_t(X.rows(),int(X.cols()*params.split));
-        MatrixXd X_v(X.rows(),int(X.cols()*(1-params.split)));
-        VectorXd y_t(int(y.size()*params.split)), y_v(int(y.size()*(1-params.split)));
+        /* MatrixXd X_t(X.rows(),int(X.cols()*params.split)); */
+        /* MatrixXd X_v(X.rows(),int(X.cols()*(1-params.split))); */
+        /* VectorXd y_t(int(y.size()*params.split)), y_v(int(y.size()*(1-params.split))); */
        
-        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_t;
-        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_v;
+        /* std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_t; */
+        /* std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_v; */
         
-        DataRef d(X, y, Z, X_t, y_t, Z_t, X_v, y_v, Z_v);
+        /* DataRef d(X, y, Z, X_t, y_t, Z_t, X_v, y_v, Z_v); */
         
-        train_test_split(d, params.shuffle, params.split);
-       
+        /* train_test_split(d, params.shuffle, params.split); */
+        DataRef d(X, y, Z, params.classification);
+        d.train_test_split(params.shuffle, params.split);
+
         if (params.classification) 
             params.set_sample_weights(d.t->y); 
        
@@ -418,7 +440,7 @@ namespace FT{
         params.msg("Initial population:\n"+p_pop->print_eqns(),2);
 
         // resize F to be twice the pop-size x number of samples
-        F.resize(X_t.cols(),int(2*params.pop_size));
+        F.resize(d.t->X.cols(),int(2*params.pop_size));
        
         // evaluate initial population
         params.msg("Evaluating initial population",1);
@@ -445,7 +467,6 @@ namespace FT{
             // evaluate offspring
             params.msg("evaluating offspring...", 2);
             p_eval->fitness(p_pop->individuals, *d.t, F, params, true);
-
             // select survivors from combined pool of parents and offspring
             params.msg("survival...", 2);
             survivors = p_surv->survive(*p_pop, F, params);
@@ -464,9 +485,8 @@ namespace FT{
             {
                 print_stats(log);
             }            
-            else
-                printProgress(((g+1)*1.0)/params.gens);
-            
+            /* else */
+            /*     printProgress(((g+1)*1.0)/params.gens); */
             if (params.backprop)
             {
                 params.bp.learning_rate = (1-1/(1+double(params.gens)))*params.bp.learning_rate;
@@ -474,14 +494,13 @@ namespace FT{
             }
                 //cout<<"\rCompleted "<<((g+1)*100/params.gens)<<"%"<< std::flush;
         }
-        cout<<"\n";
         params.msg("finished",1);
         params.msg("best training representation: " + best_ind.get_eqn(),1);
         params.msg("train score: " + std::to_string(best_score), 1);
         // evaluate population on validation set
         if (params.split < 1.0)
         {
-            F_v.resize(X_v.cols(),int(2*params.pop_size)); 
+            F_v.resize(d.v->X.cols(),int(2*params.pop_size)); 
             if (use_arch){
                 p_eval->val_fitness(arch.archive, *d.t, F_v, *d.v, params);
             }
@@ -589,7 +608,7 @@ namespace FT{
         
         VectorXd y = VectorXd();
         
-        Data d(X, y, Z);
+        Data d(X, y, Z, get_classification());
         
         if (ind == 0)        // if ind is empty, predict with best_ind
         {

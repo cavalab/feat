@@ -20,8 +20,8 @@ namespace FT{
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack);
 
-            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc);
-
+            ArrayXd getDerivative(Trace& stack, int loc);
+            
         protected:
             NodeSin* clone_impl() const override;  
             NodeSin* rnd_clone_impl() const override;  

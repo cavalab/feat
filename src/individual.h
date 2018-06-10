@@ -46,12 +46,15 @@ namespace FT{
 
         /// calculate program output while maintaining stack trace
         MatrixXd out_trace(Data d,
-                     const Parameters& params, vector<vector<ArrayXd>>& stack_trace);
+                     const Parameters& params, vector<Trace>& stack_trace);
 
 
         /// return symbolic representation of program
         string get_eqn();
-        
+
+        /// return vectorized representation of program
+        vector<string> get_features();
+
         /// return program name list 
         string program_str() const;
 
@@ -108,7 +111,6 @@ namespace FT{
         /// set probabilities
         void set_p(const vector<double>& weights, const double& fb);
     };
-    
 }
 
 #endif

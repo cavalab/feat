@@ -16,13 +16,13 @@ namespace FT{
     		std::vector<double> W;
             std::vector<double> V;  
     	
-    		virtual ~NodeDx(){}
+    		virtual ~NodeDx();
 
-    		virtual ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc) = 0;
+    		virtual ArrayXd getDerivative(Trace& stack, int loc) = 0;
     		
-    		void derivative(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc);
+    		void derivative(vector<ArrayXd>& gradients, Trace& stack, int loc);
 
-            void update(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, double n, double a);
+            void update(vector<ArrayXd>& gradients, Trace& stack, double n, double a);
 
             void print_weight();
 

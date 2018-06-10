@@ -38,13 +38,13 @@ namespace FT{
         stack.fs.push("log(" + stack.fs.pop() + ")");
     }
 
-    ArrayXd NodeLog::getDerivative(vector<ArrayXd>& stack_f, int loc) {
+    ArrayXd NodeLog::getDerivative(Trace& stack, int loc) {
         switch (loc) {
             case 1: // d/dw0
-                return limited(1/(W[0] * ArrayXd::Ones(stack_f[stack_f.size()-1].size())));
+                return limited(1/(W[0] * ArrayXd::Ones(stack.f[stack.f.size()-1].size())));
             case 0: // d/dx0
             default:
-                return limited(1/stack_f[stack_f.size()-1]);
+                return limited(1/stack.f[stack.f.size()-1]);
         } 
     }
     

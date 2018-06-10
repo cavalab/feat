@@ -54,35 +54,35 @@ namespace FT{
             if (params.backprop)
             {
                 AutoBackProp backprop(params.scorer, params.bp.iters, params.bp.learning_rate);
-                params.msg("Running backprop on " + individuals[i].get_eqn(), 2);
-                backprop.run(individuals[i], d, params);
+                params.msg("Running backprop on " + individuals.at(i).get_eqn(), 2);
+                backprop.run(individuals.at(i), d, params);
             }            
             // calculate program output matrix Phi
-            params.msg("Generating output for " + individuals[i].get_eqn(), 2);
+            params.msg("Generating output for " + individuals.at(i).get_eqn(), 2);
             MatrixXd Phi = individuals.at(i).out(d, params);            
 
             // calculate ML model from Phi
-            params.msg("ML training on " + individuals[i].get_eqn(), 2);
+            params.msg("ML training on " + individuals.at(i).get_eqn(), 2);
             bool pass = true;
             auto ml = std::make_shared<ML>(params);
 
-            shared_ptr<CLabels> yhat = ml->fit(Phi,d.y,params,pass,individuals[i].dtypes);
+            shared_ptr<CLabels> yhat = ml->fit(Phi,d.y,params,pass,individuals.at(i).dtypes);
 
             // assign F and aggregate fitness
-            params.msg("Assigning fitness to " + individuals[i].get_eqn(), 2);
+            params.msg("Assigning fitness to " + individuals.at(i).get_eqn(), 2);
 
             if (!pass)
             {
                 vector<double> w(0,Phi.rows());     // set weights to zero
-                individuals[i].set_p(w,params.feedback);
-                individuals[i].fitness = MAX_DBL;
-                F.col(individuals[i].loc) = MAX_DBL*VectorXd::Ones(d.y.size());
+                individuals.at(i).set_p(w,params.feedback);
+                individuals.at(i).fitness = MAX_DBL;
+                F.col(individuals.at(i).loc) = MAX_DBL*VectorXd::Ones(d.y.size());
             }
             else
             {
                 // assign weights to individual
-                individuals[i].set_p(ml->get_weights(),params.feedback);
-                assign_fit(individuals[i],F,yhat,d.y,params);
+                individuals.at(i).set_p(ml->get_weights(),params.feedback);
+                assign_fit(individuals.at(i),F,yhat,d.y,params);
 
                 if (params.hillclimb)
                 {
@@ -92,13 +92,13 @@ namespace FT{
                                           updated);
                     if (updated)    // update the fitness of this individual
                     {
-                        assign_fit(individuals[i], F, yhat2, d.y, params);
+                        assign_fit(individuals.at(i), F, yhat2, d.y, params);
                     }
 
                 }
             }
         }
-    }    
+    }
     
     // assign fitness to program
     void Evaluation::assign_fit(Individual& ind, MatrixXd& F, const shared_ptr<CLabels>& yhat, 
@@ -164,33 +164,33 @@ namespace FT{
         for (unsigned i = start; i<individuals.size(); ++i)
         {
             // calculate program output matrix Phi
-            params.msg("Generating output for " + individuals[i].get_eqn(), 2);
+            params.msg("Generating output for " + individuals.at(i).get_eqn(), 2);
             MatrixXd Phi = individuals.at(i).out(dt, params);            
 
             // calculate ML model from Phi
-            params.msg("ML training on " + individuals[i].get_eqn(), 2);
+            params.msg("ML training on " + individuals.at(i).get_eqn(), 2);
             bool pass = true;
             auto ml = std::make_shared<ML>(params);
-            shared_ptr<CLabels> yhat_t = ml->fit(Phi,dt.y,params,pass,individuals[i].dtypes);
+            shared_ptr<CLabels> yhat_t = ml->fit(Phi,dt.y,params,pass,individuals.at(i).dtypes);
             if (!pass)
             {
-                HANDLE_ERROR_NO_THROW("Error training eqn " + individuals[i].get_eqn() + 
+                HANDLE_ERROR_NO_THROW("Error training eqn " + individuals.at(i).get_eqn() + 
                                     "\nwith raw output " + 
-                                    to_string(individuals[i].out(dt, params)) + "\n");
+                                    to_string(individuals.at(i).out(dt, params)) + "\n");
             }
             
             // calculate program output matrix Phi on validation data
-            params.msg("Generating validation output for " + individuals[i].get_eqn(), 2);
+            params.msg("Generating validation output for " + individuals.at(i).get_eqn(), 2);
             MatrixXd Phi_v = individuals.at(i).out(dv, params);            
 
             // calculate ML model from Phi
-            params.msg("ML predicting on " + individuals[i].get_eqn(), 2);
+            params.msg("ML predicting on " + individuals.at(i).get_eqn(), 2);
             shared_ptr<CLabels> yhat_v = ml->predict(Phi_v);
 
             // assign F and aggregate fitness
-            params.msg("Assigning val fitness to " + individuals[i].get_eqn(), 2);
+            params.msg("Assigning val fitness to " + individuals.at(i).get_eqn(), 2);
             
-            assign_fit(individuals[i],F,yhat_v,dv.y,params, true);
+            assign_fit(individuals.at(i),F,yhat_v,dv.y,params, true);
                         
         }
     }

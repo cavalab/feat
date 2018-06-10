@@ -19,7 +19,9 @@ namespace FT{
 
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack);
-            
+
+            double slope(const ArrayXd& x, const ArrayXd& y);
+
         protected:
             NodeSlope* clone_impl() const override; 
             NodeSlope* rnd_clone_impl() const override; 

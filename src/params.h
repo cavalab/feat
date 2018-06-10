@@ -141,6 +141,5 @@ namespace FT{
         
         void set_sample_weights(VectorXd& y);
     };
-
 }
 #endif

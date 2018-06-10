@@ -22,8 +22,8 @@ namespace FT{
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack);
 
-            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc);
-                        
+            ArrayXd getDerivative(Trace& stack, int loc); 
+
         protected:
                 Node2dGaussian* clone_impl() const override;
 
