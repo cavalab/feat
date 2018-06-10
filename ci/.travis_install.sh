@@ -26,7 +26,7 @@ export PATH=/home/travis/miniconda/bin:$PATH
 conda update --yes conda
 conda install --yes -c conda-forge shogun-cpp
 
-# the new version of json-c seems to be missing a fn shogun is linked to;       
+# the new version of json-c seems to be missing a fn shogun is linked to; 
 # force install of older version
 conda install --yes json-c=0.12.1-0
 

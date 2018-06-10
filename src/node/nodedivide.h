@@ -21,7 +21,7 @@ namespace FT{
             void eval_eqn(Stacks& stack);
 
             // Might want to check derivative orderings for other 2 arg nodes
-            ArrayXd getDerivative(vector<ArrayXd>& stack_f, int loc);
+            ArrayXd getDerivative(Trace& stack, int loc);
             
         protected:
             NodeDivide* clone_impl() const override;

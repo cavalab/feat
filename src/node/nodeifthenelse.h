@@ -8,7 +8,7 @@ license: GNU/GPL v3
 #include "node.h"
 
 namespace FT{
-	class NodeIfThenElse : public Node
+	class NodeIfThenElse : public NodeDx
     {
     	public:
     	
@@ -20,6 +20,8 @@ namespace FT{
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack);
             
+            ArrayXd getDerivative(Trace& stack, int loc);
+
         protected:
             NodeIfThenElse* clone_impl() const override;
 

@@ -44,8 +44,8 @@ namespace FT {
         std::map<string, callback> d_score_hash;
         std::map<string, callback> score_hash;
         
-        AutoBackProp(string scorer, int iters=1000, double n=0.1, double a=0.9);
-        
+        AutoBackProp(string scorer, int iters=1000, double n=0.1, double a=0.9); 
+
         /// adapt weights
 		void run(Individual& ind, Data d,
                  const Parameters& params);
@@ -75,7 +75,7 @@ namespace FT {
 		void print_weights(NodeVector& program);
 		
 		/// Return the f_stack
-		vector<vector<ArrayXd>> forward_prop(Individual& ind, Data d,
+		vector<Trace> forward_prop(Individual& ind, Data d,
                                MatrixXd& Phi, const Parameters& params);
 
 		/// Updates stacks to have proper value on top
@@ -83,10 +83,7 @@ namespace FT {
                          vector<ArrayXd>& derivatives);
 
         /// Compute gradients and update weights 
-		/* void backprop(vector<ArrayXd>& f_stack, NodeVector& program, int start, int end, */
-                      /* MatrixXd& X, VectorXd& y, */ 
-                               /* std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z); */
-        void backprop(vector<ArrayXd>& f_stack, NodeVector& program, int start, int end, 
+        void backprop(Trace& f_stack, NodeVector& program, int start, int end, 
                                 double Beta, shared_ptr<CLabels>& yhat, 
                                 Data d,
                                vector<float> sw);
@@ -94,19 +91,20 @@ namespace FT {
         /// select random subset of data for training weights.
         void get_batch(Data d, Data db, int batch_size);
        
-        /* bool isNodeDx(Node* n){ return NULL != dynamic_cast<NodeDx*>(n); ; } */
-        /* bool isNodeDx(const std::unique_ptr<Node>& n) */ 
-        /* { */
-        /*     Node * tmp = n.get(); */
-        /*     bool answer = isNodeDx(tmp); */ 
-        /*     tmp = nullptr; */
-        /*     return answer; */
-        /* } */
 		template <class T>
-		T pop(vector<T>* v);
+		T pop(vector<T>* v) {
+			T value = v->back();
+			v->pop_back();
+			return value;
+		}
 
 		template <class T>
-		T pop_front(vector<T>* v);
+		T pop_front(vector<T>* v) {
+			T value = v->front();
+			v->erase(v->begin());
+			return value;
+		}
+
 
 	};
 }

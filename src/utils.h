@@ -14,7 +14,7 @@ license: GNU/GPL v3
 #include <map>
 #include "init.h"
 #include "error.h"
-#include "data.h"
+//#include "data.h"
 
 using namespace Eigen;
 
@@ -54,6 +54,24 @@ namespace FT{
                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
                            char sep, vector<int> idx);
 
+    void reorder_longitudinal(vector<ArrayXd> &vec1, vector<ArrayXd> &vec2,
+                             vector<int> const &order) 
+    {   
+    
+        for( int s = 1, d; s < order.size(); ++ s )
+        {
+            for ( d = order[s]; d < s; d = order[d] );
+            
+            if ( d == s )
+            {
+                while ( d = order[d], d != s )
+                {
+                    swap(vec1[s], vec1[d]);
+                    swap(vec2[s], vec2[d]);
+                }
+            }
+        }
+    }
     /// check if element is in vector.
     template<typename T>
     bool in(const vector<T> v, const T& i)
@@ -127,17 +145,6 @@ namespace FT{
 			    high_resolution_clock::time_point _start;
 			
     };
-    
-    void reorder_longitudinal(vector<ArrayXd> &vec1,
-                             vector<ArrayXd> &vec2,
-                             vector<int> const &order);
-    
-    void split_longitudinal(std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
-                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_t,
-                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_v,
-                            double split);
-
-    void train_test_split(DataRef& d, bool shuffle, double split);
  
     /// return the softmax transformation of a vector.
     template <typename T>

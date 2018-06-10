@@ -224,6 +224,9 @@ namespace FT{
             ///return best model
             string get_representation();
 
+            ///return best model: features plus their importances
+            string get_model();
+
             ///get number of parameters in best
             int get_n_params();
 
@@ -351,6 +354,5 @@ namespace FT{
             /// fits final model to best transformation
             void final_model(DataRef& d);
     };
-    
 }
 #endif

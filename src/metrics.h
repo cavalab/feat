@@ -51,7 +51,6 @@ namespace FT
         /// log loss
         double mean_log_loss(const VectorXd& y, const VectorXd& yhat, VectorXd& loss,
                           const vector<float>& class_weights = vector<float>());
-
         /// log loss
         double log_loss_label(const VectorXd& y, const shared_ptr<CLabels>& labels, VectorXd& loss,
                           const vector<float>& class_weights=vector<float>());
@@ -80,6 +79,7 @@ namespace FT
 
         VectorXd multi_log_loss(const VectorXd& y, shared_ptr<CLabels>& labels, 
                           const vector<float>& class_weights=vector<float>());
+                          
         /// derivative of multinomial log loss
         VectorXd d_multi_log_loss(const VectorXd& y, shared_ptr<CLabels>& labels, 
                           const vector<float>& class_weights=vector<float>());
@@ -121,6 +121,7 @@ namespace FT
         /*     Map<ArrayXd> cl(class_loss.data(),class_loss.size()); */        
         /*     return cl.mean(); */
         /* } */
+        
     } // metrics
 } // FT
 

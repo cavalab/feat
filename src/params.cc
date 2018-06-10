@@ -13,37 +13,37 @@ namespace FT{
                unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
                double fb, string sc, string fn, bool bckprp, int iters, double lr,
                int bs, bool hclimb):    
-        pop_size(pop_size),
-        gens(gens),
-        ml(ml),
-        classification(classification),
-        max_stall(max_stall), 
-        cross_rate(cr),
-        max_depth(max_depth),
-        max_dim(max_dim),
-        erc(constant),
-        shuffle(sh),
-        split(sp),
-        otype(ot),
-        feedback(fb),
-        backprop(bckprp),
-        bp(iters, lr, bs),
-        hillclimb(hclimb),
-        hc(iters, lr)
-    {
-        set_verbosity(verbosity);
-        if (fs.empty())
-            fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
-                  "logit,tanh,gauss,relu,"
-                  "and,or,not,xor,=,<,<=,>,>="; //sign,step,if,ite";
-        set_functions(fs);
-        set_objectives(obj);
-        set_feature_names(fn);
-        updateSize();     
-        set_otypes();
-        n_classes = 2;
-        set_scorer(sc);
-    }
+            pop_size(pop_size),
+            gens(gens),
+            ml(ml),
+            classification(classification),
+            max_stall(max_stall), 
+            cross_rate(cr),
+            max_depth(max_depth),
+            max_dim(max_dim),
+            erc(constant),
+            shuffle(sh),
+            split(sp),
+            otype(ot),
+            feedback(fb),
+            backprop(bckprp),
+            bp(iters, lr, bs),
+            hillclimb(hclimb),
+            hc(iters, lr)
+        {
+            set_verbosity(verbosity);
+            if (fs.empty())
+                fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
+                      "logit,tanh,gauss,relu,split,"
+                      "and,or,not,xor,=,<,<=,>,>=,if,ite";
+            set_functions(fs);
+            set_objectives(obj);
+            set_feature_names(fn);
+            updateSize();     
+            set_otypes();
+            n_classes = 2;
+            set_scorer(sc);
+        }
     
     Parameters::~Parameters(){}
     
@@ -297,6 +297,9 @@ namespace FT{
     	
     	else if (str.compare("<=") == 0)
     		return std::unique_ptr<Node>(new NodeLEQ());
+ 
+        else if (str.compare("split") == 0)
+    		return std::unique_ptr<Node>(new NodeSplit());
     	
      	else if (str.compare("if") == 0)
     		return std::unique_ptr<Node>(new NodeIf());   	    		
@@ -391,6 +394,7 @@ namespace FT{
             }
         }
     }
+    
     void Parameters::set_functions(string fs)
     {
         /*! 

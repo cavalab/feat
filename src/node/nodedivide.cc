@@ -42,9 +42,9 @@ namespace FT{
     }
 
     // Might want to check derivative orderings for other 2 arg nodes
-    ArrayXd NodeDivide::getDerivative(vector<ArrayXd>& stack_f, int loc) {
-        ArrayXd x1 = stack_f[stack_f.size() - 1];
-        ArrayXd x2 = stack_f[stack_f.size() - 2];
+    ArrayXd NodeDivide::getDerivative(Trace& stack, int loc) {
+        ArrayXd x1 = stack.f[stack.f.size() - 1];
+        ArrayXd x2 = stack.f[stack.f.size() - 2];
         switch (loc) {
             case 3: // d/dW[1]
                 return limited(-this->W[0] * x1/(x2 * pow(this->W[1], 2)));

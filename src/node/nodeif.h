@@ -8,17 +8,27 @@ license: GNU/GPL v3
 #include "node.h"
 
 namespace FT{
-	class NodeIf : public Node
+	class NodeIf : public NodeDx
     {
     	public:
     	   	
-    		NodeIf();
+    		NodeIf(vector<double> W0 = vector<double>())
+    		{
+    			name = "if";
+    			otype = 'f';
+    			arity['f'] = 1;
+    			arity['b'] = 1;
+    			complexity = 5;
+                W.push_back(0);
+    		}
     		
             /// Evaluates the node and updates the stack states. 
             void evaluate(Data& data, Stacks& stack);
 
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack);
+            
+            ArrayXd getDerivative(Trace& stack, int loc);
             
         protected:
             NodeIf* clone_impl() const override;

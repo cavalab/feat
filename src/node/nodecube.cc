@@ -8,11 +8,11 @@ namespace FT{
     		  
     NodeCube::NodeCube(vector<double> W0)
     {
-	    name = "cube";
-	    otype = 'f';
-	    arity['f'] = 1;
-	    arity['b'] = 0;
-	    complexity = 33;
+		name = "cube";
+		otype = 'f';
+		arity['f'] = 1;
+		arity['b'] = 0;
+		complexity = 3;
 
         if (W0.empty())
         {
@@ -22,7 +22,7 @@ namespace FT{
         }
         else
             W = W0;
-    }
+	}
 
     /// Evaluates the node and updates the stack states.  
     void NodeCube::evaluate(Data& data, Stacks& stack)
@@ -36,13 +36,13 @@ namespace FT{
         stack.fs.push("(" + stack.fs.pop() + "^3)");
     }
 
-    ArrayXd NodeCube::getDerivative(vector<ArrayXd>& stack_f, int loc) {
+    ArrayXd NodeCube::getDerivative(Trace& stack, int loc) {
         switch (loc) {
             case 1: // d/dw0
-                return 3 * pow(stack_f[stack_f.size()-1], 3) * pow(this->W[0], 2);
+                return 3 * pow(stack.f[stack.f.size()-1], 3) * pow(this->W[0], 2);
             case 0: // d/dx0
             default:
-               return 3 * pow(this->W[0], 3) * pow(stack_f[stack_f.size()-1], 2);
+               return 3 * pow(this->W[0], 3) * pow(stack.f[stack.f.size()-1], 2);
         } 
     }
     

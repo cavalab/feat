@@ -36,40 +36,48 @@ namespace FT
         public:
         
             ///< constructor initializing the vector
-            Stack();
+            Stack()
+            {
+                st = std::vector<type>();
+            }
             
             ///< population pushes element at back of vector
-            void push(type element);
+            void push(type element){ st.push_back(element); }
             
             ///< pops element from back of vector and removes it
-            type pop();
+            type pop()
+            {
+                type ret = st.back();
+                st.pop_back();
+                return ret;
+            }
             
             ///< returns true or false depending on stack is empty or not
-            bool empty();
+            bool empty(){ return st.empty(); }
             
             ///< returns size of stack
-            unsigned int size();
+            unsigned int size(){ return st.size(); }
             
             ///< returns top element of stack
-            type& top();
+            type& top(){ return st.back(); }
             
             ///< returns element at particular location in stack
-            type& at(int i);
+            type& at(int i){ return st.at(i); }
             
             ///< clears the stack
-            void clear();
+            void clear(){ st.clear(); }
             
             ///< returns start iterator of stack
-            typename vector<type>::iterator begin();
+            typename vector<type>::iterator begin(){ return st.begin(); }
             
             ///< returns end iterator of stack
-            typename vector<type>::iterator end();
+            typename vector<type>::iterator end(){ return st.end(); }
             
             ///< returns const start iterator of stack
-            typename vector<type>::const_iterator begin() const;
+            typename vector<type>::const_iterator begin() const{ return st.begin(); }
             
             ///< returns const iterator of stack
-            typename vector<type>::const_iterator end() const;
+            typename vector<type>::const_iterator end() const{ return st.end(); }
     };
     
     /*!
@@ -90,6 +98,15 @@ namespace FT
         
         ///< checks if arity of node provided satisfies the node names in various string stacks
         bool check_s(std::map<char, unsigned int> &arity);
+    };
+    /*!
+     * @class Trace
+     * @brief used for tracing stack outputs for backprop algorithm.
+     */
+    struct Trace
+    {
+        vector<ArrayXd> f;
+        vector<ArrayXb> b;
     };
 }
 

@@ -39,9 +39,9 @@ namespace FT{
         stack.fs.push("(" + stack.fs.pop() + ")^(" + stack.fs.pop() + ")");
     }
 
-    ArrayXd NodeExponent::getDerivative(vector<ArrayXd>& stack_f, int loc) {
-        ArrayXd x1 = stack_f[stack_f.size() - 1];
-        ArrayXd x2 = stack_f[stack_f.size() - 2];
+    ArrayXd NodeExponent::getDerivative(Trace& stack, int loc) {
+        ArrayXd x1 = stack.f[stack.f.size() - 1];
+        ArrayXd x2 = stack.f[stack.f.size() - 2];
         switch (loc) {
             case 3: // Weight for the power
                 return limited(pow(this->W[0] * x1, this->W[1] * x2) * limited(log(this->W[0] * x1)) * x2);
