@@ -5,7 +5,7 @@ license: GNU/GPL v3
 #ifndef NODE_IFTHENELSE
 #define NODE_IFTHENELSE
 
-#include "node.h"
+#include "nodeDx.h"
 
 namespace FT{
 	class NodeIfThenElse : public NodeDx
@@ -18,13 +18,12 @@ namespace FT{
             void evaluate(Data& data, Stacks& stack);
 
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack);
+            void eval_eqn(Stacks& stack);            
             
-            ArrayXd getDerivative(Trace& stack, int loc);
+            ArrayXd getDerivative(Trace& stack, int loc); 
 
         protected:
             NodeIfThenElse* clone_impl() const override;
-
             NodeIfThenElse* rnd_clone_impl() const override;
     };
 

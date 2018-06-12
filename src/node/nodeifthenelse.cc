@@ -8,14 +8,14 @@ license: GNU/GPL v3
 namespace FT{
 
     NodeIfThenElse::NodeIfThenElse()
-     {
-	    name = "ite";
-	    otype = 'f';
-	    arity['f'] = 2;
-	    arity['b'] = 1;
-	    complexity = 5;
+    {
+		name = "ite";
+		otype = 'f';
+		arity['f'] = 2;
+		arity['b'] = 1;
+		complexity = 5;
         W = {0.0, 0.0};
-    }
+	}
 
     /// Evaluates the node and updates the stack states. 
     void NodeIfThenElse::evaluate(Data& data, Stacks& stack)
@@ -51,5 +51,5 @@ namespace FT{
     
     NodeIfThenElse* NodeIfThenElse::clone_impl() const { return new NodeIfThenElse(*this); }
 
-    NodeIfThenElse* NodeIfThenElse::rnd_clone_impl() const { return new NodeIfThenElse(); }  
+    NodeIfThenElse* NodeIfThenElse::rnd_clone_impl() const { return new NodeIfThenElse(); }
 }

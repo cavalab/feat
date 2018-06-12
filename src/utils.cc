@@ -271,6 +271,25 @@ namespace FT{
             
         }
     }
+    
+    void reorder_longitudinal(vector<ArrayXd> &vec1, vector<ArrayXd> &vec2,
+                             vector<int> const &order)
+    {   
+    
+        for( int s = 1, d; s < order.size(); ++ s )
+        {
+            for ( d = order[s]; d < s; d = order[d] );
+            
+            if ( d == s )
+            {
+                while ( d = order[d], d != s )
+                {
+                    swap(vec1[s], vec1[d]);
+                    swap(vec2[s], vec2[d]);
+                }
+            }
+        }
+    }
 
 
     /*
