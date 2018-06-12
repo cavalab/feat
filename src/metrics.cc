@@ -200,7 +200,7 @@ namespace FT
         }
 
         VectorXd d_log_loss(const VectorXd& y, shared_ptr<CLabels>& labels, 
-                            const vector<float>& class_weights=vector<float>())
+                            const vector<float>& class_weights)
         {
             /* dynamic_pointer_cast<sh::CBinaryLabels>(labels)->scores_to_probabilities(); */
             SGVector<double> tmp = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_values();

@@ -5,22 +5,14 @@ license: GNU/GPL v3
 #ifndef NODE_IF
 #define NODE_IF
 
-#include "node.h"
+#include "nodeDx.h"
 
 namespace FT{
 	class NodeIf : public NodeDx
     {
     	public:
     	   	
-    		NodeIf(vector<double> W0 = vector<double>())
-    		{
-    			name = "if";
-    			otype = 'f';
-    			arity['f'] = 1;
-    			arity['b'] = 1;
-    			complexity = 5;
-                W.push_back(0);
-    		}
+    		NodeIf(vector<double> W0 = vector<double>());
     		
             /// Evaluates the node and updates the stack states. 
             void evaluate(Data& data, Stacks& stack);
