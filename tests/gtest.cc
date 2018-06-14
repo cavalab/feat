@@ -80,8 +80,8 @@ TEST(Feat, SettingFunctions)
     //feat.set_classification(true);
     //ASSERT_EQ(sh::EProblemType::PT_MULTICLASS, feat.p_ml->p_est->get_machine_problem_type());
     
-    feat.set_verbosity(2);
-    ASSERT_EQ(2, feat.params.verbosity);
+    feat.set_verbosity(3);
+    ASSERT_EQ(3, feat.params.verbosity);
     
     feat.set_max_stall(2);
     ASSERT_EQ(2, feat.params.max_stall);
@@ -138,7 +138,7 @@ TEST(Feat, predict)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
     
-    feat.set_verbosity(0);
+    feat.set_verbosity(1);
     /* feat.set_n_threads(1); */
     /* cout << "line 143: predict\n"; */
     feat.fit(X, y);
@@ -175,7 +175,7 @@ TEST(Feat, transform)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
     
-    feat.set_verbosity(0);
+    feat.set_verbosity(1);
     
     feat.fit(X, y);
     
@@ -218,7 +218,7 @@ TEST(Feat, fit_predict)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
     
-    feat.set_verbosity(0);
+    feat.set_verbosity(1);
          
     ASSERT_EQ(feat.fit_predict(X, y).size(), 7);
 }
@@ -227,7 +227,7 @@ TEST(Feat, fit_transform)
 {
     Feat feat(100); feat.set_random_state(666);
    
-    feat.set_verbosity(0);
+    feat.set_verbosity(1);
 
     MatrixXd X(7,2); 
     X << 0,1,  
@@ -245,7 +245,7 @@ TEST(Feat, fit_transform)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
     
-    feat.set_verbosity(0);
+    feat.set_verbosity(1);
     
     MatrixXd res = feat.fit_transform(X, y);
     ASSERT_EQ(res.cols(), 7);
@@ -987,7 +987,7 @@ TEST(Parameters, ParamsTests)
 					  false,							//classification
 					  0,								//max_stall
 					  'f',								//otype
-					  1,								//verbosity
+					  2,								//verbosity
 					  "+,-,*,/,exp,log",				//functions
 					  0.5,                              //cross_rate
 					  3,								//max_depth
@@ -1038,27 +1038,27 @@ TEST(Parameters, ParamsTests)
 	ASSERT_STREQ(params.objectives[1].c_str(), "complexity");
 	
 	params.set_verbosity(-1);
-	ASSERT_EQ(params.verbosity, 1);
+	ASSERT_EQ(params.verbosity, 2);
 	
 	params.set_verbosity(10);
-	ASSERT_EQ(params.verbosity, 1);
-	
-	params.set_verbosity(2);
 	ASSERT_EQ(params.verbosity, 2);
+	
+	params.set_verbosity(3);
+	ASSERT_EQ(params.verbosity, 3);
 	
 	string str1 = "Hello\n";
 	string str2 = params.msg("Hello", 0);
 	ASSERT_STREQ(str1.c_str(), str2.c_str());
 	
-	str2 = params.msg("Hello", 1);
-	ASSERT_STREQ(str1.c_str(), str2.c_str());
-	
 	str2 = params.msg("Hello", 2);
 	ASSERT_STREQ(str1.c_str(), str2.c_str());
 	
-	params.set_verbosity(1);
-	ASSERT_EQ(params.verbosity, 1);
-	ASSERT_STREQ("", params.msg("Hello", 2).c_str());
+	str2 = params.msg("Hello", 3);
+	ASSERT_STREQ(str1.c_str(), str2.c_str());
+	
+	params.set_verbosity(2);
+	ASSERT_EQ(params.verbosity, 2);
+	ASSERT_STREQ("", params.msg("Hello", 3).c_str());
 }
 
 TEST(Individual, Check_Dominance)
