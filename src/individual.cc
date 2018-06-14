@@ -148,8 +148,8 @@ namespace FT{
 
         Stacks stack;
         
-        params.msg("evaluating program " + get_eqn(),2);
-        params.msg("program length: " + std::to_string(program.size()),2);
+        params.msg("evaluating program " + get_eqn(),3);
+        params.msg("program length: " + std::to_string(program.size()),3);
         // evaluate each node in program
         for (const auto& n : program)
         {
@@ -164,7 +164,7 @@ namespace FT{
         }
         
         // convert stack_f to Phi
-        params.msg("converting stacks to Phi",2);
+        params.msg("converting stacks to Phi",3);
         int cols;
         if (stack.f.size()==0)
         {
@@ -215,8 +215,8 @@ namespace FT{
          */
 
         Stacks stack;
-        /* params.msg("evaluating program " + get_eqn(),2); */
-        /* params.msg("program length: " + std::to_string(program.size()),2); */
+        /* params.msg("evaluating program " + get_eqn(),3); */
+        /* params.msg("program length: " + std::to_string(program.size()),3); */
 
         vector<size_t> roots = program.roots();
         size_t root = 0;
@@ -270,7 +270,7 @@ namespace FT{
         }
         
         // convert stack_f to Phi
-        params.msg("converting stacks to Phi",2);
+        params.msg("converting stacks to Phi",3);
         int cols;
         if (stack.f.size()==0)
         {

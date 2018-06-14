@@ -269,11 +269,11 @@ namespace FT{
             p_est->set_labels(some<CRegressionLabels>(SGVector<float64_t>(y)));
         
         // train ml
-        params.msg("ML training on thread" + std::to_string(omp_get_thread_num()) + "...",2," ");       
+        params.msg("ML training on thread" + std::to_string(omp_get_thread_num()) + "...",3," ");       
         // *** Train the model ***  
         p_est->train(features);
         // *** Train the model ***
-        params.msg("done.",2);
+        params.msg("done.",3);
        
         //get output
         SGVector<double> y_pred; 
