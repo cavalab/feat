@@ -482,11 +482,11 @@ namespace FT{
                 arch.update(*p_pop,params);
 
             if(params.verbosity>0)
-            {
+            /* { */
                 print_stats(log);
-            }            
-            else
-                printProgress(((g+1)*1.0)/params.gens);
+            /* } */            
+            /* else */
+            /*     printProgress(((g+1)*1.0)/params.gens); */
                 
             if (params.backprop)
             {
