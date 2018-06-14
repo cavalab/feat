@@ -69,7 +69,7 @@ cmake -DTEST=ON -DEIGEN_DIR=ON -DSHOGUN_DIR=ON ..
 cd ..
 make -C build VERBOSE=1
 echo "running feat.."
-./build/feat examples/d_enc.csv -rs 42
+./build/feat examples/d_enc.csv -rs 42 -g 10 -p 10
 
 echo "python path is..."
 which python
@@ -79,8 +79,6 @@ which cython
 
 cd ./python
 python setup.py install
-
-#_____Run the Python Tests for the wrapper_____#
 
 echo "copying wrapper test to the python folder"
 sudo cp ../tests/wrappertest.py ./ #Copy the file to python folder
