@@ -36,15 +36,9 @@ if 'SHOGUN_DIR' in env_params:
 if 'SHOGUN_LIB' in env_params:
     shogun_lib = os.environ['SHOGUN_LIB']
 
+# get path to feat shared library for linking
 cwd = '/'.join(os.getcwd().split('/')[:-1])
-from glob import glob
-src_files = [g for g in glob('../src/*.cc') if 'main' not in g]
 feat_lib = cwd + '/build/'
-# add feat_lib to LD_LIBRARY_PATH
-ld_lib_path=os.environ['LD_LIBRARY_PATH']
-
-# if feat_lib not in ld_lib_path:
-#     os.system('export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:'+feat_lib)
 
 setup(
     name="feat",
