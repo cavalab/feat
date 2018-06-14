@@ -67,12 +67,12 @@ namespace FT{
                     int dad = r.random_choice(parents);
                     // create child
                     params.msg("crossing " + pop.individuals[mom].get_eqn() + " with " + 
-                               pop.individuals[dad].get_eqn(), 2);
+                               pop.individuals[dad].get_eqn(), 3);
                     pass = cross(pop.individuals[mom],pop.individuals[dad],child,params);
                 
                     params.msg("crossing " + pop.individuals[mom].get_eqn() + " with " + 
                            pop.individuals[dad].get_eqn() + " produced " + child.get_eqn() + 
-                           ", pass: " + std::to_string(pass),2);    
+                           ", pass: " + std::to_string(pass),3);    
 
                     child.set_parents({pop.individuals[mom], pop.individuals[dad]});
                 }
@@ -81,12 +81,12 @@ namespace FT{
                     // get random mom
                     int mom = r.random_choice(parents);                
                     params.msg("mutating " + pop.individuals[mom].get_eqn() + "(" + 
-                            pop.individuals[mom].program_str() + ")", 2);
+                            pop.individuals[mom].program_str() + ")", 3);
                     // create child
                     pass = mutate(pop.individuals[mom],child,params);
                     
                     params.msg("mutating " + pop.individuals[mom].get_eqn() + " produced " + 
-                            child.get_eqn() + ", pass: " + std::to_string(pass),2);
+                            child.get_eqn() + ", pass: " + std::to_string(pass),3);
                     child.set_parents({pop.individuals[mom]});
                 }
                 if (pass)
@@ -95,7 +95,7 @@ namespace FT{
                     assert(pop.open_loc.size()>i-start);
                     params.msg("assigning " + child.program_str() + " to pop.individuals[" + 
                         std::to_string(i) + "] with pop.open_loc[" + std::to_string(i-start) + 
-                        "]=" + std::to_string(pop.open_loc[i-start]),2);
+                        "]=" + std::to_string(pop.open_loc[i-start]),3);
 
                     pop.individuals[i] = child;
                     pop.individuals[i].loc = pop.open_loc[i-start];                   
@@ -149,7 +149,7 @@ namespace FT{
          * @param params: parameters 
          * @returns modified child
          * */
-        params.msg("\tpoint mutation",2);
+        params.msg("\tpoint mutation",3);
         float n = child.size(); 
         unsigned i = 0;
         // loop thru child's program
@@ -157,7 +157,7 @@ namespace FT{
         {
             if (r() < child.get_p(i)/n)  // mutate p. 
             {
-                params.msg("\t\tmutating node " + p->name, 2);
+                params.msg("\t\tmutating node " + p->name, 3);
                 NodeVector replacements;  // potential replacements for p
 
                 if (p->total_arity() > 0) // then it is an instruction
@@ -197,7 +197,7 @@ namespace FT{
          * @returns modified child
          * */
         
-        params.msg("\tinsert mutation",2);
+        params.msg("\tinsert mutation",3);
         float n = child.size(); 
         
         if (r()<0.5 || child.get_dim() == params.max_dim)
@@ -210,7 +210,7 @@ namespace FT{
                 {
                     params.msg("\t\tinsert mutating node " + child.program[i]->name +
                                " with probability " + std::to_string(child.get_p(i)) + 
-                               "/" + std::to_string(n), 2);
+                               "/" + std::to_string(n), 3);
                     NodeVector insertion;  // inserted segment
                     NodeVector fns;  // potential fns 
                     
@@ -259,7 +259,7 @@ namespace FT{
                    
                     string s; 
                     for (const auto& ins : insertion) s += ins->name + " "; 
-                    params.msg("\t\tinsertion: " + s + "\n", 2);
+                    params.msg("\t\tinsertion: " + s + "\n", 3);
                     NodeVector new_program; 
                     splice_programs(new_program, 
                                     child.program, i, i, 
@@ -296,18 +296,18 @@ namespace FT{
          * @param params: parameters  
          * @return mutated child
          * */
-        params.msg("\tdeletion mutation",2);
-        params.msg("\t\tprogram: " + child.program_str(),2);
+        params.msg("\tdeletion mutation",3);
+        params.msg("\t\tprogram: " + child.program_str(),3);
         vector<size_t> roots = child.program.roots();
         
         size_t end = r.random_choice(roots,child.p); 
         size_t start = child.program.subtree(end);  
-        if (params.verbosity >=2)
+        if (params.verbosity >=3)
         { 
             std::string s="";
             for (unsigned i = start; i<=end; ++i) s+= child.program[i]->name + " ";
             params.msg("\t\tdeleting " + std::to_string(start) + " to " + std::to_string(end) 
-                       + ": " + s, 2);
+                       + ": " + s, 3);
         }    
         child.program.erase(child.program.begin()+start,child.program.begin()+end+1);
         // delete program from start to end by doing a crossover with an empty program at those
@@ -315,7 +315,7 @@ namespace FT{
         /* vector<std::unique_ptr<Node>>blanks; */
         /* splice_programs(child.program, child.program, start, end, */ 
         /*                 blanks,size_t(0),size_t(-1)); */
-        params.msg("\t\tresult of delete mutation: " + child.program_str(), 2);
+        params.msg("\t\tresult of delete mutation: " + child.program_str(), 3);
     }
 
     bool Variation::cross(Individual& mom, Individual& dad, Individual& child, 
@@ -339,7 +339,7 @@ namespace FT{
         
         if (subtree) 
         {
-            params.msg("\tsubtree xo",2);
+            params.msg("\tsubtree xo",3);
             // limit xo choices to matching output types in the programs. 
             vector<char> d_otypes;
             for (const auto& p : dad.program)
@@ -353,7 +353,7 @@ namespace FT{
             if (mlocs.size()==0)        // mom and dad have no overlapping types, can't cross
             {
                 params.msg("\tno overlapping types between " + mom.program_str() + "," 
-                             + dad.program_str() + "\n", 1);
+                             + dad.program_str() + "\n", 2);
                 return 0;               
             }
             j1 = r.random_choice(mlocs,mom.get_p(mlocs));    
@@ -364,10 +364,10 @@ namespace FT{
         } 
         else             // half the time, pick a root node
         {
-            params.msg("\troot xo",2);
+            params.msg("\troot xo",3);
             mlocs = mom.program.roots();
             dlocs = dad.program.roots();
-            params.msg("\t\trandom choice mlocs (size "+std::to_string(mlocs.size())+"), p size: "+std::to_string(mom.p.size()),2);
+            params.msg("\t\trandom choice mlocs (size "+std::to_string(mlocs.size())+"), p size: "+std::to_string(mom.p.size()),3);
             j1 = r.random_choice(mlocs,mom.get_p(mlocs));   // weighted probability choice    
         }
         /* cout << "mom subtree\t" << mom.program_str() << "\n"; */
@@ -382,7 +382,7 @@ namespace FT{
         // make child program by splicing mom and dad
         splice_programs(child.program, mom.program, i1, j1, dad.program, i2, j2 );
                      
-        if (params.verbosity >= 2) 
+        if (params.verbosity >= 3)
             print_cross(mom,i1,j1,dad,i2,j2,child);     
 
         assert(is_valid_program(child.program,params.num_features, params.longitudinalMap));

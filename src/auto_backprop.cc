@@ -100,9 +100,9 @@ namespace FT {
 
         this->epk = n;  // starting learning rate
         /* params.msg("running backprop on " + ind.get_eqn(), 2); */
-        params.msg("=========================",2);
-        params.msg("Iteration,Train Loss,Val Loss,Weights",2);
-        params.msg("=========================",2);
+        params.msg("=========================",3);
+        params.msg("Iteration,Train Loss,Val Loss,Weights",3);
+        params.msg("=========================",3);
         for (int x = 0; x < this->iters; x++)
         {
             /* cout << "get batch\n"; */
@@ -149,13 +149,13 @@ namespace FT {
             {
                 min_loss = current_val_loss;
                 best_weights = ind.program.get_weights();
-                params.msg("new min loss: " + std::to_string(min_loss), 2);
+                params.msg("new min loss: " + std::to_string(min_loss), 3);
             }
             else
             {
                 ++missteps;
                 /* cout << "missteps: " << missteps << "\n"; */
-                params.msg("",2);           // update learning rate
+                params.msg("",3);           // update learning rate
             }
             if (missteps == patience || std::isnan(min_loss) || std::isinf(min_loss)
                     || min_loss <= NEAR_ZERO)       // early stopping trigger
@@ -165,7 +165,7 @@ namespace FT {
             this->epk = (1 - alpha)*this->epk + alpha*this->epT;  
             /* this->epk = this->epk + this->epT; */ 
             /* cout << "epk: " << this->epk << "\n"; */
-            if (params.verbosity>1)
+            if (params.verbosity>2)
             {
                 cout << x << "," 
                  << current_loss << "," 
@@ -174,9 +174,9 @@ namespace FT {
             }
         }
         params.msg("",2);
-        params.msg("=========================",2);
-        params.msg("done=====================",2);
-        params.msg("=========================",2);
+        params.msg("=========================",3);
+        params.msg("done=====================",3);
+        params.msg("=========================",3);
         ind.program.set_weights(best_weights);
     }
 

@@ -56,7 +56,7 @@ namespace FT{
     {
         if (!ml.compare("LinearRidgeRegression") && classification)
         {
-            msg("Setting ML type to LR",2);
+            msg("Setting ML type to LR",3);
             ml = "LR";            
         }
     }
@@ -100,7 +100,7 @@ namespace FT{
         }
         else
             scorer = sc;
-        msg("scorer set to " + scorer,2);
+        msg("scorer set to " + scorer,3);
     }
     
     /// sets weights for terminals. 
@@ -128,7 +128,7 @@ namespace FT{
             weights += std::to_string(tw)+" ";
         weights += "\n";
         
-        msg(weights, 2);
+        msg(weights, 3);
     }
     
     void Parameters::updateSize()
@@ -152,13 +152,13 @@ namespace FT{
     
     void Parameters::set_verbosity(int verbosity)
     {
-        if(verbosity <=2 && verbosity >=0)
+        if(verbosity <=3 && verbosity >=0)
             this->verbosity = verbosity;
         else
         {
-            HANDLE_ERROR_NO_THROW("'" + std::to_string(verbosity) + "' is not a valid verbosity. Setting to default 1\n");
-            HANDLE_ERROR_NO_THROW("Valid Values :\n\t0 - none\n\t1 - minimal\n\t2 - all\n");
-            this->verbosity = 1;
+            HANDLE_ERROR_NO_THROW("'" + std::to_string(verbosity) + "' is not a valid verbosity. Setting to default 2\n");
+            HANDLE_ERROR_NO_THROW("Valid Values :\n\t0 - none\n\t1 - progress\n\t2 - minimal\n\t3 - all");
+            this->verbosity = 2;
         }
     } 
 
@@ -418,7 +418,7 @@ namespace FT{
             functions.push_back(createNode(token));
             fs.erase(0, pos + delim.length());
         } 
-        if (verbosity > 1){
+        if (verbosity > 2){
             std::cout << "functions set to [";
             for (const auto& f: functions) std::cout << f->name << ", "; 
             std::cout << "]\n";
