@@ -6,7 +6,7 @@ license: GNU/GPL v3
 #define NODEVECTOR_H
 #include <memory>
 #include "node/node.h"
-#include "node/nodeDx.h"
+#include "node/n_Dx.h"
 
 #include "error.h"
 namespace FT{
