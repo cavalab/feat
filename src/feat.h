@@ -64,7 +64,7 @@ namespace FT{
             /// member initializer list constructor
               
             Feat(int pop_size=100, int gens = 100, string ml = "LinearRidgeRegression", 
-                   bool classification = false, int verbosity = 1, int max_stall = 0,
+                   bool classification = false, int verbosity = 2, int max_stall = 0,
                    string sel ="lexicase", string surv="nsga2", float cross_rate = 0.5,
                    char otype='a', string functions = "", 
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 

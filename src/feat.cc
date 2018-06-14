@@ -376,10 +376,10 @@ namespace FT{
         {
             string dimension;
             dimension = str_dim.substr(0, str_dim.length() - 1);
-            params.msg("STR DIM IS "+ dimension, 1);
-            params.msg("Cols are " + std::to_string(X.rows()), 1);
+            params.msg("STR DIM IS "+ dimension, 2);
+            params.msg("Cols are " + std::to_string(X.rows()), 2);
             params.msg("Setting dimensionality as " + 
-                       std::to_string((int)(ceil(stod(dimension)*X.rows()))), 1);
+                       std::to_string((int)(ceil(stod(dimension)*X.rows()))), 2);
             set_max_dim(ceil(stod(dimension)*X.rows()));
         }
         
@@ -426,27 +426,27 @@ namespace FT{
         params.set_terminals(d.o->X.rows(), d.o->Z);        
 
         // initial model on raw input
-        params.msg("Fitting initial model", 1);
+        params.msg("Fitting initial model", 2);
         initial_model(d);  
         
         // initialize population 
-        params.msg("Initializing population", 1);
+        params.msg("Initializing population", 2);
        
         bool random = false;
         if (!p_sel->get_type().compare("random"))
             random = true;
 
         p_pop->init(best_ind,params,random);
-        params.msg("Initial population:\n"+p_pop->print_eqns(),2);
+        params.msg("Initial population:\n"+p_pop->print_eqns(),3);
 
         // resize F to be twice the pop-size x number of samples
         F.resize(d.t->X.cols(),int(2*params.pop_size));
        
         // evaluate initial population
-        params.msg("Evaluating initial population",1);
+        params.msg("Evaluating initial population",2);
         p_eval->fitness(p_pop->individuals,*d.t,F,params);
         
-        params.msg("Initial population done",1);
+        params.msg("Initial population done",2);
         
         vector<size_t> survivors;
 
@@ -455,52 +455,50 @@ namespace FT{
         {   
             params.set_current_gen(g);
             // select parents
-            params.msg("selection..", 2);
+            params.msg("selection..", 3);
             vector<size_t> parents = p_sel->select(*p_pop, F, params);
-            params.msg("parents:\n"+p_pop->print_eqns(), 2);          
+            params.msg("parents:\n"+p_pop->print_eqns(), 3);          
             
             // variation to produce offspring
-            params.msg("variation...", 2);
+            params.msg("variation...", 3);
             p_variation->vary(*p_pop, parents, params);
-            params.msg("offspring:\n" + p_pop->print_eqns(true), 2);
+            params.msg("offspring:\n" + p_pop->print_eqns(true), 3);
 
             // evaluate offspring
-            params.msg("evaluating offspring...", 2);
+            params.msg("evaluating offspring...", 3);
             p_eval->fitness(p_pop->individuals, *d.t, F, params, true);
             // select survivors from combined pool of parents and offspring
-            params.msg("survival...", 2);
+            params.msg("survival...", 3);
             survivors = p_surv->survive(*p_pop, F, params);
            
             // reduce population to survivors
-            params.msg("shrinking pop to survivors...",2);
+            params.msg("shrinking pop to survivors...",3);
             p_pop->update(survivors);
-            params.msg("survivors:\n" + p_pop->print_eqns(), 2);
+            params.msg("survivors:\n" + p_pop->print_eqns(), 3);
 
             update_best();
             
             if (use_arch) 
                 arch.update(*p_pop,params);
 
-            if(params.verbosity>0)
-            /* { */
-                print_stats(log);
-            /* } */            
-            /* else */
-            /*     printProgress(((g+1)*1.0)/params.gens); */
+            if(params.verbosity>1)
+                print_stats(log);    
+            else if(params.verbosity == 1)
+                printProgress(((g+1)*1.0)/params.gens);
                 
             if (params.backprop)
             {
                 params.bp.learning_rate = (1-1/(1+double(params.gens)))*params.bp.learning_rate;
-                params.msg("learning rate: " + std::to_string(params.bp.learning_rate),2);
+                params.msg("learning rate: " + std::to_string(params.bp.learning_rate),3);
             }
                 //cout<<"\rCompleted "<<((g+1)*100/params.gens)<<"%"<< std::flush;
         }
         
         cout <<"\n";
         
-        params.msg("finished",1);
-        params.msg("best training representation: " + best_ind.get_eqn(),1);
-        params.msg("train score: " + std::to_string(best_score), 1);
+        params.msg("finished",2);
+        params.msg("best training representation: " + best_ind.get_eqn(),2);
+        params.msg("train score: " + std::to_string(best_score), 2);
         // evaluate population on validation set
         if (params.split < 1.0)
         {
@@ -514,9 +512,9 @@ namespace FT{
         }
         else
             best_score_v = best_score;
-        params.msg("best validation representation: " + best_ind.get_eqn(),1);
-        params.msg("validation score: " + std::to_string(best_score_v), 1);
-        params.msg("fitting final model to all training data...",2);
+        params.msg("best validation representation: " + best_ind.get_eqn(),2);
+        params.msg("validation score: " + std::to_string(best_score_v), 2);
+        params.msg("fitting final model to all training data...",3);
 
         final_model(d);   // fit final model to best features
 
@@ -564,7 +562,7 @@ namespace FT{
         /* params.set_sample_weights(y);   // need to set new sample weights for y, */ 
                                         // which is probably from a validation set
         double score = p_eval->score(d.o->y,yhat,tmp,params.class_weights);
-        params.msg("final_model score: " + std::to_string(score),1);
+        params.msg("final_model score: " + std::to_string(score),2);
     }
     
     void Feat::initial_model(DataRef &d)
@@ -596,8 +594,8 @@ namespace FT{
             best_ind.program.push_back(params.terminals[i]->clone());
         best_ind.fitness = best_score;
         
-        params.msg("initial training score: " +std::to_string(best_score),1);
-        params.msg("initial validation score: " +std::to_string(best_score_v),1);
+        params.msg("initial training score: " +std::to_string(best_score),2);
+        params.msg("initial validation score: " +std::to_string(best_score_v),2);
     }
 
     MatrixXd Feat::transform(MatrixXd& X,

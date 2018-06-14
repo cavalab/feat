@@ -52,11 +52,11 @@ namespace FT {
             if (!anychanges)    // then there are no weighted nodes, so break
                 break;
             // evaluate perturbed program 
-            params.msg("Generating output for " + tmp.get_eqn(), 2);
+            params.msg("Generating output for " + tmp.get_eqn(), 3);
             MatrixXd Phi = tmp.out(d, params);            
 
             // calculate ML model from Phi
-            params.msg("ML training on " + tmp.get_eqn(), 2);
+            params.msg("ML training on " + tmp.get_eqn(), 3);
             bool pass = true;
             auto ml = std::make_shared<ML>(params);
 
