@@ -8,7 +8,7 @@
 #include "nodevector.h"
 #include "stack.h"
 #include "node/node.h"
-#include "node/nodeDx.h"
+#include "node/n_Dx.h"
 #include "metrics.h"
 #include "individual.h"
 #include "ml.h"
