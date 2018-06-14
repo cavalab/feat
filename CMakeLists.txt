@@ -72,7 +72,7 @@ list(REMOVE_ITEM sources ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cc)
 list(REMOVE_ITEM sources ${CMAKE_CURRENT_SOURCE_DIR}/src/cv_main.cc)
 
 #feat library
-add_library(feat_lib ${sources})
+add_library(feat_lib SHARED ${sources})
 
 # executables
 

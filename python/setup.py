@@ -36,6 +36,15 @@ if 'SHOGUN_DIR' in env_params:
 if 'SHOGUN_LIB' in env_params:
     shogun_lib = os.environ['SHOGUN_LIB']
 
+cwd = '/'.join(os.getcwd().split('/')[:-1])
+from glob import glob
+src_files = [g for g in glob('../src/*.cc') if 'main' not in g]
+feat_lib = cwd + '/build/'
+# add feat_lib to LD_LIBRARY_PATH
+ld_lib_path=os.environ['LD_LIBRARY_PATH']
+
+# if feat_lib not in ld_lib_path:
+#     os.system('export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:'+feat_lib)
 
 setup(
     name="feat",
@@ -49,13 +58,14 @@ setup(
     install_requires=['Numpy>=1.8.2','SciPy>=0.13.3','scikit-learn','Cython','pandas'],
     py_modules=['feat','metrics'],
     ext_modules = cythonize([Extension(name='pyfeat',
-       sources = ["pyfeat.pyx"],    # our cython source
-       include_dirs = ['../src/',eigen_dir,shogun_include_dir]
+       sources =  ["pyfeat.pyx"],    # our cython source
+       include_dirs = ['../build/','../src/',eigen_dir,shogun_include_dir]
                       +eigency.get_includes(include_eigen=False),
        extra_compile_args = ['-std=c++1y','-fopenmp','-Wno-sign-compare',
                              '-Wno-reorder'],
-       library_dirs = [shogun_lib],
-       extra_link_args = ['-lshogun'],      
+       library_dirs = [shogun_lib,feat_lib],
+       runtime_library_dirs = [feat_lib],
+       extra_link_args = ['-lshogun','-lfeat_lib'],      
        language='c++'
        )],
        language="c++")
