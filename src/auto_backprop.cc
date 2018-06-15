@@ -173,7 +173,7 @@ namespace FT {
                  print_weights(ind.program);
             }
         }
-        params.msg("",2);
+        params.msg("",3);
         params.msg("=========================",3);
         params.msg("done=====================",3);
         params.msg("=========================",3);
