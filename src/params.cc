@@ -34,7 +34,7 @@ namespace FT{
             set_verbosity(verbosity);
             if (fs.empty())
                 fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
-                      "logit,tanh,gauss,relu,split,"
+                      "logit,tanh,gauss,relu,split,float,"
                       "and,or,not,xor,=,<,<=,>,>=,if,ite";
             set_functions(fs);
             set_objectives(obj);
@@ -269,6 +269,9 @@ namespace FT{
 
         else if (str.compare("relu")==0)
             return std::unique_ptr<Node>(new NodeRelu());
+
+        else if (str.compare("float")==0)
+            return std::unique_ptr<Node>(new NodeFloat());
 
         // logical operators
         else if (str.compare("and") == 0)
