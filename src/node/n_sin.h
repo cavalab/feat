@@ -5,50 +5,27 @@ license: GNU/GPL v3
 #ifndef NODE_SIN
 #define NODE_SIN
 
-#include "node.h"
+#include "n_Dx.h"
 
 namespace FT{
-	class NodeSin : public Node
+	class NodeSin : public NodeDx
     {
     	public:
     	
-    		NodeSin()
-       		{
-    			name = "sin";
-    			otype = 'f';
-    			arity['f'] = 1;
-    			arity['b'] = 0;
-    			complexity = 3;
-    		}
+    		NodeSin(vector<double> W0 = vector<double>());
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack);
+            void evaluate(Data& data, Stacks& stack);
             
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-                stack.fs.push("sin(" + stack.fs.pop() + ")");
-            }
+            void eval_eqn(Stacks& stack);
+            
+            ArrayXd getDerivative(Trace& stack, int loc);
+            
         protected:
-            NodeSin* clone_impl() const override { return new NodeSin(*this); };  
+            NodeSin* clone_impl() const override;
+            NodeSin* rnd_clone_impl() const override;
     };
-#ifndef USE_CUDA
-    void NodeSin::evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-    {
-        stack.f.push(limited(sin(stack.f.pop())));
-    }
-#else
-    void NodeSin::evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-    {
-        GPU_Sin(stack.dev_f, stack.idx[otype], stack.N);
-    }
-#endif
 }	
 
 #endif

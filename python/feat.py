@@ -5,47 +5,68 @@ license: GNU/GPLv3
 """
 
 import argparse
-#from ._version import __version
+#from ._version import __version__
 
-from sklearn.metrics import mean_squared_error as mse
+from sklearn.base import BaseEstimator
 import numpy as np
 import pandas as pd
 import pyfeat
-from sklearn.base import BaseEstimator
+from sklearn.metrics import mean_squared_error as mse
 from sklearn.model_selection import train_test_split
-from metrics import balanced_accuracy_score
+from sklearn.metrics import log_loss
 
 class Feat(BaseEstimator):
     """Feat uses GP to find a data representation that improves the performance of a given ML
     method."""
-    def __init__(self, pop_size=100,  gens=100,  ml="LinearRidgeRegression", 
+    def __init__(self, pop_size=100,  gens=100,  ml = "LinearRidgeRegression", 
                 classification=False,  verbosity=0,  max_stall=0,
-                sel="lexicase",  surv="pareto",  cross_rate=0.5,
-                otype='a',  functions="+,-,*,/,^2,^3,exp,log,and,or,not,=,<,>,ite", 
+                sel ="lexicase",  surv ="nsga2",  cross_rate=0.5,
+                otype ='a',  functions ="", 
                 max_depth=3,   max_dim=10,  random_state=0, 
-                erc = False,  obj="fitness,complexity", shuffle=False,  split=0.75,  fb=0.5,
-                scorer=''):
+                erc = False,  obj ="fitness,complexity", shuffle=False,  split=0.75,  fb=0.5,
+                scorer ='',feature_names="", backprop=False, iters=10, lr=0.1, batch_size=100, n_threads=0,
+                hillclimb=False, logfile="Feat.log"):
         self.pop_size = pop_size
         self.gens = gens
-        self.ml = ml.encode()
+        self.ml = ml.encode() if( isinstance(ml,str) )  else ml
+
         self.classification = classification
         self.verbosity = verbosity
         self.max_stall = max_stall
-        self.sel = sel.encode()
-        self.surv = surv.encode()
+        self.sel = sel.encode() if( isinstance(sel,str) )  else sel
+        self.surv = surv.encode() if( isinstance(surv,str) )  else surv
         self.cross_rate = cross_rate
-        self.otype = otype.encode()
-        self.functions = functions.encode()
+        self.otype = otype.encode() if( isinstance(otype,str) )  else otype
+        self.functions = functions.encode() if( isinstance(functions,str) )  else functions
         self.max_depth = max_depth
         self.max_dim = max_dim
-        self.random_state = random_state
+        self.random_state = int(random_state)
         self.erc = erc      
-        self.obj = obj.encode()
+        self.obj = obj.encode() if( isinstance(obj,str) )  else obj
         self.shuffle = shuffle
         self.split = split
         self.fb = fb
-        self.scorer = scorer.encode()
-        
+        self.scorer = scorer.encode() if( isinstance(scorer,str) )  else scorer
+        self.feature_names = feature_names.encode() if isinstance(feature_names,str) else feature_names 
+        self.backprop = bool(backprop)
+        self.iters = int(iters)
+        self.lr = float(lr)
+        if batch_size:
+            self.batch_size= int(batch_size)
+        else:
+            print('batch_size is None for some reason')
+            self.batch_size = 100
+
+        self.n_threads = int(n_threads)
+        self.hillclimb= bool(hillclimb) 
+        self.logfile = logfile.encode() if isinstance(logfile,str) else logfile
+
+        # if self.verbosity>0:
+        #print('self.__dict__: ' , self.__dict__)
+        self._pyfeat=None 
+
+    def _init_pyfeat(self):
+        # set up pyfeat glue class object
         self._pyfeat = pyfeat.PyFeat( self.pop_size,  self.gens,  self.ml, 
                 self.classification,  self.verbosity,  self.max_stall,
                 self.sel,  self.surv,  self.cross_rate,
@@ -56,36 +77,89 @@ class Feat(BaseEstimator):
                 self.shuffle,  
                 self.split,  
                 self.fb,
-                self.scorer)
+                self.scorer,
+                self.feature_names,
+                self.backprop,
+                self.iters,
+                self.lr,
+                self.batch_size,
+                self.n_threads,
+                self.hillclimb,
+                self.logfile)
+   
+    def fit(self,X,y,zfile=None,zids=None):
+        self._init_pyfeat()    
+        if zfile:
+            zfile = zfile.encode() if isinstance(zfile,str) else zfile
+            self._pyfeat.fit_with_z(X,y,zfile,zids)
+        else:
+            self._pyfeat.fit(X,y)
 
-    def fit(self,X,y):
-        self._pyfeat.fit(X,y)
+    def predict(self,X,zfile=None,zids=None):
+        if zfile:
+            zfile = zfile.encode() if isinstance(zfile,str) else zfile
+            return self._pyfeat.predict_with_z(X,zfile,zids)
+        else:
+            return self._pyfeat.predict(X)
 
-    def predict(self,X):
-        return self._pyfeat.predict(X)
+    def predict_proba(self,X,zfile=None,zids=None):
+        if zfile:
+            zfile = zfile.encode() if isinstance(zfile,str) else zfile
+            tmp = self._pyfeat.predict_proba_with_z(X,zfile,zids)
+        else:
+            tmp = self._pyfeat.predict_proba(X)
+        
+        if len(tmp.shape)<2:
+                tmp  = np.vstack((1-tmp,tmp)).transpose()
+        return tmp         
 
-    def transform(self,X):
-        return self._pyfeat.transform(X)
+
+    def transform(self,X,zfile=None,zids=None):
+        if zfile:
+            zfile = zfile.encode() if isinstance(zfile,str) else zfile
+            return self._pyfeat.transform_with_z(X,zfile,zids)
+        else:
+            return self._pyfeat.transform(X)
 
     def fit_predict(self,X,y):
+        self._init_pyfeat()    
         return self._pyfeat.fit_predict(X,y)
 
     def fit_transform(self,X,y):
+        self._init_pyfeat()    
         return self._pyfeat.fit_transform(X,y)
 
-    def score(self,features,labels):
-        labels_pred = self.predict(features).flatten()
-        print('labels_pred:',labels_pred)
+    def score(self,features,labels,zfile=None,zids=None):
+        if zfile:
+            zfile = zfile.encode() if isinstance(zfile,str) else zfile
+            labels_pred = self._pyfeat.predict_with_z(features,zfile,zids).flatten()
+        else:
+            labels_pred = self.predict(features).flatten()
         if ( self.classification ):
-            return balanced_accuracy_score(labels,labels_pred)
+            return log_loss(labels,labels_pred, labels=labels)
         else:
             return mse(labels,labels_pred)
+
+    def get_model(self):
+        return self._pyfeat.get_model()
 
     def get_representation(self):
         return self._pyfeat.get_representation()
 
     def get_archive(self):
         return self._pyfeat.get_archive()
+
+    def get_coefs(self):
+        return self._pyfeat.get_coefs()
+
+    def get_dim(self):
+        return self._pyfeat.get_dim()
+
+    def get_n_params(self):
+        return self._pyfeat.get_n_params()
+
+    def get_complexity(self):
+        return self._pyfeat.get_complexity()
 
 def main():
     """Main function that is called when Fewtwo is run from the command line"""
@@ -109,7 +183,7 @@ def main():
                         type=str, help='Selection Method')  
     parser.add_argument('-sep', action='store', dest='SEP', default=',', type=str, help='separator used on input file.')
     parser.add_argument('-surv', action='store', dest='SURVIVAL_METHOD',
-                        default='pareto',
+                        default='nsga2',
                         type=str, help='Survival Method')
     parser.add_argument('-xr', action='store', dest='CROSS_OVER',default=0.5,type=float, help='Cross over Rate in [0,1]')
     parser.add_argument('-otype', action='store', dest='O_TYPE',default="a",type=str, help='OType')

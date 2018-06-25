@@ -12,45 +12,18 @@ namespace FT{
     {
     	public:
     	
-    		NodeOr()
-            {
-                name = "or";
-    			otype = 'b';
-    			arity['f'] = 0;
-    			arity['b'] = 2;
-    			complexity = 2;
-    		}
+    		NodeOr();
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack);
+            void evaluate(Data& data, Stacks& stack);
             
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-                stack.bs.push("(" + stack.bs.pop() + " OR " + stack.bs.pop() + ")");
-            }
+            void eval_eqn(Stacks& stack);
+            
         protected:
-            NodeOr* clone_impl() const override { return new NodeOr(*this); };  
-    };
-#ifndef USE_CUDA
-    void NodeOr::evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-    {
-        stack.b.push(stack.b.pop() || stack.b.pop());
-
-    }
-#else
-    void NodeOr::evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-    {
-        GPU_Or(stack.dev_b, stack.idx[otype], stack.N);
-    }
-#endif
-    
+            NodeOr* clone_impl() const override;
+            NodeOr* rnd_clone_impl() const override;
+    };    
 }	
 
 #endif

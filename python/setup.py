@@ -1,4 +1,5 @@
 #from distutils.core import setup
+import sys
 from setuptools import setup, find_packages
 from setuptools.extension import Extension
 from Cython.Build import cythonize
@@ -30,10 +31,14 @@ else:
 shogun_include_dir = '/usr/include/'
 shogun_lib = '/usr/lib/'
 if 'SHOGUN_DIR' in env_params:
+    print('SHOGUN_DIR=',os.environ['SHOGUN_DIR'])
     shogun_include_dir = os.environ['SHOGUN_DIR']
 if 'SHOGUN_LIB' in env_params:
     shogun_lib = os.environ['SHOGUN_LIB']
 
+# get path to feat shared library for linking
+cwd = '/'.join(os.getcwd().split('/')[:-1])
+feat_lib = cwd + '/build/'
 
 setup(
     name="feat",
@@ -42,18 +47,19 @@ setup(
     url = 'https://lacava.github.io/feat',
     download_url='https://github.com/lacava/feat/releases/tag/'+package_version,
     license='GNU/GPLv3',
-    description='Another feature engineering wrapper for ML.',
+    description='A Feature Engineering Automation Tool',
     zip_safe=True,
-    install_requires=['Numpy>=1.8.2','SciPy>=0.13.3','scikit-learn','Cython'],
+    install_requires=['Numpy>=1.8.2','SciPy>=0.13.3','scikit-learn','Cython','pandas'],
     py_modules=['feat','metrics'],
     ext_modules = cythonize([Extension(name='pyfeat',
-       sources = ["pyfeat.pyx"],    # our cython source
-       include_dirs = ['../src/',eigen_dir,shogun_include_dir]
+       sources =  ["pyfeat.pyx"],    # our cython source
+       include_dirs = ['../build/','../src/',eigen_dir,shogun_include_dir]
                       +eigency.get_includes(include_eigen=False),
        extra_compile_args = ['-std=c++1y','-fopenmp','-Wno-sign-compare',
                              '-Wno-reorder'],
-       library_dirs = [shogun_lib],
-       extra_link_args = ['-lshogun'],      
+       library_dirs = [shogun_lib,feat_lib],
+       runtime_library_dirs = [feat_lib],
+       extra_link_args = ['-lshogun','-lfeat_lib'],      
        language='c++'
        )],
        language="c++")

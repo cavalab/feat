@@ -5,51 +5,29 @@ license: GNU/GPL v3
 #ifndef NODE_CUBE
 #define NODE_CUBE
 
-#include "node.h"
+#include "n_Dx.h"
 
 namespace FT{
-	class NodeCube : public Node
+	class NodeCube : public NodeDx
     {
     	public:
     		  
-    		NodeCube()
-    		{
-    			name = "cube";
-    			otype = 'f';
-    			arity['f'] = 1;
-    			arity['b'] = 0;
-    			complexity = 33;
-    		}
+    		NodeCube(vector<double> W0 = vector<double>());
     		
             /// Evaluates the node and updates the stack states.  
-            void evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack);
+            void evaluate(Data& data, Stacks& stack);
             
 
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-                stack.fs.push("(" + stack.fs.pop() + "^3)");
-            }
+            void eval_eqn(Stacks& stack);
+            
+            ArrayXd getDerivative(Trace& stack, int loc);
+            
         protected:
-            NodeCube* clone_impl() const override { return new NodeCube(*this); };  
+            NodeCube* clone_impl() const override;
+            
+            NodeCube* rnd_clone_impl() const override;
     };
-#ifndef USE_CUDA    
-    void NodeCube::evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-    {
-        stack.f.push(pow(stack.f.pop(),3));
-    }
-#else
-    void NodeCube::evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-    {
-        GPU_Cube(stack.dev_f, stack.idx['f'], stack.N);
-    }
-#endif
 }	
 
 #endif

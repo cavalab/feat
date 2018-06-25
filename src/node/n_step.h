@@ -12,48 +12,20 @@ namespace FT{
     {
     	public:
     	
-    		NodeStep()
-            {
-                name = "step";
-    			otype = 'f';
-    			arity['f'] = 1;
-    			arity['b'] = 0;
-    			complexity = 1;
-    		}
+    		NodeStep();
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack);
+            void evaluate(Data& data, Stacks& stack);
             
 
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-                stack.fs.push("step("+ stack.fs.pop() +")");
-            }
+            void eval_eqn(Stacks& stack);
+            
         protected:
-            NodeStep* clone_impl() const override { return new NodeStep(*this); };  
+            NodeStep* clone_impl() const override;
+            NodeStep* rnd_clone_impl() const override;
+            
     };
-#ifndef USE_CUDA
-    void NodeStep::evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-    {
-        ArrayXd x = stack.f.pop();
-        
-        ArrayXd res = (x > 0).select(ArrayXd::Ones(x.size()), ArrayXd::Zero(x.size())); 
-        stack.f.push(res);
-        
-    }
-#else
-    void NodeStep::evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-    {
-        GPU_Step(stack.dev_f, stack.idx[otype], stack.N);
-    }
-#endif
 }	
 
 #endif

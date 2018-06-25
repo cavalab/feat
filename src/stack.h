@@ -1,35 +1,56 @@
-/* FEWTWO
+/* FEAT
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 
 #ifndef STACK_H
 #define STACK_H
+
 #ifdef USE_CUDA
     #include "node-cuda/stack_utils.h"
 #endif
+
+#include <string>
+#include <Eigen/Dense>
+#include <vector>
+#include <map>
+
+using std::vector;
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
+using Eigen::ArrayXd;
+typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
+using namespace std;
+
 //#include "node/node.h"
 //external includes
-#define MAX_DBL std::numeric_limits<double>::max()
-#define MIN_DBL std::numeric_limits<double>::min()
+//#define MAX_DBL std::numeric_limits<double>::max()
+//#define MIN_DBL std::numeric_limits<double>::min()
 
 namespace FT
 {
     template<typename type>
+    /*!
+     * @class Stack
+     * @brief template stack class which holds various stack types for feat 
+     */
     class Stack
     {
         private:
-            std::vector<type> st;
+            std::vector<type> st;               ///< vector representing the stack
             
         public:
         
+            ///< constructor initializing the vector
             Stack()
             {
                 st = std::vector<type>();
             }
             
+            ///< population pushes element at back of vector
             void push(type element){ st.push_back(element); }
             
+            ///< pops element from back of vector and removes it
             type pop()
             {
                 type ret = st.back();
@@ -37,51 +58,63 @@ namespace FT
                 return ret;
             }
             
+            ///< returns true or false depending on stack is empty or not
             bool empty(){ return st.empty(); }
             
+            ///< returns size of stack
             unsigned int size(){ return st.size(); }
             
+            ///< returns top element of stack
             type& top(){ return st.back(); }
             
+            ///< returns element at particular location in stack
             type& at(int i){ return st.at(i); }
             
+            ///< clears the stack
             void clear(){ st.clear(); }
             
+            ///< returns start iterator of stack
             typename vector<type>::iterator begin(){ return st.begin(); }
             
+            ///< returns end iterator of stack
             typename vector<type>::iterator end(){ return st.end(); }
             
-            typename vector<type>::const_iterator begin() const { return st.begin(); }
+            ///< returns const start iterator of stack
+            typename vector<type>::const_iterator begin() const{ return st.begin(); }
             
-            typename vector<type>::const_iterator end() const { return st.end(); }
+            ///< returns const iterator of stack
+            typename vector<type>::const_iterator end() const{ return st.end(); }
     };
+    
 #ifndef USE_CUDA    
+    
+    /*!
+     * @class Stacks
+     * @brief contains various types of stacks actually used by feat
+     */
     struct Stacks
     {
-        Stack<ArrayXd> f;
-        Stack<ArrayXb> b;
-        Stack<std::pair<vector<ArrayXd>, vector<ArrayXd> > > z;
-        Stack<string> fs;
-        Stack<string> bs;
-        Stack<string> zs;
+        Stack<ArrayXd> f;                   ///< floating node stack
+        Stack<ArrayXb> b;                   ///< boolean node stack
+        Stack<std::pair<vector<ArrayXd>, vector<ArrayXd> > > z;     ///< longitudinal node stack
+        Stack<string> fs;                   ///< floating node string stack
+        Stack<string> bs;                   ///< boolean node string stack
+        Stack<string> zs;                   ///< longitudinal node string stack
         
-        bool check(std::map<char, unsigned int> &arity)
-        {
-            if(arity.find('z') == arity.end())
-                return (f.size() >= arity['f'] && b.size() >= arity['b']);
-            else
-                return (f.size() >= arity['f'] && b.size() >= arity['b'] 
-                        && z.size() >= arity['z']);
-        }
+        ///< checks if arity of node provided satisfies the elements in various value stacks
+        bool check(std::map<char, unsigned int> &arity);
         
-        bool check_s(std::map<char, unsigned int> &arity)
-        {
-            if(arity.find('z') == arity.end())
-                return (fs.size() >= arity['f'] && bs.size() >= arity['b']);
-            else
-                return (fs.size() >= arity['f'] && bs.size() >= arity['b'] 
-                        && zs.size() >= arity['z']);
-        }
+        ///< checks if arity of node provided satisfies the node names in various string stacks
+        bool check_s(std::map<char, unsigned int> &arity);
+    };
+    /*!
+     * @class Trace
+     * @brief used for tracing stack outputs for backprop algorithm.
+     */
+    struct Trace
+    {
+        vector<ArrayXd> f;
+        vector<ArrayXb> b;
     };
 #else
     struct Stacks
@@ -98,87 +131,26 @@ namespace FT
         std::map<char, size_t> idx; 
         size_t N; 
 
-        Stacks()
-        {
-            idx['f']=0;
-            idx['b']=0;
-        }
+        Stacks();
  
-        void update_idx(char otype, std::map<char, unsigned>& arity)
-        {
-            ++idx[otype];
-            for (const auto& a : arity)
-                    idx[a.first] -= a.second;
-        }
-        bool check(std::map<char, unsigned int> &arity)
-        {
-            if(arity.find('z') == arity.end())
-                return (f.rows() >= arity['f'] && b.rows() >= arity['b']);
-            else
-                return (f.rows() >= arity['f'] && b.rows() >= arity['b'] 
-                        && z.size() >= arity['z']);
-        }
+        void update_idx(char otype, std::map<char, unsigned>& arity);
         
-        bool check_s(std::map<char, unsigned int> &arity)
-        {
-            if(arity.find('z') == arity.end())
-                return (fs.size() >= arity['f'] && bs.size() >= arity['b']);
-            else
-                return (fs.size() >= arity['f'] && bs.size() >= arity['b'] 
-                        && zs.size() >= arity['z']);
-        }
+        bool check(std::map<char, unsigned int> &arity);
         
-        void allocate(const std::map<char, size_t>& stack_size, size_t N)
-        {
-            /* std::cout << "before dev_allocate, dev_f is " << dev_f << "\n"; */
-            dev_allocate(dev_f, dev_b, N*stack_size.at('f'), N*stack_size.at('b'));
-            /* std::cout << "after dev_allocate, dev_f is " << dev_f << "\n"; */
-            this->N = N;
-            f.resize(stack_size.at('f'),N);
-            b.resize(stack_size.at('b'),N);
-        }
+        bool check_s(std::map<char, unsigned int> &arity);
+        
+        void allocate(const std::map<char, size_t>& stack_size, size_t N);
 
-        void limit()
-        {
-            // clean floating point stack. 
-            for (unsigned r = 0 ; r < f.rows(); ++r)
-            {
-                f.row(r) = (isinf(f.row(r))).select(MAX_DBL,f.row(r));
-                f.row(r) = (isnan(f.row(r))).select(0,f.row(r));
-            }
-        }
+        void limit();
+        
         /// resize the f and b stacks to match the outputs of the program
-        void trim()
-        {
-            /* std::cout << "resizing f to " << idx['f'] << "x" << f.cols() << "\n"; */
-            f.resize(idx['f'],f.cols());
-            b.resize(idx['b'],b.cols());
-            /* std::cout << "new f size: " << f.size() << "," << f.rows() << "x" << f.cols() << "\n"; */
-            /* usigned frows = f.rows()-1; */
-            /* for (unsigned r = idx['f']; r < f.rows(); ++r) */
-            /*     f.block(r,0,frows-r,f.cols()) = f.block(r+1,0,frows-r,f.cols()); */
-            /*     f.conservativeResize(frows,f.cols()); */
-        }
-        void copy_to_host(const std::map<char, size_t>& stack_size)
-        {
-            /* std::cout << "size of f before copy_from_device: " << f.size() */ 
-            /*           << ", stack size: " << N*stack_size.at('f') << "\n"; */
-            /* std::cout << "size of b before copy_from_device: " << b.size() */ 
-            /*           << ", stack size: " << N*stack_size.at('b') << "\n"; */
-
-            copy_from_device(dev_f, f.data(), dev_b, b.data(), N*stack_size.at('f'), 
-                             N*stack_size.at('b'));
-            trim(); 
-            limit();
-        }
-        ~Stacks()
-        {
-            free_device(dev_f, dev_b);
-        }
+        void trim();
+        
+        void copy_to_host(const std::map<char, size_t>& stack_size);
+        
+        ~Stacks();
     };
 #endif
 }
-
-
 
 #endif

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
-<title>Feat: FT::Stacks Struct Reference</title>
+<title>Feat: FT::Stacks Class Reference</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../jquery.js"></script>
 <script type="text/javascript" src="../../dynsections.js"></script>
@@ -47,6 +47,7 @@ var searchBox = new SearchBox("searchBox", "../../search",false,'Search');
     <ul class="tablist">
       <li><a href="../../index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="../../pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="../../namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="../../annotated.html"><span>Classes</span></a></li>
       <li><a href="../../files.html"><span>Files</span></a></li>
       <li>
@@ -108,11 +109,16 @@ $(document).ready(function(){initNavTree('d5/d75/structFT_1_1Stacks.html','../..
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="../../de/d23/structFT_1_1Stacks-members.html">List of all members</a>  </div>
+<a href="../../da/d3c/classFT_1_1Stacks-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">FT::Stacks Struct Reference</div>  </div>
+<div class="title">FT::Stacks Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>contains various types of stacks actually used by feat  
+ <a href="../../d5/d75/structFT_1_1Stacks.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="../../d7/de0/stack_8h_source.html">stack.h</a>&gt;</code></p>
 <div class="dynheader">
 Collaboration diagram for FT::Stacks:</div>
 <div class="dyncontent">
@@ -130,7 +136,8 @@ Collaboration diagram for FT::Stacks:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a01464721eb629ec8cbeed0fb3122bdf5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a01464721eb629ec8cbeed0fb3122bdf5"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>check</b> (std::map&lt; char, unsigned int &gt; &amp;arity)</td></tr>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d75/structFT_1_1Stacks.html#a01464721eb629ec8cbeed0fb3122bdf5">check</a> (std::map&lt; char, unsigned int &gt; &amp;arity)</td></tr>
+<tr class="memdesc:a01464721eb629ec8cbeed0fb3122bdf5"><td class="mdescLeft">&#160;</td><td class="mdescRight">checks if arity of node provided satisfies the node names in various string stacks <br /></td></tr>
 <tr class="separator:a01464721eb629ec8cbeed0fb3122bdf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2133a7c3c9fb04bb5ae435775dec3fa2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2133a7c3c9fb04bb5ae435775dec3fa2"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>check_s</b> (std::map&lt; char, unsigned int &gt; &amp;arity)</td></tr>
@@ -139,25 +146,48 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>check_s</b> (std::map
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a3ae93e545c8b636cb55e80b2a4da0dcb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3ae93e545c8b636cb55e80b2a4da0dcb"></a>
-<a class="el" href="../../d3/d35/classFT_1_1Stack.html">Stack</a>&lt; ArrayXd &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>f</b></td></tr>
+<a class="el" href="../../d3/d35/classFT_1_1Stack.html">Stack</a>&lt; ArrayXd &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d75/structFT_1_1Stacks.html#a3ae93e545c8b636cb55e80b2a4da0dcb">f</a></td></tr>
+<tr class="memdesc:a3ae93e545c8b636cb55e80b2a4da0dcb"><td class="mdescLeft">&#160;</td><td class="mdescRight">floating node stack <br /></td></tr>
 <tr class="separator:a3ae93e545c8b636cb55e80b2a4da0dcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13c9be024a7c6870ee0f885091409c1a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a13c9be024a7c6870ee0f885091409c1a"></a>
-<a class="el" href="../../d3/d35/classFT_1_1Stack.html">Stack</a>&lt; ArrayXb &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>b</b></td></tr>
+<a class="el" href="../../d3/d35/classFT_1_1Stack.html">Stack</a>&lt; ArrayXb &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d75/structFT_1_1Stacks.html#a13c9be024a7c6870ee0f885091409c1a">b</a></td></tr>
+<tr class="memdesc:a13c9be024a7c6870ee0f885091409c1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">boolean node stack <br /></td></tr>
 <tr class="separator:a13c9be024a7c6870ee0f885091409c1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a674e990a2bdbc93fd8a984ff636c9500"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a674e990a2bdbc93fd8a984ff636c9500"></a>
-<a class="el" href="../../d3/d35/classFT_1_1Stack.html">Stack</a>&lt; std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>z</b></td></tr>
+<a class="el" href="../../d3/d35/classFT_1_1Stack.html">Stack</a>&lt; std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d75/structFT_1_1Stacks.html#a674e990a2bdbc93fd8a984ff636c9500">z</a></td></tr>
+<tr class="memdesc:a674e990a2bdbc93fd8a984ff636c9500"><td class="mdescLeft">&#160;</td><td class="mdescRight">longitudinal node stack <br /></td></tr>
 <tr class="separator:a674e990a2bdbc93fd8a984ff636c9500"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad30ed5f5f6554780f11d4e8ad0119690"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad30ed5f5f6554780f11d4e8ad0119690"></a>
-<a class="el" href="../../d3/d35/classFT_1_1Stack.html">Stack</a>&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>fs</b></td></tr>
+<a class="el" href="../../d3/d35/classFT_1_1Stack.html">Stack</a>&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d75/structFT_1_1Stacks.html#ad30ed5f5f6554780f11d4e8ad0119690">fs</a></td></tr>
+<tr class="memdesc:ad30ed5f5f6554780f11d4e8ad0119690"><td class="mdescLeft">&#160;</td><td class="mdescRight">floating node string stack <br /></td></tr>
 <tr class="separator:ad30ed5f5f6554780f11d4e8ad0119690"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a093966a829368739443a9bd82edf815e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a093966a829368739443a9bd82edf815e"></a>
-<a class="el" href="../../d3/d35/classFT_1_1Stack.html">Stack</a>&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>bs</b></td></tr>
+<a class="el" href="../../d3/d35/classFT_1_1Stack.html">Stack</a>&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d75/structFT_1_1Stacks.html#a093966a829368739443a9bd82edf815e">bs</a></td></tr>
+<tr class="memdesc:a093966a829368739443a9bd82edf815e"><td class="mdescLeft">&#160;</td><td class="mdescRight">boolean node string stack <br /></td></tr>
 <tr class="separator:a093966a829368739443a9bd82edf815e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac868074bed4916a8fe59c1923c28872f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac868074bed4916a8fe59c1923c28872f"></a>
-<a class="el" href="../../d3/d35/classFT_1_1Stack.html">Stack</a>&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>zs</b></td></tr>
+<tr class="memitem:ac868074bed4916a8fe59c1923c28872f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d3/d35/classFT_1_1Stack.html">Stack</a>&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d75/structFT_1_1Stacks.html#ac868074bed4916a8fe59c1923c28872f">zs</a></td></tr>
+<tr class="memdesc:ac868074bed4916a8fe59c1923c28872f"><td class="mdescLeft">&#160;</td><td class="mdescRight">longitudinal node string stack  <a href="#ac868074bed4916a8fe59c1923c28872f">More...</a><br /></td></tr>
 <tr class="separator:ac868074bed4916a8fe59c1923c28872f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this struct was generated from the following file:<ul>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>contains various types of stacks actually used by feat </p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="ac868074bed4916a8fe59c1923c28872f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../d3/d35/classFT_1_1Stack.html">Stack</a>&lt;string&gt; FT::Stacks::zs</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>longitudinal node string stack </p>
+<p>checks if arity of node provided satisfies the elements in various value stacks </p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="../../d7/de0/stack_8h_source.html">stack.h</a></li>
 </ul>
 </div><!-- contents -->
@@ -165,7 +195,7 @@ Public Attributes</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>FT</b></li><li class="navelem"><a class="el" href="../../d5/d75/structFT_1_1Stacks.html">Stacks</a></li>
+    <li class="navelem"><a class="el" href="../../d2/d35/namespaceFT.html">FT</a></li><li class="navelem"><a class="el" href="../../d5/d75/structFT_1_1Stacks.html">Stacks</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.11 </li>

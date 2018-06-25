@@ -84,7 +84,7 @@ int main(int argc, char** argv){
     //////////////////////////////////////// parse arguments
     InputParser input(argc, argv);
     if(input.cmdOptionExists("-h") || input.dataset.empty()){
-        if (input.dataset.empty()) std::cerr << "Error: no dataset specified.\n---\n";
+        if (input.dataset.empty()) HANDLE_ERROR_NO_THROW("Error: no dataset specified.\n---\n");
         // Print help and exit. 
         cout << "FeatCV is a cross validation model for Feat - a feature engineering wrapper for learning intelligible models.\n";
         cout << "Usage:\tfeat_cv path/to/dataset [options]\n";
@@ -140,5 +140,4 @@ int main(int argc, char** argv){
     
 
 }
-
 
