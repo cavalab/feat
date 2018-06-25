@@ -1,4 +1,4 @@
-/* FEWTWO
+/* FEAT
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
@@ -6,8 +6,13 @@ license: GNU/GPL v3
 #ifndef RND_H
 #define RND_H
 //external includes
+#include <iostream>
 #include <random>
 #include <limits>
+#include <vector>
+#include <omp.h>
+
+using namespace std;
 using std::swap;
 
 namespace FT {
@@ -25,82 +30,38 @@ namespace FT {
     {
         public:
             
-            Rnd()
-            {
-                /*!
-                 * need a random generator for each core to do multiprocessing
-                 */
-                rg.resize(omp_get_max_threads());                      
-            }
+            Rnd();
 
-            void set_seed(int seed)
-            { 
-                /*!
-                 * set seeds for each core's random number generator
-                 */
-                if (seed == 0)
-                {
-                    std::random_device rd; 
+            void set_seed(int seed);
 
-                    for (auto& r : rg)
-                        r.seed(rd());
-                }
-                else    // seed first rg with seed, then seed rest with random ints from rg[0]. 
-                {
-                    rg[0].seed(seed);
-                    
-                    int imax = std::numeric_limits<int>::max();
-                    
-                    std::uniform_int_distribution<> dist(0, imax);
-
-                    for (size_t i = 1; i < rg.size(); ++i)
-                        rg[i].seed(dist(rg[0]));                     
-                }
-            }
-
-
-            int rnd_int( int lowerLimit, int upperLimit ) 
-            {
-                std::uniform_int_distribution<> dist( lowerLimit, upperLimit );
-                return dist(rg[omp_get_thread_num()]);
-            }
-
-            float rnd_flt(float min=0.0, float max=1.0)
-            {
-                std::uniform_real_distribution<float> dist(min, max);
-                return dist(rg[omp_get_thread_num()]);
-            }
-
-            double rnd_dbl(double min=0.0, double max=1.0)
-            {
-                std::uniform_real_distribution<double> dist(min, max);
-                return dist(rg[omp_get_thread_num()]);
-            }
             
-            double operator()(unsigned i) 
-            {
-                return rnd_dbl(0.0,i);
-            }
+            int rnd_int( int lowerLimit, int upperLimit );
+
+            float rnd_flt(float min=0.0, float max=1.0);
+
+            double rnd_dbl(double min=0.0, double max=1.0);
             
-            float operator()() { return rnd_flt(0.0,1.0); }
+            double operator()(unsigned i);
+            
+            float operator()();
 
 			template <class RandomAccessIterator>
 			void shuffle (RandomAccessIterator first, RandomAccessIterator last)
 			{
-			    for (auto i=(last-first)-1; i>0; --i) 
+	            for (auto i=(last-first)-1; i>0; --i) 
                 {
-			        std::uniform_int_distribution<decltype(i)> d(0,i);
-				    swap (first[i], first[d(rg[omp_get_thread_num()])]);
-			    }
-			}            
-
+	                std::uniform_int_distribution<decltype(i)> d(0,i);
+		            swap (first[i], first[d(rg[omp_get_thread_num()])]);
+	            }
+	        }    
+            
             template<typename Iter>                                    
-            Iter select_randomly(Iter start, Iter end) 
+            Iter select_randomly(Iter start, Iter end)
             {
                 std::uniform_int_distribution<> dis(0, distance(start, end) - 1);
                 advance(start, dis(rg[omp_get_thread_num()]));
                 return start;
-            } 
+            }
            
             template<typename T>
             T random_choice(const vector<T>& v)
@@ -125,6 +86,12 @@ namespace FT {
                     cout<<"random_choice() w.size() = 0 Calling random_choice(v)\n";
                     return random_choice(v);
                 }
+                if(w.size() != v.size())
+                {   
+                    cout<<"WARN! random_choice() w.size() " << w.size() << "!= v.size() " 
+                        << v.size() << ", Calling random_choice(v)\n";
+                    return random_choice(v);
+                }
                 else
                 {
                     assert(v.size() == w.size());
@@ -133,10 +100,13 @@ namespace FT {
                     return v[dis(rg[omp_get_thread_num()])]; 
                 }
             }
-            ~Rnd() {}
+            
+            float gasdev();
+            
+            ~Rnd();
 
-    private:
-        vector<std::mt19937> rg;
+        private:
+            vector<std::mt19937> rg;
      
     };
 

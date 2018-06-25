@@ -4,11 +4,13 @@ language: cpp
   
 addons:
   apt:
-    sources:
+      update: true
+    
+  sources:
         # Newer GCC
         #- george-edison55-precise-backports
         - ubuntu-toolchain-r-test
-    packages:
+  packages:
         #        - cmake 
         #        - cmake-data
         #        - gcc-5
@@ -26,8 +28,6 @@ env:
     #- CXX='g++-5' CC='gcc-5' BUILD_TYPE='release'
     
 install: 
-    - sudo apt-get update
-    - sudo pip install -q cython pmlb numpy scipy scikit-learn
     - sh ci/.travis_install.sh
 
 script: sh ci/.travis_test.sh 

@@ -57,8 +57,19 @@ class TestFeatWrapper(unittest.TestCase):
 
     #Test 4:  Assert the length of labels returned from fit_transform
     def test_fit_transform_length(self):
-        self.debug("Calling fit transform")
+        self.debug("In wrappertest.py...Calling fit transform")
         trans_X = self.clf.fit_transform(self.X,self.y)
+
+        self.debug("Comparing the length of labls in transform vs actual feature set ")
+        expected_value = self.X.shape[0]
+        actual_value = trans_X.shape[0]
+        self.assertEqual( actual_value , expected_value )
+        
+    #Test 5:  Transform with Z
+    def test_transform_length_z(self,zfile=None,zids=None):
+        self.debug("Calling fit")
+        self.clf.fit(self.X,self.y)
+        trans_X = self.clf.transform(self.X,zfile,zids)
 
         self.debug("Comparing the length of labls in transform vs actual feature set ")
         expected_value = self.X.shape[0]
@@ -68,6 +79,13 @@ class TestFeatWrapper(unittest.TestCase):
     def debug(self,message):
         if ( self.v > 0 ):
             print (message)
+
+    def test_coefs(self):
+        self.debug("In wrappertest.py...Calling test_coefs")
+        self.clf.fit(self.X,self.y)
+        coefs = self.clf.get_coefs()
+        print('coefs:',coefs)
+        self.assertTrue( len(coefs)>0 )
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="",add_help=False)

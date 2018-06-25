@@ -7,11 +7,11 @@
 # ===
 if [ "$1" == "debug" ]; then
     rm -rf debug; mkdir debug; cd debug; 
-    cmake -DCMAKE_BUILD_TYPE=Debug -DOMP=OFF ..
+    cmake -DCMAKE_BUILD_TYPE=Debug -DSHOGUN_DIR=ON -DOMP=OFF ..
     cd ..
 elif [ "$1" == "profile" ]; then
     rm -rf profile; mkdir profile; cd profile;    
-    cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS=-p -O2 ..
+    cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS=-p -DCMAKE_CXX_FLAGS=-O2 -DSHOGUN_DIR=ON ..
     cd ..
 elif [ "$1" == "lpc" ] ; then
     # set up LPC environment
@@ -25,7 +25,7 @@ elif [ "$1" == "lpc" ] ; then
     cd ..
 elif [ "$1" == "tests" ] ; then 
     rm -rf build; mkdir build; cd build; 
-    cmake -DTEST=ON ..
+    cmake -DSHOGUN_DIR=ON .. -DTEST=ON ..
     cd ..
 elif [ "$1" == "gpu" ] ; then
     rm -rf buildGPU; mkdir buildGPU; cd buildGPU; 
@@ -33,6 +33,6 @@ elif [ "$1" == "gpu" ] ; then
     cd ..
 else
     rm -rf build; mkdir build; cd build; 
-    cmake ..
+    cmake -DSHOGUN_DIR=ON ..
     cd ..
 fi

@@ -47,6 +47,7 @@ var searchBox = new SearchBox("searchBox", "../../search",false,'Search');
     <ul class="tablist">
       <li><a href="../../index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="../../pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="../../namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="../../annotated.html"><span>Classes</span></a></li>
       <li><a href="../../files.html"><span>Files</span></a></li>
       <li>
@@ -118,7 +119,8 @@ Inheritance diagram for FT::Node2dGaussian:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../d9/d8c/classFT_1_1Node2dGaussian__inherit__graph.png" border="0" usemap="#FT_1_1Node2dGaussian_inherit__map" alt="Inheritance graph"/></div>
 <map name="FT_1_1Node2dGaussian_inherit__map" id="FT_1_1Node2dGaussian_inherit__map">
-<area shape="rect" id="node2" href="../../d3/daf/classFT_1_1Node.html" title="Represents nodes in a program. " alt="" coords="40,5,117,32"/>
+<area shape="rect" id="node2" href="../../d7/d75/classFT_1_1NodeDx.html" title="FT::NodeDx" alt="" coords="31,80,126,107"/>
+<area shape="rect" id="node3" href="../../d3/daf/classFT_1_1Node.html" title="Represents nodes in a program. " alt="" coords="40,5,117,32"/>
 </map>
 <center><span class="legend">[<a target="top" href="../../graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
@@ -126,14 +128,18 @@ Collaboration diagram for FT::Node2dGaussian:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../d2/d3b/classFT_1_1Node2dGaussian__coll__graph.png" border="0" usemap="#FT_1_1Node2dGaussian_coll__map" alt="Collaboration graph"/></div>
 <map name="FT_1_1Node2dGaussian_coll__map" id="FT_1_1Node2dGaussian_coll__map">
-<area shape="rect" id="node2" href="../../d3/daf/classFT_1_1Node.html" title="Represents nodes in a program. " alt="" coords="142,200,219,227"/>
-<area shape="rect" id="node3" title="STL class. " alt="" coords="29,103,109,130"/>
-<area shape="rect" id="node4" title="STL class. " alt="" coords="5,5,132,47"/>
+<area shape="rect" id="node2" href="../../d7/d75/classFT_1_1NodeDx.html" title="FT::NodeDx" alt="" coords="235,304,329,331"/>
+<area shape="rect" id="node3" href="../../d3/daf/classFT_1_1Node.html" title="Represents nodes in a program. " alt="" coords="142,200,219,227"/>
+<area shape="rect" id="node4" title="STL class. " alt="" coords="29,103,109,130"/>
+<area shape="rect" id="node5" title="STL class. " alt="" coords="5,5,132,47"/>
 </map>
 <center><span class="legend">[<a target="top" href="../../graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a4769dd1f2aa6a99ef9b560ff0b2e6465"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4769dd1f2aa6a99ef9b560ff0b2e6465"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Node2dGaussian</b> (vector&lt; double &gt; W0=vector&lt; double &gt;())</td></tr>
+<tr class="separator:a4769dd1f2aa6a99ef9b560ff0b2e6465"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a35d90a65785e0ded06c660bef7d8c460"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a35d90a65785e0ded06c660bef7d8c460"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/db5/classFT_1_1Node2dGaussian.html#a35d90a65785e0ded06c660bef7d8c460">evaluate</a> (const MatrixXd &amp;X, const VectorXd &amp;y, const std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; &amp;Z, <a class="el" href="../../d5/d75/structFT_1_1Stacks.html">Stacks</a> &amp;stack)</td></tr>
 <tr class="memdesc:a35d90a65785e0ded06c660bef7d8c460"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the node and updates the stack states. <br /></td></tr>
@@ -142,6 +148,22 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../.
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/db5/classFT_1_1Node2dGaussian.html#adafd7f35e26c5ce7af17b823f10e96e5">eval_eqn</a> (<a class="el" href="../../d5/d75/structFT_1_1Stacks.html">Stacks</a> &amp;stack)</td></tr>
 <tr class="memdesc:adafd7f35e26c5ce7af17b823f10e96e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the node symbolically. <br /></td></tr>
 <tr class="separator:adafd7f35e26c5ce7af17b823f10e96e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a58b98eac3f902ecefac32f0b491e125c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a58b98eac3f902ecefac32f0b491e125c"></a>
+ArrayXd&#160;</td><td class="memItemRight" valign="bottom"><b>getDerivative</b> (vector&lt; ArrayXd &gt; &amp;stack_f, int loc)</td></tr>
+<tr class="separator:a58b98eac3f902ecefac32f0b491e125c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classFT_1_1NodeDx"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classFT_1_1NodeDx')"><img src="../../closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="../../d7/d75/classFT_1_1NodeDx.html">FT::NodeDx</a></td></tr>
+<tr class="memitem:a8908615d5e47b6a192768c8b49a93677 inherit pub_methods_classFT_1_1NodeDx"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8908615d5e47b6a192768c8b49a93677"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>derivative</b> (vector&lt; ArrayXd &gt; &amp;gradients, vector&lt; ArrayXd &gt; &amp;stack_f, int loc)</td></tr>
+<tr class="separator:a8908615d5e47b6a192768c8b49a93677 inherit pub_methods_classFT_1_1NodeDx"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac60410c2d0f7fbc0130c36c24939b076 inherit pub_methods_classFT_1_1NodeDx"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d75/classFT_1_1NodeDx.html#ac60410c2d0f7fbc0130c36c24939b076">update</a> (vector&lt; ArrayXd &gt; &amp;gradients, vector&lt; ArrayXd &gt; &amp;stack_f, double n, double a)</td></tr>
+<tr class="separator:ac60410c2d0f7fbc0130c36c24939b076 inherit pub_methods_classFT_1_1NodeDx"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ef437ea704f615b2148a204a0d8fcd9 inherit pub_methods_classFT_1_1NodeDx"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4ef437ea704f615b2148a204a0d8fcd9"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>print_weight</b> ()</td></tr>
+<tr class="separator:a4ef437ea704f615b2148a204a0d8fcd9 inherit pub_methods_classFT_1_1NodeDx"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a299fda034c0052cfc1b8ac409cec71d8 inherit pub_methods_classFT_1_1NodeDx"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a299fda034c0052cfc1b8ac409cec71d8"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d75/classFT_1_1NodeDx.html#a299fda034c0052cfc1b8ac409cec71d8">isNodeDx</a> ()</td></tr>
+<tr class="memdesc:a299fda034c0052cfc1b8ac409cec71d8 inherit pub_methods_classFT_1_1NodeDx"><td class="mdescLeft">&#160;</td><td class="mdescRight">check of node type <br /></td></tr>
+<tr class="separator:a299fda034c0052cfc1b8ac409cec71d8 inherit pub_methods_classFT_1_1NodeDx"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classFT_1_1Node"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classFT_1_1Node')"><img src="../../closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="../../d3/daf/classFT_1_1Node.html">FT::Node</a></td></tr>
 <tr class="memitem:a95e1d572191c38566fc3edde41081972 inherit pub_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a95e1d572191c38566fc3edde41081972"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/daf/classFT_1_1Node.html#a95e1d572191c38566fc3edde41081972">evaluate</a> (const MatrixXd &amp;X, const VectorXd &amp;y, const std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt;&gt;&gt; &amp;Z, <a class="el" href="../../d5/d75/structFT_1_1Stacks.html">Stacks</a> &amp;stack)=0</td></tr>
@@ -164,15 +186,29 @@ ArrayXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=".
 auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/daf/classFT_1_1Node.html#a26bfc16470d49222cc6c20d4d7c6b42f">clone</a> () const </td></tr>
 <tr class="memdesc:a26bfc16470d49222cc6c20d4d7c6b42f inherit pub_methods_classFT_1_1Node"><td class="mdescLeft">&#160;</td><td class="mdescRight">makes a unique copy of this node <br /></td></tr>
 <tr class="separator:a26bfc16470d49222cc6c20d4d7c6b42f inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a526cc31df31f70e756e8f48e0fa540f7 inherit pub_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a526cc31df31f70e756e8f48e0fa540f7"></a>
+auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/daf/classFT_1_1Node.html#a526cc31df31f70e756e8f48e0fa540f7">rnd_clone</a> () const </td></tr>
+<tr class="memdesc:a526cc31df31f70e756e8f48e0fa540f7 inherit pub_methods_classFT_1_1Node"><td class="mdescLeft">&#160;</td><td class="mdescRight">makes a randomized unique copy ofnode <br /></td></tr>
+<tr class="separator:a526cc31df31f70e756e8f48e0fa540f7 inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:ac450a346663865a1d266b3ece3b32580"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac450a346663865a1d266b3ece3b32580"></a>
 <a class="el" href="../../d2/db5/classFT_1_1Node2dGaussian.html">Node2dGaussian</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>clone_impl</b> () const override</td></tr>
 <tr class="separator:ac450a346663865a1d266b3ece3b32580"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e5e2cc8d7e8c182e73bbc3a0a5471a7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6e5e2cc8d7e8c182e73bbc3a0a5471a7"></a>
+<a class="el" href="../../d2/db5/classFT_1_1Node2dGaussian.html">Node2dGaussian</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>rnd_clone_impl</b> () const override</td></tr>
+<tr class="separator:a6e5e2cc8d7e8c182e73bbc3a0a5471a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pub_attribs_classFT_1_1NodeDx"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classFT_1_1NodeDx')"><img src="../../closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="../../d7/d75/classFT_1_1NodeDx.html">FT::NodeDx</a></td></tr>
+<tr class="memitem:a0df715ce99e80ee1de04e6a027d71416 inherit pub_attribs_classFT_1_1NodeDx"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0df715ce99e80ee1de04e6a027d71416"></a>
+std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>W</b></td></tr>
+<tr class="separator:a0df715ce99e80ee1de04e6a027d71416 inherit pub_attribs_classFT_1_1NodeDx"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa87d7108173632c9594370db273b5f80 inherit pub_attribs_classFT_1_1NodeDx"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa87d7108173632c9594370db273b5f80"></a>
+std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>V</b></td></tr>
+<tr class="separator:aa87d7108173632c9594370db273b5f80 inherit pub_attribs_classFT_1_1NodeDx"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_attribs_classFT_1_1Node"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classFT_1_1Node')"><img src="../../closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="../../d3/daf/classFT_1_1Node.html">FT::Node</a></td></tr>
 <tr class="memitem:ae546a4fc2f58a2b357d1847f9130d036 inherit pub_attribs_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae546a4fc2f58a2b357d1847f9130d036"></a>
 string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/daf/classFT_1_1Node.html#ae546a4fc2f58a2b357d1847f9130d036">name</a></td></tr>
@@ -190,6 +226,9 @@ std::map&lt; char, unsigned int &gt;&#160;</td><td class="memItemRight" valign="
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/daf/classFT_1_1Node.html#af09ceee1b0f3e4ed846e9fb2a9950b2d">complexity</a></td></tr>
 <tr class="memdesc:af09ceee1b0f3e4ed846e9fb2a9950b2d inherit pub_attribs_classFT_1_1Node"><td class="mdescLeft">&#160;</td><td class="mdescRight">complexity of node <br /></td></tr>
 <tr class="separator:af09ceee1b0f3e4ed846e9fb2a9950b2d inherit pub_attribs_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad841347ffcd8c89fea40a6ffa6c53d61 inherit pub_attribs_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad841347ffcd8c89fea40a6ffa6c53d61"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>visits</b> = 0</td></tr>
+<tr class="separator:ad841347ffcd8c89fea40a6ffa6c53d61 inherit pub_attribs_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="../../d3/d7f/node2dgaussian_8h_source.html">node2dgaussian.h</a></li>
@@ -199,7 +238,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../..
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>FT</b></li><li class="navelem"><a class="el" href="../../d2/db5/classFT_1_1Node2dGaussian.html">Node2dGaussian</a></li>
+    <li class="navelem"><a class="el" href="../../d2/d35/namespaceFT.html">FT</a></li><li class="navelem"><a class="el" href="../../d2/db5/classFT_1_1Node2dGaussian.html">Node2dGaussian</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.11 </li>

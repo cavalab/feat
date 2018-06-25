@@ -12,52 +12,19 @@ namespace FT{
     {
     	public:
     	
-    		NodeXor()
-            {
-                name = "xor";
-    			otype = 'b';
-    			arity['f'] = 0;
-    			arity['b'] = 2;
-    			complexity = 2;
-    		}
+    		NodeXor();
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack);
-            
+           void evaluate(Data& data, Stacks& stack);            
 
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-        		string x2 = stack.bs.pop();
-                string x1 = stack.bs.pop();
-                stack.bs.push("(" + x1 + " XOR " + x2 + ")");
-            }
+            void eval_eqn(Stacks& stack);
+            
         protected:
-            NodeXor* clone_impl() const override { return new NodeXor(*this); };  
+            NodeXor* clone_impl() const override;
+            
+            NodeXor* rnd_clone_impl() const override;
     };
-#ifndef USE_CUDA
-    void NodeXor::evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-    {
-        ArrayXb x2 = stack.b.pop();
-        ArrayXb x1 = stack.b.pop();
-
-        ArrayXb res = (x1 != x2).select(ArrayXb::Ones(x1.size()), ArrayXb::Zero(x1.size()));
-
-        stack.b.push(res);
-        
-    }
-#else
-    void NodeXor::evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-    {
-        GPU_Xor(stack.dev_b, stack.idx[otype], stack.N);
-    }
-#endif
 }	
 
 #endif
