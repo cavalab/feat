@@ -8,28 +8,8 @@ license: GNU/GPL v3
 //external includes
 #include <iostream>
 #include <vector>
-#include <Eigen/Dense>
 #include <memory>
 #include <shogun/base/init.h>
-
-#ifdef _OPENMP
-    #include <omp.h>
-#else
-    #define omp_get_thread_num() 0
-    #define omp_get_max_threads() 1
-    #define omp_set_num_threads( x ) 0
-#endif
-// stuff being used
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
-typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
-typedef Eigen::Array<bool,Eigen::Dynamic,2> ArrayXXb;
-using std::vector;
-using std::string;
-using std::unique_ptr;
-using std::shared_ptr;
-using std::make_shared;
-using std::cout; 
  
 // internal includes
 #include "init.h"
@@ -51,6 +31,18 @@ using std::cout;
     #define GPU false
     #define initialize_cuda() 0
 #endif
+
+// stuff being used
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
+typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
+using std::vector;
+using std::string;
+using std::unique_ptr;
+using std::shared_ptr;
+using std::make_shared;
+using std::cout; 
+>>>>>>> master
 
 namespace FT{
     
