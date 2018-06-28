@@ -310,11 +310,9 @@ namespace FT{
     }    
 #else //////////////////////////////////////////////////////////// GPU implementation
     // calculate program output matrix on GPU
-    MatrixXd Individual::out(const MatrixXd& X,
-                             const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
-                             const Parameters& params, 
-                             const VectorXd& y = VectorXd())
-    {
+    MatrixXd Individual::out(Data d,
+                             const Parameters& params)
+    
         /*!
          * @params X: n_features x n_samples data
          * @params Z: longitudinal nodes for samples
@@ -334,7 +332,7 @@ namespace FT{
         
         // allocate memory for the stack on the device
         /* std::cout << "X size: " << X.rows() << "x" << X.cols() << "\n"; */ 
-        stack.allocate(stack_size,X.cols());        
+        stack.allocate(stack_size,d.X.cols());        
         /* stack.f.resize( */
         // evaluate each node in program
         for (const auto& n : program)
@@ -342,7 +340,7 @@ namespace FT{
         	if(stack.check(n->arity))
         	{
         	    //cout<<"***enter here "<<n->name<<"\n";
-	            n->evaluate(X, y, Z, stack);
+	            n->evaluate(d, stack);
 	            //cout<<"***exit here "<<n->name<<"\n";
                 // adjust indices
                 stack.update_idx(n->otype, n->arity); 

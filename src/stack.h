@@ -110,8 +110,8 @@ namespace FT
 #else
     struct Stacks
     {
-        Array<float, Dynamic, Dynamic, RowMajor> f;
-        Array<bool, Dynamic, Dynamic, RowMajor>  b;
+        Eigen::Array<float, Dynamic, Dynamic, RowMajor> f;
+        Eigen::Array<bool, Dynamic, Dynamic, RowMajor>  b;
         Stack<std::pair<vector<ArrayXd>, vector<ArrayXd> > > z;
         Stack<string> fs;
         Stack<string> bs;
