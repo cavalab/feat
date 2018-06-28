@@ -257,6 +257,113 @@ namespace FT{
     
 
 #ifndef USE_CUDA
+
+    // calculate program output matrix
+    MatrixXd Individual::out_trace(Data d,
+                     const Parameters& params, vector<Trace>& stack_trace)
+    {
+        /*!
+         * @params X: n_features x n_samples data
+         * @params Z: longitudinal nodes for samples
+         * @params y: target data
+         * @params: Feat parameters
+         * @returns Phi: n_features x n_samples transformation
+         */
+
+        Stacks stack;
+        /* params.msg("evaluating program " + get_eqn(),3); */
+        /* params.msg("program length: " + std::to_string(program.size()),3); */
+
+        vector<size_t> roots = program.roots();
+        size_t root = 0;
+        bool trace=false;
+        size_t trace_idx=0;
+
+        if (program.at(roots.at(root))->isNodeDx())
+        {
+            trace=true;
+            stack_trace.push_back(Trace());
+        }
+        
+        // evaluate each node in program
+        for (unsigned i = 0; i<program.size(); ++i)
+        {
+            if (i > roots.at(root)){
+                ++root;
+                if (program.at(roots.at(root))->isNodeDx())
+                {
+                    trace=true;
+                    stack_trace.push_back(Trace());
+                    ++trace_idx;
+                }
+                else
+                    trace=false;
+            }
+            if(stack.check(program.at(i)->arity))
+        	{
+                if (trace)
+                {
+                    /* cout << "storing trace of " << program.at(i)->name << "with " << */
+                    /*        program.at(i)->arity['f'] << " arguments\n"; */
+                    for (int j = 0; j < program.at(i)->arity['f']; j++) {
+                        /* cout << "push back float arg for " << program.at(i)->name << "\n"; */
+                        stack_trace.at(trace_idx).f.push_back(stack.f.at(stack.f.size() - 
+                                                         (program.at(i)->arity['f'] - j)));
+                    }
+                    for (int j = 0; j < program.at(i)->arity['b']; j++) {
+                        /* cout << "push back bool arg for " << program.at(i)->name << "\n"; */
+                        stack_trace.at(trace_idx).b.push_back(stack.b.at(stack.b.size() - 
+                                                         (program.at(i)->arity['b'] - j)));
+                    }
+                }
+        	    //cout<<"***enter here "<<n->name<<"\n";
+	            program.at(i)->evaluate(d, stack);
+                program.at(i)->visits = 0;
+	            //cout<<"***exit here "<<n->name<<"\n";
+	        }
+            else
+                HANDLE_ERROR_THROW("out() error: node " + program.at(i)->name + " in " + program_str() + " is invalid\n");
+        }
+        
+        // convert stack_f to Phi
+        params.msg("converting stacks to Phi",3);
+        int cols;
+        
+        if (stack.f.size()==0)
+        {
+            if (stack.b.size() == 0)
+                HANDLE_ERROR_THROW("Error: no outputs in stacks");
+         
+            cols = stack.b.top().size();
+        }
+        else
+            cols = stack.f.top().size();
+               
+        int rows_f = stack.f.size();
+        int rows_b = stack.b.size();
+        
+        dtypes.clear();        
+        Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
+        // add stack_f to Phi
+       
+        for (unsigned int i=0; i<rows_f; ++i)
+        {    
+             ArrayXd Row = ArrayXd::Map(stack.f.at(i).data(),cols);
+             clean(Row); // remove nans, set infs to max and min
+             Phi.row(i) = Row;
+             dtypes.push_back('f'); 
+        }
+        // convert stack_b to Phi       
+        for (unsigned int i=0; i<rows_b; ++i)
+        {
+            Phi.row(i+rows_f) = ArrayXb::Map(stack.b.at(i).data(),cols).cast<double>();
+            dtypes.push_back('b');
+        }       
+        //Phi.transposeInPlace();
+        return Phi;
+    }
+    
+    
     // calculate program output matrix
     MatrixXd Individual::out(Data d,
                              const Parameters& params)
@@ -325,6 +432,118 @@ namespace FT{
         return Phi;
     }    
 #else //////////////////////////////////////////////////////////// GPU implementation
+
+         // calculate program output matrix
+    MatrixXd Individual::out_trace(Data d,
+                     const Parameters& params, vector<Trace>& stack_trace)
+    {
+        /*!
+         * @params X: n_features x n_samples data
+         * @params Z: longitudinal nodes for samples
+         * @params y: target data
+         * @params: Feat parameters
+         * @returns Phi: n_features x n_samples transformation
+         */
+
+        Stacks stack;
+        /* params.msg("evaluating program " + get_eqn(),3); */
+        /* params.msg("program length: " + std::to_string(program.size()),3); */
+
+        vector<size_t> roots = program.roots();
+        size_t root = 0;
+        bool trace=false;
+        size_t trace_idx=0;
+
+        if (program.at(roots.at(root))->isNodeDx())
+        {
+            trace=true;
+            stack_trace.push_back(Trace());
+        }
+        
+        // evaluate each node in program
+        for (unsigned i = 0; i<program.size(); ++i)
+        {
+            if (i > roots.at(root)){
+                ++root;
+                if (program.at(roots.at(root))->isNodeDx())
+                {
+                    trace=true;
+                    stack_trace.push_back(Trace());
+                    ++trace_idx;
+                }
+                else
+                    trace=false;
+            }
+            if(stack.check(program.at(i)->arity))
+        	{
+                if (trace)
+                {
+                    /* cout << "storing trace of " << program.at(i)->name << "with " << */
+                    /*        program.at(i)->arity['f'] << " arguments\n"; */
+                    for (int j = 0; j < program.at(i)->arity['f']; j++) {
+                        /* cout << "push back float arg for " << program.at(i)->name << "\n"; */
+                        stack_trace.at(trace_idx).f.push_back(stack.f(stack.f.size() - 
+                                                         (program.at(i)->arity['f'] - j)));
+                    }
+                    for (int j = 0; j < program.at(i)->arity['b']; j++) {
+                        /* cout << "push back bool arg for " << program.at(i)->name << "\n"; */
+                        stack_trace.at(trace_idx).b.push_back(stack.b.(stack.b.size() - 
+                                                         (program.at(i)->arity['b'] - j)));
+                    }
+                }
+        	    //cout<<"***enter here "<<n->name<<"\n";
+	            program.at(i)->evaluate(d, stack);
+                program.at(i)->visits = 0;
+	            //cout<<"***exit here "<<n->name<<"\n";
+	        }
+            else
+                HANDLE_ERROR_THROW("out() error: node " + program.at(i)->name + " in " + program_str() + " is invalid\n");
+        }
+        
+        // convert stack_f to Phi
+        params.msg("converting stacks to Phi",3);
+        int cols;
+        
+        if (stack.f.size()==0)
+        {
+            if (stack.b.size() == 0)
+                HANDLE_ERROR_THROW("Error: no outputs in stacks");
+            
+            cols = stack.b.cols();
+        }
+        else
+            cols = stack.f.cols();
+               
+        int rows_f = stack.f.rows();
+        int rows_b = stack.b.rows();
+        
+        dtypes.clear();        
+        Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
+        
+        Eigen::ArrayXXb  PhiB = Eigen::ArrayXXb::Map(stack.b.data(),stack.b.rows(),stack.b.cols());
+        Eigen::ArrayXXf PhiF = Eigen::ArrayXXf::Map(stack.f.data(),stack.f.rows(),stack.f.cols());
+        // combine stacks into Phi 
+        Phi <<  PhiF.cast<double>(),
+                PhiB.cast<double>();
+        
+        /* std::cout << "Phi:" << Phi.rows() << "x" << Phi.cols() << "\n"; */
+
+        for (unsigned int i=0; i<rows_f; ++i)
+        {    
+             /* Phi.row(i) = VectorXd::Map(stack.f.at(i).data(),cols); */
+             dtypes.push_back('f'); 
+        }
+        // convert stack_b to Phi       
+        for (unsigned int i=0; i<rows_b; ++i)
+        {
+            /* Phi.row(i+rows_f) = ArrayXb::Map(stack.b.at(i).data(),cols).cast<double>(); */
+            dtypes.push_back('b');
+        }
+               
+        //Phi.transposeInPlace();
+        return Phi;
+    }
+    
     // calculate program output matrix on GPU
     MatrixXd Individual::out(Data d,
                              const Parameters& params)
