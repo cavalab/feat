@@ -42,7 +42,6 @@ using std::unique_ptr;
 using std::shared_ptr;
 using std::make_shared;
 using std::cout; 
->>>>>>> master
 
 namespace FT{
     
