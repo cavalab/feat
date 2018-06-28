@@ -10,17 +10,6 @@ license: GNU/GPL v3
 #include <vector>
 #include <memory>
 #include <shogun/base/init.h>
-
-// stuff being used
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
-typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
-using std::vector;
-using std::string;
-using std::unique_ptr;
-using std::shared_ptr;
-using std::make_shared;
-using std::cout; 
  
 // internal includes
 #include "init.h"
@@ -34,6 +23,17 @@ using std::cout;
 #include "ml.h"
 #include "node/node.h"
 #include "archive.h" 
+
+// stuff being used
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
+typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
+using std::vector;
+using std::string;
+using std::unique_ptr;
+using std::shared_ptr;
+using std::make_shared;
+using std::cout; 
 
 namespace FT{
     
