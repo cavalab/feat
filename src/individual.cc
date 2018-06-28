@@ -134,76 +134,7 @@ namespace FT{
         return ps;
     }
     
-    // calculate program output matrix
-    MatrixXd Individual::out(Data d,
-                             const Parameters& params)
-    {
-        /*!
-         * @params X: n_features x n_samples data
-         * @params Z: longitudinal nodes for samples
-         * @params y: target data
-         * @params: Feat parameters
-         * @returns Phi: n_features x n_samples transformation
-         */
-
-        Stacks stack;
-        
-        params.msg("evaluating program " + get_eqn(),3);
-        params.msg("program length: " + std::to_string(program.size()),3);
-        // evaluate each node in program
-        for (const auto& n : program)
-        {
-        	if(stack.check(n->arity))
-        	{
-        	    //cout<<"***enter here "<<n->name<<"\n";
-	            n->evaluate(d, stack);
-	            //cout<<"***exit here "<<n->name<<"\n";
-	        }
-            else
-                HANDLE_ERROR_THROW("out() error: node " + n->name + " in " + program_str() + " is invalid\n");
-        }
-        
-        // convert stack_f to Phi
-        params.msg("converting stacks to Phi",3);
-        int cols;
-        if (stack.f.size()==0)
-        {
-            if (stack.b.size() == 0)
-                HANDLE_ERROR_THROW("Error: no outputs in stacks");
-            
-            cols = stack.b.top().size();
-        }
-        else
-            cols = stack.f.top().size();
-               
-        int rows_f = stack.f.size();
-        int rows_b = stack.b.size();
-        /* cout << "rows_f (stack.f.size()): " << rows_f << "\n"; */ 
-        /* cout << "rows_b (stack.b.size()): " << rows_b << "\n"; */ 
-        dtypes.clear();        
-        Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
-        // add stack_f to Phi
-        /* cout << "cols: " << cols << "\n"; */ 
-      
-        for (unsigned int i=0; i<rows_f; ++i)
-        {    
-             ArrayXd Row = ArrayXd::Map(stack.f.at(i).data(),cols);
-             clean(Row); // remove nans, set infs to max and min
-             Phi.row(i) = Row;
-             dtypes.push_back('f'); 
-        }
-        // convert stack_b to Phi       
-        for (unsigned int i=0; i<rows_b; ++i)
-        {
-            Phi.row(i+rows_f) = ArrayXb::Map(stack.b.at(i).data(),cols).cast<double>();
-            dtypes.push_back('b');
-        }       
-        //Phi.transposeInPlace();
-        return Phi;
-    }
-
-#ifndef USE_CUDA
-    // calculate program output matrix
+        // calculate program output matrix
     MatrixXd Individual::out_trace(Data d,
                      const Parameters& params, vector<Trace>& stack_trace)
     {
@@ -306,7 +237,77 @@ namespace FT{
         //Phi.transposeInPlace();
         return Phi;
     }
+
     
+
+#ifndef USE_CUDA
+    // calculate program output matrix
+    MatrixXd Individual::out(Data d,
+                             const Parameters& params)
+    {
+        /*!
+         * @params X: n_features x n_samples data
+         * @params Z: longitudinal nodes for samples
+         * @params y: target data
+         * @params: Feat parameters
+         * @returns Phi: n_features x n_samples transformation
+         */
+
+        Stacks stack;
+        
+        params.msg("evaluating program " + get_eqn(),3);
+        params.msg("program length: " + std::to_string(program.size()),3);
+        // evaluate each node in program
+        for (const auto& n : program)
+        {
+        	if(stack.check(n->arity))
+        	{
+        	    //cout<<"***enter here "<<n->name<<"\n";
+	            n->evaluate(d, stack);
+	            //cout<<"***exit here "<<n->name<<"\n";
+	        }
+            else
+                HANDLE_ERROR_THROW("out() error: node " + n->name + " in " + program_str() + " is invalid\n");
+        }
+        
+        // convert stack_f to Phi
+        params.msg("converting stacks to Phi",3);
+        int cols;
+        if (stack.f.size()==0)
+        {
+            if (stack.b.size() == 0)
+                HANDLE_ERROR_THROW("Error: no outputs in stacks");
+            
+            cols = stack.b.top().size();
+        }
+        else
+            cols = stack.f.top().size();
+               
+        int rows_f = stack.f.size();
+        int rows_b = stack.b.size();
+        /* cout << "rows_f (stack.f.size()): " << rows_f << "\n"; */ 
+        /* cout << "rows_b (stack.b.size()): " << rows_b << "\n"; */ 
+        dtypes.clear();        
+        Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
+        // add stack_f to Phi
+        /* cout << "cols: " << cols << "\n"; */ 
+      
+        for (unsigned int i=0; i<rows_f; ++i)
+        {    
+             ArrayXd Row = ArrayXd::Map(stack.f.at(i).data(),cols);
+             clean(Row); // remove nans, set infs to max and min
+             Phi.row(i) = Row;
+             dtypes.push_back('f'); 
+        }
+        // convert stack_b to Phi       
+        for (unsigned int i=0; i<rows_b; ++i)
+        {
+            Phi.row(i+rows_f) = ArrayXb::Map(stack.b.at(i).data(),cols).cast<double>();
+            dtypes.push_back('b');
+        }       
+        //Phi.transposeInPlace();
+        return Phi;
+    }    
 #else //////////////////////////////////////////////////////////// GPU implementation
     // calculate program output matrix on GPU
     MatrixXd Individual::out(const MatrixXd& X,
