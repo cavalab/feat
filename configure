@@ -30,7 +30,7 @@ elif [ "$1" == "lpc_cuda" ] ; then
     export EIGEN3_INCLUDE_DIR="$HOME/eigen-3.3.4/"
     export SHOGUN_DIR="$HOME/anaconda3/include/"
     export SHOGUN_LIB="$HOME/anaconda3/lib/"
-    rm -rf build; mkdir build; cd build; 
+    rm -rf buildGPU; mkdir buildGPU; cd buildGPU; 
     cmake -DEIGEN_DIR=ON -DSHOGUN_DIR=ON -DOMP=OFF -DCORE_USE_CUDA=ON ..
     cd ..
 elif [ "$1" == "tests" ] ; then 
