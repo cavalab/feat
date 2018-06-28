@@ -312,6 +312,7 @@ namespace FT{
     // calculate program output matrix on GPU
     MatrixXd Individual::out(Data d,
                              const Parameters& params)
+    {
     
         /*!
          * @params X: n_features x n_samples data
