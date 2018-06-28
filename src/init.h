@@ -15,6 +15,7 @@ license: GNU/GPL v3
 #endif
 // stuff being used
 
+#include <Eigen/Dense>
 #include <memory>
 #include <iostream>
 
