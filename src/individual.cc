@@ -204,11 +204,13 @@ namespace FT{
         // convert stack_f to Phi
         params.msg("converting stacks to Phi",3);
         int cols;
+        
+#ifndef USE_CUDA
         if (stack.f.size()==0)
         {
             if (stack.b.size() == 0)
                 HANDLE_ERROR_THROW("Error: no outputs in stacks");
-            
+         
             cols = stack.b.top().size();
         }
         else
@@ -216,6 +218,20 @@ namespace FT{
                
         int rows_f = stack.f.size();
         int rows_b = stack.b.size();
+#else
+        if (stack.f.size()==0)
+        {
+            if (stack.b.size() == 0)
+                HANDLE_ERROR_THROW("Error: no outputs in stacks");
+            
+            cols = stack.b.cols();
+        }
+        else
+            cols = stack.f.cols();
+               
+        int rows_f = stack.f.rows();
+        int rows_b = stack.b.rows();
+#endif
         
         dtypes.clear();        
         Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
@@ -379,7 +395,7 @@ namespace FT{
         if (stack.f.size()==0)
         {
             if (stack.b.size() == 0)
-            {   std::cout << "Error: no outputs in stacks\n"; throw;}
+                HANDLE_ERROR_THROW("Error: no outputs in stacks");
             
             cols = stack.b.cols();
         }
