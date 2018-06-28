@@ -6,11 +6,11 @@ license: GNU/GPL v3
 #ifndef RND_H
 #define RND_H
 //external includes
-#include <iostream>
 #include <random>
 #include <limits>
 #include <vector>
-#include <omp.h>
+
+#include "init.h"
 
 using namespace std;
 using std::swap;
