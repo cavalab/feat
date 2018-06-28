@@ -408,8 +408,8 @@ namespace FT{
         dtypes.clear();        
         Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
         
-        ArrayXXb  PhiB = ArrayXXb::Map(stack.b.data(),stack.b.rows(),stack.b.cols());
-        ArrayXXf PhiF = ArrayXXf::Map(stack.f.data(),stack.f.rows(),stack.f.cols());
+        Eigen::ArrayXXb  PhiB = Eigen::ArrayXXb::Map(stack.b.data(),stack.b.rows(),stack.b.cols());
+        Eigen::ArrayXXf PhiF = Eigen::ArrayXXf::Map(stack.f.data(),stack.f.rows(),stack.f.cols());
         // combine stacks into Phi 
         Phi <<  PhiF.cast<double>(),
                 PhiB.cast<double>();
