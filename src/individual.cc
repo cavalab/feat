@@ -576,5 +576,19 @@ namespace FT{
         }
         return s;
     }
+    
+    std::map<char, size_t> Individual::get_max_stack_size()
+    {
+        // max stack size is calculated using node arities
+        std::map<char, size_t> stack_size; 
+        for (const auto& n : program)   
+        {   
+            ++stack_size[n->otype];
+            for (const auto& a : n->arity)
+                stack_size[a.first] -= a.second;
+                       
+        }
+        return stack_size;
+    }
 
 }
