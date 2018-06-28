@@ -8,7 +8,6 @@ license: GNU/GPL v3
 //external includes
 #include <iostream>
 #include <vector>
-#include <Eigen/Dense>
 #include <memory>
 #include <shogun/base/init.h>
 
