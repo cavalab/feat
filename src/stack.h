@@ -107,15 +107,6 @@ namespace FT
         ///< checks if arity of node provided satisfies the node names in various string stacks
         bool check_s(std::map<char, unsigned int> &arity);
     };
-    /*!
-     * @class Trace
-     * @brief used for tracing stack outputs for backprop algorithm.
-     */
-    struct Trace
-    {
-        vector<ArrayXd> f;
-        vector<ArrayXb> b;
-    };
 #else
     struct Stacks
     {
@@ -151,6 +142,15 @@ namespace FT
         ~Stacks();
     };
 #endif
+    /*!
+     * @class Trace
+     * @brief used for tracing stack outputs for backprop algorithm.
+     */
+    struct Trace
+    {
+        vector<ArrayXd> f;
+        vector<ArrayXb> b;
+    };
 }
 
 #endif
