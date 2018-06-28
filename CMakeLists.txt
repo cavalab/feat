@@ -7,18 +7,18 @@ option( CORE_USE_CUDA   "Use CUDA to speed up certain parts of the code."  OFF )
 #############################################
 
 ######### CUDA decisions ####################
-if (CORE_USE_CUDA)
-    MESSAGE( STATUS ">> --------------  USING CUDA --------------" )
-    set( CUDA_TOOLKIT_ROOT_DIR "/usr/local/cuda-8.0")
-    if (APPLE OR UNIX)
-        set(CMAKE_C_COMPILER   /usr/bin/gcc)
-        set(CMAKE_CXX_COMPILER /usr/bin/g++)
-    elseif (WIN32)
-        ### By default we use VS
-        MESSAGE( STATUS ">> User compiler:             MSVC" )
-        MESSAGE( STATUS ">> Choosing a different compiler is not yet implemented for Windows" )
-    endif()
-endif()
+#if (CORE_USE_CUDA)
+#    MESSAGE( STATUS ">> --------------  USING CUDA --------------" )
+#    set( CUDA_TOOLKIT_ROOT_DIR "/usr/local/cuda-8.0")
+#    if (APPLE OR UNIX)
+#        set(CMAKE_C_COMPILER   /usr/bin/gcc)
+#        set(CMAKE_CXX_COMPILER /usr/bin/g++)
+#    elseif (WIN32)
+#        ### By default we use VS
+#        MESSAGE( STATUS ">> User compiler:             MSVC" )
+#        MESSAGE( STATUS ">> Choosing a different compiler is not yet implemented for Windows" )
+#    endif()
+#endif()
 #############################################
 
 # version requirement for Eigen
