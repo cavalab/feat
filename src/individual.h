@@ -117,7 +117,7 @@ namespace FT{
         void set_p(const vector<double>& weights, const double& fb);
         
         typedef Array<bool, Dynamic, Dynamic> ArrayXXb;
-        typedef Array<bool, Dynamic, Dynamic> ArrayXXf;
+        typedef Array<float, Dynamic, Dynamic> ArrayXXf;
     };
 }
 
