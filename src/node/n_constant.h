@@ -1,4 +1,4 @@
-/* FEWTWO
+/* FEAT
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
@@ -12,81 +12,30 @@ namespace FT{
     {
     	public:
     		
-    		float d_value;           ///< value, for k and x types
+    		double d_value;           ///< value, for k and x types
     		bool b_value;
     		
-    		NodeConstant()
-    		{
-    			std::cerr << "error in nodeconstant.h : invalid constructor called";
-				throw;
-    		}
-
+    		NodeConstant();
+    		
             /// declares a boolean constant
-    		NodeConstant(bool& v)
-    		{
-    			name = "k_b";
-    			otype = 'b';
-    			arity['f'] = 0;
-    			arity['b'] = 0;
-    			complexity = 1;
-    			b_value = v;
-    		}
+    		NodeConstant(bool& v);
 
-            /// declares a float constant
-    		NodeConstant(const float& v)
-    		{
-    			name = "k_d";
-    			otype = 'f';
-    			arity['f'] = 0;
-    			arity['b'] = 0;
-    			complexity = 1;
-    			d_value = v;
-    		}
+            /// declares a double constant
+    		NodeConstant(const double& v);
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack);
+            void evaluate(Data& data, Stacks& stack);
 
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-        		if (otype == 'b')
-                    stack.bs.push(std::to_string(b_value));
-                else 	
-                    stack.fs.push(std::to_string(d_value));
-            }
+            void eval_eqn(Stacks& stack);
+
+            // Make the derivative 1
     		
         protected:
-            NodeConstant* clone_impl() const override { return new NodeConstant(*this); };  
+                NodeConstant* clone_impl() const override;
+      
+                NodeConstant* rnd_clone_impl() const override;
     };
-    // Definition
-#ifndef USE_CUDA    
-    void NodeConstant::evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-    {
-        if (otype == 'b')
-            stack.b.push(ArrayXb::Constant(X.cols(),b_value));
-        else 	
-            stack.f.push(ArrayXd::Constant(X.cols(),d_value));
-    }
-#else
-    void NodeConstant::evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-    {
-        if (otype == 'b')
-        {
-            GPU_Constant(stack.dev_b, b_value, stack.idx['b'], stack.N);
-        }
-        else
-        {
-            GPU_Constant(stack.dev_f, d_value, stack.idx['f'], stack.N);
-        }
-
-    }
-#endif
 }	
 
 #endif

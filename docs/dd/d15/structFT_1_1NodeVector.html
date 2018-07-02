@@ -47,6 +47,7 @@ var searchBox = new SearchBox("searchBox", "../../search",false,'Search');
     <ul class="tablist">
       <li><a href="../../index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="../../pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="../../namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="../../annotated.html"><span>Classes</span></a></li>
       <li><a href="../../files.html"><span>Files</span></a></li>
       <li>
@@ -148,10 +149,65 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1efa23c85af19a74d72f33748cb89779"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1efa23c85af19a74d72f33748cb89779"></a>
 <a class="el" href="../../dd/d15/structFT_1_1NodeVector.html">NodeVector</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a class="el" href="../../dd/d15/structFT_1_1NodeVector.html">NodeVector</a> &amp;&amp;other)=default</td></tr>
 <tr class="separator:a1efa23c85af19a74d72f33748cb89779"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:addd65a1632a06096f7257b0c79290165"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="addd65a1632a06096f7257b0c79290165"></a>
+vector&lt; <a class="el" href="../../d3/daf/classFT_1_1Node.html">Node</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d15/structFT_1_1NodeVector.html#addd65a1632a06096f7257b0c79290165">get_data</a> (int start=0, int end=0)</td></tr>
+<tr class="memdesc:addd65a1632a06096f7257b0c79290165"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns vector of raw pointers to nodes in [start,end], or all if both are zero <br /></td></tr>
+<tr class="separator:addd65a1632a06096f7257b0c79290165"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4027ffd7e8ab63bd3619631889cf1d3b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4027ffd7e8ab63bd3619631889cf1d3b"></a>
+vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d15/structFT_1_1NodeVector.html#a4027ffd7e8ab63bd3619631889cf1d3b">roots</a> ()</td></tr>
+<tr class="memdesc:a4027ffd7e8ab63bd3619631889cf1d3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns indices of root nodes <br /></td></tr>
+<tr class="separator:a4027ffd7e8ab63bd3619631889cf1d3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa8e6a3c71ddb7a76bd817d8a908652b"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d15/structFT_1_1NodeVector.html#aaa8e6a3c71ddb7a76bd817d8a908652b">subtree</a> (size_t i, char otype='0') const </td></tr>
+<tr class="separator:aaa8e6a3c71ddb7a76bd817d8a908652b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a194aee88300454bac46a44e8551aedbf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a194aee88300454bac46a44e8551aedbf"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_weights</b> (vector&lt; vector&lt; double &gt;&gt; &amp;weights)</td></tr>
+<tr class="separator:a194aee88300454bac46a44e8551aedbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee014808bd2bc16bfe4f23832514d82a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aee014808bd2bc16bfe4f23832514d82a"></a>
+vector&lt; vector&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>get_weights</b> ()</td></tr>
+<tr class="separator:aee014808bd2bc16bfe4f23832514d82a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>an extension of a vector of unique pointers to nodes </p>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="aaa8e6a3c71ddb7a76bd817d8a908652b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t FT::NodeVector::subtree </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>i</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char&#160;</td>
+          <td class="paramname"><em>otype</em> = <code>'0'</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>finds index of the end of subtree in program with root i.</p>
+<p>Input: </p><pre class="fragment">i, root index of subtree
+</pre><p>Output: </p><pre class="fragment">last index in subtree, &lt;= i
+</pre><p>note that this function assumes a subtree's arguments to be contiguous in the program.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="../../da/dbc/nodevector_8h_source.html">nodevector.h</a></li>
 </ul>
 </div><!-- contents -->
@@ -159,7 +215,7 @@ Public Member Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>FT</b></li><li class="navelem"><a class="el" href="../../dd/d15/structFT_1_1NodeVector.html">NodeVector</a></li>
+    <li class="navelem"><a class="el" href="../../d2/d35/namespaceFT.html">FT</a></li><li class="navelem"><a class="el" href="../../dd/d15/structFT_1_1NodeVector.html">NodeVector</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.11 </li>

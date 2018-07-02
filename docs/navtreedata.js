@@ -4,6 +4,13 @@ var NAVTREE =
     [ "Installing", "md_INSTALL.html", null ],
     [ "Contributing", "md_CONTRIBUTING.html", null ],
     [ "Examples", "md_examples_EXAMPLES.html", null ],
+    [ "Namespaces", null, [
+      [ "Namespace List", "namespaces.html", "namespaces" ],
+      [ "Namespace Members", "namespacemembers.html", [
+        [ "All", "namespacemembers.html", null ],
+        [ "Functions", "namespacemembers_func.html", null ]
+      ] ]
+    ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
@@ -23,9 +30,9 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"d8/d3c/nodecube_8h_source.html",
-"db/dff/classshogun_1_1CMyCARTree.html#a638888affdd879c8fbb415c47bb11376",
-"df/dfa/classFT_1_1ML.html#ae46f491cb0656cf64334f76d5ac07b9a"
+"d6/df3/classFT_1_1NodeGEQ.html#a13543d0c0c204033d8620604636239a5",
+"db/dff/classFT_1_1Feat.html#a3f5c79c87ddf804cfaa7b853117b3351",
+"de/d2c/structFT_1_1Parameters.html#a1c327169f36ac2659d0b96c6ac2088c1"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -47,6 +47,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li class="current"><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -116,7 +117,7 @@ $(document).ready(function(){initNavTree('md_CONTRIBUTING.html','');});
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;git commit -m &quot;adds my new change&quot;</div></div><!-- fragment --><ul>
 <li>Check that your branch has no conflict with Feat's master branch by merging the master branch from the upstream repo.</li>
 </ul>
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;git merge upstream/master</div></div><!-- fragment --><ul>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;git remote add upstream https://github.com/lacava/feat</div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;git fetch upstream</div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;git merge upstream/master</div></div><!-- fragment --><ul>
 <li>Fix any conflicts and commit.</li>
 </ul>
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;git commit -m &quot;Merges upstream master&quot;</div></div><!-- fragment --><ul>

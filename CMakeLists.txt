@@ -7,18 +7,18 @@ option( CORE_USE_CUDA   "Use CUDA to speed up certain parts of the code."  OFF )
 #############################################
 
 ######### CUDA decisions ####################
-if (CORE_USE_CUDA)
-    MESSAGE( STATUS ">> --------------  USING CUDA --------------" )
-    set( CUDA_TOOLKIT_ROOT_DIR "/usr/local/cuda-8.0")
-    if (APPLE OR UNIX)
-        set(CMAKE_C_COMPILER   /usr/bin/gcc)
-        set(CMAKE_CXX_COMPILER /usr/bin/g++)
-    elseif (WIN32)
-        ### By default we use VS
-        MESSAGE( STATUS ">> User compiler:             MSVC" )
-        MESSAGE( STATUS ">> Choosing a different compiler is not yet implemented for Windows" )
-    endif()
-endif()
+#if (CORE_USE_CUDA)
+#    MESSAGE( STATUS ">> --------------  USING CUDA --------------" )
+#    set( CUDA_TOOLKIT_ROOT_DIR "/usr/local/cuda-8.0")
+#    if (APPLE OR UNIX)
+#        set(CMAKE_C_COMPILER   /usr/bin/gcc)
+#        set(CMAKE_CXX_COMPILER /usr/bin/g++)
+#    elseif (WIN32)
+#        ### By default we use VS
+#        MESSAGE( STATUS ">> User compiler:             MSVC" )
+#        MESSAGE( STATUS ">> Choosing a different compiler is not yet implemented for Windows" )
+#    endif()
+#endif()
 #############################################
 
 # version requirement for Eigen
@@ -76,7 +76,8 @@ if (NOT CMAKE_BUILD_TYPE)
     message(STATUS "Setting build type to '${default_build_type}' since none was specified.")
     set(CMAKE_BUILD_TYPE "${default_build_type}")
 endif()
-
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+#set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 # add OpenMP support
 option(OMP "use OpenMP" ON)
 if (OMP)
@@ -103,32 +104,47 @@ if (CORE_USE_CUDA)
     #    include_directories("src/node-cuda")
 endif()    
 
+file(GLOB_RECURSE sources "src/*.cc")
 
-file(GLOB_RECURSE src_main_files "src/main.cc")
-file(GLOB_RECURSE src_cv_files "src/cv_main.cc")
+list(REMOVE_ITEM sources ${CMAKE_CURRENT_SOURCE_DIR}/src/parser.cc)
+list(REMOVE_ITEM sources ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cc)
+list(REMOVE_ITEM sources ${CMAKE_CURRENT_SOURCE_DIR}/src/cv_main.cc)
 
 # executable
 
 if (CORE_USE_CUDA)
-    cuda_add_executable(feat ${src_main_files} ${cuda_files})
-    cuda_add_executable(feat_cv ${src_cv_files} ${cuda_files})
-    #set_property(TARGET feat PROPERTY CUDA_STANDARD 11)
-    #set_property(TARGET feat_cv PROPERTY CUDA_STANDARD 11)
-
-    target_link_libraries(feat shogun ${CUDA_LIBRARIES})
-    target_link_libraries(feat_cv shogun ${CUDA_LIBRARIES})
+    cuda_add_library(feat_lib SHARED ${sources} ${cuda_files})
 else()
-    add_executable(feat ${src_main_files})
-    add_executable(feat_cv ${src_cv_files})
+    add_library(feat_lib SHARED ${sources})
+endif()
 
-    target_link_libraries(feat shogun)
-    target_link_libraries(feat_cv shogun)
+# executables
+
+#feat executable
+add_executable(feat src/main.cc)
+
+#feat_cv executable
+add_executable(feat_cv src/cv_main.cc) 
+
+#link libraries for different executables
+
+if (CORE_USE_CUDA)
+    target_link_libraries(feat feat_lib shogun ${CUDA_LIBRARIES})
+    target_link_libraries(feat_cv feat_lib shogun ${CUDA_LIBRARIES})
+else()
+    target_link_libraries(feat feat_lib shogun)
+    target_link_libraries(feat_cv feat_lib shogun)
 endif()
 
 if (TEST)
     # Link runTests with what we want to test and the GTest and pthread library
     add_executable(tests tests/gtest.cc)
-    target_link_libraries(tests shogun ${GTEST_LIBRARIES} pthread)
+    
+    if (CORE_USE_CUDA)
+        target_link_libraries(tests feat_lib shogun ${CUDA_LIBRARIES} ${GTEST_LIBRARIES} pthread)
+    else()
+        target_link_libraries(tests feat_lib shogun ${GTEST_LIBRARIES} pthread)
+    endif()
 endif()
 
 

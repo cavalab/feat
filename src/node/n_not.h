@@ -12,45 +12,18 @@ namespace FT{
     {
     	public:
     	
-    		NodeNot()
-       		{
-    			name = "not";
-    			otype = 'b';
-    			arity['f'] = 0;
-    			arity['b'] = 1;
-    			complexity = 1;
-    		}
+    		NodeNot();
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack);
+            void evaluate(Data& data, Stacks& stack);
             
 
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-                stack.bs.push("NOT(" + stack.bs.pop() + ")");
-            }
+            void eval_eqn(Stacks& stack);
         protected:
-            NodeNot* clone_impl() const override { return new NodeNot(*this); };  
+            NodeNot* clone_impl() const override;
+            NodeNot* rnd_clone_impl() const override;
     };
-#ifndef USE_CUDA
-    void NodeNot::evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-    {
-        stack.b.push(!stack.b.pop());
-    }
-#else
-    void NodeNot::evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-    {
-        GPU_Not(stack.dev_b, stack.idx[otype], stack.N);
-    }
-#endif
-    
 }	
 
 #endif

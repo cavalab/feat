@@ -5,55 +5,26 @@ license: GNU/GPL v3
 #ifndef NODE_SQRT
 #define NODE_SQRT
 
-#include "node.h"
+#include "n_Dx.h"
 
 namespace FT{
-	class NodeSqrt : public Node
+	class NodeSqrt : public NodeDx
     {
     	public:
-    	
-    		NodeSqrt()
-    		{
-    			std::cerr << "error in noderoot.h : invalid constructor called";
-				throw;
-    		}
-    	
-    		NodeSqrt(string n)
-    		{
-    			name = n;
-    			otype = 'f';
-    			arity['f'] = 1;
-    			arity['b'] = 0;
-    			complexity = 2;
-    		}
+    	    
+    		NodeSqrt(vector<double> W0 = vector<double>());
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack);
+            void evaluate(Data& data, Stacks& stack);
             
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-                    stack.fs.push("sqrt(|" + stack.fs.pop() + "|)");
-            }
+            void eval_eqn(Stacks& stack);
+            
+            ArrayXd getDerivative(Trace& stack, int loc);
         protected:
-            NodeSqrt* clone_impl() const override { return new NodeSqrt(*this); };  
+            NodeSqrt* clone_impl() const override;
+            
+            NodeSqrt* rnd_clone_impl() const override;  
     };
-#ifndef USE_CUDA
-    void NodeSqrt::evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-    {
-            stack.f.push(sqrt(abs(stack.f.pop())));
-    }
-#else
-    void NodeSqrt::evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-    {
-        GPU_Sqrt(stack.dev_f, stack.idx[otype], stack.N);
-    }
-#endif
 }
 #endif

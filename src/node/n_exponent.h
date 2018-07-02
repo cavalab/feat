@@ -5,54 +5,28 @@ license: GNU/GPL v3
 #ifndef NODE_EXPONENT
 #define NODE_EXPONENT
 
-#include "node.h"
+#include "n_Dx.h"
 
 namespace FT{
-	class NodeExponent : public Node
+	class NodeExponent : public NodeDx
     {
     	public:
     	  	
-    		NodeExponent()
-    		{
-    			name = "^";
-    			otype = 'f';
-    			arity['f'] = 2;
-    			arity['b'] = 0;
-    			complexity = 4;
-    		}
+    		NodeExponent(vector<double> W0 = vector<double>());
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack);
+            void evaluate(Data& data, Stacks& stack);
             
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-        		string x2 = stack.fs.pop();
-                string x1 = stack.fs.pop();
-                stack.fs.push("(" + x1 + ")^(" + x2 + ")");
-            }
+            void eval_eqn(Stacks& stack);
+            
+            ArrayXd getDerivative(Trace& stack, int loc);
+            
         protected:
-            NodeExponent* clone_impl() const override { return new NodeExponent(*this); };  
+            NodeExponent* clone_impl() const override;
+            
+            NodeExponent* rnd_clone_impl() const override;
     };
-#ifndef USE_CUDA
-    void NodeExponent::evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-    {
-        ArrayXd x2 = stack.f.pop();
-        ArrayXd x1 = stack.f.pop();
-        stack.f.push(limited(pow(x1,x2)));
-    }
-#else
-    void NodeExponent::evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-    {
-        GPU_Exponent(stack.dev_f, stack.idx[otype], stack.N);
-    }
-#endif
 }	
 
 #endif

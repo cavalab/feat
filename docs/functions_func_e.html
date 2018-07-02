@@ -47,6 +47,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -85,6 +86,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow4" class="tabs3">
     <ul class="tablist">
       <li><a href="functions_func.html#index_a"><span>a</span></a></li>
+      <li><a href="functions_func_b.html#index_b"><span>b</span></a></li>
       <li><a href="functions_func_c.html#index_c"><span>c</span></a></li>
       <li><a href="functions_func_d.html#index_d"><span>d</span></a></li>
       <li class="current"><a href="functions_func_e.html#index_e"><span>e</span></a></li>
@@ -138,6 +140,12 @@ $(document).ready(function(){initNavTree('functions_func_e.html','');});
 &#160;
 
 <h3><a class="anchor" id="index_e"></a>- e -</h3><ul>
+<li>empty()
+: <a class="el" href="d3/d35/classFT_1_1Stack.html#a7eab0f551cb592bc8a09e58053095795">FT::Stack&lt; type &gt;</a>
+</li>
+<li>end()
+: <a class="el" href="d3/d35/classFT_1_1Stack.html#ae8e56e9215bfa2586eedb43b890ff200">FT::Stack&lt; type &gt;</a>
+</li>
 <li>eval_complexity()
 : <a class="el" href="d3/daf/classFT_1_1Node.html#a85f5dc8e63804703fb5b1cc7c297c0e8">FT::Node</a>
 </li>
@@ -151,10 +159,10 @@ $(document).ready(function(){initNavTree('functions_func_e.html','');});
 , <a class="el" href="dc/da3/classFT_1_1NodeAnd.html#a1a426d1509621d1bb0a8560f27163dbe">FT::NodeAnd</a>
 , <a class="el" href="da/d77/classFT_1_1NodeConstant.html#a8efadb9efb33c2b7d2551f6d60990603">FT::NodeConstant</a>
 , <a class="el" href="d6/da2/classFT_1_1NodeCos.html#aa86a6aeca2fe1b8d59436dc17f2d8313">FT::NodeCos</a>
+, <a class="el" href="da/d98/classFT_1_1NodeCount.html#a6ac8427c1a70c8233483d7c0cf999d5e">FT::NodeCount</a>
 , <a class="el" href="d1/d36/classFT_1_1NodeCube.html#a69cd54eed3b2704d9e237fa6a1575662">FT::NodeCube</a>
 , <a class="el" href="d7/d5c/classFT_1_1NodeDivide.html#ae6f7a5894f27aa1b5058bb6174a1f65a">FT::NodeDivide</a>
 , <a class="el" href="d9/d69/classFT_1_1NodeEqual.html#a097eebfd17f296e2093faed88207d1f6">FT::NodeEqual</a>
-, <a class="el" href="db/d1d/classFT_1_1NodeExp.html#aef311f5d0613f103d77bf81a884417b8">FT::NodeExp</a>
 , <a class="el" href="d8/dbf/classFT_1_1NodeExponent.html#a43529563499e6caf4bbaa1f529abec43">FT::NodeExponent</a>
 , <a class="el" href="df/dfa/classFT_1_1NodeExponential.html#a284c9b5566beca78ac5f19f5425a915d">FT::NodeExponential</a>
 , <a class="el" href="d3/df7/classFT_1_1NodeGaussian.html#a5f5cf279d605a6225968786bbc2607fa">FT::NodeGaussian</a>
@@ -176,7 +184,7 @@ $(document).ready(function(){initNavTree('functions_func_e.html','');});
 , <a class="el" href="d8/d7d/classFT_1_1NodeMultiply.html#a99ab69c466e71307af2db9947cc34e66">FT::NodeMultiply</a>
 , <a class="el" href="dd/d56/classFT_1_1NodeNot.html#a0d87ad18d1076e564fc56abf196c72fd">FT::NodeNot</a>
 , <a class="el" href="d7/d13/classFT_1_1NodeOr.html#a432a2a4b242467dc3b423ee71d4045fe">FT::NodeOr</a>
-, <a class="el" href="db/da6/classFT_1_1NodeRoot.html#adb4f53983848df776ac6888904350c49">FT::NodeRoot</a>
+, <a class="el" href="d6/d9b/classFT_1_1NodeRelu.html#af4c8d14ee343d6b3911557fcc56cc9a7">FT::NodeRelu</a>
 , <a class="el" href="d8/dd4/classFT_1_1NodeSign.html#afc62140b5f70299d05d8add01e6e3322">FT::NodeSign</a>
 , <a class="el" href="da/d1c/classFT_1_1NodeSin.html#a6ba6c1c40658f1e84e3820257c0860f8">FT::NodeSin</a>
 , <a class="el" href="dd/ddc/classFT_1_1NodeSkew.html#a3595ea41ea60c5739b6dd0e2c711715c">FT::NodeSkew</a>
@@ -198,10 +206,10 @@ $(document).ready(function(){initNavTree('functions_func_e.html','');});
 , <a class="el" href="dc/da3/classFT_1_1NodeAnd.html#a6aad6224377bcf59624c6191cd2187ce">FT::NodeAnd</a>
 , <a class="el" href="da/d77/classFT_1_1NodeConstant.html#ab19aff54f514b7d843845c6871b9948b">FT::NodeConstant</a>
 , <a class="el" href="d6/da2/classFT_1_1NodeCos.html#a41b844dfb04cac0cdc424c17663aa831">FT::NodeCos</a>
+, <a class="el" href="da/d98/classFT_1_1NodeCount.html#ac5198265b19746b78832cfe235c1deb5">FT::NodeCount</a>
 , <a class="el" href="d1/d36/classFT_1_1NodeCube.html#a263a77db5947c629aea6c6d22542dca6">FT::NodeCube</a>
 , <a class="el" href="d7/d5c/classFT_1_1NodeDivide.html#a3475fd235858d5a86dcc89f3d1b52366">FT::NodeDivide</a>
 , <a class="el" href="d9/d69/classFT_1_1NodeEqual.html#a9d9bc2fb07b2ce592e7cadd3d9f90dab">FT::NodeEqual</a>
-, <a class="el" href="db/d1d/classFT_1_1NodeExp.html#af0183b0803cbf18d9005e2cfeb6eac91">FT::NodeExp</a>
 , <a class="el" href="d8/dbf/classFT_1_1NodeExponent.html#aa9ee4b1f64bb3546a204499b36d39909">FT::NodeExponent</a>
 , <a class="el" href="df/dfa/classFT_1_1NodeExponential.html#af5f2b6a08fad902607c6d3c6821ef5db">FT::NodeExponential</a>
 , <a class="el" href="d3/df7/classFT_1_1NodeGaussian.html#acf2b6c200e82519350195ec523514765">FT::NodeGaussian</a>
@@ -223,7 +231,7 @@ $(document).ready(function(){initNavTree('functions_func_e.html','');});
 , <a class="el" href="d8/d7d/classFT_1_1NodeMultiply.html#a2373d545c4d369dbf828e5d5d6b685ab">FT::NodeMultiply</a>
 , <a class="el" href="dd/d56/classFT_1_1NodeNot.html#a5279419ce8ee925205849d69212b9fe3">FT::NodeNot</a>
 , <a class="el" href="d7/d13/classFT_1_1NodeOr.html#a66d278b545f0321d56a2726b2befb718">FT::NodeOr</a>
-, <a class="el" href="db/da6/classFT_1_1NodeRoot.html#a8c4b3c1f8f911d89222ac9acaa52c84c">FT::NodeRoot</a>
+, <a class="el" href="d6/d9b/classFT_1_1NodeRelu.html#a659dff112cd8687a558f7c6470acded0">FT::NodeRelu</a>
 , <a class="el" href="d8/dd4/classFT_1_1NodeSign.html#a1b155b8b77ae70050ea1fa2c1082d0be">FT::NodeSign</a>
 , <a class="el" href="da/d1c/classFT_1_1NodeSin.html#a51816d15f106eb11c6fb9f6539f190a0">FT::NodeSin</a>
 , <a class="el" href="dd/ddc/classFT_1_1NodeSkew.html#a166df88be9609190b7539ad8d8206863">FT::NodeSkew</a>
