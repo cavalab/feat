@@ -183,13 +183,25 @@ namespace FT{
                     /*        program.at(i)->arity['f'] << " arguments\n"; */
                     for (int j = 0; j < program.at(i)->arity['f']; j++) {
                         /* cout << "push back float arg for " << program.at(i)->name << "\n"; */
+#ifndef USE_CUDA
                         stack_trace.at(trace_idx).f.push_back(stack.f.at(stack.f.size() - 
                                                          (program.at(i)->arity['f'] - j)));
+#else
+                        ArrayXd ad = ArrayXd::Map(stack.f.data()+(stack.f.size() - 
+                                                         (program.at(i)->arity['f'] - j)), stack.f.cols());
+                        stack_trace.at(trace_idx).f.push_back(ad);
+#endif
                     }
                     for (int j = 0; j < program.at(i)->arity['b']; j++) {
                         /* cout << "push back bool arg for " << program.at(i)->name << "\n"; */
+#ifndef USE_CUDA
                         stack_trace.at(trace_idx).b.push_back(stack.b.at(stack.b.size() - 
                                                          (program.at(i)->arity['b'] - j)));
+#else
+                        ArrayXb bd = ArrayXb::Map(stack.f.data()+(stack.b.size() - 
+                                                         (program.at(i)->arity['b'] - j)), stack.b.cols());
+                        stack_trace.at(trace_idx).b.push_back(bd);
+#endif
                     }
                 }
         	    //cout<<"***enter here "<<n->name<<"\n";
@@ -218,20 +230,6 @@ namespace FT{
                
         int rows_f = stack.f.size();
         int rows_b = stack.b.size();
-#else
-        if (stack.f.size()==0)
-        {
-            if (stack.b.size() == 0)
-                HANDLE_ERROR_THROW("Error: no outputs in stacks");
-            
-            cols = stack.b.cols();
-        }
-        else
-            cols = stack.f.cols();
-               
-        int rows_f = stack.f.rows();
-        int rows_b = stack.b.rows();
-#endif
         
         dtypes.clear();        
         Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
@@ -252,6 +250,46 @@ namespace FT{
         }       
         //Phi.transposeInPlace();
         return Phi;
+#else
+        if (stack.f.size()==0)
+        {
+            if (stack.b.size() == 0)
+                HANDLE_ERROR_THROW("Error: no outputs in stacks");
+            
+            cols = stack.b.cols();
+        }
+        else
+            cols = stack.f.cols();
+               
+        int rows_f = stack.f.rows();
+        int rows_b = stack.b.rows();
+
+        dtypes.clear();        
+        Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
+        
+        ArrayXXb  PhiB = ArrayXXb::Map(stack.b.data(),stack.b.rows(),stack.b.cols());
+        ArrayXXf PhiF = ArrayXXf::Map(stack.f.data(),stack.f.rows(),stack.f.cols());
+        // combine stacks into Phi 
+        Phi <<  PhiF.cast<double>(),
+                PhiB.cast<double>();
+        
+        /* std::cout << "Phi:" << Phi.rows() << "x" << Phi.cols() << "\n"; */
+
+        for (unsigned int i=0; i<rows_f; ++i)
+        {    
+             /* Phi.row(i) = VectorXd::Map(stack.f.at(i).data(),cols); */
+             dtypes.push_back('f'); 
+        }
+        // convert stack_b to Phi       
+        for (unsigned int i=0; i<rows_b; ++i)
+        {
+            /* Phi.row(i+rows_f) = ArrayXb::Map(stack.b.at(i).data(),cols).cast<double>(); */
+            dtypes.push_back('b');
+        }
+               
+        //Phi.transposeInPlace();
+        return Phi;
+#endif
     }
 
     
