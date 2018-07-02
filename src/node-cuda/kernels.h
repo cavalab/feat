@@ -40,8 +40,8 @@ void GPU_If(float * xf, bool * xb, size_t idxf, size_t idxb, size_t N);
 void GPU_IfThenElse(float * xf, bool * xb, size_t idxf, size_t idxb, size_t N);
 
 // leaves
-void GPU_Constant(float * dev_x, float& value, size_t idx, size_t N);
-void GPU_Constant(bool * dev_x, bool& value, size_t idx, size_t N);
+void GPU_Constant(float * dev_x, float value, size_t idx, size_t N);
+void GPU_Constant(bool * dev_x, bool value, size_t idx, size_t N);
 void GPU_Variable(float * dev_x, float * host_x, size_t idx, size_t N);
 void GPU_Variable(bool * dev_x, bool * host_x, size_t idx, size_t N);
 }
