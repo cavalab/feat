@@ -3,6 +3,11 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 
+#ifndef SELECTION_OPERATOR_H
+#define SELECTION_OPERATOR_H
+
+#include "../population.h"
+
 namespace FT{
 
     /*!
@@ -16,22 +21,12 @@ namespace FT{
 
         //SelectionOperator(){}
 
-        virtual ~SelectionOperator(){}
+        virtual ~SelectionOperator();
         
-        virtual vector<size_t> select(Population& pop, const MatrixXd& F, const Parameters& p) 
-        {   
-            std::cerr << "Undefined select() operation\n";
-            throw;
-        }
-        virtual vector<size_t> survive(Population& pop, const MatrixXd& F, const Parameters& p)
-        {
-            std::cerr << "Undefined select() operation\n";
-            throw;
-        };
-
+        virtual vector<size_t> select(Population& pop, const MatrixXd& F, const Parameters& p);
+        
+        virtual vector<size_t> survive(Population& pop, const MatrixXd& F, const Parameters& p);
     };
-	
-	
-	
-	
 }
+
+#endif

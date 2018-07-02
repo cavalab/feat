@@ -72,7 +72,7 @@ int main(int argc, char** argv){
     //////////////////////////////////////// parse arguments
     InputParser input(argc, argv);
     if(input.cmdOptionExists("-h") || input.dataset.empty()){
-        if (input.dataset.empty()) std::cerr << "Error: no dataset specified.\n---\n";
+        if (input.dataset.empty()) HANDLE_ERROR_NO_THROW("Error: no dataset specified.\n---\n");
         // Print help and exit. 
         cout << "Feat is a feature engineering wrapper for learning intelligible models.\n";
         cout << "Usage:\tfeat path/to/dataset [options]\n";
@@ -95,9 +95,14 @@ int main(int argc, char** argv){
         cout << "-split\tFraction of data to use for training (0.75)\n";
         cout << "-isplit\tInternal slit for Feat's training procedure (0.75)\n";
         cout << "-f\tfeedback strength of ML on variation probabilities (0.5)\n";
-        cout << "-n\tname to append to files\n";
-        cout << "-threads\tmaximum number of threads\n";
+        cout << "-log\tlog file name\n";
+        cout << "-n_threads\tmaximum number of threads\n";
         cout << "-ldata\tpath to longitudinal data file\n";
+        cout << "-scorer\tscoring function [mse, zero_one, bal_zero_one, log, multi_log]\n"; 
+        cout << "-bp\tbackpropagation iterations (zero)\n"; 
+        cout << "-hc\tstochastic hill climbing iterations (zero)\n"; 
+        cout << "-lr\tbackpropagation learning rate or hill climbing step size(zero)\n"; 
+        cout << "-batch\tminibatch size for stochastic gradient descent\n"; 
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
     }
@@ -144,12 +149,28 @@ int main(int argc, char** argv){
         feat.set_split(std::stod(input.getCmdOption("-isplit")));
     if(input.cmdOptionExists("-f"))
         feat.set_feedback(std::stod(input.getCmdOption("-f")));
+    if(input.cmdOptionExists("-log"))
+        feat.set_logfile(input.getCmdOption("-log"));
     if(input.cmdOptionExists("-ldata"))
         ldataFile = input.getCmdOption("-ldata");
-    if(input.cmdOptionExists("-n"))
-        feat.set_name(input.getCmdOption("-n"));
-    if(input.cmdOptionExists("-threads"))
-        feat.set_threads(std::stoi(input.getCmdOption("-threads")));
+    if(input.cmdOptionExists("-scorer"))
+        feat.set_scorer(input.getCmdOption("-scorer"));
+    if(input.cmdOptionExists("-bp"))
+    {
+        feat.set_backprop(true);
+        feat.set_iters(std::stoi(input.getCmdOption("-bp")));
+    }
+    if(input.cmdOptionExists("-hc"))
+    {
+        feat.set_hillclimb(true);
+        feat.set_iters(std::stoi(input.getCmdOption("-hc")));
+    }   
+    if(input.cmdOptionExists("-lr"))
+        feat.set_lr(std::stod(input.getCmdOption("-lr")));
+    if(input.cmdOptionExists("-batch"))
+        feat.set_batch_size(std::stoi(input.getCmdOption("-batch")));
+    if(input.cmdOptionExists("-n_threads"))
+        feat.set_n_threads(std::stoi(input.getCmdOption("-n_threads")));
     //cout << "done.\n";
     ///////////////////////////////////////
 
@@ -167,52 +188,64 @@ int main(int argc, char** argv){
     
     cout << "load_csv...";
     FT::load_csv(input.dataset,X,y,names,dtypes,binary_endpoint,delim);
-    //feat.set_dtypes(dtypes);
+    feat.set_feature_names(names);
     
     if (binary_endpoint)
     {
         if (!feat.get_classification())
-            std::cerr << "WARNING: binary endpoint detected. Feat is set for regression.";
+            HANDLE_ERROR_NO_THROW("WARNING: binary endpoint detected. Feat is set for regression.");
         else
             std::cout << "setting binary endpoint\n";
                       
     }
-     
-    // split data into training and test sets
-    MatrixXd X_t(X.rows(),int(X.cols()*split));
-    MatrixXd X_v(X.rows(),int(X.cols()*(1-split)));
-    VectorXd y_t(int(y.size()*split)), y_v(int(y.size()*(1-split)));
     
     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z;
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_t;
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_v;
-    
-    if(ldataFile.compare(""))
-    {
+   
+    if(ldataFile.compare("")) 
         FT::load_longitudinal(ldataFile, Z);
-        FT::split_longitudinal(Z, Z_t, Z_v, split);
-    }   
-    
-    FT::train_test_split(X,y,Z,X_t,X_v,y_t,y_v,Z_t,Z_v,feat.get_shuffle(), split);      
-    
-    MatrixXd X_tcopy = X_t;     
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_tcopy = Z_t;
-  
-    cout << "fitting model...\n";
-    
-    feat.fit(X_t, y_t, Z_t);
+   
+    if (split < 1.0)
+    {
+        /* // split data into training and test sets */
+        /* MatrixXd X_t(X.rows(),int(X.cols()*split)); */
+        /* MatrixXd X_v(X.rows(),int(X.cols()*(1-split))); */
+        /* VectorXd y_t(int(y.size()*split)), y_v(int(y.size()*(1-split))); */
+ 
+        /* std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_t; */
+        /* std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_v; */
+        
+        FT::DataRef d(X, y, Z, feat.get_classification());
+        
+        d.train_test_split(feat.get_shuffle(), split);
+       
+        MatrixXd X_tcopy = d.t->X;     
+        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_tcopy = d.t->Z;
+        VectorXd y_tcopy = d.t->y;
 
-    cout << "generating training prediction...\n";
+        cout << "fitting model...\n";
+        
+        feat.fit(d.t->X, d.t->y, d.t->Z);
 
-    double score_t = feat.score(X_tcopy,y_t, Z_tcopy);
+        cout << "generating training prediction...\n";
 
-    cout.precision(5);
-    cout << "train score: " << score_t << "\n";
-    
-    cout << "generating test prediction...\n";
-    double score = feat.score(X_v,y_v);
-    cout << "test score: " << score << "\n";
+        double score_t = feat.score(X_tcopy, y_tcopy, Z_tcopy);
 
+        cout.precision(5);
+        cout << "train score: " << score_t << "\n";
+        
+        cout << "generating test prediction...\n";
+        double score = feat.score(d.v->X,d.v->y,d.v->Z);
+        cout << "test score: " << score << "\n";
+    }
+    else
+    {
+        cout << "fitting model...\n";
+        
+        feat.fit(X, y, Z);
+        
+    }
+    cout << "printing final model\n";
+    cout << feat.get_model();
     cout << "done!\n";
 	
     return 0;

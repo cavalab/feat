@@ -25,12 +25,12 @@ namespace FT{
         return;
     }
 
-    void GPU_Constant(float * dev_x, float& value, size_t idx, size_t N)
+    void GPU_Constant(float * dev_x, float value, size_t idx, size_t N)
     {
         ConstantF<<< DIM_GRID, DIM_BLOCK >>>(dev_x, value, idx, N);
     }
 
-    void GPU_Constant(bool * dev_x, bool& value, size_t idx, size_t N)
+    void GPU_Constant(bool * dev_x, bool value, size_t idx, size_t N)
     {
         ConstantB<<< DIM_GRID, DIM_BLOCK >>>(dev_x, value, idx, N);
     }

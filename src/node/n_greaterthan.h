@@ -12,44 +12,19 @@ namespace FT{
     {
     	public:
     	   	
-    		NodeGreaterThan()
-    		{
-    			name = ">";
-    			otype = 'b';
-    			arity['f'] = 2;
-    			arity['b'] = 0;
-    			complexity = 2;
-    		}
+    		NodeGreaterThan();
     		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack);
+            void evaluate(Data& data, Stacks& stack);
             
 
             /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack)
-            {
-                stack.bs.push("(" + stack.fs.pop() + ">" + stack.fs.pop() + ")");
-            }
+            void eval_eqn(Stacks& stack);
         protected:
-            NodeGreaterThan* clone_impl() const override { return new NodeGreaterThan(*this); };  
+            NodeGreaterThan* clone_impl() const override;
+            
+            NodeGreaterThan* rnd_clone_impl() const override;
     };
-#ifndef USE_CUDA
-    void NodeGreaterThan::evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-    {
-        stack.b.push(stack.f.pop() > stack.f.pop());
-    }
-#else
-    void NodeGreaterThan::evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-    {
-        GPU_GreaterThan(stack.dev_f, stack.dev_b, stack.idx['f'], stack.idx[otype], stack.N);
-    }
-#endif
 }	
 
 #endif

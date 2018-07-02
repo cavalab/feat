@@ -47,6 +47,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li class="current"><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -102,37 +103,62 @@ $(document).ready(function(){initNavTree('md_examples_EXAMPLES.html','');});
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><h2>Command line example</h2>
-<p>Fewtwo can be run from the command-line. All of its options are configurable there. After a default build, the fewtwo executable will be in the <code>build</code> directory. From the repo directory, type <code>./build/fewtwo -h</code> to see options.</p>
+<p>Feat can be run from the command-line. All of its options are configurable there. After a default build, the feat executable will be in the <code>build</code> directory. From the repo directory, type <code>./build/feat -h</code> to see options.</p>
 <p>The first argument to the executable should be the dataset file to learn from. This dataset should be a comma- or tab-delimited file with columns corresponding to features, one column corresponding to the target, and rows corresponding to samples. the first row should be a header with the names of the features and target. <em>The target must be named as class, target, or label in order to be interpreted correctly.</em> See the datasets in the examples folder for guidance.</p>
 <h3>ENC problem</h3>
-<p>We will run Fewtwo on the <a href="https://archive.ics.uci.edu/ml/datasets/Energy+efficiency">energy efficiency</a> dataset from UCI, which is included in <code>examples/d_enc.txt</code>. To run Fewtwo with a population 1000 for 100 generations using a random seed of 42, type</p>
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;./build/fewtwo examples/d_enc.csv -p 1000 -g 100 -r 42</div></div><!-- fragment --><p>The default verbosity=1, so you will get a printout of summary statistics each generation. The final output should look like </p><pre class="fragment"> Generation 100/100 [//////////////////////////////////////////////////]
- Min Loss   Median Loss Time (s)
- 8.946e+01  9.023e+01   1.814e+01
- Representation Pareto Front--------------------------------------
- Rank   Complexity  Loss    Representation
- 1  8   9.010e+01   [x_0][x_1][x_2][x_3][x_4][x_5][x_6][x_7]
- 1  29  8.985e+01   [(x_6-x_5)][log(x_5)][(x_3/x_7)][(x_7/x_6)][(x_5+x_6)][(x_5-x_7)]
- 1  32  8.981e+01   [(x_7-x_5)][(x_6/x_5)][(x_6-x_5)][log(x_3)][(x_7-x_6)][(x_7+x_6)][(x_7/x_3)]
- 1  43  8.980e+01   [log(x_7)][log(x_3)][(x_5-x_3)][(x_3/x_5)][(x_6/x_3)][(x_3*x_6)][(x_5/x_5)]
- 1  46  8.972e+01   [(x_3-x_5)][(x_3*x_5)][log(x_6)][exp(x_6)][(x_3/x_6)][(x_6/x_7)][(x_6/x_3)][(x_7-x_5)]
- 1  129 8.960e+01   [((x_6+x_3)-log(x_3))][((x_7/x_7)-(x_6+x_6))][((x_3+x_5)-(x_7*x_7))][((x_6-x_7)/exp(x_6))][((x_6*x_5)+(x_5/x_3))][log((x_5-x_6))][((x_3-x_6)/(x_7*x_6))][(exp(x_7)*(x_6+x_6))]
- 1  158 8.950e+01   [exp(log(x_5))][log((x_7/x_6))][((x_7+x_5)-(x_5/x_7))][((x_6+x_5)/(x_6-x_7))][log((x_6-x_5))][log((x_5-x_7))][((x_6-x_7)/(x_3+x_5))][((x_3+x_3)-exp(x_3))][((x_7+x_6)+exp(x_5))]
- 1  486 8.946e+01   [(log(exp(x_3))+log((x_7-x_3)))][(exp(exp(x_5))*log((x_7-x_5)))][(((x_6*x_3)-(x_7+x_5))-(log(x_3)-exp(x_5)))][(exp((x_6*x_3))-exp(exp(x_3)))][((log(x_6)-exp(x_6))-(log(x_5)+(x_3/x_6)))][((log(x_3)-(x_6*x_6))*log((x_3+x_5)))][exp(log((x_5/x_3)))][(((x_6+x_5)-(x_6*x_6))+((x_5-x_3)+(x_6/x_7)))]
- 1  823 8.946e+01   [exp(((x_6*x_7)*(x_7/x_7)))][exp((log(x_7)-exp(x_7)))][exp((exp(x_6)*(x_6*x_6)))][(((x_6-x_6)+(x_3-x_5))+((x_7/x_3)-(x_6/x_7)))][exp((log(x_3)*log(x_7)))][(exp((x_6+x_6))*(log(x_7)+(x_5+x_3)))][(log((x_7*x_3))+(log(x_5)-(x_5-x_6)))][(((x_3/x_7)-(x_5-x_5))+((x_5*x_6)/(x_6-x_5)))][exp((log(x_7)*exp(x_7)))][(((x_5/x_3)*(x_5/x_3))/(exp(x_5)-exp(x_6)))]
- 2  40  8.990e+01   [(x_5/x_3)][log(x_6)][(x_6+x_6)][(x_5*x_6)][(x_3/x_7)][(x_7+x_5)][exp(x_7)]
- 2  41  8.982e+01   [(x_3+x_6)][(x_6-x_7)][(x_3/x_5)][(x_6+x_6)][log(x_6)][(x_7+x_5)][(x_5-x_3)][(x_5/x_6)][(x_7/x_6)]
- 2  46  8.972e+01   [(x_5+x_6)][(x_7+x_6)][(x_7+x_6)][(x_5+x_5)][(x_7/x_3)][(x_7-x_7)][(x_3-x_7)][(x_6/x_7)][exp(x_3)][log(x_3)]
- 2  168 8.969e+01   [exp((x_7+x_3))][(log(x_7)-(x_3/x_3))][((x_6*x_5)-log(x_7))][((x_5+x_3)/(x_7+x_5))][((x_6-x_6)+(x_6-x_3))][log((x_6*x_3))][log((x_6+x_5))][((x_3*x_3)-(x_7/x_5))][log((x_3/x_6))][log((x_5-x_7))]
- 2  183 8.967e+01   [log((x_7/x_3))][log(log(x_3))][((x_5+x_6)+(x_7-x_5))][((x_6/x_6)+(x_6*x_5))][log((x_7*x_3))][exp((x_6-x_6))][((x_3/x_5)-(x_6-x_6))][(log(x_3)+(x_6*x_7))][(exp(x_6)*(x_6*x_3))]
- 2  193 8.957e+01   [((x_3+x_3)*(x_6+x_5))][log((x_3*x_7))][((x_6/x_3)-(x_5+x_5))][log((x_5-x_6))][(exp(x_5)+(x_6-x_5))][log((x_7*x_3))][((x_5-x_5)/exp(x_3))][(log(x_6)*(x_7+x_7))][(log(x_3)+log(x_7))][((x_5+x_3)/(x_7/x_5))]
- 2  710 8.947e+01   [(((x_5+x_6)*(x_7*x_3))-((x_3+x_5)*(x_6-x_5)))][exp(((x_6-x_7)+(x_6/x_7)))][log(log(exp(x_6)))][log(((x_3/x_3)-(x_6/x_7)))][(log((x_5+x_5))/(exp(x_7)*(x_5-x_3)))][(log(exp(x_5))/((x_5+x_7)*(x_5-x_3)))][((exp(x_3)*(x_3-x_3))-log(exp(x_7)))][(((x_3-x_3)*exp(x_3))+((x_5*x_5)+(x_6-x_3)))][(log((x_6+x_5))-(exp(x_5)/(x_6*x_3)))][log(((x_3-x_5)*log(x_7)))]
+<p>We will run Feat on the <a href="https://archive.ics.uci.edu/ml/datasets/Energy+efficiency">energy efficiency</a> dataset from UCI, which is included in <code>examples/d_enc.txt</code>. To run Feat with a population 1000 for 100 generations using a random seed of 42, type</p>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;./build/feat examples/d_enc.csv -p 100 -g 100 -r 42</div></div><!-- fragment --><p>The default verbosity=1, so you will get a printout of summary statistics each generation. The final output should look like </p><pre class="fragment">Generation 100/100 [//////////////////////////////////////////////////]
+Min Loss    Median Loss Median (Max) Size   Time (s)
+2.47920e+00 6.27829e+00 27 (37)         27.75276
+Representation Pareto Front--------------------------------------
+Rank    Complexity  Loss    Representation
+1   1   1.65439e+01 [x_4]
+1   2   1.25723e+01 [x_0][x_4]
+1   3   1.03673e+01 [x_0][x_4][x_6]
+1   4   1.01868e+01 [x_0][x_3][x_4][x_6]
+1   5   1.00550e+01 [x_0][x_1][x_2][x_4][x_6]
+1   6   9.98319e+00 [x_0][x_1][x_2][x_4][x_6][x_7]
+1   7   9.78112e+00 [(x_1^2)][x_2][x_4][x_6]
+1   8   9.70928e+00 [x_7][(x_1^2)][x_2][x_4][x_6]
+1   9   9.68727e+00 [x_7][(x_1^2)][x_2][x_3][x_4][x_6]
+1   10  9.33169e+00 [x_1][(x_2*x_0)][x_2][x_4][x_6]
+1   11  9.32995e+00 [x_1][(x_2*x_0)][x_2][x_4][x_5][x_6]
+1   12  8.84481e+00 [x_2][(x_1^2)][x_2][x_3][x_4][x_6][(x_3+x_0)]
+1   14  8.08357e+00 [x_6][(x_2/(x_2^2))][x_4]
+1   15  8.08357e+00 [x_6][(x_2/(x_2^2))][x_4][x_4]
+1   17  7.95839e+00 [x_6][(x_2/(x_2^2))][x_4][(x_0-x_4)]
+1   20  7.87072e+00 [x_6][(x_2/(x_2^2))][x_4][(x_6*x_7)]
+1   21  7.55717e+00 [(x_2/(x_2^2))][(x_1+(x_6+x_2))][(x_0-x_4)][x_1]
+1   22  7.47840e+00 [x_6][(x_2/(x_2^2))][x_4][log(x_1)]
+1   23  4.84868e+00 [(x_2/(x_2^2))][(x_1^2)][x_2][x_3][x_4][x_6][(x_3+x_0)]
+1   42  4.25015e+00 [((x_1+x_4)^2)][(x_2/x_1)][(x_6+(x_6+x_2))][(x_1-x_2)][((x_1^2)^2)][(x_0^2)][(x_0*x_2)]
+1   45  4.23304e+00 [((x_1+x_4)^2)][(x_2/x_1)][(x_6+(x_6+x_2))][(x_1-x_2)][((x_1^2)^2)][(x_0^2)][(x_0*x_2)][(x_1-x_5)]
+1   48  3.78240e+00 [((x_1+x_4)^2)][(x_2/x_1)][(x_6+(x_6+x_2))][(x_1-x_2)][((x_1^2)^2)][(x_0^2)][(x_0*x_2)][(x_4+x_3)][(x_1==x_4)]
+1   64  3.02734e+00 [x_3][(x_2/x_1)][((x_4^2)/(x_2^2))][(x_1*(x_1^2))][(x_6+(x_1+x_2))][((x_1^2)^2)][((x_1+x_4)^2)][(x_0^2)]
+1   67  2.96073e+00 [x_3][(x_2/x_1)][((x_4^2)/(x_2^2))][(x_1*(x_1^2))][(x_6+(x_1+x_2))][((x_1^2)^2)][((x_1+x_4)^2)][(x_0^2)][(x_4-x_7)]
+1   70  2.76775e+00 [x_3][(x_2/x_1)][((x_4^2)/(x_2^2))][(x_1*(x_1^2))][(x_6+(x_1+x_2))][((x_1^2)^2)][((x_1+x_4)^2)][(x_0^2)][(x_6*x_7)]
+1   73  2.75930e+00 [x_1][(x_2/x_1)][((x_4^2)/(x_2^2))][(x_1*(x_1^2))][(x_6+(x_1+x_2))][((x_1^2)^2)][((x_1+x_4)^2)][(x_0^2)][(x_6*x_7)][(x_1-x_2)]
+1   74  2.75432e+00 [x_3][(x_2/x_1)][((x_4^2)/(x_2^2))][(x_1*(x_1^2))][(x_6+(x_1+x_2))][((x_1^2)^2)][((x_1+x_4)^2)][(x_0^2)][(x_6*x_7)][(x_6^2)]
+1   78  2.74151e+00 [x_3][(x_2/x_1)][((x_4^2)/(x_2^2))][(x_1*(x_1^2))][(x_6+(x_1+x_2))][((x_1^2)^2)][((x_1+x_4)^2)][(x_0^2)][(x_6*x_7)][exp(x_4)]
+1   80  2.57538e+00 [x_3][(x_2/x_1)][((x_4^2)/(x_2^2))][(x_1*(x_1^2))][(x_6+(x_1+x_2))][((x_6^2)^2)][((x_1^2)^2)][((x_1+x_4)^2)][(x_6*x_4)][(x_0^2)]
+1   115 2.52790e+00 [((exp(x_3)^2)^2)][(x_2/x_1)][((x_4^2)/(x_2^2))][(x_1*(x_0^2))][(x_6+x_2)][((x_6^2)^2)][((x_1^2)^2)][((x_1+x_4)^2)][(x_6*x_4)][(x_0^2)]
+1   117 2.49092e+00 [((exp(x_3)^2)^2)][(x_2/x_1)][((x_4^2)/(x_2^2))][(x_0*(x_0^2))][(x_6+(x_1+x_2))][((x_6^2)^2)][((x_1^2)^2)][((x_1+x_4)^2)][(x_6*x_4)][(x_0^2)]
+1   129 2.47920e+00 [((exp(x_3)^2)^2)][(x_2/x_1)][((x_4^2)/((x_2^2)^2))][(x_1*(x_0^2))][(x_6+(x_1+x_2))][((x_6^2)^2)][((x_1^2)^2)][((x_1+x_4)^2)][(x_6*x_4)][(x_0^2)]
 
 
- finished
- best representation: [log((x_6-x_5))][(log(x_5)/exp(exp(x_5)))][exp(log(x_7))][((x_3-x_7)/log(x_6))]
- score: 89.460238
- done!
+finished
+best training representation: [((exp(x_3)^2)^2)][(x_2/x_1)][((x_4^2)/((x_2^2)^2))][(x_1*(x_0^2))][(x_6+(x_1+x_2))][((x_6^2)^2)][((x_1^2)^2)][((x_1+x_4)^2)][(x_6*x_4)][(x_0^2)]
+train score: 2.479198
+best validation representation: [x_3][(x_2/x_1)][((x_4^2)/(x_2^2))][(x_1*(x_1^2))][(x_6+(x_1+x_2))][((x_1^2)^2)][((x_1+x_4)^2)][(x_0^2)]
+validation score: 3.596077
+final_model score: 3.202949
+generating training prediction...
+predicting with best_ind
+train score: 3.20295e+00
+generating test prediction...
+predicting with best_ind
+test score: 4.24600e+00
+done!
 </pre><h3>tab-delimited csv files</h3>
 <p>When using tab-delimited csv files as input, specify <code>-sep \\t</code> or <code>-sep "\\t"</code> at the command line.</p>
 <h3>Feat Cross Validator</h3>
@@ -154,7 +180,7 @@ $(document).ready(function(){initNavTree('md_examples_EXAMPLES.html','');});
 </ul>
 <p>There are 2 ways to set the hyper parameters for feat_cv. The first method is to define a string in <code>cv_main.cc</code> file and pass that to the feat_cv constructor. See <code>cv_main.cc</code> for details.</p>
 <p>The second method is to create a input file containing group of parameters and pass the filepath using <code>-infile</code> flag. Check featcvinput.txt for a sample input file. The input file contains a string similar to the one in <code>cv_main.cc</code>.</p>
-<p>The general structure of input file is `[{('token1': val1, val2, val3)('token2': val1, val2)}, {('token1': val1, val2, val3)('token2': val1, val2)},]` </p>
+<p>The general structure of input file is `[{'token1': (val1, val2, val3), 'token2': (val1, val2)}, {'token1': (val1, val2, val3), 'token2': (val1, val2)}]` </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

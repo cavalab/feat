@@ -1,4 +1,4 @@
-/* FEWTWO
+/* FEAT
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
@@ -13,69 +13,19 @@ namespace FT{
 		public:
 			size_t loc;             ///< column location in X, for x types
 			
-			NodeVariable(const size_t& l, char ntype = 'f', std::string n="")
-			{
-                if (n.empty())
-    			    name = "x_" + std::to_string(l);
-                else
-                    name = n;
-    			otype = ntype;
-    			arity['f'] = 0;
-    			arity['b'] = 0;
-    			complexity = 1;
-    			loc = l;
-    		}
-    		
+			NodeVariable(const size_t& l, char ntype = 'f', std::string n="");
+			    		
     		/// Evaluates the node and updates the stack states. 		
-			void evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack);
-		    
+			void evaluate(Data& data, Stacks& stack);
 
 		    /// Evaluates the node symbolically
-		    void eval_eqn(Stacks& stack)
-		    {
-	    		if (otype == 'b')
-	                stack.bs.push(name);
-	            else
-	                stack.fs.push(name);
-		    }
-        
-        protected:
-            NodeVariable* clone_impl() const override { return new NodeVariable(*this); };  
-	};
-#ifndef USE_CUDA
-    void NodeVariable::evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-    {
-        if (otype == 'b')
-            stack.b.push(X.row(loc).cast<bool>());
-        else
-            stack.f.push(X.row(loc));
-    }
-#else
-    void NodeVariable::evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
-    {
-        if (otype == 'b')
-        {
-            ArrayXb tmp = X.row(loc).cast<bool>();
-            GPU_Variable(stack.dev_b, tmp.data(), stack.idx[otype], stack.N);
-        }
-        else
-        {
-            ArrayXf tmp = X.row(loc).cast<float>() ;
-            /* std::cout << "NodeVariable:\n stack.dev_f: " << stack.dev_f */ 
-            /*           << "\ntmp.data(): " << tmp.data() */ 
-            /*           << "\ntmp.size(): " << tmp.size() */
-            /*           << "\nstack.idx[otype]: " << stack.idx[otype] */
-            /*           << "\nstack.N: " << stack.N <<"\n"; */
-            GPU_Variable(stack.dev_f, tmp.data(), stack.idx[otype], stack.N);
-        }
-    }
-#endif
+		    void eval_eqn(Stacks& stack);
+		    
+	    protected:
+            NodeVariable* clone_impl() const override;  
+            // rnd_clone is just clone_impl() for variable, since rand vars not supported
+            NodeVariable* rnd_clone_impl() const override;  
+    };
 }
 
 #endif

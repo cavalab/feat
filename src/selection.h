@@ -1,4 +1,4 @@
-/* FEWTWO
+/* FEAT
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
@@ -8,7 +8,11 @@ license: GNU/GPL v3
 
 #include "selection/selection_operator.h"
 #include "selection/lexicase.h"
-#include "selection/pareto.h"
+#include "selection/nsga2.h"
+#include "selection/offspring.h"
+#include "selection/random.h"
+#include "selection/simulated_annealing.h"
+
 namespace FT{
     struct Parameters; // forward declaration of Parameters       
     ////////////////////////////////////////////////////////////////////////////////// Declarations
@@ -22,39 +26,19 @@ namespace FT{
     {
         shared_ptr<SelectionOperator> pselector; 
         
-        Selection(string type="lexicase", bool survival=false)
-        {
-            /*!
-             * set type of selection operator.
-             */
-
-            if (!type.compare("lexicase"))
-                pselector = std::make_shared<Lexicase>(survival); 
-            else if (!type.compare("pareto"))
-                pselector = std::make_shared<Pareto>(survival);
-            else
-                std::cerr << "Undefined Selection Operator " + type + "\n";
-                
-        };
-
-        ~Selection(){}
+        Selection(string type="lexicase", bool survival=false);
+        
+        ~Selection();
         
         /// return type of selectionoperator
-        string get_type(){ return pselector->name; }
+        string get_type();
         
         /// perform selection 
-        vector<size_t> select(Population& pop, const MatrixXd& F, const Parameters& params)
-        {       
-            return pselector->select(pop, F, params);
-        }
+        vector<size_t> select(Population& pop, const MatrixXd& F, const Parameters& params);
+        
         /// perform survival
-        vector<size_t> survive(Population& pop, const MatrixXd& F,  const Parameters& params)
-        {       
-            return pselector->survive(pop, F, params);
-        }
+        vector<size_t> survive(Population& pop, const MatrixXd& F,  const Parameters& params);
     };
-
-    /////////////////////////////////////////////////////////////////////////////////// Definitions
     
 }
 #endif

@@ -47,6 +47,7 @@ var searchBox = new SearchBox("searchBox", "../../search",false,'Search');
     <ul class="tablist">
       <li><a href="../../index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="../../pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="../../namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="../../annotated.html"><span>Classes</span></a></li>
       <li><a href="../../files.html"><span>Files</span></a></li>
       <li>
@@ -141,15 +142,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_score</b> (string
 <tr class="separator:a6b847465b1a4fb4e40b923d3a290027b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6184eadb238cf0598efc37e8ec795035"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/db3/classFT_1_1Evaluation.html#a6184eadb238cf0598efc37e8ec795035">val_fitness</a> (<a class="el" href="../../d9/ddc/structFT_1_1Population.html">Population</a> &amp;pop, const MatrixXd &amp;X_t, const std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; &amp;Z_t, VectorXd &amp;y_t, MatrixXd &amp;F, const MatrixXd &amp;X_v, const std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; &amp;Z_v, VectorXd &amp;y_v, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params, bool offspring)</td></tr>
 <tr class="separator:a6184eadb238cf0598efc37e8ec795035"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a728ff705e6a720e09eee6c102ea87b9b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/db3/classFT_1_1Evaluation.html#a728ff705e6a720e09eee6c102ea87b9b">assign_fit</a> (<a class="el" href="../../d8/d25/classFT_1_1Individual.html">Individual</a> &amp;ind, MatrixXd &amp;F, const VectorXd &amp;yhat, const VectorXd &amp;y, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params)</td></tr>
-<tr class="memdesc:a728ff705e6a720e09eee6c102ea87b9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">assign fitness to an individual and to F.  <a href="#a728ff705e6a720e09eee6c102ea87b9b">More...</a><br /></td></tr>
-<tr class="separator:a728ff705e6a720e09eee6c102ea87b9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92c7ed902deffe505263525a1bf76ee2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/db3/classFT_1_1Evaluation.html#a92c7ed902deffe505263525a1bf76ee2">assign_fit</a> (<a class="el" href="../../d8/d25/classFT_1_1Individual.html">Individual</a> &amp;ind, MatrixXd &amp;F, const shared_ptr&lt; CLabels &gt; &amp;yhat, const VectorXd &amp;y, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params)</td></tr>
+<tr class="memdesc:a92c7ed902deffe505263525a1bf76ee2"><td class="mdescLeft">&#160;</td><td class="mdescRight">assign fitness to an individual and to F.  <a href="#a92c7ed902deffe505263525a1bf76ee2">More...</a><br /></td></tr>
+<tr class="separator:a92c7ed902deffe505263525a1bf76ee2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a15ce4783dd3ae076243272fb8345b1bb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a15ce4783dd3ae076243272fb8345b1bb"></a>
-double(*&#160;</td><td class="memItemRight" valign="bottom"><b>score</b> )(const VectorXd &amp;, const VectorXd &amp;, VectorXd &amp;)</td></tr>
-<tr class="separator:a15ce4783dd3ae076243272fb8345b1bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf418503423a3897444850ee28718f3b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acf418503423a3897444850ee28718f3b"></a>
+double(*&#160;</td><td class="memItemRight" valign="bottom"><b>score</b> )(const VectorXd &amp;, const shared_ptr&lt; CLabels &gt; &amp;, VectorXd &amp;, const vector&lt; float &gt; &amp;)</td></tr>
+<tr class="separator:acf418503423a3897444850ee28718f3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4ce03859edd4f273820d638b15e5d6c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad4ce03859edd4f273820d638b15e5d6c"></a>
 std::map&lt; string, funcPointer &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>score_hash</b></td></tr>
 <tr class="separator:ad4ce03859edd4f273820d638b15e5d6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -157,7 +158,7 @@ std::map&lt; string, funcPointer &gt;&#160;</td><td class="memItemRight" valign=
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>evaluation mixin class for <a class="el" href="../../db/dff/classFT_1_1Feat.html" title="main class for the Feat learner. ">Feat</a> </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a728ff705e6a720e09eee6c102ea87b9b"></a>
+<a class="anchor" id="a92c7ed902deffe505263525a1bf76ee2"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -176,7 +177,7 @@ std::map&lt; string, funcPointer &gt;&#160;</td><td class="memItemRight" valign=
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const VectorXd &amp;&#160;</td>
+          <td class="paramtype">const shared_ptr&lt; CLabels &gt; &amp;&#160;</td>
           <td class="paramname"><em>yhat</em>, </td>
         </tr>
         <tr>
@@ -364,7 +365,7 @@ std::map&lt; string, funcPointer &gt;&#160;</td><td class="memItemRight" valign=
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>FT</b></li><li class="navelem"><a class="el" href="../../df/db3/classFT_1_1Evaluation.html">Evaluation</a></li>
+    <li class="navelem"><a class="el" href="../../d2/d35/namespaceFT.html">FT</a></li><li class="navelem"><a class="el" href="../../df/db3/classFT_1_1Evaluation.html">Evaluation</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.11 </li>
