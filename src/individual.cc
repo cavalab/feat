@@ -445,6 +445,9 @@ namespace FT{
         
         dtypes.clear();        
         Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
+
+	typedef Array<bool, Dynamic, Dynamic> ArrayXXb;
+	typedef Array<float, Dynamic, Dynamic> ArrayXXf;
         
         ArrayXXb  PhiB = ArrayXXb::Map(stack.b.data(),stack.b.rows(),stack.b.cols());
         ArrayXXf PhiF = ArrayXXf::Map(stack.f.data(),stack.f.rows(),stack.f.cols());
