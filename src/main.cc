@@ -244,6 +244,8 @@ int main(int argc, char** argv){
         feat.fit(X, y, Z);
         
     }
+    cout << "printing final model\n";
+    cout << feat.get_model();
     cout << "done!\n";
 	
     return 0;

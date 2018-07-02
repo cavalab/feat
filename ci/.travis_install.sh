@@ -25,6 +25,11 @@ export PATH=/home/travis/miniconda/bin:$PATH
 
 conda update --yes conda
 conda install --yes -c conda-forge shogun-cpp
+
+# the new version of json-c seems to be missing a fn shogun is linked to; 
+# force install of older version
+conda install --yes json-c=0.12.1-0
+
 export SHOGUN_LIB=/home/travis/miniconda/lib/
 export SHOGUN_DIR=/home/travis/miniconda/include/
 # commending out the following installs which should be triggered
@@ -64,7 +69,7 @@ cmake -DTEST=ON -DEIGEN_DIR=ON -DSHOGUN_DIR=ON ..
 cd ..
 make -C build VERBOSE=1
 echo "running feat.."
-./build/feat examples/d_enc.csv -rs 42
+./build/feat examples/d_enc.csv -rs 42 -g 10 -p 10
 
 echo "python path is..."
 which python
@@ -74,8 +79,6 @@ which cython
 
 cd ./python
 python setup.py install
-
-#_____Run the Python Tests for the wrapper_____#
 
 echo "copying wrapper test to the python folder"
 sudo cp ../tests/wrappertest.py ./ #Copy the file to python folder

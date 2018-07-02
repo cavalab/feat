@@ -35,68 +35,52 @@
 
 #include <shogun/lib/config.h>
 
+#include <shogun/multiclass/tree/TreeMachine.h>
+#include <shogun/features/DenseFeatures.h>
+#include <shogun/mathematics/Math.h>
+#include <shogun/mathematics/eigen3.h>
+
 namespace shogun
 {
-/** @brief structure to store data of a node of
- * CART. This can be used as a template type in
- * TreeMachineNode class. CART algorithm uses nodes
- * of type CTreeMachineNode<CARTreeNodeData>
- */
-struct MyCARTreeNodeData
-{
-	/** classifying attribute */
-	int32_t attribute_id;
+    /** @brief structure to store data of a node of
+     * CART. This can be used as a template type in
+     * TreeMachineNode class. CART algorithm uses nodes
+     * of type CTreeMachineNode<CARTreeNodeData>
+     */
+    struct MyCARTreeNodeData
+    {
+	    /** classifying attribute */
+	    int32_t attribute_id;
 
-	/** feature value(s) required to move into this node */
-	SGVector<float64_t> transit_into_values;
+	    /** feature value(s) required to move into this node */
+	    SGVector<float64_t> transit_into_values;
 
-	/** classification/regression label of data */
-	float64_t node_label;
+	    /** classification/regression label of data */
+	    float64_t node_label;
 
-	/** total weight of training samples passing through this node **/
-	float64_t total_weight;
+	    /** total weight of training samples passing through this node **/
+	    float64_t total_weight;
 
-	/** total weight of misclassified samples in node/ weighted sum of squared deviation in case of regression **/
-	float64_t weight_minus_node;
+	    /** total weight of misclassified samples in node/ weighted sum of squared deviation in case of regression **/
+	    float64_t weight_minus_node;
 
-	/** total weight of misclassified samples in subtree/ weighted sum of squared deviation in case of regression **/
-	float64_t weight_minus_branch;
+	    /** total weight of misclassified samples in subtree/ weighted sum of squared deviation in case of regression **/
+	    float64_t weight_minus_branch;
 
-	/** number of leaves in the subtree beginning at this node **/
-	int32_t num_leaves;
+	    /** number of leaves in the subtree beginning at this node **/
+	    int32_t num_leaves;
 
-    /// WGL: IG is the Impurity Gain of this node: IG(n) = impurity(n) - impurity(l) - impurity(r)
-    float64_t IG; 
+        /// WGL: IG is the Impurity Gain of this node: IG(n) = impurity(n) - impurity(l) - impurity(r)
+        float64_t IG; 
 
-    /** constructor */
-	MyCARTreeNodeData()
-	{
-		attribute_id=-1;
-		transit_into_values=SGVector<float64_t>();
-		node_label=-1.0;
-		total_weight=0.;
-		weight_minus_node=0.;
-		weight_minus_branch=0.;
-		num_leaves=0;
-        // WGL
-        IG = -1.0;    
-	}
+        /** constructor */
+	    MyCARTreeNodeData();
 
-	/** print data
-	 * @param data the data to be printed
-	 */
-	static void print_data(const MyCARTreeNodeData &data)
-	{
-		SG_SPRINT("classifying feature index=%d\n", data.attribute_id);
-		data.transit_into_values.display_vector(data.transit_into_values.vector,data.transit_into_values.vlen, "transit values");
-		SG_SPRINT("total weight=%f\n", data.total_weight);
-		SG_SPRINT("errored weight of node=%f\n", data.weight_minus_node);
-		SG_SPRINT("errored weight of subtree=%f\n", data.weight_minus_branch);
-        //WGL
-        SG_SPRINT("IG of node=%f\n",data.IG);
-		SG_SPRINT("number of leaves in subtree=%d\n", data.num_leaves);
-	}
-};
+	    /** print data
+	     * @param data the data to be printed
+	     */
+	    static void print_data(const MyCARTreeNodeData &data);
+    };
 
 
 } /* shogun */

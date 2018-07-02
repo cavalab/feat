@@ -62,7 +62,7 @@ class Feat(BaseEstimator):
         self.logfile = logfile.encode() if isinstance(logfile,str) else logfile
 
         # if self.verbosity>0:
-        print('self.__dict__: ' , self.__dict__)
+        #print('self.__dict__: ' , self.__dict__)
         self._pyfeat=None 
 
     def _init_pyfeat(self):
@@ -139,6 +139,9 @@ class Feat(BaseEstimator):
             return log_loss(labels,labels_pred, labels=labels)
         else:
             return mse(labels,labels_pred)
+
+    def get_model(self):
+        return self._pyfeat.get_model()
 
     def get_representation(self):
         return self._pyfeat.get_representation()
