@@ -65,22 +65,31 @@ if (OMP)
 endif()
 
 # gather list of source files
-file(GLOB_RECURSE src_main_files "src/main.cc")
+file(GLOB_RECURSE sources "src/*.cc")
 
-file(GLOB_RECURSE src_cv_files "src/cv_main.cc")
+list(REMOVE_ITEM sources ${CMAKE_CURRENT_SOURCE_DIR}/src/parser.cc)
+list(REMOVE_ITEM sources ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cc)
+list(REMOVE_ITEM sources ${CMAKE_CURRENT_SOURCE_DIR}/src/cv_main.cc)
 
-# executable
-add_executable(feat ${src_main_files})
-add_executable(feat_cv ${src_cv_files}) 
+#feat library
+add_library(feat_lib SHARED ${sources})
+
+# executables
+
+#feat executable
+add_executable(feat src/main.cc)
+
+#feat_cv executable
+add_executable(feat_cv src/cv_main.cc) 
 
 #link libraries for different executables
-target_link_libraries(feat shogun)
-target_link_libraries(feat_cv shogun)
+target_link_libraries(feat feat_lib shogun)
+target_link_libraries(feat_cv feat_lib shogun)
 
 if (TEST)
     # Link runTests with what we want to test and the GTest and pthread library
     add_executable(tests tests/gtest.cc)
-    target_link_libraries(tests shogun ${GTEST_LIBRARIES} pthread)
+    target_link_libraries(tests feat_lib shogun ${GTEST_LIBRARIES} pthread)
 endif()
 
 
