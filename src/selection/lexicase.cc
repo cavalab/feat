@@ -63,12 +63,12 @@ namespace FT{
             {
                 // for classification problems, weight case selection by class weights
                 vector<size_t> choices(N);
-                iota(choices.begin(), choices.end(),0);
+                std::iota(choices.begin(), choices.end(),0);
                 vector<float> sample_weights = params.sample_weights;
                 for (unsigned i = 0; i<N; ++i)
                 {
                     vector<size_t> choice_idxs(N-i);
-                    iota(choice_idxs.begin(),choice_idxs.end(),0);
+                    std::iota(choice_idxs.begin(),choice_idxs.end(),0);
                     size_t idx = r.random_choice(choice_idxs,sample_weights);
                     cases.push_back(choices.at(idx));
                     choices.erase(choices.begin() + idx);
@@ -78,7 +78,7 @@ namespace FT{
             else
             {   // otherwise, choose cases randomly
                 cases.resize(N); 
-                iota(cases.begin(),cases.end(),0);
+                std::iota(cases.begin(),cases.end(),0);
                 r.shuffle(cases.begin(),cases.end());   // shuffle cases
             }
             vector<size_t> pool = starting_pool;    // initial pool   
