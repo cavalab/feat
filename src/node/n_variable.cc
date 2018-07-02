@@ -34,12 +34,12 @@ namespace FT{
     {
         if (otype == 'b')
         {
-            ArrayXb tmp = X.row(loc).cast<bool>();
+            ArrayXb tmp = data.X.row(loc).cast<bool>();
             GPU_Variable(stack.dev_b, tmp.data(), stack.idx[otype], stack.N);
         }
         else
         {
-            ArrayXf tmp = X.row(loc).cast<float>() ;
+            ArrayXf tmp = data.X.row(loc).cast<float>() ;
             /* std::cout << "NodeVariable:\n stack.dev_f: " << stack.dev_f */ 
             /*           << "\ntmp.data(): " << tmp.data() */ 
             /*           << "\ntmp.size(): " << tmp.size() */

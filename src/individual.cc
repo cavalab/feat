@@ -187,9 +187,9 @@ namespace FT{
                         stack_trace.at(trace_idx).f.push_back(stack.f.at(stack.f.size() - 
                                                          (program.at(i)->arity['f'] - j)));
 #else
-                        ArrayXd ad = ArrayXd::Map(stack.f.data()+(stack.f.size() - 
+                       /* ArrayXd ad = ArrayXd::Map(stack.f, (stack.f.size() - 
                                                          (program.at(i)->arity['f'] - j)), stack.f.cols());
-                        stack_trace.at(trace_idx).f.push_back(ad);
+                        stack_trace.at(trace_idx).f.push_back(ad);*/
 #endif
                     }
                     for (int j = 0; j < program.at(i)->arity['b']; j++) {
@@ -198,9 +198,9 @@ namespace FT{
                         stack_trace.at(trace_idx).b.push_back(stack.b.at(stack.b.size() - 
                                                          (program.at(i)->arity['b'] - j)));
 #else
-                        ArrayXb bd = ArrayXb::Map(stack.f.data()+(stack.b.size() - 
+                        /*ArrayXb bd = ArrayXb::Map(stack.f.data,(stack.b.size() - 
                                                          (program.at(i)->arity['b'] - j)), stack.b.cols());
-                        stack_trace.at(trace_idx).b.push_back(bd);
+                        stack_trace.at(trace_idx).b.push_back(bd);*/
 #endif
                     }
                 }
