@@ -36,9 +36,7 @@ namespace FT{
                                                     1.0) ); 
     }
 #else
-    void NodeDivide::evaluate(const MatrixXd& X, const VectorXd& y,
-                          const std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z, 
-			              Stacks& stack)
+    void NodeDivide::evaluate(Data& data, Stacks& stack)
     {
         GPU_Divide(stack.dev_f, stack.idx[otype], stack.N);
     }
