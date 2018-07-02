@@ -34,7 +34,7 @@ namespace FT{
             set_verbosity(verbosity);
             if (fs.empty())
                 fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
-                      "logit,tanh,gauss,relu,split,float,"
+                      "logit,tanh,gauss,"
                       "and,or,not,xor,=,<,<=,>,>=,if,ite";
             set_functions(fs);
             set_objectives(obj);
