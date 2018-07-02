@@ -5,6 +5,7 @@ license: GNU/GPL v3
 
 #include "stack.h"
 
+#include "node/node.h"
 namespace FT
 {
 
