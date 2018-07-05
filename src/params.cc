@@ -66,6 +66,7 @@ namespace FT{
     {
         /* prints messages based on verbosity level. */
 		string msg = "";
+	printf("Verbosity is %d and v is %d\n", verbosity, v);
         if (verbosity >= v)
         {
             std::cout << m << sep;
