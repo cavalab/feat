@@ -377,8 +377,8 @@ namespace FT{
          */
 
         Stacks stack;
-        params.msg("evaluating program " + get_eqn(),2);
-        params.msg("program length: " + std::to_string(program.size()),2);
+        params.msg("evaluating program " + get_eqn(),3);
+        params.msg("program length: " + std::to_string(program.size()),3);
         // to minimize copying overhead, set the stack size to the maximum it will reach for the
         // program 
         std::map<char, size_t> stack_size = get_max_stack_size();
@@ -428,7 +428,7 @@ namespace FT{
         /*     std::cout << "\n\n"; */
         /* } */
         // convert stack_f to Phi
-        params.msg("converting stacks to Phi",2);
+        params.msg("converting stacks to Phi",3);
         int cols;
         if (stack.f.size()==0)
         {
