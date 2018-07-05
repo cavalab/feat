@@ -64,10 +64,15 @@ namespace FT
     
     void Stacks::allocate(const std::map<char, size_t>& stack_size, size_t N)
     {
-        /* std::cout << "before dev_allocate, dev_f is " << dev_f << "\n"; */
+        //std::cout << "before dev_allocate, dev_f is " << dev_f << "\n";
         dev_allocate(dev_f, dev_b, N*stack_size.at('f'), N*stack_size.at('b'));
-        /* std::cout << "after dev_allocate, dev_f is " << dev_f << "\n"; */
+        //std::cout << "after dev_allocate, dev_f is " << dev_f << "\n";
+
+	//printf("Allocated Stack Sizes\n");
+	//printf("\tFloating stack N=%d and stack size as %d\n",N, stack_size.at('f'));
+
         this->N = N;
+	
         f.resize(stack_size.at('f'),N);
         b.resize(stack_size.at('b'),N);
     }
@@ -110,7 +115,9 @@ namespace FT
     
     Stacks::~Stacks()
     {
+	//printf("Calling free device\n");
         free_device(dev_f, dev_b);
+	//printf("Device freed\n");
     }
 
 #endif    

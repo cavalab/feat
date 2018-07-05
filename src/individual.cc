@@ -381,7 +381,7 @@ namespace FT{
         params.msg("program length: " + std::to_string(program.size()),2);
         // to minimize copying overhead, set the stack size to the maximum it will reach for the
         // program 
-        std::map<char, size_t> stack_size = get_max_stack_size(); 
+        std::map<char, size_t> stack_size = get_max_stack_size();
         // set the device based on the thread number
         choose_gpu();        
         
@@ -638,12 +638,19 @@ namespace FT{
     std::map<char, size_t> Individual::get_max_stack_size()
     {
         // max stack size is calculated using node arities
-        std::map<char, size_t> stack_size; 
+        std::map<char, size_t> stack_size;
+	stack_size['f'] = 0;
+	stack_size['b'] = 0; 
         for (const auto& n : program)   
         {   
-            ++stack_size[n->otype];
-            for (const auto& a : n->arity)
-                stack_size[a.first] -= a.second;
+            //printf("Node name is %s\n", n->name.c_str());
+	    
+	    ++stack_size[n->otype];
+            /*for (const auto& a : n->arity)
+                stack_size[a.first] -= a.second;*/
+
+	    //printf("Floating stack size is %zu\n", stack_size['f']);
+	    //printf("Boolean stack size is %zu\n", stack_size['b']);
                        
         }
         return stack_size;
