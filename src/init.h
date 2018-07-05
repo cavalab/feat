@@ -18,6 +18,7 @@ license: GNU/GPL v3
 #include <Eigen/Dense>
 #include <memory>
 #include <iostream>
+#include <numeric>
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
