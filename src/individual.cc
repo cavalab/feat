@@ -639,21 +639,22 @@ namespace FT{
     {
         // max stack size is calculated using node arities
         std::map<char, size_t> stack_size;
+	std::map<char, size_t> max_stack_size;
 	stack_size['f'] = 0;
 	stack_size['b'] = 0; 
+	max_stack_size['f'] = 0;
+	max_stack_size['b'] = 0;
         for (const auto& n : program)   
-        {   
-            //printf("Node name is %s\n", n->name.c_str());
-	    
+        {   	
 	    ++stack_size[n->otype];
-            /*for (const auto& a : n->arity)
-                stack_size[a.first] -= a.second;*/
+	   
+ 	    if ( max_stack_size[n->otype] < stack_size[n->otype])
+               max_stack_size[n->otype] = stack_size[n->otype];
 
-	    //printf("Floating stack size is %zu\n", stack_size['f']);
-	    //printf("Boolean stack size is %zu\n", stack_size['b']);
-                       
-        }
-        return stack_size;
+            for (const auto& a : n->arity)
+                stack_size[a.first] -= a.second;       
+        }	
+        return max_stack_size;
     }
 
 }
