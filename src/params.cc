@@ -271,8 +271,8 @@ namespace FT{
         //else if (str.compare("relu")==0)
         //    return std::unique_ptr<Node>(new NodeRelu());
 
-        else if (str.compare("float")==0)
-            return std::unique_ptr<Node>(new NodeFloat());
+        //else if (str.compare("float")==0)
+        //    return std::unique_ptr<Node>(new NodeFloat());
 
         // logical operators
         else if (str.compare("and") == 0)
