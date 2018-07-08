@@ -271,8 +271,8 @@ namespace FT{
         //else if (str.compare("relu")==0)
         //    return std::unique_ptr<Node>(new NodeRelu());
 
-        //else if (str.compare("float")==0)
-        //    return std::unique_ptr<Node>(new NodeFloat());
+        else if (str.compare("float")==0)
+            return std::unique_ptr<Node>(new NodeFloat());
 
         // logical operators
         else if (str.compare("and") == 0)
@@ -318,7 +318,7 @@ namespace FT{
             return std::unique_ptr<Node>(new NodeSign());
            
         // longitudinal nodes
-        /*else if (str.compare("mean")==0)
+        else if (str.compare("mean")==0)
             return std::unique_ptr<Node>(new NodeMean());
             
         else if (str.compare("median")==0)
@@ -343,7 +343,7 @@ namespace FT{
             return std::unique_ptr<Node>(new NodeSlope());
             
         else if (str.compare("count")==0)
-            return std::unique_ptr<Node>(new NodeCount());*/
+            return std::unique_ptr<Node>(new NodeCount());
 
         // variables and constants
         else if (str.compare("x") == 0)
@@ -368,11 +368,11 @@ namespace FT{
         else if (str.compare("kd")==0)
             return std::unique_ptr<Node>(new NodeConstant(d_val));
             
-        /*else if (str.compare("z")==0)
+        else if (str.compare("z")==0)
         {
             //std::cout<<"******CALLED with name "<<name<<"\n";
             return std::unique_ptr<Node>(new NodeLongitudinal(name));
-        }*/
+        }
         else
             HANDLE_ERROR_THROW("Error: no node named '" + str + "' exists."); 
         
