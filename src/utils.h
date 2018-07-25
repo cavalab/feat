@@ -96,7 +96,7 @@ namespace FT{
 
 		// initialize original index locations
 		vector<size_t> idx(v.size());
-		iota(idx.begin(), idx.end(), 0);
+        std::iota(idx.begin(), idx.end(), 0);
 
 		// sort indexes based on comparing values in v
 		sort(idx.begin(), idx.end(),
