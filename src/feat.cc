@@ -139,6 +139,8 @@ void Feat::set_batch_size(int bs){params.bp.batch_size = bs;}
 ///set number of threads
 void Feat::set_n_threads(unsigned t){ omp_set_num_threads(t); }
 
+void Feat::set_max_time(int time){ params.max_time = time; }
+
 /*                                                      
  * getting functions
  */
@@ -440,47 +442,25 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     vector<size_t> survivors;
 
     // main generational loop
-    for (unsigned int g = 0; g<params.gens; ++g)
-    {   
-        params.set_current_gen(g);
-        // select parents
-        params.msg("selection..", 3);
-        vector<size_t> parents = p_sel->select(*p_pop, F, params);
-        params.msg("parents:\n"+p_pop->print_eqns(), 3);          
-        
-        // variation to produce offspring
-        params.msg("variation...", 3);
-        p_variation->vary(*p_pop, parents, params);
-        params.msg("offspring:\n" + p_pop->print_eqns(true), 3);
-
-        // evaluate offspring
-        params.msg("evaluating offspring...", 3);
-        p_eval->fitness(p_pop->individuals, *d.t, F, params, true);
-        // select survivors from combined pool of parents and offspring
-        params.msg("survival...", 3);
-        survivors = p_surv->survive(*p_pop, F, params);
-       
-        // reduce population to survivors
-        params.msg("shrinking pop to survivors...",3);
-        p_pop->update(survivors);
-        params.msg("survivors:\n" + p_pop->print_eqns(), 3);
-
-        update_best();
-
-        if (use_arch) 
-            arch.update(*p_pop,params);
-
-        if(params.verbosity>1)
-            print_stats(log);    
-        else if(params.verbosity == 1)
-            printProgress(((g+1)*1.0)/params.gens);
-            
-        if (params.backprop)
-        {
-            params.bp.learning_rate = (1-1/(1+double(params.gens)))*params.bp.learning_rate;
-            params.msg("learning rate: " + std::to_string(params.bp.learning_rate),3);
-        }
+    
+    if(params.max_time == -1)
+    {
+        for (unsigned int g = 0; g<params.gens; ++g)
+        {   
+            fit_helper(g, survivors, d, log);
             //cout<<"\rCompleted "<<((g+1)*100/params.gens)<<"%"<< std::flush;
+        }
+    }
+    else
+    {
+        unsigned int g = 0;
+        
+        cout << "Here: max time is " << params.max_time << " and elapsed time is " << timer.Elapsed().count() <<"\n";
+        while(params.max_time > timer.Elapsed().count())
+        {
+            fit_helper(g, survivors, d, log);
+            g++;
+        }
     }
     
     cout <<"\n";
@@ -510,6 +490,48 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     
     if (log.is_open())
         log.close();
+}
+
+void Feat::fit_helper(unsigned int g, vector<size_t> survivors, DataRef &d, std::ofstream &log)
+{
+    params.set_current_gen(g);
+    // select parents
+    params.msg("selection..", 3);
+    vector<size_t> parents = p_sel->select(*p_pop, F, params);
+    params.msg("parents:\n"+p_pop->print_eqns(), 3);          
+    
+    // variation to produce offspring
+    params.msg("variation...", 3);
+    p_variation->vary(*p_pop, parents, params);
+    params.msg("offspring:\n" + p_pop->print_eqns(true), 3);
+
+    // evaluate offspring
+    params.msg("evaluating offspring...", 3);
+    p_eval->fitness(p_pop->individuals, *d.t, F, params, true);
+    // select survivors from combined pool of parents and offspring
+    params.msg("survival...", 3);
+    survivors = p_surv->survive(*p_pop, F, params);
+   
+    // reduce population to survivors
+    params.msg("shrinking pop to survivors...",3);
+    p_pop->update(survivors);
+    params.msg("survivors:\n" + p_pop->print_eqns(), 3);
+
+    update_best();
+
+    if (use_arch) 
+        arch.update(*p_pop,params);
+
+    if(params.verbosity>1)
+        print_stats(log);    
+    else if(params.verbosity == 1)
+        printProgress(((g+1)*1.0)/params.gens);
+        
+    if (params.backprop)
+    {
+        params.bp.learning_rate = (1-1/(1+double(params.gens)))*params.bp.learning_rate;
+        params.msg("learning rate: " + std::to_string(params.bp.learning_rate),3);
+    }
 }
 
 void Feat::fit(double * X, int rowsX, int colsX, double * Y, int lenY)

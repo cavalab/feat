@@ -152,6 +152,9 @@ namespace FT{
             ///set number of threads
             void set_n_threads(unsigned t);
             
+            ///set max time in seconds for fit method
+            void set_max_time(int time);
+            
             /*                                                      
              * getting functions
              */
@@ -246,6 +249,8 @@ namespace FT{
                      VectorXd& y,
                      std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
                             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());
+                            
+            void fit_helper(unsigned int g, vector<size_t> survivors, DataRef &d, std::ofstream &log);
                      
             /// train a model.             
             void fit(double * X,int rowsX,int colsX, double * Y,int lenY);
