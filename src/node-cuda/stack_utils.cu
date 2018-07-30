@@ -10,7 +10,7 @@ namespace FT{
     {
         HANDLE_ERROR(cudaMalloc((void **)& f, sizeof(float)*Sizef));
         HANDLE_ERROR(cudaMalloc((void **)& b, sizeof(bool)*Sizeb));
-	HANDLE_ERROR(cudaDeviceSynchronize());
+	    //HANDLE_ERROR(cudaDeviceSynchronize());
         /* std::cout << "allocated " << sizeof(float)*Sizef << " bytes at loc " << f << " for stack.f\n"; */
         /* std::cout << "allocated " << sizeof(bool)*Sizeb << " bytes at loc " << b << " for stack.b\n"; */
     }
@@ -22,7 +22,7 @@ namespace FT{
                   
         HANDLE_ERROR(cudaMemcpy(host_f, dev_f, sizeof(float)*Sizef, cudaMemcpyDeviceToHost));
         HANDLE_ERROR(cudaMemcpy(host_b, dev_b, sizeof(bool)*Sizeb,  cudaMemcpyDeviceToHost));
-	HANDLE_ERROR(cudaDeviceSynchronize());
+	    //HANDLE_ERROR(cudaDeviceSynchronize());
     }
 
     void free_device(float * dev_f, bool * dev_b)
@@ -30,6 +30,6 @@ namespace FT{
         // Free memory
         cudaFree(dev_f); 
         cudaFree(dev_b);         
-	HANDLE_ERROR(cudaDeviceSynchronize());
+	    //HANDLE_ERROR(cudaDeviceSynchronize());
     }
 }
