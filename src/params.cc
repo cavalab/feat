@@ -65,7 +65,8 @@ namespace FT{
     string Parameters::msg(string m, int v, string sep) const
     {
         /* prints messages based on verbosity level. */
-		string msg = "";
+	string msg = "";
+	
         if (verbosity >= v)
         {
             std::cout << m << sep;
@@ -317,7 +318,7 @@ namespace FT{
             return std::unique_ptr<Node>(new NodeSign());
            
         // longitudinal nodes
-        /*else if (str.compare("mean")==0)
+        else if (str.compare("mean")==0)
             return std::unique_ptr<Node>(new NodeMean());
             
         else if (str.compare("median")==0)
@@ -342,7 +343,7 @@ namespace FT{
             return std::unique_ptr<Node>(new NodeSlope());
             
         else if (str.compare("count")==0)
-            return std::unique_ptr<Node>(new NodeCount());*/
+            return std::unique_ptr<Node>(new NodeCount());
 
         // variables and constants
         else if (str.compare("x") == 0)
@@ -367,11 +368,11 @@ namespace FT{
         else if (str.compare("kd")==0)
             return std::unique_ptr<Node>(new NodeConstant(d_val));
             
-        /*else if (str.compare("z")==0)
+        else if (str.compare("z")==0)
         {
             //std::cout<<"******CALLED with name "<<name<<"\n";
             return std::unique_ptr<Node>(new NodeLongitudinal(name));
-        }*/
+        }
         else
             HANDLE_ERROR_THROW("Error: no node named '" + str + "' exists."); 
         

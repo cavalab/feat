@@ -18,10 +18,15 @@ void FT::initialize_cuda()
 
 void FT::choose_gpu()
 {
-        int n_gpus; 
-        cudaGetDeviceCount(&n_gpus);
-        int device = omp_get_thread_num() % n_gpus ; 
-        cudaSetDevice(device); 
+        #pragma omp critical
+	{
+		int n_gpus; 
+        	cudaGetDeviceCount(&n_gpus);
+        	int device = omp_get_thread_num() % n_gpus ; 
+        	cudaSetDevice(device);
+		cudaDeviceSynchronize();
+		//cudaSetDevice(1);
+	} 
 
 }
 

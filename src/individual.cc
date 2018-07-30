@@ -377,11 +377,11 @@ namespace FT{
          */
 
         Stacks stack;
-        params.msg("evaluating program " + get_eqn(),2);
-        params.msg("program length: " + std::to_string(program.size()),2);
+        params.msg("evaluating program " + get_eqn(),3);
+        params.msg("program length: " + std::to_string(program.size()),3);
         // to minimize copying overhead, set the stack size to the maximum it will reach for the
         // program 
-        std::map<char, size_t> stack_size = get_max_stack_size(); 
+        std::map<char, size_t> stack_size = get_max_stack_size();
         // set the device based on the thread number
         choose_gpu();        
         
@@ -428,7 +428,7 @@ namespace FT{
         /*     std::cout << "\n\n"; */
         /* } */
         // convert stack_f to Phi
-        params.msg("converting stacks to Phi",2);
+        params.msg("converting stacks to Phi",3);
         int cols;
         if (stack.f.size()==0)
         {
@@ -638,15 +638,23 @@ namespace FT{
     std::map<char, size_t> Individual::get_max_stack_size()
     {
         // max stack size is calculated using node arities
-        std::map<char, size_t> stack_size; 
+        std::map<char, size_t> stack_size;
+	std::map<char, size_t> max_stack_size;
+	stack_size['f'] = 0;
+	stack_size['b'] = 0; 
+	max_stack_size['f'] = 0;
+	max_stack_size['b'] = 0;
         for (const auto& n : program)   
-        {   
-            ++stack_size[n->otype];
+        {   	
+	    ++stack_size[n->otype];
+	   
+ 	    if ( max_stack_size[n->otype] < stack_size[n->otype])
+               max_stack_size[n->otype] = stack_size[n->otype];
+
             for (const auto& a : n->arity)
-                stack_size[a.first] -= a.second;
-                       
-        }
-        return stack_size;
+                stack_size[a.first] -= a.second;       
+        }	
+        return max_stack_size;
     }
 
 }
