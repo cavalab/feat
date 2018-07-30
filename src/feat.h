@@ -160,6 +160,9 @@ namespace FT{
             ///set number of threads
             void set_n_threads(unsigned t);
             
+            ///set max time in seconds for fit method
+            void set_max_time(int time);
+            
             /*                                                      
              * getting functions
              */
@@ -254,6 +257,12 @@ namespace FT{
                      VectorXd& y,
                      std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
                             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());
+                            
+            void run_generation(unsigned int g,
+                            vector<size_t> survivors,
+                            DataRef &d,
+                            std::ofstream &log,
+                            double percentage);
                      
             /// train a model.             
             void fit(double * X,int rowsX,int colsX, double * Y,int lenY);
@@ -346,7 +355,8 @@ namespace FT{
             double best_score_v;                    ///< best validation score
             string str_dim;                         ///< dimensionality as multiple of number of columns 
             void update_best(bool val=false);       ///< updates best score   
-            void print_stats(std::ofstream& log);         ///< prints stats
+            void print_stats(std::ofstream& log,
+                             double fraction);      ///< prints stats
             Individual best_ind;                    ///< best individual
             string logfile;                         ///< log filename
             /// method to fit inital ml model            

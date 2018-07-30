@@ -142,6 +142,8 @@ void Feat::set_batch_size(int bs){params.bp.batch_size = bs;}
 ///set number of threads
 void Feat::set_n_threads(unsigned t){ omp_set_num_threads(t); }
 
+void Feat::set_max_time(int time){ params.max_time = time; }
+
 /*                                                      
  * getting functions
  */
@@ -443,47 +445,21 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     vector<size_t> survivors;
 
     // main generational loop
-    for (unsigned int g = 0; g<params.gens; ++g)
-    {   
-        params.set_current_gen(g);
-        // select parents
-        params.msg("selection..", 3);
-        vector<size_t> parents = p_sel->select(*p_pop, F, params);
-        params.msg("parents:\n"+p_pop->print_eqns(), 3);          
+    
+    if(params.max_time == -1)
+    {
+        for (unsigned int g = 0; g<params.gens; ++g)
+            run_generation(g, survivors, d, log, ((g+1)*1.0)/params.gens);
+    }
+    else
+    {
+        unsigned int g = 0;
         
-        // variation to produce offspring
-        params.msg("variation...", 3);
-        p_variation->vary(*p_pop, parents, params);
-        params.msg("offspring:\n" + p_pop->print_eqns(true), 3);
-
-        // evaluate offspring
-        params.msg("evaluating offspring...", 3);
-        p_eval->fitness(p_pop->individuals, *d.t, F, params, true);
-        // select survivors from combined pool of parents and offspring
-        params.msg("survival...", 3);
-        survivors = p_surv->survive(*p_pop, F, params);
-       
-        // reduce population to survivors
-        params.msg("shrinking pop to survivors...",3);
-        p_pop->update(survivors);
-        params.msg("survivors:\n" + p_pop->print_eqns(), 3);
-
-        update_best();
-
-        if (use_arch) 
-            arch.update(*p_pop,params);
-
-        if(params.verbosity>1)
-            print_stats(log);    
-        else if(params.verbosity == 1)
-            printProgress(((g+1)*1.0)/params.gens);
-            
-        if (params.backprop)
+        while(params.max_time > timer.Elapsed().count())
         {
-            params.bp.learning_rate = (1-1/(1+double(params.gens)))*params.bp.learning_rate;
-            params.msg("learning rate: " + std::to_string(params.bp.learning_rate),3);
+            run_generation(g, survivors, d, log, timer.Elapsed().count()/params.max_time);
+            g++;
         }
-            //cout<<"\rCompleted "<<((g+1)*100/params.gens)<<"%"<< std::flush;
     }
     
     cout <<"\n";
@@ -513,6 +489,57 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     
     if (log.is_open())
         log.close();
+}
+
+void Feat::run_generation(unsigned int g,
+                      vector<size_t> survivors,
+                      DataRef &d,
+                      std::ofstream &log,
+                      double fraction)
+{
+    params.set_current_gen(g);
+    // select parents
+    params.msg("selection..", 3);
+    vector<size_t> parents = p_sel->select(*p_pop, F, params);
+    params.msg("parents:\n"+p_pop->print_eqns(), 3);          
+    
+    // variation to produce offspring
+    params.msg("variation...", 3);
+    p_variation->vary(*p_pop, parents, params);
+    params.msg("offspring:\n" + p_pop->print_eqns(true), 3);
+
+    // evaluate offspring
+    params.msg("evaluating offspring...", 3);
+    p_eval->fitness(p_pop->individuals, *d.t, F, params, true);
+    // select survivors from combined pool of parents and offspring
+    params.msg("survival...", 3);
+    survivors = p_surv->survive(*p_pop, F, params);
+   
+    // reduce population to survivors
+    params.msg("shrinking pop to survivors...",3);
+    p_pop->update(survivors);
+    params.msg("survivors:\n" + p_pop->print_eqns(), 3);
+
+    update_best();
+
+    if (use_arch) 
+        arch.update(*p_pop,params);
+
+
+    if(params.verbosity>1)
+        print_stats(log, fraction);    
+    else if(params.verbosity == 1)
+        printProgress(fraction);
+//        printProgress(((g+1)*1.0)/params.gens);
+    
+//    params.current_gen/params.gens
+        
+        
+    if (params.backprop)
+    {
+        params.bp.learning_rate = (1-1/(1+double(params.gens)))*params.bp.learning_rate;
+        params.msg("learning rate: " + std::to_string(params.bp.learning_rate),3);
+    }
 }
 
 void Feat::fit(double * X, int rowsX, int colsX, double * Y, int lenY)
@@ -722,7 +749,7 @@ double Feat::score(MatrixXd& X, const VectorXd& y,
     /*     return p_eval->se(y,yhat).mean(); */
 }
 
-void Feat::print_stats(std::ofstream& log)
+void Feat::print_stats(std::ofstream& log, double fraction)
 {
     unsigned num_models = std::min(50,p_pop->size());
     double med_score = median(F.colwise().mean().array());  // median loss
@@ -732,12 +759,18 @@ void Feat::print_stats(std::ofstream& log)
     unsigned max_size = Sizes.maxCoeff();
     string bar, space = "";                                 // progress bar
     for (unsigned int i = 0; i<50; ++i){
-        if (i <= 50*params.current_gen/params.gens) bar += "/";
+        if (i <= 50*fraction) bar += "/";
         else space += " ";
     }
     std::cout.precision(5);
     std::cout << std::scientific;
-    std::cout << "Generation " << params.current_gen << "/" << params.gens << " [" + bar + space + "]\n";
+    
+    if(params.max_time == -1)
+        std::cout << "Generation " << params.current_gen << "/" << params.gens << " [" + bar + space + "]\n";
+    else
+        std::cout << std::fixed << "Time elapsed "<< timer << "/" << params.max_time <<
+                     " seconds (Generation "<< params.current_gen <<") [" + bar + space + "]\n";
+        
     std::cout << "Min Loss\tMedian Loss\tMedian (Max) Size\tTime (s)\n"
               <<  best_score << "\t" << med_score << "\t" ;
     std::cout << std::fixed  << med_size << " (" << max_size << ") \t\t" << timer << "\n";
