@@ -43,6 +43,7 @@ namespace FT{
             set_otypes();
             n_classes = 2;
             set_scorer(sc);
+            max_time = -1;
         }
     
     Parameters::~Parameters(){}
