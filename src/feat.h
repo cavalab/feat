@@ -250,7 +250,11 @@ namespace FT{
                      std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
                             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());
                             
-            void fit_helper(unsigned int g, vector<size_t> survivors, DataRef &d, std::ofstream &log);
+            void fit_helper(unsigned int g,
+                            vector<size_t> survivors,
+                            DataRef &d,
+                            std::ofstream &log,
+                            double percentage);
                      
             /// train a model.             
             void fit(double * X,int rowsX,int colsX, double * Y,int lenY);
@@ -343,7 +347,8 @@ namespace FT{
             double best_score_v;                    ///< best validation score
             string str_dim;                         ///< dimensionality as multiple of number of columns 
             void update_best(bool val=false);       ///< updates best score   
-            void print_stats(std::ofstream& log);         ///< prints stats
+            void print_stats(std::ofstream& log,
+                             double fraction);      ///< prints stats
             Individual best_ind;                    ///< best individual
             string logfile;                         ///< log filename
             /// method to fit inital ml model            
