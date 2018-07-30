@@ -23,7 +23,7 @@ void FT::choose_gpu()
 		int n_gpus; 
         	cudaGetDeviceCount(&n_gpus);
         	int device = omp_get_thread_num() % n_gpus ; 
-        	cudaSetDevice(device);
+        	cudaSetDevice(0);
 		cudaDeviceSynchronize();
 		//cudaSetDevice(1);
 	} 

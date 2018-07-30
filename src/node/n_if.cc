@@ -26,7 +26,7 @@ namespace FT{
 #else
     void NodeIf::evaluate(Data& data, Stacks& stack)
     {
-        GPU_If(stack.dev_f, stack.dev_b, stack.idx['f'], stack.idx[otype], stack.N);
+        GPU_If(stack.dev_f, stack.dev_b, stack.idx['f'], stack.idx['b'], stack.N);
     }
 #endif
 
