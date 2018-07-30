@@ -117,6 +117,7 @@ namespace FT
     {
 	//printf("Calling free device\n");
         free_device(dev_f, dev_b);
+	//cudaDeviceReset();
 	//printf("Device freed\n");
     }
 
