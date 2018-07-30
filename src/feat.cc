@@ -446,7 +446,7 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     if(params.max_time == -1)
     {
         for (unsigned int g = 0; g<params.gens; ++g)
-            fit_helper(g, survivors, d, log, ((g+1)*1.0)/params.gens);
+            run_generation(g, survivors, d, log, ((g+1)*1.0)/params.gens);
     }
     else
     {
@@ -454,7 +454,7 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
         
         while(params.max_time > timer.Elapsed().count())
         {
-            fit_helper(g, survivors, d, log, timer.Elapsed().count()/params.max_time);
+            run_generation(g, survivors, d, log, timer.Elapsed().count()/params.max_time);
             g++;
         }
     }
@@ -488,7 +488,7 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
         log.close();
 }
 
-void Feat::fit_helper(unsigned int g,
+void Feat::run_generation(unsigned int g,
                       vector<size_t> survivors,
                       DataRef &d,
                       std::ofstream &log,

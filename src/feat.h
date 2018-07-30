@@ -250,7 +250,7 @@ namespace FT{
                      std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
                             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());
                             
-            void fit_helper(unsigned int g,
+            void run_generation(unsigned int g,
                             vector<size_t> survivors,
                             DataRef &d,
                             std::ofstream &log,
