@@ -15,7 +15,7 @@ namespace FT{
             /*     xf[idx-1] = xf[idx-1]; */
             /* else */
             /*     out[i] = 0; */ 
-            if (~xb[(idxb)*N+i])
+            if (~xb[(idxb-1)*N+i])
                 xf[(idxf-1)*N+i] = 0;
         }
         return;
