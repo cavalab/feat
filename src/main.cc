@@ -103,6 +103,7 @@ int main(int argc, char** argv){
         cout << "-hc\tstochastic hill climbing iterations (zero)\n"; 
         cout << "-lr\tbackpropagation learning rate or hill climbing step size(zero)\n"; 
         cout << "-batch\tminibatch size for stochastic gradient descent\n"; 
+        cout << "--max_time\tMaximum time in seconds to fit the model instead of number of generations\n";
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
     }
@@ -171,6 +172,14 @@ int main(int argc, char** argv){
         feat.set_batch_size(std::stoi(input.getCmdOption("-batch")));
     if(input.cmdOptionExists("-n_threads"))
         feat.set_n_threads(std::stoi(input.getCmdOption("-n_threads")));
+    if(input.cmdOptionExists("--max_time"))
+    {
+        int time = std::stoi(input.getCmdOption("--max_time"));
+        if(time <= 0)
+            HANDLE_ERROR_NO_THROW("WARNING: max_time cannot be less than equal to 0");
+        else
+            feat.set_max_time(time);
+     }
     //cout << "done.\n";
     ///////////////////////////////////////
 

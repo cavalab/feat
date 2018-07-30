@@ -54,6 +54,7 @@ namespace FT{
         vector<string> feature_names;               ///< names of features
         bool backprop;                              ///< turns on backpropagation
         bool hillclimb;                             ///< turns on parameter hill climbing
+        int max_time;                               ///< max time for fit method
 
         struct BP 
         {
