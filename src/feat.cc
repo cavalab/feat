@@ -446,19 +446,15 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     if(params.max_time == -1)
     {
         for (unsigned int g = 0; g<params.gens; ++g)
-        {   
-            fit_helper(g, survivors, d, log);
-            //cout<<"\rCompleted "<<((g+1)*100/params.gens)<<"%"<< std::flush;
-        }
+            fit_helper(g, survivors, d, log, ((g+1)*1.0)/params.gens);
     }
     else
     {
         unsigned int g = 0;
         
-        cout << "Here: max time is " << params.max_time << " and elapsed time is " << timer.Elapsed().count() <<"\n";
         while(params.max_time > timer.Elapsed().count())
         {
-            fit_helper(g, survivors, d, log);
+            fit_helper(g, survivors, d, log, timer.Elapsed().count()/params.max_time);
             g++;
         }
     }
@@ -492,7 +488,11 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
         log.close();
 }
 
-void Feat::fit_helper(unsigned int g, vector<size_t> survivors, DataRef &d, std::ofstream &log)
+void Feat::fit_helper(unsigned int g,
+                      vector<size_t> survivors,
+                      DataRef &d,
+                      std::ofstream &log,
+                      double fraction)
 {
     params.set_current_gen(g);
     // select parents
@@ -522,10 +522,15 @@ void Feat::fit_helper(unsigned int g, vector<size_t> survivors, DataRef &d, std:
     if (use_arch) 
         arch.update(*p_pop,params);
 
+
     if(params.verbosity>1)
-        print_stats(log);    
+        print_stats(log, fraction);    
     else if(params.verbosity == 1)
-        printProgress(((g+1)*1.0)/params.gens);
+        printProgress(fraction);
+//        printProgress(((g+1)*1.0)/params.gens);
+    
+//    params.current_gen/params.gens
+        
         
     if (params.backprop)
     {
@@ -741,7 +746,7 @@ double Feat::score(MatrixXd& X, const VectorXd& y,
     /*     return p_eval->se(y,yhat).mean(); */
 }
 
-void Feat::print_stats(std::ofstream& log)
+void Feat::print_stats(std::ofstream& log, double fraction)
 {
     unsigned num_models = std::min(50,p_pop->size());
     double med_score = median(F.colwise().mean().array());  // median loss
@@ -751,12 +756,18 @@ void Feat::print_stats(std::ofstream& log)
     unsigned max_size = Sizes.maxCoeff();
     string bar, space = "";                                 // progress bar
     for (unsigned int i = 0; i<50; ++i){
-        if (i <= 50*params.current_gen/params.gens) bar += "/";
+        if (i <= 50*fraction) bar += "/";
         else space += " ";
     }
     std::cout.precision(5);
     std::cout << std::scientific;
-    std::cout << "Generation " << params.current_gen << "/" << params.gens << " [" + bar + space + "]\n";
+    
+    if(params.max_time == -1)
+        std::cout << "Generation " << params.current_gen << "/" << params.gens << " [" + bar + space + "]\n";
+    else
+        std::cout << std::fixed << "Time elapsed "<< timer << "/" << params.max_time <<
+                     " seconds (Generation "<< params.current_gen <<") [" + bar + space + "]\n";
+        
     std::cout << "Min Loss\tMedian Loss\tMedian (Max) Size\tTime (s)\n"
               <<  best_score << "\t" << med_score << "\t" ;
     std::cout << std::fixed  << med_size << " (" << max_size << ") \t\t" << timer << "\n";
