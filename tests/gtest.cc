@@ -1003,7 +1003,8 @@ TEST(Parameters, ParamsTests)
                       0,                                // backprop iterations
                       0.1,                              // iterations
                       1,                                // batch size
-                      false                             // hill climbing
+                      false,                             // hill climbing
+                      -1                                // max time
                           );
 					  
 	params.set_max_dim(12);
@@ -1167,7 +1168,8 @@ TEST(Evaluation, mse)
                   0,                                // backprop iterations
                   0.1,                              // iterations
                   1,                                // batch size
-                  false                             // hill climbing
+                  false,                             // hill climbing
+                  -1                                // max time
                       );
 	
     VectorXd yhat(10), y(10), res(10);
@@ -1244,7 +1246,8 @@ TEST(Evaluation, bal_accuracy)
               0,                                // backprop iterations
               0.1,                              // iterations
               1,                                // batch size
-              false                             // hill climbing
+              false,                             // hill climbing
+                  -1                                // max time
                   );
 	
     VectorXd yhat(10), y(10), res(10), loss(10);
@@ -1322,7 +1325,8 @@ TEST(Evaluation, log_loss)
               0,                                // backprop iterations
               0.1,                              // iterations
               1,                                // batch size
-              false                             // hill climbing
+              false,                             // hill climbing
+                  -1                                // max time
                   );
 	
     VectorXd yhat(10), y(10), loss(10);
@@ -1395,7 +1399,8 @@ TEST(Evaluation, multi_log_loss)
               0,                                // backprop iterations
               0.1,                              // iterations
               1,                                // batch size
-              false                             // hill climbing
+              false,                             // hill climbing
+                  -1                                // max time
                   );                           //scoring function
 	
     VectorXd y(10), loss(10);
@@ -1461,7 +1466,8 @@ TEST(Evaluation, fitness)
                       0,                                // backprop iterations
                       0.1,                              // iterations
                       1,                                // batch size
-                      false                             // hill climbing
+                      false,                             // hill climbing
+                      -1                                // max time
                           );
                         
 	MatrixXd X(10,1); 
@@ -1538,7 +1544,8 @@ TEST(Evaluation, out_ml)
                       0,                                // backprop iterations
                       0.1,                              // iterations
                       1,                                // batch size
-                      false                             // hill climbing
+                      false,                             // hill climbing
+                      -1                                // max time
                           );
 	MatrixXd X(7,2); 
     X << 0,1,  
