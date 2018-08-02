@@ -63,7 +63,7 @@ namespace FT{
                    bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
                    double split=0.75, double fb=0.5, string scorer="", string feature_names="",
                    bool backprop=false,int iters=10, double lr=0.1, int bs=100, int n_threads=0,
-                   bool hillclimb=false, string logfile="");
+                   bool hillclimb=false, string logfile="", int max_time=-1);
             
             /// set size of population 
             void set_pop_size(int pop_size);

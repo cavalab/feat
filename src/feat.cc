@@ -28,11 +28,11 @@ Feat::Feat(int pop_size, int gens, string ml,
        bool erc, string obj,bool shuffle, 
        double split, double fb, string scorer, string feature_names,
        bool backprop,int iters, double lr, int bs, int n_threads,
-       bool hillclimb, string logfile):
+       bool hillclimb, string logfile, int max_time):
           // construct subclasses
           params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
                  functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, 
-                 fb, scorer, feature_names, backprop, iters, lr, bs, hillclimb), 
+                 fb, scorer, feature_names, backprop, iters, lr, bs, hillclimb, max_time), 
           p_sel( make_shared<Selection>(sel) ),
           p_surv( make_shared<Selection>(surv, true) ),
           p_variation( make_shared<Variation>(cross_rate) )                      
@@ -441,25 +441,20 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     
     vector<size_t> survivors;
 
+    // =====================
     // main generational loop
-    
-    if(params.max_time == -1)
+    unsigned int g = 0;
+    double fraction = 0;
+    // continue until max gens is reached or max_time is up (if it is set)
+    while((params.max_time == -1 || params.max_time > timer.Elapsed().count())
+           && g<params.gens)
     {
-        for (unsigned int g = 0; g<params.gens; ++g)
-            run_generation(g, survivors, d, log, ((g+1)*1.0)/params.gens);
+        fraction = params.max_time == -1 ? ((g+1)*1.0)/params.gens : 
+                                           timer.Elapsed().count()/params.max_time;
+        run_generation(g, survivors, d, log, fraction);
+        g++;
     }
-    else
-    {
-        unsigned int g = 0;
-        
-        while(params.max_time > timer.Elapsed().count())
-        {
-            run_generation(g, survivors, d, log, timer.Elapsed().count()/params.max_time);
-            g++;
-        }
-    }
-    
-    cout <<"\n";
+    // =====================
     
     params.msg("finished",2);
     params.msg("best training representation: " + best_ind.get_eqn(),2);
