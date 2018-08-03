@@ -854,7 +854,6 @@ void Feat::print_stats(std::ofstream& log, double fraction)
             << med_size            << sep
             << med_complexity      << sep
             << med_num_params      << sep
-            << med_dim             << sep
-            << "\n"; 
+            << med_dim             << "\n"; 
     } 
 }
