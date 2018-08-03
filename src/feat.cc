@@ -247,9 +247,9 @@ string Feat::get_eqns(bool front)
             
             for (auto& a : arch.archive)
             {          
-                r += std::to_string(a.complexity()) + "," 
-                    + std::to_string(a.fitness) + "," 
-                    + std::to_string(a.fitness_v) + ","
+                r += std::to_string(a.complexity()) + "\t" 
+                    + std::to_string(a.fitness) + "\t" 
+                    + std::to_string(a.fitness_v) + "\t"
                     + a.get_eqn() + "\n";  
             }
         }
@@ -261,9 +261,9 @@ string Feat::get_eqns(bool front)
             
             for (unsigned j = 0; j < f.size(); ++j)
             {          
-                r += std::to_string(p_pop->individuals[f[j]].complexity()) + "," 
-                    + std::to_string((*p_pop)[f[j]].fitness) + "," 
-                    + std::to_string((*p_pop)[f[j]].fitness_v) + "," 
+                r += std::to_string(p_pop->individuals[f[j]].complexity()) + "\t" 
+                    + std::to_string((*p_pop)[f[j]].fitness) + "\t" 
+                    + std::to_string((*p_pop)[f[j]].fitness_v) + "\t" 
                     + p_pop->individuals[f[j]].get_eqn() + "\n";  
             }
         }
@@ -272,9 +272,9 @@ string Feat::get_eqns(bool front)
     {
         for (unsigned j = 0; j < params.pop_size; ++j)
         {          
-            r += std::to_string(p_pop->individuals[j].complexity()) + "," 
-                + std::to_string((*p_pop)[j].fitness) + "," 
-                + std::to_string((*p_pop)[j].fitness_v) + "," 
+            r += std::to_string(p_pop->individuals[j].complexity()) + "\t" 
+                + std::to_string((*p_pop)[j].fitness) + "\t" 
+                + std::to_string((*p_pop)[j].fitness_v) + "\t" 
                 + p_pop->individuals[j].get_eqn() + "\n";  
         }
     }
