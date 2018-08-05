@@ -773,7 +773,7 @@ TEST(NodeTest, Evaluate)
     
     addObj->evaluate(data, stack);
     
-    stack.update_idx(n->otype, n->arity); 
+    stack.update_idx(addObj->otype, addObj->arity); 
     
     stack.copy_to_host(stack_size);
     
