@@ -710,7 +710,7 @@ TEST(NodeTest, Evaluate)
 	ASSERT_FALSE((isinf(x)).any());
 	ASSERT_FALSE((isnan(abs(x)).any()));
 	
-	std::unique_ptr<Node> gaus2dObj = std::unique_ptr<Node>(new Node2dGaussian());
+	/*std::unique_ptr<Node> gaus2dObj = std::unique_ptr<Node>(new Node2dGaussian());
 	
 	stack.f.clear();
 	stack.b.clear();
@@ -722,7 +722,7 @@ TEST(NodeTest, Evaluate)
 	x = stack.f.pop(); 
 	
 	ASSERT_FALSE((isinf(x)).any());
-	ASSERT_FALSE((isnan(abs(x)).any()));
+	ASSERT_FALSE((isnan(abs(x)).any()));*/
 	
 	//TODO NodeVariable, NodeConstant(both types)
 }
