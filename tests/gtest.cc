@@ -752,22 +752,26 @@ TEST(NodeTest, Evaluate)
     
     Data data(X, Y, z1);
     
-    std::map<char, size_t> stack_size = get_max_stack_size();
+    std::map<char, size_t> stack_size;
+    
+    stack_size['f'] = 5;
+    stack_size['b'] = 5;
+    
     
     // set the device based on the thread number
     choose_gpu();        
     
-    stack.allocate(stack_size,d.X.cols());
+    stack.allocate(stack_size,data	.X.cols());
     
     ArrayXf tmp = data.X.row(0).cast<float>();
-    GPU_Variable(stack.dev_f, tmp.data(), stack.idx[otype], stack.N);
+    GPU_Variable(stack.dev_f, tmp.data(), stack.idx['f'], stack.N);
     
     tmp = data.X.row(1).cast<float>();
-    GPU_Variable(stack.dev_f, tmp.data(), stack.idx[otype], stack.N);
+    GPU_Variable(stack.dev_f, tmp.data(), stack.idx['f'], stack.N);
     
     std::unique_ptr<Node> addObj = std::unique_ptr<Node>(new NodeAdd());
     
-    addObj->evaluate(d, stack);
+    addObj->evaluate(data, stack);
     
     stack.update_idx(n->otype, n->arity); 
     
