@@ -726,6 +726,59 @@ TEST(NodeTest, Evaluate)
 	
 	//TODO NodeVariable, NodeConstant(both types)
 }
+#else
+TEST(NodeTest, Evaluate)
+{
+	vector<ArrayXd> output;
+	ArrayXd x;
+	ArrayXb z;
+	std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z1;
+	
+	Stacks stack;
+	
+	MatrixXd X(3,2); 
+    X << -2.0, 0.0, 10.0,
+    	 1.0, 0.0, 0.0;
+    	 
+    ArrayXb Z1(3); 
+    ArrayXb Z2(3); 
+    Z1 << true, false, true;
+    Z2 << true, false, false;
+    	 
+    X.transposeInPlace();
+    
+    VectorXd Y(6); 
+    Y << 3.0, 4.0, 5.0, 6.0, 7.0, 8.0;
+    
+    Data data(X, Y, z1);
+    
+    std::map<char, size_t> stack_size = get_max_stack_size();
+    
+    // set the device based on the thread number
+    choose_gpu();        
+    
+    stack.allocate(stack_size,d.X.cols());
+    
+    ArrayXf tmp = data.X.row(0).cast<float>();
+    GPU_Variable(stack.dev_f, tmp.data(), stack.idx[otype], stack.N);
+    
+    tmp = data.X.row(1).cast<float>();
+    GPU_Variable(stack.dev_f, tmp.data(), stack.idx[otype], stack.N);
+    
+    std::unique_ptr<Node> addObj = std::unique_ptr<Node>(new NodeAdd());
+    
+    addObj->evaluate(d, stack);
+    
+    stack.update_idx(n->otype, n->arity); 
+    
+    stack.copy_to_host(stack_size);
+    
+    // remove extraneous rows from stacks
+    stack.trim();
+    
+    std::cout<< stack.f;
+    
+}
 #endif
 
 bool isValidProgram(NodeVector& program, unsigned num_features)
