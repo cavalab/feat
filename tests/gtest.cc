@@ -961,6 +961,144 @@ TEST(NodeTest, Evaluate)
 
     evaluateCudaNodes(nodes, X2, "tan");
     
+    MatrixXd X3(2,3); 
+    X3 << 0.0, 1.0, 1.0,
+          0.0, 1.0, 0.0;
+          
+    std::unique_ptr<Node> b1 = std::unique_ptr<Node>(new NodeVariable(0, 'b'));
+    std::unique_ptr<Node> b2 = std::unique_ptr<Node>(new NodeVariable(1, 'b'));
+          
+    std::unique_ptr<Node> andObj = std::unique_ptr<Node>(new NodeAnd());
+    
+    nodes.clear();
+    
+    nodes.push_back(b1->clone());
+    nodes.push_back(b2->clone());
+    nodes.push_back(andObj->clone());
+
+    evaluateCudaNodes(nodes, X3, "and");
+    
+    std::unique_ptr<Node> orObj = std::unique_ptr<Node>(new NodeOr());
+    
+    nodes.clear();
+    
+    nodes.push_back(b1->clone());
+    nodes.push_back(b2->clone());
+    nodes.push_back(orObj->clone());
+
+    evaluateCudaNodes(nodes, X3, "or");
+    
+    std::unique_ptr<Node> xorObj = std::unique_ptr<Node>(new NodeXor());
+    
+    nodes.clear();
+    
+    nodes.push_back(b1->clone());
+    nodes.push_back(b2->clone());
+    nodes.push_back(xorObj->clone());
+
+    evaluateCudaNodes(nodes, X3, "xor");
+    
+    /****************************/
+    
+    MatrixXd X4(2,3); 
+    X4 << 1.0, 2.0, 3.0,
+          1.0, 1.0, 4.0;
+    
+    std::unique_ptr<Node> eqObj = std::unique_ptr<Node>(new NodeEqual());
+    
+    nodes.clear();
+    
+    nodes.push_back(f1->clone());
+    nodes.push_back(f2->clone());
+    nodes.push_back(eqObj->clone());
+
+    evaluateCudaNodes(nodes, X4, "equal");
+    
+    std::unique_ptr<Node> geqObj = std::unique_ptr<Node>(new NodeGEQ());
+    
+    nodes.clear();
+    
+    nodes.push_back(f1->clone());
+    nodes.push_back(f2->clone());
+    nodes.push_back(geqObj->clone());
+
+    evaluateCudaNodes(nodes, X4, "GEQ");
+    
+    std::unique_ptr<Node> gtObj = std::unique_ptr<Node>(new NodeGreaterThan());
+    
+    nodes.clear();
+    
+    nodes.push_back(f1->clone());
+    nodes.push_back(f2->clone());
+    nodes.push_back(gtObj->clone());
+
+    evaluateCudaNodes(nodes, X4, "GreaterThan");
+    
+    std::unique_ptr<Node> leqObj = std::unique_ptr<Node>(new NodeLEQ());
+    
+    nodes.clear();
+    
+    nodes.push_back(f1->clone());
+    nodes.push_back(f2->clone());
+    nodes.push_back(leqObj->clone());
+
+    evaluateCudaNodes(nodes, X4, "LEQ");
+    
+    std::unique_ptr<Node> ltObj = std::unique_ptr<Node>(new NodeLessThan());
+    
+    nodes.clear();
+    
+    nodes.push_back(f1->clone());
+    nodes.push_back(f2->clone());
+    nodes.push_back(ltObj->clone());
+
+    evaluateCudaNodes(nodes, X4, "LessThan");
+    
+    MatrixXd X5(2,3); 
+    X5 << 1.0, 2.0, 3.0,
+          1.0, 0.0, 1.0;
+          
+    std::unique_ptr<Node> ifObj = std::unique_ptr<Node>(new NodeIf());
+    
+    nodes.clear();
+    
+    nodes.push_back(f1->clone());
+    nodes.push_back(b2->clone());
+    nodes.push_back(ifObj->clone());
+
+    evaluateCudaNodes(nodes, X5, "If");
+    
+    MatrixXd X6(3,3); 
+    X6 << 1.0, 2.0, 3.0,
+          4.0, 5.0, 6.0,
+          0.0, 1.0, 0.0;
+          
+    std::unique_ptr<Node> b3 = std::unique_ptr<Node>(new NodeVariable(2, 'b'));
+          
+    std::unique_ptr<Node> iteObj = std::unique_ptr<Node>(new NodeIfThenElse());
+    
+    nodes.clear();
+    
+    nodes.push_back(f1->clone());
+    nodes.push_back(f2->clone());
+    nodes.push_back(b3->clone());
+    nodes.push_back(iteObj->clone());
+
+    evaluateCudaNodes(nodes, X6, "IfThenElse");
+    
+    MatrixXd X7(1,2); 
+    X7 << 1.0, 0.0;
+    
+    std::unique_ptr<Node> notObj = std::unique_ptr<Node>(new NodeNot());
+    
+    nodes.clear();
+    
+    nodes.push_back(b1->clone());
+    nodes.push_back(notObj->clone());
+
+    evaluateCudaNodes(nodes, X7, "Not");
+    
+    
 }
 #endif
 
