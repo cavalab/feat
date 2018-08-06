@@ -25,7 +25,7 @@ class Feat(BaseEstimator):
                 max_depth=3,   max_dim=10,  random_state=0, 
                 erc = False,  obj ="fitness,complexity", shuffle=False,  split=0.75,  fb=0.5,
                 scorer ='',feature_names="", backprop=False, iters=10, lr=0.1, batch_size=100, n_threads=0,
-                hillclimb=False, logfile="Feat.log"):
+                hillclimb=False, logfile="Feat.log", max_time=-1):
         self.pop_size = pop_size
         self.gens = gens
         self.ml = ml.encode() if( isinstance(ml,str) )  else ml
@@ -60,7 +60,7 @@ class Feat(BaseEstimator):
         self.n_threads = int(n_threads)
         self.hillclimb= bool(hillclimb) 
         self.logfile = logfile.encode() if isinstance(logfile,str) else logfile
-
+        self.max_time = max_time
         # if self.verbosity>0:
         #print('self.__dict__: ' , self.__dict__)
         self._pyfeat=None 
@@ -85,7 +85,8 @@ class Feat(BaseEstimator):
                 self.batch_size,
                 self.n_threads,
                 self.hillclimb,
-                self.logfile)
+                self.logfile,
+                self.max_time)
    
     def fit(self,X,y,zfile=None,zids=None):
         self._init_pyfeat()    
