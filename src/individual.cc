@@ -410,10 +410,10 @@ namespace FT{
                 exit(1);
             }
         }
-        // copy data from GPU to stack
+        // copy data from GPU to stack (calls trim also)
         stack.copy_to_host(stack_size);
         // remove extraneous rows from stacks
-        stack.trim();
+        //stack.trim();
         //check stack
         /* std::cout << "stack.f:" << stack.f.rows() << "x" << stack.f.cols() << "\n"; */
         /* for (unsigned i = 0; i < stack.f.rows() ; ++i){ */

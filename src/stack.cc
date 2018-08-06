@@ -69,7 +69,7 @@ namespace FT
         //std::cout << "after dev_allocate, dev_f is " << dev_f << "\n";
 
 	//printf("Allocated Stack Sizes\n");
-	//printf("\tFloating stack N=%d and stack size as %d\n",N, stack_size.at('f'));
+	//printf("\tFloating stack N=%zu and stack size as %zu\n",N, stack_size.at('f'));
 
         this->N = N;
 	
@@ -90,14 +90,16 @@ namespace FT
     /// resize the f and b stacks to match the outputs of the program
     void Stacks::trim()
     {
-        /* std::cout << "resizing f to " << idx['f'] << "x" << f.cols() << "\n"; */
-        f.resize(idx['f'],f.cols());
-        b.resize(idx['b'],b.cols());
-        /* std::cout << "new f size: " << f.size() << "," << f.rows() << "x" << f.cols() << "\n"; */
-        /* usigned frows = f.rows()-1; */
-        /* for (unsigned r = idx['f']; r < f.rows(); ++r) */
-        /*     f.block(r,0,frows-r,f.cols()) = f.block(r+1,0,frows-r,f.cols()); */
-        /*     f.conservativeResize(frows,f.cols()); */
+        //std::cout << "resizing f to " << idx['f'] << "x" << f.cols() << "\n";
+        //f.resize(idx['f'],f.cols());
+        //b.resize(idx['b'],b.cols());
+        //std::cout << "new f size: " << f.size() << "," << f.rows() << "x" << f.cols() << "\n";
+        //unsigned frows = f.rows()-1;
+        //for (unsigned r = idx['f']; r < f.rows(); ++r)
+        //    f.block(r,0,frows-r,f.cols()) = f.block(r+1,0,frows-r,f.cols());
+        //    f.conservativeResize(frows,f.cols());
+	f.conservativeResize(idx['f'], f.cols());
+	b.conservativeResize(idx['b'], b.cols());
     }
     
     void Stacks::copy_to_host(const std::map<char, size_t>& stack_size)
@@ -106,9 +108,10 @@ namespace FT
         /*           << ", stack size: " << N*stack_size.at('f') << "\n"; */
         /* std::cout << "size of b before copy_from_device: " << b.size() */ 
         /*           << ", stack size: " << N*stack_size.at('b') << "\n"; */
+	 
+        copy_from_device(dev_f, f.data(), dev_b, b.data(), N*idx['f'], N*idx['b']);
+        //copy_from_device(dev_f, f.data(), dev_b, b.data(), N*stack_size.at('f'), N*stack_size.at('b'));
 
-        copy_from_device(dev_f, f.data(), dev_b, b.data(), N*stack_size.at('f'), 
-                         N*stack_size.at('b'));
         trim(); 
         limit();
     }
