@@ -32,7 +32,7 @@ using namespace shogun;
 
 using namespace FT;
 
-bool checkBrackets(string str)
+/*bool checkBrackets(string str)
 {
 	stack<char> st;
 	int x;
@@ -139,10 +139,10 @@ TEST(Feat, predict)
              -1.20648656, -2.68773747;
     
     feat.set_verbosity(1);
-    /* feat.set_n_threads(1); */
-    /* cout << "line 143: predict\n"; */
+    // feat.set_n_threads(1);
+    // cout << "line 143: predict\n";
     feat.fit(X, y);
-    /* cout << "line 145: done with fit\n"; */
+    // cout << "line 145: done with fit\n";
     
     X << 0,1,  
          0.4,0.8,  
@@ -258,7 +258,6 @@ TEST(Feat, fit_transform)
     ASSERT_TRUE(res.rows() <= feat.params.max_dim);
 }
 
-
 TEST(Individual, EvalEquation)
 {
 	Feat feat(100); feat.set_random_state(666);
@@ -313,7 +312,7 @@ TEST(Individual, EvalEquation)
         ASSERT_TRUE(checkBrackets(feat.p_pop->individuals[i].get_eqn())); //TODO evaluate if string correct or not
     }
 }
-
+*/
 
 #ifndef USE_CUDA
 TEST(NodeTest, Evaluate)
@@ -736,16 +735,10 @@ TEST(NodeTest, Evaluate)
 	
 	Stacks stack;
 	
-	MatrixXd X(3,2); 
-    X << -2.0, 0.0, 10.0,
-    	 1.0, 0.0, 0.0;
-    	 
-    ArrayXb Z1(3); 
-    ArrayXb Z2(3); 
-    Z1 << true, false, true;
-    Z2 << true, false, false;
-    	 
-    X.transposeInPlace();
+	MatrixXd X(3,4); 
+    X << 1.0, 2.0, 3.0, 4.0, 
+	 5.0, 6.0, 7.0, 8.0,
+	 9.0, 10.0, 11.0, 12.0;
     
     VectorXd Y(6); 
     Y << 3.0, 4.0, 5.0, 6.0, 7.0, 8.0;
@@ -754,38 +747,60 @@ TEST(NodeTest, Evaluate)
     
     std::map<char, size_t> stack_size;
     
-    stack_size['f'] = 5;
-    stack_size['b'] = 5;
+    stack_size['f'] = 3;
+    stack_size['b'] = 0;
     
-    
+    initialize_cuda();    
     // set the device based on the thread number
     choose_gpu();        
     
-    stack.allocate(stack_size,data	.X.cols());
+    stack.allocate(stack_size,data.X.cols());
     
-    ArrayXf tmp = data.X.row(0).cast<float>();
-    GPU_Variable(stack.dev_f, tmp.data(), stack.idx['f'], stack.N);
-    
-    tmp = data.X.row(1).cast<float>();
-    GPU_Variable(stack.dev_f, tmp.data(), stack.idx['f'], stack.N);
-    
+    std::unique_ptr<Node> var1 = std::unique_ptr<Node>(new NodeVariable(0));
+    std::unique_ptr<Node> var2 = std::unique_ptr<Node>(new NodeVariable(1));
+    std::unique_ptr<Node> var3 = std::unique_ptr<Node>(new NodeVariable(2));
     std::unique_ptr<Node> addObj = std::unique_ptr<Node>(new NodeAdd());
+
+    var1->evaluate(data, stack);
+    stack.update_idx(var1->otype, var1->arity);
+
+    var2->evaluate(data, stack);
+    stack.update_idx(var2->otype, var2->arity);
+
+    var3->evaluate(data, stack);
+    stack.update_idx(var3->otype, var3->arity);
     
     addObj->evaluate(data, stack);
-    
     stack.update_idx(addObj->otype, addObj->arity); 
     
+    std::cout<<"Update index 1st done with new index as " << stack.idx['f'] << "\n";
+
+    addObj->evaluate(data, stack);
+    stack.update_idx(addObj->otype, addObj->arity);    
+
+    std::cout<<"Update index 2nd done with new index as " << stack.idx['f'] << "\n";
+    
     stack.copy_to_host(stack_size);
+
+    float *f = stack.f.data();
+
+    std::cout<<"Copy to host done\n";
     
     // remove extraneous rows from stacks
-    stack.trim();
+    //stack.trim();
+
+    std::cout<<"Stack trimmed\n";
+
+    std::cout<<"Printing output now\n***************************\n";
     
     std::cout<< stack.f;
+
+    std::cout<<"\n********************************\n";
     
 }
 #endif
 
-bool isValidProgram(NodeVector& program, unsigned num_features)
+/*bool isValidProgram(NodeVector& program, unsigned num_features)
 {
     //checks whether program fulfills all its arities.
     MatrixXd X = MatrixXd::Zero(num_features,2); 
@@ -1488,9 +1503,9 @@ TEST(Evaluation, multi_log_loss)
     
     cout << "running multi_log_loss\n";
 	vector<float> weights = {(1-0.4)*3.0, (1-0.4)*3.0, (1-0.3)*3.0};
-	/* vector<float> weights; */ 
-    /* for (int i = 0; i < y.size(); ++i) */
-        /* weights.push_back(1.0); */
+	// vector<float> weights; 
+    // for (int i = 0; i < y.size(); ++i) 
+        // weights.push_back(1.0); 
 
     double score = metrics::mean_multi_log_loss(y, confidences, loss, weights);
     cout << "assertion\n";
@@ -1617,7 +1632,7 @@ TEST(Evaluation, out_ml)
              -1.20648656, -2.68773747;
     
     params.dtypes = find_dtypes(X);
-    /* shared_ptr<Evaluation> p_eval = make_shared<Evaluation>(params.scorer); */
+    //shared_ptr<Evaluation> p_eval = make_shared<Evaluation>(params.scorer); 
     shared_ptr<ML> p_ml = make_shared<ML>(params);
              
     bool pass = true;
@@ -1655,9 +1670,9 @@ TEST(Selection, SelectionOperator)
 
 	feat.timer.Reset();
 	
-	/* MatrixXd X_t(X.rows(),int(X.cols()*feat.params.split)); */
-    /* MatrixXd X_v(X.rows(),int(X.cols()*(1-feat.params.split))); */
-    /* VectorXd y_t(int(y.size()*feat.params.split)), y_v(int(y.size()*(1-feat.params.split))); */
+    //MatrixXd X_t(X.rows(),int(X.cols()*feat.params.split));
+    //MatrixXd X_v(X.rows(),int(X.cols()*(1-feat.params.split)));
+    //VectorXd y_t(int(y.size()*feat.params.split)), y_v(int(y.size()*(1-feat.params.split)));
     
     DataRef d(X, y, Z);
     
@@ -1687,7 +1702,7 @@ TEST(Selection, SelectionOperator)
     
     ASSERT_EQ(parents.size(), feat.get_pop_size());
 }
-
+*/
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
