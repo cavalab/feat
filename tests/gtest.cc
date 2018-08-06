@@ -32,7 +32,7 @@ using namespace shogun;
 
 using namespace FT;
 
-/*bool checkBrackets(string str)
+bool checkBrackets(string str)
 {
 	stack<char> st;
 	int x;
@@ -312,7 +312,6 @@ TEST(Individual, EvalEquation)
         ASSERT_TRUE(checkBrackets(feat.p_pop->individuals[i].get_eqn())); //TODO evaluate if string correct or not
     }
 }
-*/
 
 #ifndef USE_CUDA
 TEST(NodeTest, Evaluate)
@@ -1102,7 +1101,7 @@ TEST(NodeTest, Evaluate)
 }
 #endif
 
-/*bool isValidProgram(NodeVector& program, unsigned num_features)
+bool isValidProgram(NodeVector& program, unsigned num_features)
 {
     //checks whether program fulfills all its arities.
     MatrixXd X = MatrixXd::Zero(num_features,2); 
@@ -2004,7 +2003,7 @@ TEST(Selection, SelectionOperator)
     
     ASSERT_EQ(parents.size(), feat.get_pop_size());
 }
-*/
+
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
