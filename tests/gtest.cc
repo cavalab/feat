@@ -850,7 +850,7 @@ TEST(NodeTest, Evaluate)
 
     evaluateCudaNodes(nodes, X1, "exponent");
     
-    MatrixXd X1(1,4); 
+    MatrixXd X2(1,4); 
     X2 << 0.0, 1.0, 2.0, 3.0;
     
     std::unique_ptr<Node> cosObj = std::unique_ptr<Node>(new NodeCos());
