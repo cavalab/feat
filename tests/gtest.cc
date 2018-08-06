@@ -726,76 +726,81 @@ TEST(NodeTest, Evaluate)
 	//TODO NodeVariable, NodeConstant(both types)
 }
 #else
-TEST(NodeTest, Evaluate)
+
+std::map<char, size_t> get_max_stack_size(vector<std::unique_ptr<Node> > &nodes)
 {
-	vector<ArrayXd> output;
-	ArrayXd x;
-	ArrayXb z;
-	std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z1;
-	
-	Stacks stack;
-	
-	MatrixXd X(3,4); 
-    X << 1.0, 2.0, 3.0, 4.0, 
-	 5.0, 6.0, 7.0, 8.0,
-	 9.0, 10.0, 11.0, 12.0;
+    // max stack size is calculated using node arities
+    std::map<char, size_t> stack_size;
+    std::map<char, size_t> max_stack_size;
+    stack_size['f'] = 0;
+    stack_size['b'] = 0; 
+    max_stack_size['f'] = 0;
+    max_stack_size['b'] = 0;
+
+    for (const auto& n : nodes)   
+    {   	
+        ++stack_size[n->otype];
+
+        if ( max_stack_size[n->otype] < stack_size[n->otype])
+            max_stack_size[n->otype] = stack_size[n->otype];
+
+        for (const auto& a : n->arity)
+            stack_size[a.first] -= a.second;       
+    }	
+    return max_stack_size;
+}
+
+void evaluateCudaNodes(vector<std::unique_ptr<Node> > &nodes, MatrixXd &X, string testNode)
+{
+    Stacks stack;
     
     VectorXd Y(6); 
     Y << 3.0, 4.0, 5.0, 6.0, 7.0, 8.0;
     
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z1;
+    
     Data data(X, Y, z1);
     
-    std::map<char, size_t> stack_size;
+    std::map<char, size_t> stack_size = get_max_stack_size(nodes);
     
-    stack_size['f'] = 3;
-    stack_size['b'] = 0;
-    
-    initialize_cuda();    
-    // set the device based on the thread number
-    choose_gpu();        
+    choose_gpu();
     
     stack.allocate(stack_size,data.X.cols());
     
+    for (const auto& n : nodes)   
+    {
+        var1->evaluate(data, stack);
+        stack.update_idx(var1->otype, var1->arity);
+    }	
+    
+    stack.copy_to_host();
+    
+    std::cout<<"Printing output now for test node " << testNode;
+    std::cout<<"\n********************************\n";
+    
+    std::cout<<"Floating stack is\n";
+    std::cout<< stack.f;
+    
+    std::cout<<"Boolean stack is\n";
+    std::cout<< stack.b;
+    
+    std::cout<<"\n********************************\n";
+    
+    
+}
+
+TEST(NodeTest, Evaluate)
+{
+    initialize_cuda(); 
+
+	MatrixXd X(2,3); 
+    X << 4.0, 5.0, 6.0,
+         1.0, 2.0, 3.0;   
+    
     std::unique_ptr<Node> var1 = std::unique_ptr<Node>(new NodeVariable(0));
     std::unique_ptr<Node> var2 = std::unique_ptr<Node>(new NodeVariable(1));
-    std::unique_ptr<Node> var3 = std::unique_ptr<Node>(new NodeVariable(2));
+    
     std::unique_ptr<Node> addObj = std::unique_ptr<Node>(new NodeAdd());
-
-    var1->evaluate(data, stack);
-    stack.update_idx(var1->otype, var1->arity);
-
-    var2->evaluate(data, stack);
-    stack.update_idx(var2->otype, var2->arity);
-
-    var3->evaluate(data, stack);
-    stack.update_idx(var3->otype, var3->arity);
-    
-    addObj->evaluate(data, stack);
-    stack.update_idx(addObj->otype, addObj->arity); 
-    
-    std::cout<<"Update index 1st done with new index as " << stack.idx['f'] << "\n";
-
-    addObj->evaluate(data, stack);
-    stack.update_idx(addObj->otype, addObj->arity);    
-
-    std::cout<<"Update index 2nd done with new index as " << stack.idx['f'] << "\n";
-    
-    stack.copy_to_host(stack_size);
-
-    float *f = stack.f.data();
-
-    std::cout<<"Copy to host done\n";
-    
-    // remove extraneous rows from stacks
-    //stack.trim();
-
-    std::cout<<"Stack trimmed\n";
-
-    std::cout<<"Printing output now\n***************************\n";
-    
-    std::cout<< stack.f;
-
-    std::cout<<"\n********************************\n";
     
 }
 #endif

@@ -411,7 +411,7 @@ namespace FT{
             }
         }
         // copy data from GPU to stack (calls trim also)
-        stack.copy_to_host(stack_size);
+        stack.copy_to_host();
         // remove extraneous rows from stacks
         //stack.trim();
         //check stack
@@ -639,17 +639,18 @@ namespace FT{
     {
         // max stack size is calculated using node arities
         std::map<char, size_t> stack_size;
-	std::map<char, size_t> max_stack_size;
-	stack_size['f'] = 0;
-	stack_size['b'] = 0; 
-	max_stack_size['f'] = 0;
-	max_stack_size['b'] = 0;
+        std::map<char, size_t> max_stack_size;
+        stack_size['f'] = 0;
+        stack_size['b'] = 0; 
+        max_stack_size['f'] = 0;
+        max_stack_size['b'] = 0;
+
         for (const auto& n : program)   
         {   	
-	    ++stack_size[n->otype];
-	   
- 	    if ( max_stack_size[n->otype] < stack_size[n->otype])
-               max_stack_size[n->otype] = stack_size[n->otype];
+            ++stack_size[n->otype];
+
+            if ( max_stack_size[n->otype] < stack_size[n->otype])
+                max_stack_size[n->otype] = stack_size[n->otype];
 
             for (const auto& a : n->arity)
                 stack_size[a.first] -= a.second;       
