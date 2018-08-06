@@ -798,16 +798,48 @@ TEST(NodeTest, Evaluate)
          1.0, 2.0, 3.0;   
    
     vector<std::unique_ptr<Node> > nodes;
-    std::unique_ptr<Node> var1 = std::unique_ptr<Node>(new NodeVariable(0));
-    std::unique_ptr<Node> var2 = std::unique_ptr<Node>(new NodeVariable(1));
+    std::unique_ptr<Node> f1 = std::unique_ptr<Node>(new NodeVariable(0));
+    std::unique_ptr<Node> f2 = std::unique_ptr<Node>(new NodeVariable(1));
     
     std::unique_ptr<Node> addObj = std::unique_ptr<Node>(new NodeAdd());
 
-    nodes.push_back(var1->clone());
-    nodes.push_back(var2->clone());
+    nodes.push_back(f1->clone());
+    nodes.push_back(f2->clone());
     nodes.push_back(addObj->clone());
 
     evaluateCudaNodes(nodes, X, "add");
+    
+    std::unique_ptr<Node> subObj = std::unique_ptr<Node>(new NodeSubtract());
+    
+    nodes.clear();
+    
+    nodes.push_back(f1->clone());
+    nodes.push_back(f2->clone());
+    nodes.push_back(subObj->clone());
+
+    evaluateCudaNodes(nodes, X, "subtract");
+    
+    std::unique_ptr<Node> mulObj = std::unique_ptr<Node>(new NodeMultiply());
+    
+    nodes.clear();
+    
+    nodes.push_back(f1->clone());
+    nodes.push_back(f2->clone());
+    nodes.push_back(mulObj->clone());
+
+    evaluateCudaNodes(nodes, X, "multiply");
+    
+    std::unique_ptr<Node> divObj = std::unique_ptr<Node>(new NodeDivide());
+    
+    nodes.clear();
+    
+    nodes.push_back(f1->clone());
+    nodes.push_back(f2->clone());
+    nodes.push_back(divObj->clone());
+
+    evaluateCudaNodes(nodes, X, "divide");
+    
+    
     
 }
 #endif
