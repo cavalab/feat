@@ -12,12 +12,12 @@ namespace FT{
     {                    
         for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
         {
-            if (x[(idx-1)*N+1] > 0 )
-                x[(idx-1)*N+1] = 1.0 ; 
-            else if (x[(idx-1)*N+1] == 0)
-                x[(idx-1)*N+1] = 0.0; 
+            if (x[(idx-1)*N+i] > 0 )
+                x[(idx-1)*N+i] = 1.0 ; 
+            else if (x[(idx-i)*N+i] == 0)
+                x[(idx-1)*N+i] = 0.0; 
             else
-                x[(idx-1)*N+1] = -1.0 ;
+                x[(idx-1)*N+i] = -1.0 ;
         }
         return;
     }
