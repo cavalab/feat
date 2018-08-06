@@ -769,8 +769,8 @@ void evaluateCudaNodes(vector<std::unique_ptr<Node> > &nodes, MatrixXd &X, strin
     
     for (const auto& n : nodes)   
     {
-        var1->evaluate(data, stack);
-        stack.update_idx(var1->otype, var1->arity);
+        n->evaluate(data, stack);
+        stack.update_idx(n->otype, n->arity);
     }	
     
     stack.copy_to_host();
@@ -779,10 +779,10 @@ void evaluateCudaNodes(vector<std::unique_ptr<Node> > &nodes, MatrixXd &X, strin
     std::cout<<"\n********************************\n";
     
     std::cout<<"Floating stack is\n";
-    std::cout<< stack.f;
+    std::cout<< stack.f << "\n\n";
     
     std::cout<<"Boolean stack is\n";
-    std::cout<< stack.b;
+    std::cout<< stack.b << "\n";
     
     std::cout<<"\n********************************\n";
     
@@ -796,11 +796,18 @@ TEST(NodeTest, Evaluate)
 	MatrixXd X(2,3); 
     X << 4.0, 5.0, 6.0,
          1.0, 2.0, 3.0;   
-    
+   
+    vector<std::unique_ptr<Node> > nodes;
     std::unique_ptr<Node> var1 = std::unique_ptr<Node>(new NodeVariable(0));
     std::unique_ptr<Node> var2 = std::unique_ptr<Node>(new NodeVariable(1));
     
     std::unique_ptr<Node> addObj = std::unique_ptr<Node>(new NodeAdd());
+
+    nodes.push_back(var1->clone());
+    nodes.push_back(var2->clone());
+    nodes.push_back(addObj->clone());
+
+    evaluateCudaNodes(nodes, X, "add");
     
 }
 #endif
