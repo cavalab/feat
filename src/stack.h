@@ -137,7 +137,7 @@ namespace FT
         /// resize the f and b stacks to match the outputs of the program
         void trim();
         
-        void copy_to_host(const std::map<char, size_t>& stack_size);
+        void copy_to_host();
         
         ~Stacks();
     };

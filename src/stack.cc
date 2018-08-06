@@ -68,8 +68,8 @@ namespace FT
         dev_allocate(dev_f, dev_b, N*stack_size.at('f'), N*stack_size.at('b'));
         //std::cout << "after dev_allocate, dev_f is " << dev_f << "\n";
 
-	//printf("Allocated Stack Sizes\n");
-	//printf("\tFloating stack N=%zu and stack size as %zu\n",N, stack_size.at('f'));
+	    //printf("Allocated Stack Sizes\n");
+	    //printf("\tFloating stack N=%zu and stack size as %zu\n",N, stack_size.at('f'));
 
         this->N = N;
 	
@@ -98,11 +98,11 @@ namespace FT
         //for (unsigned r = idx['f']; r < f.rows(); ++r)
         //    f.block(r,0,frows-r,f.cols()) = f.block(r+1,0,frows-r,f.cols());
         //    f.conservativeResize(frows,f.cols());
-	f.conservativeResize(idx['f'], f.cols());
-	b.conservativeResize(idx['b'], b.cols());
+        f.conservativeResize(idx['f'], f.cols());
+        b.conservativeResize(idx['b'], b.cols());
     }
     
-    void Stacks::copy_to_host(const std::map<char, size_t>& stack_size)
+    void Stacks::copy_to_host()
     {
         /* std::cout << "size of f before copy_from_device: " << f.size() */ 
         /*           << ", stack size: " << N*stack_size.at('f') << "\n"; */
@@ -118,10 +118,10 @@ namespace FT
     
     Stacks::~Stacks()
     {
-	//printf("Calling free device\n");
+	    //printf("Calling free device\n");
         free_device(dev_f, dev_b);
-	//cudaDeviceReset();
-	//printf("Device freed\n");
+	    //cudaDeviceReset();
+	    //printf("Device freed\n");
     }
 
 #endif    

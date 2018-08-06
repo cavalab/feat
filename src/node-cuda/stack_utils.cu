@@ -22,10 +22,10 @@ namespace FT{
     {
         //std::cout << "dev_f: " << dev_f << "\nhost_f: " << host_f << "\nSizef: " << Sizef << "\nSizeb: " << Sizeb <<"\n";
         
-	HANDLE_ERROR(cudaMemcpy(host_f, dev_f, sizeof(float)*Sizef, cudaMemcpyDeviceToHost));
-	HANDLE_ERROR(cudaMemcpy(host_b, dev_b, sizeof(bool)*Sizeb,  cudaMemcpyDeviceToHost));
+	    HANDLE_ERROR(cudaMemcpy(host_f, dev_f, sizeof(float)*Sizef, cudaMemcpyDeviceToHost));
+	    HANDLE_ERROR(cudaMemcpy(host_b, dev_b, sizeof(bool)*Sizeb,  cudaMemcpyDeviceToHost));
 	
-	//HANDLE_ERROR(cudaDeviceSynchronize());
+	    //HANDLE_ERROR(cudaDeviceSynchronize());
     }
 
     void free_device(float * dev_f, bool * dev_b)
