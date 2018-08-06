@@ -79,7 +79,7 @@ namespace FT{
                    char ot, int verbosity, string fs, float cr, unsigned int max_depth, 
                    unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
                    double fb, string sc, string fn, bool bckprp, int iters, double lr,
-                   int bs, bool hclimb);
+                   int bs, bool hclimb, int maxt);
         
         ~Parameters();
         
