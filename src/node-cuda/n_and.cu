@@ -12,7 +12,7 @@ namespace FT{
     {                    
         for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
         {
-            x[idx-2] = x[idx-2] && x[idx-1];
+            x[idx-2] = x[idx-2] & x[idx-1];
         }
         return;
     }
