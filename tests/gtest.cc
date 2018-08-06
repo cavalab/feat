@@ -793,11 +793,12 @@ TEST(NodeTest, Evaluate)
 {
     initialize_cuda(); 
 
-	MatrixXd X(2,3); 
-    X << 4.0, 5.0, 6.0,
-         1.0, 2.0, 3.0;   
+	MatrixXd X1(2,3); 
+    X1 << 1.0, 2.0, 3.0,
+          4.0, 5.0, 6.0;   
    
     vector<std::unique_ptr<Node> > nodes;
+    
     std::unique_ptr<Node> f1 = std::unique_ptr<Node>(new NodeVariable(0));
     std::unique_ptr<Node> f2 = std::unique_ptr<Node>(new NodeVariable(1));
     
@@ -807,7 +808,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f2->clone());
     nodes.push_back(addObj->clone());
 
-    evaluateCudaNodes(nodes, X, "add");
+    evaluateCudaNodes(nodes, X1, "add");
     
     std::unique_ptr<Node> subObj = std::unique_ptr<Node>(new NodeSubtract());
     
@@ -817,7 +818,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f2->clone());
     nodes.push_back(subObj->clone());
 
-    evaluateCudaNodes(nodes, X, "subtract");
+    evaluateCudaNodes(nodes, X1, "subtract");
     
     std::unique_ptr<Node> mulObj = std::unique_ptr<Node>(new NodeMultiply());
     
@@ -827,7 +828,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f2->clone());
     nodes.push_back(mulObj->clone());
 
-    evaluateCudaNodes(nodes, X, "multiply");
+    evaluateCudaNodes(nodes, X1, "multiply");
     
     std::unique_ptr<Node> divObj = std::unique_ptr<Node>(new NodeDivide());
     
@@ -837,9 +838,128 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f2->clone());
     nodes.push_back(divObj->clone());
 
-    evaluateCudaNodes(nodes, X, "divide");
+    evaluateCudaNodes(nodes, X1, "divide");
     
+    std::unique_ptr<Node> expObj = std::unique_ptr<Node>(new NodeExponent());
     
+    nodes.clear();
+    
+    nodes.push_back(f1->clone());
+    nodes.push_back(f2->clone());
+    nodes.push_back(expObj->clone());
+
+    evaluateCudaNodes(nodes, X1, "exponent");
+    
+    MatrixXd X1(1,4); 
+    X2 << 0.0, 1.0, 2.0, 3.0;
+    
+    std::unique_ptr<Node> cosObj = std::unique_ptr<Node>(new NodeCos());
+    
+    nodes.clear();
+    
+    nodes.push_back(f1->clone());
+    nodes.push_back(cosObj->clone());
+
+    evaluateCudaNodes(nodes, X2, "cos");
+    
+    std::unique_ptr<Node> cubeObj = std::unique_ptr<Node>(new NodeCube());
+    
+    nodes.clear();
+    
+    nodes.push_back(f1->clone());
+    nodes.push_back(cubeObj->clone());
+
+    evaluateCudaNodes(nodes, X2, "cube");
+    
+    std::unique_ptr<Node> exptObj = std::unique_ptr<Node>(new NodeExponential());
+    
+    nodes.clear();
+    
+    nodes.push_back(f1->clone());
+    nodes.push_back(exptObj->clone());
+
+    evaluateCudaNodes(nodes, X2, "exponential");
+    
+    std::unique_ptr<Node> gaussObj = std::unique_ptr<Node>(new NodeGaussian());
+    
+    nodes.clear();
+    
+    nodes.push_back(f1->clone());
+    nodes.push_back(gaussObj->clone());
+
+    evaluateCudaNodes(nodes, X2, "gaussian");
+    
+    std::unique_ptr<Node> logObj = std::unique_ptr<Node>(new NodeLog());
+    
+    nodes.clear();
+    
+    nodes.push_back(f1->clone());
+    nodes.push_back(logObj->clone());
+
+    evaluateCudaNodes(nodes, X2, "log");
+    
+    std::unique_ptr<Node> logitObj = std::unique_ptr<Node>(new NodeLogit());
+    
+    nodes.clear();
+    
+    nodes.push_back(f1->clone());
+    nodes.push_back(logitObj->clone());
+
+    evaluateCudaNodes(nodes, X2, "logit");
+    
+    std::unique_ptr<Node> signObj = std::unique_ptr<Node>(new NodeSign());
+    
+    nodes.clear();
+    
+    nodes.push_back(f1->clone());
+    nodes.push_back(signObj->clone());
+
+    evaluateCudaNodes(nodes, X2, "sign");
+    
+    std::unique_ptr<Node> sinObj = std::unique_ptr<Node>(new NodeSin());
+    
+    nodes.clear();
+    
+    nodes.push_back(f1->clone());
+    nodes.push_back(sinObj->clone());
+
+    evaluateCudaNodes(nodes, X2, "sin");
+    
+    std::unique_ptr<Node> sqrtObj = std::unique_ptr<Node>(new NodeSqrt());
+    
+    nodes.clear();
+    
+    nodes.push_back(f1->clone());
+    nodes.push_back(sqrtObj->clone());
+
+    evaluateCudaNodes(nodes, X2, "sqrt");
+    
+    std::unique_ptr<Node> squareObj = std::unique_ptr<Node>(new NodeSquare());
+    
+    nodes.clear();
+    
+    nodes.push_back(f1->clone());
+    nodes.push_back(squareObj->clone());
+
+    evaluateCudaNodes(nodes, X2, "square");
+    
+    std::unique_ptr<Node> stepObj = std::unique_ptr<Node>(new NodeStep());
+    
+    nodes.clear();
+    
+    nodes.push_back(f1->clone());
+    nodes.push_back(stepObj->clone());
+
+    evaluateCudaNodes(nodes, X2, "step");
+    
+    std::unique_ptr<Node> tanObj = std::unique_ptr<Node>(new NodeTanh());
+    
+    nodes.clear();
+    
+    nodes.push_back(f1->clone());
+    nodes.push_back(tanObj->clone());
+
+    evaluateCudaNodes(nodes, X2, "tan");
     
 }
 #endif
