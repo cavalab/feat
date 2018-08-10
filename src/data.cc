@@ -20,6 +20,35 @@ namespace FT
     
     void Data::set_validation(bool v){validation=v;}
     
+    void Data::get_batch(Data &db, int batch_size)
+    {
+
+        batch_size =  std::min(batch_size,int(y.size()));
+        vector<size_t> idx(y.size());
+        std::iota(idx.begin(), idx.end(), 0);
+        r.shuffle(idx.begin(), idx.end());
+        db.X.resize(X.rows(),batch_size);
+        db.y.resize(batch_size);
+        for (const auto& val: Z )
+        {
+            db.Z[val.first].first.resize(batch_size);
+            db.Z[val.first].second.resize(batch_size);
+        }
+        for (unsigned i = 0; i<batch_size; ++i)
+        {
+           
+           db.X.col(i) = X.col(idx.at(i)); 
+           db.y(i) = y(idx.at(i)); 
+
+           for (const auto& val: Z )
+           {
+                db.Z[val.first].first.at(i) = Z.at(val.first).first.at(idx.at(i));
+                db.Z[val.first].second.at(i) = Z.at(val.first).second.at(idx.at(i));
+           }
+        }
+        //std::cout << "exiting batch\n";
+    }
+    
     DataRef::DataRef()
     {
         oCreated = false;
@@ -29,12 +58,6 @@ namespace FT
  
     DataRef::DataRef(MatrixXd& X, VectorXd& y, 
                      std::map<string,std::pair<vector<ArrayXd>, vector<ArrayXd>>>& Z, bool c)
-    /* DataRef::DataRef(MatrixXd& X, VectorXd& y, */ 
-    /*                  std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>>& Z, */
-    /*                  MatrixXd& X_t, VectorXd& y_t, */ 
-    /*                  std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>>& Z_t, */
-    /*                  MatrixXd& X_v, VectorXd& y_v, */ 
-    /*                  std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>>& Z_v) */
     {
         o = new Data(X, y, Z, c);
         oCreated = true;
@@ -46,7 +69,7 @@ namespace FT
         vCreated = true;
       
         // split data into training and test sets
-        /* train_test_split(params.shuffle, params.split); */
+        //train_test_split(params.shuffle, params.split);
     }
    
     DataRef::~DataRef()
@@ -160,26 +183,6 @@ namespace FT
             split_longitudinal(o->Z, t->Z, v->Z, split);
 
     }  
-    
-    /* void DataRef::reorder_longitudinal(vector<ArrayXd> &vec1, */
-    /*                          vector<ArrayXd> &vec2, */
-    /*                          vector<int> const &order) */ 
-    /* { */   
-    
-    /*     for( int s = 1, d; s < order.size(); ++ s ) */
-    /*     { */
-    /*         for ( d = order[s]; d < s; d = order[d] ); */
-            
-    /*         if ( d == s ) */
-    /*         { */
-    /*             while ( d = order[d], d != s ) */
-    /*             { */
-    /*                 swap(vec1[s], vec1[d]); */
-    /*                 swap(vec2[s], vec2[d]); */
-    /*             } */
-    /*         } */
-    /*     } */
-    /* } */
     
     void DataRef::split_longitudinal(
                             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
