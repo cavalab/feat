@@ -88,8 +88,6 @@ namespace FT {
                                 Data d,
                                vector<float> sw);
 
-        /// select random subset of data for training weights.
-        void get_batch(Data d, Data db, int batch_size);
        
 		template <class T>
 		T pop(vector<T>* v) {
