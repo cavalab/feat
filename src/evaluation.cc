@@ -50,17 +50,17 @@ namespace FT{
         #pragma omp parallel for
         for (unsigned i = start; i<individuals.size(); ++i)
         {
-            
             if (params.backprop)
             {
                 AutoBackProp backprop(params.scorer, params.bp.iters, params.bp.learning_rate);
                 params.msg("Running backprop on " + individuals.at(i).get_eqn(), 3);
                 backprop.run(individuals.at(i), d, params);
-            }            
+            }         
+            
             // calculate program output matrix Phi
             params.msg("Generating output for " + individuals.at(i).get_eqn(), 3);
             MatrixXd Phi = individuals.at(i).out(d, params);            
-
+            
             // calculate ML model from Phi
             params.msg("ML training on " + individuals.at(i).get_eqn(), 3);
             bool pass = true;
@@ -97,6 +97,8 @@ namespace FT{
 
                 }
             }
+            
+            //cout<<"Here 3 with i = "<<i<<" and thread as "<< omp_get_thread_num() <<"\n";   
         }
     }
     
@@ -128,8 +130,12 @@ namespace FT{
         else
             ind.fitness = f;
         
+        //cout<<"Assign 1 i = "<<ind.loc<<" F.cols() = "<<F.cols()<<" loss = "<<loss.size()<<" F.col(ind.loc) " <<F.col(ind.loc).size()<<" and thread as "<< omp_get_thread_num() <<"\n";
+            
         F.col(ind.loc) = loss;  
-         
+        
+        //cout<<"Assign 2 with i = "<<ind.loc<<" and thread as "<< omp_get_thread_num() <<"\n";
+        
         params.msg("ind " + std::to_string(ind.loc) + " fitness: " + std::to_string(ind.fitness),3);
     }
 

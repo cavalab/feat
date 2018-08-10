@@ -99,12 +99,24 @@ namespace FT
     {
         o = new Data(X, y, Z, c);
         oCreated = true;
+        
+        t = new Data(X_t, y_t, Z_t, c);
+        tCreated = true;
+        
+        v = new Data(X_v, y_v, Z_v, c);
+        vCreated = true;
     }
     
     void DataRef::setOriginalData(Data *d)
     {
         o = d;
         oCreated = false;
+        
+        t = new Data(X_t, y_t, Z_t, d->classification);
+        tCreated = true;
+        
+        v = new Data(X_v, y_v, Z_v, d->classification);
+        vCreated = true;
     }
     
     void DataRef::setTrainingData(MatrixXd& X_t, VectorXd& y_t, 
