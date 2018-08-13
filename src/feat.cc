@@ -16,6 +16,7 @@ void __attribute__ ((destructor))  dtor()
 {
     //cout<< "EXITING SHOGUN\n";
     exit_shogun();
+    FT::Rnd::destroy();
 }
 
 using namespace FT;
