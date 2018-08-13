@@ -30,10 +30,11 @@ namespace FT {
     {
         public:
             
-            Rnd();
+            static Rnd* initRand();
+            
+            static void destroy();
 
             void set_seed(int seed);
-
             
             int rnd_int( int lowerLimit, int upperLimit );
 
@@ -102,15 +103,19 @@ namespace FT {
             }
             
             float gasdev();
-            
-            ~Rnd();
 
         private:
+
+            Rnd();
+        
+            ~Rnd();
+            
             vector<std::mt19937> rg;
+            
+            static Rnd* instance;
      
     };
-
-    /////////////////////////////////////////////////////////////////////////////////// Definitions
-    static Rnd r;   // random number generator     
+    
+    static Rnd &r = *Rnd::initRand();
 }
 #endif
