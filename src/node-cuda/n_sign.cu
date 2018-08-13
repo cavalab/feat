@@ -14,7 +14,7 @@ namespace FT{
         {
             if (x[(idx-1)*N+i] > 0 )
                 x[(idx-1)*N+i] = 1.0 ; 
-            else if (x[(idx-i)*N+i] == 0)
+            else if (x[(idx-1)*N+i] == 0)
                 x[(idx-1)*N+i] = 0.0; 
             else
                 x[(idx-1)*N+i] = -1.0 ;
