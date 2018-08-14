@@ -127,10 +127,13 @@ namespace FT
         tCreated = true;
     }
     
-    void DataRef::setTrainingData(Data *d)
+    void DataRef::setTrainingData(Data *d, bool toDelete)
     {
         t = d;
-        tCreated = false;
+        if(!toDelete)
+            tCreated = false;
+        else
+            tCreated = true;
     }
     
     void DataRef::setValidationData(MatrixXd& X_v, VectorXd& y_v, 

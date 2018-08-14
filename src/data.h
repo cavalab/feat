@@ -90,7 +90,7 @@ namespace FT
                                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>>& Z_t,
                                bool c = false);
             
-            void setTrainingData(Data *d);
+            void setTrainingData(Data *d, bool toDelete = false);
             
             void setValidationData(MatrixXd& X_v, VectorXd& y_v, 
                                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>>& Z_v,

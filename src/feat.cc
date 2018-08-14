@@ -16,6 +16,7 @@ void __attribute__ ((destructor))  dtor()
 {
     //cout<< "EXITING SHOGUN\n";
     exit_shogun();
+    FT::Rnd::destroy();
 }
 
 using namespace FT;
@@ -415,15 +416,31 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     //d.setOriginalData(&data);
     
     d.train_test_split(params.shuffle, params.split);
-        
-    if (params.classification) 
-        params.set_sample_weights(d.t->y); 
    
     // define terminals based on size of X
     params.set_terminals(d.o->X.rows(), d.o->Z);        
 
     // initial model on raw input
     params.msg("Fitting initial model", 2);
+    
+    //data for batch training
+    MatrixXd Xb;
+    VectorXd yb;
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Zb;
+    Data db(Xb, yb, Zb, params.classification);
+    
+    Data *tmp_train;
+    
+    if(params.use_batch)
+    {
+        tmp_train = d.t;
+        d.t->get_batch(db, params.bp.batch_size);
+        d.setTrainingData(&db);
+    }
+    
+    if (params.classification) 
+        params.set_sample_weights(d.t->y); 
+    
     initial_model(d);  
     
     // initialize population 
@@ -448,10 +465,13 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     vector<size_t> survivors;
     
     //data for batch training
-    MatrixXd Xb;
+    /*MatrixXd Xb;
     VectorXd yb;
     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Zb;
-    Data db(Xb, yb, Zb, params.classification);
+    Data db(Xb, yb, Zb, params.classification);*/
+    
+    if(params.use_batch)
+        d.setTrainingData(tmp_train, true);
 
     // =====================
     // main generational loop
