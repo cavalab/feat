@@ -8,7 +8,6 @@ license: GNU/GPL v3
 //shogun initialization
 void __attribute__ ((constructor)) ctor()
 {
-    //cout<< "INITIALIZING SHOGUN\n";
     init_shogun_with_defaults();
 }
 
@@ -16,6 +15,7 @@ void __attribute__ ((destructor))  dtor()
 {
     //cout<< "EXITING SHOGUN\n";
     exit_shogun();
+    FT::Rnd::destroy();
 }
 
 using namespace FT;
