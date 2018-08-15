@@ -33,7 +33,8 @@ Feat::Feat(int pop_size, int gens, string ml,
           // construct subclasses
           params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
                  functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, 
-                 fb, scorer, feature_names, backprop, iters, lr, bs, hillclimb, max_time, use_batch), 
+                 fb, scorer, feature_names, backprop, iters, lr, bs, hillclimb, max_time, 
+                 use_batch), 
           p_sel( make_shared<Selection>(sel) ),
           p_surv( make_shared<Selection>(surv, true) ),
           p_variation( make_shared<Variation>(cross_rate) )                      
@@ -489,6 +490,10 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
             d.t->get_batch(db, params.bp.batch_size);
             DataRef dbr;
             dbr.setTrainingData(&db);
+            
+            if (params.classification)
+                params.set_sample_weights(dbr.t->y); 
+
             run_generation(g, survivors, dbr, log, fraction);
         }
         else
@@ -545,7 +550,7 @@ void Feat::run_generation(unsigned int g,
     //cout<<"Generation till here 0 \n";
     // evaluate offspring
     params.msg("evaluating offspring...", 3);
-    p_eval->fitness(p_pop->individuals, *d.t, F, params, true);
+    p_eval->fitness(p_pop->individuals, *d.t, F, params, true && !params.use_batch);
     //cout<<"Generation till here 1\n";
     // select survivors from combined pool of parents and offspring
     params.msg("survival...", 3);
