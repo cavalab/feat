@@ -324,8 +324,9 @@ TEST(NodeTest, Evaluate)
 	Stacks stack;
 	
 	MatrixXd X(3,2); 
-    X << -2.0, 0.0, 10.0,
-    	 1.0, 0.0, 0.0;
+    X << -2.0, 0.0,
+         10.0, 1.0,
+         0.0, 0.0;
     	 
     ArrayXb Z1(3); 
     ArrayXb Z2(3); 
@@ -724,7 +725,7 @@ TEST(NodeTest, Evaluate)
 	
 	//TODO NodeVariable, NodeConstant(both types)
 }
-#else
+/*#else
 
 std::map<char, size_t> get_max_stack_size(vector<std::unique_ptr<Node> > &nodes)
 {
@@ -997,8 +998,6 @@ TEST(NodeTest, Evaluate)
 
     evaluateCudaNodes(nodes, X3, "xor");
     
-    /****************************/
-    
     MatrixXd X4(2,3); 
     X4 << 1.0, 2.0, 3.0,
           1.0, 1.0, 4.0;
@@ -1098,8 +1097,52 @@ TEST(NodeTest, Evaluate)
     evaluateCudaNodes(nodes, X7, "Not");
     
     
-}
+}*/
 #endif
+
+#ifndef USE_CUDA
+bool isValidProgram(NodeVector& program, unsigned num_features)
+{
+    //checks whether program fulfills all its arities.
+    MatrixXd X = MatrixXd::Zero(num_features,2); 
+    VectorXd y = VectorXd::Zero(2);
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z; 
+    
+    Data data(X, y, z);
+    
+    Stacks stack;
+   
+    for (const auto& n : program){
+        if(stack.check(n->arity))
+            n->evaluate(data, stack);
+        else
+            return false; 
+    }
+    return true;
+}
+#else
+std::map<char, size_t> get_prog_stack_size(NodeVector& program)
+{
+    // max stack size is calculated using node arities
+    std::map<char, size_t> stack_size;
+    std::map<char, size_t> max_stack_size;
+    stack_size['f'] = 0;
+    stack_size['b'] = 0; 
+    max_stack_size['f'] = 0;
+    max_stack_size['b'] = 0;
+
+    for (const auto& n : program)   
+    {   	
+        ++stack_size[n->otype];
+
+        if ( max_stack_size[n->otype] < stack_size[n->otype])
+            max_stack_size[n->otype] = stack_size[n->otype];
+
+        for (const auto& a : n->arity)
+            stack_size[a.first] -= a.second;       
+    }	
+    return max_stack_size;
+}
 
 bool isValidProgram(NodeVector& program, unsigned num_features)
 {
@@ -1108,17 +1151,29 @@ bool isValidProgram(NodeVector& program, unsigned num_features)
     VectorXd y = VectorXd::Zero(2);
     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z; 
     
-    Stacks stack;
     Data data(X, y, z);
-   
-    for (const auto& n : program){
-        if ( stack.f.size() >= n->arity['f'] && stack.b.size() >= n->arity['b'])
+    
+    Stacks stack;
+    
+    std::map<char, size_t> stack_size = get_prog_stack_size(program);
+    choose_gpu();        
+        
+    stack.allocate(stack_size,data.X.cols());        
+
+    for (const auto& n : program)
+    {
+    	if(stack.check(n->arity))
+    	{
             n->evaluate(data, stack);
+            stack.update_idx(n->otype, n->arity); 
+        }
         else
-            return false; 
+            return false;   
     }
+    
     return true;
 }
+#endif
 
 TEST(Variation, MutationTests)
 {
