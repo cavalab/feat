@@ -725,7 +725,7 @@ TEST(NodeTest, Evaluate)
 	
 	//TODO NodeVariable, NodeConstant(both types)
 }
-/*#else
+#else
 
 std::map<char, size_t> get_max_stack_size(vector<std::unique_ptr<Node> > &nodes)
 {
@@ -1097,7 +1097,7 @@ TEST(NodeTest, Evaluate)
     evaluateCudaNodes(nodes, X7, "Not");
     
     
-}*/
+}
 #endif
 
 #ifndef USE_CUDA
