@@ -166,9 +166,6 @@ namespace FT{
                 for( int i = 0; i < w.size() ; i++) 
                     w[i] = w[i]/weights.size(); 
                 
-                /* cout << "get_weights(): w: " << w.size() << ":"; */
-                /* for (auto tmp : w) cout << tmp << " " ; */
-                /* cout << "\n"; */                 
                 /* cout << "returning weights\n"; */
                 /* cout << "freeing SGVector weights\n"; */
                 /* weights.clear(); */
@@ -188,7 +185,11 @@ namespace FT{
             w = dynamic_pointer_cast<sh::CMyCARTree>(p_est)->feature_importances();
         else
             HANDLE_ERROR_NO_THROW("ERROR: ML::get_weights not implemented for " + ml_type + "\n");
-            
+        
+        /* cout << "get_weights(): w: " << w.size() << ":"; */
+        /* for (auto tmp : w) cout << tmp << " " ; */
+        /* cout << "\n"; */                 
+
         return w;
     }
 

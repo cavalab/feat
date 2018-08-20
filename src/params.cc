@@ -108,22 +108,41 @@ namespace FT{
     void Parameters::set_term_weights(const vector<double>& w)
     {           
         //assert(w.size()==terminals.size()); 
+        cout << "in set_term_weights\n";
+        /* cout << "weights: "; for (auto tmp : w) cout << tmp << " " ; cout << "\n"; */ 
         string weights;
         double u = 1.0/double(w.size());
         term_weights.clear();
-        vector<double> sw = softmax(w);
+
+        // take abs value of weights
+        vector<double> aw = w;
+        double sum = 0;
+        for (unsigned i = 0; i < aw.size(); ++i)
+        { 
+            aw[i] = fabs(aw[i]); 
+            sum += aw[i];
+        }
+        // softmax transform values
+        /* vector<double> sw = softmax(aw); */
+        /* cout << "sw: "; for (auto tmp : sw) cout << tmp << " " ; cout << "\n"; */ 
+        // normalize weights to one
+        for (unsigned i = 0; i < aw.size(); ++i)
+        { 
+            aw[i] = aw[i]/sum;
+        }
         int x = 0;
+        // assign transformed weights as terminal weights
         for (unsigned i = 0; i < terminals.size(); ++i)
         {
             if(terminals[i]->otype == 'z')
                 term_weights.push_back(u);
             else
             {
-                term_weights.push_back(u + feedback*(sw[x]-u));
+                term_weights.push_back(u + feedback*(aw[x]-u));
                 x++;
             }
         }
-            
+           
         weights = "term weights: ";
         for (auto tw : term_weights)
             weights += std::to_string(tw)+" ";
