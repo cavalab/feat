@@ -104,6 +104,7 @@ int main(int argc, char** argv){
         cout << "-lr\tbackpropagation learning rate or hill climbing step size(zero)\n"; 
         cout << "-batch\tminibatch size for stochastic gradient descent\n"; 
         cout << "--max_time\tMaximum time in seconds to fit the model instead of number of generations\n";
+        cout << "--use_batch\tSet flag for stochastic mini batch training\n";
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
     }
@@ -179,7 +180,9 @@ int main(int argc, char** argv){
             HANDLE_ERROR_NO_THROW("WARNING: max_time cannot be less than equal to 0");
         else
             feat.set_max_time(time);
-     }
+    }
+    if(input.cmdOptionExists("--use_batch"))
+        feat.set_use_batch();
     //cout << "done.\n";
     ///////////////////////////////////////
 
@@ -235,7 +238,7 @@ int main(int argc, char** argv){
         
         feat.fit(d.t->X, d.t->y, d.t->Z);
 
-        cout << "generating training prediction...\n";
+        cout << "\ngenerating training prediction...\n";
 
         double score_t = feat.score(X_tcopy, y_tcopy, Z_tcopy);
 
