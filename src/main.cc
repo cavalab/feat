@@ -103,7 +103,7 @@ int main(int argc, char** argv){
         cout << "-hc\tstochastic hill climbing iterations (zero)\n"; 
         cout << "-lr\tbackpropagation learning rate or hill climbing step size(zero)\n"; 
         cout << "-batch\tminibatch size for stochastic gradient descent\n"; 
-        cout << "--max_time\tMaximum time in seconds to fit the model instead of number of generations\n";
+        cout << "-max_time\tMaximum time in seconds to fit the model instead of number of generations\n";
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
     }
@@ -172,9 +172,9 @@ int main(int argc, char** argv){
         feat.set_batch_size(std::stoi(input.getCmdOption("-batch")));
     if(input.cmdOptionExists("-n_threads"))
         feat.set_n_threads(std::stoi(input.getCmdOption("-n_threads")));
-    if(input.cmdOptionExists("--max_time"))
+    if(input.cmdOptionExists("-max_time"))
     {
-        int time = std::stoi(input.getCmdOption("--max_time"));
+        int time = std::stoi(input.getCmdOption("-max_time"));
         if(time <= 0)
             HANDLE_ERROR_NO_THROW("WARNING: max_time cannot be less than equal to 0");
         else
@@ -245,6 +245,19 @@ int main(int argc, char** argv){
         cout << "generating test prediction...\n";
         double score = feat.score(d.v->X,d.v->y,d.v->Z);
         cout << "test score: " << score << "\n";
+        VectorXd ytest = feat.predict(d.v->X);
+
+        double r2 = (1 - (d.v->y-ytest).array().pow(2).sum()/
+                        (d.v->y.array() - d.v->y.mean()).pow(2).sum());
+        cout << "test variance accounted for: " << r2 << "\n";
+        cout << "yhat: \n";
+        for (int i = 0; i < ytest.size(); ++i)
+             cout  << ytest(i) << ",";
+        cout << "\n";
+        cout << "ytest: \n";
+        for (int i = 0; i < ytest.size(); ++i)
+             cout  << d.v->y(i) << ",";
+        cout << "\n";
     }
     else
     {
