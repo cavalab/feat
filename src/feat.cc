@@ -8,7 +8,6 @@ license: GNU/GPL v3
 //shogun initialization
 void __attribute__ ((constructor)) ctor()
 {
-    //cout<< "INITIALIZING SHOGUN\n";
     init_shogun_with_defaults();
 }
 
@@ -16,6 +15,7 @@ void __attribute__ ((destructor))  dtor()
 {
     //cout<< "EXITING SHOGUN\n";
     exit_shogun();
+    FT::Rnd::destroy();
 }
 
 using namespace FT;
@@ -28,11 +28,12 @@ Feat::Feat(int pop_size, int gens, string ml,
        bool erc, string obj,bool shuffle, 
        double split, double fb, string scorer, string feature_names,
        bool backprop,int iters, double lr, int bs, int n_threads,
-       bool hillclimb, string logfile):
+       bool hillclimb, string logfile, int max_time, bool use_batch):
           // construct subclasses
           params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
                  functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, 
-                 fb, scorer, feature_names, backprop, iters, lr, bs, hillclimb), 
+                 fb, scorer, feature_names, backprop, iters, lr, bs, hillclimb, max_time, 
+                 use_batch), 
           p_sel( make_shared<Selection>(sel) ),
           p_surv( make_shared<Selection>(surv, true) ),
           p_variation( make_shared<Variation>(cross_rate) )                      
@@ -141,6 +142,8 @@ void Feat::set_n_threads(unsigned t){ omp_set_num_threads(t); }
 
 void Feat::set_max_time(int time){ params.max_time = time; }
 
+void Feat::set_use_batch(){ params.use_batch = true; }
+
 /*                                                      
  * getting functions
  */
@@ -247,9 +250,9 @@ string Feat::get_eqns(bool front)
             
             for (auto& a : arch.archive)
             {          
-                r += std::to_string(a.complexity()) + "," 
-                    + std::to_string(a.fitness) + "," 
-                    + std::to_string(a.fitness_v) + ","
+                r += std::to_string(a.complexity()) + "\t" 
+                    + std::to_string(a.fitness) + "\t" 
+                    + std::to_string(a.fitness_v) + "\t"
                     + a.get_eqn() + "\n";  
             }
         }
@@ -261,9 +264,9 @@ string Feat::get_eqns(bool front)
             
             for (unsigned j = 0; j < f.size(); ++j)
             {          
-                r += std::to_string(p_pop->individuals[f[j]].complexity()) + "," 
-                    + std::to_string((*p_pop)[f[j]].fitness) + "," 
-                    + std::to_string((*p_pop)[f[j]].fitness_v) + "," 
+                r += std::to_string(p_pop->individuals[f[j]].complexity()) + "\t" 
+                    + std::to_string((*p_pop)[f[j]].fitness) + "\t" 
+                    + std::to_string((*p_pop)[f[j]].fitness_v) + "\t" 
                     + p_pop->individuals[f[j]].get_eqn() + "\n";  
             }
         }
@@ -272,9 +275,9 @@ string Feat::get_eqns(bool front)
     {
         for (unsigned j = 0; j < params.pop_size; ++j)
         {          
-            r += std::to_string(p_pop->individuals[j].complexity()) + "," 
-                + std::to_string((*p_pop)[j].fitness) + "," 
-                + std::to_string((*p_pop)[j].fitness_v) + "," 
+            r += std::to_string(p_pop->individuals[j].complexity()) + "\t" 
+                + std::to_string((*p_pop)[j].fitness) + "\t" 
+                + std::to_string((*p_pop)[j].fitness_v) + "\t" 
                 + p_pop->individuals[j].get_eqn() + "\n";  
         }
     }
@@ -407,17 +410,37 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
         use_arch = true;
     
     // split data into training and test sets
+    //Data data(X, y, Z, params.classification);
     DataRef d(X, y, Z, params.classification);
+    //DataRef d;
+    //d.setOriginalData(&data);
+    
     d.train_test_split(params.shuffle, params.split);
-
-    if (params.classification) 
-        params.set_sample_weights(d.t->y); 
    
     // define terminals based on size of X
     params.set_terminals(d.o->X.rows(), d.o->Z);        
 
     // initial model on raw input
     params.msg("Fitting initial model", 2);
+    
+    //data for batch training
+    MatrixXd Xb;
+    VectorXd yb;
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Zb;
+    Data db(Xb, yb, Zb, params.classification);
+    
+    Data *tmp_train;
+    
+    if(params.use_batch)
+    {
+        tmp_train = d.t;
+        d.t->get_batch(db, params.bp.batch_size);
+        d.setTrainingData(&db);
+    }
+    
+    if (params.classification) 
+        params.set_sample_weights(d.t->y); 
+    
     initial_model(d);  
     
     // initialize population 
@@ -440,26 +463,44 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     params.msg("Initial population done",2);
     
     vector<size_t> survivors;
+    
+    //data for batch training
+    /*MatrixXd Xb;
+    VectorXd yb;
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Zb;
+    Data db(Xb, yb, Zb, params.classification);*/
+    
+    if(params.use_batch)
+        d.setTrainingData(tmp_train, true);
 
+    // =====================
     // main generational loop
-    
-    if(params.max_time == -1)
+    unsigned int g = 0;
+    double fraction = 0;
+    // continue until max gens is reached or max_time is up (if it is set)
+    while((params.max_time == -1 || params.max_time > timer.Elapsed().count())
+           && g<params.gens)
     {
-        for (unsigned int g = 0; g<params.gens; ++g)
-            run_generation(g, survivors, d, log, ((g+1)*1.0)/params.gens);
-    }
-    else
-    {
-        unsigned int g = 0;
-        
-        while(params.max_time > timer.Elapsed().count())
+        fraction = params.max_time == -1 ? ((g+1)*1.0)/params.gens : 
+                                           timer.Elapsed().count()/params.max_time;
+                                           
+        if(params.use_batch)
         {
-            run_generation(g, survivors, d, log, timer.Elapsed().count()/params.max_time);
-            g++;
+            d.t->get_batch(db, params.bp.batch_size);
+            DataRef dbr;
+            dbr.setTrainingData(&db);
+            
+            if (params.classification)
+                params.set_sample_weights(dbr.t->y); 
+
+            run_generation(g, survivors, dbr, log, fraction);
         }
+        else
+            run_generation(g, survivors, d, log, fraction);
+        
+        g++;
     }
-    
-    cout <<"\n";
+    // =====================
     
     params.msg("finished",2);
     params.msg("best training representation: " + best_ind.get_eqn(),2);
@@ -505,9 +546,11 @@ void Feat::run_generation(unsigned int g,
     p_variation->vary(*p_pop, parents, params);
     params.msg("offspring:\n" + p_pop->print_eqns(true), 3);
 
+    //cout<<"Generation till here 0 \n";
     // evaluate offspring
     params.msg("evaluating offspring...", 3);
-    p_eval->fitness(p_pop->individuals, *d.t, F, params, true);
+    p_eval->fitness(p_pop->individuals, *d.t, F, params, true && !params.use_batch);
+    //cout<<"Generation till here 1\n";
     // select survivors from combined pool of parents and offspring
     params.msg("survival...", 3);
     survivors = p_surv->survive(*p_pop, F, params);
@@ -517,6 +560,7 @@ void Feat::run_generation(unsigned int g,
     p_pop->update(survivors);
     params.msg("survivors:\n" + p_pop->print_eqns(), 3);
 
+    //cout<<"Generation till here\n";
     update_best();
 
     if (use_arch) 
@@ -773,11 +817,6 @@ double Feat::score(MatrixXd& X, const VectorXd& y,
     shared_ptr<CLabels> labels = predict_labels(X, Z);
     VectorXd loss; 
     return p_eval->score(y,labels,loss,params.class_weights);
-
-    /* if (params.classification) */
-    /*     return p_eval->bal_accuracy(y,yhat,vector<int>(),false); */
-    /* else */
-    /*     return p_eval->se(y,yhat).mean(); */
 }
 
 void Feat::print_stats(std::ofstream& log, double fraction)
@@ -893,7 +932,6 @@ void Feat::print_stats(std::ofstream& log, double fraction)
             << med_size            << sep
             << med_complexity      << sep
             << med_num_params      << sep
-            << med_dim             << sep
-            << "\n"; 
+            << med_dim             << "\n"; 
     } 
 }

@@ -49,35 +49,6 @@ namespace FT {
         /* cout << "\n"; */
     }
 
-    void AutoBackProp::get_batch(Data d, Data db, int batch_size)
-    {
-
-        batch_size =  std::min(batch_size,int(d.y.size()));
-        vector<size_t> idx(d.y.size());
-        std::iota(idx.begin(), idx.end(), 0);
-        r.shuffle(idx.begin(), idx.end());
-        db.X.resize(d.X.rows(),batch_size);
-        db.y.resize(batch_size);
-        for (const auto& val: d.Z )
-        {
-            db.Z[val.first].first.resize(batch_size);
-            db.Z[val.first].second.resize(batch_size);
-        }
-        for (unsigned i = 0; i<batch_size; ++i)
-        {
-           
-           db.X.col(i) = d.X.col(idx.at(i)); 
-           db.y(i) = d.y(idx.at(i)); 
-
-           for (const auto& val: d.Z )
-           {
-                db.Z[val.first].first.at(i) = d.Z.at(val.first).first.at(idx.at(i));
-                db.Z[val.first].second.at(i) = d.Z.at(val.first).second.at(idx.at(i));
-           }
-        }
-        /* std::cout << "exiting batch\n"; */
-    }
-
     void AutoBackProp::run(Individual& ind, Data d,
                             const Parameters& params)
     {
@@ -93,7 +64,7 @@ namespace FT {
         Data db(Xb, yb, Zb, params.classification);
         Data db_val(Xb_v, yb_v, Zb_v, params.classification);
         db_val.set_validation();    // make this a validation set
-        get_batch(d, db_val, params.bp.batch_size);     // draw a batch for the validation data
+        d.get_batch(db_val, params.bp.batch_size);     // draw a batch for the validation data
         
         int patience = 3;   // number of iterations to allow validation fitness to not improve
         int missteps = 0;
@@ -107,7 +78,7 @@ namespace FT {
         {
             /* cout << "get batch\n"; */
             // get batch data for training
-            get_batch(d, db, params.bp.batch_size); 
+            d.get_batch(db, params.bp.batch_size); 
             /* cout << "db.y: " << db.y.transpose() << "\n"; */ 
             // Evaluate forward pass
             MatrixXd Phi; 

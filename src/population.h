@@ -13,7 +13,6 @@ using Eigen::Map;
 
 namespace FT{    
     ////////////////////////////////////////////////////////////////////////////////// Declarations
-    extern Rnd r;
     extern int last;
     /*!
      * @class Population
