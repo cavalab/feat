@@ -38,7 +38,7 @@ namespace FT{
         unsigned int max_depth;         			///< max depth of programs
         unsigned int max_size;          			///< max size of programs (length)
         unsigned int max_dim;           			///< maximum dimensionality of programs
-        bool erc;								    ///<whether to include constants for terminals 
+        bool erc;								    ///< whether to include constants for terminals 
         unsigned num_features;                      ///< number of features
         vector<string> objectives;                  ///< Pareto objectives 
         bool shuffle;                               ///< option to shuffle the data
@@ -55,6 +55,7 @@ namespace FT{
         bool backprop;                              ///< turns on backpropagation
         bool hillclimb;                             ///< turns on parameter hill climbing
         int max_time;                               ///< max time for fit method
+        bool use_batch;                             ///< whether to use mini batch for training
 
         struct BP 
         {
@@ -79,7 +80,7 @@ namespace FT{
                    char ot, int verbosity, string fs, float cr, unsigned int max_depth, 
                    unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
                    double fb, string sc, string fn, bool bckprp, int iters, double lr,
-                   int bs, bool hclimb);
+                   int bs, bool hclimb, int maxt, bool useb);
         
         ~Parameters();
         

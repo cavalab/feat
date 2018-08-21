@@ -104,6 +104,7 @@ int main(int argc, char** argv){
         cout << "-lr\tbackpropagation learning rate or hill climbing step size(zero)\n"; 
         cout << "-batch\tminibatch size for stochastic gradient descent\n"; 
         cout << "-max_time\tMaximum time in seconds to fit the model instead of number of generations\n";
+        cout << "--use_batch\tSet flag for stochastic mini batch training\n";
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
     }
@@ -179,7 +180,9 @@ int main(int argc, char** argv){
             HANDLE_ERROR_NO_THROW("WARNING: max_time cannot be less than equal to 0");
         else
             feat.set_max_time(time);
-     }
+    }
+    if(input.cmdOptionExists("--use_batch"))
+        feat.set_use_batch();
     //cout << "done.\n";
     ///////////////////////////////////////
 
@@ -215,14 +218,7 @@ int main(int argc, char** argv){
    
     if (split < 1.0)
     {
-        /* // split data into training and test sets */
-        /* MatrixXd X_t(X.rows(),int(X.cols()*split)); */
-        /* MatrixXd X_v(X.rows(),int(X.cols()*(1-split))); */
-        /* VectorXd y_t(int(y.size()*split)), y_v(int(y.size()*(1-split))); */
- 
-        /* std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_t; */
-        /* std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_v; */
-        
+        /* split data into training and test sets */
         FT::DataRef d(X, y, Z, feat.get_classification());
         
         d.train_test_split(feat.get_shuffle(), split);
@@ -235,29 +231,34 @@ int main(int argc, char** argv){
         
         feat.fit(d.t->X, d.t->y, d.t->Z);
 
-        cout << "generating training prediction...\n";
+        cout << "\ngenerating training prediction...\n";
 
         double score_t = feat.score(X_tcopy, y_tcopy, Z_tcopy);
+        VectorXd yhat = feat.predict(X_tcopy,Z_tcopy);
+
+        double r2t = (1 - (d.t->y-yhat).array().pow(2).sum()/
+                        (d.t->y.array() - d.t->y.mean()).pow(2).sum());
 
         cout.precision(5);
         cout << "train score: " << score_t << "\n";
+        cout << "train r2: " << r2t << "\n";
         
         cout << "generating test prediction...\n";
         double score = feat.score(d.v->X,d.v->y,d.v->Z);
         cout << "test score: " << score << "\n";
-        VectorXd ytest = feat.predict(d.v->X);
+        VectorXd ytest = feat.predict(d.v->X,d.v->Z);
 
         double r2 = (1 - (d.v->y-ytest).array().pow(2).sum()/
                         (d.v->y.array() - d.v->y.mean()).pow(2).sum());
         cout << "test variance accounted for: " << r2 << "\n";
-        cout << "yhat: \n";
-        for (int i = 0; i < ytest.size(); ++i)
-             cout  << ytest(i) << ",";
-        cout << "\n";
-        cout << "ytest: \n";
-        for (int i = 0; i < ytest.size(); ++i)
-             cout  << d.v->y(i) << ",";
-        cout << "\n";
+        /* cout << "yhat: \n"; */
+        /* for (int i = 0; i < ytest.size(); ++i) */
+        /*      cout  << ytest(i) << ","; */
+        /* cout << "\n"; */
+        /* cout << "ytest: \n"; */
+        /* for (int i = 0; i < ytest.size(); ++i) */
+        /*      cout  << d.v->y(i) << ","; */
+        /* cout << "\n"; */
     }
     else
     {
