@@ -12,7 +12,7 @@ namespace FT{
                char ot, int verbosity, string fs, float cr, unsigned int max_depth, 
                unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
                double fb, string sc, string fn, bool bckprp, int iters, double lr,
-               int bs, bool hclimb, int maxt):    
+               int bs, bool hclimb, int maxt, bool useb):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
@@ -30,7 +30,8 @@ namespace FT{
             bp(iters, lr, bs),
             hillclimb(hclimb),
             hc(iters, lr),
-            max_time(maxt)
+            max_time(maxt),
+            use_batch(useb)
         {
             set_verbosity(verbosity);
             if (fs.empty())

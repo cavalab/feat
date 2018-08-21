@@ -48,6 +48,9 @@ namespace FT
                     vector<ArrayXd>>>& Z, bool c = false);
 
             void set_validation(bool v=true);
+            
+            /// select random subset of data for training weights.
+            void get_batch(Data &db, int batch_size);
     };
     
     class DataRef
@@ -77,12 +80,6 @@ namespace FT
             DataRef(MatrixXd& X, VectorXd& y, 
                              std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z, 
                              bool c=false);
-            /* DataRef(MatrixXd& X, VectorXd& y, std::map<string, */ 
-            /*         std::pair<vector<ArrayXd>, vector<ArrayXd>>>& Z, */
-            /*         MatrixXd& X_t, VectorXd& y_t, std::map<string, */ 
-            /*         std::pair<vector<ArrayXd>, vector<ArrayXd>>>& Z_t, */
-            /*         MatrixXd& X_v, VectorXd& y_v, std::map<string, std::pair<vector<ArrayXd>, */ 
-            /*         vector<ArrayXd>>>& Z_v); */
                     
             void setOriginalData(MatrixXd& X, VectorXd& y, 
                     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>>& Z, bool c=false);
@@ -93,7 +90,7 @@ namespace FT
                                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>>& Z_t,
                                bool c = false);
             
-            void setTrainingData(Data *d);
+            void setTrainingData(Data *d, bool toDelete = false);
             
             void setValidationData(MatrixXd& X_v, VectorXd& y_v, 
                                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>>& Z_v,
@@ -103,11 +100,6 @@ namespace FT
            
             /// splits data into training and validation folds.
             void train_test_split(bool shuffle, double split);
-
-            /// reorders longitudinal data according to shuffle
-            /* void reorder_longitudinal(vector<ArrayXd> &vec1, */
-            /*                  vector<ArrayXd> &vec2, */
-            /*                  vector<int> const &order); */ 
 
             void split_longitudinal(
                         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
