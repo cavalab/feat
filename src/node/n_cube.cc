@@ -33,7 +33,7 @@ namespace FT{
 #else
     void NodeCube::evaluate(Data& data, Stacks& stack)
     {
-        GPU_Cube(stack.dev_f, stack.idx['f'], stack.N);
+        GPU_Cube(stack.dev_f, stack.idx['f'], stack.N, W[0]);
     }
 #endif
 

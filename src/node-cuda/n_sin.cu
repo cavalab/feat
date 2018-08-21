@@ -8,17 +8,17 @@ license: GNU/GPL v3
 
 namespace FT{
    		
-    __global__ void Sin( float * x, size_t idx, size_t N)
+    __global__ void Sin( float * x, size_t idx, size_t N, float W0)
     {                    
         for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
         {
-            x[(idx-1)*N+i] = sin(x[(idx-1)*N+i]);
+            x[(idx-1)*N+i] = sin(W0*x[(idx-1)*N+i]);
         }
         return;
     }
-    void GPU_Sin( float * x, size_t idx, size_t N)
+    void GPU_Sin( float * x, size_t idx, size_t N, float W0)
     {
-        Sin<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N);
+        Sin<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N, W0);
     }
     /// Evaluates the node and updates the stack states. 
     /* void NodeSin::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 

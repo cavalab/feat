@@ -33,7 +33,7 @@ namespace FT{
 #else
     void NodeCos::evaluate(Data& data, Stacks& stack)
     {
-        GPU_Cos(stack.dev_f, stack.idx[otype], stack.N);
+        GPU_Cos(stack.dev_f, stack.idx[otype], stack.N, W[0]);
     }
 #endif
 

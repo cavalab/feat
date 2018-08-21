@@ -73,7 +73,7 @@ namespace FT{
 
             if (!pass)
             {
-                vector<double> w(0,Phi.rows());     // set weights to zero
+                vector<double> w(Phi.rows(), 0);     // set weights to zero
                 individuals.at(i).set_p(w,params.feedback);
                 individuals.at(i).fitness = MAX_DBL;
                 F.col(individuals.at(i).loc) = MAX_DBL*VectorXd::Ones(d.y.size());

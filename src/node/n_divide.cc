@@ -38,7 +38,7 @@ namespace FT{
 #else
     void NodeDivide::evaluate(Data& data, Stacks& stack)
     {
-        GPU_Divide(stack.dev_f, stack.idx[otype], stack.N);
+        GPU_Divide(stack.dev_f, stack.idx[otype], stack.N, W[0], W[1]);
     }
 #endif
 

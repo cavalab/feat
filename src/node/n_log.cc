@@ -35,7 +35,7 @@ namespace FT{
 #else
     void NodeLog::evaluate(Data& data, Stacks& stack)
     {
-        GPU_Log(stack.dev_f, stack.idx[otype], stack.N);
+        GPU_Log(stack.dev_f, stack.idx[otype], stack.N, W[0]);
     }
 #endif
 

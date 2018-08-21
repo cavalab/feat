@@ -39,7 +39,7 @@ namespace FT{
 #else
     void NodeSign::evaluate(Data& data, Stacks& stack)
     {
-        GPU_Sign(stack.dev_f, stack.idx[otype], stack.N);
+        GPU_Sign(stack.dev_f, stack.idx[otype], stack.N, W[0]);
     }
 #endif
 

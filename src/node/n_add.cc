@@ -34,7 +34,7 @@ namespace FT{
 #else
     void NodeAdd::evaluate(Data& data, Stacks& stack)
 	{
-        GPU_Add(stack.dev_f, stack.idx[otype], stack.N);
+        GPU_Add(stack.dev_f, stack.idx[otype], stack.N, (float)W[0], (float)W[1]);
     }
 #endif
 

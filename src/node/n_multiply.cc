@@ -33,7 +33,7 @@ namespace FT{
 #else
     void NodeMultiply::evaluate(Data& data, Stacks& stack)
     {
-        GPU_Multiply(stack.dev_f, stack.idx[otype], stack.N);
+        GPU_Multiply(stack.dev_f, stack.idx[otype], stack.N, W[0], W[1]);
     }
 #endif
 

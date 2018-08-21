@@ -35,7 +35,7 @@ namespace FT{
 #else
     void NodeGaussian::evaluate(Data& data, Stacks& stack)
     {
-        GPU_Gaussian(stack.dev_f, stack.idx[otype], stack.N);
+        GPU_Gaussian(stack.dev_f, stack.idx[otype], stack.N, W[0]);
     }
 #endif
 

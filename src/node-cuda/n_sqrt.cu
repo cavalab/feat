@@ -8,17 +8,17 @@ license: GNU/GPL v3
 
 namespace FT{
    		
-    __global__ void Sqrt( float * x, size_t idx, size_t N)
+    __global__ void Sqrt( float * x, size_t idx, size_t N, float W0)
     {                    
         for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
         {
-            x[(idx-1)*N+i] = sqrt(abs(x[(idx-1)*N+i]));
+            x[(idx-1)*N+i] = sqrt(abs(x[(idx-1)*N+i])*W0);
         }
         return;
     }
-    void GPU_Sqrt( float * x, size_t idx, size_t N)
+    void GPU_Sqrt( float * x, size_t idx, size_t N, float W0)
     {
-        Sqrt<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N);
+        Sqrt<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N, W0);
     }
     /// Evaluates the node and updates the stack states. 
     /* void NodeSqrt::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */

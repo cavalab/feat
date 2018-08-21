@@ -8,17 +8,17 @@ license: GNU/GPL v3
 
 namespace FT{
    		
-    __global__ void Gaussian( float * x, size_t idx, size_t N)
+    __global__ void Gaussian( float * x, size_t idx, size_t N, float W0)
     {                    
         for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
         {
-            x[(idx-1)*N+i] = exp ( - pow ( x[(idx-1)*N+i], 2 ) ) ;
+            x[(idx-1)*N+i] = exp ( - pow ( W0 - x[(idx-1)*N+i], 2 ) ) ;
         }
         return;
     }
-    void GPU_Gaussian( float * x, size_t idx, size_t N)
+    void GPU_Gaussian( float * x, size_t idx, size_t N, float W0)
     {
-        Gaussian<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N);
+        Gaussian<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N, W0);
     }
     /// Evaluates the node and updates the stack states. 
     /* void NodeGaussian::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 

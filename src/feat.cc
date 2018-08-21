@@ -481,7 +481,7 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     params.msg("fitting final model to all training data...",3);
 
     final_model(d);   // fit final model to best features
-    params.msg("\n Total time taken is " + std::to_string(timer.Elapsed().count()) + "\n", 1);
+    params.msg("\nTotal time taken is " + std::to_string(timer.Elapsed().count()) + "\n", 1);
     
     if (log.is_open())
         log.close();

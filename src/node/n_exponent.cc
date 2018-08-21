@@ -36,7 +36,7 @@ namespace FT{
 #else
     void NodeExponent::evaluate(Data& data, Stacks& stack)
     {
-        GPU_Exponent(stack.dev_f, stack.idx[otype], stack.N);
+        GPU_Exponent(stack.dev_f, stack.idx[otype], stack.N, W[0], W[1]);
     }
 #endif
 

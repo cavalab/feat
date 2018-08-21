@@ -8,17 +8,17 @@ license: GNU/GPL v3
 
 namespace FT{
    		
-    __global__ void Exp( float * x, size_t idx, size_t N)
+    __global__ void Exp( float * x, size_t idx, size_t N, float W0)
     {                    
         for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
         {
-            x[(idx-1)*N+i] = exp(x[(idx-1)*N+i]) ;
+            x[(idx-1)*N+i] = exp(W0*x[(idx-1)*N+i]) ;
         }
         return;
     }
-    void GPU_Exp( float * x, size_t idx, size_t N)
+    void GPU_Exp( float * x, size_t idx, size_t N, float W0)
     {
-        Exp<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N);
+        Exp<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N, W0);
     }
     /// Evaluates the node and updates the stack states. 
     /* void NodeExp::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 
