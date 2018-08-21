@@ -571,11 +571,7 @@ void Feat::run_generation(unsigned int g,
         print_stats(log, fraction);    
     else if(params.verbosity == 1)
         printProgress(fraction);
-//        printProgress(((g+1)*1.0)/params.gens);
     
-//    params.current_gen/params.gens
-        
-        
     if (params.backprop)
     {
         params.bp.learning_rate = (1-1/(1+double(params.gens)))*params.bp.learning_rate;
