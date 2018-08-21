@@ -8,22 +8,23 @@ license: GNU/GPL v3
 
 namespace FT{
    		
-    __global__ void Sign( float * x, size_t idx, size_t N)
+    __global__ void Sign( float * x, size_t idx, size_t N, float W0)
     {                    
         for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
         {
-            if (x[(idx-1)*N+i] > 0 )
+            float res = W0*x[(idx-1)*N+i];
+            if (res > 0 )
                 x[(idx-1)*N+i] = 1.0 ; 
-            else if (x[(idx-1)*N+i] == 0)
+            else if (res == 0)
                 x[(idx-1)*N+i] = 0.0; 
             else
                 x[(idx-1)*N+i] = -1.0 ;
         }
         return;
     }
-    void GPU_Sign( float * x, size_t idx, size_t N)
+    void GPU_Sign( float * x, size_t idx, size_t N, float W0)
     {
-        Sign<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N);
+        Sign<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N, W0);
     }
     /// Evaluates the node and updates the stack states. 
     /* void NodeSign::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 

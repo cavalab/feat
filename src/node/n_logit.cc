@@ -33,7 +33,7 @@ namespace FT{
 #else
     void NodeLogit::evaluate(Data& data, Stacks& stack)
     {
-        GPU_Logit(stack.dev_f, stack.idx[otype], stack.N);
+        GPU_Logit(stack.dev_f, stack.idx[otype], stack.N, W[0]);
     }
 #endif
 

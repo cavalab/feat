@@ -116,8 +116,8 @@ namespace FT{
         /// set probabilities
         void set_p(const vector<double>& weights, const double& fb);
         
-        typedef Array<bool, Dynamic, Dynamic> ArrayXXb;
-        typedef Array<float, Dynamic, Dynamic> ArrayXXf;
+        typedef Array<bool, Dynamic, Dynamic, RowMajor> ArrayXXb;
+        typedef Array<float, Dynamic, Dynamic, RowMajor> ArrayXXf;
     };
 }
 

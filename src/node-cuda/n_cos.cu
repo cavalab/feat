@@ -8,17 +8,17 @@ license: GNU/GPL v3
 
 namespace FT{
    		
-    __global__ void Cos( float * x, size_t idx, size_t N)
+    __global__ void Cos( float * x, size_t idx, size_t N, float W0)
     {                    
         for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
         {
-            x[(idx-1)*N+i] = cos ( x[(idx-1)*N+i] );
+            x[(idx-1)*N+i] = cos ( W0*x[(idx-1)*N+i] );
         }
         return;
     }
-    void GPU_Cos( float * x, size_t idx, size_t N)
+    void GPU_Cos( float * x, size_t idx, size_t N, float W0)
     {
-        Cos<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N);
+        Cos<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N, W0);
     }
     /// Evaluates the node and updates the stack states. 
     /* void NodeCos::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 

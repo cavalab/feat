@@ -34,7 +34,7 @@ namespace FT{
 #else
     void NodeSquare::evaluate(Data& data, Stacks& stack)
     {
-        GPU_Square(stack.dev_f, stack.idx[otype], stack.N);
+        GPU_Square(stack.dev_f, stack.idx[otype], stack.N, W[0]);
     }
 #endif
 

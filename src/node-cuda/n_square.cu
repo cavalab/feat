@@ -8,17 +8,17 @@ license: GNU/GPL v3
 
 namespace FT{
    		
-    __global__ void Square( float * x, size_t idx, size_t N)
+    __global__ void Square( float * x, size_t idx, size_t N, float W0)
     {                    
         for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
         {
-           x[(idx-1)*N+i] = pow(x[(idx-1)*N+i], 2);
+           x[(idx-1)*N+i] = pow(W0*x[(idx-1)*N+i], 2);
         }
         return;
     }
-    void GPU_Square( float * x, size_t idx, size_t N)
+    void GPU_Square( float * x, size_t idx, size_t N, float W0)
     {
-        Square<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N);
+        Square<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N, W0);
     }
     /// Evaluates the node and updates the stack states. 
     /* void NodeSquare::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 

@@ -6,23 +6,23 @@ license: GNU/GPL v3
 #define KERNELS 
 namespace FT{
 // math operators
-void GPU_Add(float * x, size_t idx, size_t N);
-void GPU_Subtract(float * x, size_t idx, size_t N);
-void GPU_Multiply(float * x, size_t idx, size_t N);
-void GPU_Divide(float * x, size_t idx, size_t N);
-void GPU_Exp(float * x, size_t idx, size_t N);
-void GPU_Log(float * x, size_t idx, size_t N);
-void GPU_Sin(float * x, size_t idx, size_t N);
-void GPU_Cos(float * x, size_t idx, size_t N);
-void GPU_Sqrt(float * x, size_t idx, size_t N);
-void GPU_Square(float * x, size_t idx, size_t N);
-void GPU_Cube(float * x, size_t idx, size_t N);
-void GPU_Exponent(float * x, size_t idx, size_t N);
-void GPU_Logit(float * x, size_t idx, size_t N);
+void GPU_Add(float * x, size_t idx, size_t N, float W0, float W1);
+void GPU_Subtract(float * x, size_t idx, size_t N, float W0, float W1);
+void GPU_Multiply(float * x, size_t idx, size_t N, float W0, float W1);
+void GPU_Divide(float * x, size_t idx, size_t N, float W0, float W1);
+void GPU_Exp(float * x, size_t idx, size_t N, float W0);
+void GPU_Log(float * x, size_t idx, size_t N, float W0);
+void GPU_Sin(float * x, size_t idx, size_t N, float W0);
+void GPU_Cos(float * x, size_t idx, size_t N, float W0);
+void GPU_Sqrt(float * x, size_t idx, size_t N, float W0);
+void GPU_Square(float * x, size_t idx, size_t N, float W0);
+void GPU_Cube(float * x, size_t idx, size_t N, float W0);
+void GPU_Exponent(float * x, size_t idx, size_t N, float W0, float W1);
+void GPU_Logit(float * x, size_t idx, size_t N, float W0);
 void GPU_Step(float * x, size_t idx, size_t N);
-void GPU_Sign(float * x, size_t idx, size_t N);
-void GPU_Tanh(float * x, size_t idx, size_t N);
-void GPU_Gaussian(float * x, size_t idx, size_t N);
+void GPU_Sign(float * x, size_t idx, size_t N, float W0);
+void GPU_Tanh(float * x, size_t idx, size_t N, float W0);
+void GPU_Gaussian(float * x, size_t idx, size_t N, float W0);
 void GPU_Gaussian2D(float * x, float x1mean, float x1var, float x2mean, float x2var, size_t idx, 
                     size_t N);
 

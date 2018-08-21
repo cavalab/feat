@@ -35,7 +35,7 @@ namespace FT{
 #else
     void NodeSin::evaluate(Data& data, Stacks& stack)
     {
-        GPU_Sin(stack.dev_f, stack.idx[otype], stack.N);
+        GPU_Sin(stack.dev_f, stack.idx[otype], stack.N, W[0]);
     }
 #endif
 

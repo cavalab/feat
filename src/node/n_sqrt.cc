@@ -34,7 +34,7 @@ namespace FT{
 #else
     void NodeSqrt::evaluate(Data& data, Stacks& stack)
     {
-        GPU_Sqrt(stack.dev_f, stack.idx[otype], stack.N);
+        GPU_Sqrt(stack.dev_f, stack.idx[otype], stack.N, W[0]);
     }
 #endif
 

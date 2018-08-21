@@ -8,20 +8,20 @@ license: GNU/GPL v3
 
 namespace FT{
    		
-    __global__ void Log(float * x, size_t idx, size_t N)
+    __global__ void Log(float * x, size_t idx, size_t N, float W0)
     {                    
         for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
         {
             if ( abs(x[(idx-1)*N+i]) > 0.000000001) 
-                x[(idx-1)*N+i] = log(abs(x[(idx-1)*N+i]));
+                x[(idx-1)*N+i] = log(abs(W0*x[(idx-1)*N+i]));
             else
                 x[(idx-1)*N+i] = -100000; 
         }
         return;
     }
-    void GPU_Log(float * x, size_t idx, size_t N)
+    void GPU_Log(float * x, size_t idx, size_t N, float W0)
     {
-        Log<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N);
+        Log<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N, W0);
     }
     /// Evaluates the node and updates the stack states. 
     /* void NodeLog::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 

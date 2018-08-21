@@ -34,7 +34,7 @@ namespace FT{
 #else
     void NodeSubtract::evaluate(Data& data, Stacks& stack)
     {
-        GPU_Subtract(stack.dev_f, stack.idx[otype], stack.N);
+        GPU_Subtract(stack.dev_f, stack.idx[otype], stack.N, W[0], W[1]);
     }
 #endif
 

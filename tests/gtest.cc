@@ -112,15 +112,11 @@ TEST(Feat, SettingFunctions)
     feat.set_erc(false);
     ASSERT_EQ(false, feat.params.erc);
     
-    feat.set_random_state(2);
-    //TODO test random state seed
 }
-
 
 TEST(Feat, predict)
 {
     Feat feat(100); feat.set_random_state(666);
-
     
     MatrixXd X(7,2); 
     X << 0,1,  
@@ -226,7 +222,6 @@ TEST(Feat, fit_predict)
 TEST(Feat, fit_transform)
 {
     Feat feat(100); feat.set_random_state(666);
-   
     feat.set_verbosity(1);
 
     MatrixXd X(7,2); 
@@ -1925,7 +1920,7 @@ TEST(Evaluation, fitness)
     
     // check results
     cout << pop.individuals[0].fitness << " , should be near zero\n";
-    //ASSERT_TRUE(pop.individuals[0].fitness < NEAR_ZERO);
+    ASSERT_TRUE(pop.individuals[0].fitness < NEAR_ZERO);
     ASSERT_TRUE(pop.individuals[1].fitness - 60.442868924187906 < NEAR_ZERO);
 
 }
