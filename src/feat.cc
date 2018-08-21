@@ -28,11 +28,12 @@ Feat::Feat(int pop_size, int gens, string ml,
        bool erc, string obj,bool shuffle, 
        double split, double fb, string scorer, string feature_names,
        bool backprop,int iters, double lr, int bs, int n_threads,
-       bool hillclimb, string logfile, int max_time):
+       bool hillclimb, string logfile, int max_time, bool use_batch):
           // construct subclasses
           params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
                  functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, 
-                 fb, scorer, feature_names, backprop, iters, lr, bs, hillclimb, max_time), 
+                 fb, scorer, feature_names, backprop, iters, lr, bs, hillclimb, max_time, 
+                 use_batch), 
           p_sel( make_shared<Selection>(sel) ),
           p_surv( make_shared<Selection>(surv, true) ),
           p_variation( make_shared<Variation>(cross_rate) )                      
@@ -140,6 +141,8 @@ void Feat::set_batch_size(int bs){params.bp.batch_size = bs;}
 void Feat::set_n_threads(unsigned t){ omp_set_num_threads(t); }
 
 void Feat::set_max_time(int time){ params.max_time = time; }
+
+void Feat::set_use_batch(){ params.use_batch = true; }
 
 /*                                                      
  * getting functions
@@ -407,17 +410,37 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
         use_arch = true;
     
     // split data into training and test sets
+    //Data data(X, y, Z, params.classification);
     DataRef d(X, y, Z, params.classification);
+    //DataRef d;
+    //d.setOriginalData(&data);
+    
     d.train_test_split(params.shuffle, params.split);
-
-    if (params.classification) 
-        params.set_sample_weights(d.t->y); 
    
     // define terminals based on size of X
     params.set_terminals(d.o->X.rows(), d.o->Z);        
 
     // initial model on raw input
     params.msg("Fitting initial model", 2);
+    
+    //data for batch training
+    MatrixXd Xb;
+    VectorXd yb;
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Zb;
+    Data db(Xb, yb, Zb, params.classification);
+    
+    Data *tmp_train;
+    
+    if(params.use_batch)
+    {
+        tmp_train = d.t;
+        d.t->get_batch(db, params.bp.batch_size);
+        d.setTrainingData(&db);
+    }
+    
+    if (params.classification) 
+        params.set_sample_weights(d.t->y); 
+    
     initial_model(d);  
     
     // initialize population 
@@ -440,6 +463,15 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     params.msg("Initial population done",2);
     
     vector<size_t> survivors;
+    
+    //data for batch training
+    /*MatrixXd Xb;
+    VectorXd yb;
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Zb;
+    Data db(Xb, yb, Zb, params.classification);*/
+    
+    if(params.use_batch)
+        d.setTrainingData(tmp_train, true);
 
     // =====================
     // main generational loop
@@ -451,7 +483,21 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     {
         fraction = params.max_time == -1 ? ((g+1)*1.0)/params.gens : 
                                            timer.Elapsed().count()/params.max_time;
-        run_generation(g, survivors, d, log, fraction);
+                                           
+        if(params.use_batch)
+        {
+            d.t->get_batch(db, params.bp.batch_size);
+            DataRef dbr;
+            dbr.setTrainingData(&db);
+            
+            if (params.classification)
+                params.set_sample_weights(dbr.t->y); 
+
+            run_generation(g, survivors, dbr, log, fraction);
+        }
+        else
+            run_generation(g, survivors, d, log, fraction);
+        
         g++;
     }
     // =====================
@@ -500,9 +546,11 @@ void Feat::run_generation(unsigned int g,
     p_variation->vary(*p_pop, parents, params);
     params.msg("offspring:\n" + p_pop->print_eqns(true), 3);
 
+    //cout<<"Generation till here 0 \n";
     // evaluate offspring
     params.msg("evaluating offspring...", 3);
-    p_eval->fitness(p_pop->individuals, *d.t, F, params, true);
+    p_eval->fitness(p_pop->individuals, *d.t, F, params, true && !params.use_batch);
+    //cout<<"Generation till here 1\n";
     // select survivors from combined pool of parents and offspring
     params.msg("survival...", 3);
     survivors = p_surv->survive(*p_pop, F, params);
@@ -512,6 +560,7 @@ void Feat::run_generation(unsigned int g,
     p_pop->update(survivors);
     params.msg("survivors:\n" + p_pop->print_eqns(), 3);
 
+    //cout<<"Generation till here\n";
     update_best();
 
     if (use_arch) 

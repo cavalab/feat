@@ -1004,8 +1004,8 @@ TEST(Parameters, ParamsTests)
                       0.1,                              // iterations
                       1,                                // batch size
                       false,                             // hill climbing
-                      -1                                // max time
-                          );
+                      -1,                                // max time
+                      false);                            // use batch training
 					  
 	params.set_max_dim(12);
 	ASSERT_EQ(params.max_dim, 12);
@@ -1169,8 +1169,8 @@ TEST(Evaluation, mse)
                   0.1,                              // iterations
                   1,                                // batch size
                   false,                             // hill climbing
-                  -1                                // max time
-                      );
+                  -1,                                // max time
+                  false);                            // use batch training
 	
     VectorXd yhat(10), y(10), res(10);
 	yhat << 0.0,
@@ -1247,8 +1247,8 @@ TEST(Evaluation, bal_accuracy)
               0.1,                              // iterations
               1,                                // batch size
               false,                             // hill climbing
-                  -1                                // max time
-                  );
+             -1,                                // max time
+              false);                            // use batch training
 	
     VectorXd yhat(10), y(10), res(10), loss(10);
 	
@@ -1326,8 +1326,8 @@ TEST(Evaluation, log_loss)
               0.1,                              // iterations
               1,                                // batch size
               false,                             // hill climbing
-                  -1                                // max time
-                  );
+              -1,                                // max time
+              false);                            // use batch training
 	
     VectorXd yhat(10), y(10), loss(10);
     ArrayXXd confidences(10,2);
@@ -1400,8 +1400,8 @@ TEST(Evaluation, multi_log_loss)
               0.1,                              // iterations
               1,                                // batch size
               false,                             // hill climbing
-                  -1                                // max time
-                  );                           //scoring function
+              -1,                                // max time
+              false);                            // use batch training
 	
     VectorXd y(10), loss(10);
     ArrayXXd confidences(10,3);
@@ -1467,8 +1467,8 @@ TEST(Evaluation, fitness)
                       0.1,                              // iterations
                       1,                                // batch size
                       false,                             // hill climbing
-                      -1                                // max time
-                          );
+                      -1,                                // max time
+                      false);                            // use batch training
                         
 	MatrixXd X(10,1); 
     X << 0.0,  
@@ -1545,8 +1545,8 @@ TEST(Evaluation, out_ml)
                       0.1,                              // iterations
                       1,                                // batch size
                       false,                             // hill climbing
-                      -1                                // max time
-                          );
+                      -1,                                // max time
+                      false);                            // use batch training
 	MatrixXd X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
@@ -1633,6 +1633,81 @@ TEST(Selection, SelectionOperator)
     vector<size_t> parents = feat.p_sel->select(*(feat.p_pop), feat.F, feat.params);
     
     ASSERT_EQ(parents.size(), feat.get_pop_size());
+}
+
+TEST(Random, SetSeed)
+{
+    int integers[3][10];
+    float floats[3][10];
+    double doubles[3][10];
+    
+    r.set_seed(42);
+    
+    for(int i = 0; i < 10; i++)
+        integers[0][i] = r.rnd_int(i, 100);
+    
+    for(int i = 0; i < 10; i++)
+        floats[0][i] = r.rnd_flt();
+        
+    for(int i = 0; i < 10; i++)
+        doubles[0][i] = r.rnd_dbl();
+        
+        
+    r.set_seed(10);
+    
+    for(int i = 0; i < 10; i++)
+        integers[1][i] = r.rnd_int(i, 100);
+    
+    for(int i = 0; i < 10; i++)
+        floats[1][i] = r.rnd_flt();
+        
+    for(int i = 0; i < 10; i++)
+        doubles[1][i] = r.rnd_dbl();
+        
+    r.set_seed(98);
+    
+    for(int i = 0; i < 10; i++)
+        integers[2][i] = r.rnd_int(i, 100);
+    
+    for(int i = 0; i < 10; i++)
+        floats[2][i] = r.rnd_flt();
+        
+    for(int i = 0; i < 10; i++)
+        doubles[2][i] = r.rnd_dbl();
+        
+    r.set_seed(42);
+    
+    for(int i = 0; i < 10; i++)
+        ASSERT_EQ(integers[0][i], r.rnd_int(i, 100));
+        
+    for(int i = 0; i < 10; i++)
+        ASSERT_EQ(floats[0][i], r.rnd_flt());
+        
+    for(int i = 0; i < 10; i++)
+        ASSERT_EQ(doubles[0][i], r.rnd_dbl());
+    
+    r.set_seed(10);
+    
+    for(int i = 0; i < 10; i++)
+        ASSERT_EQ(integers[1][i], r.rnd_int(i, 100));
+        
+    for(int i = 0; i < 10; i++)
+        ASSERT_EQ(floats[1][i], r.rnd_flt());
+        
+    for(int i = 0; i < 10; i++)
+        ASSERT_EQ(doubles[1][i], r.rnd_dbl());
+    
+    r.set_seed(98);
+    
+    for(int i = 0; i < 10; i++)
+        ASSERT_EQ(integers[2][i], r.rnd_int(i, 100));
+        
+    for(int i = 0; i < 10; i++)
+        ASSERT_EQ(floats[2][i], r.rnd_flt());
+        
+    for(int i = 0; i < 10; i++)
+        ASSERT_EQ(doubles[2][i], r.rnd_dbl());
+        
 }
 
 int main(int argc, char **argv) {
