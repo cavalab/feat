@@ -23,7 +23,7 @@ namespace FT{
                         
     // fitness of population
     void Evaluation::fitness(vector<Individual>& individuals,
-                             Data d, 
+                             const Data& d, 
                              MatrixXd& F, 
                              const Parameters& params, 
                              bool offspring)
@@ -141,9 +141,9 @@ namespace FT{
 
     // validation fitness of population                            
     void Evaluation::val_fitness(vector<Individual>& individuals,
-                             Data dt,
+                             const Data& dt,
                              MatrixXd& F, 
-                             Data dv,
+                             const Data& dv,
                              const Parameters& params, 
                              bool offspring)
     {
