@@ -79,7 +79,8 @@ int main(int argc, char** argv){
         cout << "Options\tDescription (default value)\n";
         cout << "-p\tpopulation size (100)\n";
         cout << "-g\tgenerations (100)\n";
-        cout << "-ml\tMachine learning model pairing (LinearRidgeRegression or LogisticRegression)\n";
+        cout << "-ml\tMachine learning model pairing " \
+                "(LinearRidgeRegression or LogisticRegression)\n";
         cout << "--c\tDo classification instead of regression. (false)\n";
         cout << "-v\tVerbosity. 0: none; 1: stats; 2: debugging (1)\n";
         cout << "-stall\tMaximum generations with no improvements to best score. (off)\n";
@@ -102,9 +103,11 @@ int main(int argc, char** argv){
         cout << "-bp\tbackpropagation iterations (zero)\n"; 
         cout << "-hc\tstochastic hill climbing iterations (zero)\n"; 
         cout << "-lr\tbackpropagation learning rate or hill climbing step size(zero)\n"; 
-        cout << "-batch\tminibatch size for stochastic gradient descent\n"; 
-        cout << "-max_time\tMaximum time in seconds to fit the model instead of number of generations\n";
+        cout << "-batch\tminibatch size (off if not set, default 100)\n"; 
+        cout << "-max_time\tMaximum time in seconds to fit the model." \
+                " Used in conjunction with generation limit.\n";
         cout << "--use_batch\tSet flag for stochastic mini batch training\n";
+        cout << "-otype\tSet output types of features. 'b':bool only,'f':float only,'a':all\n";
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
     }
@@ -170,7 +173,10 @@ int main(int argc, char** argv){
     if(input.cmdOptionExists("-lr"))
         feat.set_lr(std::stod(input.getCmdOption("-lr")));
     if(input.cmdOptionExists("-batch"))
+    {
+        feat.set_use_batch();
         feat.set_batch_size(std::stoi(input.getCmdOption("-batch")));
+    }
     if(input.cmdOptionExists("-n_threads"))
         feat.set_n_threads(std::stoi(input.getCmdOption("-n_threads")));
     if(input.cmdOptionExists("-max_time"))
@@ -183,6 +189,8 @@ int main(int argc, char** argv){
     }
     if(input.cmdOptionExists("--use_batch"))
         feat.set_use_batch();
+    if(input.cmdOptionExists("-otype"))
+        feat.set_otype(input.getCmdOption("-otype")[0]);
     //cout << "done.\n";
     ///////////////////////////////////////
 
@@ -205,7 +213,8 @@ int main(int argc, char** argv){
     if (binary_endpoint)
     {
         if (!feat.get_classification())
-            HANDLE_ERROR_NO_THROW("WARNING: binary endpoint detected. Feat is set for regression.");
+            HANDLE_ERROR_NO_THROW("WARNING: binary endpoint detected. " \
+                                  "Feat is set for regression.");
         else
             std::cout << "setting binary endpoint\n";
                       
@@ -226,6 +235,9 @@ int main(int argc, char** argv){
         MatrixXd X_tcopy = d.t->X;     
         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_tcopy = d.t->Z;
         VectorXd y_tcopy = d.t->y;
+        MatrixXd X_vcopy = d.v->X;     
+        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_vcopy = d.v->Z;
+        VectorXd y_vcopy = d.v->y;
 
         cout << "fitting model...\n";
         
@@ -233,32 +245,27 @@ int main(int argc, char** argv){
 
         cout << "\ngenerating training prediction...\n";
 
-        double score_t = feat.score(X_tcopy, y_tcopy, Z_tcopy);
         VectorXd yhat = feat.predict(X_tcopy,Z_tcopy);
+        double score_t = feat.score(X_tcopy, y_tcopy, Z_tcopy);
+        /* VectorXd yhat = feat.predict(X_tcopy,Z_tcopy); */
 
-        double r2t = (1 - (d.t->y-yhat).array().pow(2).sum()/
-                        (d.t->y.array() - d.t->y.mean()).pow(2).sum());
+        double SSres = (y_tcopy-yhat).array().pow(2).sum() ;
+        double SStot =  (y_tcopy.array() - y_tcopy.mean()).array().pow(2).sum();
+        double r2t = (1 - SSres/SStot );
 
-        cout.precision(5);
+        cout.precision(4);
         cout << "train score: " << score_t << "\n";
         cout << "train r2: " << r2t << "\n";
         
         cout << "generating test prediction...\n";
+        VectorXd yhatv = feat.predict(X_vcopy,Z_vcopy);
+        double SSresv = (y_vcopy-yhatv).array().pow(2).sum() ;
+        double SStotv =  (y_vcopy.array() - y_vcopy.mean()).array().pow(2).sum();
+        double r2v = (1 - SSresv/SStotv );
         double score = feat.score(d.v->X,d.v->y,d.v->Z);
         cout << "test score: " << score << "\n";
-        VectorXd ytest = feat.predict(d.v->X,d.v->Z);
+        cout << "test r2: " << r2v << "\n";
 
-        double r2 = (1 - (d.v->y-ytest).array().pow(2).sum()/
-                        (d.v->y.array() - d.v->y.mean()).pow(2).sum());
-        cout << "test variance accounted for: " << r2 << "\n";
-        /* cout << "yhat: \n"; */
-        /* for (int i = 0; i < ytest.size(); ++i) */
-        /*      cout  << ytest(i) << ","; */
-        /* cout << "\n"; */
-        /* cout << "ytest: \n"; */
-        /* for (int i = 0; i < ytest.size(); ++i) */
-        /*      cout  << d.v->y(i) << ","; */
-        /* cout << "\n"; */
     }
     else
     {
