@@ -96,7 +96,7 @@ class Feat(BaseEstimator):
             if len(list(X.columns)) == X.shape[1]:
                 self.feature_names = ','.join(X.columns).encode()
             X = X.values
-        if type(y).__name__ == 'DataFrame':
+        if type(y).__name__ in ['DataFrame','Series']:
             y = y.values
 
         self._init_pyfeat()   
