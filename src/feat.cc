@@ -211,14 +211,22 @@ string Feat::get_representation(){ return best_ind.get_eqn();}
 string Feat::get_model()
 {   
     vector<string> features = best_ind.get_features();
+    cout << "features: ";
+    for (auto f : features) cout << f << ","; cout << "\n";
     vector<double> weights = p_ml->get_weights();
+    cout << "weights: ";
+    for (auto f : weights) cout << f << ","; cout << "\n";
+
     vector<double> aweights(weights.size());
     for (int i =0; i<aweights.size(); ++i) 
         aweights[i] = fabs(weights[i]);
     vector<size_t> order = argsort(aweights);
+    cout << "order: ";
+    for (auto f : order) cout << f << ","; cout << "\n";
+
     string output;
     output += "Feature\tWeight\n";
-    for (unsigned i = order.size(); --i > 0;)
+    for (unsigned i = order.size(); i --> 0;)
     {
         output += features.at(order[i]);
         output += "\t";
@@ -371,7 +379,8 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
 
     // start the clock
     timer.Reset();
-
+    if (params.use_batch)
+        cout << "using batch with batch_size= " << params.bp.batch_size << "\n";
     std::ofstream log;                      ///< log file stream
     if (!logfile.empty())
         log.open(logfile, std::ofstream::app);
@@ -421,8 +430,8 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     params.set_terminals(d.o->X.rows(), d.o->Z);        
 
     // initial model on raw input
-    params.msg("Fitting initial model", 2);
-    
+    params.msg("Setting up data", 2);
+    float t0 =  timer.Elapsed().count();
     //data for batch training
     MatrixXd Xb;
     VectorXd yb;
@@ -440,9 +449,12 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     
     if (params.classification) 
         params.set_sample_weights(d.t->y); 
-    
+    cout << "time elapsed: " << timer.Elapsed().count() - t0 << "sec\n";
+    params.msg("Fitting initial model", 2);
+
+    t0 =  timer.Elapsed().count();
     initial_model(d);  
-    
+    params.msg(std::to_string(timer.Elapsed().count() - t0) + " seconds",2);
     // initialize population 
     params.msg("Initializing population", 2);
    
@@ -461,16 +473,11 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     p_eval->fitness(p_pop->individuals,*d.t,F,params);
     
     params.msg("Initial population done",2);
+    params.msg(std::to_string(timer.Elapsed().count()) + " seconds",2);
     
     vector<size_t> survivors;
     
-    //data for batch training
-    /*MatrixXd Xb;
-    VectorXd yb;
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Zb;
-    Data db(Xb, yb, Zb, params.classification);*/
-    
-    if(params.use_batch)
+    if(params.use_batch)    // reset d to all training data
         d.setTrainingData(tmp_train, true);
 
     // =====================
@@ -487,7 +494,7 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
         if(params.use_batch)
         {
             d.t->get_batch(db, params.bp.batch_size);
-            DataRef dbr;
+            DataRef dbr;    // reference to minibatch data
             dbr.setTrainingData(&db);
             
             if (params.classification)
@@ -508,12 +515,27 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     // evaluate population on validation set
     if (params.split < 1.0)
     {
+        vector<Individual>& final_pop = use_arch ? arch.archive : p_pop->individuals; 
         F_v.resize(d.v->X.cols(),int(2*params.pop_size)); 
-        if (use_arch){
-            p_eval->val_fitness(arch.archive, *d.t, F_v, *d.v, params);
+        
+        if(params.use_batch)
+        {
+            cout << "getting batch...\n";
+            t0 =  timer.Elapsed().count();
+            d.t->get_batch(db, params.bp.batch_size);
+            DataRef dbr;    // reference to minibatch data
+            dbr.setTrainingData(&db);
+            
+            if (params.classification)
+                params.set_sample_weights(dbr.t->y); 
+            cout << "got batch (" << timer.Elapsed().count() - t0 << " sec). val_fitness...\n";
+            t0 = timer.Elapsed().count();
+            p_eval->val_fitness(final_pop, *dbr.t, F_v, *d.v, params);
+            cout << "val_fitness completed in " << timer.Elapsed().count() - t0 << " seconds\n";
         }
         else
-            p_eval->val_fitness(p_pop->individuals, *d.t, F_v, *d.v, params);
+            p_eval->val_fitness(final_pop, *d.t, F_v, *d.v, params);
+
         update_best(true);                  // get the best validation model
     }
     else
@@ -571,11 +593,7 @@ void Feat::run_generation(unsigned int g,
         print_stats(log, fraction);    
     else if(params.verbosity == 1)
         printProgress(fraction);
-//        printProgress(((g+1)*1.0)/params.gens);
     
-//    params.current_gen/params.gens
-        
-        
     if (params.backprop)
     {
         params.bp.learning_rate = (1-1/(1+double(params.gens)))*params.bp.learning_rate;
@@ -631,16 +649,20 @@ void Feat::initial_model(DataRef &d)
     best_ind.set_id(0);
     int j; 
     int n_feats = std::min(params.max_dim, unsigned(d.t->X.rows()));
-    vector<size_t> var_idx(n_feats);
+    vector<size_t> var_idx(d.t->X.rows());
     std::iota(var_idx.begin(),var_idx.end(),0);
     for (unsigned i =0; i<n_feats; ++i)
     {
-        if (n_feats <= d.t->X.rows())
+        if (n_feats < d.t->X.rows())
         {
-            vector<size_t> choice_idxs(n_feats-i);
+            vector<size_t> choice_idxs(d.t->X.rows()-i);
             std::iota(choice_idxs.begin(),choice_idxs.end(),0);
+            cout << "choice_idxs: ";
+            for (auto c : choice_idxs) cout << c << ","; cout << "\n";
             size_t idx = r.random_choice(choice_idxs);
+            cout << "idx: " << idx << "\n";
             j = var_idx.at(idx);
+            cout << "j: " << j << "\n";
             var_idx.erase(var_idx.begin() + idx);
         }
         else 
