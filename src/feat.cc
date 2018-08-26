@@ -560,11 +560,9 @@ void Feat::run_generation(unsigned int g,
     p_variation->vary(*p_pop, parents, params);
     params.msg("offspring:\n" + p_pop->print_eqns(true), 3);
 
-    //cout<<"Generation till here 0 \n";
     // evaluate offspring
     params.msg("evaluating offspring...", 3);
     p_eval->fitness(p_pop->individuals, *d.t, F, params, true && !params.use_batch);
-    //cout<<"Generation till here 1\n";
     // select survivors from combined pool of parents and offspring
     params.msg("survival...", 3);
     survivors = p_surv->survive(*p_pop, F, params);
@@ -574,7 +572,6 @@ void Feat::run_generation(unsigned int g,
     p_pop->update(survivors);
     params.msg("survivors:\n" + p_pop->print_eqns(), 3);
 
-    //cout<<"Generation till here\n";
     update_best();
 
     if (use_arch) 
