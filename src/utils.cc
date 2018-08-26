@@ -90,17 +90,29 @@ namespace FT{
         // get feature types (binary or continuous/categorical)
         int i, j;
         bool isBinary;
+        std::map<double, bool> uniqueMap;
         for(i = 0; i < X.rows(); i++)
         {
             isBinary = true;
+            uniqueMap.clear();
+            
             for(j = 0; j < X.cols(); j++)
+            {
                 if(X(i, j) != 0 && X(i, j) != 1)
                     isBinary = false;
+                uniqueMap[X(i, j)] = true;
+            }
         
             if(isBinary)
                 dtypes.push_back('b');
             else
-                dtypes.push_back('f');
+            {
+                if(uniqueMap.size() < 10)
+                    dtypes.push_back('c');    
+                else
+                    dtypes.push_back('f');
+                   
+            }
         }
         
         // check if endpoint is binary

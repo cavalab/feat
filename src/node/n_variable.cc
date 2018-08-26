@@ -16,6 +16,7 @@ namespace FT{
 	    otype = ntype;
 	    arity['f'] = 0;
 	    arity['b'] = 0;
+	    arity['c'] = 0;
 	    complexity = 1;
 	    loc = l;
     }
@@ -23,19 +24,24 @@ namespace FT{
     /// Evaluates the node and updates the stack states. 		
     void NodeVariable::evaluate(Data& data, Stacks& stack)
     {
-	    if (otype == 'b')
-            stack.b.push(data.X.row(loc).cast<bool>());
-        else
-            stack.f.push(data.X.row(loc));
+        switch(otype)
+        {
+            case 'b': stack.b.push(data.X.row(loc).cast<bool>()); break;
+            case 'c': stack.c.push(data.X.row(loc)); break;
+            case 'f': stack.f.push(data.X.row(loc)); break;
+            
+        }
     }
 
     /// Evaluates the node symbolically
     void NodeVariable::eval_eqn(Stacks& stack)
     {
-	    if (otype == 'b')
-            stack.bs.push(name);
-        else
-            stack.fs.push(name);
+        switch(otype)
+        {
+            case 'b' : stack.bs.push(name); break;
+            case 'c' : stack.cs.push(name); break;
+            case 'f' : stack.fs.push(name); break;
+        }
     }
 
     NodeVariable* NodeVariable::clone_impl() const { return new NodeVariable(*this); }

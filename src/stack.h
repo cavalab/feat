@@ -88,9 +88,11 @@ namespace FT
     {
         Stack<ArrayXd> f;                   ///< floating node stack
         Stack<ArrayXb> b;                   ///< boolean node stack
+        Stack<ArrayXd> c;                   ///<categorical stack
         Stack<std::pair<vector<ArrayXd>, vector<ArrayXd> > > z;     ///< longitudinal node stack
         Stack<string> fs;                   ///< floating node string stack
         Stack<string> bs;                   ///< boolean node string stack
+        Stack<string> cs;                   ///< categorical node string stack
         Stack<string> zs;                   ///< longitudinal node string stack
         
         ///< checks if arity of node provided satisfies the elements in various value stacks
@@ -106,6 +108,7 @@ namespace FT
     struct Trace
     {
         vector<ArrayXd> f;
+        vector<ArrayXd> c;
         vector<ArrayXb> b;
     };
 }

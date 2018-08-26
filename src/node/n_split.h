@@ -14,7 +14,7 @@ namespace FT{
     
             double threshold; 
 
-    		NodeSplit();
+    		NodeSplit(bool isCategorical = false);
     		
             /// Uses a heuristic to set a splitting threshold.
             void set_threshold(ArrayXd& x, VectorXd& y, bool classification);

@@ -186,6 +186,7 @@ namespace FT{
         { 
             case 'b': otypes.push_back('b'); break;
             case 'f': otypes.push_back('f'); break;
+            //case 'c': otypes.push_back('c'); break;
             default: 
             {
                 // if terminals are all boolean, remove floating point functions
@@ -273,7 +274,7 @@ namespace FT{
             return std::unique_ptr<Node>(new NodeRelu());
 
         else if (str.compare("float")==0)
-            return std::unique_ptr<Node>(new NodeFloat());
+                return std::unique_ptr<Node>(new NodeFloat(b_val));
 
         // logical operators
         else if (str.compare("and") == 0)
@@ -304,7 +305,7 @@ namespace FT{
     		return std::unique_ptr<Node>(new NodeLEQ());
  
         else if (str.compare("split") == 0)
-    		return std::unique_ptr<Node>(new NodeSplit());
+  		    return std::unique_ptr<Node>(new NodeSplit(b_val));
     	
      	else if (str.compare("if") == 0)
     		return std::unique_ptr<Node>(new NodeIf());   	    		
@@ -421,6 +422,8 @@ namespace FT{
         {
             token = fs.substr(0, pos);
             functions.push_back(createNode(token));
+            if(!token.compare("float") || !token.compare("split"))
+                functions.push_back(createNode(token, 0, true));
             fs.erase(0, pos + delim.length());
         } 
         if (verbosity > 2){
