@@ -6,6 +6,14 @@ license: GNU/GPL v3
 
 namespace FT{
 
+    Node::Node()
+    {
+        arity['f'] = 0;
+        arity['b'] = 0;
+        arity['c'] = 0;
+        arity['z'] = 0;
+    }
+    
     unsigned int Node::total_arity()
     {
         if(arity.find('f') == arity.end())
@@ -13,11 +21,14 @@ namespace FT{
         
         if(arity.find('b') == arity.end())
             arity['b'] = 0;
+            
+        if(arity.find('c') == arity.end())
+            arity['c'] = 0;
         
         if(arity.find('z') == arity.end())
             arity['z'] = 0;
                 
-        return arity['f'] + arity['b'] + arity['z'];
+        return arity['f'] + arity['b'] + arity['c'] + arity['z'];
     }
 
     /// limits node output to be between MIN_DBL and MAX_DBL

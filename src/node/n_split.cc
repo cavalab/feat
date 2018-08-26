@@ -6,20 +6,39 @@ license: GNU/GPL v3
 
 namespace FT{
 
-	NodeSplit::NodeSplit()
+	NodeSplit::NodeSplit(bool isCategorical)
 	{
-		name = "split";
-		otype = 'b';
-		arity['f'] = 1;
-		arity['b'] = 0;
-		complexity = 2;
+	    if(!isCategorical)
+	    {
+		    name = "split";
+		    arity['f'] = 1;
+		    arity['b'] = 0;
+		    arity['c'] = 0;
+        }
+        else
+        {
+            name = "split_c";
+		    arity['f'] = 0;
+		    arity['b'] = 0;
+		    arity['c'] = 1;
+        }
+        
+        otype = 'b';
+        complexity = 2;
         threshold = 0;
+        
 	}
 
     void NodeSplit::evaluate(Data& data, Stacks& stack)
     {
         /* cout << "classification: " << data.classification << "\n"; */
-        ArrayXd x1 = stack.f.pop();
+        ArrayXd x1;
+        
+        if(arity['f'])
+            x1 = stack.f.pop();
+        else
+            x1 = stack.c.pop();
+            
         if (!data.validation && !data.y.size()==0)
             set_threshold(x1,data.y, data.classification);
 

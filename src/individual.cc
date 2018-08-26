@@ -145,7 +145,7 @@ namespace FT{
          * @params: Feat parameters
          * @returns Phi: n_features x n_samples transformation
          */
-
+         
         Stacks stack;
         
         params.msg("evaluating program " + get_eqn(),3);
@@ -166,22 +166,30 @@ namespace FT{
         // convert stack_f to Phi
         params.msg("converting stacks to Phi",3);
         int cols;
+        
         if (stack.f.size()==0)
         {
-            if (stack.b.size() == 0)
-                HANDLE_ERROR_THROW("Error: no outputs in stacks");
-            
-            cols = stack.b.top().size();
+            if (stack.c.size() == 0)
+            {
+                if (stack.b.size() == 0)
+                    HANDLE_ERROR_THROW("Error: no outputs in stacks");
+                
+                cols = stack.b.top().size();
+            }
+            else
+                cols = stack.c.top().size();
         }
         else
             cols = stack.f.top().size();
                
         int rows_f = stack.f.size();
+        int rows_c = stack.c.size();
         int rows_b = stack.b.size();
         /* cout << "rows_f (stack.f.size()): " << rows_f << "\n"; */ 
         /* cout << "rows_b (stack.b.size()): " << rows_b << "\n"; */ 
+        
         dtypes.clear();        
-        Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
+        Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
         // add stack_f to Phi
         /* cout << "cols: " << cols << "\n"; */ 
       
@@ -192,10 +200,17 @@ namespace FT{
              Phi.row(i) = Row;
              dtypes.push_back('f'); 
         }
+        for (unsigned int i=0; i<rows_c; ++i)
+        {    
+             ArrayXd Row = ArrayXd::Map(stack.c.at(i).data(),cols);
+             clean(Row); // remove nans, set infs to max and min
+             Phi.row(i+rows_c) = Row;
+             dtypes.push_back('c'); 
+        }
         // convert stack_b to Phi       
         for (unsigned int i=0; i<rows_b; ++i)
         {
-            Phi.row(i+rows_f) = ArrayXb::Map(stack.b.at(i).data(),cols).cast<double>();
+            Phi.row(i+rows_f+rows_c) = ArrayXb::Map(stack.b.at(i).data(),cols).cast<double>();
             dtypes.push_back('b');
         }       
         //Phi.transposeInPlace();
@@ -254,6 +269,13 @@ namespace FT{
                         stack_trace.at(trace_idx).f.push_back(stack.f.at(stack.f.size() - 
                                                          (program.at(i)->arity['f'] - j)));
                     }
+                    
+                    for (int j = 0; j < program.at(i)->arity['c']; j++) {
+                        /* cout << "push back float arg for " << program.at(i)->name << "\n"; */
+                        stack_trace.at(trace_idx).c.push_back(stack.c.at(stack.c.size() - 
+                                                         (program.at(i)->arity['c'] - j)));
+                    }
+                    
                     for (int j = 0; j < program.at(i)->arity['b']; j++) {
                         /* cout << "push back bool arg for " << program.at(i)->name << "\n"; */
                         stack_trace.at(trace_idx).b.push_back(stack.b.at(stack.b.size() - 
@@ -274,19 +296,25 @@ namespace FT{
         int cols;
         if (stack.f.size()==0)
         {
-            if (stack.b.size() == 0)
-                HANDLE_ERROR_THROW("Error: no outputs in stacks");
-            
-            cols = stack.b.top().size();
+            if (stack.c.size() == 0)
+            {
+                if (stack.b.size() == 0)
+                    HANDLE_ERROR_THROW("Error: no outputs in stacks");
+                
+                cols = stack.b.top().size();
+            }
+            else
+                cols = stack.c.top().size();
         }
         else
             cols = stack.f.top().size();
                
         int rows_f = stack.f.size();
+        int rows_c = stack.c.size();
         int rows_b = stack.b.size();
         
         dtypes.clear();        
-        Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b, cols);
+        Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
         // add stack_f to Phi
        
         for (unsigned int i=0; i<rows_f; ++i)
@@ -296,10 +324,19 @@ namespace FT{
              Phi.row(i) = Row;
              dtypes.push_back('f'); 
         }
+        
+        for (unsigned int i=0; i<rows_c; ++i)
+        {    
+             ArrayXd Row = ArrayXd::Map(stack.c.at(i).data(),cols);
+             clean(Row); // remove nans, set infs to max and min
+             Phi.row(i+rows_c) = Row;
+             dtypes.push_back('c'); 
+        }
+        
         // convert stack_b to Phi       
         for (unsigned int i=0; i<rows_b; ++i)
         {
-            Phi.row(i+rows_f) = ArrayXb::Map(stack.b.at(i).data(),cols).cast<double>();
+            Phi.row(i+rows_f+rows_c) = ArrayXb::Map(stack.b.at(i).data(),cols).cast<double>();
             dtypes.push_back('b');
         }       
         //Phi.transposeInPlace();

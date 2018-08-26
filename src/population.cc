@@ -122,11 +122,14 @@ namespace FT{
             // let fi be indices of functions whose output type matches otype and, if max_d==1,
             // with no boolean inputs (assuming all input data is floating point) 
             vector<size_t> fi;
-            bool bterms = in(term_types,'b');   // are there boolean terminals?
-            bool zterms = in(term_types,'z');   // are there boolean terminals?
+            bool bterms = in(term_types, 'b');   // are there boolean terminals?
+            bool cterms = in(term_types, 'c');   // are there categorical terminals?
+            bool zterms = in(term_types, 'z');   // are there boolean terminals?
             for (size_t i = 0; i<functions.size(); ++i)
-                if (functions[i]->otype==otype && (max_d>1 || functions[i]->arity['b']==0 || bterms) 
-                    && (max_d>1 || functions[i]->arity['z']==0 || zterms))
+                if (functions[i]->otype==otype &&
+                    (max_d>1 || functions[i]->arity['b']==0 || bterms) &&
+                    (max_d>1 || functions[i]->arity['c']==0 || cterms) &&
+                    (max_d>1 || functions[i]->arity['z']==0 || zterms))
                     fi.push_back(i);
             
             if (fi.size()==0){
@@ -159,9 +162,11 @@ namespace FT{
             std::unique_ptr<Node> chosen(program.back()->clone());
             // recurse to fulfill the arity of the chosen function
             for (size_t i = 0; i < chosen->arity['f']; ++i)
-                make_tree(program, functions, terminals, max_d-1, term_weights,'f', term_types);
+                make_tree(program, functions, terminals, max_d-1, term_weights, 'f', term_types);
             for (size_t i = 0; i < chosen->arity['b']; ++i)
                 make_tree(program, functions, terminals, max_d-1, term_weights, 'b', term_types);
+            for (size_t i = 0; i < chosen->arity['c']; ++i)
+                make_tree(program, functions, terminals, max_d-1, term_weights, 'c', term_types);
             for (size_t i = 0; i < chosen->arity['z']; ++i)
                 make_tree(program, functions, terminals, max_d-1, term_weights, 'z', term_types);
         }

@@ -38,6 +38,8 @@ namespace FT{
             std::map<char, unsigned int> arity;		///< floating arity of the operator 
             int complexity;         ///< complexity of node
             int visits = 0;
+            
+            Node();
 
             virtual ~Node(){}
            
