@@ -71,7 +71,7 @@ namespace FT{
                    bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
                    double split=0.75, double fb=0.5, string scorer="", string feature_names="",
                    bool backprop=false,int iters=10, double lr=0.1, int bs=100, int n_threads=0,
-                   bool hillclimb=false, string logfile="", int max_time=-1);
+                   bool hillclimb=false, string logfile="", int max_time=-1, bool use_batch = false);
             
             /// set size of population 
             void set_pop_size(int pop_size);
@@ -162,6 +162,9 @@ namespace FT{
             
             ///set max time in seconds for fit method
             void set_max_time(int time);
+            
+            ///set flag to use batch for training
+            void set_use_batch();
             
             /*                                                      
              * getting functions
