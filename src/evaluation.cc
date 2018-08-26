@@ -23,7 +23,7 @@ namespace FT{
                         
     // fitness of population
     void Evaluation::fitness(vector<Individual>& individuals,
-                             Data d, 
+                             const Data& d, 
                              MatrixXd& F, 
                              const Parameters& params, 
                              bool offspring)
@@ -50,17 +50,17 @@ namespace FT{
         #pragma omp parallel for
         for (unsigned i = start; i<individuals.size(); ++i)
         {
-            
             if (params.backprop)
             {
                 AutoBackProp backprop(params.scorer, params.bp.iters, params.bp.learning_rate);
                 params.msg("Running backprop on " + individuals.at(i).get_eqn(), 3);
                 backprop.run(individuals.at(i), d, params);
-            }            
+            }         
+            
             // calculate program output matrix Phi
             params.msg("Generating output for " + individuals.at(i).get_eqn(), 3);
             MatrixXd Phi = individuals.at(i).out(d, params);            
-
+            
             // calculate ML model from Phi
             params.msg("ML training on " + individuals.at(i).get_eqn(), 3);
             bool pass = true;
@@ -97,6 +97,8 @@ namespace FT{
 
                 }
             }
+            
+            //cout<<"Here 3 with i = "<<i<<" and thread as "<< omp_get_thread_num() <<"\n";   
         }
     }
     
@@ -127,17 +129,17 @@ namespace FT{
             ind.fitness_v = f;
         else
             ind.fitness = f;
-        
+            
         F.col(ind.loc) = loss;  
-         
+        
         params.msg("ind " + std::to_string(ind.loc) + " fitness: " + std::to_string(ind.fitness),3);
     }
 
     // validation fitness of population                            
     void Evaluation::val_fitness(vector<Individual>& individuals,
-                             Data dt,
+                             const Data& dt,
                              MatrixXd& F, 
-                             Data dv,
+                             const Data& dv,
                              const Parameters& params, 
                              bool offspring)
     {
