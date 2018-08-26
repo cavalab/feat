@@ -90,28 +90,32 @@ namespace FT{
         // get feature types (binary or continuous/categorical)
         int i, j;
         bool isBinary;
+        bool isCategorical;
         std::map<double, bool> uniqueMap;
         for(i = 0; i < X.rows(); i++)
         {
             isBinary = true;
+            isCategorical = true;
             uniqueMap.clear();
             
             for(j = 0; j < X.cols(); j++)
             {
                 if(X(i, j) != 0 && X(i, j) != 1)
                     isBinary = false;
-                uniqueMap[X(i, j)] = true;
+                if(X(i,j) != floor(X(i, j)))
+                    isCategorical = false;
+                else
+                    uniqueMap[X(i, j)] = true;
             }
         
             if(isBinary)
                 dtypes.push_back('b');
             else
             {
-                if(uniqueMap.size() < 10)
+                if(isCategorical && uniqueMap.size() < 10)
                     dtypes.push_back('c');    
                 else
                     dtypes.push_back('f');
-                   
             }
         }
         
