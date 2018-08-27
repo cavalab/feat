@@ -107,7 +107,6 @@ namespace FT{
         /// get probability of variation for program locations locs
         vector<double> get_p(const vector<size_t>& locs); 
 
-    
         /// set probabilities
         void set_p(const vector<double>& weights, const double& fb);
     };

@@ -91,19 +91,26 @@ namespace FT{
 
     /// return indices that sort a vector
 	template <typename T>
-	vector<size_t> argsort(const vector<T> &v)
-	{
-
+	vector<size_t> argsort(const vector<T> &v, bool ascending=true) 
+    {
 		// initialize original index locations
 		vector<size_t> idx(v.size());
         std::iota(idx.begin(), idx.end(), 0);
 
 		// sort indexes based on comparing values in v
-		sort(idx.begin(), idx.end(),
-		   [&v](size_t i1, size_t i2) {return v[i1] < v[i2];});
+        if (ascending)
+        {
+            sort(idx.begin(), idx.end(),
+               [&v](size_t i1, size_t i2) {return v[i1] < v[i2];});
+        }
+        else
+        {
+            sort(idx.begin(), idx.end(),
+               [&v](size_t i1, size_t i2) {return v[i1] > v[i2];});
+        }
 
 		return idx;
-	}
+    }
 
     /// class for timing things.
     class Timer 
@@ -139,10 +146,10 @@ namespace FT{
         T sum = 0;
         vector<T> w_new;
         
-        for(x = 0; x < w.size(); x++)
+        for(x = 0; x < w.size(); ++x)
             sum += exp(w[x]);
             
-        for(x = 0; x < w.size(); x++)
+        for(x = 0; x < w.size(); ++x)
             w_new.push_back(exp(w[x])/sum);
             
         return w_new;

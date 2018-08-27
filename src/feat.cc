@@ -211,14 +211,22 @@ string Feat::get_representation(){ return best_ind.get_eqn();}
 string Feat::get_model()
 {   
     vector<string> features = best_ind.get_features();
+    cout << "features: ";
+    for (auto f : features) cout << f << ","; cout << "\n";
     vector<double> weights = p_ml->get_weights();
+    cout << "weights: ";
+    for (auto f : weights) cout << f << ","; cout << "\n";
+
     vector<double> aweights(weights.size());
     for (int i =0; i<aweights.size(); ++i) 
         aweights[i] = fabs(weights[i]);
     vector<size_t> order = argsort(aweights);
+    cout << "order: ";
+    for (auto f : order) cout << f << ","; cout << "\n";
+
     string output;
     output += "Feature\tWeight\n";
-    for (unsigned i = order.size(); --i > 0;)
+    for (unsigned i = order.size(); i --> 0;)
     {
         output += features.at(order[i]);
         output += "\t";
@@ -560,11 +568,9 @@ void Feat::run_generation(unsigned int g,
     p_variation->vary(*p_pop, parents, params);
     params.msg("offspring:\n" + p_pop->print_eqns(true), 3);
 
-    //cout<<"Generation till here 0 \n";
     // evaluate offspring
     params.msg("evaluating offspring...", 3);
     p_eval->fitness(p_pop->individuals, *d.t, F, params, true && !params.use_batch);
-    //cout<<"Generation till here 1\n";
     // select survivors from combined pool of parents and offspring
     params.msg("survival...", 3);
     survivors = p_surv->survive(*p_pop, F, params);
@@ -574,7 +580,6 @@ void Feat::run_generation(unsigned int g,
     p_pop->update(survivors);
     params.msg("survivors:\n" + p_pop->print_eqns(), 3);
 
-    //cout<<"Generation till here\n";
     update_best();
 
     if (use_arch) 
@@ -636,27 +641,65 @@ void Feat::initial_model(DataRef &d)
      * fits an ML model to the raw data as a starting point.
      */
     bool pass = true;
-    shared_ptr<CLabels> yhat = p_ml->fit(d.t->X,d.t->y,params,pass);
+    
+    best_ind = Individual();
+    best_ind.set_id(0);
+    int j; 
+    int n_feats = std::min(params.max_dim, unsigned(d.t->X.rows()));
+    vector<size_t> var_idx(d.t->X.rows());
+    std::iota(var_idx.begin(),var_idx.end(),0);
+    for (unsigned i =0; i<n_feats; ++i)
+    {
+        if (n_feats < d.t->X.rows())
+        {
+            vector<size_t> choice_idxs(d.t->X.rows()-i);
+            std::iota(choice_idxs.begin(),choice_idxs.end(),0);
+            cout << "choice_idxs: ";
+            for (auto c : choice_idxs) cout << c << ","; cout << "\n";
+            size_t idx = r.random_choice(choice_idxs);
+            cout << "idx: " << idx << "\n";
+            j = var_idx.at(idx);
+            cout << "j: " << j << "\n";
+            var_idx.erase(var_idx.begin() + idx);
+        }
+        else 
+            j=i;
+        best_ind.program.push_back(params.terminals.at(j)->clone());
+    }
+
+    MatrixXd Phi = best_ind.out(*d.t, params);        
+    shared_ptr<CLabels> yhat = p_ml->fit(Phi,d.t->y,params,pass, best_ind.dtypes);
 
     // set terminal weights based on model
-    params.set_term_weights(p_ml->get_weights());
-    
+    vector<double> w;
+    if (n_feats == d.t->X.rows())
+    {
+        w = p_ml->get_weights();
+    }
+    else
+    {
+        w = vector<double>(d.t->X.rows(),1.0);
+    }
+    params.set_term_weights(w);
+   
     VectorXd tmp;
     best_score = p_eval->score(d.t->y, yhat,tmp, params.class_weights);
     
     if (params.split < 1.0)
     {
-        shared_ptr<CLabels> yhat_v = p_ml->predict(d.v->X);
+        Phi = best_ind.out(*d.v, params);        
+        shared_ptr<CLabels> yhat_v = p_ml->predict(Phi);
         best_score_v = p_eval->score(d.v->y, yhat_v,tmp, params.class_weights); 
     }
     else
         best_score_v = best_score;
     
-    // initialize best_ind to be all the features
-    best_ind = Individual();
-    best_ind.set_id(0);
-    for (unsigned i =0; i<d.t->X.rows(); ++i)
-        best_ind.program.push_back(params.terminals[i]->clone());
+    /* // initialize best_ind to be the top params.max_dim features */
+    /* best_ind = Individual(); */
+    /* best_ind.set_id(0); */
+    /* vector<size_t> w_idx = argsort(params.term_weights,false); */
+    /* for (unsigned i =0; i<std::min(params.max_dim, unsigned(d.t->X.rows())); ++i) */
+    /*     best_ind.program.push_back(params.terminals[w_idx.at(i)]->clone()); */
     best_ind.fitness = best_score;
     
     params.msg("initial training score: " +std::to_string(best_score),2);
@@ -793,11 +836,6 @@ double Feat::score(MatrixXd& X, const VectorXd& y,
     shared_ptr<CLabels> labels = predict_labels(X, Z);
     VectorXd loss; 
     return p_eval->score(y,labels,loss,params.class_weights);
-
-    /* if (params.classification) */
-    /*     return p_eval->bal_accuracy(y,yhat,vector<int>(),false); */
-    /* else */
-    /*     return p_eval->se(y,yhat).mean(); */
 }
 
 void Feat::print_stats(std::ofstream& log, double fraction)
