@@ -441,7 +441,7 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     
     if (params.classification) 
         params.set_sample_weights(d.t->y); 
-    cout << "time elapsed: " << timer.Elapsed().count() - t0 << "sec\n";
+    /* cout << "time elapsed: " << timer.Elapsed().count() - t0 << "sec\n"; */
     params.msg("Fitting initial model", 2);
 
     t0 =  timer.Elapsed().count();
