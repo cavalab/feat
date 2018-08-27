@@ -112,7 +112,6 @@ namespace FT{
         /// get maximum stack size needed for evaluation.
         std::map<char,size_t> get_max_stack_size();
 
-    
         /// set probabilities
         void set_p(const vector<double>& weights, const double& fb);
         
