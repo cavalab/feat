@@ -222,7 +222,7 @@ namespace FT{
         
         cout << "done till here\n";
         
-        cout << "Phi rows and cols are \n"<< Phi.   rows() << "\n" << Phi.cols() << "\n";  
+        cout << "Phi rows and cols are \n"<< Phi.rows() << "\n" << Phi.cols() << "\n";  
         return Phi;
     }
 
