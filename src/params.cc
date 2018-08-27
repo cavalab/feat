@@ -350,6 +350,7 @@ namespace FT{
         // variables and constants
         else if (str.compare("x") == 0)
         {
+            //cout << "Here with features.size as "<<feature_names.size()<<" and dtypes[loc] as "<<dtypes[loc]<<" \n"; 
             if(dtypes.size() == 0)
             {
                 if (feature_names.size() == 0)

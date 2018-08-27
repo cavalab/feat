@@ -148,6 +148,7 @@ namespace FT{
          
         Stacks stack;
         
+        cout << "In individua.out()\n";
         params.msg("evaluating program " + get_eqn(),3);
         params.msg("program length: " + std::to_string(program.size()),3);
         // evaluate each node in program
@@ -185,14 +186,17 @@ namespace FT{
         int rows_f = stack.f.size();
         int rows_c = stack.c.size();
         int rows_b = stack.b.size();
-        /* cout << "rows_f (stack.f.size()): " << rows_f << "\n"; */ 
-        /* cout << "rows_b (stack.b.size()): " << rows_b << "\n"; */ 
+        
+        cout << "rows_f (stack.f.size()): " << rows_f << "\n"; 
+        cout << "rows_b (stack.b.size()): " << rows_b << "\n";
+        cout << "rows_c (stack.c.size()): " << rows_c << "\n";
         
         dtypes.clear();        
         Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
         // add stack_f to Phi
         /* cout << "cols: " << cols << "\n"; */ 
-      
+        cout << "cols is " << cols << "\n";
+        
         for (unsigned int i=0; i<rows_f; ++i)
         {    
              ArrayXd Row = ArrayXd::Map(stack.f.at(i).data(),cols);
@@ -205,7 +209,8 @@ namespace FT{
              ArrayXd Row = ArrayXd::Map(stack.c.at(i).data(),cols);
              clean(Row); // remove nans, set infs to max and min
              Phi.row(i+rows_c) = Row;
-             dtypes.push_back('c'); 
+             dtypes.push_back('c');
+             cout << "i is "<< i << "\n"; 
         }
         // convert stack_b to Phi       
         for (unsigned int i=0; i<rows_b; ++i)
@@ -214,6 +219,10 @@ namespace FT{
             dtypes.push_back('b');
         }       
         //Phi.transposeInPlace();
+        
+        cout << "done till here\n";
+        
+        cout << "Phi rows and cols are \n"<< Phi.   rows() << "\n" << Phi.cols() << "\n";  
         return Phi;
     }
 
@@ -346,8 +355,10 @@ namespace FT{
     // return symbolic representation of program 
     string Individual::get_eqn()
     {
+        cout << "Called get_eqn()"<<"\n";
         if (eqn.empty())               // calculate eqn if it doesn't exist yet 
         {
+            cout << "eqn is empty\n";
             Stacks stack;
 
             for (const auto& n : program){
@@ -360,11 +371,14 @@ namespace FT{
             for (auto s : stack.fs) 
                 eqn += "[" + s + "]";
             for (auto s : stack.bs) 
+                eqn += "[" + s + "]";
+            for (auto s : stack.cs)
                 eqn += "[" + s + "]";              
             for (auto s : stack.zs) 
                 eqn += "[" + s + "]";
         }
-
+        
+        cout << "returning equation as "<<eqn << "\n"; 
         return eqn;
     }
     
