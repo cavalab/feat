@@ -139,7 +139,7 @@ namespace FT {
             return v[dis(rg[omp_get_thread_num()])]; 
         }
     }*/
-    
+        
     float Rnd::gasdev()
     //Returns a normally distributed deviate with zero mean and unit variance
     {

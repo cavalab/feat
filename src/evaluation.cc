@@ -129,12 +129,8 @@ namespace FT{
             ind.fitness_v = f;
         else
             ind.fitness = f;
-        
-        //cout<<"Assign 1 i = "<<ind.loc<<" F.cols() = "<<F.cols()<<" loss = "<<loss.size()<<" F.col(ind.loc) " <<F.col(ind.loc).size()<<" and thread as "<< omp_get_thread_num() <<"\n";
             
         F.col(ind.loc) = loss;  
-        
-        //cout<<"Assign 2 with i = "<<ind.loc<<" and thread as "<< omp_get_thread_num() <<"\n";
         
         params.msg("ind " + std::to_string(ind.loc) + " fitness: " + std::to_string(ind.fitness),3);
     }
