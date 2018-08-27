@@ -15,6 +15,7 @@ namespace FT{
 	    }
 	    else
 	    {
+	        cout << "Created categorical float\n";
 	        name = "f_c";
             otype = 'c';
 	    }

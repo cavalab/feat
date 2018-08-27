@@ -59,6 +59,7 @@ namespace FT{
             
             // calculate program output matrix Phi
             params.msg("Generating output for " + individuals.at(i).get_eqn(), 3);
+            cout << " evaluation i = " << i << " individual size is " << individuals.size() << "\n";
             MatrixXd Phi = individuals.at(i).out(d, params);            
             
             // calculate ML model from Phi

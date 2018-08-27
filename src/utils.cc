@@ -117,6 +117,8 @@ namespace FT{
                 else
                     dtypes.push_back('f');
             }
+            
+            cout << "Type is "<<dtypes[dtypes.size()-1]<< "\n";
         }
         
         // check if endpoint is binary
@@ -524,25 +526,43 @@ namespace FT{
     
     vector<char> find_dtypes(MatrixXd &X)
     {
-    	int i, j;
-	    bool isBinary;
-	    
 	    vector<char> dtypes;
 	    
-	    for(i = 0; i < X.rows(); i++)
-	    {
-	        isBinary = true;
-	        for(j = 0; j < X.cols(); j++)
-	            if(X(i, j) != 0 && X(i, j) != 1)
-	                isBinary = false;
-	                
-	        if(isBinary)
-	            dtypes.push_back('b');
-	        else
-	            dtypes.push_back('f');
-	    }
-	    
-	    return dtypes;
+	    // get feature types (binary or continuous/categorical)
+        int i, j;
+        bool isBinary;
+        bool isCategorical;
+        std::map<double, bool> uniqueMap;
+        for(i = 0; i < X.rows(); i++)
+        {
+            isBinary = true;
+            isCategorical = true;
+            uniqueMap.clear();
+            
+            for(j = 0; j < X.cols(); j++)
+            {
+                if(X(i, j) != 0 && X(i, j) != 1)
+                    isBinary = false;
+                if(X(i,j) != floor(X(i, j)))
+                    isCategorical = false;
+                else
+                    uniqueMap[X(i, j)] = true;
+            }
+        
+            if(isBinary)
+                dtypes.push_back('b');
+            else
+            {
+                if(isCategorical && uniqueMap.size() < 10)
+                    dtypes.push_back('c');    
+                else
+                    dtypes.push_back('f');
+            }
+            
+            //cout << "find_dtypes Type is "<<dtypes[dtypes.size()-1]<< "\n";
+        }
+        
+        return dtypes;
 	}
 	
 	/*

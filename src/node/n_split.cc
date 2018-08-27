@@ -17,6 +17,7 @@ namespace FT{
         }
         else
         {
+            cout << "Created categorical split\n";
             name = "split_c";
 		    arity['f'] = 0;
 		    arity['b'] = 0;
