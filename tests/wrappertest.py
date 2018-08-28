@@ -4,12 +4,12 @@ Copyright 2016 William La Cava
 license: GNU/GPLv3
 """
 from feat import Feat
-import numpy
 from sklearn.datasets import load_diabetes
 import unittest
 import argparse
 import sys
-
+import pandas as pd
+import numpy as np
 verbosity = 0
 
 class TestFeatWrapper(unittest.TestCase):
@@ -86,6 +86,20 @@ class TestFeatWrapper(unittest.TestCase):
         coefs = self.clf.get_coefs()
         print('coefs:',coefs)
         self.assertTrue( len(coefs)>0 )
+
+    def test_dataframe(self):
+        self.debug("In wrappertest.py...Calling test_dataframe")
+        dfX = pd.DataFrame(data=self.X,columns=['fishy'+str(i) 
+                                        for i in np.arange(self.X.shape[1])],
+                                        index=None)
+        # print(dfX.head())
+        # print('dfX.columns:',dfX.columns)
+        dfy = pd.DataFrame(data={'label':self.y})
+
+        self.clf.fit(dfX,dfy['label'])
+        # print('clf feature_names:',self.clf.feature_names)
+        # print('dfX.columns:',','.join(dfX.columns).encode())
+        assert(self.clf.feature_names == ','.join(dfX.columns).encode())
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="",add_help=False)
