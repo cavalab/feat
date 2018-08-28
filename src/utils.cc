@@ -102,7 +102,7 @@ namespace FT{
             {
                 if(X(i, j) != 0 && X(i, j) != 1)
                     isBinary = false;
-                if(X(i,j) != floor(X(i, j)))
+                if(X(i,j) != floor(X(i, j)) && X(i,j) != ceil(X(i,j)))
                     isCategorical = false;
                 else
                     uniqueMap[X(i, j)] = true;
@@ -117,8 +117,6 @@ namespace FT{
                 else
                     dtypes.push_back('f');
             }
-            
-            cout << "Type is "<<dtypes[dtypes.size()-1]<< "\n";
         }
         
         // check if endpoint is binary
@@ -527,7 +525,7 @@ namespace FT{
             {
                 if(X(i, j) != 0 && X(i, j) != 1)
                     isBinary = false;
-                if(X(i,j) != floor(X(i, j)))
+                if(X(i,j) != floor(X(i, j)) && X(i,j) != ceil(X(i,j)))
                     isCategorical = false;
                 else
                     uniqueMap[X(i, j)] = true;
@@ -542,8 +540,6 @@ namespace FT{
                 else
                     dtypes.push_back('f');
             }
-            
-            //cout << "find_dtypes Type is "<<dtypes[dtypes.size()-1]<< "\n";
         }
         
         return dtypes;

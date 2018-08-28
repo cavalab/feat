@@ -15,12 +15,10 @@ namespace FT{
 	    }
 	    else
 	    {
-	        cout << "Created categorical float\n";
 	        name = "f_c";
             otype = 'c';
 	    }
 	    
-	    arity['f'] = 0;
         arity['b'] = 1;
         complexity = 1;
     }
@@ -29,15 +27,15 @@ namespace FT{
     void NodeFloat::evaluate(Data& data, Stacks& stack)
     {
         if(otype == 'f')
-            stack.f.push(stack.b.pop().cast<double>());
+            stack.push<double>(stack.pop<bool>().cast<double>());
         else
-            stack.c.push(stack.b.pop().cast<double>());
+            stack.c.push(stack.pop<bool>().cast<int>());
     }
 
     /// Evaluates the node symbolically
     void NodeFloat::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("f(" + stack.bs.pop() + ")");
+        stack.push<double>("f(" + stack.popStr<bool>() + ")");
     }
     
     NodeFloat* NodeFloat::clone_impl() const { return new NodeFloat(*this); }

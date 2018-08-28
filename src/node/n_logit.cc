@@ -11,7 +11,6 @@ namespace FT{
         name = "logit";
 	    otype = 'f';
 	    arity['f'] = 1;
-	    arity['b'] = 0;
 	    complexity = 4;
 
         if (W0.empty())
@@ -27,27 +26,31 @@ namespace FT{
     /// Evaluates the node and updates the stack states. 
     void NodeLogit::evaluate(Data& data, Stacks& stack)
     {
-        stack.f.push(1/(1+(limited(exp(-W[0]*stack.f.pop())))));
+        stack.push<double>(1/(1+(limited(exp(-W[0]*stack.pop<double>())))));
     }
 
     /// Evaluates the node symbolically
     void NodeLogit::eval_eqn(Stacks& stack)
     {
-        /* stack.fs.push("1/(1+exp(-" + stack.fs.pop() + "))"); */
-        stack.fs.push("logit(" + stack.fs.pop() + ")");
+        /* stack.push<double>("1/(1+exp(-" + stack.popStr<double>() + "))"); */
+        stack.push<double>("logit(" + stack.popStr<double>() + ")");
     }
 
-    ArrayXd NodeLogit::getDerivative(Trace& stack, int loc) {
+    ArrayXd NodeLogit::getDerivative(Trace& stack, int loc) 
+    {
         ArrayXd numerator, denom;
+        
+        ArrayXd& x = stack.get<double>()[stack.size<double>()-1];
+        
         switch (loc) {
             case 1: // d/dw0
-                numerator = stack.f[stack.f.size() -1] * exp(-W[0] * stack.f[stack.f.size() -1]);
-                denom = pow(1 + exp(-W[0] * stack.f[stack.f.size()-1]), 2);
+                numerator = x * exp(-W[0] * x);
+                denom = pow(1 + exp(-W[0] * x), 2);
                 return numerator/denom;
             case 0: // d/dx0
             default:
-                numerator = W[0] * exp(-W[0] * stack.f[stack.f.size() - 1]);
-                denom = pow(1 + exp(-W[0] * stack.f[stack.f.size() - 1]), 2);
+                numerator = W[0] * exp(-W[0] * x);
+                denom = pow(1 + exp(-W[0] * x), 2);
                 return numerator/denom;
         } 
     }

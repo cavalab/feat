@@ -27,21 +27,24 @@ namespace FT{
     /// Evaluates the node and updates the stack states. 
     void NodeExponent::evaluate(Data& data, Stacks& stack)
     {
-	    /* ArrayXd x1 = stack.f.pop(); */
-        /* ArrayXd x2 = stack.f.pop(); */
+	    /* ArrayXd x1 = stack.pop<double>(); */
+        /* ArrayXd x2 = stack.pop<double>(); */
 
-        stack.f.push(limited(pow(this->W[0] * stack.f.pop(), this->W[1] * stack.f.pop())));
+        stack.push<double>(limited(pow(this->W[0] * stack.pop<double>(), 
+                                       this->W[1] * stack.pop<double>())));
     }
 
     /// Evaluates the node symbolically
     void NodeExponent::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("(" + stack.fs.pop() + ")^(" + stack.fs.pop() + ")");
+        stack.push<double>("(" + stack.popStr<double>() + ")^(" + stack.popStr<double>() + ")");
     }
 
-    ArrayXd NodeExponent::getDerivative(Trace& stack, int loc) {
-        ArrayXd x1 = stack.f[stack.f.size() - 1];
-        ArrayXd x2 = stack.f[stack.f.size() - 2];
+    ArrayXd NodeExponent::getDerivative(Trace& stack, int loc)
+    {
+        ArrayXd& x1 = stack.get<double>()[stack.size<double>()-1];
+        ArrayXd& x2 = stack.get<double>()[stack.size<double>()-2];
+        
         switch (loc) {
             case 3: // Weight for the power
                 return limited(pow(this->W[0] * x1, this->W[1] * x2) * limited(log(this->W[0] * x1)) * x2);

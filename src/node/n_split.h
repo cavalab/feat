@@ -8,13 +8,14 @@ license: GNU/GPL v3
 #include "node.h"
 
 namespace FT{
+    template <class T>
 	class NodeSplit : public Node
     {
     	public:
     
             double threshold; 
 
-    		NodeSplit(bool isCategorical = false);
+    		NodeSplit();
     		
             /// Uses a heuristic to set a splitting threshold.
             void set_threshold(ArrayXd& x, VectorXd& y, bool classification);

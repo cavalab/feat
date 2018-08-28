@@ -148,18 +148,14 @@ namespace FT{
          
         Stacks stack;
         
-        cout << "In individua.out()\n";
+        //cout << "In individua.out()\n";
         params.msg("evaluating program " + get_eqn(),3);
         params.msg("program length: " + std::to_string(program.size()),3);
         // evaluate each node in program
         for (const auto& n : program)
         {
         	if(stack.check(n->arity))
-        	{
-        	    //cout<<"***enter here "<<n->name<<"\n";
 	            n->evaluate(d, stack);
-	            //cout<<"***exit here "<<n->name<<"\n";
-	        }
             else
                 HANDLE_ERROR_THROW("out() error: node " + n->name + " in " + program_str() + " is invalid\n");
         }
@@ -187,16 +183,10 @@ namespace FT{
         int rows_c = stack.c.size();
         int rows_b = stack.b.size();
         
-        cout << "rows_f (stack.f.size()): " << rows_f << "\n"; 
-        cout << "rows_b (stack.b.size()): " << rows_b << "\n";
-        cout << "rows_c (stack.c.size()): " << rows_c << "\n";
-        
         dtypes.clear();        
         Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
-        // add stack_f to Phi
-        /* cout << "cols: " << cols << "\n"; */ 
-        cout << "cols is " << cols << "\n";
         
+        // add stack_f to Phi
         for (unsigned int i=0; i<rows_f; ++i)
         {    
              ArrayXd Row = ArrayXd::Map(stack.f.at(i).data(),cols);
@@ -204,13 +194,13 @@ namespace FT{
              Phi.row(i) = Row;
              dtypes.push_back('f'); 
         }
+        // add stack_b to Phi
         for (unsigned int i=0; i<rows_c; ++i)
         {    
-             ArrayXd Row = ArrayXd::Map(stack.c.at(i).data(),cols);
+             ArrayXd Row = ArrayXi::Map(stack.c.at(i).data(),cols).cast<double>();
              clean(Row); // remove nans, set infs to max and min
-             Phi.row(i+rows_c) = Row;
+             Phi.row(i+rows_f) = Row;
              dtypes.push_back('c');
-             cout << "i is "<< i << "\n"; 
         }
         // convert stack_b to Phi       
         for (unsigned int i=0; i<rows_b; ++i)
@@ -218,11 +208,7 @@ namespace FT{
             Phi.row(i+rows_f+rows_c) = ArrayXb::Map(stack.b.at(i).data(),cols).cast<double>();
             dtypes.push_back('b');
         }       
-        //Phi.transposeInPlace();
-        
-        cout << "done till here\n";
-        
-        cout << "Phi rows and cols are \n"<< Phi.rows() << "\n" << Phi.cols() << "\n";  
+
         return Phi;
     }
 
@@ -324,8 +310,8 @@ namespace FT{
         
         dtypes.clear();        
         Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
+        
         // add stack_f to Phi
-       
         for (unsigned int i=0; i<rows_f; ++i)
         {    
              ArrayXd Row = ArrayXd::Map(stack.f.at(i).data(),cols);
@@ -334,11 +320,12 @@ namespace FT{
              dtypes.push_back('f'); 
         }
         
+        // add stack_c to Phi
         for (unsigned int i=0; i<rows_c; ++i)
         {    
-             ArrayXd Row = ArrayXd::Map(stack.c.at(i).data(),cols);
+             ArrayXd Row = ArrayXi::Map(stack.c.at(i).data(),cols).cast<double>();
              clean(Row); // remove nans, set infs to max and min
-             Phi.row(i+rows_c) = Row;
+             Phi.row(i+rows_f) = Row;
              dtypes.push_back('c'); 
         }
         
@@ -355,10 +342,10 @@ namespace FT{
     // return symbolic representation of program 
     string Individual::get_eqn()
     {
-        cout << "Called get_eqn()"<<"\n";
+        //cout << "Called get_eqn()"<<"\n";
         if (eqn.empty())               // calculate eqn if it doesn't exist yet 
         {
-            cout << "eqn is empty\n";
+            //cout << "eqn is empty\n";
             Stacks stack;
 
             for (const auto& n : program){
@@ -378,7 +365,7 @@ namespace FT{
                 eqn += "[" + s + "]";
         }
         
-        cout << "returning equation as "<<eqn << "\n"; 
+        //cout << "returning equation as "<<eqn << "\n"; 
         return eqn;
     }
     
