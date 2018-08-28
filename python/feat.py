@@ -91,7 +91,16 @@ class Feat(BaseEstimator):
                 self.use_batch)
    
     def fit(self,X,y,zfile=None,zids=None):
-        self._init_pyfeat()    
+        
+        if type(X).__name__ == 'DataFrame':
+            if len(list(X.columns)) == X.shape[1]:
+                self.feature_names = ','.join(X.columns).encode()
+            X = X.values
+        if type(y).__name__ in ['DataFrame','Series']:
+            y = y.values
+
+        self._init_pyfeat()   
+        
         if zfile:
             zfile = zfile.encode() if isinstance(zfile,str) else zfile
             self._pyfeat.fit_with_z(X,y,zfile,zids)
