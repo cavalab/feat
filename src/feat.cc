@@ -449,9 +449,8 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     
     if (params.classification) 
         params.set_sample_weights(d.t->y); 
-    cout << "time elapsed: " << timer.Elapsed().count() - t0 << "sec\n";
+    
     params.msg("Fitting initial model", 2);
-
     t0 =  timer.Elapsed().count();
     initial_model(d);  
     params.msg(std::to_string(timer.Elapsed().count() - t0) + " seconds",2);
@@ -520,7 +519,6 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
         
         if(params.use_batch)
         {
-            cout << "getting batch...\n";
             t0 =  timer.Elapsed().count();
             d.t->get_batch(db, params.bp.batch_size);
             DataRef dbr;    // reference to minibatch data
@@ -528,10 +526,8 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
             
             if (params.classification)
                 params.set_sample_weights(dbr.t->y); 
-            cout << "got batch (" << timer.Elapsed().count() - t0 << " sec). val_fitness...\n";
             t0 = timer.Elapsed().count();
             p_eval->val_fitness(final_pop, *dbr.t, F_v, *d.v, params);
-            cout << "val_fitness completed in " << timer.Elapsed().count() - t0 << " seconds\n";
         }
         else
             p_eval->val_fitness(final_pop, *d.t, F_v, *d.v, params);
