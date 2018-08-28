@@ -245,7 +245,7 @@ namespace FT {
                     pop<ArrayXd>(&stack.f);
                 }
                 for (int i = 0; i < dNode->arity['c']; i++) {
-                    pop<ArrayXd>(&stack.c);
+                    pop<ArrayXi>(&stack.c);
                 }
                 for (int i = 0; i < dNode->arity['b']; i++) {
                     pop<ArrayXb>(&stack.b);

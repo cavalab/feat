@@ -11,7 +11,6 @@ namespace FT{
         name = "sign";
 	    otype = 'f';
 	    arity['f'] = 1;
-	    arity['b'] = 0;
 	    complexity = 1;
 
         if (W0.empty())
@@ -27,29 +26,31 @@ namespace FT{
     /// Evaluates the node and updates the stack states. 
     void NodeSign::evaluate(Data& data, Stacks& stack)
     {
-	    ArrayXd x = stack.f.pop();
+	    ArrayXd x = stack.pop<double>();
         ArrayXd ones = ArrayXd::Ones(x.size());
 
 	    ArrayXd res = (W[0] * x > 0).select(ones, 
                                             (x == 0).select(ArrayXd::Zero(x.size()), 
                                                             -1*ones)); 
-        stack.f.push(res);
+        stack.push<double>(res);
     }
 
     /// Evaluates the node symbolically
     void NodeSign::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("sign("+ stack.fs.pop() +")");
+        stack.push<double>("sign("+ stack.popStr<double>() +")");
     }
 
-    ArrayXd NodeSign::getDerivative(Trace& stack, int loc) {
+    ArrayXd NodeSign::getDerivative(Trace& stack, int loc)
+    {
+        ArrayXd& x = stack.get<double>()[stack.size<double>()-1];
         // Might want to experiment with using a perceptron update rule or estimating with some other function
         switch (loc) {
             case 1: // d/dw0
-                return stack.f[stack.f.size()-1] / (2 * sqrt(W[0] * stack.f[stack.f.size()-1]));
+                return x / (2 * sqrt(W[0] * x));
             case 0: // d/dx0
             default:
-                return W[0] / (2 * sqrt((W[0] * stack.f[stack.f.size()-1]).abs()));
+                return W[0] / (2 * sqrt((W[0] * x.abs())));
         } 
     }
     

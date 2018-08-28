@@ -11,8 +11,6 @@ namespace FT{
     {
         name = "time";
 	    otype = 'f';
-	    arity['f'] = 0;
-	    arity['b'] = 0;
 	    arity['z'] = 1;
 	    complexity = 1;
     }
@@ -29,14 +27,14 @@ namespace FT{
             
         stack.z.pop();
 
-        stack.f.push(tmp);
+        stack.push<double>(tmp);
         
     }
 
     /// Evaluates the node symbolically
     void NodeTime::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("time(" + stack.zs.pop() + ")");
+        stack.push<double>("time(" + stack.zs.pop() + ")");
     }
     
     NodeTime* NodeTime::clone_impl() const { return new NodeTime(*this); }

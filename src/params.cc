@@ -36,8 +36,8 @@ namespace FT{
             set_verbosity(verbosity);
             if (fs.empty())
                 fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
-                      "logit,tanh,gauss,relu,split,float,"
-                      "and,or,not,xor,=,<,<=,>,>=,if,ite";
+                      "logit,tanh,gauss,relu,split,split_c,float,"
+                      "float_c,and,or,not,xor,=,<,<=,>,>=,if,ite";
             set_functions(fs);
             set_objectives(obj);
             set_feature_names(fn);
@@ -226,7 +226,18 @@ namespace FT{
                     std::cout << "\n";
                     otype = 'b';
                     otypes.push_back('b');
-                }                        
+                }
+                else if (!in(ttypes, 'c'))
+                {
+                    size_t n = functions.size();
+                    for (vector<int>::size_type i =n-1; 
+                         i != (std::vector<int>::size_type) -1; i--){
+                        if (functions.at(i)->arity['c'] >0){
+                            std::cout << "erasing function " << functions.at(i)->name << "\n";
+                            functions.erase(functions.begin()+i);
+                        }
+                    }
+                }                    
                 else
                 {
                     otypes.push_back('b');
@@ -293,7 +304,10 @@ namespace FT{
             return std::unique_ptr<Node>(new NodeRelu());
 
         else if (str.compare("float")==0)
-                return std::unique_ptr<Node>(new NodeFloat(b_val));
+                return std::unique_ptr<Node>(new NodeFloat());
+        
+        else if (str.compare("float_c")==0)
+                return std::unique_ptr<Node>(new NodeFloat(true));
 
         // logical operators
         else if (str.compare("and") == 0)
@@ -324,7 +338,10 @@ namespace FT{
     		return std::unique_ptr<Node>(new NodeLEQ());
  
         else if (str.compare("split") == 0)
-  		    return std::unique_ptr<Node>(new NodeSplit(b_val));
+  		    return std::unique_ptr<Node>(new NodeSplit<double>());
+  		
+  		else if (str.compare("split_c") == 0)
+  		    return std::unique_ptr<Node>(new NodeSplit<int>());
     	
      	else if (str.compare("if") == 0)
     		return std::unique_ptr<Node>(new NodeIf());   	    		
@@ -368,8 +385,7 @@ namespace FT{
 
         // variables and constants
         else if (str.compare("x") == 0)
-        {
-            //cout << "Here with features.size as "<<feature_names.size()<<" and dtypes[loc] as "<<dtypes[loc]<<" \n"; 
+        { 
             if(dtypes.size() == 0)
             {
                 if (feature_names.size() == 0)
@@ -391,10 +407,7 @@ namespace FT{
             return std::unique_ptr<Node>(new NodeConstant(d_val));
             
         else if (str.compare("z")==0)
-        {
-            //std::cout<<"******CALLED with name "<<name<<"\n";
             return std::unique_ptr<Node>(new NodeLongitudinal(name));
-        }
         else
             HANDLE_ERROR_THROW("Error: no node named '" + str + "' exists."); 
         

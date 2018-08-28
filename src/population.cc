@@ -61,17 +61,12 @@ namespace FT{
          
         Data data(X, y, Z, false);
         
-        //cout<<"Enter\n";  
         unsigned i = 0; 
         for (const auto& n : program){
-            //cout<<"Evaluating node "<<n->name;
             if (stack.check(n->arity))
-            {
-                //cout<<"\nEvaluating\n";
                 n->evaluate(data, stack);
-                //cout<<"Evaluation done\n";
-            }
-            else{
+            else
+            {
                 std::cout << "Error: ";
                 for (const auto& p: program) std::cout << p->name << " ";
                 std::cout << "is not a valid program because ";
@@ -80,7 +75,6 @@ namespace FT{
             }
             ++i;
         }
-        //cout<<"Exit\n";
         return true;
     }
    

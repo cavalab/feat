@@ -10,7 +10,6 @@ namespace FT{
     {
 	    name = "and";
 	    otype = 'b';
-	    arity['f'] = 0;
 	    arity['b'] = 2;
 	    complexity = 2;
     }
@@ -18,14 +17,14 @@ namespace FT{
     /// Evaluates the node and updates the stack states. 
     void NodeAnd::evaluate(Data& data, Stacks& stack)
     {
-        stack.b.push(stack.b.pop() && stack.b.pop());
+        stack.push<bool>(stack.pop<bool>() && stack.pop<bool>());
 
     }
 
     /// Evaluates the node symbolically
     void NodeAnd::eval_eqn(Stacks& stack)
     {
-        stack.bs.push("(" + stack.bs.pop() + " AND " + stack.bs.pop() + ")");
+        stack.push<bool>("(" + stack.popStr<bool>() + " AND " + stack.popStr<bool>() + ")");
     }
     
     NodeAnd* NodeAnd::clone_impl() const { return new NodeAnd(*this); }

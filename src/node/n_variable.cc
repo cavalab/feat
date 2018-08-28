@@ -14,9 +14,6 @@ namespace FT{
         else
             name = n;
 	    otype = ntype;
-	    arity['f'] = 0;
-	    arity['b'] = 0;
-	    arity['c'] = 0;
 	    complexity = 1;
 	    loc = l;
     }
@@ -26,9 +23,9 @@ namespace FT{
     {
         switch(otype)
         {
-            case 'b': stack.b.push(data.X.row(loc).cast<bool>()); break;
-            case 'c': stack.c.push(data.X.row(loc)); break;
-            case 'f': stack.f.push(data.X.row(loc)); break;
+            case 'b': stack.push<bool>(data.X.row(loc).cast<bool>()); break;
+            case 'c': stack.push<int>(data.X.row(loc).cast<int>()); break;
+            case 'f': stack.push<double>(data.X.row(loc)); break;
             
         }
     }
@@ -38,9 +35,9 @@ namespace FT{
     {
         switch(otype)
         {
-            case 'b' : stack.bs.push(name); break;
-            case 'c' : stack.cs.push(name); break;
-            case 'f' : stack.fs.push(name); break;
+            case 'b' : stack.push<bool>(name); break;
+            case 'c' : stack.push<int>(name); break;
+            case 'f' : stack.push<double>(name); break;
         }
     }
 

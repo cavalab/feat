@@ -10,11 +10,13 @@ license: GNU/GPL v3
 #include <Eigen/Dense>
 #include <vector>
 #include <map>
+#include <iostream>
 
 using std::vector;
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 using Eigen::ArrayXd;
+using Eigen::ArrayXi;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
 using namespace std;
 
@@ -78,6 +80,8 @@ namespace FT
             
             ///< returns const iterator of stack
             typename vector<type>::const_iterator end() const{ return st.end(); }
+            
+            ~Stack(){}
     };
     
     /*!
@@ -88,7 +92,7 @@ namespace FT
     {
         Stack<ArrayXd> f;                   ///< floating node stack
         Stack<ArrayXb> b;                   ///< boolean node stack
-        Stack<ArrayXd> c;                   ///<categorical stack
+        Stack<ArrayXi> c;                   ///<categorical stack
         Stack<std::pair<vector<ArrayXd>, vector<ArrayXd> > > z;     ///< longitudinal node stack
         Stack<string> fs;                   ///< floating node string stack
         Stack<string> bs;                   ///< boolean node string stack
@@ -100,7 +104,56 @@ namespace FT
         
         ///< checks if arity of node provided satisfies the node names in various string stacks
         bool check_s(std::map<char, unsigned int> &arity);
+        
+        template <typename T> inline Stack<Eigen::Array<T,Eigen::Dynamic,1> >& get()
+        {
+            return get<Eigen::Array<T,Eigen::Dynamic,1> >();
+        }
+        
+        template <typename T> void push(Eigen::Array<T,Eigen::Dynamic,1>  value)
+        {
+            get<T>().push(value);
+        }
+
+        template <typename T> Eigen::Array<T,Eigen::Dynamic,1>  pop()
+        {
+            return get<T>().pop();
+        }
+        
+        template <typename T> inline Stack<string>& getStr()
+        {
+            return getStr<T>();
+        }
+        
+        template <typename T> void push(string value)
+        {
+            getStr<T>().push(value);
+        }
+        
+        template <typename T> string popStr()
+        {
+            return getStr<T>().pop();
+        }
+        
+        template <typename T> unsigned int size()
+        {
+            return get<T>().size();
+        }
+        
     };
+    
+    template <> inline Stack<ArrayXd>& Stacks::get(){ return f; }
+        
+    template <> inline Stack<ArrayXb>& Stacks::get(){ return b; }
+    
+    template <> inline Stack<ArrayXi>& Stacks::get(){ return c; }
+    
+    template <> inline Stack<string>& Stacks::getStr<double>(){ return fs; }
+        
+    template <> inline Stack<string>& Stacks::getStr<bool>(){ return bs; }
+    
+    template <> inline Stack<string>& Stacks::getStr<int>(){ return cs; }
+    
     /*!
      * @class Trace
      * @brief used for tracing stack outputs for backprop algorithm.
@@ -108,9 +161,25 @@ namespace FT
     struct Trace
     {
         vector<ArrayXd> f;
-        vector<ArrayXd> c;
+        vector<ArrayXi> c;
         vector<ArrayXb> b;
+        
+        template <typename T> inline vector<Eigen::Array<T,Eigen::Dynamic,1> >& get()
+        {
+            return get<Eigen::Array<T,Eigen::Dynamic,1> >();
+        }
+        
+        template <typename T> unsigned int size()
+        {
+            return get<T>().size();
+        }
     };
+    
+    template <> inline vector<ArrayXd>& Trace::get(){ return f; }
+        
+    template <> inline vector<ArrayXb>& Trace::get(){ return b; }
+    
+    template <> inline vector<ArrayXi>& Trace::get(){ return c; }
 }
 
 #endif

@@ -4,6 +4,7 @@ license: GNU/GPL v3
 */
 
 #include "stack.h"
+#include <iostream>
 
 namespace FT
 {
@@ -34,8 +35,11 @@ namespace FT
                     zs.size() >= arity['z']);
     }
     
+    //Stacks::~Stacks(){cout <<"called successfully\n";};
+    
     template class Stack<ArrayXd>;
     template class Stack<ArrayXb>;
+    template class Stack<ArrayXi>;
     template class Stack<std::pair<vector<ArrayXd>, vector<ArrayXd> > >;
     template class Stack<string>;
 }
