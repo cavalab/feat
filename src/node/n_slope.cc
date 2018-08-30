@@ -19,7 +19,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeSlope::evaluate(Data& data, Stacks& stack)
+    void NodeSlope::evaluate(const Data& data, Stacks& stack)
     {
         ArrayXd tmp(stack.z.top().first.size());
         

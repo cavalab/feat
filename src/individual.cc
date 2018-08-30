@@ -134,14 +134,37 @@ namespace FT{
         return ps;
     }
     
+    shared_ptr<CLabels> Individual::fit(const Data& d, const Parameters& params, bool& pass)
+    {
+        // calculate program output matrix Phi
+        params.msg("Generating output for " + get_eqn(), 3);
+        Phi = out(d, params);            
+        // calculate ML model from Phi
+        params.msg("ML training on " + get_eqn(), 3);
+        ml = std::make_shared<ML>(params);
+
+        shared_ptr<CLabels> yhat = ml->fit(Phi,d.y,params,pass,dtypes);
+
+        return yhat;
+    }
+
+    shared_ptr<CLabels> Individual::predict(const Data& d, const Parameters& params)
+    {
+        // calculate program output matrix Phi
+        params.msg("Generating output for " + get_eqn(), 3);
+        Phi = out(d, params);            
+        // calculate ML model from Phi
+        params.msg("ML predicting on " + get_eqn(), 3);
+        // assumes ML is already trained
+        shared_ptr<CLabels> yhat = ml->predict(Phi);
+
+        return yhat;
+    }
     // calculate program output matrix
-    MatrixXd Individual::out(Data d,
-                             const Parameters& params)
+    MatrixXd Individual::out(const Data& d, const Parameters& params)
     {
         /*!
-         * @params X: n_features x n_samples data
-         * @params Z: longitudinal nodes for samples
-         * @params y: target data
+         * @params d: Data structure
          * @params: Feat parameters
          * @returns Phi: n_features x n_samples transformation
          */
@@ -160,7 +183,8 @@ namespace FT{
 	            //cout<<"***exit here "<<n->name<<"\n";
 	        }
             else
-                HANDLE_ERROR_THROW("out() error: node " + n->name + " in " + program_str() + " is invalid\n");
+                HANDLE_ERROR_THROW("out() error: node " + n->name + " in " + program_str() + 
+                                   " is invalid\n");
         }
         
         // convert stack_f to Phi
@@ -203,7 +227,7 @@ namespace FT{
     }
 
     // calculate program output matrix
-    MatrixXd Individual::out_trace(Data d,
+    MatrixXd Individual::out_trace(const Data& d,
                      const Parameters& params, vector<Trace>& stack_trace)
     {
         /*!

@@ -18,7 +18,7 @@ namespace FT{
 	}
 
     /// Evaluates the node and updates the stack states. 
-    void NodeIfThenElse::evaluate(Data& data, Stacks& stack)
+    void NodeIfThenElse::evaluate(const Data& data, Stacks& stack)
     {
         ArrayXd f1 = stack.f.pop();
         ArrayXd f2 = stack.f.pop();
