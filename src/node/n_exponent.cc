@@ -47,11 +47,14 @@ namespace FT{
         
         switch (loc) {
             case 3: // Weight for the power
-                return limited(pow(this->W[0] * x1, this->W[1] * x2) * limited(log(this->W[0] * x1)) * x2);
+                return limited(pow(this->W[0] * x1,
+                                   this->W[1] * x2) * limited(log(this->W[0] * x1)) * x2);
             case 2: // Weight for the base
-                return limited(this->W[1] * x2 * pow(this->W[0] * x1, this->W[1] * x2) / this->W[0]);
+                return limited(this->W[1] * x2 * pow(this->W[0] * x1,
+                               this->W[1] * x2) / this->W[0]);
             case 1: // Power
-                return limited(this->W[1]*pow(this->W[0] * x1, this->W[1] * x2) * limited(log(this->W[0] * x1)));
+                return limited(this->W[1]*pow(this->W[0] * x1,
+                               this->W[1] * x2) * limited(log(this->W[0] * x1)));
             case 0: // Base
             default:
                 return limited(this->W[1] * x2 * pow(this->W[0] * x1, this->W[1] * x2) / x1);

@@ -93,5 +93,5 @@ namespace FT{
     std::unique_ptr<Node> Node::clone() const { return std::unique_ptr<Node>(clone_impl()); }
 
     /// makes a randomized unique copy ofnode
-    std::unique_ptr<Node> Node::rnd_clone() const { return std::unique_ptr<Node>(rnd_clone_impl()); }
+    std::unique_ptr<Node> Node::rnd_clone() const {return std::unique_ptr<Node>(rnd_clone_impl());}
 }

@@ -34,7 +34,6 @@ namespace FT{
     /// Evaluates the node symbolically
     void NodeGaussian::eval_eqn(Stacks& stack)
     {
-        /* stack.push<double>("exp(-(" +std::to_string(W[0]) + '-' + stack.popStr<double>() + ")^2)"); */
         stack.push<double>("gauss(" + stack.popStr<double>() + ")");
     }
 
