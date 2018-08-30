@@ -15,7 +15,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeGreaterThan::evaluate(Data& data, Stacks& stack)
+    void NodeGreaterThan::evaluate(const Data& data, Stacks& stack)
     {
         ArrayXd x1 = stack.pop<double>();
         ArrayXd x2 = stack.pop<double>();

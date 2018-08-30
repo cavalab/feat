@@ -24,7 +24,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeMultiply::evaluate(Data& data, Stacks& stack)
+    void NodeMultiply::evaluate(const Data& data, Stacks& stack)
     {
         stack.push<double>(limited(W[0]*stack.pop<double>() * W[1]*stack.pop<double>()));
     }

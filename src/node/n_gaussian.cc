@@ -26,7 +26,7 @@ namespace FT{
 	}
 
     /// Evaluates the node and updates the stack states. 
-    void NodeGaussian::evaluate(Data& data, Stacks& stack)
+    void NodeGaussian::evaluate(const Data& data, Stacks& stack)
     {
         stack.push<double>(limited(exp(-pow(W[0] - stack.pop<double>(), 2))));
     }

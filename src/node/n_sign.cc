@@ -24,7 +24,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeSign::evaluate(Data& data, Stacks& stack)
+    void NodeSign::evaluate(const Data& data, Stacks& stack)
     {
 	    ArrayXd x = stack.pop<double>();
         ArrayXd ones = ArrayXd::Ones(x.size());

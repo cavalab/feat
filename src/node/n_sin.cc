@@ -25,7 +25,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeSin::evaluate(Data& data, Stacks& stack)
+    void NodeSin::evaluate(const Data& data, Stacks& stack)
     {
 
         stack.push<double>(limited(sin(W[0]*stack.pop<double>())));

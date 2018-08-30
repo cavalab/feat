@@ -27,7 +27,7 @@ namespace FT{
 
     /// Evaluates the node and updates the stack states. 
     #ifndef USE_CUDA
-    void Node2dGaussian::evaluate(Data& data, Stacks& stack)
+    void Node2dGaussian::evaluate(const Data& data, Stacks& stack)
     {
         ArrayXd x1 = stack.pop<double>();
         ArrayXd x2 = stack.pop<double>();

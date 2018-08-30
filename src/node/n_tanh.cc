@@ -25,7 +25,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeTanh::evaluate(Data& data, Stacks& stack)
+    void NodeTanh::evaluate(const Data& data, Stacks& stack)
     {
         stack.push<double>(limited(tanh(W[0]*stack.pop<double>())));
     }

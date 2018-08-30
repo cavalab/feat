@@ -19,7 +19,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 		
-    void NodeLongitudinal::evaluate(Data& data, Stacks& stack)
+    void NodeLongitudinal::evaluate(const Data& data, Stacks& stack)
     {
         stack.z.push(data.Z.at(zName));
     }

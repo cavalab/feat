@@ -19,7 +19,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 		
-    void NodeVariable::evaluate(Data& data, Stacks& stack)
+    void NodeVariable::evaluate(const Data& data, Stacks& stack)
     {
         switch(otype)
         {

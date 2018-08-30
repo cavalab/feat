@@ -25,7 +25,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeSquare::evaluate(Data& data, Stacks& stack)
+    void NodeSquare::evaluate(const Data& data, Stacks& stack)
     {
         stack.push<double>(limited(pow(W[0]*stack.pop<double>(),2)));
     }

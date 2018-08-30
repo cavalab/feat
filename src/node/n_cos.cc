@@ -24,7 +24,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeCos::evaluate(Data& data, Stacks& stack)
+    void NodeCos::evaluate(const Data& data, Stacks& stack)
     {
         stack.push<double>(limited(cos(W[0] * stack.pop<double>())));
     }
