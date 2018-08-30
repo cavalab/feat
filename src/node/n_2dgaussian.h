@@ -17,7 +17,7 @@ namespace FT{
     		Node2dGaussian(vector<double> W0 = vector<double>());
     		    		
             /// Evaluates the node and updates the stack states. 
-            void evaluate(Data& data, Stacks& stack);
+            void evaluate(const Data& data, Stacks& stack);
 
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack);

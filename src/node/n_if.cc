@@ -18,7 +18,7 @@ namespace FT{
 	}
 
     /// Evaluates the node and updates the stack states. 
-    void NodeIf::evaluate(Data& data, Stacks& stack)
+    void NodeIf::evaluate(const Data& data, Stacks& stack)
     {
         stack.push<double>(limited(stack.pop<bool>().select(stack.pop<double>(),0)));
     }

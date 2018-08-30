@@ -24,7 +24,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeFloat::evaluate(Data& data, Stacks& stack)
+    void NodeFloat::evaluate(const Data& data, Stacks& stack)
     {
         if(otype == 'f')
             stack.push<double>(stack.pop<bool>().cast<double>());

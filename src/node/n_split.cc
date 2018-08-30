@@ -28,7 +28,7 @@ namespace FT{
 	}
 
     template <class T>
-    void NodeSplit<T>::evaluate(Data& data, Stacks& stack)
+    void NodeSplit<T>::evaluate(const Data& data, Stacks& stack)
     {
         ArrayXd x1;
                 

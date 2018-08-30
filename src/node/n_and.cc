@@ -15,7 +15,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeAnd::evaluate(Data& data, Stacks& stack)
+    void NodeAnd::evaluate(const Data& data, Stacks& stack)
     {
         stack.push<bool>(stack.pop<bool>() && stack.pop<bool>());
 

@@ -25,7 +25,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeExponent::evaluate(Data& data, Stacks& stack)
+    void NodeExponent::evaluate(const Data& data, Stacks& stack)
     {
 	    /* ArrayXd x1 = stack.pop<double>(); */
         /* ArrayXd x2 = stack.pop<double>(); */

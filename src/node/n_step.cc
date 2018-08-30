@@ -17,7 +17,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeStep::evaluate(Data& data, Stacks& stack)
+    void NodeStep::evaluate(const Data& data, Stacks& stack)
     {
 	    ArrayXd x = stack.pop<double>();
 	    ArrayXd res = (x > 0).select(ArrayXd::Ones(x.size()), ArrayXd::Zero(x.size())); 

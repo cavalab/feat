@@ -25,7 +25,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeSqrt::evaluate(Data& data, Stacks& stack)
+    void NodeSqrt::evaluate(const Data& data, Stacks& stack)
     {
         stack.push<double>(sqrt(W[0]*stack.pop<double>().abs()));
     }

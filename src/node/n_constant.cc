@@ -31,7 +31,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeConstant::evaluate(Data& data, Stacks& stack)
+    void NodeConstant::evaluate(const Data& data, Stacks& stack)
     {
 	    if (otype == 'b')
             stack.push<bool>(ArrayXb::Constant(data.X.cols(),int(b_value)));
