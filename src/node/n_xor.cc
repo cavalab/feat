@@ -17,7 +17,7 @@ namespace FT
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeXor::evaluate(Data& data, Stacks& stack)
+    void NodeXor::evaluate(const Data& data, Stacks& stack)
     {
 	    ArrayXb x1 = stack.b.pop();
         ArrayXb x2 = stack.b.pop();

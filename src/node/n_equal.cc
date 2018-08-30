@@ -16,7 +16,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeEqual::evaluate(Data& data, Stacks& stack)
+    void NodeEqual::evaluate(const Data& data, Stacks& stack)
     {
         stack.b.push(stack.f.pop() == stack.f.pop());
     }

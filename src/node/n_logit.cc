@@ -25,7 +25,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeLogit::evaluate(Data& data, Stacks& stack)
+    void NodeLogit::evaluate(const Data& data, Stacks& stack)
     {
         stack.f.push(1/(1+(limited(exp(-W[0]*stack.f.pop())))));
     }

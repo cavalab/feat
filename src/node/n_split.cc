@@ -16,7 +16,7 @@ namespace FT{
         threshold = 0;
 	}
 
-    void NodeSplit::evaluate(Data& data, Stacks& stack)
+    void NodeSplit::evaluate(const Data& data, Stacks& stack)
     {
         /* cout << "classification: " << data.classification << "\n"; */
         ArrayXd x1 = stack.f.pop();

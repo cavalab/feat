@@ -42,7 +42,7 @@ namespace FT{
             virtual ~Node(){}
            
             /// Evaluates the node and updates the stack states. 
-            virtual void evaluate(Data& data, Stacks& stack) = 0; 
+            virtual void evaluate(const Data& data, Stacks& stack) = 0; 
 
             /// evaluates the node symbolically
             virtual void eval_eqn(Stacks& stack) = 0;
