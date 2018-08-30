@@ -17,7 +17,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeMax::evaluate(Data& data, Stacks& stack)
+    void NodeMax::evaluate(const Data& data, Stacks& stack)
     {
         ArrayXd tmp(stack.z.top().first.size());
         int x;

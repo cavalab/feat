@@ -16,7 +16,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeNot::evaluate(Data& data, Stacks& stack)
+    void NodeNot::evaluate(const Data& data, Stacks& stack)
     {
         stack.b.push(!stack.b.pop());
     }

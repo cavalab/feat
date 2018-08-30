@@ -25,7 +25,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeRelu::evaluate(Data& data, Stacks& stack)
+    void NodeRelu::evaluate(const Data& data, Stacks& stack)
     {
         ArrayXd x = stack.f.pop();
         ArrayXd res = (W[0] * x > 0).select(W[0]*x, ArrayXd::Zero(x.size())+0.01); 

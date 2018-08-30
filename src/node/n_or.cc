@@ -17,7 +17,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeOr::evaluate(Data& data, Stacks& stack)
+    void NodeOr::evaluate(const Data& data, Stacks& stack)
     {
         stack.b.push(stack.b.pop() || stack.b.pop());
 

@@ -26,7 +26,7 @@ namespace FT{
     }
 
     /// Safe log: pushes log(abs(x)) or MIN_DBL if x is near zero. 
-    void NodeLog::evaluate(Data& data, Stacks& stack)
+    void NodeLog::evaluate(const Data& data, Stacks& stack)
     {
 	    ArrayXd x = stack.f.pop();
         stack.f.push( (abs(x) > NEAR_ZERO).select(log(abs(W[0] * x)),MIN_DBL));
