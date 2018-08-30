@@ -17,7 +17,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeCount::evaluate(Data& data, Stacks& stack)
+    void NodeCount::evaluate(const Data& data, Stacks& stack)
     {
         ArrayXd tmp(stack.z.top().first.size());
         int x;

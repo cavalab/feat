@@ -26,7 +26,7 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeAdd::evaluate(Data& data, Stacks& stack)
+    void NodeAdd::evaluate(const Data& data, Stacks& stack)
     {
         stack.f.push(limited(this->W[0] * stack.f.pop() + this->W[1] * stack.f.pop()));
     }
