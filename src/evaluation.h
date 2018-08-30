@@ -46,13 +46,6 @@ namespace FT{
                          bool offspring = false,
                          bool validation = false);
           
-            /* void val_fitness(vector<Individual>& individuals, */
-            /*                  const Data& dt, */
-            /*                  MatrixXd& F, */ 
-            /*                  const Data& dv, */
-            /*                  const Parameters& params, */ 
-            /*                  bool offspring = false); */
-         
             /// assign fitness to an individual and to F.  
             void assign_fit(Individual& ind, MatrixXd& F, const shared_ptr<CLabels>& yhat, 
                             const VectorXd& y, const Parameters& params,bool val=false);       
