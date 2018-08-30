@@ -44,7 +44,8 @@ namespace FT{
     ArrayXd NodeSign::getDerivative(Trace& stack, int loc)
     {
         ArrayXd& x = stack.get<double>()[stack.size<double>()-1];
-        // Might want to experiment with using a perceptron update rule or estimating with some other function
+        // Might want to experiment with using a perceptron
+        // update rule or estimating with some other function
         switch (loc) {
             case 1: // d/dw0
                 return x / (2 * sqrt(W[0] * x));
