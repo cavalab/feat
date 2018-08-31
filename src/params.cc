@@ -109,7 +109,6 @@ namespace FT{
     void Parameters::set_term_weights(const vector<double>& w)
     {           
         //assert(w.size()==terminals.size()); 
-        cout << "in set_term_weights\n";
         /* cout << "weights: "; for (auto tmp : w) cout << tmp << " " ; cout << "\n"; */ 
         string weights;
         double u = 1.0/double(w.size());
@@ -220,14 +219,22 @@ namespace FT{
                             functions.erase(functions.begin()+i);
                         }
                     }
+                    
                     std::cout << "functions:\n";
                     for (const auto& f : functions)
                         std::cout << f->name << " "; 
                     std::cout << "\n";
                     otype = 'b';
                     otypes.push_back('b');
+                }           
+                else
+                {
+                    otypes.push_back('b');
+                    otypes.push_back('f');
                 }
-                else if (!in(ttypes, 'c'))
+                
+                //erasing categorical nodes if no categorical stack exists  
+                if (!in(ttypes, 'c'))
                 {
                     size_t n = functions.size();
                     for (vector<int>::size_type i =n-1; 
@@ -237,12 +244,7 @@ namespace FT{
                             functions.erase(functions.begin()+i);
                         }
                     }
-                }                    
-                else
-                {
-                    otypes.push_back('b');
-                    otypes.push_back('f');
-                }
+                }         
                 break;
             }
         }
