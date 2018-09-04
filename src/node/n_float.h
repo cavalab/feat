@@ -12,7 +12,7 @@ namespace FT{
     {
     	public:
     	
-    		NodeFloat();
+    		NodeFloat(bool isCategorical = false);
     		
             /// Evaluates the node and updates the stack states. 
             void evaluate(const Data& data, Stacks& stack);

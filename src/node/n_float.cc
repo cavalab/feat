@@ -6,25 +6,36 @@ license: GNU/GPL v3
     	
 namespace FT{
 
-    NodeFloat::NodeFloat()
+    NodeFloat::NodeFloat(bool isCategorical)
     {
-	    name = "f";
-	    otype = 'f';
-	    arity['f'] = 0;
-	    arity['b'] = 1;
-	    complexity = 1;
+        if(!isCategorical)
+        {
+	        name = "f";
+	        otype = 'f';
+	    }
+	    else
+	    {
+	        name = "f_c";
+            otype = 'c';
+	    }
+	    
+        arity['b'] = 1;
+        complexity = 1;
     }
 
     /// Evaluates the node and updates the stack states. 
     void NodeFloat::evaluate(const Data& data, Stacks& stack)
     {
-        stack.f.push(stack.b.pop().cast<double>());
+        if(otype == 'f')
+            stack.push<double>(stack.pop<bool>().cast<double>());
+        else
+            stack.push<int>(stack.pop<bool>().cast<int>());
     }
 
     /// Evaluates the node symbolically
     void NodeFloat::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("f(" + stack.bs.pop() + ")");
+        stack.push<double>("f(" + stack.popStr<bool>() + ")");
     }
     
     NodeFloat* NodeFloat::clone_impl() const { return new NodeFloat(*this); }

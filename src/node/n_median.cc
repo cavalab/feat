@@ -11,8 +11,6 @@ namespace FT{
     {
         name = "median";
 	    otype = 'f';
-	    arity['f'] = 0;
-	    arity['b'] = 0;
 	    arity['z'] = 1;
 	    complexity = 1;
     }
@@ -29,14 +27,14 @@ namespace FT{
             
         stack.z.pop();
 
-        stack.f.push(tmp);
+        stack.push<double>(tmp);
         
     }
 
     /// Evaluates the node symbolically
     void NodeMedian::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("median(" + stack.zs.pop() + ")");
+        stack.push<double>("median(" + stack.zs.pop() + ")");
     }
     
     NodeMedian* NodeMedian::clone_impl() const { return new NodeMedian(*this); }

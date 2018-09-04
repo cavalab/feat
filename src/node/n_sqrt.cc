@@ -12,7 +12,6 @@ namespace FT{
         name = "sqrt";
 	    otype = 'f';
 	    arity['f'] = 1;
-	    arity['b'] = 0;
 	    complexity = 2;
 
         if (W0.empty())
@@ -28,22 +27,25 @@ namespace FT{
     /// Evaluates the node and updates the stack states. 
     void NodeSqrt::evaluate(const Data& data, Stacks& stack)
     {
-        stack.f.push(sqrt(W[0]*stack.f.pop().abs()));
+        stack.push<double>(sqrt(W[0]*stack.pop<double>().abs()));
     }
 
     /// Evaluates the node symbolically
     void NodeSqrt::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("sqrt(|" + stack.fs.pop() + "|)");
+        stack.push<double>("sqrt(|" + stack.popStr<double>() + "|)");
     }
 
-    ArrayXd NodeSqrt::getDerivative(Trace& stack, int loc) {
+    ArrayXd NodeSqrt::getDerivative(Trace& stack, int loc)
+    {
+        ArrayXd& x = stack.get<double>()[stack.size<double>()-1];
+        
         switch (loc) {
             case 1: // d/dw0
-                return stack.f[stack.f.size()-1] / (2 * sqrt(this->W[0] * stack.f[stack.f.size()-1]));
+                return x / (2 * sqrt(this->W[0] * x));
             case 0: // d/dx0
             default:
-                return this->W[0] / (2 * sqrt(this->W[0] * stack.f[stack.f.size()-1]));
+                return this->W[0] / (2 * sqrt(this->W[0] * x));
         } 
     }
 

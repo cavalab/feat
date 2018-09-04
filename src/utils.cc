@@ -90,17 +90,33 @@ namespace FT{
         // get feature types (binary or continuous/categorical)
         int i, j;
         bool isBinary;
+        bool isCategorical;
+        std::map<double, bool> uniqueMap;
         for(i = 0; i < X.rows(); i++)
         {
             isBinary = true;
+            isCategorical = true;
+            uniqueMap.clear();
+            
             for(j = 0; j < X.cols(); j++)
+            {
                 if(X(i, j) != 0 && X(i, j) != 1)
                     isBinary = false;
+                if(X(i,j) != floor(X(i, j)) && X(i,j) != ceil(X(i,j)))
+                    isCategorical = false;
+                else
+                    uniqueMap[X(i, j)] = true;
+            }
         
             if(isBinary)
                 dtypes.push_back('b');
             else
-                dtypes.push_back('f');
+            {
+                if(isCategorical && uniqueMap.size() < 10)
+                    dtypes.push_back('c');    
+                else
+                    dtypes.push_back('f');
+            }
         }
         
         // check if endpoint is binary
@@ -456,7 +472,7 @@ namespace FT{
                 X.row(i) = VectorXd::Zero(X.row(i).size());
                 continue;
             }
-            if (dtypes.at(i)!='b')   // skip binary rows
+            if (dtypes.at(i)=='f')   // skip binary and categorical rows
             {
                 X.row(i) = X.row(i).array() - offset.at(i);
                 if (scale.at(i) > NEAR_ZERO)
@@ -492,25 +508,41 @@ namespace FT{
     
     vector<char> find_dtypes(MatrixXd &X)
     {
-    	int i, j;
-	    bool isBinary;
-	    
 	    vector<char> dtypes;
 	    
-	    for(i = 0; i < X.rows(); i++)
-	    {
-	        isBinary = true;
-	        for(j = 0; j < X.cols(); j++)
-	            if(X(i, j) != 0 && X(i, j) != 1)
-	                isBinary = false;
-	                
-	        if(isBinary)
-	            dtypes.push_back('b');
-	        else
-	            dtypes.push_back('f');
-	    }
-	    
-	    return dtypes;
+	    // get feature types (binary or continuous/categorical)
+        int i, j;
+        bool isBinary;
+        bool isCategorical;
+        std::map<double, bool> uniqueMap;
+        for(i = 0; i < X.rows(); i++)
+        {
+            isBinary = true;
+            isCategorical = true;
+            uniqueMap.clear();
+            
+            for(j = 0; j < X.cols(); j++)
+            {
+                if(X(i, j) != 0 && X(i, j) != 1)
+                    isBinary = false;
+                if(X(i,j) != floor(X(i, j)) && X(i,j) != ceil(X(i,j)))
+                    isCategorical = false;
+                else
+                    uniqueMap[X(i, j)] = true;
+            }
+        
+            if(isBinary)
+                dtypes.push_back('b');
+            else
+            {
+                if(isCategorical && uniqueMap.size() < 10)
+                    dtypes.push_back('c');    
+                else
+                    dtypes.push_back('f');
+            }
+        }
+        
+        return dtypes;
 	}
 	
 	/*

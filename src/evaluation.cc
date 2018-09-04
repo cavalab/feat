@@ -58,7 +58,7 @@ namespace FT{
                 params.msg("Running backprop on " + ind.get_eqn(), 3);
                 backprop.run(ind, d, params);
             }         
-           
+
             bool pass = true;
 
             shared_ptr<CLabels> yhat = validation? ind.predict(d,params) : ind.fit(d,params,pass); 
@@ -91,8 +91,6 @@ namespace FT{
 
                 }
             }
-            
-            //cout<<"Here 3 with i = "<<i<<" and thread as "<< omp_get_thread_num() <<"\n";   
         }
     }
     

@@ -11,8 +11,6 @@ namespace FT{
     {
         name = "mean";
 	    otype = 'f';
-	    arity['f'] = 0;
-	    arity['b'] = 0;
 	    arity['z'] = 1;
 	    complexity = 1;
     }
@@ -28,14 +26,14 @@ namespace FT{
           
         stack.z.pop();
         
-        stack.f.push(tmp);
+        stack.push<double>(tmp);
         
     }
 
     /// Evaluates the node symbolically
     void NodeMean::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("mean(" + stack.zs.pop() + ")");
+        stack.push<double>("mean(" + stack.zs.pop() + ")");
     }
     
     NodeMean* NodeMean::clone_impl() const { return new NodeMean(*this); }

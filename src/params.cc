@@ -36,8 +36,8 @@ namespace FT{
             set_verbosity(verbosity);
             if (fs.empty())
                 fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
-                      "logit,tanh,gauss,relu,split,float,"
-                      "and,or,not,xor,=,<,<=,>,>=,if,ite";
+                      "logit,tanh,gauss,relu,split,split_c,float,"
+                      "float_c,and,or,not,xor,=,<,<=,>,>=,if,ite";
             set_functions(fs);
             set_objectives(obj);
             set_feature_names(fn);
@@ -109,7 +109,6 @@ namespace FT{
     void Parameters::set_term_weights(const vector<double>& w)
     {           
         //assert(w.size()==terminals.size()); 
-        cout << "in set_term_weights\n";
         /* cout << "weights: "; for (auto tmp : w) cout << tmp << " " ; cout << "\n"; */ 
         string weights;
         double u = 1.0/double(w.size());
@@ -205,6 +204,7 @@ namespace FT{
         { 
             case 'b': otypes.push_back('b'); break;
             case 'f': otypes.push_back('f'); break;
+            //case 'c': otypes.push_back('c'); break;
             default: 
             {
                 // if terminals are all boolean, remove floating point functions
@@ -219,18 +219,32 @@ namespace FT{
                             functions.erase(functions.begin()+i);
                         }
                     }
+                    
                     std::cout << "functions:\n";
                     for (const auto& f : functions)
                         std::cout << f->name << " "; 
                     std::cout << "\n";
                     otype = 'b';
                     otypes.push_back('b');
-                }                        
+                }           
                 else
                 {
                     otypes.push_back('b');
                     otypes.push_back('f');
                 }
+                
+                //erasing categorical nodes if no categorical stack exists  
+                if (!in(ttypes, 'c'))
+                {
+                    size_t n = functions.size();
+                    for (vector<int>::size_type i =n-1; 
+                         i != (std::vector<int>::size_type) -1; i--){
+                        if (functions.at(i)->arity['c'] >0){
+                            std::cout << "erasing function " << functions.at(i)->name << "\n";
+                            functions.erase(functions.begin()+i);
+                        }
+                    }
+                }         
                 break;
             }
         }
@@ -292,7 +306,10 @@ namespace FT{
             return std::unique_ptr<Node>(new NodeRelu());
 
         else if (str.compare("float")==0)
-            return std::unique_ptr<Node>(new NodeFloat());
+                return std::unique_ptr<Node>(new NodeFloat());
+        
+        else if (str.compare("float_c")==0)
+                return std::unique_ptr<Node>(new NodeFloat(true));
 
         // logical operators
         else if (str.compare("and") == 0)
@@ -323,7 +340,10 @@ namespace FT{
     		return std::unique_ptr<Node>(new NodeLEQ());
  
         else if (str.compare("split") == 0)
-    		return std::unique_ptr<Node>(new NodeSplit());
+  		    return std::unique_ptr<Node>(new NodeSplit<double>());
+  		
+  		else if (str.compare("split_c") == 0)
+  		    return std::unique_ptr<Node>(new NodeSplit<int>());
     	
      	else if (str.compare("if") == 0)
     		return std::unique_ptr<Node>(new NodeIf());   	    		
@@ -367,7 +387,7 @@ namespace FT{
 
         // variables and constants
         else if (str.compare("x") == 0)
-        {
+        { 
             if(dtypes.size() == 0)
             {
                 if (feature_names.size() == 0)
@@ -389,10 +409,7 @@ namespace FT{
             return std::unique_ptr<Node>(new NodeConstant(d_val));
             
         else if (str.compare("z")==0)
-        {
-            //std::cout<<"******CALLED with name "<<name<<"\n";
             return std::unique_ptr<Node>(new NodeLongitudinal(name));
-        }
         else
             HANDLE_ERROR_THROW("Error: no node named '" + str + "' exists."); 
         
@@ -440,6 +457,8 @@ namespace FT{
         {
             token = fs.substr(0, pos);
             functions.push_back(createNode(token));
+            if(!token.compare("float") || !token.compare("split"))
+                functions.push_back(createNode(token, 0, true));
             fs.erase(0, pos + delim.length());
         } 
         if (verbosity > 2){

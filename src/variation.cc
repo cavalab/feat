@@ -165,8 +165,11 @@ namespace FT{
                     // find instructions with matching in/out types and arities
                     for (const auto& f: params.functions)
                     {
-                        if (f->otype == p->otype && f->arity['f']==p->arity['f'] && 
-                                f->arity['b']==p->arity['b'] && f->arity['z']==p->arity['z'])
+                        if (f->otype == p->otype &&
+                            f->arity['f']==p->arity['f'] && 
+                            f->arity['b']==p->arity['b'] &&
+                            f->arity['c']==p->arity['c'] &&
+                            f->arity['z']==p->arity['z'])
                             replacements.push_back(f->rnd_clone());
                     }
                 }
@@ -239,15 +242,23 @@ namespace FT{
                     insertion.push_back(random_node(fns));
                     
                     unsigned fa = insertion.back()->arity['f']; // float arity
+                    unsigned ca = insertion.back()->arity['c']; //categorical arity
                     unsigned ba = insertion.back()->arity['b']; // bool arity
                     // decrement function arity by one for child node 
                     if (child.program[i]->otype=='f') --fa;
+                    else if (child.program[i]->otype=='c') --ca;
                     else --ba; 
+                    
                     // push back new arguments for the rest of the function
                     for (unsigned j = 0; j< fa; ++j)
                         make_tree(insertion,params.functions,params.terminals,0,
                                   params.term_weights,'f',params.ttypes);
                     if (child.program[i]->otype=='f')    // add the child now if float
+                        insertion.push_back(child.program[i]->clone());
+                    for (unsigned j = 0; j< ca; ++j)
+                        make_tree(insertion,params.functions,params.terminals,0,
+                                  params.term_weights,'c',params.ttypes);
+                    if (child.program[i]->otype=='c')    // add the child now if categorical
                         insertion.push_back(child.program[i]->clone());
                     for (unsigned j = 0; j< ba; ++j)
                         make_tree(insertion,params.functions,params.terminals,0,
