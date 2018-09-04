@@ -179,13 +179,16 @@ namespace FT{
         	if(stack.check(n->arity))
         	{
         	    //cout<<"***enter here "<<n->name<<"\n";
+                cout << n->name << ",";
 	            n->evaluate(d, stack);
 	            //cout<<"***exit here "<<n->name<<"\n";
 	        }
             else
                 HANDLE_ERROR_THROW("out() error: node " + n->name + " in " + program_str() + 
                                    " is invalid\n");
+            
         }
+        cout << "\n";
         
         // convert stack_f to Phi
         params.msg("converting stacks to Phi",3);

@@ -5,6 +5,7 @@ license: GNU/GPL v3
 
 #include "utils.h"
 #include "rnd.h"
+#include <unordered_set>
 
 namespace FT{
  
@@ -108,14 +109,13 @@ namespace FT{
         
     }
     
-    /*!
-     * load longitudinal csv file into matrix. 
-     */
+    /// load longitudinal csv file into matrix. 
     void load_longitudinal(const std::string & path,
                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
                            char sep)
     {
-        std::map<string, std::map<int, std::pair<std::vector<double>, std::vector<double> > > > dataMap;
+        cout << "in load_longitudinal\n";
+        std::map<string, std::map<int, std::pair<vector<double>, vector<double> > > > dataMap;
         std::ifstream indata;
         indata.open(path);
         if (!indata.good())
@@ -162,7 +162,7 @@ namespace FT{
             dataMap[type][std::stoi(sampleNo)].second.push_back(std::stod(time));
         }
         
-        int numTypes = dataMap.size();
+        int numVars = dataMap.size();
         int numSamples = dataMap[firstKey].size();
         int x;
         
@@ -170,14 +170,18 @@ namespace FT{
         {
             for(x = 0; x < numSamples; ++x)
             {
-                ArrayXd arr1 = Map<ArrayXd>(dataMap[val.first][x].first.data(), dataMap[val.first][x].first.size());
-                ArrayXd arr2 = Map<ArrayXd>(dataMap[val.first][x].second.data(), dataMap[val.first][x].second.size());
+                ArrayXd arr1 = Map<ArrayXd>(dataMap[val.first].at(x).first.data(), 
+                                            dataMap[val.first].at(x).first.size());
+                ArrayXd arr2 = Map<ArrayXd>(dataMap[val.first].at(x).second.data(), 
+                                            dataMap[val.first].at(x).second.size());
                 Z[val.first].first.push_back(arr1);
                 Z[val.first].second.push_back(arr2);
 
             }
             
         }
+
+        cout << "exiting load_longitudinal\n";
     }
     
     /*!
@@ -185,21 +189,32 @@ namespace FT{
      */
     void load_partial_longitudinal(const std::string & path,
                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
-                           char sep, vector<int> idx)
+                           char sep, vector<long> idx)
     {
         /* loads data from the longitudinal file, with idx providing the id numbers of each row in
          * the main data (X and y).
          * I.e., idx[k] = the id of samples in Z associated with sample k in X and y
          */
-        std::map<int, bool> idMap;
+        cout << "in load_partial_longitudinal\n";
+        cout << idx.size() << " indices\n";
+
+        std::unordered_set<long> idSet(idx.begin(), idx.end());
         std::map<int, int> idLoc;
+        std::map<int, int> locID;
         unsigned i = 0;
         for(const auto& id : idx){
-            idMap[id] = true;
+            /* idSet.insert(id); */
             idLoc[id] = i;
+            locID[i] = id;
             ++i;
         }
-        std::map<string, std::map<int, std::pair<std::vector<double>, std::vector<double> > > > dataMap;
+        cout << "\n";
+        cout << "idSet size: " << idSet.size() << "\n";
+        // dataMap maps from the variable name (string) to a map containing 
+        // 1) the sample id, and 2) a pair consisting of 
+        //      - the variable value (first) and 
+        //      - variable date (second)
+        std::map<string, std::map<int, std::pair<vector<double>, vector<double> > > > dataMap;
         std::ifstream indata;
         indata.open(path);
         if (!indata.good())
@@ -218,62 +233,136 @@ namespace FT{
         {
             string tmp; 
             std::getline(lineStream,tmp, sep);
+            tmp = trim(tmp);
             head_to_col[tmp] = i;
         }
-        
+        int nl=0; 
+        int nfound=0;
+        int nskip=0;
+        cout << "reading " << path << "...\n";
         while (std::getline(indata, line)) 
         {
             std::stringstream lineStream(line);
-            std::string sampleNo, value, time, type;
+            std::string sampleNo, value, time, name;
             
             vector<string> cols(4); 
             std::getline(lineStream, cols.at(0), sep);
             std::getline(lineStream, cols.at(1), sep);
             std::getline(lineStream, cols.at(2), sep);
             std::getline(lineStream, cols.at(3), sep);
-           
+            
+            cols.at(3) = trim(cols.at(3));
+
             sampleNo = cols.at(head_to_col["id"]);
             time = cols.at(head_to_col["date"]);
             value = cols.at(head_to_col["value"]);
-            type = cols.at(head_to_col["name"]);
+            name = cols.at(head_to_col["name"]);
 
-            type = trim(type);
+            /* name = trim(name); */
+            /* time = trim(time); */
+            /* value = trim(value); */
+            /* sampleNo = trim(sampleNo); */
             
+            /* cout << "sampleNo: " << sampleNo << ", time: " << time << ", value: " << value */ 
+            /*      << ", name: " << name << "\n"; */
+  
             if(!firstKey.compare(""))
-                firstKey = type;
+                firstKey = name;
             
-            int sNo = std::stoi(sampleNo);
-            if(idMap.find(sNo) != idMap.end())
+            long sNo = std::stol(sampleNo);
+            if(idSet.find(sNo) != idSet.end())  // if the sample ID is to be included, store it
             {
-                if(idMap[sNo] == true)
+                /* if(idMap.at(sNo) == true)   // WGL: I think this is irrelevant */
+                /* { */
+                // dataMap[variable-name][sample-id].value=value
+                // dataMap[variable-name][sample-id].time=time
+                    dataMap[name][idLoc.at(sNo)].first.push_back(std::stod(value));
+                    dataMap[name][idLoc.at(sNo)].second.push_back(std::stod(time));
+                /* } */
+                    ++nfound;
+            }
+            else
+            {
+                /* if (in(idx,sNo)) */
+                /* { */
+                /*     cout << sNo << " is in idx, but not found in idSet\n"; */
+                /*     cout << "line: "; */
+                /*     for (auto c : cols) */
+                /*         cout << c << ","; */
+                /*     cout << "\n"; */
+                /* } */
+                ++nskip;
+            }
+            ++nl;
+        }
+        cout << "read " << nl << " lines of " << path << "\n";
+        cout << "stored " << nfound << " lines, skipped " << nskip << "\n";
+        // validate dataMap
+        // for each dataMap[name], there should be map names from 0 ... numSamples -1
+
+        for ( const auto &val: dataMap )
+        {
+            bool pass = true;
+            int numSamples = val.second.size();
+            for (int x = 0; x<numSamples; ++x)
+            {
+                if (val.second.find(x) == val.second.end())
                 {
-                    dataMap[type][idLoc[sNo]].first.push_back(std::stod(value));
-                    dataMap[type][idLoc[sNo]].second.push_back(std::stod(time));
-                    ++i;
+                    cout << x << " not found (patient id = " << locID[x] << ") in " << val.first 
+                         << "\n";
+                    pass = false;
                 }
             }
+            if (!pass) 
+                exit(0);
         }
-        
-        int numSamples = dataMap[firstKey].size();
-        int numTypes = dataMap.size();	
-        
-        int x;
+        int numVars = dataMap.size();
+        cout << "numVars= " << numVars << "\n";
         
         for ( const auto &val: dataMap )
         {
-            for(x = 0; x < numSamples; x++)
+            cout << "storing " << val.first << "\n";
+            int numSamples = val.second.size();
+            cout << "numSamples= " << numSamples << "\n";
+            cout << "dataMap[val.first].size(): " << dataMap[val.first].size() << "\n"; 
+            cout << "x: ";
+            for(int x = 0; x < numSamples; ++x)
             {
-                ArrayXd arr1 = Map<ArrayXd>(dataMap[val.first][x].first.data(), dataMap[val.first][x].first.size());
-                ArrayXd arr2 = Map<ArrayXd>(dataMap[val.first][x].second.data(), dataMap[val.first][x].second.size());
+                cout << x << ",";
+                ArrayXd arr1 = Map<ArrayXd>(dataMap[val.first].at(x).first.data(), 
+                                            dataMap[val.first].at(x).first.size());
+                ArrayXd arr2 = Map<ArrayXd>(dataMap[val.first].at(x).second.data(), 
+                                            dataMap[val.first].at(x).second.size());
                 Z[val.first].first.push_back(arr1);
                 Z[val.first].second.push_back(arr2);
             }
-            
+            cout << "\n";
         }
+        cout << "Z loaded. contents:\n";
+        for (const auto& z : Z)
+        {
+            cout << "zName: " << z.first << "\n";
+            if (z.second.first.size() != z.second.second.size())
+            {
+                cout << "values and time not the same size\n";
+                cout << "values: " << z.second.first.size() << "\n";
+                cout << "time: " << z.second.second.size() << "\n";
+                exit(0);
+            }
+            for (unsigned int j = 0; j < z.second.first.size(); ++j)
+            {
+                cout << "sample " << j << " = " ;
+                for (unsigned int k = 0; k < z.second.first.at(j).size(); ++k)
+                    cout << z.second.second.at(j)(k) << ":" << z.second.first.at(j)(k) << ",";
+                cout << "\n";
+            }
+            cout << "---\n";
+        }
+        cout << "exiting load_partial_longitudinal\n";
     }
     
     void reorder_longitudinal(vector<ArrayXd> &vec1, vector<ArrayXd> &vec2,
-                             vector<int> const &order)
+                             vector<long> const &order)
     {   
     
         for( int s = 1, d; s < order.size(); ++ s )
@@ -291,21 +380,6 @@ namespace FT{
         }
     }
 
-
-    /*
-    /// check if element is in vector.
-    template<typename T>
-    bool in(const vector<T> v, const T& i)
-    {
-        // true if i is in v, else false.
-        for (const auto& el : v)
-        {
-            if (i == el)
-                return true;
-        }
-        return false;
-    }*/
-   
     /// calculate median
     double median(const ArrayXd& v) 
     {
@@ -404,32 +478,7 @@ namespace FT{
 	{
 		return high_resolution_clock::now() - _start;
 	}
-	
-	/*template <typename T, typename Traits>
-	std::basic_ostream<T, Traits>& operator<<(std::basic_ostream<T, Traits>& out, 
-                                                     const Timer& timer)
-	{
-		return out << timer.Elapsed().count();
-	}*/
- 
-    /*
-    /// return the softmax transformation of a vector.
-    template <typename T>
-    vector<T> softmax(const vector<T>& w)
-    {
-        int x;
-        T sum = 0;
-        vector<T> w_new;
-        
-        for(x = 0; x < w.size(); x++)
-            sum += exp(w[x]);
-            
-        for(x = 0; x < w.size(); x++)
-            w_new.push_back(exp(w[x])/sum);
-            
-        return w_new;
-    }*/
-    
+   
     /// fit the scale and offset of data. 
     void Normalizer::fit(MatrixXd& X, const vector<char>& dt)
     {
@@ -513,27 +562,6 @@ namespace FT{
 	    return dtypes;
 	}
 	
-	/*
-    /// returns unique elements in vector
-    template <typename T>
-    vector<T> unique(vector<T> w)   // note intentional copy
-    {
-        std::sort(w.begin(),w.end());
-        typename vector<T>::iterator it;
-        it = std::unique(w.begin(),w.end());
-        w.resize(std::distance(w.begin(), it));
-        return w;
-    }*/
-    
-    /*
-    /// returns unique elements in Eigen vector
-    template <typename T>
-    vector<T> unique(Matrix<T, Dynamic, 1> w)   // note intentional copy
-    {
-        vector<T> wv( w.data(), w.data()+w.rows());
-        return unique(wv);
-    }*/
-
     void printProgress (double percentage)
     {
         int val = (int) (percentage * 100);
@@ -543,13 +571,4 @@ namespace FT{
         fflush (stdout);
     }
     
-    /*
-    ///template function to convert objects to string for logging
-    template <typename T>
-    string to_string(const T& value)
-    {
-        std::stringstream ss;
-        ss << value;
-        return ss.str();
-    }*/
 } 

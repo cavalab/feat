@@ -174,9 +174,9 @@ namespace FT
             
             if(o->Z.size() > 0)
             {
-                std::vector<int> zidx(o->y.size());
+                std::vector<long> zidx(o->y.size());
                 std::iota(zidx.begin(), zidx.end(), 0);
-                Eigen::VectorXi zw = Map<VectorXi>(zidx.data(), zidx.size());
+                VectorXl zw = Map<VectorXl>(zidx.data(), zidx.size());
                 zw = (zw.transpose()*perm).transpose();       // shuffle zw too
                 zidx.assign(((int*)zw.data()), (((int*)zw.data())+zw.size()));
                 
