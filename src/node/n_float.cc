@@ -29,7 +29,7 @@ namespace FT{
         if(otype == 'f')
             stack.push<double>(stack.pop<bool>().cast<double>());
         else
-            stack.c.push(stack.pop<bool>().cast<int>());
+            stack.push<int>(stack.pop<bool>().cast<int>());
     }
 
     /// Evaluates the node symbolically
