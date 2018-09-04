@@ -108,8 +108,6 @@ namespace FT{
     /// sets weights for terminals. 
     void Parameters::set_term_weights(const vector<double>& w)
     {           
-        //assert(w.size()==terminals.size()); 
-        cout << "in set_term_weights\n";
         /* cout << "weights: "; for (auto tmp : w) cout << tmp << " " ; cout << "\n"; */ 
         string weights;
         double u = 1.0/double(w.size());
