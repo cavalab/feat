@@ -12,8 +12,6 @@ namespace FT{
     {
         name = "skew";
 	    otype = 'f';
-	    arity['f'] = 0;
-	    arity['b'] = 0;
 	    arity['z'] = 1;
 	    complexity = 3;
     }
@@ -30,14 +28,14 @@ namespace FT{
             
         stack.z.pop();
 
-        stack.f.push(tmp);
+        stack.push<double>(tmp);
         
     }
 
     /// Evaluates the node symbolically
     void NodeSkew::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("skew(" + stack.zs.pop() + ")");
+        stack.push<double>("skew(" + stack.zs.pop() + ")");
     }
 
     NodeSkew* NodeSkew::clone_impl() const { return new NodeSkew(*this); }

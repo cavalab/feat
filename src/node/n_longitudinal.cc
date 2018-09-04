@@ -15,9 +15,6 @@ namespace FT{
         zName = n;
             
 	    otype = 'z';
-	    arity['f'] = 0;
-	    arity['b'] = 0;
-	    arity['z'] = 0;
 	    complexity = 1;
     }
 

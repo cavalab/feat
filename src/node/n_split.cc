@@ -6,36 +6,74 @@ license: GNU/GPL v3
 
 namespace FT{
 
-	NodeSplit::NodeSplit()
+	template <>
+	NodeSplit<double>::NodeSplit()
 	{
-		name = "split";
-		otype = 'b';
-		arity['f'] = 1;
-		arity['b'] = 0;
-		complexity = 2;
+	    name = "split";
+	    arity['f'] = 1;
+	    otype = 'b';
+        complexity = 2;
+        threshold = 0;
+	
+	}
+	
+	template <>
+	NodeSplit<int>::NodeSplit()
+	{
+	    name = "split_c";
+	    arity['c'] = 1;
+	    otype = 'b';
+        complexity = 2;
         threshold = 0;
 	}
 
-    void NodeSplit::evaluate(const Data& data, Stacks& stack)
+    template <>
+    void NodeSplit<double>::evaluate(const Data& data, Stacks& stack)
     {
-        /* cout << "classification: " << data.classification << "\n"; */
-        ArrayXd x1 = stack.f.pop();
+        ArrayXd x1;
+                
+        x1 = stack.pop<double>();
+            
         if (!data.validation && !data.y.size()==0)
             set_threshold(x1,data.y, data.classification);
 
-        stack.b.push(x1 < threshold);
+        stack.push<bool>(x1 < threshold);
+    }
+    
+    template <>
+    void NodeSplit<int>::evaluate(const Data& data, Stacks& stack)
+    {
+        ArrayXd x1;
+                
+        x1 = stack.pop<int>().cast<double>();
+            
+        if (!data.validation && !data.y.size()==0)
+            set_threshold(x1,data.y, data.classification);
+
+        stack.push<bool>(x1 == threshold);
     }
 
     /// Evaluates the node symbolically
-    void NodeSplit::eval_eqn(Stacks& stack)
+    template <>
+    void NodeSplit<double>::eval_eqn(Stacks& stack)
     {
-        stack.bs.push("(" + stack.fs.pop() + "<" + std::to_string(threshold) + ")");
+        stack.push<bool>("(" + stack.popStr<double>() + "<" + std::to_string(threshold) + ")");
     }
     
-    NodeSplit* NodeSplit::clone_impl() const { return new NodeSplit(*this); };  
-    NodeSplit* NodeSplit::rnd_clone_impl() const { return new NodeSplit(); };  
+    template <>
+    void NodeSplit<int>::eval_eqn(Stacks& stack)
+    {
+        stack.push<bool>("(" + stack.popStr<int>() + "==" + std::to_string(threshold) + ")");
+    }
     
-    void NodeSplit::set_threshold(ArrayXd& x, VectorXd& y, bool classification)
+    template <class T>
+    NodeSplit<T>* NodeSplit<T>::clone_impl() const { return new NodeSplit<T>(*this); };  
+    
+    template <class T>
+    NodeSplit<T>* NodeSplit<T>::rnd_clone_impl() const { return new NodeSplit<T>(); };  
+    
+    template <class T>
+    void NodeSplit<T>::set_threshold(ArrayXd& x, VectorXd& y, bool classification)
     {
         // for each unique value in x, calculate the reduction in the heuristic brought about by
         // splitting between that value and the next. 
@@ -53,9 +91,22 @@ namespace FT{
         for (unsigned i =0; i<s.size()-1; ++i)
         {
 
-            double val = (s.at(i) + s.at(i+1)) / 2;
+            double val;
+            ArrayXi split_idx;
+            
+            if(arity['f'])
+            {
+                val = (s.at(i) + s.at(i+1)) / 2;
+                split_idx = (x < val).select(midx,-midx-1);
+            }
+            else
+            {
+                val = s.at(i);
+                split_idx = (x == val).select(midx,-midx-1);
+            }
+
             /* cout << "split val: " << val << "\n"; */
-            ArrayXi split_idx = (x < val).select(midx,-midx-1);
+
             // split data
             vector<double> d1, d2; 
             for (unsigned j=0; j< split_idx.size(); ++j)
@@ -84,7 +135,8 @@ namespace FT{
         /* cout << "final threshold set to " << threshold << "\n"; */
     }
    
-    double NodeSplit::gain(const VectorXd& lsplit, const VectorXd& rsplit, 
+    template <class T>
+    double NodeSplit<T>::gain(const VectorXd& lsplit, const VectorXd& rsplit, 
             bool classification)
     {
         double lscore, rscore, score;
@@ -105,7 +157,8 @@ namespace FT{
 	    return score;
     }
 
-    double NodeSplit::gini_impurity_index(const VectorXd& classes)
+    template <class T>
+    double NodeSplit<T>::gini_impurity_index(const VectorXd& classes)
     {
         vector<double> uc = unique(classes);
         VectorXd class_weights(uc.size());
