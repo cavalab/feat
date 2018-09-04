@@ -281,7 +281,8 @@ namespace FT{
                 firstKey = name;
             
             long sNo = std::stol(sampleNo);
-            if(idSet.find(sNo) != idSet.end())  // if the sample ID is to be included, store it
+            /* if(idSet.find(sNo) != idSet.end())  // if the sample ID is to be included, store it */
+            if(in(idx,sNo))  // if the sample ID is to be included, store it
             {
                 /* if(idMap.at(sNo) == true)   // WGL: I think this is irrelevant */
                 /* { */
@@ -292,18 +293,18 @@ namespace FT{
                 /* } */
                     ++nfound;
             }
-            else if (sNo == 552570)
-            /* else if (sNo > 33700) */
-            {
-                if (in(idx,sNo))
-                {
-                    cout << sNo << " is in idx, but not found in idSet\n";
-                    cout << "file line: ";
-                    for (auto c : cols)
-                        cout << c << ",";
-                    cout << "\n";
-                }
-            }
+            /* else if (sNo == 552570) */
+            /* /1* else if (sNo > 33700) *1/ */
+            /* { */
+            /*     if (in(idx,sNo)) */
+            /*     { */
+            /*         cout << sNo << " is in idx, but not found in idSet\n"; */
+            /*         cout << "file line: "; */
+            /*         for (auto c : cols) */
+            /*             cout << c << ","; */
+            /*         cout << "\n"; */
+            /*     } */
+            /* } */
             else
             {
                 ++nskip;
