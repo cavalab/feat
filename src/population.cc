@@ -132,6 +132,11 @@ namespace FT{
                     make_tree(program, functions, terminals, 0, term_weights, 'z', term_types);
                     return;
                 }
+                else if (otype == 'c')
+                {
+                    make_tree(program, functions, terminals, 0, term_weights, 'c', term_types);
+                    return;
+                }
                 else{            
                     std::cout << "---\n";
                     std::cout << "f1.size()=0. current program: ";

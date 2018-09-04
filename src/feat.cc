@@ -372,7 +372,15 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     // start the clock
     timer.Reset();
     if (params.use_batch)
-        cout << "using batch with batch_size= " << params.bp.batch_size << "\n";
+    {
+        if (params.bp.batch_size >= X.cols()){
+            cout << "turning off batch because X has fewer than " << params.bp.batch_size 
+                 << " samples\n";
+            params.use_batch = false;
+        }
+        else
+            cout << "using batch with batch_size= " << params.bp.batch_size << "\n";
+    }
     std::ofstream log;                      ///< log file stream
     if (!logfile.empty())
         log.open(logfile, std::ofstream::app);
@@ -389,7 +397,8 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     }
     
     params.init();       
-   
+  
+
     if (params.classification)  // setup classification endpoint
     {
        params.set_classes(y);       
@@ -470,6 +479,11 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     
     if(params.use_batch)    // reset d to all training data
         d.setTrainingData(tmp_train, true);
+
+    cout << "checking fns: "; 
+    std::cout << "functions set to [";
+    for (const auto& f: params.functions) std::cout << f->name << ", "; 
+    std::cout << "]\n";
 
     // =====================
     // main generational loop
@@ -578,7 +592,6 @@ void Feat::run_generation(unsigned int g,
 
     if (use_arch) 
         arch.update(*p_pop,params);
-
 
     if(params.verbosity>1)
         print_stats(log, fraction);    
