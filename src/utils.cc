@@ -472,7 +472,7 @@ namespace FT{
                 X.row(i) = VectorXd::Zero(X.row(i).size());
                 continue;
             }
-            if (dtypes.at(i)!='b')   // skip binary rows
+            if (dtypes.at(i)=='f')   // skip binary and categorical rows
             {
                 X.row(i) = X.row(i).array() - offset.at(i);
                 if (scale.at(i) > NEAR_ZERO)
