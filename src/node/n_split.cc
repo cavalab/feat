@@ -54,10 +54,16 @@ namespace FT{
     }
 
     /// Evaluates the node symbolically
-    template <class T>
-    void NodeSplit<T>::eval_eqn(Stacks& stack)
+    template <>
+    void NodeSplit<double>::eval_eqn(Stacks& stack)
     {
         stack.push<bool>("(" + stack.popStr<double>() + "<" + std::to_string(threshold) + ")");
+    }
+    
+    template <>
+    void NodeSplit<int>::eval_eqn(Stacks& stack)
+    {
+        stack.push<bool>("(" + stack.popStr<int>() + "==" + std::to_string(threshold) + ")");
     }
     
     template <class T>
