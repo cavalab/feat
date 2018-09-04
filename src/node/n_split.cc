@@ -27,20 +27,30 @@ namespace FT{
         threshold = 0;
 	}
 
-    template <class T>
-    void NodeSplit<T>::evaluate(const Data& data, Stacks& stack)
+    template <>
+    void NodeSplit<double>::evaluate(const Data& data, Stacks& stack)
     {
         ArrayXd x1;
                 
-        if(arity['f'])
-            x1 = stack.pop<double>();
-        else
-            x1 = stack.pop<int>().cast<double>();
+        x1 = stack.pop<double>();
             
         if (!data.validation && !data.y.size()==0)
             set_threshold(x1,data.y, data.classification);
 
         stack.push<bool>(x1 < threshold);
+    }
+    
+    template <>
+    void NodeSplit<int>::evaluate(const Data& data, Stacks& stack)
+    {
+        ArrayXd x1;
+                
+        x1 = stack.pop<int>().cast<double>();
+            
+        if (!data.validation && !data.y.size()==0)
+            set_threshold(x1,data.y, data.classification);
+
+        stack.push<bool>(x1 == threshold);
     }
 
     /// Evaluates the node symbolically
