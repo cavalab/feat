@@ -10,6 +10,8 @@ if [ $# > 0 ] ; then
             export EIGEN3_INCLUDE_DIR="$HOME/eigen-3.3.4/"
             export SHOGUN_DIR="$HOME/anaconda3/include/"
             export SHOGUN_LIB="$HOME/anaconda3/lib/"    
+        elif [ $var == "n" ] ; then
+            check_for_python=false
         elif [ $var == "y" ] || [ $var == "python" ] ; then
             echo "installing python module..."
             cd python

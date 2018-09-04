@@ -196,7 +196,7 @@ namespace FT{
     }
 
     /// set the output types of programs
-    void Parameters::set_otypes()
+    void Parameters::set_otypes(bool terminals_set)
     {
         otypes.clear();
         // set output types
@@ -220,10 +220,6 @@ namespace FT{
                         }
                     }
                     
-                    std::cout << "functions:\n";
-                    for (const auto& f : functions)
-                        std::cout << f->name << " "; 
-                    std::cout << "\n";
                     otype = 'b';
                     otypes.push_back('b');
                 }           
@@ -234,7 +230,7 @@ namespace FT{
                 }
                 
                 //erasing categorical nodes if no categorical stack exists  
-                if (!in(ttypes, 'c'))
+                if (terminals_set && !in(ttypes, 'c'))
                 {
                     size_t n = functions.size();
                     for (vector<int>::size_type i =n-1; 
@@ -448,6 +444,7 @@ namespace FT{
          *		modifies functions 
          *
          */
+
         fs += ',';          // add delimiter to end 
         string delim = ",";
         size_t pos = 0;
@@ -457,8 +454,8 @@ namespace FT{
         {
             token = fs.substr(0, pos);
             functions.push_back(createNode(token));
-            if(!token.compare("float") || !token.compare("split"))
-                functions.push_back(createNode(token, 0, true));
+            /* if(!token.compare("float") || !token.compare("split")) */
+            /*     functions.push_back(createNode(token, 0, true)); */
             fs.erase(0, pos + delim.length());
         } 
         if (verbosity > 2){
@@ -500,7 +497,7 @@ namespace FT{
         /* cout << "\n"; */
         // reset output types
         set_ttypes();
-        set_otypes();
+        set_otypes(true);
     }
 
     void Parameters::set_objectives(string obj)
