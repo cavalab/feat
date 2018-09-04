@@ -55,13 +55,14 @@ namespace FT{
     template<typename T>
     bool in(const vector<T> v, const T& i)
     {
-        /* true if i is in v, else false. */
-        for (const auto& el : v)
-        {
-            if (i == el)
-                return true;
-        }
-        return false;
+        return std::find(v.begin(), v.end(), i) != v.end();
+        /* /1* true if i is in v, else false. *1/ */
+        /* for (const auto& el : v) */
+        /* { */
+        /*     if (i == el) */
+        /*         return true; */
+        /* } */
+        /* return false; */
     }
    
     /// calculate median

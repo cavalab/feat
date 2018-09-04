@@ -198,18 +198,29 @@ namespace FT{
         cout << "in load_partial_longitudinal\n";
         cout << idx.size() << " indices\n";
 
-        std::unordered_set<long> idSet(idx.begin(), idx.end());
+        std::unordered_set<long> idSet; //(idx.begin(), idx.end());
+        idSet.insert(idx.begin(), idx.end());
+        // write out info about unordered_set
+        cout << "idSet size: " << idSet.size() << "\n";
+        cout << "max_size = " << idSet.max_size() << "\n"; 
+        cout << "max_bucket_count = " << idSet.max_bucket_count() << "\n";
+        cout << "max_load_factor = " << idSet.max_load_factor() << "\n";
+        cout << "idSet: ";
+        for (auto s : idSet)
+            cout << s << ",";
+        cout << "\n";
         std::map<int, int> idLoc;
         std::map<int, int> locID;
         unsigned i = 0;
         for(const auto& id : idx){
-            /* idSet.insert(id); */
+            /* auto tmp = idSet.insert(id); */
+            /* if (!tmp.second || *tmp.first != id) */
+            /*     cout << "insert failed on i = " << i << ", id = " << id << "\n"; */
             idLoc[id] = i;
             locID[i] = id;
             ++i;
         }
-        cout << "\n";
-        cout << "idSet size: " << idSet.size() << "\n";
+        /* cout << "\n"; */
         // dataMap maps from the variable name (string) to a map containing 
         // 1) the sample id, and 2) a pair consisting of 
         //      - the variable value (first) and 
@@ -281,16 +292,20 @@ namespace FT{
                 /* } */
                     ++nfound;
             }
+            else if (sNo == 552570)
+            /* else if (sNo > 33700) */
+            {
+                if (in(idx,sNo))
+                {
+                    cout << sNo << " is in idx, but not found in idSet\n";
+                    cout << "file line: ";
+                    for (auto c : cols)
+                        cout << c << ",";
+                    cout << "\n";
+                }
+            }
             else
             {
-                /* if (in(idx,sNo)) */
-                /* { */
-                /*     cout << sNo << " is in idx, but not found in idSet\n"; */
-                /*     cout << "line: "; */
-                /*     for (auto c : cols) */
-                /*         cout << c << ","; */
-                /*     cout << "\n"; */
-                /* } */
                 ++nskip;
             }
             ++nl;
