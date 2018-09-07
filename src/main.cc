@@ -108,6 +108,8 @@ int main(int argc, char** argv){
                 " Used in conjunction with generation limit.\n";
         cout << "--use_batch\tSet flag for stochastic mini batch training\n";
         cout << "-otype\tSet output types of features. 'b':bool only,'f':float only,'a':all\n";
+        cout << "-obj\tComma-separated objectives. Choices: fitness, complexity, size, CN, corr" \
+                " (size,complexity)\n";
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
     }
@@ -191,6 +193,8 @@ int main(int argc, char** argv){
         feat.set_use_batch();
     if(input.cmdOptionExists("-otype"))
         feat.set_otype(input.getCmdOption("-otype")[0]);
+    if(input.cmdOptionExists("-obj"))
+        feat.set_objectives(input.getCmdOption("-obj"));
     //cout << "done.\n";
     ///////////////////////////////////////
 
