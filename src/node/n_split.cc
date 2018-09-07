@@ -22,6 +22,8 @@ namespace FT{
 	{
 	    name = "split_c";
 	    arity['c'] = 1;
+        arity['b'] = 0;
+        arity['f'] = 0;
 	    otype = 'b';
         complexity = 2;
         threshold = 0;
