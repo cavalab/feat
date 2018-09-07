@@ -87,7 +87,11 @@ namespace FT{
         /*!
          * recursively builds a program with complete arguments.
          */
-        
+        /* std::cout << "current program: ["; */
+        /* for (const auto& p : program ) std::cout << p->name << " "; */
+        /* std::cout << "]\n"; */
+        /* std::cout << "otype: " << otype << "\n"; */
+        /* std::cout << "max_d: " << max_d << "\n"; */
         if (max_d == 0 || r.rnd_flt() < terminals.size()/(terminals.size()+functions.size())) 
         {
             // append terminal 
@@ -119,14 +123,20 @@ namespace FT{
             bool bterms = in(term_types, 'b');   // are there boolean terminals?
             bool cterms = in(term_types, 'c');   // are there categorical terminals?
             bool zterms = in(term_types, 'z');   // are there boolean terminals?
+            /* std::cout << "bterms: " << bterms << ",cterms: " << cterms << ",zterms: " << zterms */ 
+            /*             << "\n"; */
             for (size_t i = 0; i<functions.size(); ++i)
                 if (functions[i]->otype==otype &&
                     (max_d>1 || functions[i]->arity['b']==0 || bterms) &&
                     (max_d>1 || functions[i]->arity['c']==0 || cterms) &&
                     (max_d>1 || functions[i]->arity['z']==0 || zterms))
+                {
                     fi.push_back(i);
+                }
             
             if (fi.size()==0){
+                /* cout << "fi size = 0\n"; */
+
                 if(otype == 'z')
                 {
                     make_tree(program, functions, terminals, 0, term_weights, 'z', term_types);
@@ -156,9 +166,15 @@ namespace FT{
             // append a random choice from fs            
             /* auto t = functions[r.random_choice(fi)]->rnd_clone(); */
             //std::cout << t->name << " ";
+            /* cout << "choices: \n"; */
+            /* for (const auto& fis : fi) */
+            /*     cout << functions[fis]->name << "," ; */
+            /* cout << "\n"; */
             program.push_back(functions[r.random_choice(fi)]->rnd_clone());
             
+            /* std::cout << "program.back(): " << program.back()->name << "\n"; */ 
             std::unique_ptr<Node> chosen(program.back()->clone());
+            /* std::cout << "chosen: " << chosen->name << "\n"; */ 
             // recurse to fulfill the arity of the chosen function
             for (size_t i = 0; i < chosen->arity['f']; ++i)
                 make_tree(program, functions, terminals, max_d-1, term_weights, 'f', term_types);

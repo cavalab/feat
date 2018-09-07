@@ -36,8 +36,8 @@ namespace FT{
             set_verbosity(verbosity);
             if (fs.empty())
                 fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
-                      "logit,tanh,gauss,relu,split,split_c,float,"
-                      "float_c,and,or,not,xor,=,<,<=,>,>=,if,ite";
+                      "logit,tanh,gauss,relu,split,split_c,b2f,"
+                      "c2f,and,or,not,xor,=,<,<=,>,>=,if,ite";
             set_functions(fs);
             set_objectives(obj);
             set_feature_names(fn);
@@ -301,10 +301,10 @@ namespace FT{
         else if (str.compare("relu")==0)
             return std::unique_ptr<Node>(new NodeRelu());
 
-        else if (str.compare("float")==0)
-                return std::unique_ptr<Node>(new NodeFloat());
+        else if (str.compare("b2f")==0)
+                return std::unique_ptr<Node>(new NodeFloat(false));
         
-        else if (str.compare("float_c")==0)
+        else if (str.compare("c2f")==0)
                 return std::unique_ptr<Node>(new NodeFloat(true));
 
         // logical operators
