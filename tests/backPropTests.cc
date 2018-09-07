@@ -177,7 +177,7 @@ void testDummyProgram(FT::NodeVector p0, int iters) {
 	// Make sure internal NodeVector updated
 }
 
-TEST(BackProp, NodesTest)
+TEST(BackProp, DerivativeTest)
 {
 	Trace trace;
 	//vector<ArrayXd> inputs;
@@ -373,15 +373,16 @@ TEST(BackProp, NodesTest)
 	expectedDerivative(4,0) = 0 * pow(4,0) * log(4);
 	
 	
-	if ((expectedDerivative.matrix() - toTest->getDerivative(trace, 3).matrix()).norm() > 0.0001) {
+	/*if ((expectedDerivative.matrix() - toTest->getDerivative(trace, 3).matrix()).norm() > 0.0001) {
 		std::cout << "Exponent node (wrt to weight on second input) FAILED!\n";
 	}
     else
     {
         cout << (limited(expectedDerivative).matrix() - toTest->getDerivative(trace, 3).matrix()).norm() << "\n";
 		std::cout << "Exponent node (wrt to weight on second input) passed!\n";
-	}
+	}*/
 	
+	std::cout << "Exponent node (wrt to weight on second input) FAILED!\n";
 	//EXPECT_LE((limited(expectedDerivative).matrix() - toTest->getDerivative(trace, 3).matrix()).norm(), 0.0001);
 	
 	// COS NODE CHECK -------------------------------------------------------------------------------
@@ -465,12 +466,13 @@ TEST(BackProp, NodesTest)
 	expectedDerivative(4,0) = -2 * 1 * 0 * exp(0);
 	
 	//ERROR
-	if ((expectedDerivative.matrix() - toTest->getDerivative(trace, 0).matrix()).norm() > 0.0001) {
+	/*if ((expectedDerivative.matrix() - toTest->getDerivative(trace, 0).matrix()).norm() > 0.0001) {
 		std::cout << "Gaussian node (wrt to input) FAILED!\n";
 	}
     else
-		std::cout << "Gaussian node (wrt to input) passed!\n";
-		
+		std::cout << "Gaussian node (wrt to input) passed!\n";*/
+    
+    std::cout << "Gaussian node (wrt to input) FAILED!\n";
     //EXPECT_LE((expectedDerivative.matrix() - toTest->getDerivative(trace, 0).matrix()).norm(), 0.0001);
     
 	expectedDerivative(0,0) = -2 * 1 * 16 * exp(-16);
@@ -480,12 +482,13 @@ TEST(BackProp, NodesTest)
 	expectedDerivative(4,0) = -2 * 1 * 0 * exp(0);
 	
 	//ERROR
-	if ((expectedDerivative.matrix() - toTest->getDerivative(trace, 1).matrix()).norm() > 0.0001) {
+	/*if ((expectedDerivative.matrix() - toTest->getDerivative(trace, 1).matrix()).norm() > 0.0001) {
 		std::cout << "Gaussian node (wrt to weight) FAILED!\n";
 	}
     else
-		std::cout << "Gaussian node (wrt to weight) passed!\n";
+		std::cout << "Gaussian node (wrt to weight) passed!\n";*/
 		
+	std::cout << "Gaussian node (wrt to weight) FAILED!\n";	
     //EXPECT_LE((expectedDerivative.matrix() - toTest->getDerivative(trace, 1).matrix()).norm(), 0.0001);
     
 	// LOG NODE CHECK -------------------------------------------------------------------------------
@@ -545,12 +548,13 @@ TEST(BackProp, NodesTest)
 	expectedDerivative(4,0) = 1/(2 * sqrt(0)); // divide by zero
     
     //ERROR
-    if ((expectedDerivative.matrix() - toTest->getDerivative(trace, 0).matrix()).norm() > 0.0001) { // Currently pseudocode
+    /*if ((expectedDerivative.matrix() - toTest->getDerivative(trace, 0).matrix()).norm() > 0.0001) { // Currently pseudocode
 		std::cout << "Sqrt node (wrt to input) FAILED!\n";
 	}
     else
-		std::cout << "Sqrt node (wrt to input) passed!\n";
+		std::cout << "Sqrt node (wrt to input) passed!\n";*/
 
+    std::cout << "Sqrt node (wrt to input) FAILED!\n";
     //EXPECT_LE((limited(expectedDerivative).matrix() - toTest->getDerivative(trace, 0).matrix()).norm(), 0.0001);
     
 	expectedDerivative(0,0) = 4/(2 * sqrt(4));
@@ -560,12 +564,13 @@ TEST(BackProp, NodesTest)
 	expectedDerivative(4,0) = 0/(2 * sqrt(0)); //divide by zero
 	
 	//ERROR
-	if ((expectedDerivative.matrix() - toTest->getDerivative(trace, 1).matrix()).norm() > 0.0001) { // Currently pseudocode
+	/*if ((expectedDerivative.matrix() - toTest->getDerivative(trace, 1).matrix()).norm() > 0.0001) { // Currently pseudocode
 		std::cout << "Sqrt node(wrt to weight) FAILED!\n";
 	}
 	else
-		std::cout << "Sqrt node (wrt to weight) passed!\n";
+		std::cout << "Sqrt node (wrt to weight) passed!\n";*/
 	
+	std::cout << "Sqrt node(wrt to weight) FAILED!\n";
 	//EXPECT_LE((limited(expectedDerivative).matrix() - toTest->getDerivative(trace, 1).matrix()).norm(), 0.0001);
 	
 	// ^2  NODE CHECK -------------------------------------------------------------------------------
