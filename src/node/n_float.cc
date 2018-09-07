@@ -6,7 +6,6 @@ license: GNU/GPL v3
     	
 namespace FT{
 
-    bool isCategorical;
 
     NodeFloat::NodeFloat(bool isCategorical)
     {
@@ -17,12 +16,14 @@ namespace FT{
 	        name = "c2f";
             arity['b'] = 0;
             arity['c'] = 1;
+            arity['f'] = 0;
 	    }
 	    else
 	    {
 	        name = "b2f";
             arity['b'] = 1;
             arity['c'] = 0;
+            arity['f'] = 0;
 	    }
 
 	    otype = 'f';
@@ -49,5 +50,5 @@ namespace FT{
     
     NodeFloat* NodeFloat::clone_impl() const { return new NodeFloat(*this); }
 
-    NodeFloat* NodeFloat::rnd_clone_impl() const { return new NodeFloat(); }  
+    NodeFloat* NodeFloat::rnd_clone_impl() const { return new NodeFloat(*this); }  
 }

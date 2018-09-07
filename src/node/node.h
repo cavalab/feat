@@ -65,7 +65,7 @@ namespace FT{
             virtual bool isNodeDx() {return false;};
 
             /// makes a unique copy of this node
-            std::unique_ptr<Node> clone()const;
+            std::unique_ptr<Node> clone() const;
             
             /// makes a randomized unique copy ofnode
             std::unique_ptr<Node> rnd_clone() const;
