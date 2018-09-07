@@ -9,6 +9,7 @@ license: GNU/GPL v3
 #include "data.h"
 #include "params.h"
 #include "ml.h"
+#include "utils.h"
 
 namespace FT{
     

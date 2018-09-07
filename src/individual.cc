@@ -486,6 +486,13 @@ namespace FT{
                 obj.push_back(fitness);
             else if (n.compare("complexity")==0)
                 obj.push_back(complexity());
+            else if (n.compare("size")==0)
+                obj.push_back(program.size());
+            else if (n.compare("CN")==0)    // condition number of Phi
+                obj.push_back(condition_number(Phi.transpose()));
+            else if (n.compare("corr")==0)    // covariance structure of Phi
+                obj.push_back(1 - mean_square_corrcoef(Phi));
+
         }
     
     }

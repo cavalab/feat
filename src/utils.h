@@ -208,6 +208,14 @@ namespace FT{
         ss << value;
         return ss.str();
     }
-    
+     
+    /// returns the condition number of a matrix.
+    double condition_number(const MatrixXd& X);
+      
+    /// returns the pearson correlation coefficients of matrix.
+    MatrixXd corrcoef(const MatrixXd& X);
+    // returns the mean of the pairwise correlations of a matrix.
+    double mean_square_corrcoef(const MatrixXd& X);
+
 } 
 #endif
