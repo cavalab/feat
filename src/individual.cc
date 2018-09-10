@@ -319,9 +319,9 @@ namespace FT{
         else
             cols = stack.f.cols();
                
-        int rows_f = stack.f.size();
-        int rows_c = stack.c.size();
-        int rows_b = stack.b.size();
+        int rows_f = stack.f.rows();
+        int rows_c = stack.c.rows();
+        int rows_b = stack.b.rows();
         
         dtypes.clear();        
         Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
@@ -583,9 +583,9 @@ namespace FT{
         else
             cols = stack.f.cols();
                
-        int rows_f = stack.f.size();
-        int rows_c = stack.c.size();
-        int rows_b = stack.b.size();
+        int rows_f = stack.f.rows();
+        int rows_c = stack.c.rows();
+        int rows_b = stack.b.rows();
         
         dtypes.clear();        
         
