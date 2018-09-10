@@ -378,7 +378,8 @@ namespace FT{
             params.msg("\troot xo",3);
             mlocs = mom.program.roots();
             dlocs = dad.program.roots();
-            params.msg("\t\trandom choice mlocs (size "+std::to_string(mlocs.size())+"), p size: "+std::to_string(mom.p.size()),3);
+            params.msg("\t\trandom choice mlocs (size "+
+                       std::to_string(mlocs.size())+"), p size: "+std::to_string(mom.p.size()),3);
             j1 = r.random_choice(mlocs,mom.get_p(mlocs));   // weighted probability choice    
         }
         /* cout << "mom subtree\t" << mom.program_str() << "\n"; */
