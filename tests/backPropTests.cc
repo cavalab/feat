@@ -198,6 +198,7 @@ TEST(BackProp, DerivativeTest)
 
 	// ADD NODE CHECK -------------------------------------------------------------------------------
 	NodeDx* toTest = new FT::NodeAdd();
+	
 	// Derivative wrt to first input
 	ArrayXd expectedDerivative(5, 1);
 	expectedDerivative(0,0) = toTest->W[0];
@@ -239,7 +240,7 @@ TEST(BackProp, DerivativeTest)
 
 	// SUB NODE CHECK -------------------------------------------------------------------------------
 	toTest = new FT::NodeSubtract({1,1});
-    //    std::cout << "Subtract weights: " << toTest->W[0] << ", " << toTest->W[1] << "\n";
+    
 	expectedDerivative(0,0) = 1;
 	expectedDerivative(1,0) = 1;
 	expectedDerivative(2,0) = 1;
@@ -262,9 +263,6 @@ TEST(BackProp, DerivativeTest)
 	expectedDerivative(3,0) = 1;
 	expectedDerivative(4,0) = 0;
 
-    auto tmp = toTest->getDerivative(trace, 2);
-    //    cout << "subtract wrt to weight on first input: " << tmp << "\n";
-    
     ASSERT_LE((expectedDerivative.matrix() - toTest->getDerivative(trace, 2).matrix()).norm(), 0.0001);
     
     expectedDerivative(0,0) = -0;
@@ -277,6 +275,7 @@ TEST(BackProp, DerivativeTest)
 
 	// MULT NODE CHECK-------------------------------------------------------------------------------
 	toTest = new FT::NodeMultiply({1,1});
+	
 	expectedDerivative(0,0) = 4;
 	expectedDerivative(1,0) = 3;
 	expectedDerivative(2,0) = 2;
@@ -305,6 +304,7 @@ TEST(BackProp, DerivativeTest)
     
     // DIV NODE CHECK -------------------------------------------------------------------------------
 	toTest = new FT::NodeDivide({1,1});
+	
 	expectedDerivative(0,0) = MAX_DBL;	// Div by 0 (limited to 0)
 	expectedDerivative(1,0) = 1.0/1;
 	expectedDerivative(2,0) = 1.0/2;
@@ -339,13 +339,12 @@ TEST(BackProp, DerivativeTest)
 
 	// x^y NODE CHECK -------------------------------------------------------------------------------
 	toTest = new FT::NodeExponent({1.0,1.0});
+	
 	expectedDerivative(0,0) = 0 * pow(4,0)/4; 
 	expectedDerivative(1,0) = 1 * pow(3,1)/3;
 	expectedDerivative(2,0) = 2 * pow(2,2)/2;
 	expectedDerivative(3,0) = 3 * pow(1,3)/1;
 	expectedDerivative(4,0) = 4 * pow(0,4)/0; // div by 0
-	
-	
 	
 	ASSERT_LE((limited(expectedDerivative).matrix() - toTest->getDerivative(trace, 0).matrix()).norm(), 0.0001);
 	
@@ -375,6 +374,7 @@ TEST(BackProp, DerivativeTest)
 	
 	// COS NODE CHECK -------------------------------------------------------------------------------
 	toTest = new FT::NodeCos({1.0});
+	
 	expectedDerivative(0,0) = -1 * sin(4);
 	expectedDerivative(1,0) = -1 * sin(3);
 	expectedDerivative(2,0) = -1 * sin(2);
@@ -393,6 +393,7 @@ TEST(BackProp, DerivativeTest)
 	
 	// SIN NODE CHECK -------------------------------------------------------------------------------
 	toTest = new FT::NodeSin({1.0});
+	
 	expectedDerivative(0,0) = 1 * cos(4);
 	expectedDerivative(1,0) = 1 * cos(3);
 	expectedDerivative(2,0) = 1 * cos(2);
@@ -411,6 +412,7 @@ TEST(BackProp, DerivativeTest)
 	
 	// ^3 NODE CHECK  -------------------------------------------------------------------------------
 	toTest = new FT::NodeCube({1.0});
+	
 	expectedDerivative(0,0) = 3 * pow(4,2);
 	expectedDerivative(1,0) = 3 * pow(3,2);
 	expectedDerivative(2,0) = 3 * pow(2,2);
@@ -429,6 +431,7 @@ TEST(BackProp, DerivativeTest)
 	
 	// e^x NODE CHECK -------------------------------------------------------------------------------
 	toTest = new FT::NodeExponential({1.0});
+	
 	expectedDerivative(0,0) = 1 * exp(4);
 	expectedDerivative(1,0) = 1 * exp(3);
 	expectedDerivative(2,0) = 1 * exp(2);
@@ -447,6 +450,7 @@ TEST(BackProp, DerivativeTest)
     
 	// GAUS NODE CHECK-------------------------------------------------------------------------------
 	toTest = new FT::NodeGaussian({1.0});
+	
 	expectedDerivative(0,0) = 2 * (1 - 4) * exp(-pow(1 - 4, 2));
 	expectedDerivative(1,0) = 2 * (1 - 3) * exp(-pow(1 - 3, 2));
 	expectedDerivative(2,0) = 2 * (1 - 2) * exp(-pow(1 - 2, 2));
@@ -465,6 +469,7 @@ TEST(BackProp, DerivativeTest)
     
 	// LOG NODE CHECK -------------------------------------------------------------------------------
 	toTest = new FT::NodeLog({1.0});
+	
 	expectedDerivative(0,0) = 1.0/4;
 	expectedDerivative(1,0) = 1.0/3;
 	expectedDerivative(2,0) = 1.0/2;
@@ -483,6 +488,7 @@ TEST(BackProp, DerivativeTest)
 
 	// LOGIT NODE CHECK------------------------------------------------------------------------------
 	toTest = new FT::NodeLogit({1.0});
+	
 	expectedDerivative(0,0) = (1 * exp(1 * 4))/pow(exp(1 * 4) + 1, 2);
 	expectedDerivative(1,0) = (1 * exp(1 * 3))/pow(exp(1 * 3) + 1, 2);
 	expectedDerivative(2,0) = (1 * exp(1 * 2))/pow(exp(1 * 2) + 1, 2);
@@ -500,19 +506,27 @@ TEST(BackProp, DerivativeTest)
     ASSERT_LE((expectedDerivative.matrix() - toTest->getDerivative(trace, 1).matrix()).norm(), 0.0001);
     
 	// RELU NODE CHECK------------------------------------------------------------------------------
-	// TODO
-	// toTest = new FT::NodeRelu({1.0});
-	// expectedDerivative(0,0) = 1;
-	// expectedDerivative(1,0) = 1;
-	// expectedDerivative(2,0) = 1;
-	// expectedDerivative(3,0) = 1;
-	// expectedDerivative(4,0) = 1;
-	// if ((expectedDerivative.matrix() - toTest->getDerivative(trace, 0).matrix()).norm() > 0.0001) { // Currently pseudocode
-	// 	std::cout << "Relu node FAILED!\n";
-	// }
+    toTest = new FT::NodeRelu({1.0});
+    
+    expectedDerivative(0,0) = 1;
+    expectedDerivative(1,0) = 1;
+    expectedDerivative(2,0) = 1;
+    expectedDerivative(3,0) = 1;
+    expectedDerivative(4,0) = 0.01;
+    
+    ASSERT_LE((limited(expectedDerivative).matrix() - toTest->getDerivative(trace, 0).matrix()).norm(), 0.0001);
+    
+    expectedDerivative(0,0) = 4;
+    expectedDerivative(1,0) = 3;
+    expectedDerivative(2,0) = 2;
+    expectedDerivative(3,0) = 1;
+    expectedDerivative(4,0) = 0.01;
+    
+    ASSERT_LE((limited(expectedDerivative).matrix() - toTest->getDerivative(trace, 1).matrix()).norm(), 0.0001);
 
 	// SQRT NODE CHECK-------------------------------------------------------------------------------
 	toTest = new FT::NodeSqrt({1.0});
+	
 	expectedDerivative(0,0) = 1/(2 * sqrt(4));
 	expectedDerivative(1,0) = 1/(2 * sqrt(3));
 	expectedDerivative(2,0) = 1/(2 * sqrt(2));
@@ -531,6 +545,7 @@ TEST(BackProp, DerivativeTest)
 	
 	// ^2  NODE CHECK -------------------------------------------------------------------------------
 	toTest = new FT::NodeSquare({1.0});
+	
 	expectedDerivative(0,0) = 2 * 1 * 4;
 	expectedDerivative(1,0) = 2 * 1 * 3;
 	expectedDerivative(2,0) = 2 * 1 * 2;
@@ -549,6 +564,7 @@ TEST(BackProp, DerivativeTest)
 
 	// TANH NODE CHECK-------------------------------------------------------------------------------
 	toTest = new FT::NodeTanh({1.0});
+	
 	expectedDerivative(0,0) = 0.0013409506830258968799702;
 	expectedDerivative(1,0) = 0.00986603716544019127315616968;
 	expectedDerivative(2,0) = 0.07065082485316446568624765586105;
