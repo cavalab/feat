@@ -246,7 +246,9 @@ int main(int argc, char** argv){
         cout << "\ngenerating training prediction...\n";
 
         VectorXd yhat = feat.predict(X_tcopy,Z_tcopy);
-        double score_t = feat.score(X_tcopy, y_tcopy, Z_tcopy);
+        /* double score_t = feat.score(X_tcopy, y_tcopy, Z_tcopy); */
+        double score_t = (yhat.array() - y_tcopy.array()).pow(2).mean();
+        /* cout << "tmp score: " << tmp << "\n"; */
         /* VectorXd yhat = feat.predict(X_tcopy,Z_tcopy); */
 
         double SSres = (y_tcopy-yhat).array().pow(2).sum() ;

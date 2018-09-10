@@ -11,15 +11,13 @@ namespace FT{
     {
         name = "kurtosis";
 	    otype = 'f';
-	    arity['f'] = 0;
-	    arity['b'] = 0;
 	    arity['z'] = 1;
 	    complexity = 1;
     }
 
 #ifndef USE_CUDA
     /// Evaluates the node and updates the stack states. 
-    void NodeKurtosis::evaluate(Data& data, Stacks& stack)
+    void NodeKurtosis::evaluate(const Data& data, Stacks& stack)
     {
         ArrayXd tmp(stack.z.top().first.size());
         
@@ -29,11 +27,11 @@ namespace FT{
             tmp(x) = kurtosis(limited(stack.z.top().first[x]));
             
         stack.z.pop();
-        stack.f.push(tmp);
+        stack.push<double>(tmp);
         
     }
 #else
-    void NodeKurtosis::evaluate(Data& data, Stacks& stack)
+    void NodeKurtosis::evaluate(const Data& data, Stacks& stack)
     {
         
         int x;
@@ -49,7 +47,7 @@ namespace FT{
     /// Evaluates the node symbolically
     void NodeKurtosis::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("kurtosis(" + stack.zs.pop() + ")");
+        stack.push<double>("kurtosis(" + stack.zs.pop() + ")");
     }
     
     NodeKurtosis* NodeKurtosis::clone_impl() const { return new NodeKurtosis(*this); }

@@ -14,23 +14,24 @@ namespace FT{
         else
             name = n;
 	    otype = ntype;
-	    arity['f'] = 0;
-	    arity['b'] = 0;
 	    complexity = 1;
 	    loc = l;
     }
 
 #ifndef USE_CUDA
     /// Evaluates the node and updates the stack states. 		
-    void NodeVariable::evaluate(Data& data, Stacks& stack)
+    void NodeVariable::evaluate(const Data& data, Stacks& stack)
     {
-	    if (otype == 'b')
-            stack.b.push(data.X.row(loc).cast<bool>());
-        else
-            stack.f.push(data.X.row(loc));
+        switch(otype)
+        {
+            case 'b': stack.push<bool>(data.X.row(loc).cast<bool>()); break;
+            case 'c': stack.push<int>(data.X.row(loc).cast<int>()); break;
+            case 'f': stack.push<double>(data.X.row(loc)); break;
+            
+        }
     }
 #else
-    void NodeVariable::evaluate(Data& data, Stacks& stack)
+    void NodeVariable::evaluate(const Data& data, Stacks& stack)
     {
         if (otype == 'b')
         {
@@ -53,10 +54,12 @@ namespace FT{
     /// Evaluates the node symbolically
     void NodeVariable::eval_eqn(Stacks& stack)
     {
-	    if (otype == 'b')
-            stack.bs.push(name);
-        else
-            stack.fs.push(name);
+        switch(otype)
+        {
+            case 'b' : stack.push<bool>(name); break;
+            case 'c' : stack.push<int>(name); break;
+            case 'f' : stack.push<double>(name); break;
+        }
     }
 
     NodeVariable* NodeVariable::clone_impl() const { return new NodeVariable(*this); }

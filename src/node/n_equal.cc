@@ -11,18 +11,17 @@ namespace FT{
 	    name = "=";
 	    otype = 'b';
 	    arity['f'] = 2;
-	    arity['b'] = 0;
 	    complexity = 1;
     }
 
 #ifndef USE_CUDA
     /// Evaluates the node and updates the stack states. 
-    void NodeEqual::evaluate(Data& data, Stacks& stack)
+    void NodeEqual::evaluate(const Data& data, Stacks& stack)
     {
-        stack.b.push(stack.f.pop() == stack.f.pop());
+        stack.push<bool>(stack.pop<double>() == stack.pop<double>());
     }
 #else
-    void NodeEqual::evaluate(Data& data, Stacks& stack)
+    void NodeEqual::evaluate(const Data& data, Stacks& stack)
     {
         GPU_Equal(stack.dev_f, stack.dev_b, stack.idx['f'], stack.idx[otype], stack.N);
     }
@@ -31,7 +30,7 @@ namespace FT{
     /// Evaluates the node symbolically
     void NodeEqual::eval_eqn(Stacks& stack)
     {
-        stack.bs.push("(" + stack.fs.pop() + "==" + stack.fs.pop() + ")");
+        stack.push<bool>("(" + stack.popStr<double>() + "==" + stack.popStr<double>() + ")");
     }
     
     NodeEqual* NodeEqual::clone_impl() const { return new NodeEqual(*this); }

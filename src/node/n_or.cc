@@ -11,20 +11,19 @@ namespace FT{
     {
         name = "or";
 	    otype = 'b';
-	    arity['f'] = 0;
 	    arity['b'] = 2;
 	    complexity = 2;
     }
 
 #ifndef USE_CUDA
     /// Evaluates the node and updates the stack states. 
-    void NodeOr::evaluate(Data& data, Stacks& stack)
+    void NodeOr::evaluate(const Data& data, Stacks& stack)
     {
-        stack.b.push(stack.b.pop() || stack.b.pop());
+        stack.push<bool>(stack.pop<bool>() || stack.pop<bool>());
 
     }
 #else
-    void NodeOr::evaluate(Data& data, Stacks& stack)
+    void NodeOr::evaluate(const Data& data, Stacks& stack)
     {
         GPU_Or(stack.dev_b, stack.idx[otype], stack.N);
     }
@@ -33,7 +32,7 @@ namespace FT{
     /// Evaluates the node symbolically
     void NodeOr::eval_eqn(Stacks& stack)
     {
-        stack.bs.push("(" + stack.bs.pop() + " OR " + stack.bs.pop() + ")");
+        stack.push<bool>("(" + stack.popStr<bool>() + " OR " + stack.popStr<bool>() + ")");
     }
     
     NodeOr* NodeOr::clone_impl() const { return new NodeOr(*this); }

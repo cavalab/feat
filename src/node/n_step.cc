@@ -13,20 +13,19 @@ namespace FT{
         name = "step";
 	    otype = 'f';
 	    arity['f'] = 1;
-	    arity['b'] = 0;
 	    complexity = 1;
     }
 
 #ifndef USE_CUDA
     /// Evaluates the node and updates the stack states. 
-    void NodeStep::evaluate(Data& data, Stacks& stack)
+    void NodeStep::evaluate(const Data& data, Stacks& stack)
     {
-	    ArrayXd x = stack.f.pop();
+	    ArrayXd x = stack.pop<double>();
 	    ArrayXd res = (x > 0).select(ArrayXd::Ones(x.size()), ArrayXd::Zero(x.size())); 
-        stack.f.push(res);
+        stack.push<double>(res);
     }
 #else
-    void NodeStep::evaluate(Data& data, Stacks& stack)
+    void NodeStep::evaluate(const Data& data, Stacks& stack)
     {
         GPU_Step(stack.dev_f, stack.idx[otype], stack.N);
     }
@@ -35,7 +34,7 @@ namespace FT{
     /// Evaluates the node symbolically
     void NodeStep::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("step("+ stack.fs.pop() +")");
+        stack.push<double>("step("+ stack.popStr<double>() +")");
     }
 
     NodeStep* NodeStep::clone_impl() const { return new NodeStep(*this); }

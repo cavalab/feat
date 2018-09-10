@@ -26,16 +26,16 @@ namespace FT{
                              const Data& d, 
                              MatrixXd& F, 
                              const Parameters& params, 
-                             bool offspring)
+                             bool offspring,
+                             bool validation)
     {
     	/*!
-         * Input:
-         
-         *      individuals: population
-         *      X: feature data
-         *      y: label
-         *      F: matrix of raw fitness values
-         *      p: algorithm parameters
+         *      @params individuals: population
+         *      @params d: Data structure
+         *      @params F: matrix of raw fitness values
+         *      @params params: algorithm parameters
+         *      @params offspring: if true, only evaluate last half of population
+         *      @params validation: if true, call ind.predict instead of ind.fit
          
          * Output:
          
@@ -50,55 +50,47 @@ namespace FT{
         #pragma omp parallel for
         for (unsigned i = start; i<individuals.size(); ++i)
         {
+            Individual& ind = individuals.at(i);
+
             if (params.backprop)
             {
                 AutoBackProp backprop(params.scorer, params.bp.iters, params.bp.learning_rate);
-                params.msg("Running backprop on " + individuals.at(i).get_eqn(), 3);
-                backprop.run(individuals.at(i), d, params);
+                params.msg("Running backprop on " + ind.get_eqn(), 3);
+                backprop.run(ind, d, params);
             }         
-            
-            // calculate program output matrix Phi
-            params.msg("Generating output for " + individuals.at(i).get_eqn(), 3);
-            MatrixXd Phi = individuals.at(i).out(d, params);            
-            
-            // calculate ML model from Phi
-            params.msg("ML training on " + individuals.at(i).get_eqn(), 3);
+
             bool pass = true;
-            auto ml = std::make_shared<ML>(params);
 
-            shared_ptr<CLabels> yhat = ml->fit(Phi,d.y,params,pass,individuals.at(i).dtypes);
-
+            shared_ptr<CLabels> yhat = validation? ind.predict(d,params) : ind.fit(d,params,pass); 
             // assign F and aggregate fitness
-            params.msg("Assigning fitness to " + individuals.at(i).get_eqn(), 3);
+            params.msg("Assigning fitness to " + ind.get_eqn(), 3);
 
             if (!pass)
             {
-                vector<double> w(Phi.rows(), 0);     // set weights to zero
-                individuals.at(i).set_p(w,params.feedback);
-                individuals.at(i).fitness = MAX_DBL;
-                F.col(individuals.at(i).loc) = MAX_DBL*VectorXd::Ones(d.y.size());
+                vector<double> w(0,ind.Phi.rows());     // set weights to zero
+                ind.set_p(w,params.feedback);
+                ind.fitness = MAX_DBL;
+                F.col(ind.loc) = MAX_DBL*VectorXd::Ones(d.y.size());
             }
             else
             {
                 // assign weights to individual
-                individuals.at(i).set_p(ml->get_weights(),params.feedback);
-                assign_fit(individuals.at(i),F,yhat,d.y,params);
+                ind.set_p(ind.ml->get_weights(),params.feedback);
+                assign_fit(ind,F,yhat,d.y,params,validation);
 
                 if (params.hillclimb)
                 {
                     HillClimb hc(params.scorer, params.hc.iters, params.hc.step);
                     bool updated = false;
-                    shared_ptr<CLabels> yhat2 = hc.run(individuals.at(i), d, params,
+                    shared_ptr<CLabels> yhat2 = hc.run(ind, d, params,
                                           updated);
                     if (updated)    // update the fitness of this individual
                     {
-                        assign_fit(individuals.at(i), F, yhat2, d.y, params);
+                        assign_fit(ind, F, yhat2, d.y, params);
                     }
 
                 }
             }
-            
-            //cout<<"Here 3 with i = "<<i<<" and thread as "<< omp_get_thread_num() <<"\n";   
         }
     }
     
@@ -135,65 +127,4 @@ namespace FT{
         params.msg("ind " + std::to_string(ind.loc) + " fitness: " + std::to_string(ind.fitness),3);
     }
 
-    // validation fitness of population                            
-    void Evaluation::val_fitness(vector<Individual>& individuals,
-                             const Data& dt,
-                             MatrixXd& F, 
-                             const Data& dv,
-                             const Parameters& params, 
-                             bool offspring)
-    {
-    	/*!
-         * Input:
-         
-         *      pop: population
-         *      X: feature data
-         *      y: label
-         *      F: matrix of raw fitness values
-         *      p: algorithm parameters
-         
-         * Output:
-         
-         *      F is modified
-         *      pop[:].fitness is modified
-         */
-        
-        
-        unsigned start =0;
-        if (offspring) start = F.cols()/2;
-        // loop through individuals
-        #pragma omp parallel for
-        for (unsigned i = start; i<individuals.size(); ++i)
-        {
-            // calculate program output matrix Phi
-            params.msg("Generating output for " + individuals.at(i).get_eqn(), 3);
-            MatrixXd Phi = individuals.at(i).out(dt, params);            
-
-            // calculate ML model from Phi
-            params.msg("ML training on " + individuals.at(i).get_eqn(), 3);
-            bool pass = true;
-            auto ml = std::make_shared<ML>(params);
-            shared_ptr<CLabels> yhat_t = ml->fit(Phi,dt.y,params,pass,individuals.at(i).dtypes);
-            if (!pass)
-            {
-                HANDLE_ERROR_NO_THROW("Error training eqn " + individuals.at(i).get_eqn() + 
-                                    "\nwith raw output " + 
-                                    to_string(individuals.at(i).out(dt, params)) + "\n");
-            }
-            
-            // calculate program output matrix Phi on validation data
-            params.msg("Generating validation output for " + individuals.at(i).get_eqn(), 3);
-            MatrixXd Phi_v = individuals.at(i).out(dv, params);            
-
-            // calculate ML model from Phi
-            params.msg("ML predicting on " + individuals.at(i).get_eqn(), 3);
-            shared_ptr<CLabels> yhat_v = ml->predict(Phi_v);
-
-            // assign F and aggregate fitness
-            params.msg("Assigning val fitness to " + individuals.at(i).get_eqn(), 3);
-            
-            assign_fit(individuals.at(i),F,yhat_v,dv.y,params, true);
-                        
-        }
-    }
 }

@@ -26,12 +26,12 @@ namespace FT{
 
 #ifndef USE_CUDA    
     /// Evaluates the node and updates the stack states.  
-    void NodeCube::evaluate(Data& data, Stacks& stack)
+    void NodeCube::evaluate(const Data& data, Stacks& stack)
     {
-        stack.f.push(limited(pow(this->W[0] * stack.f.pop(),3)));
+        stack.push<double>(limited(pow(this->W[0] * stack.pop<double>(),3)));
     }
 #else
-    void NodeCube::evaluate(Data& data, Stacks& stack)
+    void NodeCube::evaluate(const Data& data, Stacks& stack)
     {
         GPU_Cube(stack.dev_f, stack.idx['f'], stack.N, W[0]);
     }
@@ -40,16 +40,19 @@ namespace FT{
     /// Evaluates the node symbolically
     void NodeCube::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("(" + stack.fs.pop() + "^3)");
+        stack.push<double>("(" + stack.popStr<double>() + "^3)");
     }
 
-    ArrayXd NodeCube::getDerivative(Trace& stack, int loc) {
+    ArrayXd NodeCube::getDerivative(Trace& stack, int loc)
+    {
+        ArrayXd& x = stack.get<double>()[stack.size<double>()-1];
+        
         switch (loc) {
             case 1: // d/dw0
-                return 3 * pow(stack.f[stack.f.size()-1], 3) * pow(this->W[0], 2);
+                return 3 * pow(x, 3) * pow(this->W[0], 2);
             case 0: // d/dx0
             default:
-               return 3 * pow(this->W[0], 3) * pow(stack.f[stack.f.size()-1], 2);
+               return 3 * pow(this->W[0], 3) * pow(x, 2);
         } 
     }
     

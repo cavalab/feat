@@ -11,15 +11,13 @@ namespace FT{
     {
         name = "mode";
 	    otype = 'f';
-	    arity['f'] = 0;
-	    arity['b'] = 0;
 	    arity['z'] = 1;
 	    complexity = 1;
     }
 
 #ifndef USE_CUDA
     /// Evaluates the node and updates the stack states. 
-    void NodeMode::evaluate(Data& data, Stacks& stack)
+    void NodeMode::evaluate(const Data& data, Stacks& stack)
     {
         ArrayXd tmp(stack.z.top().first.size());
         
@@ -30,11 +28,11 @@ namespace FT{
             
         stack.z.pop();
 
-        stack.f.push(tmp);
+        stack.push<double>(tmp);
         
     }
 #else
-    void NodeMode::evaluate(Data& data, Stacks& stack)
+    void NodeMode::evaluate(const Data& data, Stacks& stack)
     {
         
         int x;
@@ -51,7 +49,7 @@ namespace FT{
     /// Evaluates the node symbolically
     void NodeMode::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("mean(" + stack.zs.pop() + ")");
+        stack.push<double>("mean(" + stack.zs.pop() + ")");
     }
     
     NodeMode* NodeMode::clone_impl() const { return new NodeMode(*this); }

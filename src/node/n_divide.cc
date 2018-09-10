@@ -27,16 +27,16 @@ namespace FT{
 
 #ifndef USE_CUDA
     /// Evaluates the node and updates the stack states. 
-    void NodeDivide::evaluate(Data& data, Stacks& stack)
+    void NodeDivide::evaluate(const Data& data, Stacks& stack)
     {
-        ArrayXd x1 = stack.f.pop();
-        ArrayXd x2 = stack.f.pop();
+        ArrayXd x1 = stack.pop<double>();
+        ArrayXd x2 = stack.pop<double>();
         // safe division returns x1/x2 if x2 != 0, and MAX_DBL otherwise               
-        stack.f.push( (abs(x2) > NEAR_ZERO ).select((this->W[0] * x1) / (this->W[1] * x2), 
+        stack.push<double>( (abs(x2) > NEAR_ZERO ).select((this->W[0] * x1) / (this->W[1] * x2), 
                                                     1.0) ); 
     }
 #else
-    void NodeDivide::evaluate(Data& data, Stacks& stack)
+    void NodeDivide::evaluate(const Data& data, Stacks& stack)
     {
         GPU_Divide(stack.dev_f, stack.idx[otype], stack.N, W[0], W[1]);
     }
@@ -45,13 +45,15 @@ namespace FT{
     /// Evaluates the node symbolically
     void NodeDivide::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("(" + stack.fs.pop() + "/" + stack.fs.pop() + ")");            	
+        stack.push<double>("(" + stack.popStr<double>() + "/" + stack.popStr<double>() + ")");            	
     }
 
     // Might want to check derivative orderings for other 2 arg nodes
-    ArrayXd NodeDivide::getDerivative(Trace& stack, int loc) {
-        ArrayXd x1 = stack.f[stack.f.size() - 1];
-        ArrayXd x2 = stack.f[stack.f.size() - 2];
+    ArrayXd NodeDivide::getDerivative(Trace& stack, int loc)
+    {
+        ArrayXd& x1 = stack.get<double>()[stack.size<double>()-1];
+        ArrayXd& x2 = stack.get<double>()[stack.size<double>()-2];
+        
         switch (loc) {
             case 3: // d/dW[1]
                 return limited(-this->W[0] * x1/(x2 * pow(this->W[1], 2)));
