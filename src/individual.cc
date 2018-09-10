@@ -238,7 +238,7 @@ namespace FT{
         return Phi;
     }
 #else
-    MatrixXd Individual::out(Data d, const Parameters& params)
+    MatrixXd Individual::out(const Data& d, const Parameters& params)
     {
     
         /*!
@@ -311,13 +311,13 @@ namespace FT{
                 if (stack.b.size() == 0)
                     HANDLE_ERROR_THROW("Error: no outputs in stacks");
                 
-                cols = stack.b.top().size();
+                cols = stack.b.cols();
             }
             else
-                cols = stack.c.top().size();
+                cols = stack.c.cols();
         }
         else
-            cols = stack.f.top().size();
+            cols = stack.f.cols();
                
         int rows_f = stack.f.size();
         int rows_c = stack.c.size();
@@ -490,7 +490,7 @@ namespace FT{
     }
 #else
         // calculate program output matrix
-    MatrixXd Individual::out_trace(Data d,
+    MatrixXd Individual::out_trace(const Data& d,
                      const Parameters& params, vector<Trace>& stack_trace)
     {
         /*!
@@ -575,13 +575,13 @@ namespace FT{
                 if (stack.b.size() == 0)
                     HANDLE_ERROR_THROW("Error: no outputs in stacks");
                 
-                cols = stack.b.top().size();
+                cols = stack.b.cols();
             }
             else
-                cols = stack.c.top().size();
+                cols = stack.c.cols();
         }
         else
-            cols = stack.f.top().size();
+            cols = stack.f.cols();
                
         int rows_f = stack.f.size();
         int rows_c = stack.c.size();
@@ -800,8 +800,10 @@ namespace FT{
         std::map<char, size_t> stack_size;
         std::map<char, size_t> max_stack_size;
         stack_size['f'] = 0;
+        stack_size['c'] = 0; 
         stack_size['b'] = 0; 
         max_stack_size['f'] = 0;
+        max_stack_size['c'] = 0;
         max_stack_size['b'] = 0;
 
         for (const auto& n : program)   

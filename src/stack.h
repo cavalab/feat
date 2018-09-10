@@ -150,17 +150,26 @@ namespace FT
         
     };
     
+    template <> inline Stack<ArrayXd>& Stacks::get(){ return f; }
+        
+    template <> inline Stack<ArrayXb>& Stacks::get(){ return b; }
+    
+    template <> inline Stack<ArrayXi>& Stacks::get(){ return c; }
+    
 #else
     struct Stacks
     {
         Eigen::Array<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> f;
+        Eigen::Array<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> c;
         Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>  b;
         Stack<std::pair<vector<ArrayXd>, vector<ArrayXd> > > z;
         Stack<string> fs;
+        Stack<string> cs;
         Stack<string> bs;
         Stack<string> zs;
 
-        float * dev_f; 
+        float * dev_f;
+        int * dev_c; 
         bool * dev_b; 
         std::map<char, size_t> idx; 
         size_t N; 
@@ -183,20 +192,29 @@ namespace FT
         void copy_to_host();
         
         ~Stacks();
-    };
-#endif
-    
-    template <> inline Stack<ArrayXd>& Stacks::get(){ return f; }
         
-    template <> inline Stack<ArrayXb>& Stacks::get(){ return b; }
-    
-    template <> inline Stack<ArrayXi>& Stacks::get(){ return c; }
+        template <typename T> inline Stack<string>& getStr()
+        {
+            return getStr<T>();
+        }
+        
+        template <typename T> void push(string value)
+        {
+            getStr<T>().push(value);
+        }
+        
+        template <typename T> string popStr()
+        {
+            return getStr<T>().pop();
+        }
+    };
     
     template <> inline Stack<string>& Stacks::getStr<double>(){ return fs; }
         
     template <> inline Stack<string>& Stacks::getStr<bool>(){ return bs; }
     
     template <> inline Stack<string>& Stacks::getStr<int>(){ return cs; }
+#endif
     
     /*!
      * @class Trace

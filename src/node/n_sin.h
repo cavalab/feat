@@ -15,13 +15,8 @@ namespace FT{
     		NodeSin(vector<double> W0 = vector<double>());
     		
             /// Evaluates the node and updates the stack states. 
-<<<<<<< HEAD
-            void evaluate(Data& data, Stacks& stack);
-            
-=======
             void evaluate(const Data& data, Stacks& stack);
 
->>>>>>> master
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack);
             

@@ -33,21 +33,44 @@ namespace FT{
 #else
     void NodeVariable::evaluate(const Data& data, Stacks& stack)
     {
-        if (otype == 'b')
+        if(otype == 'b')
         {
             ArrayXb tmp = data.X.row(loc).cast<bool>();
             GPU_Variable(stack.dev_b, tmp.data(), stack.idx[otype], stack.N);
         }
+        else if (otype == 'c')
+        {
+            ArrayXi tmp = data.X.row(loc).cast<int>();
+            GPU_Variable(stack.dev_c, tmp.data(), stack.idx[otype], stack.N);
+        }
         else
         {
             ArrayXf tmp = data.X.row(loc).cast<float>() ;
-            /*std::cout << "NodeVariable:\n stack.dev_f: " << stack.dev_f
-                       << "\ntmp.data(): " << tmp.data() 
-                       << "\ntmp.size(): " << tmp.size()
-                       << "\nstack.idx[otype]: " << stack.idx[otype]
-                       << "\nstack.N: " << stack.N <<"\n";*/
+            // std::cout << "NodeVariable:\n stack.dev_f: " << stack.dev_f
+            //           << "\ntmp.data(): " << tmp.data() 
+            //           << "\ntmp.size(): " << tmp.size()
+            //           << "\nstack.idx[otype]: " << stack.idx[otype]
+            //           << "\nstack.N: " << stack.N <<"\n";
             GPU_Variable(stack.dev_f, tmp.data(), stack.idx[otype], stack.N);
         }
+        
+        /*switch(otype)
+        {
+            case 'b': ArrayXb tmpb = data.X.row(loc).cast<bool>();
+                      GPU_Variable(stack.dev_b, tmpb.data(), stack.idx[otype], stack.N);
+                      break;
+            case 'c': ArrayXi tmpc = data.X.row(loc).cast<int>();
+                      GPU_Variable(stack.dev_c, tmpc.data(), stack.idx[otype], stack.N);
+                      break;
+            case 'f':
+            default : ArrayXf tmpf = data.X.row(loc).cast<float>() ;
+                      // std::cout << "NodeVariable:\n stack.dev_f: " << stack.dev_f
+                      //           << "\ntmp.data(): " << tmp.data() 
+                      //           << "\ntmp.size(): " << tmp.size()
+                      //           << "\nstack.idx[otype]: " << stack.idx[otype]
+                      //           << "\nstack.N: " << stack.N <<"\n";
+                      GPU_Variable(stack.dev_f, tmpf.data(), stack.idx[otype], stack.N);
+        }*/
     }
 #endif
 
