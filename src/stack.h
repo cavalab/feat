@@ -209,12 +209,13 @@ namespace FT
         }
     };
     
+#endif
+    
     template <> inline Stack<string>& Stacks::getStr<double>(){ return fs; }
         
     template <> inline Stack<string>& Stacks::getStr<bool>(){ return bs; }
     
     template <> inline Stack<string>& Stacks::getStr<int>(){ return cs; }
-#endif
     
     /*!
      * @class Trace
