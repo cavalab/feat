@@ -11,7 +11,6 @@ namespace FT{
 	    name = "cos";
 	    otype = 'f';
 	    arity['f'] = 1;
-	    arity['b'] = 0;
 	    complexity = 3;
 
         if (W0.empty())
@@ -26,12 +25,12 @@ namespace FT{
 
 #ifndef USE_CUDA    
     /// Evaluates the node and updates the stack states. 
-    void NodeCos::evaluate(Data& data, Stacks& stack)
+    void NodeCos::evaluate(const Data& data, Stacks& stack)
     {
-        stack.f.push(limited(cos(W[0] * stack.f.pop())));
+        stack.push<double>(limited(cos(W[0] * stack.pop<double>())));
     }
 #else
-    void NodeCos::evaluate(Data& data, Stacks& stack)
+    void NodeCos::evaluate(const Data& data, Stacks& stack)
     {
         GPU_Cos(stack.dev_f, stack.idx[otype], stack.N, W[0]);
     }
@@ -40,16 +39,19 @@ namespace FT{
     /// Evaluates the node symbolically
     void NodeCos::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("cos(" + stack.fs.pop() + ")");
+        stack.push<double>("cos(" + stack.popStr<double>() + ")");
     }
 
     ArrayXd NodeCos::getDerivative(Trace& stack, int loc) {
+    
+        ArrayXd& x = stack.get<double>()[stack.size<double>()-1];
+        
         switch (loc) {
             case 1: // d/dw0
-                return stack.f[stack.f.size()-1] * -sin(W[0] * stack.f[stack.f.size() - 1]);
+                return x * -sin(W[0] * x);
             case 0: // d/dx0
             default:
-               return W[0] * -sin(W[0] * stack.f[stack.f.size() - 1]);
+               return W[0] * -sin(W[0] * x);
         } 
     }
     

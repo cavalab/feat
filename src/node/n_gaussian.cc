@@ -12,7 +12,6 @@ namespace FT{
         name = "gaussian";
 		otype = 'f';
 		arity['f'] = 1;
-		arity['b'] = 0;
 		complexity = 4;
 
         if (W0.empty())
@@ -28,12 +27,12 @@ namespace FT{
 
 #ifndef USE_CUDA
     /// Evaluates the node and updates the stack states. 
-    void NodeGaussian::evaluate(Data& data, Stacks& stack)
+    void NodeGaussian::evaluate(const Data& data, Stacks& stack)
     {
-        stack.f.push(limited(exp(-pow(W[0] - stack.f.pop(), 2))));
+        stack.push<double>(limited(exp(-pow(W[0] - stack.pop<double>(), 2))));
     }
 #else
-    void NodeGaussian::evaluate(Data& data, Stacks& stack)
+    void NodeGaussian::evaluate(const Data& data, Stacks& stack)
     {
         GPU_Gaussian(stack.dev_f, stack.idx[otype], stack.N, W[0]);
     }
@@ -42,13 +41,12 @@ namespace FT{
     /// Evaluates the node symbolically
     void NodeGaussian::eval_eqn(Stacks& stack)
     {
-        /* stack.fs.push("exp(-(" +std::to_string(W[0]) + '-' + stack.fs.pop() + ")^2)"); */
-        stack.fs.push("gauss(" + stack.fs.pop() + ")");
+        stack.push<double>("gauss(" + stack.popStr<double>() + ")");
     }
 
     ArrayXd NodeGaussian::getDerivative(Trace& stack, int loc) 
     {
-        ArrayXd& x = stack.f[stack.f.size()-1];
+        ArrayXd& x = stack.get<double>()[stack.size<double>()-1];
         
         switch (loc) {
             case 1: // d/dw0

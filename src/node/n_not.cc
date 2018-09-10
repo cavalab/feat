@@ -10,19 +10,18 @@ namespace FT{
     {
 	    name = "not";
 	    otype = 'b';
-	    arity['f'] = 0;
 	    arity['b'] = 1;
 	    complexity = 1;
     }
 
 #ifndef USE_CUDA
     /// Evaluates the node and updates the stack states. 
-    void NodeNot::evaluate(Data& data, Stacks& stack)
+    void NodeNot::evaluate(const Data& data, Stacks& stack)
     {
-        stack.b.push(!stack.b.pop());
+        stack.push<bool>(!stack.pop<bool>());
     }
 #else
-    void NodeNot::evaluate(Data& data, Stacks& stack)
+    void NodeNot::evaluate(const Data& data, Stacks& stack)
     {
         GPU_Not(stack.dev_b, stack.idx[otype], stack.N);
     }
@@ -31,7 +30,7 @@ namespace FT{
     /// Evaluates the node symbolically
     void NodeNot::eval_eqn(Stacks& stack)
     {
-        stack.bs.push("NOT(" + stack.bs.pop() + ")");
+        stack.push<bool>("NOT(" + stack.popStr<bool>() + ")");
     }
     
     NodeNot* NodeNot::clone_impl() const { return new NodeNot(*this); }

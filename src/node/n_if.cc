@@ -19,12 +19,12 @@ namespace FT{
 
 #ifndef USE_CUDA
     /// Evaluates the node and updates the stack states. 
-    void NodeIf::evaluate(Data& data, Stacks& stack)
+    void NodeIf::evaluate(const Data& data, Stacks& stack)
     {
-        stack.f.push(limited(stack.b.pop().select(stack.f.pop(),0)));
+        stack.push<double>(limited(stack.pop<bool>().select(stack.pop<double>(),0)));
     }
 #else
-    void NodeIf::evaluate(Data& data, Stacks& stack)
+    void NodeIf::evaluate(const Data& data, Stacks& stack)
     {
         GPU_If(stack.dev_f, stack.dev_b, stack.idx['f'], stack.idx['b'], stack.N);
     }
@@ -33,15 +33,17 @@ namespace FT{
     /// Evaluates the node symbolically
     void NodeIf::eval_eqn(Stacks& stack)
     {
-      stack.fs.push("if(" + stack.bs.pop() + "," + stack.fs.pop() + "," + "0)");
+      stack.push<double>("if(" + stack.popStr<bool>() + "," + stack.popStr<double>() + "," + "0)");
     }
     
     ArrayXd NodeIf::getDerivative(Trace& stack, int loc) 
     {
-        ArrayXb xb = stack.b[stack.b.size()-1];
+        ArrayXd& xf = stack.get<double>()[stack.size<double>()-1];
+        ArrayXb& xb = stack.get<bool>()[stack.size<bool>()-1];
+        
         switch (loc) {
             case 1: // d/dW[0]
-                return ArrayXd::Zero(stack.f[stack.f.size()-1].size()); 
+                return ArrayXd::Zero(xf.size()); 
             case 0: // d/dx1
             default:
                 return xb.cast<double>(); 

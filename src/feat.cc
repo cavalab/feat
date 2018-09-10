@@ -214,19 +214,11 @@ string Feat::get_representation(){ return best_ind.get_eqn();}
 string Feat::get_model()
 {   
     vector<string> features = best_ind.get_features();
-    cout << "features: ";
-    for (auto f : features) cout << f << ","; cout << "\n";
     vector<double> weights = p_ml->get_weights();
-    cout << "weights: ";
-    for (auto f : weights) cout << f << ","; cout << "\n";
-
     vector<double> aweights(weights.size());
     for (int i =0; i<aweights.size(); ++i) 
         aweights[i] = fabs(weights[i]);
     vector<size_t> order = argsort(aweights);
-    cout << "order: ";
-    for (auto f : order) cout << f << ","; cout << "\n";
-
     string output;
     output += "Feature\tWeight\n";
     for (unsigned i = order.size(); i --> 0;)
@@ -452,9 +444,8 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     
     if (params.classification) 
         params.set_sample_weights(d.t->y); 
-    cout << "time elapsed: " << timer.Elapsed().count() - t0 << "sec\n";
+    
     params.msg("Fitting initial model", 2);
-
     t0 =  timer.Elapsed().count();
     initial_model(d);  
     params.msg(std::to_string(timer.Elapsed().count() - t0) + " seconds",2);
@@ -521,23 +512,26 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
         vector<Individual>& final_pop = use_arch ? arch.archive : p_pop->individuals; 
         F_v.resize(d.v->X.cols(),int(2*params.pop_size)); 
         
-        if(params.use_batch)
-        {
-            cout << "getting batch...\n";
-            t0 =  timer.Elapsed().count();
-            d.t->get_batch(db, params.bp.batch_size);
-            DataRef dbr;    // reference to minibatch data
-            dbr.setTrainingData(&db);
+        /* if(params.use_batch) */
+        /* { */
+        /*     t0 =  timer.Elapsed().count(); */
+        /*     d.t->get_batch(db, params.bp.batch_size); */
+        /*     DataRef dbr;    // reference to minibatch data */
+        /*     dbr.setTrainingData(&db); */
             
-            if (params.classification)
-                params.set_sample_weights(dbr.t->y); 
-            cout << "got batch (" << timer.Elapsed().count() - t0 << " sec). val_fitness...\n";
-            t0 = timer.Elapsed().count();
-            p_eval->val_fitness(final_pop, *dbr.t, F_v, *d.v, params);
-            cout << "val_fitness completed in " << timer.Elapsed().count() - t0 << " seconds\n";
-        }
-        else
-            p_eval->val_fitness(final_pop, *d.t, F_v, *d.v, params);
+        /*     if (params.classification) */
+        /*         params.set_sample_weights(dbr.t->y); */ 
+        /*     t0 = timer.Elapsed().count(); */
+        /*     /1* p_eval->val_fitness(final_pop, *dbr.t, F_v, *d.v, params); *1/ */
+        /*     p_eval->fitness(final_pop, *d.v, F_v, params, false, true); */
+        /* } */
+        /* else */
+        /* { */
+        /*     /1* p_eval->val_fitness(final_pop, *d.t, F_v, *d.v, params); *1/ */
+        /*     p_eval->fitness(final_pop, *d.v, F_v, params, false, true); */
+        /* } */
+        
+        p_eval->fitness(final_pop, *d.v, F_v, params, false, true);
 
         update_best(true);                  // get the best validation model
     }
@@ -644,7 +638,6 @@ void Feat::initial_model(DataRef &d)
     /*!
      * fits an ML model to the raw data as a starting point.
      */
-    bool pass = true;
     
     best_ind = Individual();
     best_ind.set_id(0);
@@ -670,15 +663,15 @@ void Feat::initial_model(DataRef &d)
             j=i;
         best_ind.program.push_back(params.terminals.at(j)->clone());
     }
-
-    MatrixXd Phi = best_ind.out(*d.t, params);        
-    shared_ptr<CLabels> yhat = p_ml->fit(Phi,d.t->y,params,pass, best_ind.dtypes);
+    
+    bool pass = true;
+    shared_ptr<CLabels> yhat = best_ind.fit(*d.t,params,pass);
 
     // set terminal weights based on model
     vector<double> w;
     if (n_feats == d.t->X.rows())
     {
-        w = p_ml->get_weights();
+        w = best_ind.ml->get_weights();
     }
     else
     {
@@ -687,23 +680,16 @@ void Feat::initial_model(DataRef &d)
     params.set_term_weights(w);
    
     VectorXd tmp;
-    best_score = p_eval->score(d.t->y, yhat,tmp, params.class_weights);
+    best_score = p_eval->score(d.t->y, yhat, tmp, params.class_weights);
     
     if (params.split < 1.0)
     {
-        Phi = best_ind.out(*d.v, params);        
-        shared_ptr<CLabels> yhat_v = p_ml->predict(Phi);
-        best_score_v = p_eval->score(d.v->y, yhat_v,tmp, params.class_weights); 
+        shared_ptr<CLabels> yhat_v = best_ind.predict(*d.v, params);
+        best_score_v = p_eval->score(d.v->y, yhat_v, tmp, params.class_weights); 
     }
     else
         best_score_v = best_score;
     
-    /* // initialize best_ind to be the top params.max_dim features */
-    /* best_ind = Individual(); */
-    /* best_ind.set_id(0); */
-    /* vector<size_t> w_idx = argsort(params.term_weights,false); */
-    /* for (unsigned i =0; i<std::min(params.max_dim, unsigned(d.t->X.rows())); ++i) */
-    /*     best_ind.program.push_back(params.terminals[w_idx.at(i)]->clone()); */
     best_ind.fitness = best_score;
     
     params.msg("initial training score: " +std::to_string(best_score),2);

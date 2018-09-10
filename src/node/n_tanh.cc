@@ -12,7 +12,6 @@ namespace FT{
         name = "tanh";
 	    otype = 'f';
 	    arity['f'] = 1;
-	    arity['b'] = 0;
 	    complexity = 3;
 
         if (W0.empty())
@@ -27,12 +26,12 @@ namespace FT{
 
 #ifndef USE_CUDA
     /// Evaluates the node and updates the stack states. 
-    void NodeTanh::evaluate(Data& data, Stacks& stack)
+    void NodeTanh::evaluate(const Data& data, Stacks& stack)
     {
-        stack.f.push(limited(tanh(W[0]*stack.f.pop())));
+        stack.push<double>(limited(tanh(W[0]*stack.pop<double>())));
     }
 #else
-    void NodeTanh::evaluate(Data& data, Stacks& stack)
+    void NodeTanh::evaluate(const Data& data, Stacks& stack)
     {
         GPU_Tanh(stack.dev_f, stack.idx[otype], stack.N, W[0]);
     }
@@ -41,14 +40,14 @@ namespace FT{
     /// Evaluates the node symbolically
     void NodeTanh::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("tanh(" + stack.fs.pop() + ")");
+        stack.push<double>("tanh(" + stack.popStr<double>() + ")");
     }
 
     ArrayXd NodeTanh::getDerivative(Trace& stack, int loc)
     {
         ArrayXd numerator;
         ArrayXd denom;
-        ArrayXd x = stack.f[stack.f.size()-1];
+        ArrayXd x = stack.get<double>()[stack.size<double>()-1];
         switch (loc) {
             case 1: // d/dw0
                 numerator = 4 * x * exp(2 * this->W[0] * x);

@@ -26,15 +26,16 @@ namespace FT{
 
 #ifndef USE_CUDA
     /// Evaluates the node and updates the stack states. 
-    void NodeExponent::evaluate(Data& data, Stacks& stack)
+    void NodeExponent::evaluate(const Data& data, Stacks& stack)
     {
-	    /* ArrayXd x1 = stack.f.pop(); */
-        /* ArrayXd x2 = stack.f.pop(); */
+	    /* ArrayXd x1 = stack.pop<double>(); */
+        /* ArrayXd x2 = stack.pop<double>(); */
 
-        stack.f.push(limited(pow(this->W[0] * stack.f.pop(), this->W[1] * stack.f.pop())));
+        stack.push<double>(limited(pow(this->W[0] * stack.pop<double>(), 
+                                       this->W[1] * stack.pop<double>())));
     }
 #else
-    void NodeExponent::evaluate(Data& data, Stacks& stack)
+    void NodeExponent::evaluate(const Data& data, Stacks& stack)
     {
         GPU_Exponent(stack.dev_f, stack.idx[otype], stack.N, W[0], W[1]);
     }
@@ -43,19 +44,24 @@ namespace FT{
     /// Evaluates the node symbolically
     void NodeExponent::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("(" + stack.fs.pop() + ")^(" + stack.fs.pop() + ")");
+        stack.push<double>("(" + stack.popStr<double>() + ")^(" + stack.popStr<double>() + ")");
     }
 
-    ArrayXd NodeExponent::getDerivative(Trace& stack, int loc) {
-        ArrayXd x1 = stack.f[stack.f.size() - 1];
-        ArrayXd x2 = stack.f[stack.f.size() - 2];
+    ArrayXd NodeExponent::getDerivative(Trace& stack, int loc)
+    {
+        ArrayXd& x1 = stack.get<double>()[stack.size<double>()-1];
+        ArrayXd& x2 = stack.get<double>()[stack.size<double>()-2];
+        
         switch (loc) {
             case 3: // Weight for the power
-                return limited(pow(this->W[0] * x1, this->W[1] * x2) * limited(log(this->W[0] * x1)) * x2);
+                return limited(pow(this->W[0] * x1,
+                                   this->W[1] * x2) * limited(log(this->W[0] * x1)) * x2);
             case 2: // Weight for the base
-                return limited(this->W[1] * x2 * pow(this->W[0] * x1, this->W[1] * x2) / this->W[0]);
+                return limited(this->W[1] * x2 * pow(this->W[0] * x1,
+                               this->W[1] * x2) / this->W[0]);
             case 1: // Power
-                return limited(this->W[1]*pow(this->W[0] * x1, this->W[1] * x2) * limited(log(this->W[0] * x1)));
+                return limited(this->W[1]*pow(this->W[0] * x1,
+                               this->W[1] * x2) * limited(log(this->W[0] * x1)));
             case 0: // Base
             default:
                 return limited(this->W[1] * x2 * pow(this->W[0] * x1, this->W[1] * x2) / x1);

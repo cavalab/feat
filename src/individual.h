@@ -11,6 +11,7 @@ license: GNU/GPL v3
 #endif
 #include "data.h"
 #include "params.h"
+#include "ml.h"
 
 namespace FT{
     
@@ -23,6 +24,8 @@ namespace FT{
     class Individual{
     public:        
         NodeVector program;                         ///< executable data structure
+        MatrixXd Phi;                               ///< transformation output of program 
+        shared_ptr<ML> ml;                          ///< ML model, trained on Phi
         double fitness;             				///< aggregate fitness score
         double fitness_v;             				///< aggregate validation fitness score
         size_t loc;                 				///< index of individual in semantic matrix F
@@ -37,21 +40,26 @@ namespace FT{
         float crowd_dist;                           ///< crowding distance on the Pareto front
         unsigned int c;                             ///< the complexity of the program.    
         vector<char> dtypes;                        ///< the data types of each column of the 
-                                                     // program output
-        unsigned id;                                ///< tracking id                                                     
+                                                      // program output
+        unsigned id;                                ///< tracking id
         vector<unsigned> parent_id;                 ///< ids of parents
        
         Individual();
 
         /// calculate program output matrix Phi
-        MatrixXd out(Data d,
+        MatrixXd out(const Data& d,
                      const Parameters& params);
 
         /// calculate program output while maintaining stack trace
-        MatrixXd out_trace(Data d,
+        MatrixXd out_trace(const Data& d,
                      const Parameters& params, vector<Trace>& stack_trace);
 
-
+        /// fits an ML model to the data after transformation
+        shared_ptr<CLabels> fit(const Data& d, const Parameters& params, bool& pass);
+        
+        /// generates prediction on data using transformation and ML predict
+        shared_ptr<CLabels> predict(const Data& d, const Parameters& params);
+        
         /// return symbolic representation of program
         string get_eqn();
 

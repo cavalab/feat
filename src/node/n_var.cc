@@ -12,15 +12,13 @@ namespace FT{
     {
         name = "variance";
 	    otype = 'f';
-	    arity['f'] = 0;
-	    arity['b'] = 0;
 	    arity['z'] = 1;
 	    complexity = 1;
     }
 
     /// Evaluates the node and updates the stack states. 
 #ifndef USE_CUDA
-    void NodeVar::evaluate(Data& data, Stacks& stack)
+    void NodeVar::evaluate(const Data& data, Stacks& stack)
     {
         ArrayXd tmp(stack.z.top().first.size());
         
@@ -32,11 +30,11 @@ namespace FT{
             
         stack.z.pop();
 
-        stack.f.push(tmp);
+        stack.push<double>(tmp);
         
     }
 #else
-    void NodeVar::evaluate(Data& data, Stacks& stack)
+    void NodeVar::evaluate(const Data& data, Stacks& stack)
     {
         
         int x;
@@ -52,7 +50,7 @@ namespace FT{
     /// Evaluates the node symbolically
     void NodeVar::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("variance(" + stack.zs.pop() + ")");
+        stack.push<double>("variance(" + stack.zs.pop() + ")");
     }
 
     NodeVar* NodeVar::clone_impl() const { return new NodeVar(*this); }

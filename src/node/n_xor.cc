@@ -11,25 +11,24 @@ namespace FT
     {
         name = "xor";
 	    otype = 'b';
-	    arity['f'] = 0;
 	    arity['b'] = 2;
 	    complexity = 2;
     }
 
 #ifndef USE_CUDA
     /// Evaluates the node and updates the stack states. 
-    void NodeXor::evaluate(Data& data, Stacks& stack)
+    void NodeXor::evaluate(const Data& data, Stacks& stack)
     {
-	    ArrayXb x1 = stack.b.pop();
-        ArrayXb x2 = stack.b.pop();
+	    ArrayXb x1 = stack.pop<bool>();
+        ArrayXb x2 = stack.pop<bool>();
 
         ArrayXb res = (x1 != x2).select(ArrayXb::Ones(x1.size()), ArrayXb::Zero(x1.size()));
 
-        stack.b.push(res);
+        stack.push<bool>(res);
         
     }
 #else
-    void NodeXor::evaluate(Data& data, Stacks& stack)
+    void NodeXor::evaluate(const Data& data, Stacks& stack)
     {
         GPU_Xor(stack.dev_b, stack.idx[otype], stack.N);
     }
@@ -38,7 +37,7 @@ namespace FT
     /// Evaluates the node symbolically
     void NodeXor::eval_eqn(Stacks& stack)
     {
-        stack.bs.push("(" + stack.bs.pop() + " XOR " + stack.bs.pop() + ")");
+        stack.push<bool>("(" + stack.popStr<bool>() + " XOR " + stack.popStr<bool>() + ")");
     }
     
     NodeXor* NodeXor::clone_impl() const { return new NodeXor(*this); }
