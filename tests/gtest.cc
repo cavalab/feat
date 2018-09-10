@@ -728,8 +728,10 @@ std::map<char, size_t> get_max_stack_size(NodeVector &nodes)
     std::map<char, size_t> stack_size;
     std::map<char, size_t> max_stack_size;
     stack_size['f'] = 0;
+    stack_size['c'] = 0;
     stack_size['b'] = 0; 
     max_stack_size['f'] = 0;
+    max_stack_size['c'] = 0;
     max_stack_size['b'] = 0;
 
     for (const auto& n : nodes)   
@@ -2049,13 +2051,21 @@ TEST(Random, SetSeed)
     r.set_seed(42);
     
     for(int i = 0; i < 10; i++)
+    {
         integers[0][i] = r.rnd_int(i, 100);
-    
+        //cout << integers[0][i] << "\n";
+    }
     for(int i = 0; i < 10; i++)
+    {
         floats[0][i] = r.rnd_flt();
+        //cout << floats[0][i] << "\n";
+    }
         
     for(int i = 0; i < 10; i++)
+    {
         doubles[0][i] = r.rnd_dbl();
+        //cout << doubles[0][i] << "\n";
+    }   
         
         
     r.set_seed(10);
