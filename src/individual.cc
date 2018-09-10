@@ -93,6 +93,8 @@ namespace FT{
         for (unsigned i=0; i<p.size(); ++i)
             p[i] = u + fb*(u-p[i]);
         /* cout << "exiting set_p\n"; */
+        // set weights
+        this->w = weights;
     }
     
     double Individual::get_p(const size_t i)
