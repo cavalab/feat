@@ -573,6 +573,8 @@ namespace FT{
         int rpad = PBWIDTH - lpad;
         printf ("\rCompleted %3d%% [%.*s%*s]", val, lpad, PBSTR.c_str(), rpad, "");
         fflush (stdout);
+        if(val == 100)
+            cout << "\n";
     }
     
     /*
