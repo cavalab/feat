@@ -67,7 +67,7 @@ namespace FT{
 
             if (!pass)
             {
-                vector<double> w(0,ind.Phi.rows());     // set weights to zero
+                vector<double> w(ind.Phi.rows(), 0);     // set weights to zero
                 ind.set_p(w,params.feedback);
                 
                 if (validation) 
