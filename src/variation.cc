@@ -37,7 +37,8 @@ namespace FT{
         return v.at(idx)->clone();
     }
  
-    void Variation::vary(Population& pop, const vector<size_t>& parents, const Parameters& params)
+    void Variation::vary(Population& pop, const vector<size_t>& parents, const Parameters& params,
+                         const Data& d)
     {
         /*!
          * performs variation on the current population. 
@@ -68,7 +69,9 @@ namespace FT{
                     // create child
                     params.msg("crossing " + pop.individuals[mom].get_eqn() + " with " + 
                                pop.individuals[dad].get_eqn(), 3);
-                    pass = cross(pop.individuals[mom],pop.individuals[dad],child,params);
+                    /* pass = cross(pop.individuals[mom],pop.individuals[dad],child,params); */
+                    pass = semantic_cross(pop.individuals[mom],pop.individuals[dad],child,params,
+                                          d);
                 
                     params.msg("crossing " + pop.individuals[mom].get_eqn() + " with " + 
                            pop.individuals[dad].get_eqn() + " produced " + child.get_eqn() + 
@@ -328,6 +331,8 @@ namespace FT{
         /*                 blanks,size_t(0),size_t(-1)); */
         params.msg("\t\tresult of delete mutation: " + child.program_str(), 3);
     }
+    
+    
 
     bool Variation::cross(Individual& mom, Individual& dad, Individual& child, 
                           const Parameters& params)
@@ -389,6 +394,78 @@ namespace FT{
         /* cout << "dad subtree\n" << dad.program_str() << "\n"; */
         // get dad subtree
         j2 = r.random_choice(dlocs);
+        i2 = dad.program.subtree(j2); 
+               
+        // make child program by splicing mom and dad
+        splice_programs(child.program, mom.program, i1, j1, dad.program, i2, j2 );
+                     
+        if (params.verbosity >= 3)
+            print_cross(mom,i1,j1,dad,i2,j2,child);     
+
+        assert(is_valid_program(child.program,params.num_features, params.longitudinalMap));
+        // check child depth and dimensionality
+        return child.size()>0 && child.size() <= params.max_size 
+                    && child.get_dim() <= params.max_dim;
+    }
+
+    /// semantic crossover
+    bool Variation::semantic_cross(Individual& mom, Individual& dad, Individual& child,
+                        const Parameters& params, const Data& d)
+    {
+        /*!
+         * crossover by either swapping in a dimension most correlated with the residual of mom. 
+         *
+         * @param   mom: root parent
+         * @param   dad: parent from which subtree is chosen
+         * @param   child: result of cross
+         * @param   params: parameters
+         *
+         * @return  child: mom with dad subtree graft
+         */
+                    
+        vector<size_t> mlocs, dlocs; // mom and dad locations for consideration
+        size_t i1, j1, j1_idx, i2, j2;       // i1-j1: mom portion, i2-j2: dad portion
+        
+        params.msg("\troot xo",3);
+        mlocs = mom.program.roots();
+        vector<int> mlocs_indices(mlocs.size());
+        std::iota(mlocs_indices.begin(),mlocs_indices.end(),0);
+
+        dlocs = dad.program.roots();
+        params.msg("\t\trandom choice mlocs (size "+
+                   std::to_string(mlocs.size())+"), p size: "+std::to_string(mom.p.size()),3);
+        j1_idx = r.random_choice(mlocs_indices,mom.get_p(mlocs));   // weighted probability choice    
+        j1 = mlocs.at(j1_idx); 
+        // get subtree              
+        i1 = mom.program.subtree(j1);
+                            
+        // get dad subtree
+        // choose root in dad that is most correlated with the residual of
+        // j2 = index in dad.Phi that maximizes R2(d.y, w*mom.Phi - w_i1*Phi_i1)
+        VectorXd mom_pred_minus_tree = mom.predict_vector(d,params,j1_idx);  
+        cout << "mom_pred_minus_tree: " << mom_pred_minus_tree.transpose() << "\n";
+        VectorXd mom_residual = d.y - mom_pred_minus_tree;
+        cout << "mom_residual: " << mom_residual.transpose() << "\n";
+        
+        vector<double> corrs(dad.Phi.rows());
+        int best_corr_idx = 0;
+        double best_corr = 0;
+        double corr; 
+
+        for (int i = 0; i < dad.Phi.rows(); ++i)
+        {
+            corr = pearson_correlation(mom_residual.array(), dad.Phi.row(i).array());
+            corrs.at(i) = corr; // this can be removed
+            if (corr > best_corr || i == 0 )
+            {
+                best_corr_idx = i; 
+                best_corr = corr;
+            }
+        }
+        cout << "corrs: ";
+        for (auto c : corrs) cout << c << ", "; cout << "\n";
+        cout << "chose corr at " << best_corr_idx << "\n";
+        j2 = dlocs.at(best_corr_idx);
         i2 = dad.program.subtree(j2); 
                
         // make child program by splicing mom and dad

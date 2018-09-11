@@ -550,7 +550,7 @@ void Feat::run_generation(unsigned int g,
     
     // variation to produce offspring
     params.msg("variation...", 3);
-    p_variation->vary(*p_pop, parents, params);
+    p_variation->vary(*p_pop, parents, params,*d.t);
     params.msg("offspring:\n" + p_pop->print_eqns(true), 3);
 
     // evaluate offspring
