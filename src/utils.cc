@@ -439,8 +439,12 @@ namespace FT{
     {
         return covariance(x, y)/variance(x);
     }
-    
 
+    // Pearson correlation    
+    double pearson_correlation(const ArrayXd& x, const ArrayXd& y)
+    {
+        return pow(covariance(x,y),2) / (variance(x) * variance(y));
+    }
     /// median absolute deviation
     double mad(const ArrayXd& x) 
     {
@@ -605,6 +609,7 @@ namespace FT{
                 / svd.singularValues()(svd.singularValues().size()-1);
         return cond;
     }
+
     /// returns the pearson correlation coefficients of matrix.
     MatrixXd corrcoef(const MatrixXd& X)
     { 

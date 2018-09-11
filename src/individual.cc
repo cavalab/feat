@@ -150,17 +150,27 @@ namespace FT{
         return yhat;
     }
 
-    shared_ptr<CLabels> Individual::predict(const Data& d, const Parameters& params)
+    shared_ptr<CLabels> Individual::predict(const Data& d, const Parameters& params, 
+                                            int drop_idx)
     {
         // calculate program output matrix Phi
         params.msg("Generating output for " + get_eqn(), 3);
-        Phi = out(d, params);            
+        Phi = out(d, params);           
+        
+        if (drop_idx >= 0)  // if drop_idx specified, mask that phi output
+            Phi.row(drop_idx) = VectorXd::Zero(Phi.cols());
+
         // calculate ML model from Phi
         params.msg("ML predicting on " + get_eqn(), 3);
         // assumes ML is already trained
         shared_ptr<CLabels> yhat = ml->predict(Phi);
 
         return yhat;
+    }
+    VectorXd Individual::predict_vector(const Data& d, const Parameters& params, 
+                                            int drop_idx)
+    {
+        return ml->labels_to_vector(this->predict(d,params,drop_idx));
     }
     // calculate program output matrix
     MatrixXd Individual::out(const Data& d, const Parameters& params)
