@@ -42,10 +42,10 @@ namespace FT{
         
         switch (loc) {
             case 1: // d/dw0
-                return x / (2 * sqrt(this->W[0] * x));
+                return limited(x / (2 * sqrt(this->W[0] * x)));
             case 0: // d/dx0
             default:
-                return this->W[0] / (2 * sqrt(this->W[0] * x));
+                return limited(this->W[0] / (2 * sqrt(this->W[0] * x)));
         } 
     }
 
