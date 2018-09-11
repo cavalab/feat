@@ -210,12 +210,12 @@ namespace FT{
                 // if terminals are all boolean, remove floating point functions
                 if (ttypes.size()==1 && ttypes[0]=='b')
                 {
-                    std::cout << "otypes is size 1 and otypes[0]==b\nerasing functions...\n";
+                    msg("otypes is size 1 and otypes[0]==b\nerasing functions...\n",2);
                     size_t n = functions.size();
                     for (vector<int>::size_type i =n-1; 
                          i != (std::vector<int>::size_type) -1; i--){
                         if (functions.at(i)->arity['f'] >0){
-                            std::cout << "erasing function " << functions.at(i)->name << "\n";
+                            msg("erasing function " + functions.at(i)->name + "\n", 2);
                             functions.erase(functions.begin()+i);
                         }
                     }
@@ -236,7 +236,7 @@ namespace FT{
                     for (vector<int>::size_type i =n-1; 
                          i != (std::vector<int>::size_type) -1; i--){
                         if (functions.at(i)->arity['c'] >0){
-                            std::cout << "erasing function " << functions.at(i)->name << "\n";
+                            msg("erasing function " + functions.at(i)->name + "\n", 2);
                             functions.erase(functions.begin()+i);
                         }
                     }
@@ -247,7 +247,11 @@ namespace FT{
 
     }
     
-    std::unique_ptr<Node> Parameters::createNode(string str, double d_val, bool b_val, size_t loc, string name)
+    std::unique_ptr<Node> Parameters::createNode(string str,
+                                                 double d_val,
+                                                 bool b_val,
+                                                 size_t loc,
+                                                 string name)
     {
         // algebraic operators
     	if (str.compare("+") == 0) 
