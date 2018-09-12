@@ -23,13 +23,6 @@ namespace FT{
     void NodeVariable<T>::evaluate(const Data& data, Stacks& stack)
     {
         stack.push<T>(data.X.row(loc).template cast<T>());
-        /*switch(otype)
-        {
-            case 'b': stack.push<bool>(data.X.row(loc).cast<bool>()); break;
-            case 'c': stack.push<int>(data.X.row(loc).cast<int>()); break;
-            case 'f': stack.push<double>(data.X.row(loc)); break;
-            
-        }*/
     }
 
     /// Evaluates the node symbolically
@@ -37,12 +30,6 @@ namespace FT{
     void NodeVariable<T>::eval_eqn(Stacks& stack)
     {
         stack.push<T>(name);
-        /*switch(otype)
-        {
-            case 'b' : stack.push<bool>(name); break;
-            case 'c' : stack.push<int>(name); break;
-            case 'f' : stack.push<double>(name); break;
-        }*/
     }
 
     template <class T>
