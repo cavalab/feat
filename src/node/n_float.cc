@@ -7,7 +7,7 @@ license: GNU/GPL v3
 namespace FT{
 
     template <>
-    NodeFloat<double>::NodeFloat()
+    NodeFloat<bool>::NodeFloat()
     {
         name = "f";
         otype = 'f';
@@ -28,7 +28,7 @@ namespace FT{
     template <class T>
     void NodeFloat<T>::evaluate(const Data& data, Stacks& stack)
     {
-        stack.push<double>(stack.pop<T>().cast<double>());
+        stack.push<double>(stack.pop<T>().template cast<double>());
     }
 
     /// Evaluates the node symbolically
