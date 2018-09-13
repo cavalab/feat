@@ -138,7 +138,9 @@ endif()
 
 if (TEST)
     # Link runTests with what we want to test and the GTest and pthread library
-    add_executable(tests tests/gtest.cc)
+    file(GLOB_RECURSE testsSrc "tests/*.cc")
+    
+    add_executable(tests ${testsSrc})
     
     if (CORE_USE_CUDA)
         target_link_libraries(tests feat_lib shogun ${CUDA_LIBRARIES} ${GTEST_LIBRARIES} pthread)

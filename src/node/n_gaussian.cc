@@ -50,10 +50,10 @@ namespace FT{
         
         switch (loc) {
             case 1: // d/dw0
-                return limited(-2 * (W[0] - 2) * exp(-pow(W[0] - x, 2)));
+                return limited(2 * (x - W[0]) * exp(-pow(W[0] - x, 2)));
             case 0: // d/dx0
             default:
-                return limited(2 * (W[0] - 2) * exp(-pow(W[0] - x, 2)));
+                return limited(2 * (W[0] - x) * exp(-pow(W[0] - x, 2)));
         } 
     }
     
