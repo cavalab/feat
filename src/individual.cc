@@ -152,8 +152,7 @@ namespace FT{
         return yh;
     }
 
-    shared_ptr<CLabels> Individual::predict(const Data& d, const Parameters& params, 
-                                            int drop_idx)
+    shared_ptr<CLabels> Individual::predict(const Data& d, const Parameters& params)
     {
         // calculate program output matrix Phi
         params.msg("Generating output for " + get_eqn(), 3);
@@ -174,10 +173,34 @@ namespace FT{
         return yhat;
     }
 
-    VectorXd Individual::predict_vector(const Data& d, const Parameters& params, 
-                                            int drop_idx)
+    VectorXd Individual::predict_drop(const Data& d, const Parameters& params, int drop_idx)
     {
-        return ml->labels_to_vector(this->predict(d,params,drop_idx));
+        // calculate program output matrix Phi
+        params.msg("Generating output for " + get_eqn(), 3);
+        // toggle validation
+        MatrixXd PhiDrop = Phi;           // TODO: guarantee this is not changing nodes
+         
+        if (Phi.size()==0)
+            HANDLE_ERROR_THROW("Phi must be generated before predict_drop() is called\n");
+        if (drop_idx >= 0)  // if drop_idx specified, mask that phi output
+        {
+            if (drop_idx >= PhiDrop.rows())
+                HANDLE_ERROR_THROW("drop_idx ( " + std::to_string(drop_idx) + " > Phi size (" 
+                                   + std::to_string(Phi.rows()) + ")\n");
+            cout << "dropping row " + std::to_string(drop_idx) + "\n";
+            /* PhiDrop.row(drop_idx) = VectorXd::Zero(Phi.cols()); */
+            PhiDrop.row(drop_idx).setZero();
+        }
+        // calculate ML model from Phi
+        /* params.msg("ML predicting on " + get_eqn(), 3); */
+        // assumes ML is already trained
+        VectorXd yh = ml->predict_vector(PhiDrop);
+        return yh;
+    }
+
+    VectorXd Individual::predict_vector(const Data& d, const Parameters& params)
+    {
+        return ml->labels_to_vector(this->predict(d,params));
     }
     // calculate program output matrix
     MatrixXd Individual::out(const Data& d, const Parameters& params, bool predict)

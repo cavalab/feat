@@ -59,11 +59,9 @@ namespace FT{
          *  @params drop_idx if specified, the phi output at drop_idx is set to zero, effectively
          *  removing its output from the transformation. used in semantic crossover.
          */
-        shared_ptr<CLabels> predict(const Data& d, const Parameters& params, 
-                                    int drop_idx=-1);
-        VectorXd predict_vector(const Data& d, const Parameters& params, 
-                                int drop_idx = -1);
-
+        shared_ptr<CLabels> predict(const Data& d, const Parameters& params);
+        VectorXd predict_vector(const Data& d, const Parameters& params);
+        VectorXd predict_drop(const Data& d, const Parameters& params, int drop_idx);
         /// return symbolic representation of program
         string get_eqn();
 
