@@ -71,13 +71,10 @@ namespace FT{
                     params.msg("crossing " + mom.get_eqn() + " with " + 
                                dad.get_eqn(), 3);
                    
-                    /* #pragma omp critical */
-                    {
                     if (params.semantic_xo)
                         pass = semantic_cross(mom, dad, child, params, d);
                     else
                         pass = cross(mom, dad, child, params);
-                    } 
                     
                     params.msg("crossing " + mom.get_eqn() + " with " + 
                            dad.get_eqn() + " produced " + child.get_eqn() + 
