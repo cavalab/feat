@@ -615,17 +615,17 @@ namespace FT{
     { 
         MatrixXd centered = X.colwise() - X.rowwise().mean();
 
-        std::cout << "centered: " << centered.rows() << "x" << centered.cols() << ": " 
-                  << centered << "\n\n";
+        /* std::cout << "centered: " << centered.rows() << "x" << centered.cols() << ": " */ 
+        /*           << centered << "\n\n"; */
         MatrixXd cov = ( centered * centered.adjoint()) / double(X.cols() - 1);
-        std::cout << "cov: " << cov.rows() << "x" << cov.cols() << ": " << cov << "\n\n";
+        /* std::cout << "cov: " << cov.rows() << "x" << cov.cols() << ": " << cov << "\n\n"; */
         VectorXd tmp = 1/cov.diagonal().array().sqrt();
         auto d = tmp.asDiagonal();
-        std::cout << "1/sqrt(diag(cov)): " << d.rows() << "x" << d.cols() << ": " 
-                  << d.diagonal() << "\n";
+        /* std::cout << "1/sqrt(diag(cov)): " << d.rows() << "x" << d.cols() << ": " */ 
+        /*           << d.diagonal() << "\n"; */
         MatrixXd corrcoef = d * cov * d;
-        std::cout << "cov/d: " << corrcoef.rows() << "x" << corrcoef.cols() << ": " 
-                  << corrcoef << "\n";
+        /* std::cout << "cov/d: " << corrcoef.rows() << "x" << corrcoef.cols() << ": " */ 
+        /*           << corrcoef << "\n"; */
         return corrcoef;
     }
     // returns the mean of the pairwise correlations of a matrix.
@@ -633,7 +633,7 @@ namespace FT{
     {
         MatrixXd tmp = corrcoef(X).triangularView<StrictlyUpper>();
         double N = tmp.rows()*(tmp.rows()-1)/2;
-        cout << "triangular strictly upper view: " << tmp << "\n";
+        /* cout << "triangular strictly upper view: " << tmp << "\n"; */
         return tmp.array().square().sum()/N;
     }
  

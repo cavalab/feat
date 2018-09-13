@@ -451,6 +451,10 @@ namespace FT{
         VectorXd tree = mom.ml->get_weights().at(j1_idx)*mom.Phi.row(j1_idx).array();
         /* cout << "tree (idx=" << j1_idx << "): " << tree.transpose() << "\n"; */
         VectorXd mom_pred_minus_tree = mom.yhat - tree; 
+/* #pragma omp critical */
+        /* { */
+        /* VectorXd mom_pred_minus_tree = mom.predict_drop(d,params,j1_idx); */ 
+        /* } */
         /* cout << "mom_pred_minus_tree: " << mom_pred_minus_tree.transpose() << "\n"; */
         VectorXd mom_residual = d.y - mom_pred_minus_tree;
         /* cout << "mom_residual: " << mom_residual.transpose() << "\n"; */
