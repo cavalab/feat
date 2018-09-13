@@ -56,7 +56,7 @@ namespace FT{
     }
 
     /// returns indices of root nodes 
-    vector<size_t> NodeVector::roots()
+    vector<size_t> NodeVector::roots() const
     {
         // find "root" nodes of program, where roots are final values that output 
         // something directly to the stack

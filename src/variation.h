@@ -53,7 +53,7 @@ namespace FT{
             
             /// semantic crossover
             bool semantic_cross(Individual& mom, Individual& dad, Individual& child,
-                               const Parameters& params, const Data& d);
+                                const Parameters& params, const Data& d);
 
             /// mutation
             bool mutate(Individual& mom, Individual& child, const Parameters& params);

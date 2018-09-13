@@ -23,6 +23,7 @@ namespace FT{
     public:        
         NodeVector program;                         ///< executable data structure
         MatrixXd Phi;                               ///< transformation output of program 
+        VectorXd yhat;                              ///< current output
         shared_ptr<ML> ml;                          ///< ML model, trained on Phi
         double fitness;             				///< aggregate fitness score
         double fitness_v;             				///< aggregate validation fitness score
@@ -45,8 +46,7 @@ namespace FT{
         Individual();
 
         /// calculate program output matrix Phi
-        MatrixXd out(const Data& d,
-                     const Parameters& params);
+        MatrixXd out(const Data& d, const Parameters& params, bool predict=false);
 
         /// calculate program output while maintaining stack trace
         MatrixXd out_trace(const Data& d,
@@ -59,8 +59,10 @@ namespace FT{
          *  @params drop_idx if specified, the phi output at drop_idx is set to zero, effectively
          *  removing its output from the transformation. used in semantic crossover.
          */
-        shared_ptr<CLabels> predict(const Data& d, const Parameters& params, int drop_idx=-1);
-        VectorXd predict_vector(const Data& d, const Parameters& params, int drop_idx = -1);
+        shared_ptr<CLabels> predict(const Data& d, const Parameters& params, 
+                                    int drop_idx=-1);
+        VectorXd predict_vector(const Data& d, const Parameters& params, 
+                                int drop_idx = -1);
 
         /// return symbolic representation of program
         string get_eqn();
@@ -112,13 +114,13 @@ namespace FT{
         void set_parents(const vector<Individual>& parents);
         
         /// get probabilities of variation
-        vector<double> get_p();
+        vector<double> get_p() const;
         
         /// get inverted weight probability for pogram location i
-        double get_p(const size_t i);
+        double get_p(const size_t i) const;
         
         /// get probability of variation for program locations locs
-        vector<double> get_p(const vector<size_t>& locs); 
+        vector<double> get_p(const vector<size_t>& locs) const; 
 
         /// set probabilities
         void set_p(const vector<double>& weights, const double& fb);

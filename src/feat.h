@@ -60,10 +60,11 @@ namespace FT{
                    string sel ="lexicase", string surv="nsga2", float cross_rate = 0.5,
                    char otype='a', string functions = "", 
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
-                   bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
+                   bool erc = false, string obj="fitness,complexity", bool shuffle=false, 
                    double split=0.75, double fb=0.5, string scorer="", string feature_names="",
                    bool backprop=false,int iters=10, double lr=0.1, int bs=100, int n_threads=0,
-                   bool hillclimb=false, string logfile="", int max_time=-1, bool use_batch = false);
+                   bool hillclimb=false, string logfile="", int max_time=-1, 
+                   bool use_batch = false, bool semantic_xo = false);
             
             /// set size of population 
             void set_pop_size(int pop_size);
@@ -158,6 +159,9 @@ namespace FT{
             ///set flag to use batch for training
             void set_use_batch();
             
+            /// use semantic crossover
+            void set_semantic_xo(bool sem_xo=true){params.semantic_xo=sem_xo;};
+
             /*                                                      
              * getting functions
              */

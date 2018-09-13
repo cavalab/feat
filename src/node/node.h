@@ -63,6 +63,7 @@ namespace FT{
 
             /// check of node type
             virtual bool isNodeDx() {return false;};
+            virtual bool isNodeTrain() {return false;};
 
             /// makes a unique copy of this node
             std::unique_ptr<Node> clone() const;

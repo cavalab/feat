@@ -131,6 +131,7 @@ namespace FT{
         if (!ml_type.compare("LeastAngleRegression") || !ml_type.compare("LinearRidgeRegression")||
         	!ml_type.compare("SVM") || (!ml_type.compare("LR")))
         {
+            // for multiclass, return the average weight magnitude over the OVR models
             if(prob_type == PT_MULTICLASS && ( !ml_type.compare("LR") || !ml_type.compare("SVM") ) ) 
             {
                 /* cout << "in get_weights(), multiclass LR\n"; */
@@ -174,7 +175,7 @@ namespace FT{
 
 	            return w;		
             }
-	        
+	        // otherwise, return the true weights 
             auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_w();
             
             w.assign(tmp.data(), tmp.data()+tmp.size());          

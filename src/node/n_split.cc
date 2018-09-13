@@ -36,8 +36,10 @@ namespace FT{
                 
         x1 = stack.pop<double>();
             
-        if (!data.validation && !data.y.size()==0)
+        if (!data.validation && !data.y.size()==0 && train)
             set_threshold(x1,data.y, data.classification);
+        /* else */
+        /*     cout << "skipping threshold setting\n"; */
 
         stack.push<bool>(x1 < threshold);
     }
@@ -49,9 +51,10 @@ namespace FT{
                 
         x1 = stack.pop<int>().cast<double>();
             
-        if (!data.validation && !data.y.size()==0)
+        if (!data.validation && !data.y.size()==0 && train)
             set_threshold(x1,data.y, data.classification);
-
+        /* else */
+        /*     cout << "skipping threshold setting\n"; */
         stack.push<bool>(x1 == threshold);
     }
 
@@ -77,6 +80,7 @@ namespace FT{
     template <class T>
     void NodeSplit<T>::set_threshold(ArrayXd& x, VectorXd& y, bool classification)
     {
+        /* cout << "setting threshold\n"; */
         // for each unique value in x, calculate the reduction in the heuristic brought about by
         // splitting between that value and the next. 
         // set threshold according to the biggest reduction. 

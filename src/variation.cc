@@ -64,33 +64,40 @@ namespace FT{
                 if ( r() < cross_rate)      // crossover
                 {
                     // get random mom and dad 
-                    int mom = r.random_choice(parents);
-                    int dad = r.random_choice(parents);
+                    Individual& mom = pop.individuals.at(r.random_choice(parents));
+                    Individual& dad = pop.individuals.at(r.random_choice(parents));
+                    /* int dad = r.random_choice(parents); */
                     // create child
-                    params.msg("crossing " + pop.individuals[mom].get_eqn() + " with " + 
-                               pop.individuals[dad].get_eqn(), 3);
-                    /* pass = cross(pop.individuals[mom],pop.individuals[dad],child,params); */
-                    pass = semantic_cross(pop.individuals[mom],pop.individuals[dad],child,params,
-                                          d);
-                
-                    params.msg("crossing " + pop.individuals[mom].get_eqn() + " with " + 
-                           pop.individuals[dad].get_eqn() + " produced " + child.get_eqn() + 
+                    params.msg("crossing " + mom.get_eqn() + " with " + 
+                               dad.get_eqn(), 3);
+                   
+                    /* #pragma omp critical */
+                    {
+                    if (params.semantic_xo)
+                        pass = semantic_cross(mom, dad, child, params, d);
+                    else
+                        pass = cross(mom, dad, child, params);
+                    } 
+                    
+                    params.msg("crossing " + mom.get_eqn() + " with " + 
+                           dad.get_eqn() + " produced " + child.get_eqn() + 
                            ", pass: " + std::to_string(pass),3);    
 
-                    child.set_parents({pop.individuals[mom], pop.individuals[dad]});
+                    child.set_parents({mom, dad});
                 }
                 else                        // mutation
                 {
                     // get random mom
-                    int mom = r.random_choice(parents);                
-                    params.msg("mutating " + pop.individuals[mom].get_eqn() + "(" + 
-                            pop.individuals[mom].program_str() + ")", 3);
+                    Individual& mom = pop.individuals.at(r.random_choice(parents));
+                    /* int mom = r.random_choice(parents); */                
+                    params.msg("mutating " + mom.get_eqn() + "(" + 
+                            mom.program_str() + ")", 3);
                     // create child
-                    pass = mutate(pop.individuals[mom],child,params);
+                    pass = mutate(mom,child,params);
                     
-                    params.msg("mutating " + pop.individuals[mom].get_eqn() + " produced " + 
+                    params.msg("mutating " + mom.get_eqn() + " produced " + 
                             child.get_eqn() + ", pass: " + std::to_string(pass),3);
-                    child.set_parents({pop.individuals[mom]});
+                    child.set_parents({mom});
                 }
                 if (pass)
                 {
@@ -422,7 +429,7 @@ namespace FT{
          *
          * @return  child: mom with dad subtree graft
          */
-                    
+                   
         vector<size_t> mlocs, dlocs; // mom and dad locations for consideration
         size_t i1, j1, j1_idx, i2, j2;       // i1-j1: mom portion, i2-j2: dad portion
         
@@ -442,11 +449,16 @@ namespace FT{
         // get dad subtree
         // choose root in dad that is most correlated with the residual of
         // j2 = index in dad.Phi that maximizes R2(d.y, w*mom.Phi - w_i1*Phi_i1)
-        VectorXd mom_pred_minus_tree = mom.predict_vector(d,params,j1_idx);  
-        cout << "mom_pred_minus_tree: " << mom_pred_minus_tree.transpose() << "\n";
+        /* cout << "mom: " << mom.get_eqn() << "\n"; */
+        /* cout << "mom yhat: " << mom.yhat.transpose() << "\n"; */
+        VectorXd tree = mom.ml->get_weights().at(j1_idx)*mom.Phi.row(j1_idx).array();
+        /* cout << "tree (idx=" << j1_idx << "): " << tree.transpose() << "\n"; */
+        VectorXd mom_pred_minus_tree = mom.yhat - tree; 
+        /* cout << "mom_pred_minus_tree: " << mom_pred_minus_tree.transpose() << "\n"; */
         VectorXd mom_residual = d.y - mom_pred_minus_tree;
-        cout << "mom_residual: " << mom_residual.transpose() << "\n";
-        
+        /* cout << "mom_residual: " << mom_residual.transpose() << "\n"; */
+       
+        // get correlations of dad's features with the residual from mom, less the swap choice
         vector<double> corrs(dad.Phi.rows());
         int best_corr_idx = 0;
         double best_corr = 0;
@@ -462,22 +474,27 @@ namespace FT{
                 best_corr = corr;
             }
         }
-        cout << "corrs: ";
-        for (auto c : corrs) cout << c << ", "; cout << "\n";
-        cout << "chose corr at " << best_corr_idx << "\n";
+        /* cout << "corrs: "; */
+        /* for (auto c : corrs) cout << c << ", "; cout << "\n"; */
+        /* cout << "chose corr at " << best_corr_idx << "\n"; */
         j2 = dlocs.at(best_corr_idx);
         i2 = dad.program.subtree(j2); 
-               
+        
+        if (params.verbosity >= 3)
+            print_cross(mom,i1,j1,dad,i2,j2,child,false);     
+       
         // make child program by splicing mom and dad
         splice_programs(child.program, mom.program, i1, j1, dad.program, i2, j2 );
-                     
+        
         if (params.verbosity >= 3)
-            print_cross(mom,i1,j1,dad,i2,j2,child);     
-
+            print_cross(mom,i1,j1,dad,i2,j2,child,true);     
+             
+        
         assert(is_valid_program(child.program,params.num_features, params.longitudinalMap));
         // check child depth and dimensionality
         return child.size()>0 && child.size() <= params.max_size 
                     && child.get_dim() <= params.max_dim;
+        
     }
     
     // swap vector subsets with different sizes. 
