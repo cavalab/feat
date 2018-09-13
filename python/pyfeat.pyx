@@ -24,7 +24,8 @@ cdef extern from "feat.h" namespace "FT":
                bool erc, string obj,bool shuffle, 
                double split, double fb, string scorer, 
                string feature_names, bool backprop, int iters, double lr, int bs,
-               int n_threads, bool hillclimb, string logfile, int max_time, bool use_batch) except + 
+               int n_threads, bool hillclimb, string logfile, int max_time, bool use_batch,
+               bool semantic_xo) except + 
 
         void fit(double * X, int rowsX, int colsX, double*  y , int lenY)
         VectorXd predict(double * X, int rowsX,int colsX)
@@ -57,7 +58,8 @@ cdef class PyFeat:
                   int random_state, 
                   bool erc , string obj, bool shuffle, double split, double fb,
                   string scorer, string feature_names, bool backprop, int iters, double lr, int bs,
-                  int n_threads, bool hillclimb, string logfile, int max_time, bool use_batch):
+                  int n_threads, bool hillclimb, string logfile, int max_time, bool use_batch,
+                  bool semantic_xo):
         
         cdef char otype_char
         if ( len(otype) == 0):
@@ -66,7 +68,8 @@ cdef class PyFeat:
             otype_char = ord(otype)
         self.ft = Feat(pop_size,gens,ml,classification,verbosity,max_stall,sel,surv,cross_rate,
         otype_char, functions, max_depth, max_dim, random_state, erc, obj, shuffle, split, fb, scorer,
-        feature_names, backprop, iters, lr, bs, n_threads, hillclimb, logfile, max_time, use_batch)
+        feature_names, backprop, iters, lr, bs, n_threads, hillclimb, logfile, max_time, 
+        use_batch, semantic_xo)
 
     def fit(self,np.ndarray X,np.ndarray y):
         cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
