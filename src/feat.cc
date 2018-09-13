@@ -28,12 +28,12 @@ Feat::Feat(int pop_size, int gens, string ml,
        bool erc, string obj,bool shuffle, 
        double split, double fb, string scorer, string feature_names,
        bool backprop,int iters, double lr, int bs, int n_threads,
-       bool hillclimb, string logfile, int max_time, bool use_batch):
+       bool hillclimb, string logfile, int max_time, bool use_batch, bool semantic_xo):
           // construct subclasses
           params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
                  functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, 
                  fb, scorer, feature_names, backprop, iters, lr, bs, hillclimb, max_time, 
-                 use_batch), 
+                 use_batch, semantic_xo), 
           p_sel( make_shared<Selection>(sel) ),
           p_surv( make_shared<Selection>(surv, true) ),
           p_variation( make_shared<Variation>(cross_rate) )                      

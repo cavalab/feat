@@ -50,7 +50,7 @@ namespace FT{
     }
     
     /// get probabilities of variation
-    vector<double> Individual::get_p(){ return p; }     
+    vector<double> Individual::get_p() const { return p; }     
     
     void Individual::set_p(const vector<double>& weights, const double& fb)
     {   
@@ -97,7 +97,7 @@ namespace FT{
         this->w = weights;
     }
     
-    double Individual::get_p(const size_t i)
+    double Individual::get_p(const size_t i) const
     {
         /*! @param i index in program 
          * @returns weight associated with node */
@@ -129,7 +129,7 @@ namespace FT{
 
     }
     
-    vector<double> Individual::get_p(const vector<size_t>& locs)
+    vector<double> Individual::get_p(const vector<size_t>& locs) const
     {
         vector<double> ps;
         for (const auto& el : locs) ps.push_back(get_p(el));
@@ -145,9 +145,11 @@ namespace FT{
         params.msg("ML training on " + get_eqn(), 3);
         ml = std::make_shared<ML>(params);
 
-        shared_ptr<CLabels> yhat = ml->fit(Phi,d.y,params,pass,dtypes);
+        shared_ptr<CLabels> yh = ml->fit(Phi,d.y,params,pass,dtypes);
 
-        return yhat;
+        this->yhat = ml->labels_to_vector(yh);
+
+        return yh;
     }
 
     shared_ptr<CLabels> Individual::predict(const Data& d, const Parameters& params, 
@@ -155,29 +157,35 @@ namespace FT{
     {
         // calculate program output matrix Phi
         params.msg("Generating output for " + get_eqn(), 3);
-        Phi = out(d, params);           
-        
-        if (drop_idx >= 0)  // if drop_idx specified, mask that phi output
-            Phi.row(drop_idx) = VectorXd::Zero(Phi.cols());
+        // toggle validation
+        Phi = out(d, params, true);           // TODO: guarantee this is not changing nodes
 
+        if (Phi.size()==0)
+            HANDLE_ERROR_THROW("Phi must be generated before predict() is called\n");
+        /* if (drop_idx >= 0)  // if drop_idx specified, mask that phi output */
+        /* { */
+        /*     cout << "dropping row " + std::to_string(drop_idx) + "\n"; */
+        /*     Phi.row(drop_idx) = VectorXd::Zero(Phi.cols()); */
+        /* } */
         // calculate ML model from Phi
         params.msg("ML predicting on " + get_eqn(), 3);
         // assumes ML is already trained
         shared_ptr<CLabels> yhat = ml->predict(Phi);
-
         return yhat;
     }
+
     VectorXd Individual::predict_vector(const Data& d, const Parameters& params, 
                                             int drop_idx)
     {
         return ml->labels_to_vector(this->predict(d,params,drop_idx));
     }
     // calculate program output matrix
-    MatrixXd Individual::out(const Data& d, const Parameters& params)
+    MatrixXd Individual::out(const Data& d, const Parameters& params, bool predict)
     {
         /*!
          * @params d: Data structure
-         * @params: Feat parameters
+         * @params params: Feat parameters
+         * @params predict: if true, this guarantees nodes like split do not get trained
          * @returns Phi: n_features x n_samples transformation
          */
          
@@ -189,6 +197,8 @@ namespace FT{
         // evaluate each node in program
         for (const auto& n : program)
         {
+            if (n->isNodeTrain()) // learning nodes are set for fit or predict mode
+                dynamic_cast<NodeTrain*>(n.get())->train = !predict;
         	if(stack.check(n->arity))
 	            n->evaluate(d, stack);
             else
@@ -230,7 +240,7 @@ namespace FT{
              Phi.row(i) = Row;
              dtypes.push_back('f'); 
         }
-        // add stack_b to Phi
+        // add stack_c to Phi
         for (unsigned int i=0; i<rows_c; ++i)
         {    
              ArrayXd Row = ArrayXi::Map(stack.c.at(i).data(),cols).cast<double>();
