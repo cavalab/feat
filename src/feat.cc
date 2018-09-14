@@ -405,7 +405,8 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
        params.set_scorer(scorer);
     } 
 
-    set_dtypes(find_dtypes(X));
+    if (params.dtypes.size()==0)    // set feature types if not set
+        set_dtypes(find_dtypes(X));
    
     N.fit_normalize(X,params.dtypes);                   // normalize data
 

@@ -605,8 +605,11 @@ namespace FT{
     double condition_number(const MatrixXd& X)
     {
         JacobiSVD<MatrixXd> svd(X);
-        double cond = svd.singularValues()(0) 
+        double cond=MAX_DBL; 
+        if (svd.singularValues().size()>0)
+            cond= svd.singularValues()(0) 
                 / svd.singularValues()(svd.singularValues().size()-1);
+        cout << "CN: " + std::to_string(cond) + "\n";
         return cond;
     }
 
