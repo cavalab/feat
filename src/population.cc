@@ -87,16 +87,20 @@ namespace FT{
         /*!
          * recursively builds a program with complete arguments.
          */
-        /* std::cout << "current program: ["; */
-        /* for (const auto& p : program ) std::cout << p->name << " "; */
-        /* std::cout << "]\n"; */
-        /* std::cout << "otype: " << otype << "\n"; */
-        /* std::cout << "max_d: " << max_d << "\n"; */
+        std::cout << "current program: [";
+        for (const auto& p : program ) std::cout << p->name << " ";
+        std::cout << "]\n";
+        std::cout << "otype: " << otype << "\n";
+        std::cout << "max_d: " << max_d << "\n";
         if (max_d == 0 || r.rnd_flt() < terminals.size()/(terminals.size()+functions.size())) 
         {
             // append terminal 
             vector<size_t> ti;  // indices of valid terminals 
             vector<double> tw;  // weights of valid terminals
+            cout << "terminals: " ;
+            for (const auto& t : terminals) cout << t->name << "(" << t->otype << "),"; 
+            cout << "\n";
+            
             for (size_t i = 0; i<terminals.size(); ++i)
             {
                 if (terminals[i]->otype == otype) // grab terminals matching output type
@@ -104,12 +108,16 @@ namespace FT{
                     ti.push_back(i);
                     tw.push_back(term_weights[i]);                    
                 }
+                    
             }
+
+            cout << "valid terminals: ";
+            for (const auto& i : ti) cout << terminals.at(i)->name << ","; cout << "\n";
             
             if(ti.size() > 0 && tw.size() > 0)
             {
                 auto t = terminals[r.random_choice(ti,tw)]->clone();
-                //std::cout << t->name << " ";
+                std::cout << t->name << " ";
                 program.push_back(t->rnd_clone());
             }
             else
