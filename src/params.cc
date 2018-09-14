@@ -198,7 +198,6 @@ namespace FT{
     /// set the output types of programs
     void Parameters::set_otypes()
     {
-        cout << "Called\n";
         otypes.clear();
         // set output types
         switch (otype)
