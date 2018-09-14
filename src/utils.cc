@@ -628,6 +628,7 @@ namespace FT{
         /*           << corrcoef << "\n"; */
         return corrcoef;
     }
+
     // returns the mean of the pairwise correlations of a matrix.
     double mean_square_corrcoef(const MatrixXd& X)
     {

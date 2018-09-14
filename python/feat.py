@@ -48,7 +48,8 @@ class Feat(BaseEstimator):
         self.split = split
         self.fb = fb
         self.scorer = scorer.encode() if( isinstance(scorer,str) )  else scorer
-        self.feature_names = feature_names.encode() if isinstance(feature_names,str) else feature_names 
+        self.feature_names = (feature_names.encode() if isinstance(feature_names,str) 
+                                                     else feature_names )
         self.backprop = bool(backprop)
         self.iters = int(iters)
         self.lr = float(lr)
