@@ -464,8 +464,8 @@ TEST(NodeTest, Evaluate)
     //vector<std::unique_ptr<Node> > nodes;
     NodeVector nodes;
     
-    std::unique_ptr<Node> f1 = std::unique_ptr<Node>(new NodeVariable(0));
-    std::unique_ptr<Node> f2 = std::unique_ptr<Node>(new NodeVariable(1));
+    std::unique_ptr<Node> f1 = std::unique_ptr<Node>(new NodeVariable<double>(0));
+    std::unique_ptr<Node> f2 = std::unique_ptr<Node>(new NodeVariable<double>(1));
     
     std::unique_ptr<Node> addObj = std::unique_ptr<Node>(new NodeAdd());
 
@@ -630,8 +630,8 @@ TEST(NodeTest, Evaluate)
     X3 << 0.0, 1.0, 1.0,
           0.0, 1.0, 0.0;
           
-    std::unique_ptr<Node> b1 = std::unique_ptr<Node>(new NodeVariable(0, 'b'));
-    std::unique_ptr<Node> b2 = std::unique_ptr<Node>(new NodeVariable(1, 'b'));
+    std::unique_ptr<Node> b1 = std::unique_ptr<Node>(new NodeVariable<bool>(0, 'b'));
+    std::unique_ptr<Node> b2 = std::unique_ptr<Node>(new NodeVariable<bool>(1, 'b'));
           
     std::unique_ptr<Node> andObj = std::unique_ptr<Node>(new NodeAnd());
     
@@ -736,7 +736,7 @@ TEST(NodeTest, Evaluate)
           4.0, 5.0, 6.0,
           0.0, 1.0, 0.0;
           
-    std::unique_ptr<Node> b3 = std::unique_ptr<Node>(new NodeVariable(2, 'b'));
+    std::unique_ptr<Node> b3 = std::unique_ptr<Node>(new NodeVariable<bool>(2, 'b'));
           
     std::unique_ptr<Node> iteObj = std::unique_ptr<Node>(new NodeIfThenElse());
     
