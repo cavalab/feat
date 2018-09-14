@@ -129,37 +129,13 @@ void testDummyProgram(FT::NodeVector p0, int iters) {
     int bs = 1; 
     FT::Individual ind;
     ind.program = p0;
-    FT::Parameters params(100, 								//pop_size
-					  100,								//gens
-					  "LinearRidgeRegression",			//ml
-					  false,							//classification
-					  0,								//max_stall
-					  'f',								//otype
-					  2,								//verbosity
-					  "+,-,*,/,exp,log",				//functions
-					  0.5,                              //cross_rate
-					  3,								//max_depth
-					  10,								//max_dim
-					  false,							//erc
-					  "fitness,complexity",  			//obj
-                      false,                            //shuffle
-                      0.75,								//train/test split
-                      0.5,                             // feedback 
-                      "mse",                           //scoring function
-                      "",                               // feature names
-                      true,                             // backprop
-                      iters,                            // iterations
-                      learning_rate,
-                      bs,
-                      false,
-                      -1,
-                      false);
+    FT::Feat feat;
                       
     Data data(x, y, Z);
     
 	// AutoBackProp(PROGRAM, COST_FUNCTION, D_COST_FUNCTION, INPUT_DATA, LABELS, ITERS, LEARNING RATE);
 	FT::AutoBackProp* engine = new FT::AutoBackProp("mse", iters, learning_rate);
-    engine->run(ind, data, params); // Update pointer to NodeVector internally
+    engine->run(ind, data, feat.params); // Update pointer to NodeVector internally
 
     std::cout << "test program returned:\n";
 	for (const auto& n : ind.program) {

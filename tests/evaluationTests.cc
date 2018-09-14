@@ -3,32 +3,8 @@
 TEST(Evaluation, mse)
 {
 	
-    Parameters params(100, 								//pop_size
-                  100,								//gens
-                  "LinearRidgeRegression",			//ml
-                  false,							//classification
-                  0,								//max_stall
-                  'f',								//otype
-                  1,								//verbosity
-                  "+,-,*,/,exp,log",				//functions
-                  0.5,                              //cross_rate
-                  3,								//max_depth
-                  10,								//max_dim
-                  false,							//erc
-                  "fitness,complexity",  			//obj
-                  false,                            //shuffle
-                  0.75,								//train/test split
-                  0.5,                             // feedback 
-                  "mse",                           //scoring function
-                  "",                              // feature names
-                  false,                            // backprop
-                  0,                                // backprop iterations
-                  0.1,                              // iterations
-                  1,                                // batch size
-                  false,                             // hill climbing
-                  -1,                                // max time
-                  false);                            // use batch training
-	
+    Feat ft;
+    
     VectorXd yhat(10), y(10), res(10);
 	yhat << 0.0,
 	        1.0,
@@ -65,7 +41,7 @@ TEST(Evaluation, mse)
 
     // test mean squared error      
     VectorXd loss; 
-    double score = metrics::mse(y, yhat, loss, params.class_weights);
+    double score = metrics::mse(y, yhat, loss, ft.params.class_weights);
 
     if (loss != res)
     {
@@ -81,32 +57,8 @@ TEST(Evaluation, bal_accuracy)
 {
     // test balanced zero one loss
 	
-    Parameters params(100, 								//pop_size
-              100,								//gens
-              "LinearRidgeRegression",			//ml
-              true,							//classification
-              0,								//max_stall
-              'f',								//otype
-              1,								//verbosity
-              "+,-,*,/,exp,log",				//functions
-              0.5,                              //cross_rate
-              3,								//max_depth
-              10,								//max_dim
-              false,							//erc
-              "fitness,complexity",  			//obj
-              false,                            //shuffle
-              0.75,								//train/test split
-              0.5,                             // feedback 
-              "bal_zero_one",                           //scoring function
-              "",                              // feature names
-              false,                            // backprop
-              0,                                // backprop iterations
-              0.1,                              // iterations
-              1,                                // batch size
-              false,                             // hill climbing
-             -1,                                // max time
-              false);                            // use batch training
-	
+    Feat ft;
+    
     VectorXd yhat(10), y(10), res(10), loss(10);
 	
   
@@ -144,7 +96,7 @@ TEST(Evaluation, bal_accuracy)
            1.0,
            1.0;
            
-    double score = metrics::bal_zero_one_loss(y, yhat, loss, params.class_weights);
+    double score = metrics::bal_zero_one_loss(y, yhat, loss, ft.params.class_weights);
     
     if (loss != res)
     {
@@ -159,32 +111,6 @@ TEST(Evaluation, bal_accuracy)
 TEST(Evaluation, log_loss)
 {
     // test log loss
-	
-    Parameters params(100, 								//pop_size
-              100,								//gens
-              "LinearRidgeRegression",			//ml
-              true,							//classification
-              0,								//max_stall
-              'f',								//otype
-              1,								//verbosity
-              "+,-,*,/,exp,log",				//functions
-              0.5,                              //cross_rate
-              3,								//max_depth
-              10,								//max_dim
-              false,							//erc
-              "fitness,complexity",  			//obj
-              false,                            //shuffle
-              0.75,								//train/test split
-              0.5,                             // feedback 
-              "bal_zero_one",                           //scoring function
-              "",                              // feature names
-              false,                            // backprop
-              0,                                // backprop iterations
-              0.1,                              // iterations
-              1,                                // batch size
-              false,                             // hill climbing
-              -1,                                // max time
-              false);                            // use batch training
 	
     VectorXd yhat(10), y(10), loss(10);
     ArrayXXd confidences(10,2);
@@ -232,34 +158,7 @@ TEST(Evaluation, log_loss)
 
 TEST(Evaluation, multi_log_loss)
 {
-    // test log loss
-	
-    Parameters params(100, 								//pop_size
-              100,								//gens
-              "LinearRidgeRegression",			//ml
-              true,							//classification
-              0,								//max_stall
-              'f',								//otype
-              1,								//verbosity
-              "+,-,*,/,exp,log",				//functions
-              0.5,                              //cross_rate
-              3,								//max_depth
-              10,								//max_dim
-              false,							//erc
-              "fitness,complexity",  			//obj
-              false,                            //shuffle
-              0.75,								//train/test split
-              0.5,                             // feedback 
-              "bal_zero_one",
-              "",                              // feature names
-              false,                            // backprop
-              0,                                // backprop iterations
-              0.1,                              // iterations
-              1,                                // batch size
-              false,                             // hill climbing
-              -1,                                // max time
-              false);                            // use batch training
-	
+    // test log loss   
     VectorXd y(10), loss(10);
     ArrayXXd confidences(10,3);
 
@@ -299,34 +198,11 @@ TEST(Evaluation, multi_log_loss)
 
     ASSERT_EQ(((int)(score*100000)),62344);
 }
+
 TEST(Evaluation, fitness)
 {
-		Parameters params(100, 								//pop_size
-					  100,								//gens
-					  "LinearRidgeRegression",			//ml
-					  false,							//classification
-					  0,								//max_stall
-					  'f',								//otype
-					  1,								//verbosity
-					  "+,-,*,/,exp,log",				//functions
-					  0.5,                              //cross_rate
-					  3,								//max_depth
-					  10,								//max_dim
-					  false,							//erc
-					  "fitness,complexity",  			//obj
-                      false,                            //shuffle
-                      0.75,								//train/test split
-                      0.5,                             // feedback 
-                      "mse",                           // scoring function
-                      "",                              // feature names
-                      false,                            // backprop
-                      0,                                // backprop iterations
-                      0.1,                              // iterations
-                      1,                                // batch size
-                      false,                             // hill climbing
-                      -1,                                // max time
-                      false);                            // use batch training
-                        
+	Feat ft;
+	
 	MatrixXd X(10,1); 
     X << 0.0,  
          1.0,  
@@ -368,7 +244,7 @@ TEST(Evaluation, fitness)
     // get fitness
     Evaluation eval("mse"); 
 
-    eval.fitness(pop.individuals, d, F, params);
+    eval.fitness(pop.individuals, d, F, ft.params);
     
     // check results
     //cout << pop.individuals[0].fitness << " , should be near zero\n";
@@ -379,31 +255,8 @@ TEST(Evaluation, fitness)
 
 TEST(Evaluation, out_ml)
 {
-	Parameters params(100, 								//pop_size
-					  100,								//gens
-					  "LinearRidgeRegression",			//ml
-					  false,							//classification
-					  0,								//max_stall
-					  'f',								//otype
-					  1,								//verbosity
-					  "+,-,*,/,exp,log",				//functions
-					  0.5,                              //cross_rate
-					  3,								//max_depth
-					  10,								//max_dim
-					  false,							//erc
-					  "fitness,complexity",  			//obj
-                      false,                            //shuffle
-                      0.75,								//train/test split
-                      0.5,                             // feedback                 
-                      "mse",                           // scoring function
-                      "",                              // feature names
-                      false,                            // backprop
-                      0,                                // backprop iterations
-                      0.1,                              // iterations
-                      1,                                // batch size
-                      false,                             // hill climbing
-                      -1,                                // max time
-                      false);                            // use batch training
+    Feat ft;
+
 	MatrixXd X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
@@ -420,12 +273,12 @@ TEST(Evaluation, out_ml)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
     
-    params.dtypes = find_dtypes(X);
+    ft.params.dtypes = find_dtypes(X);
     /* shared_ptr<Evaluation> p_eval = make_shared<Evaluation>(params.scorer); */
-    shared_ptr<ML> p_ml = make_shared<ML>(params);
+    shared_ptr<ML> p_ml = make_shared<ML>(ft.params);
              
     bool pass = true;
-    VectorXd yhat = p_ml->fit_vector(X, y, params, pass);
+    VectorXd yhat = p_ml->fit_vector(X, y, ft.params, pass);
      
     double mean = ((yhat - y).array().pow(2)).mean();
     
