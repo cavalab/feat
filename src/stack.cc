@@ -148,20 +148,9 @@ namespace FT
     
     Stacks::~Stacks()
     {
-	    //printf("Calling free device\n");
         free_device(dev_f, dev_c, dev_b);
-	    //cudaDeviceReset();
-	    //printf("Device freed\n");
     }
 
 #endif    
-    //Stacks::~Stacks(){cout <<"called successfully\n";};
-    
-    template class Stack<ArrayXd>;
-    template class Stack<ArrayXb>;
-    template class Stack<ArrayXi>;
-    template class Stack<std::pair<vector<ArrayXd>, vector<ArrayXd> > >;
-    template class Stack<string>;
-    
 }
 

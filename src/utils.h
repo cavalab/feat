@@ -73,7 +73,10 @@ namespace FT{
     /// calculate median
     double median(const ArrayXd& v);
     
-    /// calculate variance
+    /// calculate variance when mean provided
+    double variance(const ArrayXd& v, double mean);
+    
+    ///calculate variance
     double variance(const ArrayXd& v);
     
     /// calculate skew
