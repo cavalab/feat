@@ -39,16 +39,16 @@ namespace FT{
     /// Evaluates the node and updates the stack states. 
     void Node2dGaussian::evaluate(const Data& data, Stacks& stack)
     {
-        double x1mean = stack.f.row(stack.idx['f']-1).mean();
-        double x2mean = stack.f.row(stack.idx['f']-2).mean();
+        float x1mean = stack.f.row(stack.idx['f']-1).mean();
+        float x2mean = stack.f.row(stack.idx['f']-2).mean();
         
-        double x1var = variance(stack.f.row(stack.idx['f']-1), x1mean);
-        double x2var = variance(stack.f.row(stack.idx['f']-2), x2mean);
+        double x1var = variance(stack.f.row(stack.idx['f']-1).cast<double>(), x1mean);
+        double x2var = variance(stack.f.row(stack.idx['f']-2).cast<double>(), x2mean);
                       
         GPU_Gaussian2D(stack.dev_f, stack.idx[otype],
                        (float)x1mean, (float)x1var,
                        (float)x2mean, (float)x2var,
-                       (float)W0, (float)W1, stack.N);
+                       (float)W[0], (float)W[1], stack.N);
     }
 #endif
 
@@ -73,7 +73,7 @@ namespace FT{
     
     Node2dGaussian* Node2dGaussian::clone_impl() const { return new Node2dGaussian(*this); }  
 
-    Node2dGaussian* Node2dGaussian::rnd_clone_impl() const { return new Node2dGaussian(); }
+    Node2dGaussian* Node2dGaussian::rnd_clone_impl() const { return new Node2dGaussian(*this); }
 }
 
 

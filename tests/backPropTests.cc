@@ -584,7 +584,7 @@ TEST(BackProp, DerivativeTest)
 }
 
 
-TEST(BackProp, PropogationTest)
+/*TEST(BackProp, PropogationTest)
 {
     int myNumber = 0;
 	string input = "";
@@ -603,4 +603,4 @@ TEST(BackProp, PropogationTest)
 	}
  	cout << "Running with : " << myNumber << endl << endl;
 	testDummyProgram(program, myNumber);
-}
+}*/

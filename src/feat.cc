@@ -677,6 +677,14 @@ void Feat::initial_model(DataRef &d)
     {
         w = vector<double>(d.t->X.rows(),1.0);
     }
+    
+    /*cout << "Weights are \n";
+    for(auto i : w)
+        cout << i << "\n";
+    cout <<"\n";
+    HANDLE_ERROR_THROW("Exiting");*/
+    
+    
     params.set_term_weights(w);
    
     VectorXd tmp;

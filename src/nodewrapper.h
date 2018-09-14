@@ -12,7 +12,7 @@ license: GNU/GPL v3
 #endif
 
 #include "node/node.h"
-//#include "node/n_2dgaussian.h"
+#include "node/n_2dgaussian.h"
 #include "node/n_add.h"
 #include "node/n_and.h"
 #include "node/n_constant.h"
@@ -23,7 +23,7 @@ license: GNU/GPL v3
 #include "node/n_equal.h"
 #include "node/n_exponent.h"
 #include "node/n_exponential.h"
-//#include "node/n_float.h"
+#include "node/n_float.h"
 #include "node/n_gaussian.h"
 #include "node/n_geq.h"
 #include "node/n_greaterthan.h"
@@ -43,7 +43,7 @@ license: GNU/GPL v3
 #include "node/n_multiply.h"
 #include "node/n_not.h"
 #include "node/n_or.h"
-//#include "node/n_relu.h"
+#include "node/n_relu.h"
 #include "node/n_sign.h"
 #include "node/n_sin.h"
 #include "node/n_skew.h"

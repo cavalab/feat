@@ -153,8 +153,8 @@ namespace FT{
                 
                 for( int i = 0 ; i < weights.size(); ++i )
                 {
-                    /* cout << "weights:\n"; */
-                    /* weights.at(i).display_vector(); */
+                    cout << "weights:\n";
+                    weights.at(i).display_vector();
 
                     for( int j = 0;j<weights.at(i).size(); ++j) 
                     {
@@ -178,8 +178,8 @@ namespace FT{
             auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_w();
             
             w.assign(tmp.data(), tmp.data()+tmp.size());          
-            /* for (unsigned i =0; i<w.size(); ++i)    // take absolute value of weights */
-            /*     w[i] = fabs(w[i]); */
+            //for (unsigned i =0; i<w.size(); ++i)    // take absolute value of weights 
+            //     w[i] = fabs(w[i]);
 	    }
         else if (!ml_type.compare("CART"))           
             w = dynamic_pointer_cast<sh::CMyCARTree>(p_est)->feature_importances();
@@ -195,7 +195,12 @@ namespace FT{
 
     shared_ptr<CLabels> ML::fit(MatrixXd& X, VectorXd& y, const Parameters& params, bool& pass,
                      const vector<char>& dtypes)
-    { 
+    {         
+        //cout << "X is \n"<<X<<"\n";
+        //cout << "Y is \n"<<y<<"\n";
+        //cout << "dtypes are\n";
+        //for(auto c : dtypes)
+        //    cout << c <<"\n";
     	/*!
          * Trains ml on X, y to generate output yhat = f(X). 
          *
@@ -241,6 +246,7 @@ namespace FT{
             /* cout << "normlize is false\n"; */
 
         auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
+        //cout << features << "\n";
         /* cout << "Phi:\n"; */
         /* for (int i = 0; i < 10 ; ++i) */
         /* { */
