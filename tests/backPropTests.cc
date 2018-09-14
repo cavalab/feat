@@ -64,9 +64,9 @@ Node* parseToNode(std::string token) {
     } else if (token == "sin") {
     	return new FT::NodeSin();
     } else if (token == "x0") {
-    	return new FT::NodeVariable(0);
+    	return new FT::NodeVariable<double>(0);
     } else if (token == "x1") {
-    	return new FT::NodeVariable(1);
+    	return new FT::NodeVariable<double>(1);
     } else if (token == "exponent") {
     	return new FT::NodeExponent();
     } else if (token == "max") {
