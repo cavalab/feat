@@ -29,7 +29,7 @@ namespace FT{
                         float x2mean, float x2var,
                         float W0, float W1, size_t N)
     {	    
-        Gaussian2D<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N, W0, W1);
+        Gaussian2D<<< DIM_GRID, DIM_BLOCK >>>(x, idx, x1mean, x1var, x2mean, x2var, W0, W1, N);
     }
 }	
 

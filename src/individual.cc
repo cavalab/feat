@@ -228,13 +228,13 @@ namespace FT{
              Phi.row(i+rows_f) = Row;
              dtypes.push_back('c');
         }
-        // convert stack_b to Phi       
+        // convert stack_b to Phi
         for (unsigned int i=0; i<rows_b; ++i)
         {
             Phi.row(i+rows_f+rows_c) = ArrayXb::Map(stack.b.at(i).data(),cols).cast<double>();
             dtypes.push_back('b');
         }       
-
+        
         return Phi;
     }
 #else
@@ -326,14 +326,10 @@ namespace FT{
         dtypes.clear();        
         Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
 
-        ArrayXXf PhiF = ArrayXXf::Map(stack.f.data(),stack.f.rows(),stack.f.cols());
-        ArrayXXi PhiC = ArrayXXi::Map(stack.c.data(),stack.c.rows(),stack.c.cols());
-        ArrayXXb PhiB = ArrayXXb::Map(stack.b.data(),stack.b.rows(),stack.b.cols());
-        
         // combine stacks into Phi 
-        Phi <<  PhiF.cast<double>(),
-                PhiC.cast<double>(),
-                PhiB.cast<double>();
+        Phi <<  stack.f.cast<double>(),
+                stack.c.cast<double>(),
+                stack.b.cast<double>();
         
         /* std::cout << "Phi:" << Phi.rows() << "x" << Phi.cols() << "\n"; */
 

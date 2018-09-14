@@ -36,9 +36,9 @@ namespace FT{
     void NodeFloat<T>::evaluate(const Data& data, Stacks& stack)
     {
         if(arity['b'])
-            stack.f.row(stack.idx['f']) = stack.b.row(stack.idx['b']).cast<double>();
+            stack.f.row(stack.idx['f']) = stack.b.row(stack.idx['b']).cast<float>();
         else
-            stack.f.row(stack.idx['f']) = stack.c.row(stack.idx['c']).cast<double>();
+            stack.f.row(stack.idx['f']) = stack.c.row(stack.idx['c']).cast<float>();
     }
 #endif
 
