@@ -36,9 +36,9 @@ namespace FT{
     void NodeFloat<T>::evaluate(const Data& data, Stacks& stack)
     {
         if(arity['b'])
-            stack.f.row(stack.idx['f']) = stack.b.row(stack.idx['b']).cast<float>();
+            GPU_Float(stack.dev_f, stack.dev_b, stack.idx[otype], stack.idx['b'], stack.N);
         else
-            stack.f.row(stack.idx['f']) = stack.c.row(stack.idx['c']).cast<float>();
+            GPU_Float(stack.dev_f, stack.dev_c, stack.idx[otype], stack.idx['c'], stack.N);
     }
 #endif
 
