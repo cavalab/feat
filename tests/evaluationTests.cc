@@ -229,14 +229,14 @@ TEST(Evaluation, fitness)
     // make population 
     Population pop(2);
     // individual 0 = [sin(x0) cos(x0)]
-    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeVariable(0)));
+    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(0)));
     pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeSin({1.0})));
-    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeVariable(0)));
+    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(0)));
     pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeCos({1.0})));
     pop.individuals[0].loc = 0;
     //std::cout << pop.individuals[0].get_eqn() + "\n";
     // individual 1 = [x0] 
-    pop.individuals[1].program.push_back(std::unique_ptr<Node>(new NodeVariable(0)));
+    pop.individuals[1].program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(0)));
     pop.individuals[1].loc = 1;
     //std::cout << pop.individuals[1].get_eqn() + "\n";    
     MatrixXd F(10,2);   // output matrix
