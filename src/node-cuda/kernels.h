@@ -28,6 +28,8 @@ void GPU_Gaussian2D(float * x, size_t idx,
                     float x2mean, float x2var,
                     float W0, float W1, size_t N);
 void GPU_Relu(float * x, size_t idx, size_t N, float W0);
+void GPU_Float(float * x, bool* y, size_t idxf, size_t idxb, size_t N);
+void GPU_Float(float * x, int* y, size_t idxf, size_t idxb, size_t N)
 
 // boolean operators
 void GPU_And(bool * x, size_t idx, size_t N);
