@@ -28,7 +28,8 @@ Feat::Feat(int pop_size, int gens, string ml,
        bool erc, string obj,bool shuffle, 
        double split, double fb, string scorer, string feature_names,
        bool backprop,int iters, double lr, int bs, int n_threads,
-       bool hillclimb, string logfile, int max_time, bool use_batch, bool semantic_xo):
+       bool hillclimb, string logfile, int max_time, bool use_batch, bool semantic_xo,
+       bool print_pop):
           // construct subclasses
           params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
                  functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, 
@@ -580,6 +581,9 @@ void Feat::run_generation(unsigned int g,
     else if(params.verbosity == 1)
         printProgress(fraction);
     
+    if (print_pop)
+        print_population();
+
     if (params.backprop)
     {
         params.bp.learning_rate = (1-1/(1+double(params.gens)))*params.bp.learning_rate;
@@ -935,4 +939,24 @@ void Feat::print_stats(std::ofstream& log, double fraction)
             << med_num_params      << sep
             << med_dim             << "\n"; 
     } 
+}
+void Feat::print_population()
+{
+    std::ofstream out;                      ///< log file stream
+    char sep = "\t";
+    if (!logfile.empty())
+        out.open(logfile + ".pop" + std::to_string(params.current_gen));
+    else
+        out.open("pop" + std::to_string(params.current_gen));
+
+    for (const auto& o : params.objectives)
+        out << o << sep;
+    out << "\n";
+    for (const auto& i : p_pop->individuals)
+    {
+        for (const auto& o : i.obj)
+            out << o << sep;
+        out << "\n";
+    }
+    out.close();
 }

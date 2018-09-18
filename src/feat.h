@@ -64,7 +64,7 @@ namespace FT{
                    double split=0.75, double fb=0.5, string scorer="", string feature_names="",
                    bool backprop=false,int iters=10, double lr=0.1, int bs=100, int n_threads=0,
                    bool hillclimb=false, string logfile="", int max_time=-1, 
-                   bool use_batch = false, bool semantic_xo = false);
+                   bool use_batch = false, bool semantic_xo = false, bool print_pop=false);
             
             /// set size of population 
             void set_pop_size(int pop_size);
@@ -162,6 +162,7 @@ namespace FT{
             /// use semantic crossover
             void set_semantic_xo(bool sem_xo=true){params.semantic_xo=sem_xo;};
 
+            void set_print_pop(bool pp=true){ print_pop=pp; };
             /*                                                      
              * getting functions
              */
@@ -334,6 +335,8 @@ namespace FT{
                          std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
                                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());
             
+            /// prints population obj scores each generation 
+            void print_population();
         private:
             // Parameters
             Parameters params;    					///< hyperparameters of Feat 
@@ -361,6 +364,7 @@ namespace FT{
                              double fraction);      ///< prints stats
             Individual best_ind;                    ///< best individual
             string logfile;                         ///< log filename
+            bool print_pop;                         ///< controls whether pop is printed each gen
             /// method to fit inital ml model            
             void initial_model(DataRef &d);
             /// fits final model to best transformation
