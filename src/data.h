@@ -50,7 +50,7 @@ namespace FT
             void set_validation(bool v=true);
             
             /// select random subset of data for training weights.
-            void get_batch(Data &db, int batch_size);
+            void get_batch(Data &db, int batch_size) const;
     };
     
     class DataRef
