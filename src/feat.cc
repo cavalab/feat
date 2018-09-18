@@ -372,7 +372,15 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     // start the clock
     timer.Reset();
     if (params.use_batch)
-        cout << "using batch with batch_size= " << params.bp.batch_size << "\n";
+    {
+        if (params.bp.batch_size >= X.cols()){
+            cout << "turning off batch because X has fewer than " << params.bp.batch_size 
+                 << " samples\n";
+            params.use_batch = false;
+        }
+        else
+            cout << "using batch with batch_size= " << params.bp.batch_size << "\n";
+    }
     std::ofstream log;                      ///< log file stream
     if (!logfile.empty())
         log.open(logfile, std::ofstream::app);
@@ -389,7 +397,8 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     }
     
     params.init();       
-   
+  
+
     if (params.classification)  // setup classification endpoint
     {
        params.set_classes(y);       
@@ -507,26 +516,8 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     if (params.split < 1.0)
     {
         vector<Individual>& final_pop = use_arch ? arch.archive : p_pop->individuals; 
-        F_v.resize(d.v->X.cols(),int(2*params.pop_size)); 
         
-        /* if(params.use_batch) */
-        /* { */
-        /*     t0 =  timer.Elapsed().count(); */
-        /*     d.t->get_batch(db, params.bp.batch_size); */
-        /*     DataRef dbr;    // reference to minibatch data */
-        /*     dbr.setTrainingData(&db); */
-            
-        /*     if (params.classification) */
-        /*         params.set_sample_weights(dbr.t->y); */ 
-        /*     t0 = timer.Elapsed().count(); */
-        /*     /1* p_eval->val_fitness(final_pop, *dbr.t, F_v, *d.v, params); *1/ */
-        /*     p_eval->fitness(final_pop, *d.v, F_v, params, false, true); */
-        /* } */
-        /* else */
-        /* { */
-        /*     /1* p_eval->val_fitness(final_pop, *d.t, F_v, *d.v, params); *1/ */
-        /*     p_eval->fitness(final_pop, *d.v, F_v, params, false, true); */
-        /* } */
+        F_v.resize(d.v->X.cols(),int(2*params.pop_size)); 
         
         p_eval->fitness(final_pop, *d.v, F_v, params, false, true);
 
@@ -578,7 +569,6 @@ void Feat::run_generation(unsigned int g,
 
     if (use_arch) 
         arch.update(*p_pop,params);
-
 
     if(params.verbosity>1)
         print_stats(log, fraction);    
@@ -647,12 +637,12 @@ void Feat::initial_model(DataRef &d)
         {
             vector<size_t> choice_idxs(d.t->X.rows()-i);
             std::iota(choice_idxs.begin(),choice_idxs.end(),0);
-            cout << "choice_idxs: ";
-            for (auto c : choice_idxs) cout << c << ","; cout << "\n";
+            /* cout << "choice_idxs: "; */
+            /* for (auto c : choice_idxs) cout << c << ","; cout << "\n"; */
             size_t idx = r.random_choice(choice_idxs);
-            cout << "idx: " << idx << "\n";
+            /* cout << "idx: " << idx << "\n"; */
             j = var_idx.at(idx);
-            cout << "j: " << j << "\n";
+            /* cout << "j: " << j << "\n"; */
             var_idx.erase(var_idx.begin() + idx);
         }
         else 

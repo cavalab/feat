@@ -196,7 +196,7 @@ namespace FT{
     }
 
     /// set the output types of programs
-    void Parameters::set_otypes()
+    void Parameters::set_otypes(bool terminals_set)
     {
         otypes.clear();
         // set output types
@@ -210,20 +210,16 @@ namespace FT{
                 // if terminals are all boolean, remove floating point functions
                 if (ttypes.size()==1 && ttypes[0]=='b')
                 {
-                    std::cout << "otypes is size 1 and otypes[0]==b\nerasing functions...\n";
+                    msg("otypes is size 1 and otypes[0]==b\nerasing functions...\n",2);
                     size_t n = functions.size();
                     for (vector<int>::size_type i =n-1; 
                          i != (std::vector<int>::size_type) -1; i--){
                         if (functions.at(i)->arity['f'] >0){
-                            std::cout << "erasing function " << functions.at(i)->name << "\n";
+                            msg("erasing function " + functions.at(i)->name + "\n", 2);
                             functions.erase(functions.begin()+i);
                         }
                     }
                     
-                    std::cout << "functions:\n";
-                    for (const auto& f : functions)
-                        std::cout << f->name << " "; 
-                    std::cout << "\n";
                     otype = 'b';
                     otypes.push_back('b');
                 }           
@@ -234,13 +230,13 @@ namespace FT{
                 }
                 
                 //erasing categorical nodes if no categorical stack exists  
-                if (!in(ttypes, 'c'))
+                if (terminals_set && !in(ttypes, 'c'))
                 {
                     size_t n = functions.size();
                     for (vector<int>::size_type i =n-1; 
                          i != (std::vector<int>::size_type) -1; i--){
                         if (functions.at(i)->arity['c'] >0){
-                            std::cout << "erasing function " << functions.at(i)->name << "\n";
+                            msg("erasing function " + functions.at(i)->name + "\n", 2);
                             functions.erase(functions.begin()+i);
                         }
                     }
@@ -251,7 +247,11 @@ namespace FT{
 
     }
     
-    std::unique_ptr<Node> Parameters::createNode(string str, double d_val, bool b_val, size_t loc, string name)
+    std::unique_ptr<Node> Parameters::createNode(string str,
+                                                 double d_val,
+                                                 bool b_val,
+                                                 size_t loc,
+                                                 string name)
     {
         // algebraic operators
     	if (str.compare("+") == 0) 
@@ -469,6 +469,7 @@ namespace FT{
          *		modifies functions 
          *
          */
+
         fs += ',';          // add delimiter to end 
         string delim = ",";
         size_t pos = 0;
@@ -478,6 +479,7 @@ namespace FT{
         {
             token = fs.substr(0, pos);
             functions.push_back(createNode(token));
+
             fs.erase(0, pos + delim.length());
         } 
         if (verbosity > 2){
@@ -519,7 +521,8 @@ namespace FT{
         /* cout << "\n"; */
         // reset output types
         set_ttypes();
-        set_otypes();
+        
+      (true);
     }
 
     void Parameters::set_objectives(string obj)
