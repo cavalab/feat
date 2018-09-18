@@ -539,7 +539,7 @@ namespace FT{
                 obj.push_back(CN);
             }
             else if (n.compare("corr")==0)    // covariance structure of Phi
-                obj.push_back(1 - mean_square_corrcoef(Phi));
+                obj.push_back(mean_square_corrcoef(Phi));
 
         }
     
