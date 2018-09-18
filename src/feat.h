@@ -244,6 +244,9 @@ namespace FT{
             /// return the coefficients or importance scores of the best model. 
             ArrayXd get_coefs();
 
+            /// return the number of nodes in the best model
+            int get_n_nodes();
+
             /// get longitudinal data from file s
             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>> get_Z(string s, 
                     int * idx, int idx_size);

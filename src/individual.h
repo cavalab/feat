@@ -27,6 +27,7 @@ namespace FT{
         shared_ptr<ML> ml;                          ///< ML model, trained on Phi
         double fitness;             				///< aggregate fitness score
         double fitness_v;             				///< aggregate validation fitness score
+        double CN;
         size_t loc;                 				///< index of individual in semantic matrix F
         string eqn;                 				///< symbolic representation of program
         vector<double> w;            				///< weights from ML training on program output

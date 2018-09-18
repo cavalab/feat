@@ -237,6 +237,10 @@ int Feat::get_dim(){ return best_ind.get_dim(); }
 ///get dimensionality of best
 int Feat::get_complexity(){ return best_ind.complexity(); } 
 
+
+/// return the number of nodes in the best model
+int Feat::get_n_nodes(){ return best_ind.program.size(); }
+
 ///return population as string
 string Feat::get_eqns(bool front)
 {
@@ -860,9 +864,9 @@ void Feat::print_stats(std::ofstream& log, double fraction)
             if (lim_model.size()==60) 
                 lim_model += "...";
             
-            std::cout <<  arch.archive[i].rank << "\t" 
-                      <<  arch.archive[i].complexity() << "\t" 
-                      <<  arch.archive[i].fitness << "\t" 
+            std::cout <<  arch.archive[i].rank          << "\t" 
+                      <<  arch.archive[i].complexity()  << "\t" 
+                      <<  arch.archive[i].fitness       << "\t" 
                       <<  lim_model << "\n";  
         }
     }
@@ -884,8 +888,9 @@ void Feat::print_stats(std::ofstream& log, double fraction)
                 lim_model.push_back(model.at(j));
             if (lim_model.size()==60) 
                 lim_model += "...";
-            std::cout << p_pop->individuals[f[j]].rank << "\t" 
-                      <<  p_pop->individuals[f[j]].complexity() << "\t" << (*p_pop)[f[j]].fitness 
+            std::cout << p_pop->individuals[f[j]].rank              << "\t" 
+                      <<  p_pop->individuals[f[j]].complexity()     << "\t" 
+                      << (*p_pop)[f[j]].fitness                     << "\t"
                       << "\t" << lim_model << "\n";  
         }
     }
