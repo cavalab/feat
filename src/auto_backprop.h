@@ -47,7 +47,7 @@ namespace FT {
         AutoBackProp(string scorer, int iters=1000, double n=0.1, double a=0.9); 
 
         /// adapt weights
-		void run(Individual& ind, Data d,
+		void run(Individual& ind, const Data& d,
                  const Parameters& params);
 
         /* ~AutoBackProp() */
@@ -75,7 +75,7 @@ namespace FT {
 		void print_weights(NodeVector& program);
 		
 		/// Return the f_stack
-		vector<Trace> forward_prop(Individual& ind, Data d,
+		vector<Trace> forward_prop(Individual& ind, const Data& d,
                                MatrixXd& Phi, const Parameters& params);
 
 		/// Updates stacks to have proper value on top
@@ -85,7 +85,7 @@ namespace FT {
         /// Compute gradients and update weights 
         void backprop(Trace& f_stack, NodeVector& program, int start, int end, 
                                 double Beta, shared_ptr<CLabels>& yhat, 
-                                Data d,
+                                const Data& d,
                                vector<float> sw);
 
        

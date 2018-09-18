@@ -6,39 +6,41 @@ license: GNU/GPL v3
     	
 namespace FT{
 
-    NodeFloat::NodeFloat(bool isCategorical)
+    template <>
+    NodeFloat<bool>::NodeFloat()
     {
-        if(!isCategorical)
-        {
-	        name = "f";
-	        otype = 'f';
-	    }
-	    else
-	    {
-	        name = "f_c";
-            otype = 'c';
-	    }
-	    
+        name = "b2f";
+        otype = 'f';
         arity['b'] = 1;
+        complexity = 1;
+    }
+    
+    template <>
+    NodeFloat<int>::NodeFloat()
+    {
+        name = "c2f";
+        otype = 'f';
+        arity['c'] = 1;
         complexity = 1;
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeFloat::evaluate(const Data& data, Stacks& stack)
+    template <class T>
+    void NodeFloat<T>::evaluate(const Data& data, Stacks& stack)
     {
-        if(otype == 'f')
-            stack.push<double>(stack.pop<bool>().cast<double>());
-        else
-            stack.push<int>(stack.pop<bool>().cast<int>());
+        stack.push<double>(stack.pop<T>().template cast<double>());
     }
 
     /// Evaluates the node symbolically
-    void NodeFloat::eval_eqn(Stacks& stack)
+    template <class T>
+    void NodeFloat<T>::eval_eqn(Stacks& stack)
     {
-        stack.push<double>("f(" + stack.popStr<bool>() + ")");
+        stack.push<double>("float(" + stack.popStr<T>() + ")");
     }
     
-    NodeFloat* NodeFloat::clone_impl() const { return new NodeFloat(*this); }
+    template <class T>
+    NodeFloat<T>* NodeFloat<T>::clone_impl() const { return new NodeFloat<T>(*this); }
 
-    NodeFloat* NodeFloat::rnd_clone_impl() const { return new NodeFloat(); }  
+    template <class T>
+    NodeFloat<T>* NodeFloat<T>::rnd_clone_impl() const { return new NodeFloat<T>(*this); }  
 }

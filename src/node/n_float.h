@@ -8,11 +8,12 @@ license: GNU/GPL v3
 #include "node.h"
 
 namespace FT{
+    template <class T>
 	class NodeFloat : public Node
     {
     	public:
     	
-    		NodeFloat(bool isCategorical = false);
+    		NodeFloat();
     		
             /// Evaluates the node and updates the stack states. 
             void evaluate(const Data& data, Stacks& stack);

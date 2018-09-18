@@ -196,7 +196,7 @@ namespace FT{
     }
 
     /// set the output types of programs
-    void Parameters::set_otypes()
+    void Parameters::set_otypes(bool terminals_set)
     {
         otypes.clear();
         // set output types
@@ -220,10 +220,6 @@ namespace FT{
                         }
                     }
                     
-                    msg("functions:\n",2);;
-                    for (const auto& f : functions)
-                        msg(f->name + " ",2); 
-                    msg("\n", 2);
                     otype = 'b';
                     otypes.push_back('b');
                 }           
@@ -234,7 +230,7 @@ namespace FT{
                 }
                 
                 //erasing categorical nodes if no categorical stack exists  
-                if (!in(ttypes, 'c'))
+                if (terminals_set && !in(ttypes, 'c'))
                 {
                     size_t n = functions.size();
                     for (vector<int>::size_type i =n-1; 
@@ -310,10 +306,10 @@ namespace FT{
             return std::unique_ptr<Node>(new NodeRelu());
 
         else if (str.compare("float")==0)
-                return std::unique_ptr<Node>(new NodeFloat());
+                return std::unique_ptr<Node>(new NodeFloat<bool>());
         
         else if (str.compare("float_c")==0)
-                return std::unique_ptr<Node>(new NodeFloat(true));
+                return std::unique_ptr<Node>(new NodeFloat<int>());
 
         // logical operators
         else if (str.compare("and") == 0)
@@ -395,15 +391,36 @@ namespace FT{
             if(dtypes.size() == 0)
             {
                 if (feature_names.size() == 0)
-                    return std::unique_ptr<Node>(new NodeVariable(loc));
+                    return std::unique_ptr<Node>(new NodeVariable<double>(loc));
                 else
-                    return std::unique_ptr<Node>(new NodeVariable(loc,'f', feature_names.at(loc)));
+                    return std::unique_ptr<Node>(new NodeVariable<double>(loc,'f', feature_names.at(loc)));
             }
             else if (feature_names.size() == 0)
-                return std::unique_ptr<Node>(new NodeVariable(loc, dtypes[loc]));
+            {
+                switch(dtypes[loc])
+                {
+                    case 'b': return std::unique_ptr<Node>(new NodeVariable<bool>(loc,
+                                                                                  dtypes[loc]));
+                    case 'c': return std::unique_ptr<Node>(new NodeVariable<int>(loc,
+                                                                                  dtypes[loc]));
+                    case 'f': return std::unique_ptr<Node>(new NodeVariable<double>(loc,
+                                                                                  dtypes[loc]));
+                }
+            }
             else
-                return std::unique_ptr<Node>(new NodeVariable(loc, dtypes[loc], 
-                                                              feature_names.at(loc)));
+            {
+                switch(dtypes[loc])
+                {
+                    case 'b': return std::unique_ptr<Node>(new NodeVariable<bool>(loc, 
+                                                           dtypes[loc],feature_names.at(loc)));
+                    
+                    case 'c': return std::unique_ptr<Node>(new NodeVariable<int>(loc, 
+                                                           dtypes[loc],feature_names.at(loc)));
+                    
+                    case 'f': return std::unique_ptr<Node>(new NodeVariable<double>(loc, 
+                                                           dtypes[loc],feature_names.at(loc)));
+                }
+            }
         }
             
         else if (str.compare("kb")==0)
@@ -452,6 +469,7 @@ namespace FT{
          *		modifies functions 
          *
          */
+
         fs += ',';          // add delimiter to end 
         string delim = ",";
         size_t pos = 0;
@@ -461,8 +479,7 @@ namespace FT{
         {
             token = fs.substr(0, pos);
             functions.push_back(createNode(token));
-            if(!token.compare("float") || !token.compare("split"))
-                functions.push_back(createNode(token, 0, true));
+
             fs.erase(0, pos + delim.length());
         } 
         if (verbosity > 2){
@@ -504,7 +521,8 @@ namespace FT{
         /* cout << "\n"; */
         // reset output types
         set_ttypes();
-        set_otypes();
+        
+      (true);
     }
 
     void Parameters::set_objectives(string obj)
