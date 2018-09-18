@@ -3,6 +3,7 @@
 TEST(Population, PopulationTests)
 {
 	Feat feat(100, 100, "LinearRidgeRegression", false, 1);
+    feat.set_n_threads(1);
 	feat.set_random_state(666);
 	
     MatrixXd X(4,2); 
@@ -29,7 +30,10 @@ TEST(Population, PopulationTests)
     feat.params.init();       
   
     feat.set_dtypes(find_dtypes(X));
-            
+    cout << "dtypes: ";
+    for (const auto& d : feat.params.dtypes)
+        cout << d << ",";
+    cout << "\n";
     feat.p_ml = make_shared<ML>(feat.params); // intialize ML
     feat.p_pop = make_shared<Population>(feat.params.pop_size);  
     //std::cout << "feat.params.scorer: " << feat.params.scorer << "\n";
