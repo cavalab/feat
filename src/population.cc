@@ -87,7 +87,6 @@ namespace FT{
         /*!
          * recursively builds a program with complete arguments.
          */
-        
         if (max_d == 0 || r.rnd_flt() < terminals.size()/(terminals.size()+functions.size())) 
         {
             // append terminal 
