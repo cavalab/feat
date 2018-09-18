@@ -8,6 +8,7 @@ license: GNU/GPL v3
 #include "node.h"
 
 namespace FT{
+    template <class T>
 	class NodeVariable : public Node
 	{
 		public:

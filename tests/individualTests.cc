@@ -107,11 +107,11 @@ TEST(Individual, Subtree)
 {
 	Individual a;
 	
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(1)));
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(2)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(1)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(2)));
 	a.program.push_back(std::unique_ptr<Node>(new NodeAdd()));
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(3)));
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(4)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(3)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(4)));
 	a.program.push_back(std::unique_ptr<Node>(new NodeSubtract()));
 	a.program.push_back(std::unique_ptr<Node>(new NodeMultiply()));
 	
@@ -122,9 +122,9 @@ TEST(Individual, Subtree)
 	
 	a.program.clear();
 	
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(1)));
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(2)));
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(3)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(1)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(2)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(3)));
 	a.program.push_back(std::unique_ptr<Node>(new NodeConstant(true)));
 	a.program.push_back(std::unique_ptr<Node>(new NodeIfThenElse()));
 	a.program.push_back(std::unique_ptr<Node>(new NodeAdd()));
@@ -138,11 +138,11 @@ TEST(Individual, Complexity)
 {
 	Individual a;
 	
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(1)));
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(2)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(1)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(2)));
 	a.program.push_back(std::unique_ptr<Node>(new NodeAdd()));
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(3)));
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(4)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(3)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(4)));
 	a.program.push_back(std::unique_ptr<Node>(new NodeSubtract()));
 	a.program.push_back(std::unique_ptr<Node>(new NodeMultiply()));
 	
@@ -151,8 +151,8 @@ TEST(Individual, Complexity)
 	a.program.clear();
 	a.c = 0;
 	
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(1)));
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(2)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(1)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(2)));
 	a.program.push_back(std::unique_ptr<Node>(new NodeMultiply()));
 	
 	ASSERT_EQ(a.complexity(), 6);
@@ -160,7 +160,7 @@ TEST(Individual, Complexity)
 	a.program.clear();
 	a.c = 0;
 	
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable(1)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(1)));
 	a.program.push_back(std::unique_ptr<Node>(new NodeSin()));
 	
 	ASSERT_EQ(a.complexity(), 6);
