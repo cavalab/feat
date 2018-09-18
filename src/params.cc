@@ -522,7 +522,7 @@ namespace FT{
         // reset output types
         set_ttypes();
         
-      (true);
+        set_otypes(true);
     }
 
     void Parameters::set_objectives(string obj)

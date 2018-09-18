@@ -87,6 +87,9 @@ namespace FT{
         /*!
          * recursively builds a program with complete arguments.
          */
+        /* cout << "program: "; */
+        /* for (const auto& p : program) cout << p->name << ","; */
+        /* cout << "\n"; */
         if (max_d == 0 || r.rnd_flt() < terminals.size()/(terminals.size()+functions.size())) 
         {
             // append terminal 
