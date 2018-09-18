@@ -177,6 +177,9 @@ class Feat(BaseEstimator):
     def get_complexity(self):
         return self._pyfeat.get_complexity()
 
+    def get_n_nodes(self):
+        return self._pyfeat.get_n_nodes()
+
 def main():
     """Main function that is called when Fewtwo is run from the command line"""
     parser = argparse.ArgumentParser(description="A feature engineering wrapper for ML.",

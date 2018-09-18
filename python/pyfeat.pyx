@@ -49,6 +49,7 @@ cdef extern from "feat.h" namespace "FT":
         int get_n_params()
         int get_complexity()
         int get_dim()
+        int get_n_nodes()
 
 cdef class PyFeat:
     cdef Feat ft  # hold a c++ instance which we're wrapping
@@ -192,3 +193,5 @@ cdef class PyFeat:
     def get_dim(self):
         return self.ft.get_dim()
 
+    def get_n_nodes(self):
+        return self.ft.get_n_nodes()
