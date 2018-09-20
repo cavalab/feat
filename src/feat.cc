@@ -943,7 +943,7 @@ void Feat::print_stats(std::ofstream& log, double fraction)
 void Feat::print_population()
 {
     std::ofstream out;                      ///< log file stream
-    char sep = "\t";
+    string sep = "\t";
     if (!logfile.empty())
         out.open(logfile + ".pop" + std::to_string(params.current_gen));
     else
@@ -951,11 +951,13 @@ void Feat::print_population()
 
     for (const auto& o : params.objectives)
         out << o << sep;
-    out << "\n";
+    out << "rank\n";
+    /* out << "\n"; */
     for (const auto& i : p_pop->individuals)
     {
         for (const auto& o : i.obj)
             out << o << sep;
+        out << i.rank ;
         out << "\n";
     }
     out.close();
