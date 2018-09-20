@@ -42,7 +42,7 @@ namespace FT{
         vector<char> dtypes;                        ///< the data types of each column of the 
                                                       // program output
         unsigned id;                                ///< tracking id
-        vector<unsigned> parent_id;                 ///< ids of parents
+        vector<int> parent_id;                      ///< ids of parents
        
         Individual();
 
@@ -109,9 +109,13 @@ namespace FT{
         void clone(Individual& cpy, bool sameid=true);
         
         void set_id(unsigned i);
-        
+
+        /// set parent ids using parents  
         void set_parents(const vector<Individual>& parents);
         
+        /// set parent ids using id values 
+        void set_parents(const vector<int>& parents){ parent_id = parents; }
+
         /// get probabilities of variation
         vector<double> get_p() const;
         

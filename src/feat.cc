@@ -29,7 +29,7 @@ Feat::Feat(int pop_size, int gens, string ml,
        double split, double fb, string scorer, string feature_names,
        bool backprop,int iters, double lr, int bs, int n_threads,
        bool hillclimb, string logfile, int max_time, bool use_batch, bool semantic_xo,
-       bool print_pop):
+       int print_pop):
           // construct subclasses
           params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
                  functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, 
@@ -581,7 +581,7 @@ void Feat::run_generation(unsigned int g,
     else if(params.verbosity == 1)
         printProgress(fraction);
     
-    if (print_pop)
+    if (print_pop > 1 || print_pop > 0 && g == params.gens-1)
         print_population();
 
     if (params.backprop)
@@ -949,15 +949,26 @@ void Feat::print_population()
     else
         out.open("pop" + std::to_string(params.current_gen));
 
+    out << "id" << sep << "parent_id" << sep; 
     for (const auto& o : params.objectives)
         out << o << sep;
-    out << "rank\n";
+    out << "rank" << sep << "eqn";
+    out << "\n"; 
     /* out << "\n"; */
-    for (const auto& i : p_pop->individuals)
+    for (auto& i : p_pop->individuals)
     {
+        out << i.id << sep; 
+        for (unsigned j = 0; j<i.parent_id.size(); ++j) 
+        {
+            if (j > 0) 
+                out << ",";
+            out << i.parent_id.at(j) ;
+        }
+        out << sep ;
         for (const auto& o : i.obj)
             out << o << sep;
-        out << i.rank ;
+        out << i.rank << sep;
+        out << i.get_eqn() ;
         out << "\n";
     }
     out.close();

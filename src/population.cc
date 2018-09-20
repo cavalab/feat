@@ -17,7 +17,10 @@ namespace FT{
         locs.resize(2*p); 
         std::iota(locs.begin(),locs.end(),0);
         for (unsigned i = 0; i < individuals.size(); ++i)
+        {
             individuals[i].set_id(locs[i]);
+            individuals[i].set_parents(vector<int>(1,-1));
+       }
     }
     
     Population::~Population(){}
@@ -224,7 +227,7 @@ namespace FT{
          */
         individuals[0] = starting_model;
         individuals[0].loc = 0;
-        
+
         #pragma omp parallel for
         for (unsigned i = 1; i< individuals.size(); ++i)
         {           

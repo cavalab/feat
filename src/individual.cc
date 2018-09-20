@@ -7,7 +7,7 @@ license: GNU/GPL v3
 
 namespace FT{    
        
-    Individual::Individual(){c = 0; dim = 0; eqn="";}
+    Individual::Individual(){c = 0; dim = 0; eqn=""; parent_id.clear(); parent_id.push_back(-1);}
 
     /// set rank
     void Individual::set_rank(unsigned r){rank=r;}
@@ -48,7 +48,8 @@ namespace FT{
         for (const auto& p : parents)
             parent_id.push_back(p.id);
     }
-    
+     
+       
     /// get probabilities of variation
     vector<double> Individual::get_p() const { return p; }     
     
