@@ -10,7 +10,7 @@ sudo cmake --version
 echo "installing eigen..."
 #wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"
 wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.bz2"
-tar xvjf 3.3.4.tar.gz 
+tar xvjf 3.3.4.tar.bz2 
 mkdir eigen-3.3.4 
 mv eigen-eigen*/* eigen-3.3.4
 
