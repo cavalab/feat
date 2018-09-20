@@ -29,46 +29,30 @@ namespace FT{
         threshold = 0;
 	}
 
-    template <>
-    void NodeSplit<double>::evaluate(const Data& data, Stacks& stack)
+    template <class T>
+    void NodeSplit<T>::evaluate(const Data& data, Stacks& stack)
     {
         ArrayXd x1;
                 
-        x1 = stack.pop<double>();
+        x1 = stack.pop<T>().template cast<double>();
             
         if (!data.validation && !data.y.size()==0 && train)
             set_threshold(x1,data.y, data.classification);
-        /* else */
-        /*     cout << "skipping threshold setting\n"; */
-
-        stack.push<bool>(x1 < threshold);
-    }
-    
-    template <>
-    void NodeSplit<int>::evaluate(const Data& data, Stacks& stack)
-    {
-        ArrayXd x1;
-                
-        x1 = stack.pop<int>().cast<double>();
             
-        if (!data.validation && !data.y.size()==0 && train)
-            set_threshold(x1,data.y, data.classification);
-        /* else */
-        /*     cout << "skipping threshold setting\n"; */
-        stack.push<bool>(x1 == threshold);
+        if(arity['f'])
+            stack.push<bool>(x1 < threshold);
+        else
+            stack.push<bool>(x1 == threshold);
     }
 
     /// Evaluates the node symbolically
-    template <>
-    void NodeSplit<double>::eval_eqn(Stacks& stack)
+    template <class T>
+    void NodeSplit<T>::eval_eqn(Stacks& stack)
     {
-        stack.push<bool>("(" + stack.popStr<double>() + "<" + std::to_string(threshold) + ")");
-    }
-    
-    template <>
-    void NodeSplit<int>::eval_eqn(Stacks& stack)
-    {
-        stack.push<bool>("(" + stack.popStr<int>() + "==" + std::to_string(threshold) + ")");
+        if(arity['f'])
+            stack.push<bool>("(" + stack.popStr<T>() + "<" + std::to_string(threshold) + ")");
+        else
+            stack.push<bool>("(" + stack.popStr<T>() + "==" + std::to_string(threshold) + ")");
     }
     
     template <class T>
