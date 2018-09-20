@@ -307,10 +307,10 @@ namespace FT{
             return std::unique_ptr<Node>(new NodeRelu());
 
         else if (str.compare("b2f")==0)
-            return std::unique_ptr<Node>(new NodeFloat(false));
+            return std::unique_ptr<Node>(new NodeFloat<bool>());
         
         else if (str.compare("c2f")==0)
-            return std::unique_ptr<Node>(new NodeFloat(true));
+            return std::unique_ptr<Node>(new NodeFloat<int>());
         
         // logical operators
         else if (str.compare("and") == 0)
