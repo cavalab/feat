@@ -49,7 +49,7 @@ namespace FT {
         /* cout << "\n"; */
     }
 
-    void AutoBackProp::run(Individual& ind, Data d,
+    void AutoBackProp::run(Individual& ind, const Data& d,
                             const Parameters& params)
     {
         vector<size_t> roots = ind.program.roots();
@@ -152,7 +152,7 @@ namespace FT {
     }
 
     // forward pass
-    vector<Trace> AutoBackProp::forward_prop(Individual& ind, Data d,
+    vector<Trace> AutoBackProp::forward_prop(Individual& ind, const Data& d,
                                MatrixXd& Phi, const Parameters& params) 
     {
         /* cout << "Forward pass\n"; */
@@ -198,7 +198,7 @@ namespace FT {
     // Compute gradients and update weights 
     void AutoBackProp::backprop(Trace& stack, NodeVector& program, int start, int end, 
                                 double Beta, shared_ptr<CLabels>& yhat, 
-                                Data d,
+                                const Data& d,
                                 vector<float> sw)    
     {
         /* cout << "Backward pass \n"; */

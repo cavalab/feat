@@ -136,7 +136,7 @@ namespace FT{
         void set_ttypes();
 
         /// set the output types of programs
-        void set_otypes();
+        void set_otypes(bool terminals_set=false);
         
         /// sets the number of classes based on target vector y.
         void set_classes(VectorXd& y);    

@@ -69,7 +69,12 @@ namespace FT{
             {
                 vector<double> w(ind.Phi.rows(), 0);     // set weights to zero
                 ind.set_p(w,params.feedback);
-                ind.fitness = MAX_DBL;
+                
+                if (validation) 
+                    ind.fitness_v = MAX_DBL; 
+                else 
+                    ind.fitness = MAX_DBL;
+
                 F.col(ind.loc) = MAX_DBL*VectorXd::Ones(d.y.size());
             }
             else
@@ -78,7 +83,7 @@ namespace FT{
                 ind.set_p(ind.ml->get_weights(),params.feedback);
                 assign_fit(ind,F,yhat,d.y,params,validation);
 
-                if (params.hillclimb)
+                if (params.hillclimb && !validation)
                 {
                     HillClimb hc(params.scorer, params.hc.iters, params.hc.step);
                     bool updated = false;
