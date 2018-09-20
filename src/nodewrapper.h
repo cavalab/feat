@@ -9,43 +9,45 @@ license: GNU/GPL v3
 
 #include "node/node.h"
 
-//boolean nodes
-#include "node/bool/n_and.h"
-#include "node/bool/n_equal.h"
-#include "node/bool/n_geq.h"
-#include "node/bool/n_greaterthan.h"
-#include "node/bool/n_leq.h"
-#include "node/bool/n_lessthan.h"
-#include "node/bool/n_not.h"
-#include "node/bool/n_or.h"
-#include "node/bool/n_split.h"
-#include "node/bool/n_xor.h"
+//arithmatic nodes
+#include "node/arithmatic/n_2dgaussian.h"
+#include "node/arithmatic/n_add.h"
+#include "node/arithmatic/n_cos.h"
+#include "node/arithmatic/n_cube.h"
+#include "node/arithmatic/n_divide.h"
+#include "node/arithmatic/n_exponent.h"
+#include "node/arithmatic/n_exponential.h"
+#include "node/arithmatic/n_float.h"
+#include "node/arithmatic/n_gaussian.h"
+#include "node/arithmatic/n_log.h"
+#include "node/arithmatic/n_logit.h"
+#include "node/arithmatic/n_multiply.h"
+#include "node/arithmatic/n_sign.h"
+#include "node/arithmatic/n_sin.h"
+#include "node/arithmatic/n_sqrt.h"
+#include "node/arithmatic/n_square.h"
+#include "node/arithmatic/n_step.h"
+#include "node/arithmatic/n_subtract.h"
+#include "node/arithmatic/n_tanh.h"
 
 //control nodes
 #include "node/control/n_if.h"
 #include "node/control/n_ifthenelse.h"
 
-//floating nodes
-#include "node/float/n_2dgaussian.h"
-#include "node/float/n_add.h"
-#include "node/float/n_cos.h"
-#include "node/float/n_cube.h"
-#include "node/float/n_divide.h"
-#include "node/float/n_exponent.h"
-#include "node/float/n_exponential.h"
-#include "node/float/n_float.h"
-#include "node/float/n_gaussian.h"
-#include "node/float/n_log.h"
-#include "node/float/n_logit.h"
-#include "node/float/n_multiply.h"
-#include "node/float/n_relu.h"
-#include "node/float/n_sign.h"
-#include "node/float/n_sin.h"
-#include "node/float/n_sqrt.h"
-#include "node/float/n_square.h"
-#include "node/float/n_step.h"
-#include "node/float/n_subtract.h"
-#include "node/float/n_tanh.h"
+//learn
+#include "node/learn/n_relu.h"
+#include "node/learn/n_split.h"
+
+//logic nodes
+#include "node/logic/n_and.h"
+#include "node/logic/n_equal.h"
+#include "node/logic/n_geq.h"
+#include "node/logic/n_greaterthan.h"
+#include "node/logic/n_leq.h"
+#include "node/logic/n_lessthan.h"
+#include "node/logic/n_not.h"
+#include "node/logic/n_or.h"
+#include "node/logic/n_xor.h"
 
 //longitudinal nodes
 #include "node/longitudinal/n_count.h"
@@ -64,6 +66,5 @@ license: GNU/GPL v3
 //terminal nodes
 #include "node/terminals/n_constant.h"
 #include "node/terminals/n_variable.h"
-
 
 #endif
