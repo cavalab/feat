@@ -9,7 +9,7 @@ namespace FT{
     template <>
     NodeFloat<bool>::NodeFloat()
     {
-        name = "f";
+        name = "b2f";
         otype = 'f';
         arity['b'] = 1;
         complexity = 1;
@@ -18,7 +18,7 @@ namespace FT{
     template <>
     NodeFloat<int>::NodeFloat()
     {
-        name = "f_c";
+        name = "c2f";
         otype = 'f';
         arity['c'] = 1;
         complexity = 1;

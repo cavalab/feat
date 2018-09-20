@@ -80,7 +80,7 @@ TEST(Feat, predict)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
     
-    /* feat.set_n_threads(1); */
+    feat.set_n_threads(1);
     /* cout << "line 143: predict\n"; */
     feat.fit(X, y);
     /* cout << "line 145: done with fit\n"; */
