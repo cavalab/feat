@@ -92,6 +92,7 @@ namespace FT{
         /* std::cout << "]\n"; */
         /* std::cout << "otype: " << otype << "\n"; */
         /* std::cout << "max_d: " << max_d << "\n"; */
+
         if (max_d == 0 || r.rnd_flt() < terminals.size()/(terminals.size()+functions.size())) 
         {
             // append terminal 
