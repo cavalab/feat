@@ -127,12 +127,12 @@ namespace FT{
        
         dtypes = find_dtypes(X);
 
-        cout << "dtypes: " ; 
-        for (unsigned i = 0; i < dtypes.size(); ++i) 
-        {
-            cout << names.at(i) << " : " << dtypes.at(i);
-            cout << "\n";
-        }
+//        cout << "dtypes: " ; 
+//        for (unsigned i = 0; i < dtypes.size(); ++i) 
+//        {
+//            cout << names.at(i) << " : " << dtypes.at(i);
+//            cout << "\n";
+//        }
 
 
 /*         // get feature types (binary or continuous/categorical) */
