@@ -40,7 +40,7 @@ namespace FT{
         vector<Node*> get_data(int start=0,int end=0);
 
         /// returns indices of root nodes 
-        vector<size_t> roots();
+        vector<size_t> roots() const;
 
         size_t subtree(size_t i, char otype='0') const;
         
