@@ -710,10 +710,10 @@ MatrixXd Feat::transform(MatrixXd& X,
         if (best_ind.program.size()==0)
             HANDLE_ERROR_THROW("You need to train a model using fit() before making predictions.");
         
-        return best_ind.out(d, params);
+        return best_ind.out(d, params, true);
     }
 
-    return ind->out(d, params);
+    return ind->out(d, params, true);
 }
 
 MatrixXd Feat::transform(double * X, int rows_x, int cols_x)
