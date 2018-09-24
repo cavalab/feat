@@ -37,7 +37,8 @@ Feat::Feat(int pop_size, int gens, string ml,
                  use_batch, semantic_xo), 
           p_sel( make_shared<Selection>(sel) ),
           p_surv( make_shared<Selection>(surv, true) ),
-          p_variation( make_shared<Variation>(cross_rate) )                      
+          p_variation( make_shared<Variation>(cross_rate) ),
+          print_pop(print_pop)
 {
     r.set_seed(random_state);
     str_dim = "";
