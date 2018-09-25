@@ -90,6 +90,7 @@ namespace FT{
         /*!
          * recursively builds a program with complete arguments.
          */
+        // debugging output
         /* std::cout << "current program: ["; */
         /* for (const auto& p : program ) std::cout << p->name << " "; */
         /* std::cout << "]\n"; */
@@ -112,9 +113,9 @@ namespace FT{
                     ti.push_back(i);
                     tw.push_back(term_weights[i]);                    
                 }
+                cout << terminals[i]->name << ": " << terminals[i]->otype << "\n";
                     
             }
-
             /* cout << "valid terminals: "; */
             /* for (const auto& i : ti) cout << terminals.at(i)->name << ","; cout << "\n"; */
             
@@ -125,13 +126,20 @@ namespace FT{
                 program.push_back(t->rnd_clone());
             }
             else
-                HANDLE_ERROR_THROW("Error: make_tree couldn't find properly typed terminals");
+            {
+                string ttypes = "";
+                for (const auto& t : terminals)
+                    ttypes += t->name + ": " + t->otype + "\n";
+                HANDLE_ERROR_THROW("Error: make_tree couldn't find properly typed terminals\n"
+                                   + ttypes);
+            }
         }
         else
         {
             // let fi be indices of functions whose output type matches otype and, if max_d==1,
             // with no boolean inputs (assuming all input data is floating point) 
             vector<size_t> fi;
+            bool fterms = in(term_types, 'f');   // are there floating terminals?
             bool bterms = in(term_types, 'b');   // are there boolean terminals?
             bool cterms = in(term_types, 'c');   // are there categorical terminals?
             bool zterms = in(term_types, 'z');   // are there boolean terminals?
@@ -139,6 +147,7 @@ namespace FT{
             /*             << "\n"; */
             for (size_t i = 0; i<functions.size(); ++i)
                 if (functions[i]->otype==otype &&
+                    (max_d>1 || functions[i]->arity['f']==0 || fterms) &&
                     (max_d>1 || functions[i]->arity['b']==0 || bterms) &&
                     (max_d>1 || functions[i]->arity['c']==0 || cterms) &&
                     (max_d>1 || functions[i]->arity['z']==0 || zterms))
