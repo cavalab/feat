@@ -113,7 +113,7 @@ namespace FT{
                     ti.push_back(i);
                     tw.push_back(term_weights[i]);                    
                 }
-                cout << terminals[i]->name << ": " << terminals[i]->otype << "\n";
+                /* cout << terminals[i]->name << ": " << terminals[i]->otype << "\n"; */
                     
             }
             /* cout << "valid terminals: "; */
