@@ -28,7 +28,7 @@ namespace FT{
         catch (const std::out_of_range& e) 
         {
             cout << "out of range error on ";
-            cout << "stack.z.push(data.Z.at(" << zName << ")\n";
+            cout << "stack.z.push(data.Z.at(" << zName << "))\n";
             cout << "data.Z size: " << data.Z.size() << "\n";
             cout << "data.Z keys:\n";
             for (const auto& keys : data.Z)
