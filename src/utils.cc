@@ -253,36 +253,61 @@ namespace FT{
      */
     void load_partial_longitudinal(const std::string & path,
                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
-                           char sep, vector<long> idx)
+                           char sep, const vector<long>& idx)
     {
         /* loads data from the longitudinal file, with idx providing the id numbers of each row in
          * the main data (X and y).
          * I.e., idx[k] = the id of samples in Z associated with sample k in X and y
          */
-        cout << "in load_partial_longitudinal\n";
-        cout << idx.size() << " indices\n";
-
+        /* cout << "in load_partial_longitudinal\n"; */
+        /* cout << idx.size() << " indices\n"; */
+        /* for (unsigned i = 0; i<idx.size(); ++i) */
+        /*     cout << i << "," << idx[i] << "\n"; */
         std::unordered_set<long> idSet; //(idx.begin(), idx.end());
-        idSet.insert(idx.begin(), idx.end());
+        /* idSet.insert(idx.begin(), idx.end()); */
         // write out info about unordered_set
-        cout << "idSet size: " << idSet.size() << "\n";
-        cout << "max_size = " << idSet.max_size() << "\n"; 
-        cout << "max_bucket_count = " << idSet.max_bucket_count() << "\n";
-        cout << "max_load_factor = " << idSet.max_load_factor() << "\n";
-        cout << "idSet: ";
-        for (auto s : idSet)
-            cout << s << ",";
-        cout << "\n";
+        
+        /* cout << "max_size = " << idSet.max_size() << "\n"; */ 
+        /* cout << "max_bucket_count = " << idSet.max_bucket_count() << "\n"; */
+        /* cout << "max_load_factor = " << idSet.max_load_factor() << "\n"; */
+        /* cout << "idSet: "; */
+        /* for (auto s : idSet) */
+        /*     cout << s << ","; */
+        /* cout << "\n"; */
         std::map<int, int> idLoc;
         std::map<int, int> locID;
         unsigned i = 0;
         for(const auto& id : idx){
-            /* auto tmp = idSet.insert(id); */
-            /* if (!tmp.second || *tmp.first != id) */
-            /*     cout << "insert failed on i = " << i << ", id = " << id << "\n"; */
+            auto tmp = idSet.insert(id);
+            if (!tmp.second || *tmp.first != id){
+                cout << "insert failed on i = " << i << ", id = " << id << ".\n";
+                if(idSet.find(id) != idSet.end())
+                    cout << "failed because " << id << " is already in idSet\n";
+                else
+                {
+                    cout << "retrying..\n";
+                    int blrg=0;
+                    while (blrg<100 && (!tmp.second || *tmp.first != id) )
+                    {
+                        auto tmp = idSet.insert(id);
+                        blrg++;
+                    }
+                    if (blrg == 100)
+                        HANDLE_ERROR_THROW("insert failed on i = " + std::to_string(i) + 
+                                           " id = " + std::to_string(id));
+                }
+            } 
+            /* else */
+            /*     cout << id << " = " << *tmp.first << "\n"; */
             idLoc[id] = i;
             locID[i] = id;
             ++i;
+        }
+        /* cout << "idSet size: " << idSet.size() << "\n"; */
+        /* cout << "idx size: " << idx.size() << "\n"; */
+        if (idSet.size() != idx.size())
+        {
+            HANDLE_ERROR_THROW("Sample IDs must be unique"); 
         }
         /* cout << "\n"; */
         // dataMap maps from the variable name (string) to a map containing 
@@ -345,8 +370,8 @@ namespace FT{
                 firstKey = name;
             
             long sNo = std::stol(sampleNo);
-            /* if(idSet.find(sNo) != idSet.end())  // if the sample ID is to be included, store it */
-            if(in(idx,sNo))  // if the sample ID is to be included, store it
+            if(idSet.find(sNo) != idSet.end())  // if the sample ID is to be included, store it
+            /* if(in(idx,sNo))  // if the sample ID is to be included, store it */
             {
                 /* if(idMap.at(sNo) == true)   // WGL: I think this is irrelevant */
                 /* { */
@@ -388,8 +413,9 @@ namespace FT{
             {
                 if (val.second.find(x) == val.second.end())
                 {
-                    cout << x << " not found (patient id = " << locID[x] << ") in " << val.first 
-                         << "\n";
+                    HANDLE_ERROR_THROW(std::to_string(x) + " not found (patient id = " 
+                                       + std::to_string(locID[x]) + ") in " + 
+                                       val.first);
                     pass = false;
                 }
             }
@@ -397,18 +423,18 @@ namespace FT{
                 exit(0);
         }
         int numVars = dataMap.size();
-        cout << "numVars= " << numVars << "\n";
+        /* cout << "numVars= " << numVars << "\n"; */
         
         for ( const auto &val: dataMap )
         {
-            cout << "storing " << val.first << "\n";
+            /* cout << "storing " << val.first << "\n"; */
             int numSamples = val.second.size();
-            cout << "numSamples= " << numSamples << "\n";
-            cout << "dataMap[val.first].size(): " << dataMap[val.first].size() << "\n"; 
-            cout << "x: ";
+            /* cout << "numSamples= " << numSamples << "\n"; */
+            /* cout << "dataMap[val.first].size(): " << dataMap[val.first].size() << "\n"; */ 
+            /* cout << "x: "; */
             for(int x = 0; x < numSamples; ++x)
             {
-                cout << x << ",";
+                /* cout << x << ","; */
                 ArrayXd arr1 = Map<ArrayXd>(dataMap[val.first].at(x).first.data(), 
                                             dataMap[val.first].at(x).first.size());
                 ArrayXd arr2 = Map<ArrayXd>(dataMap[val.first].at(x).second.data(), 
@@ -416,29 +442,30 @@ namespace FT{
                 Z[val.first].first.push_back(arr1);
                 Z[val.first].second.push_back(arr2);
             }
-            cout << "\n";
+            /* cout << "\n"; */
         }
-        cout << "Z loaded. contents:\n";
-        for (const auto& z : Z)
-        {
-            cout << "zName: " << z.first << "\n";
-            if (z.second.first.size() != z.second.second.size())
-            {
-                cout << "values and time not the same size\n";
-                cout << "values: " << z.second.first.size() << "\n";
-                cout << "time: " << z.second.second.size() << "\n";
-                exit(0);
-            }
-            for (unsigned int j = 0; j < z.second.first.size(); ++j)
-            {
-                cout << "sample " << j << " = " ;
-                for (unsigned int k = 0; k < z.second.first.at(j).size(); ++k)
-                    cout << z.second.second.at(j)(k) << ":" << z.second.first.at(j)(k) << ",";
-                cout << "\n";
-            }
-            cout << "---\n";
-        }
-        cout << "exiting load_partial_longitudinal\n";
+        /////////////////// debugging 
+        /* cout << "Z loaded. contents:\n"; */
+        /* for (const auto& z : Z) */
+        /* { */
+        /*     cout << "zName: " << z.first << "\n"; */
+        /*     if (z.second.first.size() != z.second.second.size()) */
+        /*     { */
+        /*         cout << "values and time not the same size\n"; */
+        /*         cout << "values: " << z.second.first.size() << "\n"; */
+        /*         cout << "time: " << z.second.second.size() << "\n"; */
+        /*         exit(0); */
+        /*     } */
+        /*     for (unsigned int j = 0; j < z.second.first.size(); ++j) */
+        /*     { */
+        /*         cout << "sample " << j << " = " ; */
+        /*         for (unsigned int k = 0; k < z.second.first.at(j).size(); ++k) */
+        /*             cout << z.second.second.at(j)(k) << ":" << z.second.first.at(j)(k) << ","; */
+        /*         cout << "\n"; */
+        /*     } */
+        /*     cout << "---\n"; */
+        /* } */
+        /* cout << "exiting load_partial_longitudinal\n"; */
     }
     
     void reorder_longitudinal(vector<ArrayXd> &vec1, vector<ArrayXd> &vec2,
