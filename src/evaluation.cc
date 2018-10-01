@@ -58,7 +58,7 @@ namespace FT{
                 params.msg("Running backprop on " + ind.get_eqn(), 3);
                 backprop.run(ind, d, params);
             }         
-           
+
             bool pass = true;
 
             shared_ptr<CLabels> yhat = validation? ind.predict(d,params) : ind.fit(d,params,pass); 
@@ -67,9 +67,14 @@ namespace FT{
 
             if (!pass)
             {
-                vector<double> w(0,ind.Phi.rows());     // set weights to zero
+                vector<double> w(ind.Phi.rows(), 0);     // set weights to zero
                 ind.set_p(w,params.feedback);
-                ind.fitness = MAX_DBL;
+                
+                if (validation) 
+                    ind.fitness_v = MAX_DBL; 
+                else 
+                    ind.fitness = MAX_DBL;
+
                 F.col(ind.loc) = MAX_DBL*VectorXd::Ones(d.y.size());
             }
             else
@@ -78,7 +83,7 @@ namespace FT{
                 ind.set_p(ind.ml->get_weights(),params.feedback);
                 assign_fit(ind,F,yhat,d.y,params,validation);
 
-                if (params.hillclimb)
+                if (params.hillclimb && !validation)
                 {
                     HillClimb hc(params.scorer, params.hc.iters, params.hc.step);
                     bool updated = false;
@@ -91,8 +96,6 @@ namespace FT{
 
                 }
             }
-            
-            //cout<<"Here 3 with i = "<<i<<" and thread as "<< omp_get_thread_num() <<"\n";   
         }
     }
     

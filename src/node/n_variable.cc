@@ -6,40 +6,40 @@ license: GNU/GPL v3
 #include "n_variable.h"
 			
 namespace FT{
-
-    NodeVariable::NodeVariable(const size_t& l, char ntype, std::string n)
+    template <class T>
+    NodeVariable<T>::NodeVariable(const size_t& l, char ntype, std::string n)
     {
         if (n.empty())
 	        name = "x_" + std::to_string(l);
         else
             name = n;
 	    otype = ntype;
-	    arity['f'] = 0;
-	    arity['b'] = 0;
 	    complexity = 1;
 	    loc = l;
     }
 
-    /// Evaluates the node and updates the stack states. 		
-    void NodeVariable::evaluate(const Data& data, Stacks& stack)
+    /// Evaluates the node and updates the stack states. 
+    template <class T>		
+    void NodeVariable<T>::evaluate(const Data& data, Stacks& stack)
     {
-	    if (otype == 'b')
-            stack.b.push(data.X.row(loc).cast<bool>());
-        else
-            stack.f.push(data.X.row(loc));
+        stack.push<T>(data.X.row(loc).template cast<T>());
     }
 
     /// Evaluates the node symbolically
-    void NodeVariable::eval_eqn(Stacks& stack)
+    template <class T>
+    void NodeVariable<T>::eval_eqn(Stacks& stack)
     {
-	    if (otype == 'b')
-            stack.bs.push(name);
-        else
-            stack.fs.push(name);
+        stack.push<T>(name);
     }
 
-    NodeVariable* NodeVariable::clone_impl() const { return new NodeVariable(*this); }
+    template <class T>
+    NodeVariable<T>* NodeVariable<T>::clone_impl() const { return new NodeVariable<T>(*this); }
       
     // rnd_clone is just clone_impl() for variable, since rand vars not supported
-    NodeVariable* NodeVariable::rnd_clone_impl() const { return new NodeVariable(*this); }
+    template <class T>
+    NodeVariable<T>* NodeVariable<T>::rnd_clone_impl() const { return new NodeVariable<T>(*this); }
+    
+    template class NodeVariable<bool>;
+    template class NodeVariable<int>;
+    template class NodeVariable<double>;
 }

@@ -28,15 +28,17 @@ Feat::Feat(int pop_size, int gens, string ml,
        bool erc, string obj,bool shuffle, 
        double split, double fb, string scorer, string feature_names,
        bool backprop,int iters, double lr, int bs, int n_threads,
-       bool hillclimb, string logfile, int max_time, bool use_batch):
+       bool hillclimb, string logfile, int max_time, bool use_batch, bool semantic_xo,
+       int print_pop):
           // construct subclasses
           params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
                  functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, 
                  fb, scorer, feature_names, backprop, iters, lr, bs, hillclimb, max_time, 
-                 use_batch), 
+                 use_batch, semantic_xo), 
           p_sel( make_shared<Selection>(sel) ),
           p_surv( make_shared<Selection>(surv, true) ),
-          p_variation( make_shared<Variation>(cross_rate) )                      
+          p_variation( make_shared<Variation>(cross_rate) ),
+          print_pop(print_pop)
 {
     r.set_seed(random_state);
     str_dim = "";
@@ -237,6 +239,10 @@ int Feat::get_dim(){ return best_ind.get_dim(); }
 ///get dimensionality of best
 int Feat::get_complexity(){ return best_ind.complexity(); } 
 
+
+/// return the number of nodes in the best model
+int Feat::get_n_nodes(){ return best_ind.program.size(); }
+
 ///return population as string
 string Feat::get_eqns(bool front)
 {
@@ -372,7 +378,15 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     // start the clock
     timer.Reset();
     if (params.use_batch)
-        cout << "using batch with batch_size= " << params.bp.batch_size << "\n";
+    {
+        if (params.bp.batch_size >= X.cols()){
+            cout << "turning off batch because X has fewer than " << params.bp.batch_size 
+                 << " samples\n";
+            params.use_batch = false;
+        }
+        else
+            cout << "using batch with batch_size= " << params.bp.batch_size << "\n";
+    }
     std::ofstream log;                      ///< log file stream
     if (!logfile.empty())
         log.open(logfile, std::ofstream::app);
@@ -389,14 +403,16 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     }
     
     params.init();       
-   
+  
+
     if (params.classification)  // setup classification endpoint
     {
        params.set_classes(y);       
        params.set_scorer(scorer);
     } 
 
-    set_dtypes(find_dtypes(X));
+    if (params.dtypes.size()==0)    // set feature types if not set
+        set_dtypes(find_dtypes(X));
    
     N.fit_normalize(X,params.dtypes);                   // normalize data
 
@@ -507,26 +523,8 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     if (params.split < 1.0)
     {
         vector<Individual>& final_pop = use_arch ? arch.archive : p_pop->individuals; 
-        F_v.resize(d.v->X.cols(),int(2*params.pop_size)); 
         
-        /* if(params.use_batch) */
-        /* { */
-        /*     t0 =  timer.Elapsed().count(); */
-        /*     d.t->get_batch(db, params.bp.batch_size); */
-        /*     DataRef dbr;    // reference to minibatch data */
-        /*     dbr.setTrainingData(&db); */
-            
-        /*     if (params.classification) */
-        /*         params.set_sample_weights(dbr.t->y); */ 
-        /*     t0 = timer.Elapsed().count(); */
-        /*     /1* p_eval->val_fitness(final_pop, *dbr.t, F_v, *d.v, params); *1/ */
-        /*     p_eval->fitness(final_pop, *d.v, F_v, params, false, true); */
-        /* } */
-        /* else */
-        /* { */
-        /*     /1* p_eval->val_fitness(final_pop, *d.t, F_v, *d.v, params); *1/ */
-        /*     p_eval->fitness(final_pop, *d.v, F_v, params, false, true); */
-        /* } */
+        F_v.resize(d.v->X.cols(),int(2*params.pop_size)); 
         
         p_eval->fitness(final_pop, *d.v, F_v, params, false, true);
 
@@ -559,7 +557,7 @@ void Feat::run_generation(unsigned int g,
     
     // variation to produce offspring
     params.msg("variation...", 3);
-    p_variation->vary(*p_pop, parents, params);
+    p_variation->vary(*p_pop, parents, params,*d.t);
     params.msg("offspring:\n" + p_pop->print_eqns(true), 3);
 
     // evaluate offspring
@@ -579,12 +577,14 @@ void Feat::run_generation(unsigned int g,
     if (use_arch) 
         arch.update(*p_pop,params);
 
-
     if(params.verbosity>1)
         print_stats(log, fraction);    
     else if(params.verbosity == 1)
         printProgress(fraction);
     
+    if (print_pop > 1 || print_pop > 0 && g == params.gens-1)
+        print_population();
+
     if (params.backprop)
     {
         params.bp.learning_rate = (1-1/(1+double(params.gens)))*params.bp.learning_rate;
@@ -647,9 +647,12 @@ void Feat::initial_model(DataRef &d)
         {
             vector<size_t> choice_idxs(d.t->X.rows()-i);
             std::iota(choice_idxs.begin(),choice_idxs.end(),0);
-            for (auto c : choice_idxs) cout << c << ","; cout << "\n";
+            /* cout << "choice_idxs: "; */
+            /* for (auto c : choice_idxs) cout << c << ","; cout << "\n"; */
             size_t idx = r.random_choice(choice_idxs);
+            /* cout << "idx: " << idx << "\n"; */
             j = var_idx.at(idx);
+            /* cout << "j: " << j << "\n"; */
             var_idx.erase(var_idx.begin() + idx);
         }
         else 
@@ -708,10 +711,10 @@ MatrixXd Feat::transform(MatrixXd& X,
         if (best_ind.program.size()==0)
             HANDLE_ERROR_THROW("You need to train a model using fit() before making predictions.");
         
-        return best_ind.out(d, params);
+        return best_ind.out(d, params, true);
     }
 
-    return ind->out(d, params);
+    return ind->out(d, params, true);
 }
 
 MatrixXd Feat::transform(double * X, int rows_x, int cols_x)
@@ -866,9 +869,9 @@ void Feat::print_stats(std::ofstream& log, double fraction)
             if (lim_model.size()==60) 
                 lim_model += "...";
             
-            std::cout <<  arch.archive[i].rank << "\t" 
-                      <<  arch.archive[i].complexity() << "\t" 
-                      <<  arch.archive[i].fitness << "\t" 
+            std::cout <<  arch.archive[i].rank          << "\t" 
+                      <<  arch.archive[i].complexity()  << "\t" 
+                      <<  arch.archive[i].fitness       << "\t" 
                       <<  lim_model << "\n";  
         }
     }
@@ -890,8 +893,9 @@ void Feat::print_stats(std::ofstream& log, double fraction)
                 lim_model.push_back(model.at(j));
             if (lim_model.size()==60) 
                 lim_model += "...";
-            std::cout << p_pop->individuals[f[j]].rank << "\t" 
-                      <<  p_pop->individuals[f[j]].complexity() << "\t" << (*p_pop)[f[j]].fitness 
+            std::cout << p_pop->individuals[f[j]].rank              << "\t" 
+                      <<  p_pop->individuals[f[j]].complexity()     << "\t" 
+                      << (*p_pop)[f[j]].fitness                     << "\t"
                       << "\t" << lim_model << "\n";  
         }
     }
@@ -936,4 +940,37 @@ void Feat::print_stats(std::ofstream& log, double fraction)
             << med_num_params      << sep
             << med_dim             << "\n"; 
     } 
+}
+void Feat::print_population()
+{
+    std::ofstream out;                      ///< log file stream
+    string sep = "\t";
+    if (!logfile.empty())
+        out.open(logfile + ".pop" + std::to_string(params.current_gen));
+    else
+        out.open("pop" + std::to_string(params.current_gen));
+
+    out << "id" << sep << "parent_id" << sep; 
+    for (const auto& o : params.objectives)
+        out << o << sep;
+    out << "rank" << sep << "eqn";
+    out << "\n"; 
+    /* out << "\n"; */
+    for (auto& i : p_pop->individuals)
+    {
+        out << i.id << sep; 
+        for (unsigned j = 0; j<i.parent_id.size(); ++j) 
+        {
+            if (j > 0) 
+                out << ",";
+            out << i.parent_id.at(j) ;
+        }
+        out << sep ;
+        for (const auto& o : i.obj)
+            out << o << sep;
+        out << i.rank << sep;
+        out << i.get_eqn() ;
+        out << "\n";
+    }
+    out.close();
 }

@@ -38,10 +38,48 @@ namespace FT{
         return ltrim(rtrim(str, chars), chars);
     }
 
-    /*!
-     * load csv file into matrix. 
-     */
+    /// determines data types of columns of matrix X.
+    vector<char> find_dtypes(MatrixXd &X)
+    {
+	    vector<char> dtypes;
+	    
+	    // get feature types (binary or continuous/categorical)
+        int i, j;
+        bool isBinary;
+        bool isCategorical;
+        std::map<double, bool> uniqueMap;
+        for(i = 0; i < X.rows(); i++)
+        {
+            isBinary = true;
+            isCategorical = true;
+            uniqueMap.clear();
+            
+            for(j = 0; j < X.cols(); j++)
+            {
+                if(X(i, j) != 0 && X(i, j) != 1)
+                    isBinary = false;
+                if(X(i,j) != floor(X(i, j)) && X(i,j) != ceil(X(i,j)))
+                    isCategorical = false;
+                else
+                    uniqueMap[X(i, j)] = true;
+            }
+        
+            if(isBinary)
+                dtypes.push_back('b');
+            else
+            {
+                if(isCategorical && uniqueMap.size() < 10)
+                    dtypes.push_back('c');    
+                else
+                    dtypes.push_back('f');
+            }
+        }
+
+        return dtypes;
+
+	}
     
+    /// load csv file into matrix. 
     void load_csv (const std::string & path, MatrixXd& X, VectorXd& y, vector<string>& names, 
                    vector<char> &dtypes, bool& binary_endpoint, char sep) 
     {
@@ -87,22 +125,48 @@ namespace FT{
         
         assert(X.cols() == y.size() && "different numbers of samples in X and y");
         assert(X.rows() == names.size() && "header missing or incorrect number of feature names");
-        
-        // get feature types (binary or continuous/categorical)
-        int i, j;
-        bool isBinary;
-        for(i = 0; i < X.rows(); i++)
+       
+        dtypes = find_dtypes(X);
+
+        cout << "dtypes: " ; 
+        for (unsigned i = 0; i < dtypes.size(); ++i) 
         {
-            isBinary = true;
-            for(j = 0; j < X.cols(); j++)
-                if(X(i, j) != 0 && X(i, j) != 1)
-                    isBinary = false;
-        
-            if(isBinary)
-                dtypes.push_back('b');
-            else
-                dtypes.push_back('f');
+            cout << names.at(i) << " : " << dtypes.at(i);
+            cout << "\n";
         }
+
+
+/*         // get feature types (binary or continuous/categorical) */
+/*         int i, j; */
+/*         bool isBinary; */
+/*         bool isCategorical; */
+/*         std::map<double, bool> uniqueMap; */
+/*         for(i = 0; i < X.rows(); i++) */
+/*         { */
+/*             isBinary = true; */
+/*             isCategorical = true; */
+/*             uniqueMap.clear(); */
+            
+/*             for(j = 0; j < X.cols(); j++) */
+/*             { */
+/*                 if(X(i, j) != 0 && X(i, j) != 1) */
+/*                     isBinary = false; */
+/*                 if(X(i,j) != floor(X(i, j)) && X(i,j) != ceil(X(i,j))) */
+/*                     isCategorical = false; */
+/*                 else */
+/*                     uniqueMap[X(i, j)] = true; */
+/*             } */
+        
+/*             if(isBinary) */
+/*                 dtypes.push_back('b'); */
+/*             else */
+/*             { */
+/*                 if(isCategorical && uniqueMap.size() < 10) */
+/*                     dtypes.push_back('c'); */    
+/*                 else */
+/*                     dtypes.push_back('f'); */
+/*             } */
+/*         } */
         
         // check if endpoint is binary
         binary_endpoint = (y.array() == 0 || y.array() == 1).all();
@@ -465,8 +529,12 @@ namespace FT{
     {
         return covariance(x, y)/variance(x);
     }
-    
 
+    // Pearson correlation    
+    double pearson_correlation(const ArrayXd& x, const ArrayXd& y)
+    {
+        return pow(covariance(x,y),2) / (variance(x) * variance(y));
+    }
     /// median absolute deviation
     double mad(const ArrayXd& x) 
     {
@@ -521,7 +589,7 @@ namespace FT{
                 X.row(i) = VectorXd::Zero(X.row(i).size());
                 continue;
             }
-            if (dtypes.at(i)!='b')   // skip binary rows
+            if (dtypes.at(i)=='f')   // skip binary and categorical rows
             {
                 X.row(i) = X.row(i).array() - offset.at(i);
                 if (scale.at(i) > NEAR_ZERO)
@@ -555,28 +623,7 @@ namespace FT{
 
     }
     
-    vector<char> find_dtypes(MatrixXd &X)
-    {
-    	int i, j;
-	    bool isBinary;
-	    
-	    vector<char> dtypes;
-	    
-	    for(i = 0; i < X.rows(); i++)
-	    {
-	        isBinary = true;
-	        for(j = 0; j < X.cols(); j++)
-	            if(X(i, j) != 0 && X(i, j) != 1)
-	                isBinary = false;
-	                
-	        if(isBinary)
-	            dtypes.push_back('b');
-	        else
-	            dtypes.push_back('f');
-	    }
-	    
-	    return dtypes;
-	}
+
 	
     void printProgress (double percentage)
     {
@@ -585,6 +632,73 @@ namespace FT{
         int rpad = PBWIDTH - lpad;
         printf ("\rCompleted %3d%% [%.*s%*s]", val, lpad, PBSTR.c_str(), rpad, "");
         fflush (stdout);
+        if(val == 100)
+            cout << "\n";
     }
     
+    /*
+    ///template function to convert objects to string for logging
+    template <typename T>
+    string to_string(const T& value)
+    {
+        std::stringstream ss;
+        ss << value;
+        return ss.str();
+    }*/
+    /// returns the condition number of a matrix.
+    double condition_number(const MatrixXd& X)
+    {
+        /* cout << "X (" << X.rows() << "x" << X.cols() << "): " << X.transpose() << "\n"; */
+        /* MatrixXd Y = X; */
+        /* try */
+        /* { */
+        /* JacobiSVD<MatrixXd> svd(Y); */
+        BDCSVD<MatrixXd> svd(X);
+        /* cout << "JacobiSVD declared\n"; */
+        double cond=MAX_DBL; 
+        /* cout << "running svals\n"; */
+        ArrayXd svals = svd.singularValues();
+        /* cout << "svals: " << svals.transpose() << "\n"; */
+        if (svals.size()>0)
+        {
+            cond= svals(0) / svals(svals.size()-1);
+        }
+        /* cout << "CN: " + std::to_string(cond) + "\n"; */
+        return cond;
+
+        /* } */
+        /* catch (...) */
+        /* { */
+        return MAX_DBL;
+        /* } */
+    }
+
+    /// returns the pearson correlation coefficients of matrix.
+    MatrixXd corrcoef(const MatrixXd& X)
+    { 
+        MatrixXd centered = X.colwise() - X.rowwise().mean();
+
+        /* std::cout << "centered: " << centered.rows() << "x" << centered.cols() << ": " */ 
+        /*           << centered << "\n\n"; */
+        MatrixXd cov = ( centered * centered.adjoint()) / double(X.cols() - 1);
+        /* std::cout << "cov: " << cov.rows() << "x" << cov.cols() << ": " << cov << "\n\n"; */
+        VectorXd tmp = 1/cov.diagonal().array().sqrt();
+        auto d = tmp.asDiagonal();
+        /* std::cout << "1/sqrt(diag(cov)): " << d.rows() << "x" << d.cols() << ": " */ 
+        /*           << d.diagonal() << "\n"; */
+        MatrixXd corrcoef = d * cov * d;
+        /* std::cout << "cov/d: " << corrcoef.rows() << "x" << corrcoef.cols() << ": " */ 
+        /*           << corrcoef << "\n"; */
+        return corrcoef;
+    }
+
+    // returns the mean of the pairwise correlations of a matrix.
+    double mean_square_corrcoef(const MatrixXd& X)
+    {
+        MatrixXd tmp = corrcoef(X).triangularView<StrictlyUpper>();
+        double N = tmp.rows()*(tmp.rows()-1)/2;
+        /* cout << "triangular strictly upper view: " << tmp << "\n"; */
+        return tmp.array().square().sum()/N;
+    }
+ 
 } 

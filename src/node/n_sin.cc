@@ -12,7 +12,6 @@ namespace FT{
 	    name = "sin";
 	    otype = 'f';
 	    arity['f'] = 1;
-	    arity['b'] = 0;
 	    complexity = 3;
 
         if (W0.empty())
@@ -29,22 +28,25 @@ namespace FT{
     void NodeSin::evaluate(const Data& data, Stacks& stack)
     {
 
-        stack.f.push(limited(sin(W[0]*stack.f.pop())));
+        stack.push<double>(limited(sin(W[0]*stack.pop<double>())));
     }
 
     /// Evaluates the node symbolically
     void NodeSin::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("sin(" + stack.fs.pop() + ")");
+        stack.push<double>("sin(" + stack.popStr<double>() + ")");
     }
 
-    ArrayXd NodeSin::getDerivative(Trace& stack, int loc) {
+    ArrayXd NodeSin::getDerivative(Trace& stack, int loc)
+    {
+        ArrayXd& x = stack.get<double>()[stack.size<double>()-1];
+        
         switch (loc) {
             case 1: // d/dw0
-                return stack.f[stack.f.size() - 1] * cos(W[0] * stack.f[stack.f.size()-1]);
+                return x * cos(W[0] * x);
             case 0: // d/dx0
             default:
-                return W[0] * cos(W[0] * stack.f[stack.f.size() - 1]);
+                return W[0] * cos(W[0] * x);
         } 
     }
 

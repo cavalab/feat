@@ -12,8 +12,6 @@ namespace FT{
     {
         name = "variance";
 	    otype = 'f';
-	    arity['f'] = 0;
-	    arity['b'] = 0;
 	    arity['z'] = 1;
 	    complexity = 1;
     }
@@ -31,14 +29,14 @@ namespace FT{
             
         stack.z.pop();
 
-        stack.f.push(tmp);
+        stack.push<double>(tmp);
         
     }
 
     /// Evaluates the node symbolically
     void NodeVar::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("variance(" + stack.zs.pop() + ")");
+        stack.push<double>("variance(" + stack.zs.pop() + ")");
     }
 
     NodeVar* NodeVar::clone_impl() const { return new NodeVar(*this); }

@@ -20,7 +20,7 @@ namespace FT
     
     void Data::set_validation(bool v){validation=v;}
     
-    void Data::get_batch(Data &db, int batch_size)
+    void Data::get_batch(Data &db, int batch_size) const
     {
 
         batch_size =  std::min(batch_size,int(y.size()));
