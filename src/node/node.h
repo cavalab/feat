@@ -38,6 +38,8 @@ namespace FT{
             std::map<char, unsigned int> arity;		///< floating arity of the operator 
             int complexity;         ///< complexity of node
             int visits = 0;
+            
+            Node();
 
             virtual ~Node(){}
            
@@ -61,9 +63,10 @@ namespace FT{
 
             /// check of node type
             virtual bool isNodeDx() {return false;};
+            virtual bool isNodeTrain() {return false;};
 
             /// makes a unique copy of this node
-            std::unique_ptr<Node> clone()const;
+            std::unique_ptr<Node> clone() const;
             
             /// makes a randomized unique copy ofnode
             std::unique_ptr<Node> rnd_clone() const;

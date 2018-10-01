@@ -10,8 +10,6 @@ namespace FT{
     {
         name = "max";
 	    otype = 'f';
-	    arity['f'] = 0;
-	    arity['b'] = 0;
 	    arity['z'] = 1;
 	    complexity = 1;
     }
@@ -27,14 +25,14 @@ namespace FT{
 
         stack.z.pop();
         
-        stack.f.push(tmp);
+        stack.push<double>(tmp);
         
     }
 
     /// Evaluates the node symbolically
     void NodeMax::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("max(" + stack.zs.pop() + ")");
+        stack.push<double>("max(" + stack.zs.pop() + ")");
     }
     
     NodeMax* NodeMax::clone_impl() const { return new NodeMax(*this); }

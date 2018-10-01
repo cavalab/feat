@@ -27,20 +27,22 @@ namespace FT{
     /// Evaluates the node and updates the stack states. 
     void NodeRelu::evaluate(const Data& data, Stacks& stack)
     {
-        ArrayXd x = stack.f.pop();
+        ArrayXd x = stack.pop<double>();
         ArrayXd res = (W[0] * x > 0).select(W[0]*x, ArrayXd::Zero(x.size())+0.01); 
-        stack.f.push(res);
+        stack.push<double>(res);
     }
 
     /// Evaluates the node symbolically
     void NodeRelu::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("relu("+ stack.fs.pop() +")");         	
+        stack.push<double>("relu("+ stack.popStr<double>() +")");         	
     }
 
-    ArrayXd NodeRelu::getDerivative(Trace& stack, int loc) {
+    ArrayXd NodeRelu::getDerivative(Trace& stack, int loc)
+    {
 
-        ArrayXd x = stack.f[stack.f.size()-1];
+        ArrayXd& x = stack.get<double>()[stack.size<double>()-1];
+        
         switch (loc) {
             case 1: // d/dW
                 return (x>0).select(x,ArrayXd::Zero(x.size())+0.01);

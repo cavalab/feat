@@ -12,7 +12,7 @@ namespace FT{
                char ot, int verbosity, string fs, float cr, unsigned int max_depth, 
                unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
                double fb, string sc, string fn, bool bckprp, int iters, double lr,
-               int bs, bool hclimb, int maxt, bool useb):    
+               int bs, bool hclimb, int maxt, bool useb, bool sem_xo):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
@@ -31,13 +31,14 @@ namespace FT{
             hillclimb(hclimb),
             hc(iters, lr),
             max_time(maxt),
-            use_batch(useb)
+            use_batch(useb),
+            semantic_xo(sem_xo)
         {
             set_verbosity(verbosity);
             if (fs.empty())
                 fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
-                      "logit,tanh,gauss,relu,split,float,"
-                      "and,or,not,xor,=,<,<=,>,>=,if,ite";
+                      "logit,tanh,gauss,relu,split,split_c,b2f,"
+                      "c2f,and,or,not,xor,=,<,<=,>,>=,if,ite";
             set_functions(fs);
             set_objectives(obj);
             set_feature_names(fn);
@@ -195,7 +196,7 @@ namespace FT{
     }
 
     /// set the output types of programs
-    void Parameters::set_otypes()
+    void Parameters::set_otypes(bool terminals_set)
     {
         otypes.clear();
         // set output types
@@ -203,39 +204,54 @@ namespace FT{
         { 
             case 'b': otypes.push_back('b'); break;
             case 'f': otypes.push_back('f'); break;
+            //case 'c': otypes.push_back('c'); break;
             default: 
             {
                 // if terminals are all boolean, remove floating point functions
                 if (ttypes.size()==1 && ttypes[0]=='b')
                 {
-                    std::cout << "otypes is size 1 and otypes[0]==b\nerasing functions...\n";
+                    msg("otypes is size 1 and otypes[0]==b\nerasing functions...\n",2);
                     size_t n = functions.size();
                     for (vector<int>::size_type i =n-1; 
                          i != (std::vector<int>::size_type) -1; i--){
                         if (functions.at(i)->arity['f'] >0){
-                            std::cout << "erasing function " << functions.at(i)->name << "\n";
+                            msg("erasing function " + functions.at(i)->name + "\n", 2);
                             functions.erase(functions.begin()+i);
                         }
                     }
-                    std::cout << "functions:\n";
-                    for (const auto& f : functions)
-                        std::cout << f->name << " "; 
-                    std::cout << "\n";
+                    
                     otype = 'b';
                     otypes.push_back('b');
-                }                        
+                }           
                 else
                 {
                     otypes.push_back('b');
                     otypes.push_back('f');
                 }
+                
+                //erasing categorical nodes if no categorical stack exists  
+                if (terminals_set && !in(ttypes, 'c'))
+                {
+                    size_t n = functions.size();
+                    for (vector<int>::size_type i =n-1; 
+                         i != (std::vector<int>::size_type) -1; i--){
+                        if (functions.at(i)->arity['c'] >0){
+                            msg("erasing function " + functions.at(i)->name + "\n", 2);
+                            functions.erase(functions.begin()+i);
+                        }
+                    }
+                }         
                 break;
             }
         }
 
     }
     
-    std::unique_ptr<Node> Parameters::createNode(string str, double d_val, bool b_val, size_t loc, string name)
+    std::unique_ptr<Node> Parameters::createNode(string str,
+                                                 double d_val,
+                                                 bool b_val,
+                                                 size_t loc,
+                                                 string name)
     {
         // algebraic operators
     	if (str.compare("+") == 0) 
@@ -289,9 +305,12 @@ namespace FT{
         else if (str.compare("relu")==0)
             return std::unique_ptr<Node>(new NodeRelu());
 
-        else if (str.compare("float")==0)
-            return std::unique_ptr<Node>(new NodeFloat());
-
+        else if (str.compare("b2f")==0)
+            return std::unique_ptr<Node>(new NodeFloat<bool>());
+        
+        else if (str.compare("c2f")==0)
+            return std::unique_ptr<Node>(new NodeFloat<int>());
+        
         // logical operators
         else if (str.compare("and") == 0)
     		return std::unique_ptr<Node>(new NodeAnd());
@@ -321,7 +340,10 @@ namespace FT{
     		return std::unique_ptr<Node>(new NodeLEQ());
  
         else if (str.compare("split") == 0)
-    		return std::unique_ptr<Node>(new NodeSplit());
+  		    return std::unique_ptr<Node>(new NodeSplit<double>());
+  		
+  		else if (str.compare("split_c") == 0)
+  		    return std::unique_ptr<Node>(new NodeSplit<int>());
     	
      	else if (str.compare("if") == 0)
     		return std::unique_ptr<Node>(new NodeIf());   	    		
@@ -365,19 +387,40 @@ namespace FT{
 
         // variables and constants
         else if (str.compare("x") == 0)
-        {
+        { 
             if(dtypes.size() == 0)
             {
                 if (feature_names.size() == 0)
-                    return std::unique_ptr<Node>(new NodeVariable(loc));
+                    return std::unique_ptr<Node>(new NodeVariable<double>(loc));
                 else
-                    return std::unique_ptr<Node>(new NodeVariable(loc,'f', feature_names.at(loc)));
+                    return std::unique_ptr<Node>(new NodeVariable<double>(loc,'f', feature_names.at(loc)));
             }
             else if (feature_names.size() == 0)
-                return std::unique_ptr<Node>(new NodeVariable(loc, dtypes[loc]));
+            {
+                switch(dtypes[loc])
+                {
+                    case 'b': return std::unique_ptr<Node>(new NodeVariable<bool>(loc,
+                                                                                  dtypes[loc]));
+                    case 'c': return std::unique_ptr<Node>(new NodeVariable<int>(loc,
+                                                                                  dtypes[loc]));
+                    case 'f': return std::unique_ptr<Node>(new NodeVariable<double>(loc,
+                                                                                  dtypes[loc]));
+                }
+            }
             else
-                return std::unique_ptr<Node>(new NodeVariable(loc, dtypes[loc], 
-                                                              feature_names.at(loc)));
+            {
+                switch(dtypes[loc])
+                {
+                    case 'b': return std::unique_ptr<Node>(new NodeVariable<bool>(loc, 
+                                                           dtypes[loc],feature_names.at(loc)));
+                    
+                    case 'c': return std::unique_ptr<Node>(new NodeVariable<int>(loc, 
+                                                           dtypes[loc],feature_names.at(loc)));
+                    
+                    case 'f': return std::unique_ptr<Node>(new NodeVariable<double>(loc, 
+                                                           dtypes[loc],feature_names.at(loc)));
+                }
+            }
         }
             
         else if (str.compare("kb")==0)
@@ -387,10 +430,7 @@ namespace FT{
             return std::unique_ptr<Node>(new NodeConstant(d_val));
             
         else if (str.compare("z")==0)
-        {
-            //std::cout<<"******CALLED with name "<<name<<"\n";
             return std::unique_ptr<Node>(new NodeLongitudinal(name));
-        }
         else
             HANDLE_ERROR_THROW("Error: no node named '" + str + "' exists."); 
         
@@ -429,6 +469,7 @@ namespace FT{
          *		modifies functions 
          *
          */
+
         fs += ',';          // add delimiter to end 
         string delim = ",";
         size_t pos = 0;
@@ -438,6 +479,7 @@ namespace FT{
         {
             token = fs.substr(0, pos);
             functions.push_back(createNode(token));
+
             fs.erase(0, pos + delim.length());
         } 
         if (verbosity > 2){
@@ -479,7 +521,8 @@ namespace FT{
         /* cout << "\n"; */
         // reset output types
         set_ttypes();
-        set_otypes();
+        
+        set_otypes(true);
     }
 
     void Parameters::set_objectives(string obj)
