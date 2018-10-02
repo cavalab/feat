@@ -33,19 +33,6 @@ namespace FT{
      
     std::string trim(std::string str, const std::string& chars = "\t\n\v\f\r ");
 
-    ///   load csv file into matrix. 
-    void load_csv (const std::string & path, MatrixXd& X, VectorXd& y, vector<string>& names, 
-                   vector<char> &dtypes, bool& binary_endpoint, char sep=',');
-    
-    ///  load longitudinal csv file into matrix. 
-    void load_longitudinal(const std::string & path,
-                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
-                           char sep=',');
-    
-    /// load partial longitudinal csv file into matrix according to idx vector
-    void load_partial_longitudinal(const std::string & path,
-                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
-                           char sep, const vector<long>& idx);
 
     /// reordering utility for shuffling longitudinal data.
     void reorder_longitudinal(vector<ArrayXd> &vec1, vector<ArrayXd> &vec2,
@@ -56,13 +43,6 @@ namespace FT{
     bool in(const vector<T> v, const T& i)
     {
         return std::find(v.begin(), v.end(), i) != v.end();
-        /* /1* true if i is in v, else false. *1/ */
-        /* for (const auto& el : v) */
-        /* { */
-        /*     if (i == el) */
-        /*         return true; */
-        /* } */
-        /* return false; */
     }
    
     /// calculate median
@@ -198,9 +178,6 @@ namespace FT{
         vector<T> wv( w.data(), w.data()+w.rows());
         return unique(wv);
     }
-
-    /// outputs a progress bar, filled according to @params percentage.
-    void printProgress (double percentage);
     
     ///template function to convert objects to string for logging
     template <typename T>

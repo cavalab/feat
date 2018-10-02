@@ -39,6 +39,7 @@ license: GNU/GPL v3
 #include "node/n_multiply.h"
 #include "node/n_not.h"
 #include "node/n_or.h"
+#include "node/n_recent.h"
 #include "node/n_relu.h"
 #include "node/n_sign.h"
 #include "node/n_sin.h"
