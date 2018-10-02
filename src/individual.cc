@@ -227,10 +227,9 @@ namespace FT{
 	            n->evaluate(d, stack);
             else
                 HANDLE_ERROR_THROW("out() error: node " + n->name + " in " + program_str() + 
-                                   " is invalid\n");
+                                   " failed arity check\n");
             
         }
-        cout << "\n";
         
         // convert stack_f to Phi
         params.msg("converting stacks to Phi",3);

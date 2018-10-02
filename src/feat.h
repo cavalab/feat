@@ -15,6 +15,7 @@ license: GNU/GPL v3
 #include "init.h"
 #include "rnd.h"
 #include "utils.h"
+#include "io.h"
 #include "params.h"
 #include "population.h"
 #include "selection.h"
