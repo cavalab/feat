@@ -71,4 +71,8 @@ license: GNU/GPL v3
 #include "node/terminals/n_constant.h"
 #include "node/terminals/n_variable.h"
 
+//extra include 
+//remove after n_split implemented for cuda
+#include "./node/n_train.h"
+
 #endif
