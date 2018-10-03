@@ -15,14 +15,11 @@ namespace FT{
         zName = n;
             
 	    otype = 'z';
-	    arity['f'] = 0;
-	    arity['b'] = 0;
-	    arity['z'] = 0;
 	    complexity = 1;
     }
 
     /// Evaluates the node and updates the stack states. 		
-    void NodeLongitudinal::evaluate(Data& data, Stacks& stack)
+    void NodeLongitudinal::evaluate(const Data& data, Stacks& stack)
     {
         stack.z.push(data.Z.at(zName));
     }

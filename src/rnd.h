@@ -6,11 +6,11 @@ license: GNU/GPL v3
 #ifndef RND_H
 #define RND_H
 //external includes
-#include <iostream>
 #include <random>
 #include <limits>
 #include <vector>
-#include <omp.h>
+
+#include "init.h"
 
 using namespace std;
 using std::swap;
@@ -30,10 +30,11 @@ namespace FT {
     {
         public:
             
-            Rnd();
+            static Rnd* initRand();
+            
+            static void destroy();
 
             void set_seed(int seed);
-
             
             int rnd_int( int lowerLimit, int upperLimit );
 
@@ -102,15 +103,19 @@ namespace FT {
             }
             
             float gasdev();
-            
-            ~Rnd();
 
         private:
+
+            Rnd();
+        
+            ~Rnd();
+            
             vector<std::mt19937> rg;
+            
+            static Rnd* instance;
      
     };
-
-    /////////////////////////////////////////////////////////////////////////////////// Definitions
-    static Rnd r;   // random number generator     
+    
+    static Rnd &r = *Rnd::initRand();
 }
 #endif

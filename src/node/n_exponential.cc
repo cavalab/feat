@@ -26,24 +26,27 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeExponential::evaluate(Data& data, Stacks& stack)
+    void NodeExponential::evaluate(const Data& data, Stacks& stack)
     {
-        stack.f.push(limited(exp(this->W[0] * stack.f.pop())));
+        stack.push<double>(limited(exp(this->W[0] * stack.pop<double>())));
     }
 
     /// Evaluates the node symbolically
     void NodeExponential::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("exp(" + stack.fs.pop() + ")");
+        stack.push<double>("exp(" + stack.popStr<double>() + ")");
     }
 
-    ArrayXd NodeExponential::getDerivative(Trace& stack, int loc) {
+    ArrayXd NodeExponential::getDerivative(Trace& stack, int loc)
+    {
+        ArrayXd& x = stack.get<double>()[stack.size<double>()-1];
+        
         switch (loc) {
             case 1: // d/dw0
-                return stack.f[stack.f.size()-1] * limited(exp(this->W[0] * stack.f[stack.f.size()-1]));
+                return x * limited(exp(this->W[0] * x));
             case 0: // d/dx0
             default:
-               return this->W[0] * limited(exp(W[0] * stack.f[stack.f.size()-1]));
+               return this->W[0] * limited(exp(W[0] * x));
         } 
     }
     

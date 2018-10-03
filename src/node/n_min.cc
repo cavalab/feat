@@ -11,14 +11,12 @@ namespace FT{
     {
         name = "min";
 	    otype = 'f';
-	    arity['f'] = 0;
-	    arity['b'] = 0;
 	    arity['z'] = 1;
 	    complexity = 1;
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeMin::evaluate(Data& data, Stacks& stack)
+    void NodeMin::evaluate(const Data& data, Stacks& stack)
     {
         ArrayXd tmp(stack.z.top().first.size());
         
@@ -29,14 +27,14 @@ namespace FT{
             
         stack.z.pop();
 
-        stack.f.push(tmp);
+        stack.push<double>(tmp);
         
     }
 
     /// Evaluates the node symbolically
     void NodeMin::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("min(" + stack.zs.pop() + ")");
+        stack.push<double>("min(" + stack.zs.pop() + ")");
     }
     
     NodeMin* NodeMin::clone_impl() const { return new NodeMin(*this); }

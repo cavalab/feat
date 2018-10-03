@@ -12,7 +12,6 @@ namespace FT{
 	    name = "^2";
 	    otype = 'f';
 	    arity['f'] = 1;
-	    arity['b'] = 0;
 	    complexity = 2;
 
         if (W0.empty())
@@ -26,24 +25,26 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeSquare::evaluate(Data& data, Stacks& stack)
+    void NodeSquare::evaluate(const Data& data, Stacks& stack)
     {
-        stack.f.push(limited(pow(W[0]*stack.f.pop(),2)));
+        stack.push<double>(limited(pow(W[0]*stack.pop<double>(),2)));
     }
 
     /// Evaluates the node symbolically
     void NodeSquare::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("(" + stack.fs.pop() + "^2)");
+        stack.push<double>("(" + stack.popStr<double>() + "^2)");
     }
 
-    ArrayXd NodeSquare::getDerivative(Trace& stack, int loc) {
+    ArrayXd NodeSquare::getDerivative(Trace& stack, int loc)
+    {
+        ArrayXd& x = stack.get<double>()[stack.size<double>()-1];
         switch (loc) {
             case 1: // d/dw0
-                return 2 * pow(stack.f[stack.f.size()-1], 2) * this->W[0];
+                return 2 * pow(x, 2) * this->W[0];
             case 0: // d/dx0
             default:
-               return 2 * pow(this->W[0], 2) * stack.f[stack.f.size()-1];
+               return 2 * pow(this->W[0], 2) * x;
         } 
     }
 

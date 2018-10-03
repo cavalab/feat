@@ -27,7 +27,6 @@ namespace FT{
     {
         public:
         
-            /* VectorXd (* loss_fn)(const VectorXd&, const VectorXd&);  // pointer to loss function */
             double (* score)(const VectorXd&, const shared_ptr<CLabels>&, VectorXd&, 
                              const vector<float>&);    // pointer to scoring function
                              
@@ -41,18 +40,12 @@ namespace FT{
 
             /// fitness of population.
             void fitness(vector<Individual>& individuals,
-                         Data d, 
+                         const Data& d, 
                          MatrixXd& F, 
                          const Parameters& params, 
-                         bool offspring = false);
+                         bool offspring = false,
+                         bool validation = false);
           
-            void val_fitness(vector<Individual>& individuals,
-                             Data dt,
-                             MatrixXd& F, 
-                             Data dv,
-                             const Parameters& params, 
-                             bool offspring = false);
-         
             /// assign fitness to an individual and to F.  
             void assign_fit(Individual& ind, MatrixXd& F, const shared_ptr<CLabels>& yhat, 
                             const VectorXd& y, const Parameters& params,bool val=false);       

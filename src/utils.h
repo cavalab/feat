@@ -81,29 +81,41 @@ namespace FT{
     
     /// calculate kurtosis
     double kurtosis(const ArrayXd& v);
-    
+   
+    /// covariance of x and y
     double covariance(const ArrayXd& x, const ArrayXd& y);
-    
+   
+    /// slope of x/y
     double slope(const ArrayXd& x, const ArrayXd& y);
 
+    /// the normalized covariance of x and y
+    double pearson_correlation(const ArrayXd& x, const ArrayXd& y);
+    
     /// median absolute deviation
     double mad(const ArrayXd& x);
 
     /// return indices that sort a vector
 	template <typename T>
-	vector<size_t> argsort(const vector<T> &v)
-	{
-
+	vector<size_t> argsort(const vector<T> &v, bool ascending=true) 
+    {
 		// initialize original index locations
 		vector<size_t> idx(v.size());
-		iota(idx.begin(), idx.end(), 0);
+        std::iota(idx.begin(), idx.end(), 0);
 
 		// sort indexes based on comparing values in v
-		sort(idx.begin(), idx.end(),
-		   [&v](size_t i1, size_t i2) {return v[i1] < v[i2];});
+        if (ascending)
+        {
+            sort(idx.begin(), idx.end(),
+               [&v](size_t i1, size_t i2) {return v[i1] < v[i2];});
+        }
+        else
+        {
+            sort(idx.begin(), idx.end(),
+               [&v](size_t i1, size_t i2) {return v[i1] > v[i2];});
+        }
 
 		return idx;
-	}
+    }
 
     /// class for timing things.
     class Timer 
@@ -139,10 +151,10 @@ namespace FT{
         T sum = 0;
         vector<T> w_new;
         
-        for(x = 0; x < w.size(); x++)
+        for(x = 0; x < w.size(); ++x)
             sum += exp(w[x]);
             
-        for(x = 0; x < w.size(); x++)
+        for(x = 0; x < w.size(); ++x)
             w_new.push_back(exp(w[x])/sum);
             
         return w_new;
@@ -201,6 +213,14 @@ namespace FT{
         ss << value;
         return ss.str();
     }
-    
+     
+    /// returns the condition number of a matrix.
+    double condition_number(const MatrixXd& X);
+      
+    /// returns the pearson correlation coefficients of matrix.
+    MatrixXd corrcoef(const MatrixXd& X);
+    // returns the mean of the pairwise correlations of a matrix.
+    double mean_square_corrcoef(const MatrixXd& X);
+
 } 
 #endif

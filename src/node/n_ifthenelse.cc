@@ -18,26 +18,30 @@ namespace FT{
 	}
 
     /// Evaluates the node and updates the stack states. 
-    void NodeIfThenElse::evaluate(Data& data, Stacks& stack)
+    void NodeIfThenElse::evaluate(const Data& data, Stacks& stack)
     {
-        ArrayXd f1 = stack.f.pop();
-        ArrayXd f2 = stack.f.pop();
-        stack.f.push(limited(stack.b.pop().select(f1,f2)));
+        ArrayXd f1 = stack.pop<double>();
+        ArrayXd f2 = stack.pop<double>();
+        stack.push<double>(limited(stack.pop<bool>().select(f1,f2)));
     }
 
     /// Evaluates the node symbolically
     void NodeIfThenElse::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("if-then-else(" + stack.bs.pop() + "," + stack.fs.pop() + "," + stack.fs.pop() + ")");
+        stack.push<double>("if-then-else(" + stack.popStr<bool>() + 
+                           "," + stack.popStr<double>() + "," + 
+                           stack.popStr<double>() + ")");
     }
     
     ArrayXd NodeIfThenElse::getDerivative(Trace& stack, int loc) 
     {
-        ArrayXb xb = stack.b[stack.b.size()-1];
+        ArrayXd& xf = stack.get<double>()[stack.size<double>()-1];
+        ArrayXb& xb = stack.get<bool>()[stack.size<bool>()-1];
+        
         switch (loc) {
             case 3: // d/dW[0]
             case 2: 
-                return ArrayXd::Zero(stack.f[stack.f.size()-1].size()); 
+                return ArrayXd::Zero(xf.size()); 
             case 1: // d/dx2
                 return (!xb).cast<double>(); 
             case 0: // d/dx1

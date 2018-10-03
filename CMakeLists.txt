@@ -88,7 +88,9 @@ target_link_libraries(feat_cv feat_lib shogun)
 
 if (TEST)
     # Link runTests with what we want to test and the GTest and pthread library
-    add_executable(tests tests/gtest.cc)
+    file(GLOB_RECURSE testsSrc "tests/*.cc")
+    
+    add_executable(tests ${testsSrc})
     target_link_libraries(tests feat_lib shogun ${GTEST_LIBRARIES} pthread)
 endif()
 

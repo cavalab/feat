@@ -12,7 +12,6 @@ namespace FT{
 	    name = "log";
 	    otype = 'f';
 	    arity['f'] = 1;
-	    arity['b'] = 0;
 	    complexity = 4;
 
         if (W0.empty())
@@ -26,25 +25,28 @@ namespace FT{
     }
 
     /// Safe log: pushes log(abs(x)) or MIN_DBL if x is near zero. 
-    void NodeLog::evaluate(Data& data, Stacks& stack)
+    void NodeLog::evaluate(const Data& data, Stacks& stack)
     {
-	    ArrayXd x = stack.f.pop();
-        stack.f.push( (abs(x) > NEAR_ZERO).select(log(abs(W[0] * x)),MIN_DBL));
+	    ArrayXd x = stack.pop<double>();
+        stack.push<double>( (abs(x) > NEAR_ZERO).select(log(abs(W[0] * x)),MIN_DBL));
     }
 
     /// Evaluates the node symbolically
     void NodeLog::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("log(" + stack.fs.pop() + ")");
+        stack.push<double>("log(" + stack.popStr<double>() + ")");
     }
 
-    ArrayXd NodeLog::getDerivative(Trace& stack, int loc) {
+    ArrayXd NodeLog::getDerivative(Trace& stack, int loc)
+    {
+        ArrayXd& x = stack.get<double>()[stack.size<double>()-1];
+        
         switch (loc) {
             case 1: // d/dw0
-                return limited(1/(W[0] * ArrayXd::Ones(stack.f[stack.f.size()-1].size())));
+                return limited(1/(W[0] * ArrayXd::Ones(x.size())));
             case 0: // d/dx0
             default:
-                return limited(1/stack.f[stack.f.size()-1]);
+                return limited(1/x);
         } 
     }
     

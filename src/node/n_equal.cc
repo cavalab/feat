@@ -11,20 +11,19 @@ namespace FT{
 	    name = "=";
 	    otype = 'b';
 	    arity['f'] = 2;
-	    arity['b'] = 0;
 	    complexity = 1;
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeEqual::evaluate(Data& data, Stacks& stack)
+    void NodeEqual::evaluate(const Data& data, Stacks& stack)
     {
-        stack.b.push(stack.f.pop() == stack.f.pop());
+        stack.push<bool>(stack.pop<double>() == stack.pop<double>());
     }
 
     /// Evaluates the node symbolically
     void NodeEqual::eval_eqn(Stacks& stack)
     {
-        stack.bs.push("(" + stack.fs.pop() + "==" + stack.fs.pop() + ")");
+        stack.push<bool>("(" + stack.popStr<double>() + "==" + stack.popStr<double>() + ")");
     }
     
     NodeEqual* NodeEqual::clone_impl() const { return new NodeEqual(*this); }
