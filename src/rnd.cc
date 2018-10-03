@@ -7,14 +7,35 @@ license: GNU/GPL v3
 
 namespace FT {
     
+    Rnd* Rnd::instance = NULL;
+    
     Rnd::Rnd()
     {
         /*!
          * need a random generator for each core to do multiprocessing
          */
+        //cout << "Max threads are " <<omp_get_max_threads()<<"\n";
         rg.resize(omp_get_max_threads());                      
     }
 
+    Rnd* Rnd::initRand()
+    {
+        if (!instance)
+        {
+            instance = new Rnd();
+        }
+
+        return instance;
+    }
+
+    void Rnd::destroy()
+    {
+        if (instance)
+            delete instance;
+            
+        instance = NULL;
+    }
+    
     void Rnd::set_seed(int seed)
     { 
         /*!
@@ -40,8 +61,6 @@ namespace FT {
         }
     }
 
-
-    
     int Rnd::rnd_int( int lowerLimit, int upperLimit ) 
     {
         std::uniform_int_distribution<> dist( lowerLimit, upperLimit );
@@ -120,7 +139,7 @@ namespace FT {
             return v[dis(rg[omp_get_thread_num()])]; 
         }
     }*/
-    
+        
     float Rnd::gasdev()
     //Returns a normally distributed deviate with zero mean and unit variance
     {

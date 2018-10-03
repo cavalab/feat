@@ -24,8 +24,9 @@ class Feat(BaseEstimator):
                 otype ='a',  functions ="", 
                 max_depth=3,   max_dim=10,  random_state=0, 
                 erc = False,  obj ="fitness,complexity", shuffle=False,  split=0.75,  fb=0.5,
-                scorer ='',feature_names="", backprop=False, iters=10, lr=0.1, batch_size=100, n_threads=0,
-                hillclimb=False, logfile="Feat.log"):
+                scorer ='',feature_names="", backprop=False, iters=10, lr=0.1, batch_size=100, 
+                n_threads=0, hillclimb=False, logfile="Feat.log", max_time=-1, use_batch=False, 
+                semantic_xo=False, print_pop=0):
         self.pop_size = pop_size
         self.gens = gens
         self.ml = ml.encode() if( isinstance(ml,str) )  else ml
@@ -47,7 +48,8 @@ class Feat(BaseEstimator):
         self.split = split
         self.fb = fb
         self.scorer = scorer.encode() if( isinstance(scorer,str) )  else scorer
-        self.feature_names = feature_names.encode() if isinstance(feature_names,str) else feature_names 
+        self.feature_names = (feature_names.encode() if isinstance(feature_names,str) 
+                                                     else feature_names )
         self.backprop = bool(backprop)
         self.iters = int(iters)
         self.lr = float(lr)
@@ -60,7 +62,10 @@ class Feat(BaseEstimator):
         self.n_threads = int(n_threads)
         self.hillclimb= bool(hillclimb) 
         self.logfile = logfile.encode() if isinstance(logfile,str) else logfile
-
+        self.max_time = max_time
+        self.use_batch = use_batch
+        self.semantic_xo = semantic_xo
+        self.print_pop = print_pop
         # if self.verbosity>0:
         #print('self.__dict__: ' , self.__dict__)
         self._pyfeat=None 
@@ -85,10 +90,23 @@ class Feat(BaseEstimator):
                 self.batch_size,
                 self.n_threads,
                 self.hillclimb,
-                self.logfile)
+                self.logfile,
+                self.max_time,
+                self.use_batch,
+                self.semantic_xo,
+                self.print_pop)
    
     def fit(self,X,y,zfile=None,zids=None):
-        self._init_pyfeat()    
+        
+        if type(X).__name__ == 'DataFrame':
+            if len(list(X.columns)) == X.shape[1]:
+                self.feature_names = ','.join(X.columns).encode()
+            X = X.values
+        if type(y).__name__ in ['DataFrame','Series']:
+            y = y.values
+
+        self._init_pyfeat()   
+        
         if zfile:
             zfile = zfile.encode() if isinstance(zfile,str) else zfile
             self._pyfeat.fit_with_z(X,y,zfile,zids)
@@ -160,6 +178,9 @@ class Feat(BaseEstimator):
 
     def get_complexity(self):
         return self._pyfeat.get_complexity()
+
+    def get_n_nodes(self):
+        return self._pyfeat.get_n_nodes()
 
 def main():
     """Main function that is called when Fewtwo is run from the command line"""

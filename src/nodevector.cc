@@ -56,7 +56,7 @@ namespace FT{
     }
 
     /// returns indices of root nodes 
-    vector<size_t> NodeVector::roots()
+    vector<size_t> NodeVector::roots() const
     {
         // find "root" nodes of program, where roots are final values that output 
         // something directly to the stack
@@ -114,13 +114,20 @@ namespace FT{
               
        for (unsigned int j = 0; j<arity['f']; ++j)  
            i = subtree(--i,'f');                   // recurse for floating arguments      
+       
        size_t i2 = i;                              // index for second recursion
        for (unsigned int j = 0; j<arity['b']; ++j)
            i2 = subtree(--i2,'b');
-       size_t i3 = i2;                 // recurse for boolean arguments
+       
+       size_t i3 = i2;                 // recurse for longitudinal arguments
        for (unsigned int j = 0; j<arity['z']; ++j)
-           i3 = subtree(--i3,'z'); 
-       return std::min(i,i3);
+           i3 = subtree(--i3,'z');
+       
+       size_t i4 = i3;                 // recurse for categorical arguments
+       for (unsigned int j = 0; j<arity['c']; ++j)
+           i4 = subtree(--i4,'c'); 
+       
+       return std::min(i,i4);
     }
     
     void NodeVector::set_weights(vector<vector<double>>& weights)

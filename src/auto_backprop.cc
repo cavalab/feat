@@ -49,36 +49,7 @@ namespace FT {
         /* cout << "\n"; */
     }
 
-    void AutoBackProp::get_batch(Data d, Data db, int batch_size)
-    {
-
-        batch_size =  std::min(batch_size,int(d.y.size()));
-        vector<size_t> idx(d.y.size());
-        std::iota(idx.begin(), idx.end(), 0);
-        r.shuffle(idx.begin(), idx.end());
-        db.X.resize(d.X.rows(),batch_size);
-        db.y.resize(batch_size);
-        for (const auto& val: d.Z )
-        {
-            db.Z[val.first].first.resize(batch_size);
-            db.Z[val.first].second.resize(batch_size);
-        }
-        for (unsigned i = 0; i<batch_size; ++i)
-        {
-           
-           db.X.col(i) = d.X.col(idx.at(i)); 
-           db.y(i) = d.y(idx.at(i)); 
-
-           for (const auto& val: d.Z )
-           {
-                db.Z[val.first].first.at(i) = d.Z.at(val.first).first.at(idx.at(i));
-                db.Z[val.first].second.at(i) = d.Z.at(val.first).second.at(idx.at(i));
-           }
-        }
-        /* std::cout << "exiting batch\n"; */
-    }
-
-    void AutoBackProp::run(Individual& ind, Data d,
+    void AutoBackProp::run(Individual& ind, const Data& d,
                             const Parameters& params)
     {
         vector<size_t> roots = ind.program.roots();
@@ -93,7 +64,7 @@ namespace FT {
         Data db(Xb, yb, Zb, params.classification);
         Data db_val(Xb_v, yb_v, Zb_v, params.classification);
         db_val.set_validation();    // make this a validation set
-        get_batch(d, db_val, params.bp.batch_size);     // draw a batch for the validation data
+        d.get_batch(db_val, params.bp.batch_size);     // draw a batch for the validation data
         
         int patience = 3;   // number of iterations to allow validation fitness to not improve
         int missteps = 0;
@@ -107,7 +78,7 @@ namespace FT {
         {
             /* cout << "get batch\n"; */
             // get batch data for training
-            get_batch(d, db, params.bp.batch_size); 
+            d.get_batch(db, params.bp.batch_size); 
             /* cout << "db.y: " << db.y.transpose() << "\n"; */ 
             // Evaluate forward pass
             MatrixXd Phi; 
@@ -181,7 +152,7 @@ namespace FT {
     }
 
     // forward pass
-    vector<Trace> AutoBackProp::forward_prop(Individual& ind, Data d,
+    vector<Trace> AutoBackProp::forward_prop(Individual& ind, const Data& d,
                                MatrixXd& Phi, const Parameters& params) 
     {
         /* cout << "Forward pass\n"; */
@@ -227,7 +198,7 @@ namespace FT {
     // Compute gradients and update weights 
     void AutoBackProp::backprop(Trace& stack, NodeVector& program, int start, int end, 
                                 double Beta, shared_ptr<CLabels>& yhat, 
-                                Data d,
+                                const Data& d,
                                 vector<float> sw)    
     {
         /* cout << "Backward pass \n"; */
@@ -272,6 +243,9 @@ namespace FT {
                 // Get rid of the input arguments for the node
                 for (int i = 0; i < dNode->arity['f']; i++) {
                     pop<ArrayXd>(&stack.f);
+                }
+                for (int i = 0; i < dNode->arity['c']; i++) {
+                    pop<ArrayXi>(&stack.c);
                 }
                 for (int i = 0; i < dNode->arity['b']; i++) {
                     pop<ArrayXb>(&stack.b);

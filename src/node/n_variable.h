@@ -8,6 +8,7 @@ license: GNU/GPL v3
 #include "node.h"
 
 namespace FT{
+    template <class T>
 	class NodeVariable : public Node
 	{
 		public:
@@ -16,7 +17,7 @@ namespace FT{
 			NodeVariable(const size_t& l, char ntype = 'f', std::string n="");
 			    		
     		/// Evaluates the node and updates the stack states. 		
-			void evaluate(Data& data, Stacks& stack);
+			void evaluate(const Data& data, Stacks& stack);
 
 		    /// Evaluates the node symbolically
 		    void eval_eqn(Stacks& stack);

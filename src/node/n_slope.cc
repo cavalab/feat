@@ -12,14 +12,12 @@ namespace FT{
     {
         name = "slope";
 	    otype = 'f';
-	    arity['f'] = 0;
-	    arity['b'] = 0;
 	    arity['z'] = 1;
 	    complexity = 4;
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeSlope::evaluate(Data& data, Stacks& stack)
+    void NodeSlope::evaluate(const Data& data, Stacks& stack)
     {
         ArrayXd tmp(stack.z.top().first.size());
         
@@ -28,14 +26,14 @@ namespace FT{
             
         stack.z.pop();
 
-        stack.f.push(tmp);
+        stack.push<double>(tmp);
         
     }
 
     /// Evaluates the node symbolically
     void NodeSlope::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("slope(" + stack.zs.pop() + ")");
+        stack.push<double>("slope(" + stack.zs.pop() + ")");
     }
     
     double NodeSlope::slope(const ArrayXd& x, const ArrayXd& y)

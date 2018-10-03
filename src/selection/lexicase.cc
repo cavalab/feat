@@ -27,7 +27,6 @@ namespace FT{
          *      In selection mode, parents are selected among the first half of columns of F since
          *      it is assumed that we are selecting for offspring to fill the remaining columns. 
          */            
-        
         unsigned int N = F.rows(); //< number of samples
         unsigned int P = F.cols()/2; //< number of individuals
 
@@ -48,13 +47,10 @@ namespace FT{
         for (const auto& p : pop.individuals)
         {
         	starting_pool.push_back(p.loc);
-        	//cout<<"Filled "<<p.loc<<"\t";
         }
-        //cout<<"Filled "<<p.loc<<"\n";
         assert(starting_pool.size() == P);     
         
         vector<size_t> F_locs(P,0); // selected individuals
-        
         #pragma omp parallel for 
         for (unsigned int i = 0; i<P; ++i)  // selection loop
         {
@@ -63,12 +59,12 @@ namespace FT{
             {
                 // for classification problems, weight case selection by class weights
                 vector<size_t> choices(N);
-                iota(choices.begin(), choices.end(),0);
+                std::iota(choices.begin(), choices.end(),0);
                 vector<float> sample_weights = params.sample_weights;
                 for (unsigned i = 0; i<N; ++i)
                 {
                     vector<size_t> choice_idxs(N-i);
-                    iota(choice_idxs.begin(),choice_idxs.end(),0);
+                    std::iota(choice_idxs.begin(),choice_idxs.end(),0);
                     size_t idx = r.random_choice(choice_idxs,sample_weights);
                     cases.push_back(choices.at(idx));
                     choices.erase(choices.begin() + idx);
@@ -78,7 +74,7 @@ namespace FT{
             else
             {   // otherwise, choose cases randomly
                 cases.resize(N); 
-                iota(cases.begin(),cases.end(),0);
+                std::iota(cases.begin(),cases.end(),0);
                 r.shuffle(cases.begin(),cases.end());   // shuffle cases
             }
             vector<size_t> pool = starting_pool;    // initial pool   
@@ -121,7 +117,6 @@ namespace FT{
             assert(winner.size()>0);
             //if more than one winner, pick randomly
             F_locs[i] = r.random_choice(winner);   
-            //cout<<"Check 2";                         
         }               
 
         // convert F_locs to pop.individuals indices

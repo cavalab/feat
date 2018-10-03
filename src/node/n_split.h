@@ -5,10 +5,11 @@ license: GNU/GPL v3
 #ifndef NODE_SPLIT
 #define NODE_SPLIT
 
-#include "node.h"
+#include "n_train.h"
 
 namespace FT{
-	class NodeSplit : public Node
+    template <class T>
+	class NodeSplit : public NodeTrain
     {
     	public:
     
@@ -26,7 +27,7 @@ namespace FT{
             double gini_impurity_index(const VectorXd& classes);
             
             /// Evaluates the node and updates the stack states. 
-            void evaluate(Data& data, Stacks& stack);            
+            void evaluate(const Data& data, Stacks& stack);            
 
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack);

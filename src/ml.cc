@@ -391,7 +391,7 @@ ArrayXXd ML::predict_proba(MatrixXd& X)
         HANDLE_ERROR_THROW("Error: predict_proba not defined for problem type or ML method");
 }
 
-VectorXd ML::labels_to_vector(shared_ptr<CLabels>& labels)
+VectorXd ML::labels_to_vector(const shared_ptr<CLabels>& labels)
 {
     SGVector<double> y_pred;
     if (prob_type==PT_BINARY && 

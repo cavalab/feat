@@ -38,7 +38,7 @@ namespace FT{
         unsigned int max_depth;         			///< max depth of programs
         unsigned int max_size;          			///< max size of programs (length)
         unsigned int max_dim;           			///< maximum dimensionality of programs
-        bool erc;								    ///<whether to include constants for terminals 
+        bool erc;								    ///< whether to include constants for terminals 
         unsigned num_features;                      ///< number of features
         vector<string> objectives;                  ///< Pareto objectives 
         bool shuffle;                               ///< option to shuffle the data
@@ -54,7 +54,10 @@ namespace FT{
         vector<string> feature_names;               ///< names of features
         bool backprop;                              ///< turns on backpropagation
         bool hillclimb;                             ///< turns on parameter hill climbing
-
+        int max_time;                               ///< max time for fit method
+        bool use_batch;                             ///< whether to use mini batch for training
+        bool semantic_xo;                           ///< use semantic crossover  
+                                                        
         struct BP 
         {
            int iters;
@@ -78,7 +81,7 @@ namespace FT{
                    char ot, int verbosity, string fs, float cr, unsigned int max_depth, 
                    unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
                    double fb, string sc, string fn, bool bckprp, int iters, double lr,
-                   int bs, bool hclimb);
+                   int bs, bool hclimb, int maxt, bool useb, bool sem_xo);
         
         ~Parameters();
         
@@ -134,12 +137,14 @@ namespace FT{
         void set_ttypes();
 
         /// set the output types of programs
-        void set_otypes();
+        void set_otypes(bool terminals_set=false);
         
         /// sets the number of classes based on target vector y.
         void set_classes(VectorXd& y);
         
+        /// sets the weights of each sample (and class weights)
         void set_sample_weights(VectorXd& y);
+
     };
 }
 #endif

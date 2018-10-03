@@ -6,28 +6,41 @@ license: GNU/GPL v3
     	
 namespace FT{
 
-    NodeFloat::NodeFloat()
+    template <>
+    NodeFloat<bool>::NodeFloat()
     {
-	    name = "f";
-	    otype = 'f';
-	    arity['f'] = 0;
-	    arity['b'] = 1;
-	    complexity = 1;
+        name = "b2f";
+        otype = 'f';
+        arity['b'] = 1;
+        complexity = 1;
+    }
+    
+    template <>
+    NodeFloat<int>::NodeFloat()
+    {
+        name = "c2f";
+        otype = 'f';
+        arity['c'] = 1;
+        complexity = 1;
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeFloat::evaluate(Data& data, Stacks& stack)
+    template <class T>
+    void NodeFloat<T>::evaluate(const Data& data, Stacks& stack)
     {
-        stack.f.push(stack.b.pop().cast<double>());
+        stack.push<double>(stack.pop<T>().template cast<double>());
     }
 
     /// Evaluates the node symbolically
-    void NodeFloat::eval_eqn(Stacks& stack)
+    template <class T>
+    void NodeFloat<T>::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("f(" + stack.bs.pop() + ")");
+        stack.push<double>("float(" + stack.popStr<T>() + ")");
     }
     
-    NodeFloat* NodeFloat::clone_impl() const { return new NodeFloat(*this); }
+    template <class T>
+    NodeFloat<T>* NodeFloat<T>::clone_impl() const { return new NodeFloat<T>(*this); }
 
-    NodeFloat* NodeFloat::rnd_clone_impl() const { return new NodeFloat(); }  
+    template <class T>
+    NodeFloat<T>* NodeFloat<T>::rnd_clone_impl() const { return new NodeFloat<T>(*this); }  
 }

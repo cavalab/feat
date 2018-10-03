@@ -10,14 +10,12 @@ namespace FT{
     {
         name = "max";
 	    otype = 'f';
-	    arity['f'] = 0;
-	    arity['b'] = 0;
 	    arity['z'] = 1;
 	    complexity = 1;
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeMax::evaluate(Data& data, Stacks& stack)
+    void NodeMax::evaluate(const Data& data, Stacks& stack)
     {
         ArrayXd tmp(stack.z.top().first.size());
         int x;
@@ -27,14 +25,14 @@ namespace FT{
 
         stack.z.pop();
         
-        stack.f.push(tmp);
+        stack.push<double>(tmp);
         
     }
 
     /// Evaluates the node symbolically
     void NodeMax::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("max(" + stack.zs.pop() + ")");
+        stack.push<double>("max(" + stack.zs.pop() + ")");
     }
     
     NodeMax* NodeMax::clone_impl() const { return new NodeMax(*this); }

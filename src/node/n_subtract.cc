@@ -12,7 +12,6 @@ namespace FT{
 	    name = "-";
 	    otype = 'f';
 	    arity['f'] = 2;
-	    arity['b'] = 0;
 	    complexity = 1;
 
         if (W0.empty())
@@ -26,28 +25,32 @@ namespace FT{
     }
 
     /// Evaluates the node and updates the stack states. 
-    void NodeSubtract::evaluate(Data& data, Stacks& stack)
+    void NodeSubtract::evaluate(const Data& data, Stacks& stack)
     {
-        stack.f.push(limited(W[0]*stack.f.pop() - W[1]*stack.f.pop()));
+        stack.push<double>(limited(W[0]*stack.pop<double>() - W[1]*stack.pop<double>()));
     }
 
     /// Evaluates the node symbolically
     void NodeSubtract::eval_eqn(Stacks& stack)
     {
-        stack.fs.push("(" + stack.fs.pop() + "-" + stack.fs.pop() + ")");
+        stack.push<double>("(" + stack.popStr<double>() + "-" + stack.popStr<double>() + ")");
     }
 
-    ArrayXd NodeSubtract::getDerivative(Trace& stack, int loc) {
+    ArrayXd NodeSubtract::getDerivative(Trace& stack, int loc)
+    {
+        ArrayXd x1 = stack.get<double>()[stack.size<double>()-1];
+        ArrayXd x2 = stack.get<double>()[stack.size<double>()-2];
+        
         switch (loc) {
             case 3: // d/dW[1]
-                return -stack.f[stack.f.size()-2];
+                return -x2;
             case 2: // d/dW[0]
-                return stack.f[stack.f.size()-1];
+                return x1;
             case 1: // d/dx2
-                return -this->W[1] * ArrayXd::Ones(stack.f[stack.f.size()-2].size());
+                return -this->W[1] * ArrayXd::Ones(x2.size());
             case 0: //d/dx1
             default:
-               return this->W[0] * ArrayXd::Ones(stack.f[stack.f.size()-1].size());
+               return this->W[0] * ArrayXd::Ones(x1.size());
         } 
     }
 

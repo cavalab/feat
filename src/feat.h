@@ -8,27 +8,8 @@ license: GNU/GPL v3
 //external includes
 #include <iostream>
 #include <vector>
-#include <Eigen/Dense>
 #include <memory>
 #include <shogun/base/init.h>
-
-#ifdef _OPENMP
-    #include <omp.h>
-#else
-    #define omp_get_thread_num() 0
-    #define omp_get_max_threads() 1
-    #define omp_set_num_threads( x ) 0
-#endif
-// stuff being used
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
-typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
-using std::vector;
-using std::string;
-using std::unique_ptr;
-using std::shared_ptr;
-using std::make_shared;
-using std::cout; 
  
 // internal includes
 #include "init.h"
@@ -42,6 +23,17 @@ using std::cout;
 #include "ml.h"
 #include "node/node.h"
 #include "archive.h" 
+
+// stuff being used
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
+typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
+using std::vector;
+using std::string;
+using std::unique_ptr;
+using std::shared_ptr;
+using std::make_shared;
+using std::cout; 
 
 namespace FT{
     
@@ -68,10 +60,11 @@ namespace FT{
                    string sel ="lexicase", string surv="nsga2", float cross_rate = 0.5,
                    char otype='a', string functions = "", 
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
-                   bool erc = false, string obj="fitness,complexity",bool shuffle=false, 
+                   bool erc = false, string obj="fitness,complexity", bool shuffle=false, 
                    double split=0.75, double fb=0.5, string scorer="", string feature_names="",
                    bool backprop=false,int iters=10, double lr=0.1, int bs=100, int n_threads=0,
-                   bool hillclimb=false, string logfile="");
+                   bool hillclimb=false, string logfile="", int max_time=-1, 
+                   bool use_batch = false, bool semantic_xo = false, int print_pop=0);
             
             /// set size of population 
             void set_pop_size(int pop_size);
@@ -160,6 +153,16 @@ namespace FT{
             ///set number of threads
             void set_n_threads(unsigned t);
             
+            ///set max time in seconds for fit method
+            void set_max_time(int time);
+            
+            ///set flag to use batch for training
+            void set_use_batch();
+            
+            /// use semantic crossover
+            void set_semantic_xo(bool sem_xo=true){params.semantic_xo=sem_xo;};
+
+            void set_print_pop(int pp){ print_pop=pp; };
             /*                                                      
              * getting functions
              */
@@ -242,6 +245,9 @@ namespace FT{
             /// return the coefficients or importance scores of the best model. 
             ArrayXd get_coefs();
 
+            /// return the number of nodes in the best model
+            int get_n_nodes();
+
             /// get longitudinal data from file s
             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>> get_Z(string s, 
                     int * idx, int idx_size);
@@ -254,6 +260,12 @@ namespace FT{
                      VectorXd& y,
                      std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
                             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());
+                            
+            void run_generation(unsigned int g,
+                            vector<size_t> survivors,
+                            DataRef &d,
+                            std::ofstream &log,
+                            double percentage);
                      
             /// train a model.             
             void fit(double * X,int rowsX,int colsX, double * Y,int lenY);
@@ -323,6 +335,8 @@ namespace FT{
                          std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
                                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());
             
+            /// prints population obj scores each generation 
+            void print_population();
         private:
             // Parameters
             Parameters params;    					///< hyperparameters of Feat 
@@ -346,9 +360,11 @@ namespace FT{
             double best_score_v;                    ///< best validation score
             string str_dim;                         ///< dimensionality as multiple of number of columns 
             void update_best(bool val=false);       ///< updates best score   
-            void print_stats(std::ofstream& log);         ///< prints stats
+            void print_stats(std::ofstream& log,
+                             double fraction);      ///< prints stats
             Individual best_ind;                    ///< best individual
             string logfile;                         ///< log filename
+            int print_pop;                         ///< controls whether pop is printed each gen
             /// method to fit inital ml model            
             void initial_model(DataRef &d);
             /// fits final model to best transformation
