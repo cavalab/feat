@@ -42,7 +42,8 @@ namespace FT{
             ~Variation();
 
             /// method to handle variation of population
-            void vary(Population& pop, const vector<size_t>& parents, const Parameters& params);
+            void vary(Population& pop, const vector<size_t>& parents, const Parameters& params,
+                      const Data& d);
             
         private:
         
@@ -50,6 +51,10 @@ namespace FT{
             bool cross(Individual& mom, Individual& dad, Individual& child,
                        const Parameters& params);
             
+            /// semantic crossover
+            bool semantic_cross(Individual& mom, Individual& dad, Individual& child,
+                                const Parameters& params, const Data& d);
+
             /// mutation
             bool mutate(Individual& mom, Individual& child, const Parameters& params);
             void point_mutate(Individual& child, const Parameters& params);

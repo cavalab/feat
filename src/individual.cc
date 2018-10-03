@@ -7,7 +7,7 @@ license: GNU/GPL v3
 
 namespace FT{    
        
-    Individual::Individual(){c = 0; dim = 0; eqn="";}
+    Individual::Individual(){c = 0; dim = 0; eqn=""; parent_id.clear(); parent_id.push_back(-1);}
 
     /// set rank
     void Individual::set_rank(unsigned r){rank=r;}
@@ -48,9 +48,10 @@ namespace FT{
         for (const auto& p : parents)
             parent_id.push_back(p.id);
     }
-    
+     
+       
     /// get probabilities of variation
-    vector<double> Individual::get_p(){ return p; }     
+    vector<double> Individual::get_p() const { return p; }     
     
     void Individual::set_p(const vector<double>& weights, const double& fb)
     {   
@@ -93,9 +94,11 @@ namespace FT{
         for (unsigned i=0; i<p.size(); ++i)
             p[i] = u + fb*(u-p[i]);
         /* cout << "exiting set_p\n"; */
+        // set weights
+        this->w = weights;
     }
     
-    double Individual::get_p(const size_t i)
+    double Individual::get_p(const size_t i) const
     {
         /*! @param i index in program 
          * @returns weight associated with node */
@@ -127,7 +130,7 @@ namespace FT{
 
     }
     
-    vector<double> Individual::get_p(const vector<size_t>& locs)
+    vector<double> Individual::get_p(const vector<size_t>& locs) const
     {
         vector<double> ps;
         for (const auto& el : locs) ps.push_back(get_p(el));
@@ -143,31 +146,72 @@ namespace FT{
         params.msg("ML training on " + get_eqn(), 3);
         ml = std::make_shared<ML>(params);
 
-        shared_ptr<CLabels> yhat = ml->fit(Phi,d.y,params,pass,dtypes);
+        shared_ptr<CLabels> yh = ml->fit(Phi,d.y,params,pass,dtypes);
 
-        return yhat;
+        this->yhat = ml->labels_to_vector(yh);
+
+        return yh;
     }
 
     shared_ptr<CLabels> Individual::predict(const Data& d, const Parameters& params)
     {
         // calculate program output matrix Phi
         params.msg("Generating output for " + get_eqn(), 3);
-        Phi = out(d, params);            
+        // toggle validation
+        Phi = out(d, params, true);           // TODO: guarantee this is not changing nodes
+
+        if (Phi.size()==0)
+            HANDLE_ERROR_THROW("Phi must be generated before predict() is called\n");
+        /* if (drop_idx >= 0)  // if drop_idx specified, mask that phi output */
+        /* { */
+        /*     cout << "dropping row " + std::to_string(drop_idx) + "\n"; */
+        /*     Phi.row(drop_idx) = VectorXd::Zero(Phi.cols()); */
+        /* } */
         // calculate ML model from Phi
         params.msg("ML predicting on " + get_eqn(), 3);
         // assumes ML is already trained
         shared_ptr<CLabels> yhat = ml->predict(Phi);
-
         return yhat;
+    }
+
+    VectorXd Individual::predict_drop(const Data& d, const Parameters& params, int drop_idx)
+    {
+        // calculate program output matrix Phi
+        params.msg("Generating output for " + get_eqn(), 3);
+        // toggle validation
+        MatrixXd PhiDrop = Phi;           // TODO: guarantee this is not changing nodes
+         
+        if (Phi.size()==0)
+            HANDLE_ERROR_THROW("Phi must be generated before predict_drop() is called\n");
+        if (drop_idx >= 0)  // if drop_idx specified, mask that phi output
+        {
+            if (drop_idx >= PhiDrop.rows())
+                HANDLE_ERROR_THROW("drop_idx ( " + std::to_string(drop_idx) + " > Phi size (" 
+                                   + std::to_string(Phi.rows()) + ")\n");
+            cout << "dropping row " + std::to_string(drop_idx) + "\n";
+            /* PhiDrop.row(drop_idx) = VectorXd::Zero(Phi.cols()); */
+            PhiDrop.row(drop_idx).setZero();
+        }
+        // calculate ML model from Phi
+        /* params.msg("ML predicting on " + get_eqn(), 3); */
+        // assumes ML is already trained
+        VectorXd yh = ml->predict_vector(PhiDrop);
+        return yh;
+    }
+
+    VectorXd Individual::predict_vector(const Data& d, const Parameters& params)
+    {
+        return ml->labels_to_vector(this->predict(d,params));
     }
     
 #ifndef USE_CUDA
     // calculate program output matrix
-    MatrixXd Individual::out(const Data& d, const Parameters& params)
+    MatrixXd Individual::out(const Data& d, const Parameters& params, bool predict)
     {
         /*!
          * @params d: Data structure
-         * @params: Feat parameters
+         * @params params: Feat parameters
+         * @params predict: if true, this guarantees nodes like split do not get trained
          * @returns Phi: n_features x n_samples transformation
          */
          
@@ -179,6 +223,8 @@ namespace FT{
         // evaluate each node in program
         for (const auto& n : program)
         {
+            if (n->isNodeTrain()) // learning nodes are set for fit or predict mode
+                dynamic_cast<NodeTrain*>(n.get())->train = !predict;
         	if(stack.check(n->arity))
 	            n->evaluate(d, stack);
             else
@@ -220,7 +266,7 @@ namespace FT{
              Phi.row(i) = Row;
              dtypes.push_back('f'); 
         }
-        // add stack_b to Phi
+        // add stack_c to Phi
         for (unsigned int i=0; i<rows_c; ++i)
         {    
              ArrayXd Row = ArrayXi::Map(stack.c.at(i).data(),cols).cast<double>();
@@ -747,6 +793,16 @@ namespace FT{
                 obj.push_back(fitness);
             else if (n.compare("complexity")==0)
                 obj.push_back(complexity());
+            else if (n.compare("size")==0)
+                obj.push_back(program.size());
+            else if (n.compare("CN")==0)    // condition number of Phi
+            {
+                CN = condition_number(Phi.transpose());
+                obj.push_back(CN);
+            }
+            else if (n.compare("corr")==0)    // covariance structure of Phi
+                obj.push_back(mean_square_corrcoef(Phi));
+
         }
     
     }

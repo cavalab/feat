@@ -56,7 +56,8 @@ namespace FT{
         bool hillclimb;                             ///< turns on parameter hill climbing
         int max_time;                               ///< max time for fit method
         bool use_batch;                             ///< whether to use mini batch for training
-
+        bool semantic_xo;                           ///< use semantic crossover  
+                                                        
         struct BP 
         {
            int iters;
@@ -80,7 +81,7 @@ namespace FT{
                    char ot, int verbosity, string fs, float cr, unsigned int max_depth, 
                    unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
                    double fb, string sc, string fn, bool bckprp, int iters, double lr,
-                   int bs, bool hclimb, int maxt, bool useb);
+                   int bs, bool hclimb, int maxt, bool useb, bool sem_xo);
         
         ~Parameters();
         
@@ -141,7 +142,9 @@ namespace FT{
         /// sets the number of classes based on target vector y.
         void set_classes(VectorXd& y);    
         
+        /// sets the weights of each sample (and class weights)
         void set_sample_weights(VectorXd& y);
+
     };
 }
 #endif
