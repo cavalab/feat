@@ -81,7 +81,7 @@ namespace FT{
             ArrayXXd predict_proba(MatrixXd& X);
            
             /// utility function to convert CLabels types to VectorXd types. 
-            VectorXd labels_to_vector(shared_ptr<CLabels>& labels);
+            VectorXd labels_to_vector(const shared_ptr<CLabels>& labels);
 
             /* VectorXd predict(MatrixXd& X); */
             // set data types (for tree-based methods)            

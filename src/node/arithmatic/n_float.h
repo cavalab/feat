@@ -20,7 +20,10 @@ namespace FT{
 
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack);
-            
+           
+            /// Determines whether to convert categorical or boolean inputs
+            bool isCategorical;
+
         protected:
             NodeFloat* clone_impl() const override;
 
