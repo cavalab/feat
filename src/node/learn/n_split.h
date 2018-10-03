@@ -5,7 +5,7 @@ license: GNU/GPL v3
 #ifndef NODE_SPLIT
 #define NODE_SPLIT
 
-#include "n_train.h"
+#include "../n_train.h"
 
 namespace FT{
     template <class T>
