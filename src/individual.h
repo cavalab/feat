@@ -9,6 +9,7 @@ license: GNU/GPL v3
 #include "data.h"
 #include "params.h"
 #include "ml.h"
+#include "utils.h"
 
 namespace FT{
     
@@ -22,9 +23,11 @@ namespace FT{
     public:        
         NodeVector program;                         ///< executable data structure
         MatrixXd Phi;                               ///< transformation output of program 
+        VectorXd yhat;                              ///< current output
         shared_ptr<ML> ml;                          ///< ML model, trained on Phi
         double fitness;             				///< aggregate fitness score
         double fitness_v;             				///< aggregate validation fitness score
+        double CN;
         size_t loc;                 				///< index of individual in semantic matrix F
         string eqn;                 				///< symbolic representation of program
         vector<double> w;            				///< weights from ML training on program output
@@ -39,13 +42,12 @@ namespace FT{
         vector<char> dtypes;                        ///< the data types of each column of the 
                                                       // program output
         unsigned id;                                ///< tracking id
-        vector<unsigned> parent_id;                 ///< ids of parents
+        vector<int> parent_id;                      ///< ids of parents
        
         Individual();
 
         /// calculate program output matrix Phi
-        MatrixXd out(const Data& d,
-                     const Parameters& params);
+        MatrixXd out(const Data& d, const Parameters& params, bool predict=false);
 
         /// calculate program output while maintaining stack trace
         MatrixXd out_trace(const Data& d,
@@ -54,9 +56,13 @@ namespace FT{
         /// fits an ML model to the data after transformation
         shared_ptr<CLabels> fit(const Data& d, const Parameters& params, bool& pass);
         
-        /// generates prediction on data using transformation and ML predict
+        /*! generates prediction on data using transformation and ML predict. 
+         *  @params drop_idx if specified, the phi output at drop_idx is set to zero, effectively
+         *  removing its output from the transformation. used in semantic crossover.
+         */
         shared_ptr<CLabels> predict(const Data& d, const Parameters& params);
-        
+        VectorXd predict_vector(const Data& d, const Parameters& params);
+        VectorXd predict_drop(const Data& d, const Parameters& params, int drop_idx);
         /// return symbolic representation of program
         string get_eqn();
 
@@ -103,17 +109,21 @@ namespace FT{
         void clone(Individual& cpy, bool sameid=true);
         
         void set_id(unsigned i);
-        
+
+        /// set parent ids using parents  
         void set_parents(const vector<Individual>& parents);
         
+        /// set parent ids using id values 
+        void set_parents(const vector<int>& parents){ parent_id = parents; }
+
         /// get probabilities of variation
-        vector<double> get_p();
+        vector<double> get_p() const;
         
         /// get inverted weight probability for pogram location i
-        double get_p(const size_t i);
+        double get_p(const size_t i) const;
         
         /// get probability of variation for program locations locs
-        vector<double> get_p(const vector<size_t>& locs); 
+        vector<double> get_p(const vector<size_t>& locs) const; 
 
         /// set probabilities
         void set_p(const vector<double>& weights, const double& fb);
