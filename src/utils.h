@@ -81,11 +81,16 @@ namespace FT{
     
     /// calculate kurtosis
     double kurtosis(const ArrayXd& v);
-    
+   
+    /// covariance of x and y
     double covariance(const ArrayXd& x, const ArrayXd& y);
-    
+   
+    /// slope of x/y
     double slope(const ArrayXd& x, const ArrayXd& y);
 
+    /// the normalized covariance of x and y
+    double pearson_correlation(const ArrayXd& x, const ArrayXd& y);
+    
     /// median absolute deviation
     double mad(const ArrayXd& x);
 
@@ -208,6 +213,14 @@ namespace FT{
         ss << value;
         return ss.str();
     }
-    
+     
+    /// returns the condition number of a matrix.
+    double condition_number(const MatrixXd& X);
+      
+    /// returns the pearson correlation coefficients of matrix.
+    MatrixXd corrcoef(const MatrixXd& X);
+    // returns the mean of the pairwise correlations of a matrix.
+    double mean_square_corrcoef(const MatrixXd& X);
+
 } 
 #endif
