@@ -22,6 +22,8 @@ namespace FT{
 	{
 	    name = "split_c";
 	    arity['c'] = 1;
+        arity['b'] = 0;
+        arity['f'] = 0;
 	    otype = 'b';
         complexity = 2;
         threshold = 0;
@@ -34,7 +36,7 @@ namespace FT{
                 
         x1 = stack.pop<T>().template cast<double>();
             
-        if (!data.validation && !data.y.size()==0)
+        if (!data.validation && !data.y.size()==0 && train)
             set_threshold(x1,data.y, data.classification);
             
         if(arity['f'])
@@ -62,6 +64,7 @@ namespace FT{
     template <class T>
     void NodeSplit<T>::set_threshold(ArrayXd& x, VectorXd& y, bool classification)
     {
+        /* cout << "setting threshold\n"; */
         // for each unique value in x, calculate the reduction in the heuristic brought about by
         // splitting between that value and the next. 
         // set threshold according to the biggest reduction. 
