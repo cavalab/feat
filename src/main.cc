@@ -108,6 +108,11 @@ int main(int argc, char** argv){
                 " Used in conjunction with generation limit.\n";
         cout << "--use_batch\tSet flag for stochastic mini batch training\n";
         cout << "-otype\tSet output types of features. 'b':bool only,'f':float only,'a':all\n";
+        cout << "-obj\tComma-separated objectives. Choices: fitness, complexity, size, CN, corr" \
+                " (size,complexity)\n";
+        cout << "--semantic_xo\tSet flag for semantic crossover\n";
+        cout << "-print_pop\tPrint the population objective scores. 0: never, 1: at end, "
+                "2: each generation. (0)\n";
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
     }
@@ -191,6 +196,13 @@ int main(int argc, char** argv){
         feat.set_use_batch();
     if(input.cmdOptionExists("-otype"))
         feat.set_otype(input.getCmdOption("-otype")[0]);
+    if(input.cmdOptionExists("-obj"))
+        feat.set_objectives(input.getCmdOption("-obj"));
+    if(input.cmdOptionExists("--semantic_xo"))
+        feat.set_semantic_xo();
+    if(input.cmdOptionExists("-print_pop"))
+        feat.set_print_pop(std::stoi(input.getCmdOption("-print_pop")));
+
     //cout << "done.\n";
     ///////////////////////////////////////
 
@@ -209,6 +221,7 @@ int main(int argc, char** argv){
     cout << "load_csv...";
     FT::load_csv(input.dataset,X,y,names,dtypes,binary_endpoint,delim);
     feat.set_feature_names(names);
+    feat.set_dtypes(dtypes);
     
     if (binary_endpoint)
     {
