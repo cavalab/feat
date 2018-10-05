@@ -83,7 +83,7 @@ int main(int argc, char** argv){
                 "(LinearRidgeRegression or LogisticRegression)\n";
         cout << "--c\tDo classification instead of regression. (false)\n";
         cout << "-v\tVerbosity. 0: none; 1: stats; 2: debugging (1)\n";
-        cout << "-stall\tMaximum generations with no improvements to best score. (off)\n";
+        cout << "-stall\tMaximum generations with no improvements to best score. (0, off)\n";
         cout << "-sel\tSelection method. (lexicase)\n";
         cout << "-surv\tSurvival method. (nsga2)\n";
         cout << "-xr\tCrossover rate in [0, 1]. Mutation is the reciprocal. (0.5)\n";

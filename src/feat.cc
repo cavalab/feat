@@ -489,11 +489,13 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
 
     // =====================
     // main generational loop
-    unsigned int g = 0;
+    unsigned g = 0;
+    unsigned stall_count = 0;
     double fraction = 0;
     // continue until max gens is reached or max_time is up (if it is set)
     while((params.max_time == -1 || params.max_time > timer.Elapsed().count())
-           && g<params.gens)
+           && g<params.gens
+           && (params.max_stall == 0 || stall_count < params.max_stall) )
     {
         fraction = params.max_time == -1 ? ((g+1)*1.0)/params.gens : 
                                            timer.Elapsed().count()/params.max_time;
@@ -507,10 +509,10 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
             if (params.classification)
                 params.set_sample_weights(dbr.t->y); 
 
-            run_generation(g, survivors, dbr, log, fraction);
+            run_generation(g, survivors, dbr, log, fraction, stall_count);
         }
         else
-            run_generation(g, survivors, d, log, fraction);
+            run_generation(g, survivors, d, log, fraction, stall_count);
         
         g++;
     }
@@ -528,7 +530,7 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
         
         p_eval->fitness(final_pop, *d.v, F_v, params, false, true);
 
-        update_best(true);                  // get the best validation model
+        update_best(d,true);                  // get the best validation model
     }
     else
         best_score_v = best_score;
@@ -547,7 +549,8 @@ void Feat::run_generation(unsigned int g,
                       vector<size_t> survivors,
                       DataRef &d,
                       std::ofstream &log,
-                      double fraction)
+                      double fraction,
+                      unsigned& stall_count)
 {
     params.set_current_gen(g);
     // select parents
@@ -572,7 +575,10 @@ void Feat::run_generation(unsigned int g,
     p_pop->update(survivors);
     params.msg("survivors:\n" + p_pop->print_eqns(), 3);
 
-    update_best();
+    update_best(d);
+
+    if (params.max_stall > 0)
+        update_stall_count(stall_count, F);
 
     if (use_arch) 
         arch.update(*p_pop,params);
@@ -590,8 +596,23 @@ void Feat::run_generation(unsigned int g,
         params.bp.learning_rate = (1-1/(1+double(params.gens)))*params.bp.learning_rate;
         params.msg("learning rate: " + std::to_string(params.bp.learning_rate),3);
     }
+
 }
 
+void Feat::update_stall_count(unsigned& stall_count, MatrixXd& F)
+{
+    double med_score = median(F.colwise().mean().array());  // median loss
+    if (params.current_gen == 0 || med_score < best_med_score)
+    {
+        best_med_score = med_score;
+        stall_count = 0;
+    }
+    else
+    {
+        ++stall_count;
+    }
+
+}
 void Feat::fit(double * X, int rowsX, int colsX, double * Y, int lenY)
 {
     MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
@@ -792,7 +813,7 @@ ArrayXXd Feat::predict_proba_with_z(double * X, int rowsX,int colsX,
 }
 
 
-void Feat::update_best(bool validation)
+void Feat::update_best(const DataRef& d, bool validation)
 {
     double bs;
     bs = validation ? best_score_v : best_score ; 
@@ -811,9 +832,20 @@ void Feat::update_best(bool validation)
 
     if (validation) 
         best_score_v = bs; 
-    else 
+    else
+    {
         best_score = bs;
 
+        if (params.split < 1.0)
+        {
+            // get validation score for new best_ind 
+            MatrixXd tmp(d.v->X.cols(),int(2*params.pop_size)); 
+            vector<Individual> best_vec = {best_ind};
+            p_eval->fitness(best_vec, *d.v, tmp, params, false, true);
+            best_ind = best_vec[0];
+            best_score_v = best_ind.fitness_v;
+        }
+    }
 }
 
 double Feat::score(MatrixXd& X, const VectorXd& y,
@@ -908,10 +940,11 @@ void Feat::print_stats(std::ofstream& log, double fraction)
         string sep = ",";
         if (params.current_gen == 0) // print header
         {
-            log << "generation" << sep
-                << "min_loss"   << sep 
-                << "med_loss"   << sep 
-                << "med_size"   << sep 
+            log << "generation"     << sep
+                << "min_loss"       << sep 
+                << "min_loss_val"   << sep 
+                << "med_loss"       << sep 
+                << "med_size"       << sep 
                 << "med_complexity" << sep 
                 << "med_num_params" << sep
                 <<  "med_dim\n";
@@ -934,6 +967,7 @@ void Feat::print_stats(std::ofstream& log, double fraction)
 
         log << params.current_gen  << sep
             << best_score          << sep
+            << best_score_v        << sep
             << med_score           << sep
             << med_size            << sep
             << med_complexity      << sep
