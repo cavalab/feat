@@ -499,13 +499,13 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     {
         fraction = params.max_time == -1 ? ((g+1)*1.0)/params.gens : 
                                            timer.Elapsed().count()/params.max_time;
-                                           
         if(params.use_batch)
         {
             d.t->get_batch(db, params.bp.batch_size);
             DataRef dbr;    // reference to minibatch data
             dbr.setTrainingData(&db);
-            
+            dbr.setValidationData(d.v);
+
             if (params.classification)
                 params.set_sample_weights(dbr.t->y); 
 
@@ -574,7 +574,7 @@ void Feat::run_generation(unsigned int g,
     params.msg("shrinking pop to survivors...",3);
     p_pop->update(survivors);
     params.msg("survivors:\n" + p_pop->print_eqns(), 3);
-
+    
     update_best(d);
 
     if (params.max_stall > 0)
@@ -815,6 +815,8 @@ ArrayXXd Feat::predict_proba_with_z(double * X, int rowsX,int colsX,
 
 void Feat::update_best(const DataRef& d, bool validation)
 {
+    params.msg("updating best..",2);
+
     double bs;
     bs = validation ? best_score_v : best_score ; 
     double f; 
@@ -838,12 +840,10 @@ void Feat::update_best(const DataRef& d, bool validation)
 
         if (params.split < 1.0)
         {
-            // get validation score for new best_ind 
-            MatrixXd tmp(d.v->X.cols(),int(2*params.pop_size)); 
-            vector<Individual> best_vec = {best_ind};
-            p_eval->fitness(best_vec, *d.v, tmp, params, false, true);
-            best_ind = best_vec[0];
-            best_score_v = best_ind.fitness_v;
+            VectorXd tmp;
+            shared_ptr<CLabels> yhat_v = best_ind.predict(*d.v, params);
+            best_score_v = p_eval->score(d.v->y, yhat_v, tmp, params.class_weights); 
+            best_ind.fitness_v = best_score_v;
         }
     }
 }
