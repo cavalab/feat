@@ -26,7 +26,7 @@ namespace FT
         batch_size =  std::min(batch_size,int(y.size()));
         vector<size_t> idx(y.size());
         std::iota(idx.begin(), idx.end(), 0);
-        r.shuffle(idx.begin(), idx.end());
+//        r.shuffle(idx.begin(), idx.end());
         db.X.resize(X.rows(),batch_size);
         db.y.resize(batch_size);
         for (const auto& val: Z )
