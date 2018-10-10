@@ -108,6 +108,7 @@ $(document).ready(function(){initNavTree('d3/d64/classFT_1_1NodeMode.html','../.
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="../../db/d6b/classFT_1_1NodeMode-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">FT::NodeMode Class Reference</div>  </div>
@@ -134,19 +135,15 @@ Collaboration diagram for FT::NodeMode:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a56ae12aee4502b23a97e2affd5915c33"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a56ae12aee4502b23a97e2affd5915c33"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d64/classFT_1_1NodeMode.html#a56ae12aee4502b23a97e2affd5915c33">evaluate</a> (const MatrixXd &amp;X, const VectorXd &amp;y, const std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; &amp;Z, <a class="el" href="../../d5/d75/structFT_1_1Stacks.html">Stacks</a> &amp;stack)</td></tr>
-<tr class="memdesc:a56ae12aee4502b23a97e2affd5915c33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the node and updates the stack states. <br /></td></tr>
-<tr class="separator:a56ae12aee4502b23a97e2affd5915c33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f984fcf9089039217ce90d1e3701ae4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1f984fcf9089039217ce90d1e3701ae4"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d64/classFT_1_1NodeMode.html#a1f984fcf9089039217ce90d1e3701ae4">evaluate</a> (const <a class="el" href="../../d5/d03/classFT_1_1Data.html">Data</a> &amp;data, <a class="el" href="../../d5/d75/structFT_1_1Stacks.html">Stacks</a> &amp;stack)</td></tr>
+<tr class="memdesc:a1f984fcf9089039217ce90d1e3701ae4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the node and updates the stack states. <br /></td></tr>
+<tr class="separator:a1f984fcf9089039217ce90d1e3701ae4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1290cb8cc8e50706c128837767f0d37b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1290cb8cc8e50706c128837767f0d37b"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d64/classFT_1_1NodeMode.html#a1290cb8cc8e50706c128837767f0d37b">eval_eqn</a> (<a class="el" href="../../d5/d75/structFT_1_1Stacks.html">Stacks</a> &amp;stack)</td></tr>
 <tr class="memdesc:a1290cb8cc8e50706c128837767f0d37b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the node symbolically. <br /></td></tr>
 <tr class="separator:a1290cb8cc8e50706c128837767f0d37b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classFT_1_1Node"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classFT_1_1Node')"><img src="../../closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="../../d3/daf/classFT_1_1Node.html">FT::Node</a></td></tr>
-<tr class="memitem:a95e1d572191c38566fc3edde41081972 inherit pub_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a95e1d572191c38566fc3edde41081972"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/daf/classFT_1_1Node.html#a95e1d572191c38566fc3edde41081972">evaluate</a> (const MatrixXd &amp;X, const VectorXd &amp;y, const std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt;&gt;&gt; &amp;Z, <a class="el" href="../../d5/d75/structFT_1_1Stacks.html">Stacks</a> &amp;stack)=0</td></tr>
-<tr class="memdesc:a95e1d572191c38566fc3edde41081972 inherit pub_methods_classFT_1_1Node"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the node and updates the stack states. <br /></td></tr>
-<tr class="separator:a95e1d572191c38566fc3edde41081972 inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c25f017fe0e31985293be28d7aae946 inherit pub_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3c25f017fe0e31985293be28d7aae946"></a>
 unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>total_arity</b> ()</td></tr>
 <tr class="separator:a3c25f017fe0e31985293be28d7aae946 inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -164,14 +161,26 @@ ArrayXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=".
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/daf/classFT_1_1Node.html#ab21932c302da1432b829b59b00a8f97e">isNodeDx</a> ()</td></tr>
 <tr class="memdesc:ab21932c302da1432b829b59b00a8f97e inherit pub_methods_classFT_1_1Node"><td class="mdescLeft">&#160;</td><td class="mdescRight">check of node type <br /></td></tr>
 <tr class="separator:ab21932c302da1432b829b59b00a8f97e inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26bfc16470d49222cc6c20d4d7c6b42f inherit pub_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a26bfc16470d49222cc6c20d4d7c6b42f"></a>
-auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/daf/classFT_1_1Node.html#a26bfc16470d49222cc6c20d4d7c6b42f">clone</a> () const </td></tr>
-<tr class="memdesc:a26bfc16470d49222cc6c20d4d7c6b42f inherit pub_methods_classFT_1_1Node"><td class="mdescLeft">&#160;</td><td class="mdescRight">makes a unique copy of this node <br /></td></tr>
-<tr class="separator:a26bfc16470d49222cc6c20d4d7c6b42f inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a526cc31df31f70e756e8f48e0fa540f7 inherit pub_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a526cc31df31f70e756e8f48e0fa540f7"></a>
-auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/daf/classFT_1_1Node.html#a526cc31df31f70e756e8f48e0fa540f7">rnd_clone</a> () const </td></tr>
-<tr class="memdesc:a526cc31df31f70e756e8f48e0fa540f7 inherit pub_methods_classFT_1_1Node"><td class="mdescLeft">&#160;</td><td class="mdescRight">makes a randomized unique copy ofnode <br /></td></tr>
-<tr class="separator:a526cc31df31f70e756e8f48e0fa540f7 inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a728ffac6fcd0f17a86aeb5b3b6e53742 inherit pub_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a728ffac6fcd0f17a86aeb5b3b6e53742"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>isNodeTrain</b> ()</td></tr>
+<tr class="separator:a728ffac6fcd0f17a86aeb5b3b6e53742 inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18dc899e75237bba5a08dc86292e12ea inherit pub_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a18dc899e75237bba5a08dc86292e12ea"></a>
+std::unique_ptr&lt; <a class="el" href="../../d3/daf/classFT_1_1Node.html">Node</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/daf/classFT_1_1Node.html#a18dc899e75237bba5a08dc86292e12ea">clone</a> () const </td></tr>
+<tr class="memdesc:a18dc899e75237bba5a08dc86292e12ea inherit pub_methods_classFT_1_1Node"><td class="mdescLeft">&#160;</td><td class="mdescRight">makes a unique copy of this node <br /></td></tr>
+<tr class="separator:a18dc899e75237bba5a08dc86292e12ea inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04af42a958e1b0c37620f11a701af592 inherit pub_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a04af42a958e1b0c37620f11a701af592"></a>
+std::unique_ptr&lt; <a class="el" href="../../d3/daf/classFT_1_1Node.html">Node</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/daf/classFT_1_1Node.html#a04af42a958e1b0c37620f11a701af592">rnd_clone</a> () const </td></tr>
+<tr class="memdesc:a04af42a958e1b0c37620f11a701af592 inherit pub_methods_classFT_1_1Node"><td class="mdescLeft">&#160;</td><td class="mdescRight">makes a randomized unique copy ofnode <br /></td></tr>
+<tr class="separator:a04af42a958e1b0c37620f11a701af592 inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:aa306a8204dac04c489a0448eceda00ad"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa306a8204dac04c489a0448eceda00ad"></a>
+<a class="el" href="../../d3/d64/classFT_1_1NodeMode.html">NodeMode</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>clone_impl</b> () const override</td></tr>
+<tr class="separator:aa306a8204dac04c489a0448eceda00ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3de2cb05ec5404d95e94a7072b973a24"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3de2cb05ec5404d95e94a7072b973a24"></a>
+<a class="el" href="../../d3/d64/classFT_1_1NodeMode.html">NodeMode</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>rnd_clone_impl</b> () const override</td></tr>
+<tr class="separator:a3de2cb05ec5404d95e94a7072b973a24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -195,16 +204,10 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../..
 <tr class="memitem:ad841347ffcd8c89fea40a6ffa6c53d61 inherit pub_attribs_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad841347ffcd8c89fea40a6ffa6c53d61"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>visits</b> = 0</td></tr>
 <tr class="separator:ad841347ffcd8c89fea40a6ffa6c53d61 inherit pub_attribs_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_methods_classFT_1_1Node"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classFT_1_1Node')"><img src="../../closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="../../d3/daf/classFT_1_1Node.html">FT::Node</a></td></tr>
-<tr class="memitem:a31941d8bc3a131c9391621302782a558 inherit pro_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a31941d8bc3a131c9391621302782a558"></a>
-virtual <a class="el" href="../../d3/daf/classFT_1_1Node.html">Node</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>clone_impl</b> () const =0</td></tr>
-<tr class="separator:a31941d8bc3a131c9391621302782a558 inherit pro_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa96b0a089f9260064bd6f702fd33a6c7 inherit pro_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa96b0a089f9260064bd6f702fd33a6c7"></a>
-virtual <a class="el" href="../../d3/daf/classFT_1_1Node.html">Node</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>rnd_clone_impl</b> () const =0</td></tr>
-<tr class="separator:aa96b0a089f9260064bd6f702fd33a6c7 inherit pro_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this class was generated from the following file:<ul>
-<li><a class="el" href="../../db/daa/nodemode_8h_source.html">nodemode.h</a></li>
+<hr/>The documentation for this class was generated from the following files:<ul>
+<li><a class="el" href="../../df/d73/n__mode_8h_source.html">n_mode.h</a></li>
+<li>n_mode.cc</li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

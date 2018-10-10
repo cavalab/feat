@@ -1,6 +1,7 @@
 var classFT_1_1Stack =
 [
     [ "Stack", "d3/d35/classFT_1_1Stack.html#ab00e738aca3a48ce47de28124c4bd6ab", null ],
+    [ "~Stack", "d3/d35/classFT_1_1Stack.html#a96154d314ac883172f802f5866ef9024", null ],
     [ "at", "d3/d35/classFT_1_1Stack.html#a950831ef551e327dd283a88fbedf6701", null ],
     [ "begin", "d3/d35/classFT_1_1Stack.html#a2fa8bc0afab80e3c507601760a40a892", null ],
     [ "begin", "d3/d35/classFT_1_1Stack.html#aa93ecce2320aca05cb59915f8dcf3869", null ],

@@ -15,6 +15,7 @@ license: GNU/GPL v3
 #include "init.h"
 #include "rnd.h"
 #include "utils.h"
+#include "io.h"
 #include "params.h"
 #include "population.h"
 #include "selection.h"
@@ -250,7 +251,7 @@ namespace FT{
 
             /// get longitudinal data from file s
             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>> get_Z(string s, 
-                    int * idx, int idx_size);
+                    long * idx, int idx_size);
 
             /// destructor             
             ~Feat();
@@ -273,7 +274,7 @@ namespace FT{
 
             /// train a model, first loading longitudinal samples (Z) from file.
             void fit_with_z(double * X, int rowsX, int colsX, double * Y, int lenY, string s, 
-                            int * idx, int idx_size);
+                            long * idx, int idx_size);
            
             /// predict on unseen data.             
             VectorXd predict(MatrixXd& X,
@@ -294,11 +295,11 @@ namespace FT{
 	
             /// predict on unseen data, loading longitudinal samples (Z) from file.
             VectorXd predict_with_z(double * X, int rowsX,int colsX, 
-                                    string s, int * idx, int idx_size);
+                                    string s, long * idx, int idx_size);
 
             /// predict probabilities of each class.
             ArrayXXd predict_proba_with_z(double * X, int rowsX,int colsX, 
-                                    string s, int * idx, int idx_size);  
+                                    string s, long * idx, int idx_size);  
 
             /// predict on unseen data.             
             VectorXd predict(double * X, int rowsX, int colsX);      
@@ -312,7 +313,8 @@ namespace FT{
             MatrixXd transform(double * X,  int rows_x, int cols_x);
             
             /// train a model, first loading longitudinal samples (Z) from file.
-            MatrixXd transform_with_z(double * X, int rowsX, int colsX, string s, int * idx, int idx_size);
+            MatrixXd transform_with_z(double * X, int rowsX, int colsX, string s, 
+                                      long * idx, int idx_size);
             
             /// convenience function calls fit then predict.            
             VectorXd fit_predict(MatrixXd& X,
