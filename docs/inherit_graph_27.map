@@ -1,3 +1,8 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$d3/d35/classFT_1_1Stack.html" title="template stack class which holds various stack types for feat " alt="" coords="5,5,135,32"/>
+<area shape="rect" id="node1" href="$d2/d3a/structFT_1_1SelectionOperator.html" title="base class for selection operators. " alt="" coords="5,107,156,133"/>
+<area shape="rect" id="node2" href="$d8/d78/structFT_1_1Lexicase.html" title="Lexicase selection operator. " alt="" coords="209,5,308,32"/>
+<area shape="rect" id="node3" href="$dd/df8/structFT_1_1NSGA2.html" title="FT::NSGA2" alt="" coords="213,56,304,83"/>
+<area shape="rect" id="node4" href="$dd/d16/structFT_1_1Offspring.html" title="FT::Offspring" alt="" coords="209,107,308,133"/>
+<area shape="rect" id="node5" href="$d0/d92/structFT_1_1Random.html" title="FT::Random" alt="" coords="211,157,306,184"/>
+<area shape="rect" id="node6" href="$d9/d70/structFT_1_1SimAnneal.html" title="FT::SimAnneal" alt="" coords="204,208,313,235"/>
 </map>

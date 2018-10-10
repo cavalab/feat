@@ -125,313 +125,365 @@ Collaboration diagram for FT::Feat:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../db/d54/classFT_1_1Feat__coll__graph.png" border="0" usemap="#FT_1_1Feat_coll__map" alt="Collaboration graph"/></div>
 <map name="FT_1_1Feat_coll__map" id="FT_1_1Feat_coll__map">
-<area shape="rect" id="node4" href="../../de/d2c/structFT_1_1Parameters.html" title="holds the hyperparameters for Feat. " alt="" coords="855,585,969,611"/>
-<area shape="rect" id="node21" href="../../d8/d25/classFT_1_1Individual.html" title="individual programs in the population " alt="" coords="861,178,963,205"/>
-<area shape="rect" id="node23" href="../../dd/db4/structFT_1_1Normalizer.html" title="FT::Normalizer" alt="" coords="857,277,967,303"/>
-<area shape="rect" id="node6" href="../../dd/d15/structFT_1_1NodeVector.html" title="an extension of a vector of unique pointers to nodes " alt="" coords="529,71,643,98"/>
-<area shape="rect" id="node7" title="STL class. " alt="" coords="237,64,397,105"/>
-<area shape="rect" id="node10" title="STL class. " alt="" coords="277,695,357,722"/>
-<area shape="rect" id="node11" title="STL class. " alt="" coords="5,688,132,729"/>
-<area shape="rect" id="node14" href="../../d4/d04/structFT_1_1Parameters_1_1BP.html" title="FT::Parameters::BP" alt="" coords="517,629,655,655"/>
-<area shape="rect" id="node19" href="../../d3/d4e/classFT_1_1Timer.html" title="class for timing things. " alt="" coords="873,435,951,462"/>
+<area shape="rect" id="node3" href="../../df/dfc/structFT_1_1Archive.html" title="Defines a Pareto archive of programs. " alt="" coords="1273,697,1364,723"/>
+<area shape="rect" id="node4" href="../../dd/df8/structFT_1_1NSGA2.html" title="FT::NSGA2" alt="" coords="983,26,1073,53"/>
+<area shape="rect" id="node5" href="../../d2/d3a/structFT_1_1SelectionOperator.html" title="base class for selection operators. " alt="" coords="629,71,780,98"/>
+<area shape="rect" id="node6" title="STL class. " alt="" coords="393,258,473,285"/>
+<area shape="rect" id="node11" href="../../d8/d25/classFT_1_1Individual.html" title="individual programs in the population " alt="" coords="654,706,755,733"/>
+<area shape="rect" id="node22" href="../../de/d2c/structFT_1_1Parameters.html" title="holds the hyperparameters for Feat. " alt="" coords="971,493,1085,519"/>
+<area shape="rect" id="node7" title="STL class. " alt="" coords="166,251,293,292"/>
+<area shape="rect" id="node30" href="../../dd/db4/structFT_1_1Normalizer.html" title="FT::Normalizer" alt="" coords="650,818,759,845"/>
+<area shape="rect" id="node14" href="../../dd/d15/structFT_1_1NodeVector.html" title="an extension of a vector of unique pointers to nodes " alt="" coords="376,601,491,627"/>
+<area shape="rect" id="node15" title="STL class. " alt="" coords="149,593,309,635"/>
+<area shape="rect" id="node23" href="../../d0/d29/structFT_1_1Parameters_1_1HC.html" title="FT::Parameters::HC" alt="" coords="634,554,775,581"/>
+<area shape="rect" id="node26" href="../../d4/d04/structFT_1_1Parameters_1_1BP.html" title="FT::Parameters::BP" alt="" coords="635,655,774,682"/>
+<area shape="rect" id="node29" href="../../d3/d4e/classFT_1_1Timer.html" title="class for timing things. " alt="" coords="1279,1079,1358,1106"/>
 </map>
 <center><span class="legend">[<a target="top" href="../../graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a69dc6a2d1e9df33443954a60fc8d5c71"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a69dc6a2d1e9df33443954a60fc8d5c71"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a69dc6a2d1e9df33443954a60fc8d5c71">Feat</a> (int pop_size=100, int gens=100, string ml=&quot;LinearRidgeRegression&quot;, bool classification=false, int verbosity=1, int max_stall=0, string sel=&quot;lexicase&quot;, string surv=&quot;nsga2&quot;, float cross_rate=0.5, char otype='a', string functions=&quot;&quot;, unsigned int max_depth=3, unsigned int max_dim=10, int random_state=0, bool erc=false, string obj=&quot;fitness,complexity&quot;, bool shuffle=false, double split=0.75, double fb=0.5, string <a class="el" href="../../db/dff/classFT_1_1Feat.html#aa1d94c8c67ddc6e56a24e80970e8b6ce">scorer</a>=&quot;&quot;, string feature_names=&quot;&quot;, bool backprop=false, int iters=10, double lr=0.1, int bs=100, int n_threads=0)</td></tr>
-<tr class="memdesc:a69dc6a2d1e9df33443954a60fc8d5c71"><td class="mdescLeft">&#160;</td><td class="mdescRight">member initializer list constructor <br /></td></tr>
-<tr class="separator:a69dc6a2d1e9df33443954a60fc8d5c71"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a49dd79e97333eaf36f38f3dc3d35e1f7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a49dd79e97333eaf36f38f3dc3d35e1f7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a49dd79e97333eaf36f38f3dc3d35e1f7">set_pop_size</a> (int pop_size)</td></tr>
-<tr class="memdesc:a49dd79e97333eaf36f38f3dc3d35e1f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">set size of population <br /></td></tr>
-<tr class="separator:a49dd79e97333eaf36f38f3dc3d35e1f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2264cf2cde17cb13caf0beb3d92d8952"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2264cf2cde17cb13caf0beb3d92d8952"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a2264cf2cde17cb13caf0beb3d92d8952">set_generations</a> (int gens)</td></tr>
-<tr class="memdesc:a2264cf2cde17cb13caf0beb3d92d8952"><td class="mdescLeft">&#160;</td><td class="mdescRight">set size of max generations <br /></td></tr>
-<tr class="separator:a2264cf2cde17cb13caf0beb3d92d8952"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af72e593c2e2bf7bd49a05f128f551941"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af72e593c2e2bf7bd49a05f128f551941"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#af72e593c2e2bf7bd49a05f128f551941">set_ml</a> (string ml)</td></tr>
-<tr class="memdesc:af72e593c2e2bf7bd49a05f128f551941"><td class="mdescLeft">&#160;</td><td class="mdescRight">set <a class="el" href="../../df/dfa/classFT_1_1ML.html" title="class that specifies the machine learning algorithm to pair with Feat. ">ML</a> algorithm to use <br /></td></tr>
-<tr class="separator:af72e593c2e2bf7bd49a05f128f551941"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf8adeb6f15f8a2debbdb58d58d7bcb6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acf8adeb6f15f8a2debbdb58d58d7bcb6"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#acf8adeb6f15f8a2debbdb58d58d7bcb6">set_classification</a> (bool classification)</td></tr>
-<tr class="memdesc:acf8adeb6f15f8a2debbdb58d58d7bcb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">set EProblemType for shogun <br /></td></tr>
-<tr class="separator:acf8adeb6f15f8a2debbdb58d58d7bcb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4a058fa0a08fcddbe73fd7b7bd6e64dd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4a058fa0a08fcddbe73fd7b7bd6e64dd"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a4a058fa0a08fcddbe73fd7b7bd6e64dd">set_verbosity</a> (int verbosity)</td></tr>
-<tr class="memdesc:a4a058fa0a08fcddbe73fd7b7bd6e64dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">set level of debug info <br /></td></tr>
-<tr class="separator:a4a058fa0a08fcddbe73fd7b7bd6e64dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa4dfa9dcaf6e06a1b87eefe0a7e08dd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afa4dfa9dcaf6e06a1b87eefe0a7e08dd"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#afa4dfa9dcaf6e06a1b87eefe0a7e08dd">set_max_stall</a> (int max_stall)</td></tr>
-<tr class="memdesc:afa4dfa9dcaf6e06a1b87eefe0a7e08dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">set maximum stall in learning, in generations <br /></td></tr>
-<tr class="separator:afa4dfa9dcaf6e06a1b87eefe0a7e08dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6efbcdfceb8e924371561ea08b7ad91d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6efbcdfceb8e924371561ea08b7ad91d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a6efbcdfceb8e924371561ea08b7ad91d">set_selection</a> (string sel)</td></tr>
-<tr class="memdesc:a6efbcdfceb8e924371561ea08b7ad91d"><td class="mdescLeft">&#160;</td><td class="mdescRight">set selection method <br /></td></tr>
-<tr class="separator:a6efbcdfceb8e924371561ea08b7ad91d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4eb00c32688a48f4454b3943027c88b2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4eb00c32688a48f4454b3943027c88b2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a4eb00c32688a48f4454b3943027c88b2">set_survival</a> (string surv)</td></tr>
-<tr class="memdesc:a4eb00c32688a48f4454b3943027c88b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">set survivability <br /></td></tr>
-<tr class="separator:a4eb00c32688a48f4454b3943027c88b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d870c85743787c9149a2d8a0ab2e453"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3d870c85743787c9149a2d8a0ab2e453"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a3d870c85743787c9149a2d8a0ab2e453">set_cross_rate</a> (float cross_rate)</td></tr>
-<tr class="memdesc:a3d870c85743787c9149a2d8a0ab2e453"><td class="mdescLeft">&#160;</td><td class="mdescRight">set cross rate in variation <br /></td></tr>
-<tr class="separator:a3d870c85743787c9149a2d8a0ab2e453"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd9d3a1a3a2f3c4ce7f7911b3a336f4a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afd9d3a1a3a2f3c4ce7f7911b3a336f4a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#afd9d3a1a3a2f3c4ce7f7911b3a336f4a">set_otype</a> (char ot)</td></tr>
-<tr class="memdesc:afd9d3a1a3a2f3c4ce7f7911b3a336f4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">set program output type ('f', 'b') <br /></td></tr>
-<tr class="separator:afd9d3a1a3a2f3c4ce7f7911b3a336f4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9510d66be1b2e345ab6b892f25a739f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae9510d66be1b2e345ab6b892f25a739f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#ae9510d66be1b2e345ab6b892f25a739f">set_functions</a> (string functions)</td></tr>
-<tr class="memdesc:ae9510d66be1b2e345ab6b892f25a739f"><td class="mdescLeft">&#160;</td><td class="mdescRight">sets available functions based on comma-separated list. <br /></td></tr>
-<tr class="separator:ae9510d66be1b2e345ab6b892f25a739f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c7115da5aa9a6a2e903fcdcf52c4530"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0c7115da5aa9a6a2e903fcdcf52c4530"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a0c7115da5aa9a6a2e903fcdcf52c4530">set_max_depth</a> (unsigned int max_depth)</td></tr>
-<tr class="memdesc:a0c7115da5aa9a6a2e903fcdcf52c4530"><td class="mdescLeft">&#160;</td><td class="mdescRight">set max depth of programs <br /></td></tr>
-<tr class="separator:a0c7115da5aa9a6a2e903fcdcf52c4530"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adce65e47f11bd14683ebd74f123a3825"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adce65e47f11bd14683ebd74f123a3825"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#adce65e47f11bd14683ebd74f123a3825">set_max_dim</a> (unsigned int max_dim)</td></tr>
-<tr class="memdesc:adce65e47f11bd14683ebd74f123a3825"><td class="mdescLeft">&#160;</td><td class="mdescRight">set maximum dimensionality of programs <br /></td></tr>
-<tr class="separator:adce65e47f11bd14683ebd74f123a3825"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3e2794fd185e8fd1b36f963d7bdf4499"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3e2794fd185e8fd1b36f963d7bdf4499"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a3e2794fd185e8fd1b36f963d7bdf4499">set_max_dim</a> (string str)</td></tr>
-<tr class="memdesc:a3e2794fd185e8fd1b36f963d7bdf4499"><td class="mdescLeft">&#160;</td><td class="mdescRight">set dimensionality as multiple of the number of columns <br /></td></tr>
-<tr class="separator:a3e2794fd185e8fd1b36f963d7bdf4499"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d6b2bd99950c8d6c7e53c9a04f41dbb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4d6b2bd99950c8d6c7e53c9a04f41dbb"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a4d6b2bd99950c8d6c7e53c9a04f41dbb">set_random_state</a> (int random_state)</td></tr>
-<tr class="memdesc:a4d6b2bd99950c8d6c7e53c9a04f41dbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">set seeds for each core's random number generator <br /></td></tr>
-<tr class="separator:a4d6b2bd99950c8d6c7e53c9a04f41dbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1088d48cbc863865cb2da5e6e3e6be80"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1088d48cbc863865cb2da5e6e3e6be80"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a1088d48cbc863865cb2da5e6e3e6be80">set_erc</a> (bool erc)</td></tr>
-<tr class="memdesc:a1088d48cbc863865cb2da5e6e3e6be80"><td class="mdescLeft">&#160;</td><td class="mdescRight">flag to set whether to use variable or constants for terminals <br /></td></tr>
-<tr class="separator:a1088d48cbc863865cb2da5e6e3e6be80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f794ad98914bce2117aafe1cf79409d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0f794ad98914bce2117aafe1cf79409d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a0f794ad98914bce2117aafe1cf79409d">set_shuffle</a> (bool sh)</td></tr>
-<tr class="memdesc:a0f794ad98914bce2117aafe1cf79409d"><td class="mdescLeft">&#160;</td><td class="mdescRight">flag to shuffle the input samples for train/test splits <br /></td></tr>
-<tr class="separator:a0f794ad98914bce2117aafe1cf79409d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0166b613fa0d1969225fafa261f4f7cc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0166b613fa0d1969225fafa261f4f7cc"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a0166b613fa0d1969225fafa261f4f7cc">set_objectives</a> (string obj)</td></tr>
-<tr class="memdesc:a0166b613fa0d1969225fafa261f4f7cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">set objectives in feat <br /></td></tr>
-<tr class="separator:a0166b613fa0d1969225fafa261f4f7cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0ad8b562f8e8ab5e4cb4b3c94960860e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0ad8b562f8e8ab5e4cb4b3c94960860e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a0ad8b562f8e8ab5e4cb4b3c94960860e">set_split</a> (double sp)</td></tr>
-<tr class="memdesc:a0ad8b562f8e8ab5e4cb4b3c94960860e"><td class="mdescLeft">&#160;</td><td class="mdescRight">set train fraction of dataset <br /></td></tr>
-<tr class="separator:a0ad8b562f8e8ab5e4cb4b3c94960860e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a1fb2e1c71d30eab0012ed7dfe1da20"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2a1fb2e1c71d30eab0012ed7dfe1da20"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a2a1fb2e1c71d30eab0012ed7dfe1da20">set_dtypes</a> (vector&lt; char &gt; dtypes)</td></tr>
-<tr class="memdesc:a2a1fb2e1c71d30eab0012ed7dfe1da20"><td class="mdescLeft">&#160;</td><td class="mdescRight">set data types for input parameters <br /></td></tr>
-<tr class="separator:a2a1fb2e1c71d30eab0012ed7dfe1da20"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c1743ceb6bbc7daaa0f2edc02f5b2ef"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0c1743ceb6bbc7daaa0f2edc02f5b2ef"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a0c1743ceb6bbc7daaa0f2edc02f5b2ef">set_feedback</a> (double fb)</td></tr>
-<tr class="memdesc:a0c1743ceb6bbc7daaa0f2edc02f5b2ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">set feedback <br /></td></tr>
-<tr class="separator:a0c1743ceb6bbc7daaa0f2edc02f5b2ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af47926cf65703e6cc6f3ba9a5112ea46"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af47926cf65703e6cc6f3ba9a5112ea46"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#af47926cf65703e6cc6f3ba9a5112ea46">set_name</a> (string s)</td></tr>
-<tr class="memdesc:af47926cf65703e6cc6f3ba9a5112ea46"><td class="mdescLeft">&#160;</td><td class="mdescRight">set name for files <br /></td></tr>
-<tr class="separator:af47926cf65703e6cc6f3ba9a5112ea46"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af785ffcb7d5e5a390123bc049ebb8c10"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af785ffcb7d5e5a390123bc049ebb8c10"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#af785ffcb7d5e5a390123bc049ebb8c10">set_scorer</a> (string s)</td></tr>
-<tr class="memdesc:af785ffcb7d5e5a390123bc049ebb8c10"><td class="mdescLeft">&#160;</td><td class="mdescRight">set scoring function <br /></td></tr>
-<tr class="separator:af785ffcb7d5e5a390123bc049ebb8c10"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11659f60c82f238ee8dcbcd0a95c6e57"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a11659f60c82f238ee8dcbcd0a95c6e57"></a>
+<tr class="memitem:a3308ba35e02bbc07fb41a3286077c372"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3308ba35e02bbc07fb41a3286077c372"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a3308ba35e02bbc07fb41a3286077c372">Feat</a> (int pop_size=100, int gens=100, string ml=&quot;LinearRidgeRegression&quot;, bool classification=false, int verbosity=2, int max_stall=0, string sel=&quot;lexicase&quot;, string surv=&quot;nsga2&quot;, float cross_rate=0.5, char otype='a', string functions=&quot;&quot;, unsigned int max_depth=3, unsigned int max_dim=10, int random_state=0, bool erc=false, string obj=&quot;fitness,complexity&quot;, bool shuffle=false, double split=0.75, double fb=0.5, string <a class="el" href="../../db/dff/classFT_1_1Feat.html#aa1d94c8c67ddc6e56a24e80970e8b6ce">scorer</a>=&quot;&quot;, string feature_names=&quot;&quot;, bool backprop=false, int iters=10, double lr=0.1, int bs=100, int n_threads=0, bool hillclimb=false, string <a class="el" href="../../db/dff/classFT_1_1Feat.html#aba080b7328bd2531c64c3e1fb742e448">logfile</a>=&quot;&quot;, int max_time=-1, bool use_batch=false, bool semantic_xo=false, int <a class="el" href="../../db/dff/classFT_1_1Feat.html#ae3dbfaf2093cfca7a19294317fdb64bf">print_pop</a>=0)</td></tr>
+<tr class="memdesc:a3308ba35e02bbc07fb41a3286077c372"><td class="mdescLeft">&#160;</td><td class="mdescRight">member initializer list constructor <br /></td></tr>
+<tr class="separator:a3308ba35e02bbc07fb41a3286077c372"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ec3b484537655f2066ac982d2d24042"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9ec3b484537655f2066ac982d2d24042"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a9ec3b484537655f2066ac982d2d24042">set_pop_size</a> (int pop_size)</td></tr>
+<tr class="memdesc:a9ec3b484537655f2066ac982d2d24042"><td class="mdescLeft">&#160;</td><td class="mdescRight">set size of population <br /></td></tr>
+<tr class="separator:a9ec3b484537655f2066ac982d2d24042"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4bbf7e75964e9501101312b1bb537d7c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4bbf7e75964e9501101312b1bb537d7c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a4bbf7e75964e9501101312b1bb537d7c">set_generations</a> (int gens)</td></tr>
+<tr class="memdesc:a4bbf7e75964e9501101312b1bb537d7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">set size of max generations <br /></td></tr>
+<tr class="separator:a4bbf7e75964e9501101312b1bb537d7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9dc6ad4f2183ba01f12123dc03ca08d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa9dc6ad4f2183ba01f12123dc03ca08d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#aa9dc6ad4f2183ba01f12123dc03ca08d">set_ml</a> (string ml)</td></tr>
+<tr class="memdesc:aa9dc6ad4f2183ba01f12123dc03ca08d"><td class="mdescLeft">&#160;</td><td class="mdescRight">set <a class="el" href="../../df/dfa/classFT_1_1ML.html" title="class that specifies the machine learning algorithm to pair with Feat. ">ML</a> algorithm to use <br /></td></tr>
+<tr class="separator:aa9dc6ad4f2183ba01f12123dc03ca08d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a362ac99c901ac7c4f8fca90f3446d277"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a362ac99c901ac7c4f8fca90f3446d277"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a362ac99c901ac7c4f8fca90f3446d277">set_classification</a> (bool classification)</td></tr>
+<tr class="memdesc:a362ac99c901ac7c4f8fca90f3446d277"><td class="mdescLeft">&#160;</td><td class="mdescRight">set EProblemType for shogun <br /></td></tr>
+<tr class="separator:a362ac99c901ac7c4f8fca90f3446d277"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adfe06031824311d1f02afa24805aba5e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adfe06031824311d1f02afa24805aba5e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#adfe06031824311d1f02afa24805aba5e">set_verbosity</a> (int verbosity)</td></tr>
+<tr class="memdesc:adfe06031824311d1f02afa24805aba5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">set level of debug info <br /></td></tr>
+<tr class="separator:adfe06031824311d1f02afa24805aba5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff51fdd5751b95cc32b48b8a99d90f9f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aff51fdd5751b95cc32b48b8a99d90f9f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#aff51fdd5751b95cc32b48b8a99d90f9f">set_max_stall</a> (int max_stall)</td></tr>
+<tr class="memdesc:aff51fdd5751b95cc32b48b8a99d90f9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">set maximum stall in learning, in generations <br /></td></tr>
+<tr class="separator:aff51fdd5751b95cc32b48b8a99d90f9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0be7b4df9bfdcf91f67707d3854d1764"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0be7b4df9bfdcf91f67707d3854d1764"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a0be7b4df9bfdcf91f67707d3854d1764">set_selection</a> (string sel)</td></tr>
+<tr class="memdesc:a0be7b4df9bfdcf91f67707d3854d1764"><td class="mdescLeft">&#160;</td><td class="mdescRight">set selection method <br /></td></tr>
+<tr class="separator:a0be7b4df9bfdcf91f67707d3854d1764"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae63059431600ab734962201e379ea357"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae63059431600ab734962201e379ea357"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#ae63059431600ab734962201e379ea357">set_survival</a> (string surv)</td></tr>
+<tr class="memdesc:ae63059431600ab734962201e379ea357"><td class="mdescLeft">&#160;</td><td class="mdescRight">set survivability <br /></td></tr>
+<tr class="separator:ae63059431600ab734962201e379ea357"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae92576a0f6304ca94a893d32f6239d34"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae92576a0f6304ca94a893d32f6239d34"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#ae92576a0f6304ca94a893d32f6239d34">set_cross_rate</a> (float cross_rate)</td></tr>
+<tr class="memdesc:ae92576a0f6304ca94a893d32f6239d34"><td class="mdescLeft">&#160;</td><td class="mdescRight">set cross rate in variation <br /></td></tr>
+<tr class="separator:ae92576a0f6304ca94a893d32f6239d34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7f998174d4f55a45a291695b86bd2ff"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa7f998174d4f55a45a291695b86bd2ff"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#aa7f998174d4f55a45a291695b86bd2ff">set_otype</a> (char ot)</td></tr>
+<tr class="memdesc:aa7f998174d4f55a45a291695b86bd2ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">set program output type ('f', 'b') <br /></td></tr>
+<tr class="separator:aa7f998174d4f55a45a291695b86bd2ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad50375f04bbf8e98e9d53ebb67973e20"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad50375f04bbf8e98e9d53ebb67973e20"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#ad50375f04bbf8e98e9d53ebb67973e20">set_functions</a> (string functions)</td></tr>
+<tr class="memdesc:ad50375f04bbf8e98e9d53ebb67973e20"><td class="mdescLeft">&#160;</td><td class="mdescRight">sets available functions based on comma-separated list. <br /></td></tr>
+<tr class="separator:ad50375f04bbf8e98e9d53ebb67973e20"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4f1fb971f01f09f2f6901af8a2a4fe6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad4f1fb971f01f09f2f6901af8a2a4fe6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#ad4f1fb971f01f09f2f6901af8a2a4fe6">set_max_depth</a> (unsigned int max_depth)</td></tr>
+<tr class="memdesc:ad4f1fb971f01f09f2f6901af8a2a4fe6"><td class="mdescLeft">&#160;</td><td class="mdescRight">set max depth of programs <br /></td></tr>
+<tr class="separator:ad4f1fb971f01f09f2f6901af8a2a4fe6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0eb77221403bb93117d9ab13d35291a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad0eb77221403bb93117d9ab13d35291a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#ad0eb77221403bb93117d9ab13d35291a">set_max_dim</a> (unsigned int max_dim)</td></tr>
+<tr class="memdesc:ad0eb77221403bb93117d9ab13d35291a"><td class="mdescLeft">&#160;</td><td class="mdescRight">set maximum dimensionality of programs <br /></td></tr>
+<tr class="separator:ad0eb77221403bb93117d9ab13d35291a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad652f8df46dc7bd933d3c3609b227932"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad652f8df46dc7bd933d3c3609b227932"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#ad652f8df46dc7bd933d3c3609b227932">set_max_dim</a> (string str)</td></tr>
+<tr class="memdesc:ad652f8df46dc7bd933d3c3609b227932"><td class="mdescLeft">&#160;</td><td class="mdescRight">set dimensionality as multiple of the number of columns <br /></td></tr>
+<tr class="separator:ad652f8df46dc7bd933d3c3609b227932"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15c499b8735c8e4b19a1c06271544a51"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a15c499b8735c8e4b19a1c06271544a51"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a15c499b8735c8e4b19a1c06271544a51">set_random_state</a> (int random_state)</td></tr>
+<tr class="memdesc:a15c499b8735c8e4b19a1c06271544a51"><td class="mdescLeft">&#160;</td><td class="mdescRight">set seeds for each core's random number generator <br /></td></tr>
+<tr class="separator:a15c499b8735c8e4b19a1c06271544a51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3061cbce5f8ba248f19afa13f65d0ee1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3061cbce5f8ba248f19afa13f65d0ee1"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a3061cbce5f8ba248f19afa13f65d0ee1">set_erc</a> (bool erc)</td></tr>
+<tr class="memdesc:a3061cbce5f8ba248f19afa13f65d0ee1"><td class="mdescLeft">&#160;</td><td class="mdescRight">flag to set whether to use variable or constants for terminals <br /></td></tr>
+<tr class="separator:a3061cbce5f8ba248f19afa13f65d0ee1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab47b4abe7aa70ae88525ccbe30e077b9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab47b4abe7aa70ae88525ccbe30e077b9"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#ab47b4abe7aa70ae88525ccbe30e077b9">set_shuffle</a> (bool sh)</td></tr>
+<tr class="memdesc:ab47b4abe7aa70ae88525ccbe30e077b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">flag to shuffle the input samples for train/test splits <br /></td></tr>
+<tr class="separator:ab47b4abe7aa70ae88525ccbe30e077b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9475c56f274b3fbf6c5034b906979ce"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af9475c56f274b3fbf6c5034b906979ce"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#af9475c56f274b3fbf6c5034b906979ce">set_objectives</a> (string obj)</td></tr>
+<tr class="memdesc:af9475c56f274b3fbf6c5034b906979ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">set objectives in feat <br /></td></tr>
+<tr class="separator:af9475c56f274b3fbf6c5034b906979ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a148cf61e6b427b0337359642aa0ce507"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a148cf61e6b427b0337359642aa0ce507"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a148cf61e6b427b0337359642aa0ce507">set_split</a> (double sp)</td></tr>
+<tr class="memdesc:a148cf61e6b427b0337359642aa0ce507"><td class="mdescLeft">&#160;</td><td class="mdescRight">set train fraction of dataset <br /></td></tr>
+<tr class="separator:a148cf61e6b427b0337359642aa0ce507"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2bc82367924ad367d59f17c441a90bfc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2bc82367924ad367d59f17c441a90bfc"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a2bc82367924ad367d59f17c441a90bfc">set_dtypes</a> (vector&lt; char &gt; dtypes)</td></tr>
+<tr class="memdesc:a2bc82367924ad367d59f17c441a90bfc"><td class="mdescLeft">&#160;</td><td class="mdescRight">set data types for input parameters <br /></td></tr>
+<tr class="separator:a2bc82367924ad367d59f17c441a90bfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5292ad29bafb2b256480a34596d22f27"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5292ad29bafb2b256480a34596d22f27"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a5292ad29bafb2b256480a34596d22f27">set_feedback</a> (double fb)</td></tr>
+<tr class="memdesc:a5292ad29bafb2b256480a34596d22f27"><td class="mdescLeft">&#160;</td><td class="mdescRight">set feedback <br /></td></tr>
+<tr class="separator:a5292ad29bafb2b256480a34596d22f27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae0baf89218f51e8fabe0740d57dde8b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aae0baf89218f51e8fabe0740d57dde8b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#aae0baf89218f51e8fabe0740d57dde8b">set_logfile</a> (string s)</td></tr>
+<tr class="memdesc:aae0baf89218f51e8fabe0740d57dde8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">set name for files <br /></td></tr>
+<tr class="separator:aae0baf89218f51e8fabe0740d57dde8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39eda2f1a14b93e86d996b4a262a9021"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a39eda2f1a14b93e86d996b4a262a9021"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a39eda2f1a14b93e86d996b4a262a9021">set_scorer</a> (string s)</td></tr>
+<tr class="memdesc:a39eda2f1a14b93e86d996b4a262a9021"><td class="mdescLeft">&#160;</td><td class="mdescRight">set scoring function <br /></td></tr>
+<tr class="separator:a39eda2f1a14b93e86d996b4a262a9021"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a29bee37dc352312ae6a3adf3ca97ca65"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a29bee37dc352312ae6a3adf3ca97ca65"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>set_feature_names</b> (string s)</td></tr>
-<tr class="separator:a11659f60c82f238ee8dcbcd0a95c6e57"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2483191f1ea4f302d7a784e92a22b4c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae2483191f1ea4f302d7a784e92a22b4c"></a>
+<tr class="separator:a29bee37dc352312ae6a3adf3ca97ca65"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6b098840303ac34624175fb40ed9de2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae6b098840303ac34624175fb40ed9de2"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>set_feature_names</b> (vector&lt; string &gt; &amp;s)</td></tr>
-<tr class="separator:ae2483191f1ea4f302d7a784e92a22b4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60375171080f86520d74e0ac1bdbeab7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a60375171080f86520d74e0ac1bdbeab7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a60375171080f86520d74e0ac1bdbeab7">set_backprop</a> (bool bp)</td></tr>
-<tr class="memdesc:a60375171080f86520d74e0ac1bdbeab7"><td class="mdescLeft">&#160;</td><td class="mdescRight">set name for files <br /></td></tr>
-<tr class="separator:a60375171080f86520d74e0ac1bdbeab7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a48bc45e6e60fdac4f71fbe927475979a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a48bc45e6e60fdac4f71fbe927475979a"></a>
+<tr class="separator:ae6b098840303ac34624175fb40ed9de2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0088fc0725db1b4c7c7f97d8d404fda2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0088fc0725db1b4c7c7f97d8d404fda2"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a0088fc0725db1b4c7c7f97d8d404fda2">set_backprop</a> (bool bp)</td></tr>
+<tr class="memdesc:a0088fc0725db1b4c7c7f97d8d404fda2"><td class="mdescLeft">&#160;</td><td class="mdescRight">set constant optimization options <br /></td></tr>
+<tr class="separator:a0088fc0725db1b4c7c7f97d8d404fda2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7d01af79abeebf28abdf88e3b7ed9a8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa7d01af79abeebf28abdf88e3b7ed9a8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_hillclimb</b> (bool hc)</td></tr>
+<tr class="separator:aa7d01af79abeebf28abdf88e3b7ed9a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a9e1aef557ff7f716e7707624c84591"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9a9e1aef557ff7f716e7707624c84591"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>set_iters</b> (int iters)</td></tr>
-<tr class="separator:a48bc45e6e60fdac4f71fbe927475979a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa5c4bc603238b18a88ed517390c05d9c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa5c4bc603238b18a88ed517390c05d9c"></a>
+<tr class="separator:a9a9e1aef557ff7f716e7707624c84591"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e86ac10d6ba70444e07f5d38c292548"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2e86ac10d6ba70444e07f5d38c292548"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>set_lr</b> (double lr)</td></tr>
-<tr class="separator:aa5c4bc603238b18a88ed517390c05d9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37b2bcd987b29fdf769e7b5876051173"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a37b2bcd987b29fdf769e7b5876051173"></a>
+<tr class="separator:a2e86ac10d6ba70444e07f5d38c292548"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae93c64f176954e630b66e5e81d3fbe10"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae93c64f176954e630b66e5e81d3fbe10"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>set_batch_size</b> (int bs)</td></tr>
-<tr class="separator:a37b2bcd987b29fdf769e7b5876051173"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a49137b4e0c6947f7cc77c3d1f76ca41b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a49137b4e0c6947f7cc77c3d1f76ca41b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a49137b4e0c6947f7cc77c3d1f76ca41b">set_n_threads</a> (unsigned t)</td></tr>
-<tr class="memdesc:a49137b4e0c6947f7cc77c3d1f76ca41b"><td class="mdescLeft">&#160;</td><td class="mdescRight">set number of threads <br /></td></tr>
-<tr class="separator:a49137b4e0c6947f7cc77c3d1f76ca41b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa846df76606deab76ddcb2719b00e8ad"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa846df76606deab76ddcb2719b00e8ad"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#aa846df76606deab76ddcb2719b00e8ad">get_pop_size</a> ()</td></tr>
-<tr class="memdesc:aa846df76606deab76ddcb2719b00e8ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">return population size <br /></td></tr>
-<tr class="separator:aa846df76606deab76ddcb2719b00e8ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d0372607deb968c31f6f202670758c4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4d0372607deb968c31f6f202670758c4"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a4d0372607deb968c31f6f202670758c4">get_generations</a> ()</td></tr>
-<tr class="memdesc:a4d0372607deb968c31f6f202670758c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">return size of max generations <br /></td></tr>
-<tr class="separator:a4d0372607deb968c31f6f202670758c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a590cb75b967668a7a409e5fa7bfb3ea7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a590cb75b967668a7a409e5fa7bfb3ea7"></a>
-string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a590cb75b967668a7a409e5fa7bfb3ea7">get_ml</a> ()</td></tr>
-<tr class="memdesc:a590cb75b967668a7a409e5fa7bfb3ea7"><td class="mdescLeft">&#160;</td><td class="mdescRight">return <a class="el" href="../../df/dfa/classFT_1_1ML.html" title="class that specifies the machine learning algorithm to pair with Feat. ">ML</a> algorithm string <br /></td></tr>
-<tr class="separator:a590cb75b967668a7a409e5fa7bfb3ea7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e33b26b7dab96a27a400ef063cfb6c2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2e33b26b7dab96a27a400ef063cfb6c2"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a2e33b26b7dab96a27a400ef063cfb6c2">get_classification</a> ()</td></tr>
-<tr class="memdesc:a2e33b26b7dab96a27a400ef063cfb6c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">return type of classification flag set <br /></td></tr>
-<tr class="separator:a2e33b26b7dab96a27a400ef063cfb6c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f5c79c87ddf804cfaa7b853117b3351"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3f5c79c87ddf804cfaa7b853117b3351"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a3f5c79c87ddf804cfaa7b853117b3351">get_max_stall</a> ()</td></tr>
-<tr class="memdesc:a3f5c79c87ddf804cfaa7b853117b3351"><td class="mdescLeft">&#160;</td><td class="mdescRight">return maximum stall in learning, in generations <br /></td></tr>
-<tr class="separator:a3f5c79c87ddf804cfaa7b853117b3351"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad180b14d8d4b20def8c792db8e34c13f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad180b14d8d4b20def8c792db8e34c13f"></a>
-vector&lt; char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#ad180b14d8d4b20def8c792db8e34c13f">get_otypes</a> ()</td></tr>
-<tr class="memdesc:ad180b14d8d4b20def8c792db8e34c13f"><td class="mdescLeft">&#160;</td><td class="mdescRight">return program output type ('f', 'b') <br /></td></tr>
-<tr class="separator:ad180b14d8d4b20def8c792db8e34c13f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0bc4bea99ec0c7312061d633e04e8d1b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0bc4bea99ec0c7312061d633e04e8d1b"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a0bc4bea99ec0c7312061d633e04e8d1b">get_verbosity</a> ()</td></tr>
-<tr class="memdesc:a0bc4bea99ec0c7312061d633e04e8d1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">return current verbosity level set <br /></td></tr>
-<tr class="separator:a0bc4bea99ec0c7312061d633e04e8d1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af0fab0de9fca7dec14b166d2557f124c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af0fab0de9fca7dec14b166d2557f124c"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#af0fab0de9fca7dec14b166d2557f124c">get_max_depth</a> ()</td></tr>
-<tr class="memdesc:af0fab0de9fca7dec14b166d2557f124c"><td class="mdescLeft">&#160;</td><td class="mdescRight">return max_depth of programs <br /></td></tr>
-<tr class="separator:af0fab0de9fca7dec14b166d2557f124c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f53e90d2dbda34e11bc5c8b40750333"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9f53e90d2dbda34e11bc5c8b40750333"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a9f53e90d2dbda34e11bc5c8b40750333">get_cross_rate</a> ()</td></tr>
-<tr class="memdesc:a9f53e90d2dbda34e11bc5c8b40750333"><td class="mdescLeft">&#160;</td><td class="mdescRight">return cross rate for variation <br /></td></tr>
-<tr class="separator:a9f53e90d2dbda34e11bc5c8b40750333"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe3abad818a2b077b9901b555da52e86"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abe3abad818a2b077b9901b555da52e86"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#abe3abad818a2b077b9901b555da52e86">get_max_size</a> ()</td></tr>
-<tr class="memdesc:abe3abad818a2b077b9901b555da52e86"><td class="mdescLeft">&#160;</td><td class="mdescRight">return max size of programs <br /></td></tr>
-<tr class="separator:abe3abad818a2b077b9901b555da52e86"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0edf27e026797485ac365e9a07d3d80"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab0edf27e026797485ac365e9a07d3d80"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#ab0edf27e026797485ac365e9a07d3d80">get_max_dim</a> ()</td></tr>
-<tr class="memdesc:ab0edf27e026797485ac365e9a07d3d80"><td class="mdescLeft">&#160;</td><td class="mdescRight">return max dimensionality of programs <br /></td></tr>
-<tr class="separator:ab0edf27e026797485ac365e9a07d3d80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:add0aa7d497a0c6d9034d031747ec9345"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="add0aa7d497a0c6d9034d031747ec9345"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#add0aa7d497a0c6d9034d031747ec9345">get_erc</a> ()</td></tr>
-<tr class="memdesc:add0aa7d497a0c6d9034d031747ec9345"><td class="mdescLeft">&#160;</td><td class="mdescRight">return boolean value of erc flag <br /></td></tr>
-<tr class="separator:add0aa7d497a0c6d9034d031747ec9345"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6cb0bed8dd07a1f070c1639037151eaf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6cb0bed8dd07a1f070c1639037151eaf"></a>
-string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a6cb0bed8dd07a1f070c1639037151eaf">get_name</a> ()</td></tr>
-<tr class="memdesc:a6cb0bed8dd07a1f070c1639037151eaf"><td class="mdescLeft">&#160;</td><td class="mdescRight">get name <br /></td></tr>
-<tr class="separator:a6cb0bed8dd07a1f070c1639037151eaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33b6eefe55a74107c59f4f19027ecee4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a33b6eefe55a74107c59f4f19027ecee4"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a33b6eefe55a74107c59f4f19027ecee4">get_num_features</a> ()</td></tr>
-<tr class="memdesc:a33b6eefe55a74107c59f4f19027ecee4"><td class="mdescLeft">&#160;</td><td class="mdescRight">return number of features <br /></td></tr>
-<tr class="separator:a33b6eefe55a74107c59f4f19027ecee4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae3a52cf234315172314c0083f1d35320"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae3a52cf234315172314c0083f1d35320"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#ae3a52cf234315172314c0083f1d35320">get_shuffle</a> ()</td></tr>
-<tr class="memdesc:ae3a52cf234315172314c0083f1d35320"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether option to shuffle the data is set or not <br /></td></tr>
-<tr class="separator:ae3a52cf234315172314c0083f1d35320"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0212c6394678e646dbd060b5f4aeb0a8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0212c6394678e646dbd060b5f4aeb0a8"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a0212c6394678e646dbd060b5f4aeb0a8">get_split</a> ()</td></tr>
-<tr class="memdesc:a0212c6394678e646dbd060b5f4aeb0a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">return fraction of data to use for training <br /></td></tr>
-<tr class="separator:a0212c6394678e646dbd060b5f4aeb0a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab8f45e1b798ef3086e4e656aa65bc42e"><td class="memItemLeft" align="right" valign="top">vector&lt; char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#ab8f45e1b798ef3086e4e656aa65bc42e">get_dtypes</a> ()</td></tr>
-<tr class="memdesc:ab8f45e1b798ef3086e4e656aa65bc42e"><td class="mdescLeft">&#160;</td><td class="mdescRight">add custom node into feat  <a href="#ab8f45e1b798ef3086e4e656aa65bc42e">More...</a><br /></td></tr>
-<tr class="separator:ab8f45e1b798ef3086e4e656aa65bc42e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab9060a5198828fc5dba4ba29141aef45"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab9060a5198828fc5dba4ba29141aef45"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#ab9060a5198828fc5dba4ba29141aef45">get_feedback</a> ()</td></tr>
-<tr class="memdesc:ab9060a5198828fc5dba4ba29141aef45"><td class="mdescLeft">&#160;</td><td class="mdescRight">return feedback setting <br /></td></tr>
-<tr class="separator:ab9060a5198828fc5dba4ba29141aef45"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7082d552aeecc156e8ca2d3ef6dd85d9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7082d552aeecc156e8ca2d3ef6dd85d9"></a>
-string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a7082d552aeecc156e8ca2d3ef6dd85d9">get_representation</a> ()</td></tr>
-<tr class="memdesc:a7082d552aeecc156e8ca2d3ef6dd85d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">return best model <br /></td></tr>
-<tr class="separator:a7082d552aeecc156e8ca2d3ef6dd85d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aacf69516a92c4f61fab96467f270f21d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aacf69516a92c4f61fab96467f270f21d"></a>
-string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#aacf69516a92c4f61fab96467f270f21d">get_eqns</a> (bool front=true)</td></tr>
-<tr class="memdesc:aacf69516a92c4f61fab96467f270f21d"><td class="mdescLeft">&#160;</td><td class="mdescRight">return population as string <br /></td></tr>
-<tr class="separator:aacf69516a92c4f61fab96467f270f21d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4cbe69d9a4ce88394b29f787bb955f13"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4cbe69d9a4ce88394b29f787bb955f13"></a>
-ArrayXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a4cbe69d9a4ce88394b29f787bb955f13">get_coefs</a> ()</td></tr>
-<tr class="memdesc:a4cbe69d9a4ce88394b29f787bb955f13"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the coefficients or importance scores of the best model. <br /></td></tr>
-<tr class="separator:a4cbe69d9a4ce88394b29f787bb955f13"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9e1cbcdb4d5fec88440bc2b6fd2b037e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9e1cbcdb4d5fec88440bc2b6fd2b037e"></a>
-std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a9e1cbcdb4d5fec88440bc2b6fd2b037e">get_Z</a> (string s, int *idx, int idx_size)</td></tr>
-<tr class="memdesc:a9e1cbcdb4d5fec88440bc2b6fd2b037e"><td class="mdescLeft">&#160;</td><td class="mdescRight">get longitudinal data from file s <br /></td></tr>
-<tr class="separator:a9e1cbcdb4d5fec88440bc2b6fd2b037e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a166dedefa8457a89aeab55c95e4dad28"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a166dedefa8457a89aeab55c95e4dad28"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a166dedefa8457a89aeab55c95e4dad28">~Feat</a> ()</td></tr>
-<tr class="memdesc:a166dedefa8457a89aeab55c95e4dad28"><td class="mdescLeft">&#160;</td><td class="mdescRight">destructor <br /></td></tr>
-<tr class="separator:a166dedefa8457a89aeab55c95e4dad28"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7dc95d9390052a055f1083d1710a839f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a7dc95d9390052a055f1083d1710a839f">fit</a> (MatrixXd &amp;X, VectorXd &amp;y, std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; Z=std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt;())</td></tr>
-<tr class="memdesc:a7dc95d9390052a055f1083d1710a839f"><td class="mdescLeft">&#160;</td><td class="mdescRight">train a model.  <a href="#a7dc95d9390052a055f1083d1710a839f">More...</a><br /></td></tr>
-<tr class="separator:a7dc95d9390052a055f1083d1710a839f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c172cfde14fd31d8cf2cf99346ed725"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8c172cfde14fd31d8cf2cf99346ed725"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a8c172cfde14fd31d8cf2cf99346ed725">fit</a> (double *X, int rowsX, int colsX, double *Y, int lenY)</td></tr>
-<tr class="memdesc:a8c172cfde14fd31d8cf2cf99346ed725"><td class="mdescLeft">&#160;</td><td class="mdescRight">train a model. <br /></td></tr>
-<tr class="separator:a8c172cfde14fd31d8cf2cf99346ed725"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af280c4fe451b5f543295a872d24263ec"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af280c4fe451b5f543295a872d24263ec"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#af280c4fe451b5f543295a872d24263ec">fit_with_z</a> (double *X, int rowsX, int colsX, double *Y, int lenY, string s, int *idx, int idx_size)</td></tr>
-<tr class="memdesc:af280c4fe451b5f543295a872d24263ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">train a model, first loading longitudinal samples (Z) from file. <br /></td></tr>
-<tr class="separator:af280c4fe451b5f543295a872d24263ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab74f7552efa5db52170f037cfc52d399"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab74f7552efa5db52170f037cfc52d399"></a>
-VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#ab74f7552efa5db52170f037cfc52d399">predict</a> (MatrixXd &amp;X, std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; Z=std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt;())</td></tr>
-<tr class="memdesc:ab74f7552efa5db52170f037cfc52d399"><td class="mdescLeft">&#160;</td><td class="mdescRight">predict on unseen data. <br /></td></tr>
-<tr class="separator:ab74f7552efa5db52170f037cfc52d399"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d546550665319a1a51195f6e777b6d0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3d546550665319a1a51195f6e777b6d0"></a>
-shared_ptr&lt; CLabels &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a3d546550665319a1a51195f6e777b6d0">predict_labels</a> (MatrixXd &amp;X, std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; Z=std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt;())</td></tr>
-<tr class="memdesc:a3d546550665319a1a51195f6e777b6d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">predict on unseen data. return CLabels. <br /></td></tr>
-<tr class="separator:a3d546550665319a1a51195f6e777b6d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a68e94b89784cf924fa951ccb6fe7f380"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a68e94b89784cf924fa951ccb6fe7f380"></a>
-ArrayXXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a68e94b89784cf924fa951ccb6fe7f380">predict_proba</a> (MatrixXd &amp;X, std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; Z=std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt;())</td></tr>
-<tr class="memdesc:a68e94b89784cf924fa951ccb6fe7f380"><td class="mdescLeft">&#160;</td><td class="mdescRight">predict probabilities of each class. <br /></td></tr>
-<tr class="separator:a68e94b89784cf924fa951ccb6fe7f380"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a568ebfb9ee7a44f0afc9110e77a49e16"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a568ebfb9ee7a44f0afc9110e77a49e16"></a>
+<tr class="separator:ae93c64f176954e630b66e5e81d3fbe10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a9222a4ab9c8fee92aa435ba261fe12"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7a9222a4ab9c8fee92aa435ba261fe12"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a7a9222a4ab9c8fee92aa435ba261fe12">set_n_threads</a> (unsigned t)</td></tr>
+<tr class="memdesc:a7a9222a4ab9c8fee92aa435ba261fe12"><td class="mdescLeft">&#160;</td><td class="mdescRight">set number of threads <br /></td></tr>
+<tr class="separator:a7a9222a4ab9c8fee92aa435ba261fe12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a446c5f63dcf508de5c5c90adee67db07"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a446c5f63dcf508de5c5c90adee67db07"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a446c5f63dcf508de5c5c90adee67db07">set_max_time</a> (int time)</td></tr>
+<tr class="memdesc:a446c5f63dcf508de5c5c90adee67db07"><td class="mdescLeft">&#160;</td><td class="mdescRight">set max time in seconds for fit method <br /></td></tr>
+<tr class="separator:a446c5f63dcf508de5c5c90adee67db07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60f537b340ce3b02ab1482e2461a3a8d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a60f537b340ce3b02ab1482e2461a3a8d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a60f537b340ce3b02ab1482e2461a3a8d">set_use_batch</a> ()</td></tr>
+<tr class="memdesc:a60f537b340ce3b02ab1482e2461a3a8d"><td class="mdescLeft">&#160;</td><td class="mdescRight">set flag to use batch for training <br /></td></tr>
+<tr class="separator:a60f537b340ce3b02ab1482e2461a3a8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8810a5fdeca4cda9f20a4a0d81eb2c0b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8810a5fdeca4cda9f20a4a0d81eb2c0b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a8810a5fdeca4cda9f20a4a0d81eb2c0b">set_semantic_xo</a> (bool sem_xo=true)</td></tr>
+<tr class="memdesc:a8810a5fdeca4cda9f20a4a0d81eb2c0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">use semantic crossover <br /></td></tr>
+<tr class="separator:a8810a5fdeca4cda9f20a4a0d81eb2c0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5f21e4a64e86a8d10b4b1d2862f56e5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad5f21e4a64e86a8d10b4b1d2862f56e5"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_print_pop</b> (int pp)</td></tr>
+<tr class="separator:ad5f21e4a64e86a8d10b4b1d2862f56e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99c6921df95c8b8803b2ecd81ac572e6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a99c6921df95c8b8803b2ecd81ac572e6"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a99c6921df95c8b8803b2ecd81ac572e6">get_pop_size</a> ()</td></tr>
+<tr class="memdesc:a99c6921df95c8b8803b2ecd81ac572e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">return population size <br /></td></tr>
+<tr class="separator:a99c6921df95c8b8803b2ecd81ac572e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e099408cc7e97fefd54272ab2e7ff45"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9e099408cc7e97fefd54272ab2e7ff45"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a9e099408cc7e97fefd54272ab2e7ff45">get_generations</a> ()</td></tr>
+<tr class="memdesc:a9e099408cc7e97fefd54272ab2e7ff45"><td class="mdescLeft">&#160;</td><td class="mdescRight">return size of max generations <br /></td></tr>
+<tr class="separator:a9e099408cc7e97fefd54272ab2e7ff45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd6ec83281861593b4c2179a176a0cd6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abd6ec83281861593b4c2179a176a0cd6"></a>
+string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#abd6ec83281861593b4c2179a176a0cd6">get_ml</a> ()</td></tr>
+<tr class="memdesc:abd6ec83281861593b4c2179a176a0cd6"><td class="mdescLeft">&#160;</td><td class="mdescRight">return <a class="el" href="../../df/dfa/classFT_1_1ML.html" title="class that specifies the machine learning algorithm to pair with Feat. ">ML</a> algorithm string <br /></td></tr>
+<tr class="separator:abd6ec83281861593b4c2179a176a0cd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a76a11db1f1a9d132c64b698894758a54"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a76a11db1f1a9d132c64b698894758a54"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a76a11db1f1a9d132c64b698894758a54">get_classification</a> ()</td></tr>
+<tr class="memdesc:a76a11db1f1a9d132c64b698894758a54"><td class="mdescLeft">&#160;</td><td class="mdescRight">return type of classification flag set <br /></td></tr>
+<tr class="separator:a76a11db1f1a9d132c64b698894758a54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a804058205a8d7f98122f12bfcf7df2d7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a804058205a8d7f98122f12bfcf7df2d7"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a804058205a8d7f98122f12bfcf7df2d7">get_max_stall</a> ()</td></tr>
+<tr class="memdesc:a804058205a8d7f98122f12bfcf7df2d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">return maximum stall in learning, in generations <br /></td></tr>
+<tr class="separator:a804058205a8d7f98122f12bfcf7df2d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c6acb39d8c005767c7c8679564b8e5f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5c6acb39d8c005767c7c8679564b8e5f"></a>
+vector&lt; char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a5c6acb39d8c005767c7c8679564b8e5f">get_otypes</a> ()</td></tr>
+<tr class="memdesc:a5c6acb39d8c005767c7c8679564b8e5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">return program output type ('f', 'b') <br /></td></tr>
+<tr class="separator:a5c6acb39d8c005767c7c8679564b8e5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a698e5be8ee5c0f9e365b8148a2a680b2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a698e5be8ee5c0f9e365b8148a2a680b2"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a698e5be8ee5c0f9e365b8148a2a680b2">get_verbosity</a> ()</td></tr>
+<tr class="memdesc:a698e5be8ee5c0f9e365b8148a2a680b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">return current verbosity level set <br /></td></tr>
+<tr class="separator:a698e5be8ee5c0f9e365b8148a2a680b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b2f857e7ae8b1c179fae7379bb70569"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3b2f857e7ae8b1c179fae7379bb70569"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a3b2f857e7ae8b1c179fae7379bb70569">get_max_depth</a> ()</td></tr>
+<tr class="memdesc:a3b2f857e7ae8b1c179fae7379bb70569"><td class="mdescLeft">&#160;</td><td class="mdescRight">return max_depth of programs <br /></td></tr>
+<tr class="separator:a3b2f857e7ae8b1c179fae7379bb70569"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa4c53c8d5357ffc896452a5090d381b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afa4c53c8d5357ffc896452a5090d381b"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#afa4c53c8d5357ffc896452a5090d381b">get_cross_rate</a> ()</td></tr>
+<tr class="memdesc:afa4c53c8d5357ffc896452a5090d381b"><td class="mdescLeft">&#160;</td><td class="mdescRight">return cross rate for variation <br /></td></tr>
+<tr class="separator:afa4c53c8d5357ffc896452a5090d381b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0352ff140bbdb21acae534b0f9dcd805"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0352ff140bbdb21acae534b0f9dcd805"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a0352ff140bbdb21acae534b0f9dcd805">get_max_size</a> ()</td></tr>
+<tr class="memdesc:a0352ff140bbdb21acae534b0f9dcd805"><td class="mdescLeft">&#160;</td><td class="mdescRight">return max size of programs <br /></td></tr>
+<tr class="separator:a0352ff140bbdb21acae534b0f9dcd805"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa87c50496b8eb3c65265a705c2f3b6d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaa87c50496b8eb3c65265a705c2f3b6d"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#aaa87c50496b8eb3c65265a705c2f3b6d">get_max_dim</a> ()</td></tr>
+<tr class="memdesc:aaa87c50496b8eb3c65265a705c2f3b6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">return max dimensionality of programs <br /></td></tr>
+<tr class="separator:aaa87c50496b8eb3c65265a705c2f3b6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a697e692ec56c3bba59b2da89e94c98c8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a697e692ec56c3bba59b2da89e94c98c8"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a697e692ec56c3bba59b2da89e94c98c8">get_erc</a> ()</td></tr>
+<tr class="memdesc:a697e692ec56c3bba59b2da89e94c98c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">return boolean value of erc flag <br /></td></tr>
+<tr class="separator:a697e692ec56c3bba59b2da89e94c98c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7b33b5cdf06038755304526b02b5961"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab7b33b5cdf06038755304526b02b5961"></a>
+string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#ab7b33b5cdf06038755304526b02b5961">get_logfile</a> ()</td></tr>
+<tr class="memdesc:ab7b33b5cdf06038755304526b02b5961"><td class="mdescLeft">&#160;</td><td class="mdescRight">get name <br /></td></tr>
+<tr class="separator:ab7b33b5cdf06038755304526b02b5961"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2719399d62452c4e903321692c33571"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad2719399d62452c4e903321692c33571"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#ad2719399d62452c4e903321692c33571">get_num_features</a> ()</td></tr>
+<tr class="memdesc:ad2719399d62452c4e903321692c33571"><td class="mdescLeft">&#160;</td><td class="mdescRight">return number of features <br /></td></tr>
+<tr class="separator:ad2719399d62452c4e903321692c33571"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9894c09d8e29064840676d1941dfcd3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af9894c09d8e29064840676d1941dfcd3"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#af9894c09d8e29064840676d1941dfcd3">get_shuffle</a> ()</td></tr>
+<tr class="memdesc:af9894c09d8e29064840676d1941dfcd3"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether option to shuffle the data is set or not <br /></td></tr>
+<tr class="separator:af9894c09d8e29064840676d1941dfcd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a895775893dbfe2c99505522077289a5e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a895775893dbfe2c99505522077289a5e"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a895775893dbfe2c99505522077289a5e">get_split</a> ()</td></tr>
+<tr class="memdesc:a895775893dbfe2c99505522077289a5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">return fraction of data to use for training <br /></td></tr>
+<tr class="separator:a895775893dbfe2c99505522077289a5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af19e70b5bb10fb16c48e381093417c18"><td class="memItemLeft" align="right" valign="top">vector&lt; char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#af19e70b5bb10fb16c48e381093417c18">get_dtypes</a> ()</td></tr>
+<tr class="memdesc:af19e70b5bb10fb16c48e381093417c18"><td class="mdescLeft">&#160;</td><td class="mdescRight">add custom node into feat  <a href="#af19e70b5bb10fb16c48e381093417c18">More...</a><br /></td></tr>
+<tr class="separator:af19e70b5bb10fb16c48e381093417c18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1fcc0421636fd302120113c2cbba5a4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa1fcc0421636fd302120113c2cbba5a4"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#aa1fcc0421636fd302120113c2cbba5a4">get_feedback</a> ()</td></tr>
+<tr class="memdesc:aa1fcc0421636fd302120113c2cbba5a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">return feedback setting <br /></td></tr>
+<tr class="separator:aa1fcc0421636fd302120113c2cbba5a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50913731f582b1cec9469fe58058c597"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a50913731f582b1cec9469fe58058c597"></a>
+string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a50913731f582b1cec9469fe58058c597">get_representation</a> ()</td></tr>
+<tr class="memdesc:a50913731f582b1cec9469fe58058c597"><td class="mdescLeft">&#160;</td><td class="mdescRight">return best model <br /></td></tr>
+<tr class="separator:a50913731f582b1cec9469fe58058c597"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e3743fb45c9041c1ef9eed666f2529d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5e3743fb45c9041c1ef9eed666f2529d"></a>
+string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a5e3743fb45c9041c1ef9eed666f2529d">get_model</a> ()</td></tr>
+<tr class="memdesc:a5e3743fb45c9041c1ef9eed666f2529d"><td class="mdescLeft">&#160;</td><td class="mdescRight">return best model: features plus their importances <br /></td></tr>
+<tr class="separator:a5e3743fb45c9041c1ef9eed666f2529d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b3b542d0b768a0ecccef42e062da5e3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5b3b542d0b768a0ecccef42e062da5e3"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a5b3b542d0b768a0ecccef42e062da5e3">get_n_params</a> ()</td></tr>
+<tr class="memdesc:a5b3b542d0b768a0ecccef42e062da5e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">get number of parameters in best <br /></td></tr>
+<tr class="separator:a5b3b542d0b768a0ecccef42e062da5e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a014d7a01e9980c9f023eeea0198efdfa"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a014d7a01e9980c9f023eeea0198efdfa"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a014d7a01e9980c9f023eeea0198efdfa">get_dim</a> ()</td></tr>
+<tr class="memdesc:a014d7a01e9980c9f023eeea0198efdfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">get dimensionality of best <br /></td></tr>
+<tr class="separator:a014d7a01e9980c9f023eeea0198efdfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87ed8cd097bbde87ebd11830706e7f12"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a87ed8cd097bbde87ebd11830706e7f12"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a87ed8cd097bbde87ebd11830706e7f12">get_complexity</a> ()</td></tr>
+<tr class="memdesc:a87ed8cd097bbde87ebd11830706e7f12"><td class="mdescLeft">&#160;</td><td class="mdescRight">get dimensionality of best <br /></td></tr>
+<tr class="separator:a87ed8cd097bbde87ebd11830706e7f12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d298b216554e3e2b4ba9124246adaa1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1d298b216554e3e2b4ba9124246adaa1"></a>
+string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a1d298b216554e3e2b4ba9124246adaa1">get_eqns</a> (bool front=true)</td></tr>
+<tr class="memdesc:a1d298b216554e3e2b4ba9124246adaa1"><td class="mdescLeft">&#160;</td><td class="mdescRight">return population as string <br /></td></tr>
+<tr class="separator:a1d298b216554e3e2b4ba9124246adaa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab9746fdc65dab30370aa6b19e736ae18"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab9746fdc65dab30370aa6b19e736ae18"></a>
+ArrayXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#ab9746fdc65dab30370aa6b19e736ae18">get_coefs</a> ()</td></tr>
+<tr class="memdesc:ab9746fdc65dab30370aa6b19e736ae18"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the coefficients or importance scores of the best model. <br /></td></tr>
+<tr class="separator:ab9746fdc65dab30370aa6b19e736ae18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7a1851a4992f2544352268d31de389d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab7a1851a4992f2544352268d31de389d"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#ab7a1851a4992f2544352268d31de389d">get_n_nodes</a> ()</td></tr>
+<tr class="memdesc:ab7a1851a4992f2544352268d31de389d"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the number of nodes in the best model <br /></td></tr>
+<tr class="separator:ab7a1851a4992f2544352268d31de389d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a6bfdd8564ced2378a954e42654d90e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2a6bfdd8564ced2378a954e42654d90e"></a>
+std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a2a6bfdd8564ced2378a954e42654d90e">get_Z</a> (string s, int *idx, int idx_size)</td></tr>
+<tr class="memdesc:a2a6bfdd8564ced2378a954e42654d90e"><td class="mdescLeft">&#160;</td><td class="mdescRight">get longitudinal data from file s <br /></td></tr>
+<tr class="separator:a2a6bfdd8564ced2378a954e42654d90e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7797e289bc355fd92d2d65ae0b3fae1d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7797e289bc355fd92d2d65ae0b3fae1d"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a7797e289bc355fd92d2d65ae0b3fae1d">~Feat</a> ()</td></tr>
+<tr class="memdesc:a7797e289bc355fd92d2d65ae0b3fae1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">destructor <br /></td></tr>
+<tr class="separator:a7797e289bc355fd92d2d65ae0b3fae1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a61a241e42f7509019d929767e5cf176f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a61a241e42f7509019d929767e5cf176f">fit</a> (MatrixXd &amp;X, VectorXd &amp;y, std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; Z=std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt;())</td></tr>
+<tr class="memdesc:a61a241e42f7509019d929767e5cf176f"><td class="mdescLeft">&#160;</td><td class="mdescRight">train a model.  <a href="#a61a241e42f7509019d929767e5cf176f">More...</a><br /></td></tr>
+<tr class="separator:a61a241e42f7509019d929767e5cf176f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6876312f4509939e54b5dc33efcfd0e9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6876312f4509939e54b5dc33efcfd0e9"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>run_generation</b> (unsigned int g, vector&lt; size_t &gt; survivors, <a class="el" href="../../d6/d9e/classFT_1_1DataRef.html">DataRef</a> &amp;d, std::ofstream &amp;log, double percentage, unsigned &amp;stall_count)</td></tr>
+<tr class="separator:a6876312f4509939e54b5dc33efcfd0e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6962f020ea1d291b30043e5b46daacea"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6962f020ea1d291b30043e5b46daacea"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a6962f020ea1d291b30043e5b46daacea">fit</a> (double *X, int rowsX, int colsX, double *Y, int lenY)</td></tr>
+<tr class="memdesc:a6962f020ea1d291b30043e5b46daacea"><td class="mdescLeft">&#160;</td><td class="mdescRight">train a model. <br /></td></tr>
+<tr class="separator:a6962f020ea1d291b30043e5b46daacea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6d186a3e6ece3d4ab139bc80571f8ac"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae6d186a3e6ece3d4ab139bc80571f8ac"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#ae6d186a3e6ece3d4ab139bc80571f8ac">fit_with_z</a> (double *X, int rowsX, int colsX, double *Y, int lenY, string s, int *idx, int idx_size)</td></tr>
+<tr class="memdesc:ae6d186a3e6ece3d4ab139bc80571f8ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">train a model, first loading longitudinal samples (Z) from file. <br /></td></tr>
+<tr class="separator:ae6d186a3e6ece3d4ab139bc80571f8ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06286576906d8044f78d9a5beea4e74d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a06286576906d8044f78d9a5beea4e74d"></a>
+VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a06286576906d8044f78d9a5beea4e74d">predict</a> (MatrixXd &amp;X, std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; Z=std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt;())</td></tr>
+<tr class="memdesc:a06286576906d8044f78d9a5beea4e74d"><td class="mdescLeft">&#160;</td><td class="mdescRight">predict on unseen data. <br /></td></tr>
+<tr class="separator:a06286576906d8044f78d9a5beea4e74d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c6d6bd5b2f56c2a46430c6b46d4988e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0c6d6bd5b2f56c2a46430c6b46d4988e"></a>
+shared_ptr&lt; CLabels &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a0c6d6bd5b2f56c2a46430c6b46d4988e">predict_labels</a> (MatrixXd &amp;X, std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; Z=std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt;())</td></tr>
+<tr class="memdesc:a0c6d6bd5b2f56c2a46430c6b46d4988e"><td class="mdescLeft">&#160;</td><td class="mdescRight">predict on unseen data. return CLabels. <br /></td></tr>
+<tr class="separator:a0c6d6bd5b2f56c2a46430c6b46d4988e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae30be7b5f102d8c3947979d60af3e474"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae30be7b5f102d8c3947979d60af3e474"></a>
+ArrayXXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#ae30be7b5f102d8c3947979d60af3e474">predict_proba</a> (MatrixXd &amp;X, std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; Z=std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt;())</td></tr>
+<tr class="memdesc:ae30be7b5f102d8c3947979d60af3e474"><td class="mdescLeft">&#160;</td><td class="mdescRight">predict probabilities of each class. <br /></td></tr>
+<tr class="separator:ae30be7b5f102d8c3947979d60af3e474"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d2b98642699670ea1629aca3ecdb0a5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4d2b98642699670ea1629aca3ecdb0a5"></a>
 ArrayXXd&#160;</td><td class="memItemRight" valign="bottom"><b>predict_proba</b> (double *X, int rows_x, int cols_x)</td></tr>
-<tr class="separator:a568ebfb9ee7a44f0afc9110e77a49e16"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a82c5be759067a1abe2503022be2c6046"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a82c5be759067a1abe2503022be2c6046"></a>
-VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a82c5be759067a1abe2503022be2c6046">predict_with_z</a> (double *X, int rowsX, int colsX, string s, int *idx, int idx_size)</td></tr>
-<tr class="memdesc:a82c5be759067a1abe2503022be2c6046"><td class="mdescLeft">&#160;</td><td class="mdescRight">predict on unseen data, loading longitudinal samples (Z) from file. <br /></td></tr>
-<tr class="separator:a82c5be759067a1abe2503022be2c6046"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a94bbe76ab5ae55895c2272023e249e98"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a94bbe76ab5ae55895c2272023e249e98"></a>
-ArrayXXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a94bbe76ab5ae55895c2272023e249e98">predict_proba_with_z</a> (double *X, int rowsX, int colsX, string s, int *idx, int idx_size)</td></tr>
-<tr class="memdesc:a94bbe76ab5ae55895c2272023e249e98"><td class="mdescLeft">&#160;</td><td class="mdescRight">predict probabilities of each class. <br /></td></tr>
-<tr class="separator:a94bbe76ab5ae55895c2272023e249e98"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a08dbb016820af4ced1a8ffcea7bdcddf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a08dbb016820af4ced1a8ffcea7bdcddf"></a>
-VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a08dbb016820af4ced1a8ffcea7bdcddf">predict</a> (double *X, int rowsX, int colsX)</td></tr>
-<tr class="memdesc:a08dbb016820af4ced1a8ffcea7bdcddf"><td class="mdescLeft">&#160;</td><td class="mdescRight">predict on unseen data. <br /></td></tr>
-<tr class="separator:a08dbb016820af4ced1a8ffcea7bdcddf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71c8e10921fce6a3cd53d2de2ce30359"><td class="memItemLeft" align="right" valign="top">MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a71c8e10921fce6a3cd53d2de2ce30359">transform</a> (MatrixXd &amp;X, std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; Z=std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt;(), <a class="el" href="../../d8/d25/classFT_1_1Individual.html">Individual</a> *ind=0)</td></tr>
-<tr class="memdesc:a71c8e10921fce6a3cd53d2de2ce30359"><td class="mdescLeft">&#160;</td><td class="mdescRight">transform an input matrix using a program.  <a href="#a71c8e10921fce6a3cd53d2de2ce30359">More...</a><br /></td></tr>
-<tr class="separator:a71c8e10921fce6a3cd53d2de2ce30359"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b8bb8b6eef135ea4eb74d851b6db387"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4b8bb8b6eef135ea4eb74d851b6db387"></a>
+<tr class="separator:a4d2b98642699670ea1629aca3ecdb0a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9fb8171b97ae0ebd9c81b12aa6ccc395"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9fb8171b97ae0ebd9c81b12aa6ccc395"></a>
+VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a9fb8171b97ae0ebd9c81b12aa6ccc395">predict_with_z</a> (double *X, int rowsX, int colsX, string s, int *idx, int idx_size)</td></tr>
+<tr class="memdesc:a9fb8171b97ae0ebd9c81b12aa6ccc395"><td class="mdescLeft">&#160;</td><td class="mdescRight">predict on unseen data, loading longitudinal samples (Z) from file. <br /></td></tr>
+<tr class="separator:a9fb8171b97ae0ebd9c81b12aa6ccc395"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63fb9c333de1b08454dd9de2977b7a4c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a63fb9c333de1b08454dd9de2977b7a4c"></a>
+ArrayXXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a63fb9c333de1b08454dd9de2977b7a4c">predict_proba_with_z</a> (double *X, int rowsX, int colsX, string s, int *idx, int idx_size)</td></tr>
+<tr class="memdesc:a63fb9c333de1b08454dd9de2977b7a4c"><td class="mdescLeft">&#160;</td><td class="mdescRight">predict probabilities of each class. <br /></td></tr>
+<tr class="separator:a63fb9c333de1b08454dd9de2977b7a4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57e7456e3f9d97325dcc8eec818f2897"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a57e7456e3f9d97325dcc8eec818f2897"></a>
+VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a57e7456e3f9d97325dcc8eec818f2897">predict</a> (double *X, int rowsX, int colsX)</td></tr>
+<tr class="memdesc:a57e7456e3f9d97325dcc8eec818f2897"><td class="mdescLeft">&#160;</td><td class="mdescRight">predict on unseen data. <br /></td></tr>
+<tr class="separator:a57e7456e3f9d97325dcc8eec818f2897"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70683df873b3584aa2ad346264280398"><td class="memItemLeft" align="right" valign="top">MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a70683df873b3584aa2ad346264280398">transform</a> (MatrixXd &amp;X, std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; Z=std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt;(), <a class="el" href="../../d8/d25/classFT_1_1Individual.html">Individual</a> *ind=0)</td></tr>
+<tr class="memdesc:a70683df873b3584aa2ad346264280398"><td class="mdescLeft">&#160;</td><td class="mdescRight">transform an input matrix using a program.  <a href="#a70683df873b3584aa2ad346264280398">More...</a><br /></td></tr>
+<tr class="separator:a70683df873b3584aa2ad346264280398"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66b684acced2dc80d99448a480df6803"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a66b684acced2dc80d99448a480df6803"></a>
 MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><b>transform</b> (double *X, int rows_x, int cols_x)</td></tr>
-<tr class="separator:a4b8bb8b6eef135ea4eb74d851b6db387"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a08bf4aa7be9c8c7f96c598935c7a8915"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a08bf4aa7be9c8c7f96c598935c7a8915"></a>
-MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a08bf4aa7be9c8c7f96c598935c7a8915">transform_with_z</a> (double *X, int rowsX, int colsX, string s, int *idx, int idx_size)</td></tr>
-<tr class="memdesc:a08bf4aa7be9c8c7f96c598935c7a8915"><td class="mdescLeft">&#160;</td><td class="mdescRight">train a model, first loading longitudinal samples (Z) from file. <br /></td></tr>
-<tr class="separator:a08bf4aa7be9c8c7f96c598935c7a8915"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a829e20a40b836408a429756690da3e3e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a829e20a40b836408a429756690da3e3e"></a>
-VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a829e20a40b836408a429756690da3e3e">fit_predict</a> (MatrixXd &amp;X, VectorXd &amp;y, std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; Z=std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt;())</td></tr>
-<tr class="memdesc:a829e20a40b836408a429756690da3e3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">convenience function calls fit then predict. <br /></td></tr>
-<tr class="separator:a829e20a40b836408a429756690da3e3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af223645638e9f5e4730d9040d6a053d7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af223645638e9f5e4730d9040d6a053d7"></a>
+<tr class="separator:a66b684acced2dc80d99448a480df6803"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf34059fe576ca1c776bc88008a72795"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adf34059fe576ca1c776bc88008a72795"></a>
+MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#adf34059fe576ca1c776bc88008a72795">transform_with_z</a> (double *X, int rowsX, int colsX, string s, int *idx, int idx_size)</td></tr>
+<tr class="memdesc:adf34059fe576ca1c776bc88008a72795"><td class="mdescLeft">&#160;</td><td class="mdescRight">train a model, first loading longitudinal samples (Z) from file. <br /></td></tr>
+<tr class="separator:adf34059fe576ca1c776bc88008a72795"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7831ddbf1364720113a351b60298cb87"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7831ddbf1364720113a351b60298cb87"></a>
+VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a7831ddbf1364720113a351b60298cb87">fit_predict</a> (MatrixXd &amp;X, VectorXd &amp;y, std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; Z=std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt;())</td></tr>
+<tr class="memdesc:a7831ddbf1364720113a351b60298cb87"><td class="mdescLeft">&#160;</td><td class="mdescRight">convenience function calls fit then predict. <br /></td></tr>
+<tr class="separator:a7831ddbf1364720113a351b60298cb87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a961833fc8696d5c5193452e5bef25cd5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a961833fc8696d5c5193452e5bef25cd5"></a>
 VectorXd&#160;</td><td class="memItemRight" valign="bottom"><b>fit_predict</b> (double *X, int rows_x, int cols_x, double *Y, int len_y)</td></tr>
-<tr class="separator:af223645638e9f5e4730d9040d6a053d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8bf715a74afad16e9bbefc7149f775be"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8bf715a74afad16e9bbefc7149f775be"></a>
-MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a8bf715a74afad16e9bbefc7149f775be">fit_transform</a> (MatrixXd &amp;X, VectorXd &amp;y, std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; Z=std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt;())</td></tr>
-<tr class="memdesc:a8bf715a74afad16e9bbefc7149f775be"><td class="mdescLeft">&#160;</td><td class="mdescRight">convenience function calls fit then transform. <br /></td></tr>
-<tr class="separator:a8bf715a74afad16e9bbefc7149f775be"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5354b9f0fd4d542949e1ead30fe5837c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5354b9f0fd4d542949e1ead30fe5837c"></a>
+<tr class="separator:a961833fc8696d5c5193452e5bef25cd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f0b51e0bf5dc3f2bf0a4362783d592d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6f0b51e0bf5dc3f2bf0a4362783d592d"></a>
+MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a6f0b51e0bf5dc3f2bf0a4362783d592d">fit_transform</a> (MatrixXd &amp;X, VectorXd &amp;y, std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; Z=std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt;())</td></tr>
+<tr class="memdesc:a6f0b51e0bf5dc3f2bf0a4362783d592d"><td class="mdescLeft">&#160;</td><td class="mdescRight">convenience function calls fit then transform. <br /></td></tr>
+<tr class="separator:a6f0b51e0bf5dc3f2bf0a4362783d592d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a1c0cc51222905a569d30bbb7d7d760"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8a1c0cc51222905a569d30bbb7d7d760"></a>
 MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><b>fit_transform</b> (double *X, int rows_x, int cols_x, double *Y, int len_y)</td></tr>
-<tr class="separator:a5354b9f0fd4d542949e1ead30fe5837c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a752fc8f11996f049ce14db769102c28d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a752fc8f11996f049ce14db769102c28d"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a752fc8f11996f049ce14db769102c28d">score</a> (MatrixXd &amp;X, const VectorXd &amp;y, std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; Z=std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt;())</td></tr>
-<tr class="memdesc:a752fc8f11996f049ce14db769102c28d"><td class="mdescLeft">&#160;</td><td class="mdescRight">scoring function <br /></td></tr>
-<tr class="separator:a752fc8f11996f049ce14db769102c28d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a8a1c0cc51222905a569d30bbb7d7d760"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae64bbea9d445e1780247df65d606ac4a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae64bbea9d445e1780247df65d606ac4a"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#ae64bbea9d445e1780247df65d606ac4a">score</a> (MatrixXd &amp;X, const VectorXd &amp;y, std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; Z=std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt;())</td></tr>
+<tr class="memdesc:ae64bbea9d445e1780247df65d606ac4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">scoring function <br /></td></tr>
+<tr class="separator:ae64bbea9d445e1780247df65d606ac4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b71d9fd0bc2ac87563151d3392abe39"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a6b71d9fd0bc2ac87563151d3392abe39">print_population</a> ()</td></tr>
+<tr class="memdesc:a6b71d9fd0bc2ac87563151d3392abe39"><td class="mdescLeft">&#160;</td><td class="mdescRight">prints population obj scores each generation  <a href="#a6b71d9fd0bc2ac87563151d3392abe39">More...</a><br /></td></tr>
+<tr class="separator:a6b71d9fd0bc2ac87563151d3392abe39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:a89e6fe5a67239837dff414055753e262"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a89e6fe5a67239837dff414055753e262"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a89e6fe5a67239837dff414055753e262">update_best</a> (bool val=false)</td></tr>
-<tr class="memdesc:a89e6fe5a67239837dff414055753e262"><td class="mdescLeft">&#160;</td><td class="mdescRight">updates best score <br /></td></tr>
-<tr class="separator:a89e6fe5a67239837dff414055753e262"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a41b81ec313e0f53ecf1e095f49bec537"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a41b81ec313e0f53ecf1e095f49bec537"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a41b81ec313e0f53ecf1e095f49bec537">print_stats</a> (unsigned int)</td></tr>
-<tr class="memdesc:a41b81ec313e0f53ecf1e095f49bec537"><td class="mdescLeft">&#160;</td><td class="mdescRight">prints stats <br /></td></tr>
-<tr class="separator:a41b81ec313e0f53ecf1e095f49bec537"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa53d0f06eb2fbc8b0f560b23eb4d496c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#aa53d0f06eb2fbc8b0f560b23eb4d496c">initial_model</a> (MatrixXd &amp;X_t, VectorXd &amp;y_t, MatrixXd &amp;X_v, VectorXd &amp;y_v)</td></tr>
-<tr class="separator:aa53d0f06eb2fbc8b0f560b23eb4d496c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91556fe6f81229870110045cc1c85dd9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a91556fe6f81229870110045cc1c85dd9"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a91556fe6f81229870110045cc1c85dd9">final_model</a> (MatrixXd &amp;X, VectorXd &amp;y, std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; &amp;Z)</td></tr>
-<tr class="memdesc:a91556fe6f81229870110045cc1c85dd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">fits final model to best transformation <br /></td></tr>
-<tr class="separator:a91556fe6f81229870110045cc1c85dd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9267257d74384f43df34c0f4e164db48"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9267257d74384f43df34c0f4e164db48"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a9267257d74384f43df34c0f4e164db48">update_best</a> (const <a class="el" href="../../d6/d9e/classFT_1_1DataRef.html">DataRef</a> &amp;d, bool val=false)</td></tr>
+<tr class="memdesc:a9267257d74384f43df34c0f4e164db48"><td class="mdescLeft">&#160;</td><td class="mdescRight">updates best score <br /></td></tr>
+<tr class="separator:a9267257d74384f43df34c0f4e164db48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a941022e805aa62357a3ed48d9e49777d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a941022e805aa62357a3ed48d9e49777d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a941022e805aa62357a3ed48d9e49777d">print_stats</a> (std::ofstream &amp;log, double fraction)</td></tr>
+<tr class="memdesc:a941022e805aa62357a3ed48d9e49777d"><td class="mdescLeft">&#160;</td><td class="mdescRight">prints stats <br /></td></tr>
+<tr class="separator:a941022e805aa62357a3ed48d9e49777d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a670655a6238f84f7da2bfe570a0fb920"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a670655a6238f84f7da2bfe570a0fb920">initial_model</a> (<a class="el" href="../../d6/d9e/classFT_1_1DataRef.html">DataRef</a> &amp;d)</td></tr>
+<tr class="separator:a670655a6238f84f7da2bfe570a0fb920"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b756059dbd7d8d0de509515cb90c3eb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8b756059dbd7d8d0de509515cb90c3eb"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a8b756059dbd7d8d0de509515cb90c3eb">final_model</a> (<a class="el" href="../../d6/d9e/classFT_1_1DataRef.html">DataRef</a> &amp;d)</td></tr>
+<tr class="memdesc:a8b756059dbd7d8d0de509515cb90c3eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">fits final model to best transformation <br /></td></tr>
+<tr class="separator:a8b756059dbd7d8d0de509515cb90c3eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a547e3a5ef2163ccfb1585e66b7e86f67"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a547e3a5ef2163ccfb1585e66b7e86f67"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a547e3a5ef2163ccfb1585e66b7e86f67">update_stall_count</a> (unsigned &amp;stall_count, MatrixXd &amp;<a class="el" href="../../db/dff/classFT_1_1Feat.html#a79c174854ebad874115b6d2625fad7c9">F</a>)</td></tr>
+<tr class="memdesc:a547e3a5ef2163ccfb1585e66b7e86f67"><td class="mdescLeft">&#160;</td><td class="mdescRight">updates stall count for early stopping <br /></td></tr>
+<tr class="separator:a547e3a5ef2163ccfb1585e66b7e86f67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -451,10 +503,6 @@ MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 <a class="el" href="../../d3/d4e/classFT_1_1Timer.html">Timer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#af5be17d09edb530c180bc20ed0a98326">timer</a></td></tr>
 <tr class="memdesc:af5be17d09edb530c180bc20ed0a98326"><td class="mdescLeft">&#160;</td><td class="mdescRight">start time of training <br /></td></tr>
 <tr class="separator:af5be17d09edb530c180bc20ed0a98326"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adf9e89447f315cc1ca35f12f5e81b4f7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adf9e89447f315cc1ca35f12f5e81b4f7"></a>
-string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#adf9e89447f315cc1ca35f12f5e81b4f7">name</a></td></tr>
-<tr class="memdesc:adf9e89447f315cc1ca35f12f5e81b4f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">name to append to files <br /></td></tr>
-<tr class="separator:adf9e89447f315cc1ca35f12f5e81b4f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6978a1d4421f56a70cf148b0a5624fd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab6978a1d4421f56a70cf148b0a5624fd"></a>
 shared_ptr&lt; <a class="el" href="../../d9/ddc/structFT_1_1Population.html">Population</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#ab6978a1d4421f56a70cf148b0a5624fd">p_pop</a></td></tr>
 <tr class="memdesc:ab6978a1d4421f56a70cf148b0a5624fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">population of programs <br /></td></tr>
@@ -479,6 +527,18 @@ shared_ptr&lt; <a class="el" href="../../de/d87/structFT_1_1Selection.html">Sele
 shared_ptr&lt; <a class="el" href="../../df/dfa/classFT_1_1ML.html">ML</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a431fb5909d6e7c8ddd3f5d28ced11d6c">p_ml</a></td></tr>
 <tr class="memdesc:a431fb5909d6e7c8ddd3f5d28ced11d6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">pointer to machine learning class <br /></td></tr>
 <tr class="separator:a431fb5909d6e7c8ddd3f5d28ced11d6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec8126568742c11379cc62fb7a4672c8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aec8126568742c11379cc62fb7a4672c8"></a>
+<a class="el" href="../../df/dfc/structFT_1_1Archive.html">Archive</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#aec8126568742c11379cc62fb7a4672c8">arch</a></td></tr>
+<tr class="memdesc:aec8126568742c11379cc62fb7a4672c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">pareto front archive <br /></td></tr>
+<tr class="separator:aec8126568742c11379cc62fb7a4672c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f8ecac48492e069570784ce200b3c90"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4f8ecac48492e069570784ce200b3c90"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a4f8ecac48492e069570784ce200b3c90">use_arch</a></td></tr>
+<tr class="memdesc:a4f8ecac48492e069570784ce200b3c90"><td class="mdescLeft">&#160;</td><td class="mdescRight">internal control over use of archive <br /></td></tr>
+<tr class="separator:a4f8ecac48492e069570784ce200b3c90"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa46144d8615e6d422246e6a7f705bea6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa46144d8615e6d422246e6a7f705bea6"></a>
+string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#aa46144d8615e6d422246e6a7f705bea6">survival</a></td></tr>
+<tr class="memdesc:aa46144d8615e6d422246e6a7f705bea6"><td class="mdescLeft">&#160;</td><td class="mdescRight">stores survival mode <br /></td></tr>
+<tr class="separator:aa46144d8615e6d422246e6a7f705bea6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afcfa4779605e55727c8217bb300d40e4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afcfa4779605e55727c8217bb300d40e4"></a>
 <a class="el" href="../../dd/db4/structFT_1_1Normalizer.html">Normalizer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#afcfa4779605e55727c8217bb300d40e4">N</a></td></tr>
 <tr class="memdesc:afcfa4779605e55727c8217bb300d40e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">scales training data. <br /></td></tr>
@@ -495,25 +555,37 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="..
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a263cb01cf8cc8ce43162b68cbf4bc547">best_score_v</a></td></tr>
 <tr class="memdesc:a263cb01cf8cc8ce43162b68cbf4bc547"><td class="mdescLeft">&#160;</td><td class="mdescRight">best validation score <br /></td></tr>
 <tr class="separator:a263cb01cf8cc8ce43162b68cbf4bc547"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ed774dfbe6f7068289fadc99a4f80a4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5ed774dfbe6f7068289fadc99a4f80a4"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a5ed774dfbe6f7068289fadc99a4f80a4">best_med_score</a></td></tr>
+<tr class="memdesc:a5ed774dfbe6f7068289fadc99a4f80a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">best median population score <br /></td></tr>
+<tr class="separator:a5ed774dfbe6f7068289fadc99a4f80a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3ecfa399e827a3e633a40780c66c600"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa3ecfa399e827a3e633a40780c66c600"></a>
 string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#aa3ecfa399e827a3e633a40780c66c600">str_dim</a></td></tr>
 <tr class="memdesc:aa3ecfa399e827a3e633a40780c66c600"><td class="mdescLeft">&#160;</td><td class="mdescRight">dimensionality as multiple of number of columns <br /></td></tr>
 <tr class="separator:aa3ecfa399e827a3e633a40780c66c600"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7cf6d268c2b010ebcc10ad95cac81831"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7cf6d268c2b010ebcc10ad95cac81831"></a>
 <a class="el" href="../../d8/d25/classFT_1_1Individual.html">Individual</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a7cf6d268c2b010ebcc10ad95cac81831">best_ind</a></td></tr>
-<tr class="memdesc:a7cf6d268c2b010ebcc10ad95cac81831"><td class="mdescLeft">&#160;</td><td class="mdescRight">best individual method to fit inital ml model <br /></td></tr>
+<tr class="memdesc:a7cf6d268c2b010ebcc10ad95cac81831"><td class="mdescLeft">&#160;</td><td class="mdescRight">best individual <br /></td></tr>
 <tr class="separator:a7cf6d268c2b010ebcc10ad95cac81831"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba080b7328bd2531c64c3e1fb742e448"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aba080b7328bd2531c64c3e1fb742e448"></a>
+string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#aba080b7328bd2531c64c3e1fb742e448">logfile</a></td></tr>
+<tr class="memdesc:aba080b7328bd2531c64c3e1fb742e448"><td class="mdescLeft">&#160;</td><td class="mdescRight">log filename <br /></td></tr>
+<tr class="separator:aba080b7328bd2531c64c3e1fb742e448"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3dbfaf2093cfca7a19294317fdb64bf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae3dbfaf2093cfca7a19294317fdb64bf"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#ae3dbfaf2093cfca7a19294317fdb64bf">print_pop</a></td></tr>
+<tr class="memdesc:ae3dbfaf2093cfca7a19294317fdb64bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">controls whether pop is printed each gen method to fit inital ml model <br /></td></tr>
+<tr class="separator:ae3dbfaf2093cfca7a19294317fdb64bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>main class for the <a class="el" href="../../db/dff/classFT_1_1Feat.html" title="main class for the Feat learner. ">Feat</a> learner. </p>
 <p><a class="el" href="../../db/dff/classFT_1_1Feat.html" title="main class for the Feat learner. ">Feat</a> optimizes feature represenations for a given machine learning algorithm. It does so by using evolutionary computation to optimize a population of programs. Each program represents a set of feature transformations. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a7dc95d9390052a055f1083d1710a839f"></a>
+<a class="anchor" id="a61a241e42f7509019d929767e5cf176f"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void FT::Feat::fit </td>
+          <td class="memname">void Feat::fit </td>
           <td>(</td>
           <td class="paramtype">MatrixXd &amp;&#160;</td>
           <td class="paramname"><em>X</em>, </td>
@@ -551,28 +623,21 @@ string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="..
 <li>produce offspring from parents via variation</li>
 <li>select surviving individuals from parents and offspring</li>
 </ol>
+<p>&lt; log file stream </p>
 
 </div>
 </div>
-<a class="anchor" id="ab8f45e1b798ef3086e4e656aa65bc42e"></a>
+<a class="anchor" id="af19e70b5bb10fb16c48e381093417c18"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">vector&lt;char&gt; FT::Feat::get_dtypes </td>
+          <td class="memname">vector&lt; char &gt; Feat::get_dtypes </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>add custom node into feat </p>
@@ -580,7 +645,7 @@ string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="..
 
 </div>
 </div>
-<a class="anchor" id="aa53d0f06eb2fbc8b0f560b23eb4d496c"></a>
+<a class="anchor" id="a670655a6238f84f7da2bfe570a0fb920"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -588,33 +653,11 @@ string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="..
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void FT::Feat::initial_model </td>
+          <td class="memname">void Feat::initial_model </td>
           <td>(</td>
-          <td class="paramtype">MatrixXd &amp;&#160;</td>
-          <td class="paramname"><em>X_t</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype"><a class="el" href="../../d6/d9e/classFT_1_1DataRef.html">DataRef</a> &amp;&#160;</td>
+          <td class="paramname"><em>d</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">VectorXd &amp;&#160;</td>
-          <td class="paramname"><em>y_t</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">MatrixXd &amp;&#160;</td>
-          <td class="paramname"><em>X_v</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">VectorXd &amp;&#160;</td>
-          <td class="paramname"><em>y_v</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -627,12 +670,30 @@ string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="..
 
 </div>
 </div>
-<a class="anchor" id="a71c8e10921fce6a3cd53d2de2ce30359"></a>
+<a class="anchor" id="a6b71d9fd0bc2ac87563151d3392abe39"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">MatrixXd FT::Feat::transform </td>
+          <td class="memname">void Feat::print_population </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>prints population obj scores each generation </p>
+<p>&lt; log file stream </p>
+
+</div>
+</div>
+<a class="anchor" id="a70683df873b3584aa2ad346264280398"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">MatrixXd Feat::transform </td>
           <td>(</td>
           <td class="paramtype">MatrixXd &amp;&#160;</td>
           <td class="paramname"><em>X</em>, </td>
@@ -662,8 +723,9 @@ string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="..
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="../../d3/dff/feat_8h_source.html">feat.h</a></li>
+<li>feat.cc</li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

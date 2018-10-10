@@ -137,14 +137,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a317f8fcf06b9e50788cb5f167d8fc79e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a317f8fcf06b9e50788cb5f167d8fc79e"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>set_score</b> (string scorer)</td></tr>
 <tr class="separator:a317f8fcf06b9e50788cb5f167d8fc79e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6b847465b1a4fb4e40b923d3a290027b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/db3/classFT_1_1Evaluation.html#a6b847465b1a4fb4e40b923d3a290027b">fitness</a> (<a class="el" href="../../d9/ddc/structFT_1_1Population.html">Population</a> &amp;pop, const MatrixXd &amp;X, const std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; &amp;Z, VectorXd &amp;y, MatrixXd &amp;F, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params, bool offspring)</td></tr>
-<tr class="memdesc:a6b847465b1a4fb4e40b923d3a290027b"><td class="mdescLeft">&#160;</td><td class="mdescRight">fitness of population.  <a href="#a6b847465b1a4fb4e40b923d3a290027b">More...</a><br /></td></tr>
-<tr class="separator:a6b847465b1a4fb4e40b923d3a290027b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6184eadb238cf0598efc37e8ec795035"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/db3/classFT_1_1Evaluation.html#a6184eadb238cf0598efc37e8ec795035">val_fitness</a> (<a class="el" href="../../d9/ddc/structFT_1_1Population.html">Population</a> &amp;pop, const MatrixXd &amp;X_t, const std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; &amp;Z_t, VectorXd &amp;y_t, MatrixXd &amp;F, const MatrixXd &amp;X_v, const std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; &amp;Z_v, VectorXd &amp;y_v, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params, bool offspring)</td></tr>
-<tr class="separator:a6184eadb238cf0598efc37e8ec795035"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a92c7ed902deffe505263525a1bf76ee2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/db3/classFT_1_1Evaluation.html#a92c7ed902deffe505263525a1bf76ee2">assign_fit</a> (<a class="el" href="../../d8/d25/classFT_1_1Individual.html">Individual</a> &amp;ind, MatrixXd &amp;F, const shared_ptr&lt; CLabels &gt; &amp;yhat, const VectorXd &amp;y, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params)</td></tr>
-<tr class="memdesc:a92c7ed902deffe505263525a1bf76ee2"><td class="mdescLeft">&#160;</td><td class="mdescRight">assign fitness to an individual and to F.  <a href="#a92c7ed902deffe505263525a1bf76ee2">More...</a><br /></td></tr>
-<tr class="separator:a92c7ed902deffe505263525a1bf76ee2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06791c46e482828bb86c801a47fc00cd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/db3/classFT_1_1Evaluation.html#a06791c46e482828bb86c801a47fc00cd">fitness</a> (vector&lt; <a class="el" href="../../d8/d25/classFT_1_1Individual.html">Individual</a> &gt; &amp;individuals, const <a class="el" href="../../d5/d03/classFT_1_1Data.html">Data</a> &amp;d, MatrixXd &amp;F, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params, bool offspring=false, bool validation=false)</td></tr>
+<tr class="memdesc:a06791c46e482828bb86c801a47fc00cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">fitness of population.  <a href="#a06791c46e482828bb86c801a47fc00cd">More...</a><br /></td></tr>
+<tr class="separator:a06791c46e482828bb86c801a47fc00cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adaf94409cdc3602f5590377baad1d28a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/db3/classFT_1_1Evaluation.html#adaf94409cdc3602f5590377baad1d28a">assign_fit</a> (<a class="el" href="../../d8/d25/classFT_1_1Individual.html">Individual</a> &amp;ind, MatrixXd &amp;F, const shared_ptr&lt; CLabels &gt; &amp;yhat, const VectorXd &amp;y, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;params, bool val=false)</td></tr>
+<tr class="memdesc:adaf94409cdc3602f5590377baad1d28a"><td class="mdescLeft">&#160;</td><td class="mdescRight">assign fitness to an individual and to F.  <a href="#adaf94409cdc3602f5590377baad1d28a">More...</a><br /></td></tr>
+<tr class="separator:adaf94409cdc3602f5590377baad1d28a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -158,7 +156,7 @@ std::map&lt; string, funcPointer &gt;&#160;</td><td class="memItemRight" valign=
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>evaluation mixin class for <a class="el" href="../../db/dff/classFT_1_1Feat.html" title="main class for the Feat learner. ">Feat</a> </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a92c7ed902deffe505263525a1bf76ee2"></a>
+<a class="anchor" id="adaf94409cdc3602f5590377baad1d28a"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -190,7 +188,13 @@ std::map&lt; string, funcPointer &gt;&#160;</td><td class="memItemRight" valign=
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;&#160;</td>
-          <td class="paramname"><em>params</em>&#160;</td>
+          <td class="paramname"><em>params</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>val</em> = <code>false</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -211,33 +215,21 @@ std::map&lt; string, funcPointer &gt;&#160;</td><td class="memItemRight" valign=
 </pre>
 </div>
 </div>
-<a class="anchor" id="a6b847465b1a4fb4e40b923d3a290027b"></a>
+<a class="anchor" id="a06791c46e482828bb86c801a47fc00cd"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void FT::Evaluation::fitness </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="../../d9/ddc/structFT_1_1Population.html">Population</a> &amp;&#160;</td>
-          <td class="paramname"><em>pop</em>, </td>
+          <td class="paramtype">vector&lt; <a class="el" href="../../d8/d25/classFT_1_1Individual.html">Individual</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>individuals</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const MatrixXd &amp;&#160;</td>
-          <td class="paramname"><em>X</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; &amp;&#160;</td>
-          <td class="paramname"><em>Z</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">VectorXd &amp;&#160;</td>
-          <td class="paramname"><em>y</em>, </td>
+          <td class="paramtype">const <a class="el" href="../../d5/d03/classFT_1_1Data.html">Data</a> &amp;&#160;</td>
+          <td class="paramname"><em>d</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -255,7 +247,13 @@ std::map&lt; string, funcPointer &gt;&#160;</td><td class="memItemRight" valign=
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>offspring</em> = <code>false</code>&#160;</td>
+          <td class="paramname"><em>offspring</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>validation</em> = <code>false</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -266,99 +264,20 @@ std::map&lt; string, funcPointer &gt;&#160;</td><td class="memItemRight" valign=
 </div><div class="memdoc">
 
 <p>fitness of population. </p>
-<p>Input: </p><pre class="fragment"> pop: population
- X: feature data
- y: label
- F: matrix of raw fitness values
- p: algorithm parameters
+<pre class="fragment"> @params individuals: population
+ @params d: Data structure
+ @params F: matrix of raw fitness values
+ @params params: algorithm parameters
+ @params offspring: if true, only evaluate last half of population
+ @params validation: if true, call ind.predict instead of ind.fit
 </pre><p>Output: </p><pre class="fragment"> F is modified
  pop[:].fitness is modified
 </pre>
 </div>
 </div>
-<a class="anchor" id="a6184eadb238cf0598efc37e8ec795035"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void FT::Evaluation::val_fitness </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="../../d9/ddc/structFT_1_1Population.html">Population</a> &amp;&#160;</td>
-          <td class="paramname"><em>pop</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const MatrixXd &amp;&#160;</td>
-          <td class="paramname"><em>X_t</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; &amp;&#160;</td>
-          <td class="paramname"><em>Z_t</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">VectorXd &amp;&#160;</td>
-          <td class="paramname"><em>y_t</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">MatrixXd &amp;&#160;</td>
-          <td class="paramname"><em>F</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const MatrixXd &amp;&#160;</td>
-          <td class="paramname"><em>X_v</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; &amp;&#160;</td>
-          <td class="paramname"><em>Z_v</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">VectorXd &amp;&#160;</td>
-          <td class="paramname"><em>y_v</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;&#160;</td>
-          <td class="paramname"><em>params</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>offspring</em> = <code>false</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Input: </p><pre class="fragment"> pop: population
- X: feature data
- y: label
- F: matrix of raw fitness values
- p: algorithm parameters
-</pre><p>Output: </p><pre class="fragment"> F is modified
- pop[:].fitness is modified
-</pre>
-</div>
-</div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="../../d3/df9/evaluation_8h_source.html">evaluation.h</a></li>
+<li>evaluation.cc</li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

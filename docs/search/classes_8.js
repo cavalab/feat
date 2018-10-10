@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['ml',['ML',['../df/dfa/classFT_1_1ML.html',1,'FT']]],
-  ['mycartreenodedata',['MyCARTreeNodeData',['../df/d48/structshogun_1_1MyCARTreeNodeData.html',1,'shogun']]]
+  ['lexicase',['Lexicase',['../d8/d78/structFT_1_1Lexicase.html',1,'FT']]]
 ];

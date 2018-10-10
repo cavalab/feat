@@ -1,8 +1,9 @@
 var classFT_1_1NodeIf =
 [
-    [ "NodeIf", "d2/d99/classFT_1_1NodeIf.html#a22a5972b4fcb168e5b06d33518b42e3e", null ],
-    [ "clone_impl", "d2/d99/classFT_1_1NodeIf.html#aaf9eac5ad7eeeac7877e068a0ae4c620", null ],
+    [ "NodeIf", "d2/d99/classFT_1_1NodeIf.html#ae7ac5e08d50bf178852c83435ab1bbcb", null ],
+    [ "clone_impl", "d2/d99/classFT_1_1NodeIf.html#ad633a687790ec391978cde77538858e8", null ],
     [ "eval_eqn", "d2/d99/classFT_1_1NodeIf.html#ab7a11f91a245654a54fecb96365ef0e6", null ],
-    [ "evaluate", "d2/d99/classFT_1_1NodeIf.html#aa96a5e52c4ca6b26bdc1946a07c63a55", null ],
-    [ "rnd_clone_impl", "d2/d99/classFT_1_1NodeIf.html#ab88625d16fd446c7dc6c1fb8c961f8d8", null ]
+    [ "evaluate", "d2/d99/classFT_1_1NodeIf.html#a18c67a28637a0c939ba118cbd8334097", null ],
+    [ "getDerivative", "d2/d99/classFT_1_1NodeIf.html#a5eabf32f05a3d281d8b05d95176a7cce", null ],
+    [ "rnd_clone_impl", "d2/d99/classFT_1_1NodeIf.html#ab2e0874c6629ce84691ae589e2e0bc38", null ]
 ];
