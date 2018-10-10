@@ -53,6 +53,10 @@ namespace FT
             void get_batch(Data &db, int batch_size) const;
     };
     
+    /* !
+     * @class DataRef
+     * @brief Holds training and validation splits of data, with pointers to each.
+     * */
     class DataRef
     {
         private:
