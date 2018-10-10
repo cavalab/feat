@@ -57,7 +57,7 @@ namespace FT{
         int max_time;                               ///< max time for fit method
         bool use_batch;                             ///< whether to use mini batch for training
         bool semantic_xo;                           ///< use semantic crossover  
-                                                        
+
         struct BP 
         {
            int iters;
