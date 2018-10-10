@@ -52,7 +52,7 @@ ArrayXd limited(ArrayXd x)
 
 Node* parseToNode(std::string token) {
 	if (token == "+") {
-    	return new FT::NodeAdd();
+    	return new FT::NodeAdd({1.0, 1.0});
     } else if (token == "-") {
     	return new FT::NodeSubtract();
     } else if (token == "/") {
@@ -60,7 +60,7 @@ Node* parseToNode(std::string token) {
     } else if (token == "*") {
     	return new FT::NodeMultiply();
     } else if (token == "cos") {
-    	return new FT::NodeCos();
+    	return new FT::NodeCos({1.0});
     } else if (token == "sin") {
     	return new FT::NodeSin();
     } else if (token == "x0") {
@@ -80,7 +80,7 @@ Node* parseToNode(std::string token) {
 
 FT::NodeVector programGen() {
 	FT::NodeVector program;
-	std::string txt = "x0 x1 cos";
+	std::string txt = "x0 x1 +";
 
 	char ch = ' ';
 	size_t pos = txt.find( ch );
@@ -113,15 +113,20 @@ void testDummyProgram(FT::NodeVector p0, int iters) {
 		std::cout << n->name << ", ";
 	}
 	std::cout << "]\n";
+	
+	std::cout << "Number of iterations are "<< iters <<"\n";
 
 	// Create input data and labels
-	MatrixXd x(2, 2);
-	VectorXd y(2);
-	x << 7.3, 6.7, 
-		 12.4, 13.2;
+	MatrixXd x(2, 10);
+	VectorXd y(10);
+	x.row(0) << -0.44485052, -0.49109715,  0.88231917,  0.94669031, -0.80300709,
+       -0.581858  , -0.91693663, -0.98437617, -0.52860637, -0.89671113;
+    x.row(1) << 0.89560483,  0.87110481, -0.47065155,  0.32214509,  0.59596947,
+        0.81329039,  0.39903285,  0.17607827,  0.84886707, -0.44261626;
 
-	y << 9.0, 
-		 8.0;
+    y << 1.79711347,  1.63112011,  0.35268371,  2.85981589,  0.18189424,
+        1.27615517, -0.63677472, -1.44051753,  1.48938848, -3.12127104;
+	    
 
     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
 	// Params
@@ -130,12 +135,15 @@ void testDummyProgram(FT::NodeVector p0, int iters) {
     FT::Individual ind;
     ind.program = p0;
     FT::Feat feat;
+    feat.set_verbosity(3);
+    
+    feat.set_shuffle(false);
                       
     Data data(x, y, Z);
     
-	// AutoBackProp(PROGRAM, COST_FUNCTION, D_COST_FUNCTION, INPUT_DATA, LABELS, ITERS, LEARNING RATE);
-	FT::AutoBackProp* engine = new FT::AutoBackProp("mse", iters, learning_rate);
-    engine->run(ind, data, feat.params); // Update pointer to NodeVector internally
+	FT::AutoBackProp* engine = new FT::AutoBackProp("mse", iters, learning_rate, 0);	
+
+    engine->run2(ind, data, feat.params); // Update pointer to NodeVector internally
 
     std::cout << "test program returned:\n";
 	for (const auto& n : ind.program) {
@@ -569,7 +577,7 @@ TEST(BackProp, PropogationTest)
 		//cout << "Please enter number of iterations: ";
 	   	//getline(cin, input);
 	   	
-	   	input = "10";
+	   	input = "100";
 
 	   	// This code converts from string to number safely.
 	   	stringstream myStream(input);
