@@ -108,7 +108,10 @@ $(document).ready(function(){initNavTree('dd/d2d/classFT_1_1Rnd.html','../../');
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="../../d0/d0c/classFT_1_1Rnd-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">FT::Rnd Class Reference</div>  </div>
@@ -119,11 +122,16 @@ $(document).ready(function(){initNavTree('dd/d2d/classFT_1_1Rnd.html','../../');
  <a href="../../dd/d2d/classFT_1_1Rnd.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="../../d2/da9/rnd_8h_source.html">rnd.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for FT::Rnd:</div>
+<div class="dyncontent">
+<div class="center"><img src="../../d6/d35/classFT_1_1Rnd__coll__graph.png" border="0" usemap="#FT_1_1Rnd_coll__map" alt="Collaboration graph"/></div>
+<map name="FT_1_1Rnd_coll__map" id="FT_1_1Rnd_coll__map">
+</map>
+<center><span class="legend">[<a target="top" href="../../graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a1e6e78753f30e39667e4f6397582cea8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d2d/classFT_1_1Rnd.html#a1e6e78753f30e39667e4f6397582cea8">Rnd</a> ()</td></tr>
-<tr class="separator:a1e6e78753f30e39667e4f6397582cea8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f282bd01ffc273b0f74e0db490eab13"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d2d/classFT_1_1Rnd.html#a4f282bd01ffc273b0f74e0db490eab13">set_seed</a> (int seed)</td></tr>
 <tr class="separator:a4f282bd01ffc273b0f74e0db490eab13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa2bead598d4536e3bae12ea0f8723913"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa2bead598d4536e3bae12ea0f8723913"></a>
@@ -155,12 +163,35 @@ template&lt;typename Iter &gt; </td></tr>
 <tr class="memitem:a9b2d69b06615ee9f799038c736048e6d"><td class="memTemplParams" colspan="2">template&lt;typename T , typename D &gt; </td></tr>
 <tr class="memitem:a9b2d69b06615ee9f799038c736048e6d"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="../../dd/d2d/classFT_1_1Rnd.html#a9b2d69b06615ee9f799038c736048e6d">random_choice</a> (const vector&lt; T &gt; &amp;v, const vector&lt; D &gt; &amp;w)</td></tr>
 <tr class="separator:a9b2d69b06615ee9f799038c736048e6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3d9595226f96c356a743f22e7121197"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae3d9595226f96c356a743f22e7121197"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>gasdev</b> ()</td></tr>
+<tr class="separator:ae3d9595226f96c356a743f22e7121197"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:aaefbb795c115f95a5a7aa4c2c440c9f6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaefbb795c115f95a5a7aa4c2c440c9f6"></a>
+static <a class="el" href="../../dd/d2d/classFT_1_1Rnd.html">Rnd</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>initRand</b> ()</td></tr>
+<tr class="separator:aaefbb795c115f95a5a7aa4c2c440c9f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af22330a4c7b5dee54c171adf286b00ff"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af22330a4c7b5dee54c171adf286b00ff"></a>
+static void&#160;</td><td class="memItemRight" valign="bottom"><b>destroy</b> ()</td></tr>
+<tr class="separator:af22330a4c7b5dee54c171adf286b00ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a1e6e78753f30e39667e4f6397582cea8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d2d/classFT_1_1Rnd.html#a1e6e78753f30e39667e4f6397582cea8">Rnd</a> ()</td></tr>
+<tr class="separator:a1e6e78753f30e39667e4f6397582cea8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a400b4f4b00e421b0d1d2ca4d47748ae0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a400b4f4b00e421b0d1d2ca4d47748ae0"></a>
 vector&lt; std::mt19937 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>rg</b></td></tr>
 <tr class="separator:a400b4f4b00e421b0d1d2ca4d47748ae0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a344d0eae782e358e989c067eba66b544"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a344d0eae782e358e989c067eba66b544"></a>
+static <a class="el" href="../../dd/d2d/classFT_1_1Rnd.html">Rnd</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>instance</b> = NULL</td></tr>
+<tr class="separator:a344d0eae782e358e989c067eba66b544"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Defines a multi-core random number generator and its operators. </p>
@@ -181,7 +212,7 @@ vector&lt; std::mt19937 &gt;&#160;</td><td class="memItemRight" valign="bottom">
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -257,9 +288,6 @@ template&lt;typename T , typename D &gt; </div>
 <a class="anchor" id="a4f282bd01ffc273b0f74e0db490eab13"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void FT::Rnd::set_seed </td>
@@ -269,18 +297,14 @@ template&lt;typename T , typename D &gt; </div>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 <p>set seeds for each core's random number generator</p>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="../../d2/da9/rnd_8h_source.html">rnd.h</a></li>
+<li>rnd.cc</li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

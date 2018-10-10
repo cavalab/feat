@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['timer',['Timer',['../d3/d4e/classFT_1_1Timer.html',1,'FT']]]
+  ['random',['Random',['../d0/d92/structFT_1_1Random.html',1,'FT']]],
+  ['rnd',['Rnd',['../dd/d2d/classFT_1_1Rnd.html',1,'FT']]]
 ];
