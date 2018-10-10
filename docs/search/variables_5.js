@@ -6,6 +6,7 @@ var searchData=
   ['feature_5fnames',['feature_names',['../de/d2c/structFT_1_1Parameters.html#ab036088636ec2dcfe8bb0215700f631b',1,'FT::Parameters']]],
   ['feedback',['feedback',['../de/d2c/structFT_1_1Parameters.html#adace64c4fd209f05a0baf58b98f5b3ad',1,'FT::Parameters']]],
   ['fitness',['fitness',['../d8/d25/classFT_1_1Individual.html#a4af553c06f662e1a53cba465247a63c3',1,'FT::Individual']]],
+  ['fitness_5fv',['fitness_v',['../d8/d25/classFT_1_1Individual.html#aed736099b3b41f1a9096ffa73458260b',1,'FT::Individual']]],
   ['foldsize',['foldSize',['../df/de2/classFT_1_1FeatCV.html#acd588d2c45280f192beaa1783ea4e546',1,'FT::FeatCV']]],
   ['fs',['fs',['../d5/d75/structFT_1_1Stacks.html#ad30ed5f5f6554780f11d4e8ad0119690',1,'FT::Stacks']]],
   ['functions',['functions',['../de/d2c/structFT_1_1Parameters.html#a73627d83a91b1eb185457c0f87c9d473',1,'FT::Parameters']]]

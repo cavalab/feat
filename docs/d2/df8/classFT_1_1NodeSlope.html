@@ -135,19 +135,18 @@ Collaboration diagram for FT::NodeSlope:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ae3472d4e6906f61d91fb42d457cee549"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae3472d4e6906f61d91fb42d457cee549"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/df8/classFT_1_1NodeSlope.html#ae3472d4e6906f61d91fb42d457cee549">evaluate</a> (const MatrixXd &amp;X, const VectorXd &amp;y, const std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt; &gt; &gt; &amp;Z, <a class="el" href="../../d5/d75/structFT_1_1Stacks.html">Stacks</a> &amp;stack)</td></tr>
-<tr class="memdesc:ae3472d4e6906f61d91fb42d457cee549"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the node and updates the stack states. <br /></td></tr>
-<tr class="separator:ae3472d4e6906f61d91fb42d457cee549"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2bb2cb948b00d499f9d54cb79b27a7a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae2bb2cb948b00d499f9d54cb79b27a7a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/df8/classFT_1_1NodeSlope.html#ae2bb2cb948b00d499f9d54cb79b27a7a">evaluate</a> (const <a class="el" href="../../d5/d03/classFT_1_1Data.html">Data</a> &amp;data, <a class="el" href="../../d5/d75/structFT_1_1Stacks.html">Stacks</a> &amp;stack)</td></tr>
+<tr class="memdesc:ae2bb2cb948b00d499f9d54cb79b27a7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the node and updates the stack states. <br /></td></tr>
+<tr class="separator:ae2bb2cb948b00d499f9d54cb79b27a7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5474a0581c2e7918ecededd1c3aea1e5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5474a0581c2e7918ecededd1c3aea1e5"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/df8/classFT_1_1NodeSlope.html#a5474a0581c2e7918ecededd1c3aea1e5">eval_eqn</a> (<a class="el" href="../../d5/d75/structFT_1_1Stacks.html">Stacks</a> &amp;stack)</td></tr>
 <tr class="memdesc:a5474a0581c2e7918ecededd1c3aea1e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the node symbolically. <br /></td></tr>
 <tr class="separator:a5474a0581c2e7918ecededd1c3aea1e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a969ea82c8f02b66aca80849b5337959b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a969ea82c8f02b66aca80849b5337959b"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>slope</b> (const ArrayXd &amp;x, const ArrayXd &amp;y)</td></tr>
+<tr class="separator:a969ea82c8f02b66aca80849b5337959b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classFT_1_1Node"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classFT_1_1Node')"><img src="../../closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="../../d3/daf/classFT_1_1Node.html">FT::Node</a></td></tr>
-<tr class="memitem:a95e1d572191c38566fc3edde41081972 inherit pub_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a95e1d572191c38566fc3edde41081972"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/daf/classFT_1_1Node.html#a95e1d572191c38566fc3edde41081972">evaluate</a> (const MatrixXd &amp;X, const VectorXd &amp;y, const std::map&lt; string, std::pair&lt; vector&lt; ArrayXd &gt;, vector&lt; ArrayXd &gt;&gt;&gt; &amp;Z, <a class="el" href="../../d5/d75/structFT_1_1Stacks.html">Stacks</a> &amp;stack)=0</td></tr>
-<tr class="memdesc:a95e1d572191c38566fc3edde41081972 inherit pub_methods_classFT_1_1Node"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the node and updates the stack states. <br /></td></tr>
-<tr class="separator:a95e1d572191c38566fc3edde41081972 inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c25f017fe0e31985293be28d7aae946 inherit pub_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3c25f017fe0e31985293be28d7aae946"></a>
 unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>total_arity</b> ()</td></tr>
 <tr class="separator:a3c25f017fe0e31985293be28d7aae946 inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -165,23 +164,26 @@ ArrayXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href=".
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/daf/classFT_1_1Node.html#ab21932c302da1432b829b59b00a8f97e">isNodeDx</a> ()</td></tr>
 <tr class="memdesc:ab21932c302da1432b829b59b00a8f97e inherit pub_methods_classFT_1_1Node"><td class="mdescLeft">&#160;</td><td class="mdescRight">check of node type <br /></td></tr>
 <tr class="separator:ab21932c302da1432b829b59b00a8f97e inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26bfc16470d49222cc6c20d4d7c6b42f inherit pub_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a26bfc16470d49222cc6c20d4d7c6b42f"></a>
-auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/daf/classFT_1_1Node.html#a26bfc16470d49222cc6c20d4d7c6b42f">clone</a> () const </td></tr>
-<tr class="memdesc:a26bfc16470d49222cc6c20d4d7c6b42f inherit pub_methods_classFT_1_1Node"><td class="mdescLeft">&#160;</td><td class="mdescRight">makes a unique copy of this node <br /></td></tr>
-<tr class="separator:a26bfc16470d49222cc6c20d4d7c6b42f inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a526cc31df31f70e756e8f48e0fa540f7 inherit pub_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a526cc31df31f70e756e8f48e0fa540f7"></a>
-auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/daf/classFT_1_1Node.html#a526cc31df31f70e756e8f48e0fa540f7">rnd_clone</a> () const </td></tr>
-<tr class="memdesc:a526cc31df31f70e756e8f48e0fa540f7 inherit pub_methods_classFT_1_1Node"><td class="mdescLeft">&#160;</td><td class="mdescRight">makes a randomized unique copy ofnode <br /></td></tr>
-<tr class="separator:a526cc31df31f70e756e8f48e0fa540f7 inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a728ffac6fcd0f17a86aeb5b3b6e53742 inherit pub_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a728ffac6fcd0f17a86aeb5b3b6e53742"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>isNodeTrain</b> ()</td></tr>
+<tr class="separator:a728ffac6fcd0f17a86aeb5b3b6e53742 inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18dc899e75237bba5a08dc86292e12ea inherit pub_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a18dc899e75237bba5a08dc86292e12ea"></a>
+std::unique_ptr&lt; <a class="el" href="../../d3/daf/classFT_1_1Node.html">Node</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/daf/classFT_1_1Node.html#a18dc899e75237bba5a08dc86292e12ea">clone</a> () const </td></tr>
+<tr class="memdesc:a18dc899e75237bba5a08dc86292e12ea inherit pub_methods_classFT_1_1Node"><td class="mdescLeft">&#160;</td><td class="mdescRight">makes a unique copy of this node <br /></td></tr>
+<tr class="separator:a18dc899e75237bba5a08dc86292e12ea inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04af42a958e1b0c37620f11a701af592 inherit pub_methods_classFT_1_1Node"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a04af42a958e1b0c37620f11a701af592"></a>
+std::unique_ptr&lt; <a class="el" href="../../d3/daf/classFT_1_1Node.html">Node</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/daf/classFT_1_1Node.html#a04af42a958e1b0c37620f11a701af592">rnd_clone</a> () const </td></tr>
+<tr class="memdesc:a04af42a958e1b0c37620f11a701af592 inherit pub_methods_classFT_1_1Node"><td class="mdescLeft">&#160;</td><td class="mdescRight">makes a randomized unique copy ofnode <br /></td></tr>
+<tr class="separator:a04af42a958e1b0c37620f11a701af592 inherit pub_methods_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a560fda76a9e556f7808e0aeb4e8a8870"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a560fda76a9e556f7808e0aeb4e8a8870"></a>
+<tr class="memitem:ad689bbfe9799629dccae9503832a7b73"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad689bbfe9799629dccae9503832a7b73"></a>
 <a class="el" href="../../d2/df8/classFT_1_1NodeSlope.html">NodeSlope</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>clone_impl</b> () const override</td></tr>
-<tr class="separator:a560fda76a9e556f7808e0aeb4e8a8870"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71dfa8c5d128f940362c6496c1d7d772"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a71dfa8c5d128f940362c6496c1d7d772"></a>
+<tr class="separator:ad689bbfe9799629dccae9503832a7b73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a321b7e60532822cf2ac781105d489e1a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a321b7e60532822cf2ac781105d489e1a"></a>
 <a class="el" href="../../d2/df8/classFT_1_1NodeSlope.html">NodeSlope</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>rnd_clone_impl</b> () const override</td></tr>
-<tr class="separator:a71dfa8c5d128f940362c6496c1d7d772"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a321b7e60532822cf2ac781105d489e1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -206,8 +208,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../..
 int&#160;</td><td class="memItemRight" valign="bottom"><b>visits</b> = 0</td></tr>
 <tr class="separator:ad841347ffcd8c89fea40a6ffa6c53d61 inherit pub_attribs_classFT_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this class was generated from the following file:<ul>
-<li><a class="el" href="../../d5/dbd/nodeslope_8h_source.html">nodeslope.h</a></li>
+<hr/>The documentation for this class was generated from the following files:<ul>
+<li><a class="el" href="../../d0/d89/n__slope_8h_source.html">n_slope.h</a></li>
+<li>n_slope.cc</li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

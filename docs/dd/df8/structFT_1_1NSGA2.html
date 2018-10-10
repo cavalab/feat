@@ -109,8 +109,8 @@ $(document).ready(function(){initNavTree('dd/df8/structFT_1_1NSGA2.html','../../
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pri-methods">Private Member Functions</a> &#124;
-<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="../../db/d6a/classFT_1_1NSGA2-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">FT::NSGA2 Class Reference</div>  </div>
@@ -129,7 +129,9 @@ Collaboration diagram for FT::NSGA2:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../d6/d07/structFT_1_1NSGA2__coll__graph.png" border="0" usemap="#FT_1_1NSGA2_coll__map" alt="Collaboration graph"/></div>
 <map name="FT_1_1NSGA2_coll__map" id="FT_1_1NSGA2_coll__map">
-<area shape="rect" id="node2" href="../../d2/d3a/structFT_1_1SelectionOperator.html" title="base class for selection operators. " alt="" coords="5,5,156,32"/>
+<area shape="rect" id="node2" href="../../d2/d3a/structFT_1_1SelectionOperator.html" title="base class for selection operators. " alt="" coords="5,193,156,219"/>
+<area shape="rect" id="node3" title="STL class. " alt="" coords="41,96,121,123"/>
+<area shape="rect" id="node4" title="STL class. " alt="" coords="17,5,144,47"/>
 </map>
 <center><span class="legend">[<a target="top" href="../../graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -146,32 +148,26 @@ Classes</h2></td></tr>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a4e71d2d11a708c4dd165a2dd39e4af7f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/df8/structFT_1_1NSGA2.html#a4e71d2d11a708c4dd165a2dd39e4af7f">NSGA2</a> (bool surv)</td></tr>
 <tr class="separator:a4e71d2d11a708c4dd165a2dd39e4af7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98d405cf81e57be4969bd0d99a7c80e5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a98d405cf81e57be4969bd0d99a7c80e5"></a>
+vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/df8/structFT_1_1NSGA2.html#a98d405cf81e57be4969bd0d99a7c80e5">select</a> (<a class="el" href="../../d9/ddc/structFT_1_1Population.html">Population</a> &amp;pop, const MatrixXd &amp;F, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;p)</td></tr>
+<tr class="memdesc:a98d405cf81e57be4969bd0d99a7c80e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">selection according to the survival scheme of NSGA-II <br /></td></tr>
+<tr class="separator:a98d405cf81e57be4969bd0d99a7c80e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa42914a15ac5001082785a6e8503b111"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa42914a15ac5001082785a6e8503b111"></a>
 vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/df8/structFT_1_1NSGA2.html#aa42914a15ac5001082785a6e8503b111">survive</a> (<a class="el" href="../../d9/ddc/structFT_1_1Population.html">Population</a> &amp;pop, const MatrixXd &amp;F, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;p)</td></tr>
-<tr class="memdesc:aa42914a15ac5001082785a6e8503b111"><td class="mdescLeft">&#160;</td><td class="mdescRight">selection according to the survival scheme of NSGA-II <br /></td></tr>
+<tr class="memdesc:aa42914a15ac5001082785a6e8503b111"><td class="mdescLeft">&#160;</td><td class="mdescRight">survival according to the survival scheme of NSGA-II <br /></td></tr>
 <tr class="separator:aa42914a15ac5001082785a6e8503b111"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_structFT_1_1SelectionOperator"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_structFT_1_1SelectionOperator')"><img src="../../closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="../../d2/d3a/structFT_1_1SelectionOperator.html">FT::SelectionOperator</a></td></tr>
-<tr class="memitem:aea68aeaa9d9112058f5f12bb76e56d82 inherit pub_methods_structFT_1_1SelectionOperator"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aea68aeaa9d9112058f5f12bb76e56d82"></a>
-virtual vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>select</b> (<a class="el" href="../../d9/ddc/structFT_1_1Population.html">Population</a> &amp;pop, const MatrixXd &amp;F, const <a class="el" href="../../de/d2c/structFT_1_1Parameters.html">Parameters</a> &amp;p)</td></tr>
-<tr class="separator:aea68aeaa9d9112058f5f12bb76e56d82 inherit pub_methods_structFT_1_1SelectionOperator"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
-Private Member Functions</h2></td></tr>
-<tr class="memitem:a1e992bf1f41669fa6fa9b41b2b62147d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1e992bf1f41669fa6fa9b41b2b62147d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>fast_nds</b> (<a class="el" href="../../d9/ddc/structFT_1_1Population.html">Population</a> &amp;)</td></tr>
-<tr class="separator:a1e992bf1f41669fa6fa9b41b2b62147d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22a2bac6f010c670317f9158d14cc5b4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a22a2bac6f010c670317f9158d14cc5b4"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>fast_nds</b> (vector&lt; <a class="el" href="../../d8/d25/classFT_1_1Individual.html">Individual</a> &gt; &amp;)</td></tr>
+<tr class="separator:a22a2bac6f010c670317f9158d14cc5b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab4d082a50e9bae73dc0d408954773cb2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab4d082a50e9bae73dc0d408954773cb2"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>crowding_distance</b> (<a class="el" href="../../d9/ddc/structFT_1_1Population.html">Population</a> &amp;, int)</td></tr>
 <tr class="separator:ab4d082a50e9bae73dc0d408954773cb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
-Private Attributes</h2></td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
 <tr class="memitem:acdeca7183084e0f86ded63cf85c59f21"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acdeca7183084e0f86ded63cf85c59f21"></a>
 vector&lt; vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>front</b></td></tr>
 <tr class="separator:acdeca7183084e0f86ded63cf85c59f21"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_attribs_structFT_1_1SelectionOperator"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_structFT_1_1SelectionOperator')"><img src="../../closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="../../d2/d3a/structFT_1_1SelectionOperator.html">FT::SelectionOperator</a></td></tr>
 <tr class="memitem:a1bf532fb56df68486f121a59b1c3b78c inherit pub_attribs_structFT_1_1SelectionOperator"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1bf532fb56df68486f121a59b1c3b78c"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>survival</b></td></tr>
@@ -179,14 +175,17 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>survival</b></td></tr
 <tr class="memitem:adff6d00934cd5fdaffd25a92a074b00a inherit pub_attribs_structFT_1_1SelectionOperator"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adff6d00934cd5fdaffd25a92a074b00a"></a>
 string&#160;</td><td class="memItemRight" valign="bottom"><b>name</b></td></tr>
 <tr class="separator:adff6d00934cd5fdaffd25a92a074b00a inherit pub_attribs_structFT_1_1SelectionOperator"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a82e22b20ba54f148055fac7b6f8b79f0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a82e22b20ba54f148055fac7b6f8b79f0"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>tournament</b> (vector&lt; <a class="el" href="../../d8/d25/classFT_1_1Individual.html">Individual</a> &gt; &amp;pop, size_t i, size_t j) const </td></tr>
+<tr class="separator:a82e22b20ba54f148055fac7b6f8b79f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a4e71d2d11a708c4dd165a2dd39e4af7f"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">FT::NSGA2::NSGA2 </td>
@@ -196,18 +195,14 @@ string&#160;</td><td class="memItemRight" valign="bottom"><b>name</b></td></tr>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 <p>NSGA-II based selection and survival methods. </p>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="../../d3/d06/nsga2_8h_source.html">nsga2.h</a></li>
+<li>nsga2.cc</li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

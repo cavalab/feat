@@ -1,0 +1,26 @@
+var classFT_1_1DataRef =
+[
+    [ "DataRef", "d6/d9e/classFT_1_1DataRef.html#a8c4fda67ad2d471836b063731d04fbad", null ],
+    [ "~DataRef", "d6/d9e/classFT_1_1DataRef.html#a41cba340012239af1452f0fe7af24c3b", null ],
+    [ "DataRef", "d6/d9e/classFT_1_1DataRef.html#ad8c2c35cf3481670f8c5f87e09829307", null ],
+    [ "setOriginalData", "d6/d9e/classFT_1_1DataRef.html#ad48d992e0dfefc3b1fab8bd2d0624002", null ],
+    [ "setOriginalData", "d6/d9e/classFT_1_1DataRef.html#afcfc974012fc3fdd3cbcdad0237e52dc", null ],
+    [ "setTrainingData", "d6/d9e/classFT_1_1DataRef.html#a06ec75b3dbcbcc79270a556287c7f83c", null ],
+    [ "setTrainingData", "d6/d9e/classFT_1_1DataRef.html#a5caed63709e56cb08a2f3a84405b32c6", null ],
+    [ "setValidationData", "d6/d9e/classFT_1_1DataRef.html#a5a3d6776e14504aa52644b59ad4cbee2", null ],
+    [ "setValidationData", "d6/d9e/classFT_1_1DataRef.html#a12f7c7bae30bc676469687221b6e2c91", null ],
+    [ "split_longitudinal", "d6/d9e/classFT_1_1DataRef.html#a0348ad6bc9b1d169d8cdf9b7dd2c517a", null ],
+    [ "train_test_split", "d6/d9e/classFT_1_1DataRef.html#a5ae84b778716dabd7cb9aa7cf59bb355", null ],
+    [ "o", "d6/d9e/classFT_1_1DataRef.html#aa33b5f7ab70f0cfeaf02226f80d2baa9", null ],
+    [ "oCreated", "d6/d9e/classFT_1_1DataRef.html#abf38e74bbacf68ced1d383b943f8aa8e", null ],
+    [ "t", "d6/d9e/classFT_1_1DataRef.html#a7cdadcfbb59efdd7e2f05cf3f14b62d5", null ],
+    [ "tCreated", "d6/d9e/classFT_1_1DataRef.html#ab656dc53893f7e6a6b4b97cf7e4c5914", null ],
+    [ "v", "d6/d9e/classFT_1_1DataRef.html#a4d82f4308a086720178a2f170642639b", null ],
+    [ "vCreated", "d6/d9e/classFT_1_1DataRef.html#af3262c77f5ea4ee5b0f13a745458adf7", null ],
+    [ "X_t", "d6/d9e/classFT_1_1DataRef.html#a0a7c73619431a0fe464c3e60412b590c", null ],
+    [ "X_v", "d6/d9e/classFT_1_1DataRef.html#a3d4a347ea7e338610fcfd2276b3ff28d", null ],
+    [ "y_t", "d6/d9e/classFT_1_1DataRef.html#a3bdb8743d86f3d3ac610daa6d5fc5d16", null ],
+    [ "y_v", "d6/d9e/classFT_1_1DataRef.html#a49c165d2c49c18a060288e102d8ecd9e", null ],
+    [ "Z_t", "d6/d9e/classFT_1_1DataRef.html#a64c797ad765a66745d34873f5fa173f0", null ],
+    [ "Z_v", "d6/d9e/classFT_1_1DataRef.html#aaa9795deeba211a9d2e3653ceab6f8ba", null ]
+];
