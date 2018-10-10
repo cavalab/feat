@@ -266,7 +266,8 @@ namespace FT{
                             vector<size_t> survivors,
                             DataRef &d,
                             std::ofstream &log,
-                            double percentage);
+                            double percentage,
+                            unsigned& stall_count);
                      
             /// train a model.             
             void fit(double * X,int rowsX,int colsX, double * Y,int lenY);
@@ -360,8 +361,9 @@ namespace FT{
             // performance tracking
             double best_score;                      ///< current best score
             double best_score_v;                    ///< best validation score
+            double best_med_score;                  ///< best median population score
             string str_dim;                         ///< dimensionality as multiple of number of columns 
-            void update_best(bool val=false);       ///< updates best score   
+            void update_best(const DataRef& d, bool val=false);       ///< updates best score   
             void print_stats(std::ofstream& log,
                              double fraction);      ///< prints stats
             Individual best_ind;                    ///< best individual
@@ -371,6 +373,8 @@ namespace FT{
             void initial_model(DataRef &d);
             /// fits final model to best transformation
             void final_model(DataRef& d);
+            /// updates stall count for early stopping
+            void update_stall_count(unsigned& stall_count, MatrixXd& F);
     };
 }
 #endif
