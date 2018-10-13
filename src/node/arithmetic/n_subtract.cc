@@ -27,7 +27,9 @@ namespace FT{
     /// Evaluates the node and updates the stack states. 
     void NodeSubtract::evaluate(const Data& data, Stacks& stack)
     {
-        stack.push<double>(limited(W[0]*stack.pop<double>() - W[1]*stack.pop<double>()));
+        ArrayXd x1 = stack.pop<double>();
+        ArrayXd x2 = stack.pop<double>();
+        stack.push<double>(limited(this->W[0]*x1 - this->W[1]*x2));
     }
 
     /// Evaluates the node symbolically
