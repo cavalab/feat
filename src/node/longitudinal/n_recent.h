@@ -5,7 +5,7 @@ license: GNU/GPL v3
 #ifndef NODE_RECENT
 #define NODE_RECENT 
 
-#include "node.h"
+#include "../node.h"
 
 namespace FT{
 	class NodeRecent : public Node
