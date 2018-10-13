@@ -58,6 +58,7 @@ license: GNU/GPL v3
 #include "node/longitudinal/n_median.h"
 #include "node/longitudinal/n_min.h"
 #include "node/longitudinal/n_mode.h"
+#include "node/longitudinal/n_recent.h"
 #include "node/longitudinal/n_skew.h"
 #include "node/longitudinal/n_slope.h"
 #include "node/longitudinal/n_time.h"
