@@ -60,29 +60,6 @@ namespace FT{
         } 
     }
 
-    // void derivative(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, int loc) {
-    //     switch (loc) {
-    //         case 0:
-    //         default:
-    //             numerator = 4 * W[0] * exp(2 * W[0] * stack_f[stack_f.size() - 1]);
-    //             denom = pow(exp(2 * W[0] * stack_f[stack_f.size() - 1]),2);
-    //             gradients.push_back(numerator/denom);
-    //             break;
-    //     } 
-    // }
-
-    // void update(vector<ArrayXd>& gradients, vector<ArrayXd>& stack_f, double n) {
-    //     int update_value = 1;
-    //     for(auto &grad : gradients) {
-    //         update_value *= grad;
-    //     }
-
-    //     numerator = 4 * stack_f[stack_f.size() - 1] * exp(2 * W[0] * stack_f[stack_f.size() - 1]); 
-    //     denom = pow(exp(2 * W[0] * stack_f[stack_f.size()-1]) + 1,2);
-    //     d_w = numerator/denom;
-    //     W[0] = W[0] - n/update_value.size() * sum(d_w * update_value);
-    // }
-
     NodeTanh* NodeTanh::clone_impl() const { return new NodeTanh(*this); }
      
     NodeTanh* NodeTanh::rnd_clone_impl() const { return new NodeTanh(); }

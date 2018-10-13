@@ -26,7 +26,10 @@ namespace FT{
     /// Evaluates the node and updates the stack states. 
     void NodeMultiply::evaluate(const Data& data, Stacks& stack)
     {
-        stack.push<double>(limited(W[0]*stack.pop<double>() * W[1]*stack.pop<double>()));
+        ArrayXd x1 = stack.pop<double>();
+        ArrayXd x2 = stack.pop<double>();
+       
+        stack.push<double>(limited(W[0]*x1 * W[1]*x2));
     }
 
     /// Evaluates the node symbolically
@@ -46,10 +49,10 @@ namespace FT{
             case 2: // d/dW[0] 
                 return x1 * this->W[1] * x2;
             case 1: // d/dx2
-                return this->W[0] * this->W[1] * x2;
+                return this->W[0] * this->W[1] * x1;
             case 0: // d/dx1
             default:
-                return this->W[1] * this->W[0] * x1;
+                return this->W[1] * this->W[0] * x2;
         } 
     }
     

@@ -145,8 +145,8 @@ class TestBackProp
                     params.msg("",3);           // update learning rate
                 }
                 
-                double alpha = double(x)/double(iters);
-                this->epk = (1 - alpha)*this->epk + alpha*this->epT;  
+                /* double alpha = double(x)/double(iters); */
+                /* this->epk = (1 - alpha)*this->epk + alpha*this->epT; */  
                 cout << "Verbosity is " << params.verbosity << "\n";
                 if (params.verbosity>2)
                 {
@@ -362,8 +362,8 @@ TEST(BackProp, DerivativeTest)
 	input2(2,0) = 2;
 	input2(3,0) = 1;
 	input2(4,0) = 0;
-	trace.f.push_back(input1);
 	trace.f.push_back(input2);
+	trace.f.push_back(input1);
 
 	// ADD NODE CHECK -------------------------------------------------------------------------------
 	NodeDx* toTest = new FT::NodeAdd();
@@ -376,7 +376,8 @@ TEST(BackProp, DerivativeTest)
 	expectedDerivative(3,0) = toTest->W[0];
 	expectedDerivative(4,0) = toTest->W[0];
 	
-	ASSERT_LE((expectedDerivative.matrix() - toTest->getDerivative(trace, 0).matrix()).norm(), 0.0001);
+	ASSERT_LE((expectedDerivative.matrix() - toTest->getDerivative(trace, 0).matrix()).norm(), 
+              0.0001);
 		
 	expectedDerivative(0,0) = toTest->W[1];
 	expectedDerivative(1,0) = toTest->W[1];
@@ -386,7 +387,8 @@ TEST(BackProp, DerivativeTest)
 
 	// Derivative wrt to second input
 	
-	ASSERT_LE((expectedDerivative.matrix() - toTest->getDerivative(trace, 1).matrix()).norm(), 0.0001);
+	ASSERT_LE((expectedDerivative.matrix() - toTest->getDerivative(trace, 1).matrix()).norm(), 
+              0.0001);
 
 	// Derivative wrt to first weight
 	expectedDerivative(0,0) = 0;
@@ -755,7 +757,7 @@ TEST(BackProp, DerivativeTest)
 
 TEST(BackProp, PropogationTest)
 {
-    int iters = 10;
+    int iters = 100;
 	FT::NodeVector program = programGen();
  	cout << "Running with : " << iters << endl << endl;
 	testDummyProgram(program, iters);
