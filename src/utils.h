@@ -33,41 +33,16 @@ namespace FT{
      
     std::string trim(std::string str, const std::string& chars = "\t\n\v\f\r ");
 
-    /*!
-     * load csv file into matrix. 
-     */
-    
-    void load_csv (const std::string & path, MatrixXd& X, VectorXd& y, vector<string>& names, 
-                   vector<char> &dtypes, bool& binary_endpoint, char sep=',');
-    
-    /*!
-     * load longitudinal csv file into matrix. 
-     */
-    void load_longitudinal(const std::string & path,
-                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
-                           char sep=',');
-    
-    /*!
-     * load partial longitudinal csv file into matrix according to idx vector
-     */
-    void load_partial_longitudinal(const std::string & path,
-                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
-                           char sep, vector<int> idx);
 
+    /// reordering utility for shuffling longitudinal data.
     void reorder_longitudinal(vector<ArrayXd> &vec1, vector<ArrayXd> &vec2,
-                             vector<int> const &order); 
+                             vector<long> const &order); 
 
     /// check if element is in vector.
     template<typename T>
     bool in(const vector<T> v, const T& i)
     {
-        /* true if i is in v, else false. */
-        for (const auto& el : v)
-        {
-            if (i == el)
-                return true;
-        }
-        return false;
+        return std::find(v.begin(), v.end(), i) != v.end();
     }
    
     /// calculate median
@@ -159,7 +134,8 @@ namespace FT{
             
         return w_new;
     }
-    
+   
+    /// normalizes a matrix to unit variance, 0 mean centered.
     struct Normalizer
     {
         vector<double> scale;
@@ -173,7 +149,6 @@ namespace FT{
         void normalize(MatrixXd& X);
         
         void fit_normalize(MatrixXd& X, const vector<char>& dtypes);
-        
     };
 
     /// returns true for elements of x that are infinite
@@ -181,7 +156,8 @@ namespace FT{
     
     /// returns true for elements of x that are NaN
     ArrayXb isnan(const ArrayXd& x);
-    
+   
+    /// calculates data types for each column of X
     vector<char> find_dtypes(MatrixXd &X);
 	
     /// returns unique elements in vector
@@ -202,8 +178,6 @@ namespace FT{
         vector<T> wv( w.data(), w.data()+w.rows());
         return unique(wv);
     }
-
-    void printProgress (double percentage);
     
     ///template function to convert objects to string for logging
     template <typename T>

@@ -6,7 +6,7 @@ var classFT_1_1ML =
     [ "fit_vector", "df/dfa/classFT_1_1ML.html#a874c6c77a9c5d466505795ea83e239cd", null ],
     [ "get_weights", "df/dfa/classFT_1_1ML.html#a27fa984d19c8826c2fcbe81edb6a3417", null ],
     [ "init", "df/dfa/classFT_1_1ML.html#a2ee8ca95a179f4cbe3c3ab87d9066147", null ],
-    [ "labels_to_vector", "df/dfa/classFT_1_1ML.html#a50e74bfae7344ef534a74ec5bdee5e60", null ],
+    [ "labels_to_vector", "df/dfa/classFT_1_1ML.html#a7f178f3a394fc2f27cc20d0f723d1ab7", null ],
     [ "predict", "df/dfa/classFT_1_1ML.html#a3d420bae8ccaccc519ee236b7556dea5", null ],
     [ "predict_proba", "df/dfa/classFT_1_1ML.html#a77409ad5a41a56c5aa6d98d9f698038d", null ],
     [ "predict_vector", "df/dfa/classFT_1_1ML.html#a32c7f6d2eac0de798d067eb42b871bf9", null ],

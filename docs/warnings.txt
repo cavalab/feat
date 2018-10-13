@@ -1,0 +1,708 @@
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_logit.h:12: warning: Compound FT::NodeLogit is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/utils.h:164: warning: Compound FT::Normalizer is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_variable.h:13: warning: Compound FT::NodeVariable is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_log.h:12: warning: Compound FT::NodeLog is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_var.h:12: warning: Compound FT::NodeVar is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_skew.h:12: warning: Compound FT::NodeSkew is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/offspring.h:16: warning: Compound FT::Offspring is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_kurtosis.h:12: warning: Compound FT::NodeKurtosis is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_if.h:12: warning: Compound FT::NodeIf is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_cos.h:12: warning: Compound FT::NodeCos is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_divide.h:12: warning: Compound FT::NodeDivide is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_leq.h:12: warning: Compound FT::NodeLEQ is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:12: warning: Compound FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_gaussian.h:12: warning: Compound FT::NodeGaussian is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_train.h:10: warning: Compound FT::NodeTrain is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_multiply.h:12: warning: Compound FT::NodeMultiply is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/params.h:72: warning: Compound FT::Parameters::HC is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_exponential.h:12: warning: Compound FT::NodeExponential is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_geq.h:12: warning: Compound FT::NodeGEQ is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/hillclimb.h:27: warning: Compound FT::HillClimb is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_add.h:12: warning: Compound FT::NodeAdd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_min.h:12: warning: Compound FT::NodeMin is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:28: warning: Compound FT::FeatObjects is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_greaterthan.h:12: warning: Compound FT::NodeGreaterThan is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_exponent.h:12: warning: Compound FT::NodeExponent is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_sign.h:12: warning: Compound FT::NodeSign is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/params.h:62: warning: Compound FT::Parameters::BP is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_sqrt.h:12: warning: Compound FT::NodeSqrt is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_float.h:13: warning: Compound FT::NodeFloat is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_max.h:12: warning: Compound FT::NodeMax is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_not.h:12: warning: Compound FT::NodeNot is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_or.h:12: warning: Compound FT::NodeOr is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/main.cc:16: warning: Compound InputParser is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/cv_main.cc:22: warning: Compound InputParser is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_lessthan.h:12: warning: Compound FT::NodeLessThan is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml/MyLibLinear.h:12: warning: Compound shogun::CMyLibLinear is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/random.h:16: warning: Compound FT::Random is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/variation.h:25: warning: Compound FT::Variation is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_equal.h:12: warning: Compound FT::NodeEqual is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:61: warning: Compound FT::DataRef is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_mode.h:12: warning: Compound FT::NodeMode is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_subtract.h:12: warning: Compound FT::NodeSubtract is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_cube.h:12: warning: Compound FT::NodeCube is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_2dgaussian.h:14: warning: Compound FT::Node2dGaussian is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/simulated_annealing.h:16: warning: Compound FT::SimAnneal is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_split.h:13: warning: Compound FT::NodeSplit is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/nsga2.h:16: warning: Compound FT::NSGA2 is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/auto_backprop.h:36: warning: Compound FT::AutoBackProp is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_sin.h:12: warning: Compound FT::NodeSin is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_and.h:12: warning: Compound FT::NodeAnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_relu.h:12: warning: Compound FT::NodeRelu is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_count.h:12: warning: Compound FT::NodeCount is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_ifthenelse.h:12: warning: Compound FT::NodeIfThenElse is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_square.h:12: warning: Compound FT::NodeSquare is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_tanh.h:12: warning: Compound FT::NodeTanh is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/auto_backprop.h:70: warning: Compound FT::AutoBackProp::BP_NODE is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_constant.h:12: warning: Compound FT::NodeConstant is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_longitudinal.h:12: warning: Compound FT::NodeLongitudinal is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_time.h:12: warning: Compound FT::NodeTime is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_slope.h:12: warning: Compound FT::NodeSlope is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_xor.h:12: warning: Compound FT::NodeXor is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_mean.h:12: warning: Compound FT::NodeMean is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_step.h:12: warning: Compound FT::NodeStep is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_median.h:12: warning: Compound FT::NodeMedian is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.cc:59: warning: no matching class member found for 
+  FT::DataRef::DataRef(MatrixXd &X, VectorXd &y, std::map< std::string, std::pair< std::vector< ArrayXd >, std::vector< ArrayXd >>> &Z, bool c)
+Possible candidates:
+  FT::DataRef::DataRef()
+  FT::DataRef::DataRef(MatrixXd &X, VectorXd &y, std::map< string, std::pair< vector< ArrayXd >, vector< ArrayXd > > > &Z, bool c=false)
+
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/cv_main.cc:26: warning: Member InputParser(int &argc, char **argv) (function) of class InputParser is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/main.cc:20: warning: Member InputParser(int &argc, char **argv) (function) of class InputParser is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/cv_main.cc:24: warning: Member dataset (variable) of class InputParser is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/cv_main.cc:58: warning: Member tokens (variable) of class InputParser is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/evaluation.h:23: warning: Member funcPointer)(const VectorXd &, const shared_ptr< CLabels > &, VectorXd &, const vector< float > &) (typedef) of namespace FT is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:33: warning: Member tokenType (enumeration) of namespace FT is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:50: warning: Member vecType (enumeration) of namespace FT is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.cc:10: warning: Member string2bool(const std::string &v) (function) of namespace FT is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.cc:17: warning: Member getTokenType(string &token) (function) of namespace FT is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/population.cc:212: warning: Member make_program(NodeVector &program, const NodeVector &functions, const NodeVector &terminals, int max_d, const vector< double > &term_weights, int dim, char otype, vector< string > longitudinalMap, const vector< char > &term_types) (function) of namespace FT is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/utils.cc:23: warning: Member ltrim(std::string str, const std::string &chars) (function) of namespace FT is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/utils.cc:29: warning: Member rtrim(std::string str, const std::string &chars) (function) of namespace FT is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/utils.cc:35: warning: Member trim(std::string str, const std::string &chars) (function) of namespace FT is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/utils.cc:339: warning: Member reorder_longitudinal(vector< ArrayXd > &vec1, vector< ArrayXd > &vec2, vector< int > const &order) (function) of namespace FT is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/utils.cc:584: warning: Member printProgress(double percentage) (function) of namespace FT is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/utils.cc:652: warning: Member mean_square_corrcoef(const MatrixXd &X) (function) of namespace FT is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/init.h:36: warning: Member NEAR_ZERO (variable) of namespace FT is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/init.h:37: warning: Member MAX_DBL (variable) of namespace FT is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/init.h:38: warning: Member MIN_DBL (variable) of namespace FT is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/population.cc:10: warning: Member last (variable) of namespace FT is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/rnd.h:119: warning: Member r (variable) of namespace FT is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/utils.cc:11: warning: Member PBSTR (variable) of namespace FT is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/utils.cc:13: warning: Member PBWIDTH (variable) of namespace FT is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/archive.h:34: warning: Member init(Population &pop) (function) of class FT::Archive is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/archive.h:36: warning: Member update(const Population &pop, const Parameters &params) (function) of class FT::Archive is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/archive.h:32: warning: Member sameFitComplexity(const Individual &lhs, const Individual &rhs) (function) of class FT::Archive is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/auto_backprop.h:42: warning: Member callback)(const VectorXd &, shared_ptr< CLabels > &, const vector< float > &) (typedef) of class FT::AutoBackProp is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/auto_backprop.h:47: warning: Member AutoBackProp(string scorer, int iters=1000, double n=0.1, double a=0.9) (function) of class FT::AutoBackProp is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/auto_backprop.h:44: warning: Member d_score_hash (variable) of class FT::AutoBackProp is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/auto_backprop.h:45: warning: Member score_hash (variable) of class FT::AutoBackProp is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/auto_backprop.h:75: warning: Member print_weights(NodeVector &program) (function) of class FT::AutoBackProp is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/auto_backprop.h:93: warning: Member pop(vector< T > *v) (function) of class FT::AutoBackProp is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/auto_backprop.h:100: warning: Member pop_front(vector< T > *v) (function) of class FT::AutoBackProp is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/auto_backprop.h:61: warning: Member n (variable) of class FT::AutoBackProp is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/auto_backprop.h:62: warning: Member a (variable) of class FT::AutoBackProp is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/auto_backprop.h:63: warning: Member d_cost_func (variable) of class FT::AutoBackProp is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/auto_backprop.h:64: warning: Member cost_func (variable) of class FT::AutoBackProp is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/auto_backprop.h:65: warning: Member iters (variable) of class FT::AutoBackProp is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/auto_backprop.h:66: warning: Member epk (variable) of class FT::AutoBackProp is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/auto_backprop.h:67: warning: Member epT (variable) of class FT::AutoBackProp is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/auto_backprop.h:71: warning: Member n (variable) of class FT::AutoBackProp::BP_NODE is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/auto_backprop.h:72: warning: Member deriv_list (variable) of class FT::AutoBackProp::BP_NODE is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:47: warning: Member Data(MatrixXd &X, VectorXd &y, std::map< string, std::pair< vector< ArrayXd >, vector< ArrayXd >>> &Z, bool c=false) (function) of class FT::Data is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:50: warning: Member set_validation(bool v=true) (function) of class FT::Data is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:41: warning: Member X (variable) of class FT::Data is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:42: warning: Member y (variable) of class FT::Data is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:43: warning: Member Z (variable) of class FT::Data is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:44: warning: Member classification (variable) of class FT::Data is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:45: warning: Member validation (variable) of class FT::Data is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:19: warning: Member startIndex (variable) of class FT::DataFolds is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:20: warning: Member quantity (variable) of class FT::DataFolds is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:84: warning: Member DataRef(MatrixXd &X, VectorXd &y, std::map< string, std::pair< vector< ArrayXd >, vector< ArrayXd > > > &Z, bool c=false) (function) of class FT::DataRef is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:88: warning: Member setOriginalData(MatrixXd &X, VectorXd &y, std::map< string, std::pair< vector< ArrayXd >, vector< ArrayXd >>> &Z, bool c=false) (function) of class FT::DataRef is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:91: warning: Member setOriginalData(Data *d) (function) of class FT::DataRef is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:93: warning: Member setTrainingData(MatrixXd &X_t, VectorXd &y_t, std::map< string, std::pair< vector< ArrayXd >, vector< ArrayXd >>> &Z_t, bool c=false) (function) of class FT::DataRef is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:97: warning: Member setTrainingData(Data *d, bool toDelete=false) (function) of class FT::DataRef is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:99: warning: Member setValidationData(MatrixXd &X_v, VectorXd &y_v, std::map< string, std::pair< vector< ArrayXd >, vector< ArrayXd >>> &Z_v, bool c=false) (function) of class FT::DataRef is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:103: warning: Member setValidationData(Data *d) (function) of class FT::DataRef is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:108: warning: Member split_longitudinal(std::map< string, std::pair< vector< ArrayXd >, vector< ArrayXd > > > &Z, std::map< string, std::pair< vector< ArrayXd >, vector< ArrayXd > > > &Z_t, std::map< string, std::pair< vector< ArrayXd >, vector< ArrayXd > > > &Z_v, double split) (function) of class FT::DataRef is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:75: warning: Member o (variable) of class FT::DataRef is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:76: warning: Member v (variable) of class FT::DataRef is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:77: warning: Member t (variable) of class FT::DataRef is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:63: warning: Member oCreated (variable) of class FT::DataRef is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:64: warning: Member tCreated (variable) of class FT::DataRef is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:65: warning: Member vCreated (variable) of class FT::DataRef is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:67: warning: Member X_t (variable) of class FT::DataRef is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:68: warning: Member X_v (variable) of class FT::DataRef is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:69: warning: Member y_t (variable) of class FT::DataRef is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:70: warning: Member y_v (variable) of class FT::DataRef is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:71: warning: Member Z_t (variable) of class FT::DataRef is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/data.h:72: warning: Member Z_v (variable) of class FT::DataRef is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/evaluation.h:35: warning: Member Evaluation(string scorer) (function) of class FT::Evaluation is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/evaluation.h:39: warning: Member set_score(string scorer) (function) of class FT::Evaluation is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/evaluation.h:30: warning: Member score)(const VectorXd &, const shared_ptr< CLabels > &, VectorXd &, const vector< float > &) (variable) of class FT::Evaluation is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/evaluation.h:33: warning: Member score_hash (variable) of class FT::Evaluation is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/feat.h:138: warning: Member set_feature_names(string s) (function) of class FT::Feat is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/feat.h:140: warning: Member set_feature_names(vector< string > &s) (function) of class FT::Feat is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/feat.h:145: warning: Member set_hillclimb(bool hc) (function) of class FT::Feat is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/feat.h:147: warning: Member set_iters(int iters) (function) of class FT::Feat is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/feat.h:149: warning: Member set_lr(double lr) (function) of class FT::Feat is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/feat.h:151: warning: Member set_batch_size(int bs) (function) of class FT::Feat is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/feat.h:165: warning: Member set_print_pop(int pp) (function) of class FT::Feat is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/feat.h:264: warning: Member run_generation(unsigned int g, vector< size_t > survivors, DataRef &d, std::ofstream &log, double percentage, unsigned &stall_count) (function) of class FT::Feat is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/feat.h:293: warning: Member predict_proba(double *X, int rows_x, int cols_x) (function) of class FT::Feat is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/feat.h:312: warning: Member transform(double *X, int rows_x, int cols_x) (function) of class FT::Feat is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/feat.h:323: warning: Member fit_predict(double *X, int rows_x, int cols_x, double *Y, int len_y) (function) of class FT::Feat is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/feat.h:331: warning: Member fit_transform(double *X, int rows_x, int cols_x, double *Y, int len_y) (function) of class FT::Feat is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:72: warning: Member FeatCV(int fdSize, string params) (function) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:108: warning: Member pop_size (variable) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:109: warning: Member gens (variable) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:110: warning: Member mlStr (variable) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:111: warning: Member max_stall (variable) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:112: warning: Member sel (variable) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:113: warning: Member surv (variable) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:114: warning: Member cross_rate (variable) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:115: warning: Member funcs (variable) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:116: warning: Member max_depth (variable) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:117: warning: Member max_dim (variable) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:118: warning: Member ercVec (variable) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:119: warning: Member obj (variable) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:120: warning: Member fb (variable) of class FT::FeatCV is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:29: warning: Member obj (variable) of class FT::FeatObjects is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/featcv.h:30: warning: Member score (variable) of class FT::FeatObjects is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/hillclimb.h:32: warning: Member callback)(const VectorXd &, shared_ptr< CLabels > &, const vector< float > &) (typedef) of class FT::HillClimb is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/hillclimb.h:36: warning: Member HillClimb(string scorer, int iters=1, double step=0.1) (function) of class FT::HillClimb is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/hillclimb.h:34: warning: Member score_hash (variable) of class FT::HillClimb is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/hillclimb.h:43: warning: Member cost_func (variable) of class FT::HillClimb is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/hillclimb.h:44: warning: Member iters (variable) of class FT::HillClimb is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/hillclimb.h:45: warning: Member step (variable) of class FT::HillClimb is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/individual.h:64: warning: Member predict_vector(const Data &d, const Parameters &params) (function) of class FT::Individual is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/individual.h:65: warning: Member predict_drop(const Data &d, const Parameters &params, int drop_idx) (function) of class FT::Individual is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/individual.h:106: warning: Member get_complexity() const  (function) of class FT::Individual is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/individual.h:111: warning: Member set_id(unsigned i) (function) of class FT::Individual is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/individual.h:30: warning: Member CN (variable) of class FT::Individual is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/individual.cc:210: warning: Found unknown command `\params'
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/individual.cc:211: warning: Found unknown command `\params'
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/individual.cc:212: warning: Found unknown command `\params'
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/individual.cc:290: warning: Found unknown command `\params'
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/individual.cc:291: warning: Found unknown command `\params'
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/individual.cc:292: warning: Found unknown command `\params'
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/individual.cc:293: warning: Found unknown command `\params'
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/individual.h:60: warning: Found unknown command `\params'
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/lexicase.h:20: warning: Member Lexicase(bool surv) (function) of class FT::Lexicase is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/selection_operator.h:19: warning: Member survival (variable) of class FT::SelectionOperator is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/selection_operator.h:20: warning: Member name (variable) of class FT::SelectionOperator is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml.h:59: warning: Member init() (function) of class FT::ML is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml.h:71: warning: Member fit_vector(MatrixXd &X, VectorXd &y, const Parameters &params, bool &pass, const vector< char > &dtypes=vector< char >()) (function) of class FT::ML is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml.h:75: warning: Member predict(MatrixXd &X) (function) of class FT::ML is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml.h:78: warning: Member predict_vector(MatrixXd &X) (function) of class FT::ML is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml.h:81: warning: Member predict_proba(MatrixXd &X) (function) of class FT::ML is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml.h:88: warning: Member set_dtypes(const vector< char > &dtypes) (function) of class FT::ML is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:75: warning: Member clone_impl() const =0 (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:76: warning: Member rnd_clone_impl() const =0 (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_2dgaussian.h:17: warning: Member Node2dGaussian(vector< double > W0=vector< double >()) (function) of class FT::Node2dGaussian is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_2dgaussian.h:25: warning: Member getDerivative(Trace &stack, int loc) (function) of class FT::Node2dGaussian is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:21: warning: Member derivative(vector< ArrayXd > &gradients, Trace &stack, int loc) (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:25: warning: Member print_weight() (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_2dgaussian.h:28: warning: Member clone_impl() const override (function) of class FT::Node2dGaussian is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_2dgaussian.h:30: warning: Member rnd_clone_impl() const override (function) of class FT::Node2dGaussian is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:14: warning: Member W (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:15: warning: Member V (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_add.h:15: warning: Member NodeAdd(vector< double > W0=vector< double >()) (function) of class FT::NodeAdd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_add.h:23: warning: Member getDerivative(Trace &stack, int loc) (function) of class FT::NodeAdd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:21: warning: Member derivative(vector< ArrayXd > &gradients, Trace &stack, int loc) (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:25: warning: Member print_weight() (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_add.h:26: warning: Member clone_impl() const override (function) of class FT::NodeAdd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_add.h:28: warning: Member rnd_clone_impl() const override (function) of class FT::NodeAdd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:14: warning: Member W (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:15: warning: Member V (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_and.h:24: warning: Member clone_impl() const override (function) of class FT::NodeAnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_and.h:26: warning: Member rnd_clone_impl() const override (function) of class FT::NodeAnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_constant.h:16: warning: Member b_value (variable) of class FT::NodeConstant is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_constant.h:35: warning: Member clone_impl() const override (function) of class FT::NodeConstant is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_constant.h:37: warning: Member rnd_clone_impl() const override (function) of class FT::NodeConstant is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_cos.h:15: warning: Member NodeCos(vector< double > W0=vector< double >()) (function) of class FT::NodeCos is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_cos.h:23: warning: Member getDerivative(Trace &stack, int loc) (function) of class FT::NodeCos is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:21: warning: Member derivative(vector< ArrayXd > &gradients, Trace &stack, int loc) (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:25: warning: Member print_weight() (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_cos.h:26: warning: Member clone_impl() const override (function) of class FT::NodeCos is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_cos.h:28: warning: Member rnd_clone_impl() const override (function) of class FT::NodeCos is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:14: warning: Member W (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:15: warning: Member V (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_count.h:24: warning: Member clone_impl() const override (function) of class FT::NodeCount is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_count.h:26: warning: Member rnd_clone_impl() const override (function) of class FT::NodeCount is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_cube.h:15: warning: Member NodeCube(vector< double > W0=vector< double >()) (function) of class FT::NodeCube is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_cube.h:23: warning: Member getDerivative(Trace &stack, int loc) (function) of class FT::NodeCube is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:21: warning: Member derivative(vector< ArrayXd > &gradients, Trace &stack, int loc) (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:25: warning: Member print_weight() (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_cube.h:26: warning: Member clone_impl() const override (function) of class FT::NodeCube is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_cube.h:28: warning: Member rnd_clone_impl() const override (function) of class FT::NodeCube is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:14: warning: Member W (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:15: warning: Member V (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_divide.h:15: warning: Member NodeDivide(vector< double > W0=vector< double >()) (function) of class FT::NodeDivide is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_divide.h:24: warning: Member getDerivative(Trace &stack, int loc) (function) of class FT::NodeDivide is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:21: warning: Member derivative(vector< ArrayXd > &gradients, Trace &stack, int loc) (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:25: warning: Member print_weight() (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_divide.h:27: warning: Member clone_impl() const override (function) of class FT::NodeDivide is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_divide.h:29: warning: Member rnd_clone_impl() const override (function) of class FT::NodeDivide is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:14: warning: Member W (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:15: warning: Member V (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:19: warning: Member getDerivative(Trace &stack, int loc)=0 (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:21: warning: Member derivative(vector< ArrayXd > &gradients, Trace &stack, int loc) (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:25: warning: Member print_weight() (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:14: warning: Member W (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:15: warning: Member V (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:75: warning: Member clone_impl() const =0 (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:76: warning: Member rnd_clone_impl() const =0 (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.cc:15: warning: Found unknown command `\params'
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.cc:16: warning: Found unknown command `\params'
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_equal.h:24: warning: Member clone_impl() const override (function) of class FT::NodeEqual is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_equal.h:26: warning: Member rnd_clone_impl() const override (function) of class FT::NodeEqual is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_exponent.h:15: warning: Member NodeExponent(vector< double > W0=vector< double >()) (function) of class FT::NodeExponent is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_exponent.h:23: warning: Member getDerivative(Trace &stack, int loc) (function) of class FT::NodeExponent is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:21: warning: Member derivative(vector< ArrayXd > &gradients, Trace &stack, int loc) (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:25: warning: Member print_weight() (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_exponent.h:26: warning: Member clone_impl() const override (function) of class FT::NodeExponent is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_exponent.h:28: warning: Member rnd_clone_impl() const override (function) of class FT::NodeExponent is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:14: warning: Member W (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:15: warning: Member V (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_exponential.h:15: warning: Member NodeExponential(vector< double > W0=vector< double >()) (function) of class FT::NodeExponential is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_exponential.h:23: warning: Member getDerivative(Trace &stack, int loc) (function) of class FT::NodeExponential is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:21: warning: Member derivative(vector< ArrayXd > &gradients, Trace &stack, int loc) (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:25: warning: Member print_weight() (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_exponential.h:26: warning: Member clone_impl() const override (function) of class FT::NodeExponential is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_exponential.h:28: warning: Member rnd_clone_impl() const override (function) of class FT::NodeExponential is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:14: warning: Member W (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:15: warning: Member V (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_float.h:28: warning: Member clone_impl() const override (function) of class FT::NodeFloat is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_float.h:30: warning: Member rnd_clone_impl() const override (function) of class FT::NodeFloat is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_gaussian.h:15: warning: Member NodeGaussian(vector< double > W0=vector< double >()) (function) of class FT::NodeGaussian is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_gaussian.h:23: warning: Member getDerivative(Trace &stack, int loc) (function) of class FT::NodeGaussian is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:21: warning: Member derivative(vector< ArrayXd > &gradients, Trace &stack, int loc) (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:25: warning: Member print_weight() (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_gaussian.h:26: warning: Member clone_impl() const override (function) of class FT::NodeGaussian is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_gaussian.h:28: warning: Member rnd_clone_impl() const override (function) of class FT::NodeGaussian is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:14: warning: Member W (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:15: warning: Member V (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_geq.h:24: warning: Member clone_impl() const override (function) of class FT::NodeGEQ is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_geq.h:26: warning: Member rnd_clone_impl() const override (function) of class FT::NodeGEQ is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_greaterthan.h:24: warning: Member clone_impl() const override (function) of class FT::NodeGreaterThan is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_greaterthan.h:26: warning: Member rnd_clone_impl() const override (function) of class FT::NodeGreaterThan is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_if.h:15: warning: Member NodeIf(vector< double > W0=vector< double >()) (function) of class FT::NodeIf is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_if.h:23: warning: Member getDerivative(Trace &stack, int loc) (function) of class FT::NodeIf is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:21: warning: Member derivative(vector< ArrayXd > &gradients, Trace &stack, int loc) (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:25: warning: Member print_weight() (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_if.h:26: warning: Member clone_impl() const override (function) of class FT::NodeIf is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_if.h:28: warning: Member rnd_clone_impl() const override (function) of class FT::NodeIf is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:14: warning: Member W (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:15: warning: Member V (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_ifthenelse.h:23: warning: Member getDerivative(Trace &stack, int loc) (function) of class FT::NodeIfThenElse is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:21: warning: Member derivative(vector< ArrayXd > &gradients, Trace &stack, int loc) (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:25: warning: Member print_weight() (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_ifthenelse.h:26: warning: Member clone_impl() const override (function) of class FT::NodeIfThenElse is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_ifthenelse.h:27: warning: Member rnd_clone_impl() const override (function) of class FT::NodeIfThenElse is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:14: warning: Member W (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:15: warning: Member V (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_kurtosis.h:24: warning: Member clone_impl() const override (function) of class FT::NodeKurtosis is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_kurtosis.h:26: warning: Member rnd_clone_impl() const override (function) of class FT::NodeKurtosis is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_leq.h:24: warning: Member clone_impl() const override (function) of class FT::NodeLEQ is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_leq.h:26: warning: Member rnd_clone_impl() const override (function) of class FT::NodeLEQ is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_lessthan.h:24: warning: Member clone_impl() const override (function) of class FT::NodeLessThan is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_lessthan.h:26: warning: Member rnd_clone_impl() const override (function) of class FT::NodeLessThan is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_log.h:15: warning: Member NodeLog(vector< double > W0=vector< double >()) (function) of class FT::NodeLog is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_log.h:23: warning: Member getDerivative(Trace &stack, int loc) (function) of class FT::NodeLog is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:21: warning: Member derivative(vector< ArrayXd > &gradients, Trace &stack, int loc) (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:25: warning: Member print_weight() (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_log.h:26: warning: Member clone_impl() const override (function) of class FT::NodeLog is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_log.h:28: warning: Member rnd_clone_impl() const override (function) of class FT::NodeLog is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:14: warning: Member W (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:15: warning: Member V (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_logit.h:15: warning: Member NodeLogit(vector< double > W0=vector< double >()) (function) of class FT::NodeLogit is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_logit.h:23: warning: Member getDerivative(Trace &stack, int loc) (function) of class FT::NodeLogit is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:21: warning: Member derivative(vector< ArrayXd > &gradients, Trace &stack, int loc) (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:25: warning: Member print_weight() (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_logit.h:26: warning: Member clone_impl() const override (function) of class FT::NodeLogit is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_logit.h:28: warning: Member rnd_clone_impl() const override (function) of class FT::NodeLogit is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:14: warning: Member W (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:15: warning: Member V (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_longitudinal.h:16: warning: Member NodeLongitudinal(std::string n) (function) of class FT::NodeLongitudinal is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_longitudinal.h:14: warning: Member zName (variable) of class FT::NodeLongitudinal is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_longitudinal.h:25: warning: Member clone_impl() const override (function) of class FT::NodeLongitudinal is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_longitudinal.h:27: warning: Member rnd_clone_impl() const override (function) of class FT::NodeLongitudinal is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_max.h:24: warning: Member clone_impl() const override (function) of class FT::NodeMax is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_max.h:26: warning: Member rnd_clone_impl() const override (function) of class FT::NodeMax is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_mean.h:24: warning: Member clone_impl() const override (function) of class FT::NodeMean is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_mean.h:26: warning: Member rnd_clone_impl() const override (function) of class FT::NodeMean is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_median.h:24: warning: Member clone_impl() const override (function) of class FT::NodeMedian is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_median.h:26: warning: Member rnd_clone_impl() const override (function) of class FT::NodeMedian is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_min.h:24: warning: Member clone_impl() const override (function) of class FT::NodeMin is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_min.h:26: warning: Member rnd_clone_impl() const override (function) of class FT::NodeMin is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_mode.h:24: warning: Member clone_impl() const override (function) of class FT::NodeMode is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_mode.h:26: warning: Member rnd_clone_impl() const override (function) of class FT::NodeMode is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_multiply.h:15: warning: Member NodeMultiply(vector< double > W0=vector< double >()) (function) of class FT::NodeMultiply is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_multiply.h:23: warning: Member getDerivative(Trace &stack, int loc) (function) of class FT::NodeMultiply is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:21: warning: Member derivative(vector< ArrayXd > &gradients, Trace &stack, int loc) (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:25: warning: Member print_weight() (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_multiply.h:26: warning: Member clone_impl() const override (function) of class FT::NodeMultiply is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_multiply.h:28: warning: Member rnd_clone_impl() const override (function) of class FT::NodeMultiply is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:14: warning: Member W (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:15: warning: Member V (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_not.h:24: warning: Member clone_impl() const override (function) of class FT::NodeNot is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_not.h:26: warning: Member rnd_clone_impl() const override (function) of class FT::NodeNot is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_or.h:24: warning: Member clone_impl() const override (function) of class FT::NodeOr is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_or.h:26: warning: Member rnd_clone_impl() const override (function) of class FT::NodeOr is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_relu.h:15: warning: Member NodeRelu(vector< double > W0=vector< double >()) (function) of class FT::NodeRelu is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_relu.h:23: warning: Member getDerivative(Trace &stack, int loc) (function) of class FT::NodeRelu is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:21: warning: Member derivative(vector< ArrayXd > &gradients, Trace &stack, int loc) (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:25: warning: Member print_weight() (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_relu.h:26: warning: Member clone_impl() const override (function) of class FT::NodeRelu is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_relu.h:28: warning: Member rnd_clone_impl() const override (function) of class FT::NodeRelu is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:14: warning: Member W (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:15: warning: Member V (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_sign.h:15: warning: Member NodeSign(vector< double > W0=vector< double >()) (function) of class FT::NodeSign is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_sign.h:23: warning: Member getDerivative(Trace &stack, int loc) (function) of class FT::NodeSign is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:21: warning: Member derivative(vector< ArrayXd > &gradients, Trace &stack, int loc) (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:25: warning: Member print_weight() (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_sign.h:26: warning: Member clone_impl() const override (function) of class FT::NodeSign is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_sign.h:27: warning: Member rnd_clone_impl() const override (function) of class FT::NodeSign is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:14: warning: Member W (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:15: warning: Member V (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_sin.h:15: warning: Member NodeSin(vector< double > W0=vector< double >()) (function) of class FT::NodeSin is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_sin.h:23: warning: Member getDerivative(Trace &stack, int loc) (function) of class FT::NodeSin is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:21: warning: Member derivative(vector< ArrayXd > &gradients, Trace &stack, int loc) (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:25: warning: Member print_weight() (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_sin.h:26: warning: Member clone_impl() const override (function) of class FT::NodeSin is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_sin.h:27: warning: Member rnd_clone_impl() const override (function) of class FT::NodeSin is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:14: warning: Member W (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:15: warning: Member V (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_skew.h:24: warning: Member clone_impl() const override (function) of class FT::NodeSkew is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_skew.h:25: warning: Member rnd_clone_impl() const override (function) of class FT::NodeSkew is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_slope.h:23: warning: Member slope(const ArrayXd &x, const ArrayXd &y) (function) of class FT::NodeSlope is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_slope.h:26: warning: Member clone_impl() const override (function) of class FT::NodeSlope is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_slope.h:27: warning: Member rnd_clone_impl() const override (function) of class FT::NodeSlope is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_train.h:14: warning: Member isNodeTrain() (function) of class FT::NodeTrain is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_split.h:16: warning: Member threshold (variable) of class FT::NodeSplit is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_train.h:12: warning: Member train (variable) of class FT::NodeTrain is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_split.h:36: warning: Member clone_impl() const override (function) of class FT::NodeSplit is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_split.h:37: warning: Member rnd_clone_impl() const override (function) of class FT::NodeSplit is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_sqrt.h:15: warning: Member NodeSqrt(vector< double > W0=vector< double >()) (function) of class FT::NodeSqrt is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_sqrt.h:23: warning: Member getDerivative(Trace &stack, int loc) (function) of class FT::NodeSqrt is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:21: warning: Member derivative(vector< ArrayXd > &gradients, Trace &stack, int loc) (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:25: warning: Member print_weight() (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_sqrt.h:26: warning: Member clone_impl() const override (function) of class FT::NodeSqrt is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_sqrt.h:27: warning: Member rnd_clone_impl() const override (function) of class FT::NodeSqrt is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:14: warning: Member W (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:15: warning: Member V (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_square.h:15: warning: Member NodeSquare(vector< double > W0=vector< double >()) (function) of class FT::NodeSquare is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_square.h:23: warning: Member getDerivative(Trace &stack, int loc) (function) of class FT::NodeSquare is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:21: warning: Member derivative(vector< ArrayXd > &gradients, Trace &stack, int loc) (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:25: warning: Member print_weight() (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_square.h:26: warning: Member clone_impl() const override (function) of class FT::NodeSquare is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_square.h:27: warning: Member rnd_clone_impl() const override (function) of class FT::NodeSquare is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:14: warning: Member W (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:15: warning: Member V (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_step.h:24: warning: Member clone_impl() const override (function) of class FT::NodeStep is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_step.h:25: warning: Member rnd_clone_impl() const override (function) of class FT::NodeStep is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_subtract.h:15: warning: Member NodeSubtract(vector< double > W0=vector< double >()) (function) of class FT::NodeSubtract is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_subtract.h:23: warning: Member getDerivative(Trace &stack, int loc) (function) of class FT::NodeSubtract is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:21: warning: Member derivative(vector< ArrayXd > &gradients, Trace &stack, int loc) (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:25: warning: Member print_weight() (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_subtract.h:26: warning: Member clone_impl() const override (function) of class FT::NodeSubtract is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_subtract.h:27: warning: Member rnd_clone_impl() const override (function) of class FT::NodeSubtract is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:14: warning: Member W (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:15: warning: Member V (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_tanh.h:15: warning: Member NodeTanh(vector< double > W0=vector< double >()) (function) of class FT::NodeTanh is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_tanh.h:23: warning: Member getDerivative(Trace &stack, int loc) (function) of class FT::NodeTanh is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:21: warning: Member derivative(vector< ArrayXd > &gradients, Trace &stack, int loc) (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:25: warning: Member print_weight() (function) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_tanh.h:26: warning: Member clone_impl() const override (function) of class FT::NodeTanh is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_tanh.h:27: warning: Member rnd_clone_impl() const override (function) of class FT::NodeTanh is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:14: warning: Member W (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_Dx.h:15: warning: Member V (variable) of class FT::NodeDx is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_time.h:24: warning: Member clone_impl() const override (function) of class FT::NodeTime is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_time.h:25: warning: Member rnd_clone_impl() const override (function) of class FT::NodeTime is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_train.h:14: warning: Member isNodeTrain() (function) of class FT::NodeTrain is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_train.h:12: warning: Member train (variable) of class FT::NodeTrain is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:75: warning: Member clone_impl() const =0 (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:76: warning: Member rnd_clone_impl() const =0 (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_var.h:24: warning: Member clone_impl() const override (function) of class FT::NodeVar is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_var.h:25: warning: Member rnd_clone_impl() const override (function) of class FT::NodeVar is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_variable.h:17: warning: Member NodeVariable(const size_t &l, char ntype= 'f', std::string n="") (function) of class FT::NodeVariable is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_variable.h:26: warning: Member clone_impl() const override (function) of class FT::NodeVariable is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_variable.h:28: warning: Member rnd_clone_impl() const override (function) of class FT::NodeVariable is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/nodevector.h:26: warning: Member NodeVector(const NodeVector &other) (function) of class FT::NodeVector is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/nodevector.h:28: warning: Member NodeVector(NodeVector &&other) (function) of class FT::NodeVector is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/nodevector.h:35: warning: Member operator=(NodeVector const &other) (function) of class FT::NodeVector is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/nodevector.h:37: warning: Member operator=(NodeVector &&other) (function) of class FT::NodeVector is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/nodevector.h:47: warning: Member set_weights(vector< vector< double >> &weights) (function) of class FT::NodeVector is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/nodevector.h:49: warning: Member get_weights() (function) of class FT::NodeVector is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:53: warning: Member total_arity() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:66: warning: Member isNodeTrain() (function) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_xor.h:24: warning: Member clone_impl() const override (function) of class FT::NodeXor is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/n_xor.h:26: warning: Member rnd_clone_impl() const override (function) of class FT::NodeXor is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/node/node.h:40: warning: Member visits (variable) of class FT::Node is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/utils.h:175: warning: Member fit_normalize(MatrixXd &X, const vector< char > &dtypes) (function) of class FT::Normalizer is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/utils.h:165: warning: Member scale (variable) of class FT::Normalizer is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/utils.h:166: warning: Member offset (variable) of class FT::Normalizer is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/utils.h:167: warning: Member dtypes (variable) of class FT::Normalizer is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/nsga2.h:31: warning: Member fast_nds(vector< Individual > &) (function) of class FT::NSGA2 is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/nsga2.h:33: warning: Member crowding_distance(Population &, int) (function) of class FT::NSGA2 is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/nsga2.h:29: warning: Member front (variable) of class FT::NSGA2 is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/selection_operator.h:19: warning: Member survival (variable) of class FT::SelectionOperator is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/selection_operator.h:20: warning: Member name (variable) of class FT::SelectionOperator is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/nsga2.h:64: warning: Member tournament(vector< Individual > &pop, size_t i, size_t j) const  (function) of class FT::NSGA2 is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/nsga2.h:59: warning: Member comparator_obj(const Population &population, int index) (function) of class FT::NSGA2::comparator_obj is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/nsga2.h:61: warning: Member operator()(int i, int j) (function) of class FT::NSGA2::comparator_obj is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/nsga2.h:41: warning: Member sort_n(const Population &population) (function) of class FT::NSGA2::sort_n is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/nsga2.h:42: warning: Member operator()(int i, int j) (function) of class FT::NSGA2::sort_n is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/offspring.h:23: warning: Member survive(Population &pop, const MatrixXd &F, const Parameters &params) (function) of class FT::Offspring is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/selection_operator.h:26: warning: Member select(Population &pop, const MatrixXd &F, const Parameters &p) (function) of class FT::SelectionOperator is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/offspring.h:25: warning: Member elitism (variable) of class FT::Offspring is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/selection_operator.h:19: warning: Member survival (variable) of class FT::SelectionOperator is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/selection_operator.h:20: warning: Member name (variable) of class FT::SelectionOperator is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/params.h:80: warning: Member Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, char ot, int verbosity, string fs, float cr, unsigned int max_depth, unsigned int max_dim, bool constant, string obj, bool sh, double sp, double fb, string sc, string fn, bool bckprp, int iters, double lr, int bs, bool hclimb, int maxt, bool useb, bool sem_xo) (function) of class FT::Parameters is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/params.h:128: warning: Member set_feature_names(string fn) (function) of class FT::Parameters is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/params.h:135: warning: Member set_otype(char ot) (function) of class FT::Parameters is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/params.h:137: warning: Member set_ttypes() (function) of class FT::Parameters is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/params.h:66: warning: Member BP(int i, double l, int bs) (function) of class FT::Parameters::BP is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/params.h:63: warning: Member iters (variable) of class FT::Parameters::BP is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/params.h:64: warning: Member learning_rate (variable) of class FT::Parameters::BP is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/params.h:65: warning: Member batch_size (variable) of class FT::Parameters::BP is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/params.h:75: warning: Member HC(int i, double s) (function) of class FT::Parameters::HC is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/params.h:73: warning: Member iters (variable) of class FT::Parameters::HC is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/params.h:74: warning: Member step (variable) of class FT::Parameters::HC is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/population.h:30: warning: Member Population(int p) (function) of class FT::Population is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/population.h:58: warning: Member operator[](size_t i) (function) of class FT::Population is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/population.h:25: warning: Member locs (variable) of class FT::Population is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/population.h:81: warning: Member SameFitComplexity(Population &p) (function) of class FT::Population::SameFitComplexity is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/population.h:82: warning: Member operator()(size_t i, size_t j) (function) of class FT::Population::SameFitComplexity is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/population.h:80: warning: Member pop (variable) of class FT::Population::SameFitComplexity is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/population.h:70: warning: Member SortComplexity(Population &p) (function) of class FT::Population::SortComplexity is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/population.h:71: warning: Member operator()(size_t i, size_t j) (function) of class FT::Population::SortComplexity is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/population.h:69: warning: Member pop (variable) of class FT::Population::SortComplexity is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/random.h:23: warning: Member select(Population &pop, const MatrixXd &F, const Parameters &params) (function) of class FT::Random is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/random.h:24: warning: Member survive(Population &pop, const MatrixXd &F, const Parameters &params) (function) of class FT::Random is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/random.h:27: warning: Member elitism (variable) of class FT::Random is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/selection_operator.h:19: warning: Member survival (variable) of class FT::SelectionOperator is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/selection_operator.h:20: warning: Member name (variable) of class FT::SelectionOperator is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/rnd.h:39: warning: Member rnd_int(int lowerLimit, int upperLimit) (function) of class FT::Rnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/rnd.h:41: warning: Member rnd_flt(float min=0.0, float max=1.0) (function) of class FT::Rnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/rnd.h:43: warning: Member rnd_dbl(double min=0.0, double max=1.0) (function) of class FT::Rnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/rnd.h:45: warning: Member operator()(unsigned i) (function) of class FT::Rnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/rnd.h:47: warning: Member operator()() (function) of class FT::Rnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/rnd.h:50: warning: Member shuffle(RandomAccessIterator first, RandomAccessIterator last) (function) of class FT::Rnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/rnd.h:60: warning: Member select_randomly(Iter start, Iter end) (function) of class FT::Rnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/rnd.h:105: warning: Member gasdev() (function) of class FT::Rnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/rnd.h:33: warning: Member initRand() (function) of class FT::Rnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/rnd.h:35: warning: Member destroy() (function) of class FT::Rnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/rnd.h:113: warning: Member rg (variable) of class FT::Rnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/rnd.h:115: warning: Member instance (variable) of class FT::Rnd is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection.h:27: warning: Member pselector (variable) of class FT::Selection is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/selection_operator.h:26: warning: Member select(Population &pop, const MatrixXd &F, const Parameters &p) (function) of class FT::SelectionOperator is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/selection_operator.h:28: warning: Member survive(Population &pop, const MatrixXd &F, const Parameters &p) (function) of class FT::SelectionOperator is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/selection_operator.h:19: warning: Member survival (variable) of class FT::SelectionOperator is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/selection_operator.h:20: warning: Member name (variable) of class FT::SelectionOperator is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/simulated_annealing.h:23: warning: Member select(Population &pop, const MatrixXd &F, const Parameters &params) (function) of class FT::SimAnneal is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/simulated_annealing.h:24: warning: Member survive(Population &pop, const MatrixXd &F, const Parameters &params) (function) of class FT::SimAnneal is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/selection_operator.h:19: warning: Member survival (variable) of class FT::SelectionOperator is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/selection/selection_operator.h:20: warning: Member name (variable) of class FT::SelectionOperator is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/stack.h:82: warning: Member end() const  (function) of class FT::Stack is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/stack.h:106: warning: Member check_s(std::map< char, unsigned int > &arity) (function) of class FT::Stacks is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/stack.h:108: warning: Member get() (function) of class FT::Stacks is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/stack.h:113: warning: Member push(Eigen::Array< T, Eigen::Dynamic, 1 > value) (function) of class FT::Stacks is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/stack.h:118: warning: Member pop() (function) of class FT::Stacks is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/stack.h:123: warning: Member getStr() (function) of class FT::Stacks is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/stack.h:128: warning: Member push(string value) (function) of class FT::Stacks is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/stack.h:133: warning: Member popStr() (function) of class FT::Stacks is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/stack.h:138: warning: Member size() (function) of class FT::Stacks is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/stack.h:145: warning: Member get() (function) of class FT::Stacks is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/stack.h:147: warning: Member get() (function) of class FT::Stacks is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/stack.h:149: warning: Member get() (function) of class FT::Stacks is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/stack.h:149: warning: Member getStr() (function) of class FT::Stacks is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/stack.h:149: warning: Member getStr() (function) of class FT::Stacks is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/stack.h:149: warning: Member getStr() (function) of class FT::Stacks is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/utils.h:128: warning: Member Timer(bool run=false) (function) of class FT::Timer is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/utils.h:130: warning: Member Reset() (function) of class FT::Timer is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/utils.h:132: warning: Member Elapsed() const  (function) of class FT::Timer is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/utils.h:123: warning: Member high_resolution_clock (typedef) of class FT::Timer is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/utils.h:125: warning: Member seconds (typedef) of class FT::Timer is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/utils.h:142: warning: Member _start (variable) of class FT::Timer is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/utils.h:135: warning: Member operator<<(std::basic_ostream< T, Traits > &out, const Timer &timer) (friend) of class FT::Timer is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/stack.h:167: warning: Member get() (function) of class FT::Trace is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/stack.h:172: warning: Member size() (function) of class FT::Trace is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/stack.h:178: warning: Member get() (function) of class FT::Trace is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/stack.h:180: warning: Member get() (function) of class FT::Trace is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/stack.h:182: warning: Member get() (function) of class FT::Trace is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/stack.h:163: warning: Member f (variable) of class FT::Trace is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/stack.h:164: warning: Member c (variable) of class FT::Trace is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/stack.h:165: warning: Member b (variable) of class FT::Trace is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/variation.h:55: warning: The following parameters of FT::Variation::semantic_cross(Individual &mom, Individual &dad, Individual &child, const Parameters &params, const Data &d) are not documented:
+  parameter 'd'
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/variation.h:65: warning: The following parameters of FT::Variation::splice_programs(NodeVector &vnew, const NodeVector &v1, size_t i1, size_t j1, const NodeVector &v2, size_t i2, size_t j2) are not documented:
+  parameter 'vnew'
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/variation.h:45: warning: The following parameters of FT::Variation::vary(Population &pop, const vector< size_t > &parents, const Parameters &params, const Data &d) are not documented:
+  parameter 'd'
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml/MulticlassLogisticRegression.h:85: warning: Member get_w() (function) of class shogun::CMulticlassLogisticRegression is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml/MyCARTree.h:225: warning: Member pre_sort_features(CFeatures *data, SGMatrix< float64_t > &sorted_feats, SGMatrix< index_t > &sorted_indices) (function) of class shogun::CMyCARTree is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml/MyCARTree.h:227: warning: Member set_sorted_features(SGMatrix< float64_t > &sorted_feats, SGMatrix< index_t > &sorted_indices) (function) of class shogun::CMyCARTree is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml/MyCARTree.h:258: warning: argument 'labels_vec' of command @param is not found in the argument list of shogun::CMyCARTree::compute_best_attribute(const SGMatrix< float64_t > &mat, const SGVector< float64_t > &weights, CLabels *labels, SGVector< float64_t > &left, SGVector< float64_t > &right, SGVector< bool > &is_left_final, int32_t &num_missing, int32_t &count_left, int32_t &count_right, float64_t &IG, int32_t subset_size=0, const SGVector< int32_t > &active_indices=SGVector< index_t >())
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml/MyCARTree.h:272: warning: The following parameters of shogun::CMyCARTree::compute_best_attribute(const SGMatrix< float64_t > &mat, const SGVector< float64_t > &weights, CLabels *labels, SGVector< float64_t > &left, SGVector< float64_t > &right, SGVector< bool > &is_left_final, int32_t &num_missing, int32_t &count_left, int32_t &count_right, float64_t &IG, int32_t subset_size=0, const SGVector< int32_t > &active_indices=SGVector< index_t >()) are not documented:
+  parameter 'labels'
+  parameter 'subset_size'
+  parameter 'active_indices'
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml/MyLibLinear.h:37: warning: Member set_probabilities(CLabels *labels, CFeatures *data) (function) of class shogun::CMyLibLinear is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml/MyLibLinear.h:35: warning: argument 'C' of command @param is not found in the argument list of shogun::CMyLibLinear::predict_probability(CLabels *labels, const SGVector< float64_t > &outputs)
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml/MyLibLinear.h:35: warning: argument 'traindat' of command @param is not found in the argument list of shogun::CMyLibLinear::predict_probability(CLabels *labels, const SGVector< float64_t > &outputs)
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml/MyLibLinear.h:35: warning: argument 'trainlab' of command @param is not found in the argument list of shogun::CMyLibLinear::predict_probability(CLabels *labels, const SGVector< float64_t > &outputs)
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml/MyLibLinear.h:36: warning: The following parameters of shogun::CMyLibLinear::predict_probability(CLabels *labels, const SGVector< float64_t > &outputs) are not documented:
+  parameter 'labels'
+  parameter 'outputs'
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml/MyMulticlassLibLinear.h:48: warning: Member MACHINE_PROBLEM_TYPE(PT_MULTICLASS) (function) of class shogun::CMyMulticlassLibLinear is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml/MyMulticlassLibLinear.h:126: warning: Member get_w() const  (function) of class shogun::CMyMulticlassLibLinear is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml/MyMulticlassLibLinear.h:138: warning: Member init_defaults() (function) of class shogun::CMyMulticlassLibLinear is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/src/ml/MyMulticlassLibLinear.h:140: warning: Member register_parameters() (function) of class shogun::CMyMulticlassLibLinear is not documented.
+/media/bill/Drive/Dropbox/PostDoc/code/feat/README.md:3: warning: Unexpected html tag <img> found within <a href=...> context
+/media/bill/Drive/Dropbox/PostDoc/code/feat/README.md:4: warning: Unexpected html tag <img> found within <a href=...> context

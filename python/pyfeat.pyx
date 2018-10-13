@@ -38,13 +38,13 @@ cdef extern from "feat.h" namespace "FT":
         string get_model()
 
         void fit_with_z(double * X,int rowsX,int colsX, double * Y,int lenY, string s, 
-                            int * train_idx, int train_size)
+                            long * train_idx, int train_size)
         VectorXd predict_with_z(double * X,int rowsX,int colsX, string s, 
-                            int * idx, int idx_size)
+                            long * idx, int idx_size)
         MatrixXd transform_with_z(double * X,int rowsX,int colsX, string s, 
-                            int * train_idx, int train_size)
+                            long * train_idx, int train_size)
         ArrayXXd predict_proba_with_z(double * X,int rowsX,int colsX, string s, 
-                            int * idx, int idx_size)
+                            long * idx, int idx_size)
         ArrayXd get_coefs()
         int get_n_params()
         int get_complexity()
@@ -85,22 +85,22 @@ cdef class PyFeat:
     def fit_with_z(self,np.ndarray X,np.ndarray y, string zfile, np.ndarray zids):
         cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
         cdef np.ndarray[np.double_t, ndim=1, mode="fortran"] arr_y
-        cdef np.ndarray[int, ndim=1, mode="fortran"] arr_z_id
+        cdef np.ndarray[long, ndim=1, mode="fortran"] arr_z_id
         check_X_y(X,y,ensure_2d=True,ensure_min_samples=1)
         X = X.transpose()
         arr_x = np.asfortranarray(X, dtype=np.double)
         arr_y = np.asfortranarray(y, dtype=np.double)
-        arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
+        arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_long)
 
         self.ft.fit_with_z(&arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y),
                            zfile, &arr_z_id[0], len(arr_z_id))
                            
     def transform_with_z(self,np.ndarray X, string zfile, np.ndarray zids):
         cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
-        cdef np.ndarray[int, ndim=1, mode="fortran"] arr_z_id
+        cdef np.ndarray[long, ndim=1, mode="fortran"] arr_z_id
         X = X.transpose()
         arr_x = np.asfortranarray(X, dtype=np.double)
-        arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
+        arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_long)
         res = ndarray(self.ft.transform_with_z(&arr_x[0,0],X.shape[0],X.shape[1], zfile, &arr_z_id[0], len(arr_z_id)))
         return res.transpose()
 
@@ -115,10 +115,10 @@ cdef class PyFeat:
 
     def predict_with_z(self,np.ndarray X, string zfile, np.ndarray zids):
         cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
-        cdef np.ndarray[int, ndim=1, mode="fortran"] arr_z_id
+        cdef np.ndarray[long, ndim=1, mode="fortran"] arr_z_id
         X = X.transpose()
         arr_x = np.asfortranarray(X, dtype=np.double)
-        arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
+        arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_long)
         
         res = ndarray(self.ft.predict_with_z(&arr_x[0,0],X.shape[0],X.shape[1],
                                              zfile, &arr_z_id[0], len(arr_z_id)))
@@ -134,10 +134,10 @@ cdef class PyFeat:
 
     def predict_proba_with_z(self,np.ndarray X, string zfile, np.ndarray zids):
         cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
-        cdef np.ndarray[int, ndim=1, mode="fortran"] arr_z_id
+        cdef np.ndarray[long, ndim=1, mode="fortran"] arr_z_id
         X = X.transpose()
         arr_x = np.asfortranarray(X, dtype=np.double)
-        arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
+        arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_long)
         
         res = ndarray(self.ft.predict_proba_with_z(&arr_x[0,0],X.shape[0],X.shape[1],
                                              zfile, &arr_z_id[0], len(arr_z_id)))

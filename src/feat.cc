@@ -300,11 +300,11 @@ ArrayXd Feat::get_coefs()
 
 /// get longitudinal data from file s
 std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>> Feat::get_Z(string s, 
-        int * idx, int idx_size)
+        long * idx, int idx_size)
 {
 
     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z;
-    vector<int> ids(idx,idx+idx_size);
+    vector<long> ids(idx,idx+idx_size);
     load_partial_longitudinal(s,Z,',',ids);
     for (auto& z : Z)
         reorder_longitudinal(z.second.first, z.second.second, ids);
@@ -489,28 +489,30 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
 
     // =====================
     // main generational loop
-    unsigned int g = 0;
+    unsigned g = 0;
+    unsigned stall_count = 0;
     double fraction = 0;
     // continue until max gens is reached or max_time is up (if it is set)
     while((params.max_time == -1 || params.max_time > timer.Elapsed().count())
-           && g<params.gens)
+           && g<params.gens
+           && (params.max_stall == 0 || stall_count < params.max_stall) )
     {
         fraction = params.max_time == -1 ? ((g+1)*1.0)/params.gens : 
                                            timer.Elapsed().count()/params.max_time;
-                                           
         if(params.use_batch)
         {
             d.t->get_batch(db, params.bp.batch_size);
             DataRef dbr;    // reference to minibatch data
             dbr.setTrainingData(&db);
-            
+            dbr.setValidationData(d.v);
+
             if (params.classification)
                 params.set_sample_weights(dbr.t->y); 
 
-            run_generation(g, survivors, dbr, log, fraction);
+            run_generation(g, survivors, dbr, log, fraction, stall_count);
         }
         else
-            run_generation(g, survivors, d, log, fraction);
+            run_generation(g, survivors, d, log, fraction, stall_count);
         
         g++;
     }
@@ -528,7 +530,7 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
         
         p_eval->fitness(final_pop, *d.v, F_v, params, false, true);
 
-        update_best(true);                  // get the best validation model
+        update_best(d,true);                  // get the best validation model
     }
     else
         best_score_v = best_score;
@@ -547,7 +549,8 @@ void Feat::run_generation(unsigned int g,
                       vector<size_t> survivors,
                       DataRef &d,
                       std::ofstream &log,
-                      double fraction)
+                      double fraction,
+                      unsigned& stall_count)
 {
     params.set_current_gen(g);
     // select parents
@@ -571,8 +574,11 @@ void Feat::run_generation(unsigned int g,
     params.msg("shrinking pop to survivors...",3);
     p_pop->update(survivors);
     params.msg("survivors:\n" + p_pop->print_eqns(), 3);
+    
+    update_best(d);
 
-    update_best();
+    if (params.max_stall > 0)
+        update_stall_count(stall_count, F);
 
     if (use_arch) 
         arch.update(*p_pop,params);
@@ -590,8 +596,23 @@ void Feat::run_generation(unsigned int g,
         params.bp.learning_rate = (1-1/(1+double(params.gens)))*params.bp.learning_rate;
         params.msg("learning rate: " + std::to_string(params.bp.learning_rate),3);
     }
+
 }
 
+void Feat::update_stall_count(unsigned& stall_count, MatrixXd& F)
+{
+    double med_score = median(F.colwise().mean().array());  // median loss
+    if (params.current_gen == 0 || med_score < best_med_score)
+    {
+        best_med_score = med_score;
+        stall_count = 0;
+    }
+    else
+    {
+        ++stall_count;
+    }
+
+}
 void Feat::fit(double * X, int rowsX, int colsX, double * Y, int lenY)
 {
     MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
@@ -601,7 +622,7 @@ void Feat::fit(double * X, int rowsX, int colsX, double * Y, int lenY)
 }
 
 void Feat::fit_with_z(double * X, int rowsX, int colsX, double * Y, int lenY, string s, 
-                int * idx, int idx_size)
+                long * idx, int idx_size)
 {
 
     MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
@@ -634,7 +655,7 @@ void Feat::initial_model(DataRef &d)
     /*!
      * fits an ML model to the raw data as a starting point.
      */
-    
+    cout << "X size: " << d.t->X.rows() << " x " << d.t->X.cols() << "\n"; 
     best_ind = Individual();
     best_ind.set_id(0);
     int j; 
@@ -724,7 +745,7 @@ MatrixXd Feat::transform(double * X, int rows_x, int cols_x)
     
 }
 
-MatrixXd Feat::transform_with_z(double * X, int rowsX, int colsX, string s, int * idx, int idx_size)
+MatrixXd Feat::transform_with_z(double * X, int rowsX, int colsX, string s, long * idx, int idx_size)
 {
     MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
     auto Z = get_Z(s, idx, idx_size);
@@ -762,7 +783,7 @@ VectorXd Feat::predict(double * X, int rowsX,int colsX)
 }
 
 VectorXd Feat::predict_with_z(double * X, int rowsX,int colsX, 
-                                string s, int * idx, int idx_size)
+                                string s, long * idx, int idx_size)
 {
 
     MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
@@ -781,7 +802,7 @@ ArrayXXd Feat::predict_proba(MatrixXd& X,
 }
 
 ArrayXXd Feat::predict_proba_with_z(double * X, int rowsX,int colsX, 
-                                string s, int * idx, int idx_size)
+                                string s, long * idx, int idx_size)
 {
     MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
     auto Z = get_Z(s, idx, idx_size);
@@ -792,8 +813,10 @@ ArrayXXd Feat::predict_proba_with_z(double * X, int rowsX,int colsX,
 }
 
 
-void Feat::update_best(bool validation)
+void Feat::update_best(const DataRef& d, bool validation)
 {
+    params.msg("updating best..",2);
+
     double bs;
     bs = validation ? best_score_v : best_score ; 
     double f; 
@@ -811,9 +834,18 @@ void Feat::update_best(bool validation)
 
     if (validation) 
         best_score_v = bs; 
-    else 
+    else
+    {
         best_score = bs;
 
+        if (params.split < 1.0)
+        {
+            VectorXd tmp;
+            shared_ptr<CLabels> yhat_v = best_ind.predict(*d.v, params);
+            best_score_v = p_eval->score(d.v->y, yhat_v, tmp, params.class_weights); 
+            best_ind.fitness_v = best_score_v;
+        }
+    }
 }
 
 double Feat::score(MatrixXd& X, const VectorXd& y,
@@ -908,10 +940,11 @@ void Feat::print_stats(std::ofstream& log, double fraction)
         string sep = ",";
         if (params.current_gen == 0) // print header
         {
-            log << "generation" << sep
-                << "min_loss"   << sep 
-                << "med_loss"   << sep 
-                << "med_size"   << sep 
+            log << "generation"     << sep
+                << "min_loss"       << sep 
+                << "min_loss_val"   << sep 
+                << "med_loss"       << sep 
+                << "med_size"       << sep 
                 << "med_complexity" << sep 
                 << "med_num_params" << sep
                 <<  "med_dim\n";
@@ -934,6 +967,7 @@ void Feat::print_stats(std::ofstream& log, double fraction)
 
         log << params.current_gen  << sep
             << best_score          << sep
+            << best_score_v        << sep
             << med_score           << sep
             << med_size            << sep
             << med_complexity      << sep

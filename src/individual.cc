@@ -227,7 +227,8 @@ namespace FT{
 	            n->evaluate(d, stack);
             else
                 HANDLE_ERROR_THROW("out() error: node " + n->name + " in " + program_str() + 
-                                   " is invalid\n");
+                                   " failed arity check\n");
+            
         }
         
         // convert stack_f to Phi

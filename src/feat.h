@@ -15,6 +15,7 @@ license: GNU/GPL v3
 #include "init.h"
 #include "rnd.h"
 #include "utils.h"
+#include "io.h"
 #include "params.h"
 #include "population.h"
 #include "selection.h"
@@ -250,7 +251,7 @@ namespace FT{
 
             /// get longitudinal data from file s
             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>> get_Z(string s, 
-                    int * idx, int idx_size);
+                    long * idx, int idx_size);
 
             /// destructor             
             ~Feat();
@@ -265,14 +266,15 @@ namespace FT{
                             vector<size_t> survivors,
                             DataRef &d,
                             std::ofstream &log,
-                            double percentage);
+                            double percentage,
+                            unsigned& stall_count);
                      
             /// train a model.             
             void fit(double * X,int rowsX,int colsX, double * Y,int lenY);
 
             /// train a model, first loading longitudinal samples (Z) from file.
             void fit_with_z(double * X, int rowsX, int colsX, double * Y, int lenY, string s, 
-                            int * idx, int idx_size);
+                            long * idx, int idx_size);
            
             /// predict on unseen data.             
             VectorXd predict(MatrixXd& X,
@@ -293,11 +295,11 @@ namespace FT{
 	
             /// predict on unseen data, loading longitudinal samples (Z) from file.
             VectorXd predict_with_z(double * X, int rowsX,int colsX, 
-                                    string s, int * idx, int idx_size);
+                                    string s, long * idx, int idx_size);
 
             /// predict probabilities of each class.
             ArrayXXd predict_proba_with_z(double * X, int rowsX,int colsX, 
-                                    string s, int * idx, int idx_size);  
+                                    string s, long * idx, int idx_size);  
 
             /// predict on unseen data.             
             VectorXd predict(double * X, int rowsX, int colsX);      
@@ -311,7 +313,8 @@ namespace FT{
             MatrixXd transform(double * X,  int rows_x, int cols_x);
             
             /// train a model, first loading longitudinal samples (Z) from file.
-            MatrixXd transform_with_z(double * X, int rowsX, int colsX, string s, int * idx, int idx_size);
+            MatrixXd transform_with_z(double * X, int rowsX, int colsX, string s, 
+                                      long * idx, int idx_size);
             
             /// convenience function calls fit then predict.            
             VectorXd fit_predict(MatrixXd& X,
@@ -358,8 +361,9 @@ namespace FT{
             // performance tracking
             double best_score;                      ///< current best score
             double best_score_v;                    ///< best validation score
+            double best_med_score;                  ///< best median population score
             string str_dim;                         ///< dimensionality as multiple of number of columns 
-            void update_best(bool val=false);       ///< updates best score   
+            void update_best(const DataRef& d, bool val=false);       ///< updates best score   
             void print_stats(std::ofstream& log,
                              double fraction);      ///< prints stats
             Individual best_ind;                    ///< best individual
@@ -369,6 +373,8 @@ namespace FT{
             void initial_model(DataRef &d);
             /// fits final model to best transformation
             void final_model(DataRef& d);
+            /// updates stall count for early stopping
+            void update_stall_count(unsigned& stall_count, MatrixXd& F);
     };
 }
 #endif

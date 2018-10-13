@@ -5,6 +5,7 @@ license: GNU/GPL v3
 
 #include "utils.h"
 #include "rnd.h"
+#include <unordered_set>
 
 namespace FT{
  
@@ -78,266 +79,8 @@ namespace FT{
 
 	}
     
-    /// load csv file into matrix. 
-    void load_csv (const std::string & path, MatrixXd& X, VectorXd& y, vector<string>& names, 
-                   vector<char> &dtypes, bool& binary_endpoint, char sep) 
-    {
-        std::ifstream indata;
-        indata.open(path);
-        if (!indata.good())
-            HANDLE_ERROR_THROW("Invalid input file " + path + "\n"); 
-            
-        std::string line;
-        std::vector<double> values, targets;
-        unsigned rows=0, col=0, target_col = 0;
-        
-        while (std::getline(indata, line)) 
-        {
-            std::stringstream lineStream(line);
-            std::string cell;
-            
-            while (std::getline(lineStream, cell, sep)) 
-            {
-                cell = trim(cell);
-                  
-                if (rows==0) // read in header
-                {
-                    if (!cell.compare("class") || !cell.compare("target") 
-                            || !cell.compare("label"))
-                        target_col = col;                    
-                    else
-                        names.push_back(cell);
-                }
-                else if (col != target_col) 
-                    values.push_back(std::stod(cell));
-                else
-                    targets.push_back(std::stod(cell));
-                
-                ++col;
-            }
-            ++rows;
-            col=0;   
-        }
-        
-        X = Map<MatrixXd>(values.data(), values.size()/(rows-1), rows-1);
-        y = Map<VectorXd>(targets.data(), targets.size());
-        
-        assert(X.cols() == y.size() && "different numbers of samples in X and y");
-        assert(X.rows() == names.size() && "header missing or incorrect number of feature names");
-       
-        dtypes = find_dtypes(X);
-
-//        cout << "dtypes: " ; 
-//        for (unsigned i = 0; i < dtypes.size(); ++i) 
-//        {
-//            cout << names.at(i) << " : " << dtypes.at(i);
-//            cout << "\n";
-//        }
-
-
-/*         // get feature types (binary or continuous/categorical) */
-/*         int i, j; */
-/*         bool isBinary; */
-/*         bool isCategorical; */
-/*         std::map<double, bool> uniqueMap; */
-/*         for(i = 0; i < X.rows(); i++) */
-/*         { */
-/*             isBinary = true; */
-/*             isCategorical = true; */
-/*             uniqueMap.clear(); */
-            
-/*             for(j = 0; j < X.cols(); j++) */
-/*             { */
-/*                 if(X(i, j) != 0 && X(i, j) != 1) */
-/*                     isBinary = false; */
-/*                 if(X(i,j) != floor(X(i, j)) && X(i,j) != ceil(X(i,j))) */
-/*                     isCategorical = false; */
-/*                 else */
-/*                     uniqueMap[X(i, j)] = true; */
-/*             } */
-        
-/*             if(isBinary) */
-/*                 dtypes.push_back('b'); */
-/*             else */
-/*             { */
-/*                 if(isCategorical && uniqueMap.size() < 10) */
-/*                     dtypes.push_back('c'); */    
-/*                 else */
-/*                     dtypes.push_back('f'); */
-/*             } */
-/*         } */
-        
-        // check if endpoint is binary
-        binary_endpoint = (y.array() == 0 || y.array() == 1).all();
-        
-    }
-    
-    /*!
-     * load longitudinal csv file into matrix. 
-     */
-    void load_longitudinal(const std::string & path,
-                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
-                           char sep)
-    {
-        std::map<string, std::map<int, std::pair<std::vector<double>, std::vector<double> > > > dataMap;
-        std::ifstream indata;
-        indata.open(path);
-        if (!indata.good())
-            HANDLE_ERROR_THROW("Invalid input file " + path + "\n"); 
-            
-        std::string line, firstKey = "";
-       
-        string header;
-        std::getline(indata, header); 
-    
-        std::stringstream lineStream(header);
-        
-        std::map<string,int> head_to_col;
-        for (int i = 0; i<4; ++i)
-        {
-            string tmp; 
-            std::getline(lineStream,tmp, sep);
-            head_to_col[tmp] = i;
-        }
-        
-        while (std::getline(indata, line)) 
-        {
-            std::stringstream lineStream(line);
-            std::string sampleNo, value, time, type;
-            
-            vector<string> cols(4); 
-            std::getline(lineStream, cols.at(0), sep);
-            std::getline(lineStream, cols.at(1), sep);
-            std::getline(lineStream, cols.at(2), sep);
-            std::getline(lineStream, cols.at(3), sep);
-           
-            sampleNo = cols.at(head_to_col["id"]);
-            time = cols.at(head_to_col["date"]);
-            value = cols.at(head_to_col["value"]);
-            type = cols.at(head_to_col["name"]);
-
-            type = trim(type);
-            
-            if(!firstKey.compare(""))
-                firstKey = type;
-            /* cout << "sampleNo: " << sampleNo << ", time: " << time << ", value: " << value */ 
-                 /* << ", type: " << type << "\n"; */
-            dataMap[type][std::stoi(sampleNo)].first.push_back(std::stod(value));
-            dataMap[type][std::stoi(sampleNo)].second.push_back(std::stod(time));
-        }
-        
-        int numTypes = dataMap.size();
-        int numSamples = dataMap[firstKey].size();
-        int x;
-        
-        for ( const auto &val: dataMap )
-        {
-            for(x = 0; x < numSamples; ++x)
-            {
-                ArrayXd arr1 = Map<ArrayXd>(dataMap[val.first][x].first.data(), dataMap[val.first][x].first.size());
-                ArrayXd arr2 = Map<ArrayXd>(dataMap[val.first][x].second.data(), dataMap[val.first][x].second.size());
-                Z[val.first].first.push_back(arr1);
-                Z[val.first].second.push_back(arr2);
-
-            }
-            
-        }
-    }
-    
-    /*!
-     * load partial longitudinal csv file into matrix according to idx vector
-     */
-    void load_partial_longitudinal(const std::string & path,
-                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
-                           char sep, vector<int> idx)
-    {
-        /* loads data from the longitudinal file, with idx providing the id numbers of each row in
-         * the main data (X and y).
-         * I.e., idx[k] = the id of samples in Z associated with sample k in X and y
-         */
-        std::map<int, bool> idMap;
-        std::map<int, int> idLoc;
-        unsigned i = 0;
-        for(const auto& id : idx){
-            idMap[id] = true;
-            idLoc[id] = i;
-            ++i;
-        }
-        std::map<string, std::map<int, std::pair<std::vector<double>, std::vector<double> > > > dataMap;
-        std::ifstream indata;
-        indata.open(path);
-        if (!indata.good())
-            HANDLE_ERROR_THROW("Invalid input file " + path + "\n");
-        
-        std::string line, firstKey = "";
-       
-        // get header
-        string header;
-        std::getline(indata, header); 
-    
-        std::stringstream lineStream(header);
-        
-        std::map<string,int> head_to_col;
-        for (int i = 0; i<4; ++i)
-        {
-            string tmp; 
-            std::getline(lineStream,tmp, sep);
-            head_to_col[tmp] = i;
-        }
-        
-        while (std::getline(indata, line)) 
-        {
-            std::stringstream lineStream(line);
-            std::string sampleNo, value, time, type;
-            
-            vector<string> cols(4); 
-            std::getline(lineStream, cols.at(0), sep);
-            std::getline(lineStream, cols.at(1), sep);
-            std::getline(lineStream, cols.at(2), sep);
-            std::getline(lineStream, cols.at(3), sep);
-           
-            sampleNo = cols.at(head_to_col["id"]);
-            time = cols.at(head_to_col["date"]);
-            value = cols.at(head_to_col["value"]);
-            type = cols.at(head_to_col["name"]);
-
-            type = trim(type);
-            
-            if(!firstKey.compare(""))
-                firstKey = type;
-            
-            int sNo = std::stoi(sampleNo);
-            if(idMap.find(sNo) != idMap.end())
-            {
-                if(idMap[sNo] == true)
-                {
-                    dataMap[type][idLoc[sNo]].first.push_back(std::stod(value));
-                    dataMap[type][idLoc[sNo]].second.push_back(std::stod(time));
-                    ++i;
-                }
-            }
-        }
-        
-        int numSamples = dataMap[firstKey].size();
-        int numTypes = dataMap.size();	
-        
-        int x;
-        
-        for ( const auto &val: dataMap )
-        {
-            for(x = 0; x < numSamples; x++)
-            {
-                ArrayXd arr1 = Map<ArrayXd>(dataMap[val.first][x].first.data(), dataMap[val.first][x].first.size());
-                ArrayXd arr2 = Map<ArrayXd>(dataMap[val.first][x].second.data(), dataMap[val.first][x].second.size());
-                Z[val.first].first.push_back(arr1);
-                Z[val.first].second.push_back(arr2);
-            }
-            
-        }
-    }
-    
     void reorder_longitudinal(vector<ArrayXd> &vec1, vector<ArrayXd> &vec2,
-                             vector<int> const &order)
+                             vector<long> const &order)
     {   
     
         for( int s = 1, d; s < order.size(); ++ s )
@@ -355,21 +98,6 @@ namespace FT{
         }
     }
 
-
-    /*
-    /// check if element is in vector.
-    template<typename T>
-    bool in(const vector<T> v, const T& i)
-    {
-        // true if i is in v, else false.
-        for (const auto& el : v)
-        {
-            if (i == el)
-                return true;
-        }
-        return false;
-    }*/
-   
     /// calculate median
     double median(const ArrayXd& v) 
     {
@@ -472,32 +200,7 @@ namespace FT{
 	{
 		return high_resolution_clock::now() - _start;
 	}
-	
-	/*template <typename T, typename Traits>
-	std::basic_ostream<T, Traits>& operator<<(std::basic_ostream<T, Traits>& out, 
-                                                     const Timer& timer)
-	{
-		return out << timer.Elapsed().count();
-	}*/
- 
-    /*
-    /// return the softmax transformation of a vector.
-    template <typename T>
-    vector<T> softmax(const vector<T>& w)
-    {
-        int x;
-        T sum = 0;
-        vector<T> w_new;
-        
-        for(x = 0; x < w.size(); x++)
-            sum += exp(w[x]);
-            
-        for(x = 0; x < w.size(); x++)
-            w_new.push_back(exp(w[x])/sum);
-            
-        return w_new;
-    }*/
-    
+   
     /// fit the scale and offset of data. 
     void Normalizer::fit(MatrixXd& X, const vector<char>& dt)
     {
@@ -557,42 +260,8 @@ namespace FT{
         return nans;
 
     }
-    
-
 	
-	/*
-    /// returns unique elements in vector
-    template <typename T>
-    vector<T> unique(vector<T> w)   // note intentional copy
-    {
-        std::sort(w.begin(),w.end());
-        typename vector<T>::iterator it;
-        it = std::unique(w.begin(),w.end());
-        w.resize(std::distance(w.begin(), it));
-        return w;
-    }*/
-    
-    /*
-    /// returns unique elements in Eigen vector
-    template <typename T>
-    vector<T> unique(Matrix<T, Dynamic, 1> w)   // note intentional copy
-    {
-        vector<T> wv( w.data(), w.data()+w.rows());
-        return unique(wv);
-    }*/
-
-    void printProgress (double percentage)
-    {
-        int val = (int) (percentage * 100);
-        int lpad = (int) (percentage * PBWIDTH);
-        int rpad = PBWIDTH - lpad;
-        printf ("\rCompleted %3d%% [%.*s%*s]", val, lpad, PBSTR.c_str(), rpad, "");
-        fflush (stdout);
-        if(val == 100)
-            cout << "\n";
-    }
-    
-    /*
+    /* Defined in utils.h
     ///template function to convert objects to string for logging
     template <typename T>
     string to_string(const T& value)
