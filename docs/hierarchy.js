@@ -1,8 +1,12 @@
 var hierarchy =
 [
+    [ "FT::Archive", "df/dfc/structFT_1_1Archive.html", null ],
     [ "FT::AutoBackProp", "d3/dd7/classFT_1_1AutoBackProp.html", null ],
     [ "FT::Parameters::BP", "d4/d04/structFT_1_1Parameters_1_1BP.html", null ],
     [ "FT::AutoBackProp::BP_NODE", "d6/dd3/structFT_1_1AutoBackProp_1_1BP__NODE.html", null ],
+    [ "CLibLinear", null, [
+      [ "shogun::CMyLibLinear", "de/d65/classshogun_1_1CMyLibLinear.html", null ]
+    ] ],
     [ "CLinearMulticlassMachine", null, [
       [ "shogun::CMulticlassLogisticRegression", "db/d4e/classshogun_1_1CMulticlassLogisticRegression.html", null ],
       [ "shogun::CMyMulticlassLibLinear", "df/d62/classshogun_1_1CMyMulticlassLibLinear.html", null ]
@@ -11,12 +15,16 @@ var hierarchy =
     [ "CTreeMachine", null, [
       [ "shogun::CMyCARTree", "db/dff/classshogun_1_1CMyCARTree.html", null ]
     ] ],
+    [ "FT::Data", "d5/d03/classFT_1_1Data.html", null ],
     [ "FT::DataFolds", "dc/d9a/structFT_1_1DataFolds.html", null ],
+    [ "FT::DataRef", "d6/d9e/classFT_1_1DataRef.html", null ],
     [ "FT::Evaluation", "df/db3/classFT_1_1Evaluation.html", null ],
     [ "FT::Feat", "db/dff/classFT_1_1Feat.html", null ],
     [ "FT::FeatCV", "df/de2/classFT_1_1FeatCV.html", null ],
     [ "FT::FeatObjects", "df/d04/structFT_1_1FeatObjects.html", null ],
     [ "FewObjects", "d7/dfa/classFewObjects.html", null ],
+    [ "FT::Parameters::HC", "d0/d29/structFT_1_1Parameters_1_1HC.html", null ],
+    [ "FT::HillClimb", "df/d02/classFT_1_1HillClimb.html", null ],
     [ "FT::Individual", "d8/d25/classFT_1_1Individual.html", null ],
     [ "InputParser", "de/d16/classInputParser.html", null ],
     [ "FT::ML", "df/dfa/classFT_1_1ML.html", null ],
@@ -34,6 +42,8 @@ var hierarchy =
         [ "FT::NodeExponent", "d8/dbf/classFT_1_1NodeExponent.html", null ],
         [ "FT::NodeExponential", "df/dfa/classFT_1_1NodeExponential.html", null ],
         [ "FT::NodeGaussian", "d3/df7/classFT_1_1NodeGaussian.html", null ],
+        [ "FT::NodeIf", "d2/d99/classFT_1_1NodeIf.html", null ],
+        [ "FT::NodeIfThenElse", "d9/d5e/classFT_1_1NodeIfThenElse.html", null ],
         [ "FT::NodeLog", "db/def/classFT_1_1NodeLog.html", null ],
         [ "FT::NodeLogit", "d2/d6a/classFT_1_1NodeLogit.html", null ],
         [ "FT::NodeMultiply", "d8/d7d/classFT_1_1NodeMultiply.html", null ],
@@ -46,10 +56,9 @@ var hierarchy =
         [ "FT::NodeTanh", "d8/d18/classFT_1_1NodeTanh.html", null ]
       ] ],
       [ "FT::NodeEqual", "d9/d69/classFT_1_1NodeEqual.html", null ],
+      [ "FT::NodeFloat< T >", "d2/d5e/classFT_1_1NodeFloat.html", null ],
       [ "FT::NodeGEQ", "d6/df3/classFT_1_1NodeGEQ.html", null ],
       [ "FT::NodeGreaterThan", "db/dff/classFT_1_1NodeGreaterThan.html", null ],
-      [ "FT::NodeIf", "d2/d99/classFT_1_1NodeIf.html", null ],
-      [ "FT::NodeIfThenElse", "d9/d5e/classFT_1_1NodeIfThenElse.html", null ],
       [ "FT::NodeKurtosis", "d0/de6/classFT_1_1NodeKurtosis.html", null ],
       [ "FT::NodeLEQ", "d0/da3/classFT_1_1NodeLEQ.html", null ],
       [ "FT::NodeLessThan", "db/d85/classFT_1_1NodeLessThan.html", null ],
@@ -65,8 +74,11 @@ var hierarchy =
       [ "FT::NodeSlope", "d2/df8/classFT_1_1NodeSlope.html", null ],
       [ "FT::NodeStep", "d5/df4/classFT_1_1NodeStep.html", null ],
       [ "FT::NodeTime", "d0/d42/classFT_1_1NodeTime.html", null ],
+      [ "FT::NodeTrain", "d0/daf/classFT_1_1NodeTrain.html", [
+        [ "FT::NodeSplit< T >", "de/d5e/classFT_1_1NodeSplit.html", null ]
+      ] ],
       [ "FT::NodeVar", "d9/d60/classFT_1_1NodeVar.html", null ],
-      [ "FT::NodeVariable", "d5/d06/classFT_1_1NodeVariable.html", null ],
+      [ "FT::NodeVariable< T >", "d5/d06/classFT_1_1NodeVariable.html", null ],
       [ "FT::NodeXor", "d8/d3d/classFT_1_1NodeXor.html", null ]
     ] ],
     [ "FT::Normalizer", "dd/db4/structFT_1_1Normalizer.html", null ],
@@ -77,17 +89,22 @@ var hierarchy =
     [ "FT::Selection", "de/d87/structFT_1_1Selection.html", null ],
     [ "FT::SelectionOperator", "d2/d3a/structFT_1_1SelectionOperator.html", [
       [ "FT::Lexicase", "d8/d78/structFT_1_1Lexicase.html", null ],
-      [ "FT::NSGA2", "dd/df8/structFT_1_1NSGA2.html", null ]
+      [ "FT::NSGA2", "dd/df8/structFT_1_1NSGA2.html", null ],
+      [ "FT::Offspring", "dd/d16/structFT_1_1Offspring.html", null ],
+      [ "FT::Random", "d0/d92/structFT_1_1Random.html", null ],
+      [ "FT::SimAnneal", "d9/d70/structFT_1_1SimAnneal.html", null ]
     ] ],
     [ "FT::NSGA2::sort_n", "d5/d93/structFT_1_1NSGA2_1_1sort__n.html", null ],
     [ "FT::Population::SortComplexity", "db/df6/structFT_1_1Population_1_1SortComplexity.html", null ],
     [ "FT::Stack< type >", "d3/d35/classFT_1_1Stack.html", null ],
     [ "FT::Stack< ArrayXb >", "d3/d35/classFT_1_1Stack.html", null ],
     [ "FT::Stack< ArrayXd >", "d3/d35/classFT_1_1Stack.html", null ],
+    [ "FT::Stack< ArrayXi >", "d3/d35/classFT_1_1Stack.html", null ],
     [ "FT::Stack< std::pair< vector< ArrayXd >, vector< ArrayXd > > >", "d3/d35/classFT_1_1Stack.html", null ],
     [ "FT::Stack< string >", "d3/d35/classFT_1_1Stack.html", null ],
     [ "FT::Stacks", "d5/d75/structFT_1_1Stacks.html", null ],
     [ "FT::Timer", "d3/d4e/classFT_1_1Timer.html", null ],
+    [ "FT::Trace", "d7/d99/structFT_1_1Trace.html", null ],
     [ "FT::Variation", "d3/d01/classFT_1_1Variation.html", null ],
     [ "std::vector< T >", null, [
       [ "FT::NodeVector", "dd/d15/structFT_1_1NodeVector.html", null ]

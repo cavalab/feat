@@ -15,6 +15,8 @@ kf.get_n_splits(X)
 
 clf = Feat(max_depth=5,
            max_dim=min(50,2*X.shape[1]),
+           gens = 1,
+           pop_size = 2,
            verbosity=1,
            shuffle=True,
            ml='LR',

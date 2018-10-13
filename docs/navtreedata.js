@@ -30,9 +30,10 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"d6/df3/classFT_1_1NodeGEQ.html#a13543d0c0c204033d8620604636239a5",
-"db/dff/classFT_1_1Feat.html#a3f5c79c87ddf804cfaa7b853117b3351",
-"de/d2c/structFT_1_1Parameters.html#a1c327169f36ac2659d0b96c6ac2088c1"
+"d5/d03/classFT_1_1Data.html#ae379df081eaeba38bdf26748b0d33b55",
+"d9/d69/classFT_1_1NodeEqual.html#a0ab4b15b03eb45c613383e34bdeb4d1c",
+"db/dff/classshogun_1_1CMyCARTree.html#a4fa218866aa1bbbd73347819f201c17c",
+"df/d02/classFT_1_1HillClimb.html#aa0ce5e98ccf77e9533d7f5c05850d147"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
