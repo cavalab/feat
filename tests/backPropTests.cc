@@ -55,6 +55,8 @@ Node* parseToNode(std::string token) {
     	return new FT::NodeVariable<double>(0);
     } else if (token == "x1") {
     	return new FT::NodeVariable<double>(1);
+    } else if (token == "c") {
+    return new FT::NodeConstant(1.0);
     } else if (token == "exponent") {
     	return new FT::NodeExponent({1.0, 1.0});
     } else if (token == "exp") {
@@ -66,7 +68,7 @@ Node* parseToNode(std::string token) {
     } else if (token == "relu") {
     	return new FT::NodeRelu({1.0});
     } else if (token == "sign") {
-    	return new FT::NodeSign({1.0});
+    	return new FT::NodeSign();
     } else if (token == "logit") {
     	return new FT::NodeLogit({1.0});
     } else if (token == "max") {
@@ -303,7 +305,7 @@ FT::NodeVector programGen(std::string txt) {
     return program;
 }
 
-FT::Individual testDummyProgram(FT::NodeVector p0, Data data, int iters) {
+FT::Individual testDummyProgram(FT::NodeVector p0, Data data, int iters, VectorXd& yhat) {
 	
 	std::cout << "Testing program: [";
 	
@@ -315,19 +317,20 @@ FT::Individual testDummyProgram(FT::NodeVector p0, Data data, int iters) {
 	std::cout << "Number of iterations are "<< iters <<"\n";
 
 	// Params
-	double learning_rate = 0.1;
+	double learning_rate = 0.25;
     int bs = 1; 
     FT::Individual ind;
     ind.program = p0;
     FT::Feat feat;
-    //feat.set_verbosity(3);
+    /* feat.set_verbosity(3); */
     
     feat.set_shuffle(false);
                           
-	TestBackProp* engine = new TestBackProp(iters, learning_rate, 0);	
+	TestBackProp* engine = new TestBackProp(iters, learning_rate, 0.9);	
 
     engine->run(ind, data, feat.params); // Update pointer to NodeVector internally
-	
+    MatrixXd Phi = ind.out(data,feat.params); 
+    yhat = Phi.row(0); 
 	return ind;
 
 	// Make sure internal NodeVector updated
@@ -344,18 +347,23 @@ TEST(BackProp, SumGradient)
     X.row(1) << 0.89560483,  0.87110481, -0.47065155,  0.32214509,  0.59596947,
         0.81329039,  0.39903285,  0.17607827,  0.84886707, -0.44261626;
 
-    y << 1.79711347,  1.63112011,  0.35268371,  2.85981589,  0.18189424,
-        1.27615517, -0.63677472, -1.44051753,  1.48938848, -3.12127104;
+    /* y << 1.79711347,  1.63112011,  0.35268371,  2.85981589,  0.18189424, */
+    /*     1.27615517, -0.63677472, -1.44051753,  1.48938848, -3.12127104; */
         
+    y = 2*X.row(0).array()+3*X.row(1).array();
+    /* cout << "X[0]: " << X.row(0) << "\n"; */
+    /* cout << "X[1]: " << X.row(1) << "\n"; */
+    /* cout << "y: " << y.transpose() << "\n"; */
     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
     
     Data data(X, y, Z);
     
     FT::NodeVector program = programGen("x0 x1 +");
-    
-    FT::Individual ind = testDummyProgram(program, data, 100);
+    VectorXd yhat; 
+    FT::Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
+    vector<double> What(2);
 	for (const auto& n : ind.program) {
 		std::cout << n->name << ": ";
 		NodeDx* nd = dynamic_cast<NodeDx*>(n.get());
@@ -363,10 +371,15 @@ TEST(BackProp, SumGradient)
 			std::cout << " with weight";
 			for (int i = 0; i < nd->arity['f']; i++) {
 				std::cout << " " << nd->W[i];
+                What[i] = nd->W[i];
 			}
 		}
 		std::cout << "\n";
 	}
+    /* cout << y - yhat << "\n"; */
+    ASSERT_LE((y-yhat).array().pow(2).sum(),0.000001);
+    ASSERT_LE(What[0]-3,0.000001);
+    ASSERT_LE(What[1]-2,0.000001);
 }
 
 TEST(BackProp, SubtractGradient)
@@ -381,17 +394,18 @@ TEST(BackProp, SubtractGradient)
     X.row(1) << 0.89560483,  0.87110481, -0.47065155,  0.32214509,  0.59596947,
         0.81329039,  0.39903285,  0.17607827,  0.84886707, -0.44261626;
 
-    y << 2*X.row(0)-3*X.row(1);
+    y = 2*X.row(0)-3*X.row(1);
         
     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
     
     Data data(X, y, Z);
     
     FT::NodeVector program = programGen("x0 x1 -");
-    
-    FT::Individual ind = testDummyProgram(program, data, 100);
+    VectorXd yhat; 
+    FT::Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
+	vector<double> What(2);
 	for (const auto& n : ind.program) {
 		std::cout << n->name << ": ";
 		NodeDx* nd = dynamic_cast<NodeDx*>(n.get());
@@ -399,10 +413,17 @@ TEST(BackProp, SubtractGradient)
 			std::cout << " with weight";
 			for (int i = 0; i < nd->arity['f']; i++) {
 				std::cout << " " << nd->W[i];
+                What[i] = nd->W[i];
 			}
 		}
 		std::cout << "\n";
 	}
+
+    /* cout << y - yhat << "\n"; */
+    ASSERT_LE((y-yhat).array().pow(2).sum(),0.000001);
+    ASSERT_LE(What[0]-3,0.000001);
+    ASSERT_LE(What[1]-2,0.000001);
+
 }
 
 TEST(BackProp, MultiplyGradient)
@@ -416,17 +437,19 @@ TEST(BackProp, MultiplyGradient)
     X.row(1) << 0.89560483,  0.87110481, -0.47065155,  0.32214509,  0.59596947,
         0.81329039,  0.39903285,  0.17607827,  0.84886707, -0.44261626;
 
-    y << (2*X.row(0))*(3*X.row(1));
+    y = (2*X.row(0))*(3*X.row(1));
         
     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
     
     Data data(X, y, Z);
     
     FT::NodeVector program = programGen("x0 x1 *");
-    
-    FT::Individual ind = testDummyProgram(program, data, 100);
+    VectorXd yhat; 
+    FT::Individual ind = testDummyProgram(program, data, 1000, yhat);
+
     
     std::cout << "test program returned:\n";
+	vector<double> What(2);
 	for (const auto& n : ind.program) {
 		std::cout << n->name << ": ";
 		NodeDx* nd = dynamic_cast<NodeDx*>(n.get());
@@ -434,10 +457,16 @@ TEST(BackProp, MultiplyGradient)
 			std::cout << " with weight";
 			for (int i = 0; i < nd->arity['f']; i++) {
 				std::cout << " " << nd->W[i];
+                What[i] = nd->W[i];
 			}
 		}
 		std::cout << "\n";
 	}
+
+    /* cout << y - yhat << "\n"; */
+    /* ASSERT_LE((y-yhat).array().pow(2).sum(),0.000001); */
+    // What[0] and What[1] should be equivalent since they are completely correlated here
+    ASSERT_LE(What[0]-What[1],0.000001);
 }
 
 TEST(BackProp, DivideGradient)
@@ -450,18 +479,24 @@ TEST(BackProp, DivideGradient)
        -0.581858  , -0.91693663, -0.98437617, -0.52860637, -0.89671113;
     X.row(1) << 0.89560483,  0.87110481, -0.47065155,  0.32214509,  0.59596947,
         0.81329039,  0.39903285,  0.17607827,  0.84886707, -0.44261626;
-
-    y << ((2*X.row(0).array())/(3*X.row(1).array()));
-        
+ 
+    double Wnom = 1.234;
+    double Wden = 0.9876;
+    /* y = ((Wnom*X.row(0).array())/(Wden*X.row(1).array())); */
+    // y = 1/ (x)
+    /* y = Wnom/(Wden*X.row(0).array()); */
+    y = Wnom/Wden*ArrayXd::Ones(X.rows());
     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
     
     Data data(X, y, Z);
     
-    FT::NodeVector program = programGen("x0 x1 /");
+    FT::NodeVector program = programGen("x1 x1 /");
     
-    FT::Individual ind = testDummyProgram(program, data, 100);
+    VectorXd yhat;
+    FT::Individual ind = testDummyProgram(program, data, 10000, yhat);
     
     std::cout << "test program returned:\n";
+    vector<double> What(2);
 	for (const auto& n : ind.program) {
 		std::cout << n->name << ": ";
 		NodeDx* nd = dynamic_cast<NodeDx*>(n.get());
@@ -469,10 +504,19 @@ TEST(BackProp, DivideGradient)
 			std::cout << " with weight";
 			for (int i = 0; i < nd->arity['f']; i++) {
 				std::cout << " " << nd->W[i];
+                What[i] = nd->W[i];
 			}
 		}
 		std::cout << "\n";
 	}
+
+    /* cout << y - yhat << "\n"; */
+    /* ASSERT_LE((y-yhat).array().pow(2).sum(),0.000001); */
+    cout << "what[0]/what[1]: " << What[0]/What[1] << "\n";
+    cout << "Wnom/Wden : " << Wnom/Wden << "\n";
+    // The ratio of the true weights should match the ratio of the found weights
+    ASSERT_LE(fabs(Wnom/Wden - What[0]/What[1]),0.001);
+    /* ASSERT_LE(What[1]-Wden,0.001); */
 }
 
 TEST(BackProp, SinGradient)
@@ -493,7 +537,8 @@ TEST(BackProp, SinGradient)
     
     FT::NodeVector program = programGen("x0 sin");
     
-    FT::Individual ind = testDummyProgram(program, data, 100);
+    VectorXd yhat;
+    FT::Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
 	for (const auto& n : ind.program) {
@@ -507,6 +552,9 @@ TEST(BackProp, SinGradient)
 		}
 		std::cout << "\n";
 	}
+
+    /* cout << y - yhat << "\n"; */
+    ASSERT_LE((y-yhat).array().pow(2).sum(),0.000001);
 }
 
 TEST(BackProp, CosGradient)
@@ -527,7 +575,8 @@ TEST(BackProp, CosGradient)
     
     FT::NodeVector program = programGen("x0 cos");
     
-    FT::Individual ind = testDummyProgram(program, data, 100);
+    VectorXd yhat;
+    FT::Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
 	for (const auto& n : ind.program) {
@@ -541,6 +590,8 @@ TEST(BackProp, CosGradient)
 		}
 		std::cout << "\n";
 	}
+
+    ASSERT_LE((y-yhat).array().pow(2).sum(),0.000001);
 }
 
 TEST(BackProp, TanhGradient)
@@ -561,7 +612,8 @@ TEST(BackProp, TanhGradient)
     
     FT::NodeVector program = programGen("x0 tanh");
     
-    FT::Individual ind = testDummyProgram(program, data, 100);
+    VectorXd yhat;
+    FT::Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
 	for (const auto& n : ind.program) {
@@ -575,6 +627,9 @@ TEST(BackProp, TanhGradient)
 		}
 		std::cout << "\n";
 	}
+
+    /* cout << y - yhat << "\n"; */
+    ASSERT_LE((y-yhat).array().pow(2).sum(),0.00001);
 }
 
 TEST(BackProp, ExpGradient)
@@ -586,7 +641,7 @@ TEST(BackProp, ExpGradient)
        0.59444715, 0.14955871, 0.95985467, 0.29628456, 0.36876264;
     
     //y = exp(2x)
-    y << exp(2*X.row(0).array());
+    y << exp(1.2345*X.row(0).array());
         
     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
     
@@ -594,7 +649,8 @@ TEST(BackProp, ExpGradient)
     
     FT::NodeVector program = programGen("x0 exp");
     
-    FT::Individual ind = testDummyProgram(program, data, 100);
+    VectorXd yhat;
+    FT::Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
 	for (const auto& n : ind.program) {
@@ -608,6 +664,8 @@ TEST(BackProp, ExpGradient)
 		}
 		std::cout << "\n";
 	}
+
+    ASSERT_LE((y-yhat).array().pow(2).sum(),0.00001);
 }
 
 TEST(BackProp, LogGradient)
@@ -627,7 +685,8 @@ TEST(BackProp, LogGradient)
     
     FT::NodeVector program = programGen("x0 log");
     
-    FT::Individual ind = testDummyProgram(program, data, 100);
+    VectorXd yhat;
+    FT::Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
 	for (const auto& n : ind.program) {
@@ -641,6 +700,9 @@ TEST(BackProp, LogGradient)
 		}
 		std::cout << "\n";
 	}
+
+    /* cout << y - yhat << "\n"; */
+    ASSERT_LE((y-yhat).array().pow(2).sum(),0.00001);
 }
 
 TEST(BackProp, SqrtGradient)
@@ -660,7 +722,8 @@ TEST(BackProp, SqrtGradient)
     
     FT::NodeVector program = programGen("x0 sqrt");
     
-    FT::Individual ind = testDummyProgram(program, data, 100);
+    VectorXd yhat;
+    FT::Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
 	for (const auto& n : ind.program) {
@@ -674,6 +737,8 @@ TEST(BackProp, SqrtGradient)
 		}
 		std::cout << "\n";
 	}
+
+    ASSERT_LE((y-yhat).array().pow(2).sum(),0.000001);
 }
 
 TEST(BackProp, ReluGradient)
@@ -694,7 +759,8 @@ TEST(BackProp, ReluGradient)
     
     FT::NodeVector program = programGen("x0 relu");
     
-    FT::Individual ind = testDummyProgram(program, data, 100);
+    VectorXd yhat;
+    FT::Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
 	for (const auto& n : ind.program) {
@@ -708,40 +774,9 @@ TEST(BackProp, ReluGradient)
 		}
 		std::cout << "\n";
 	}
-}
 
-TEST(BackProp, SignGradient)
-{
-    // Create input data and labels
-	MatrixXd X(1, 10);
-	VectorXd y(10);
-	X.row(0) << 0.9916109 , 0, 0.73439047, 0.70957884, 0,
-       -0.59444715, 0, -0.95985467, 0, 0;
-    
-    //y = sign(2x)
-    y << 1.9832218, 0, 1.46878094, 1.41915768, 0,
-         -1, 0, -1, 0, 0;
-        
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
-    
-    Data data(X, y, Z);
-    
-    FT::NodeVector program = programGen("x0 sign");
-    
-    FT::Individual ind = testDummyProgram(program, data, 100);
-    
-    std::cout << "test program returned:\n";
-	for (const auto& n : ind.program) {
-		std::cout << n->name << ": ";
-		NodeDx* nd = dynamic_cast<NodeDx*>(n.get());
-		if (nd != NULL) {
-			std::cout << " with weight";
-			for (int i = 0; i < nd->arity['f']; i++) {
-				std::cout << " " << nd->W[i];
-			}
-		}
-		std::cout << "\n";
-	}
+    /* cout << y - yhat << "\n"; */
+    ASSERT_LE((y-yhat).array().pow(2).sum(),0.00001);
 }
 
 TEST(BackProp, LogitGradient)
@@ -753,18 +788,22 @@ TEST(BackProp, LogitGradient)
        0.37672478, 0.05773657, 0.36211793, 0.0161587 , 0.02614942;
     
     //y = logit(2x)
-    y << -3.21347748,  2.49860441,  0.13516769,  0.52119546,  0.18420504,
-        1.11709547, -2.03601496,  0.9655712 , -3.39929844, -2.89706515;
-        
+    /* y << -3.21347748,  2.49860441,  0.13516769,  0.52119546,  0.18420504, */
+    /*     1.11709547, -2.03601496,  0.9655712 , -3.39929844, -2.89706515; */
+    double Wtarget = 1.234;
+    y = 1/(1 + exp(-Wtarget*X.row(0).array()));
+
     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
     
     Data data(X, y, Z);
     
     FT::NodeVector program = programGen("x0 logit");
     
-    FT::Individual ind = testDummyProgram(program, data, 100);
+    VectorXd yhat;
+    FT::Individual ind = testDummyProgram(program, data, 2000, yhat);
     
     std::cout << "test program returned:\n";
+    vector<double> What(1);
 	for (const auto& n : ind.program) {
 		std::cout << n->name << ": ";
 		NodeDx* nd = dynamic_cast<NodeDx*>(n.get());
@@ -772,10 +811,16 @@ TEST(BackProp, LogitGradient)
 			std::cout << " with weight";
 			for (int i = 0; i < nd->arity['f']; i++) {
 				std::cout << " " << nd->W[i];
+                What[i] = nd->W[i];
 			}
 		}
 		std::cout << "\n";
 	}
+
+    /* cout << y - yhat << "\n"; */
+
+    ASSERT_LE((y-yhat).array().pow(2).sum(),0.00001);
+    ASSERT_LE(What[0]-Wtarget,0.01);
 }
 
 TEST(BackProp, DerivativeTest)

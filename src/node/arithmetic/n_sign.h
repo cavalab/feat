@@ -5,14 +5,14 @@ license: GNU/GPL v3
 #ifndef NODE_SIGN
 #define NODE_SIGN
 
-#include "../n_Dx.h"
+#include "../node.h"
 
 namespace FT{
-	class NodeSign : public NodeDx
+	class NodeSign : public Node
     {
     	public:
     	
-    		NodeSign(vector<double> W0 = vector<double>());
+    		NodeSign();
     		
             /// Evaluates the node and updates the stack states. 
             void evaluate(const Data& data, Stacks& stack);
@@ -20,8 +20,6 @@ namespace FT{
             /// Evaluates the node symbolically
             void eval_eqn(Stacks& stack);
 
-            ArrayXd getDerivative(Trace& stack, int loc);
-            
         protected:
             NodeSign* clone_impl() const override;  
             NodeSign* rnd_clone_impl() const override;  
