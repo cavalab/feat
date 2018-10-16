@@ -22,8 +22,8 @@ namespace FT{
             for (const auto& w : W)
                 V.push_back(0.0);
         }
-        std::cout << "***************************\n";
-        std::cout << "Updating " << this->name << "\n";
+//        std::cout << "***************************\n";
+//        std::cout << "Updating " << this->name << "\n";
         ArrayXd update_value = ArrayXd::Ones(stack.f[0].size());
         for(const ArrayXd& g : gradients) {
             /* std::cout << "Using gradient: " << g << "\n"; */
@@ -37,7 +37,7 @@ namespace FT{
          vector<double> W_temp(W);
         vector<double> V_temp(V);
         
-        cout << "*****n value is "<< n<<"\n";
+//        cout << "*****n value is "<< n<<"\n";
         // Have to use temporary weights so as not to compute updates with updated weights
         for (int i = 0; i < arity['f']; ++i) {
         	ArrayXd d_w = getDerivative(stack, arity['f'] + i);
@@ -60,9 +60,9 @@ namespace FT{
             }
         }
 
-        std::cout << "Updated\n";
-        std::cout << "***************************\n";
-        print_weight();
+//        std::cout << "Updated\n";
+//        std::cout << "***************************\n";
+//        print_weight();
     }
 
     void NodeDx::print_weight()
