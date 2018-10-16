@@ -32,6 +32,28 @@ TODO Make it so stops traversing once it hits a non-differentiable node and then
 **/
 
 namespace FT {
+
+    struct BP_NODE
+	{
+		NodeDx* n;
+		vector<ArrayXd> deriv_list;
+	};
+
+   
+	template <class T>
+	T pop(vector<T>* v) {
+		T value = v->back();
+		v->pop_back();
+		return value;
+	}
+
+	template <class T>
+	T pop_front(vector<T>* v) {
+		T value = v->front();
+		v->erase(v->begin());
+		return value;
+	}
+	
 	class AutoBackProp 
     {
         /* @class AutoBackProp
@@ -41,9 +63,11 @@ namespace FT {
 	
         typedef VectorXd (*callback)(const VectorXd&, shared_ptr<CLabels>&, const vector<float>&);
         
+        typedef VectorXd (*callback2)(const VectorXd&, const VectorXd&);
+        
         std::map<string, callback> d_score_hash;
         std::map<string, callback> score_hash;
-        
+                
         AutoBackProp(string scorer, int iters=1000, double n=0.1, double a=0.9); 
 
         /// adapt weights
@@ -62,15 +86,13 @@ namespace FT {
         double a;                   //< momentum
         callback d_cost_func;       //< derivative of cost function pointer
         callback cost_func;         //< cost function pointer
+        
+        callback2 d_cost_func2;       //< derivative of cost function pointer
+        callback2 cost_func2;         //< cost function pointer
+        
         int iters;                  //< iterations
         double epk;                 //< current learning rate 
         double epT;                  //< min learning rate
-
-		struct BP_NODE
-		{
-			NodeDx* n;
-			vector<ArrayXd> deriv_list;
-		};
 
 		void print_weights(NodeVector& program);
 		
@@ -87,22 +109,12 @@ namespace FT {
                                 double Beta, shared_ptr<CLabels>& yhat, 
                                 const Data& d,
                                vector<float> sw);
-
-       
-		template <class T>
-		T pop(vector<T>* v) {
-			T value = v->back();
-			v->pop_back();
-			return value;
-		}
-
-		template <class T>
-		T pop_front(vector<T>* v) {
-			T value = v->front();
-			v->erase(v->begin());
-			return value;
-		}
-
+                               
+        /// Compute gradients and update weights 
+        void backprop2(Trace& f_stack, NodeVector& program, int start, int end, 
+                                double Beta, const VectorXd& yhat, 
+                                const Data& d,
+                               vector<float> sw);
 
 	};
 }

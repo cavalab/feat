@@ -20,10 +20,11 @@ namespace FT {
         d_score_hash["mse"] = & metrics::d_squared_difference;
         d_score_hash["log"] =  & metrics::d_log_loss; 
         d_score_hash["multi_log"] =  & metrics::d_multi_log_loss;
-		
+        
         this->d_cost_func = d_score_hash[scorer]; 
         this->cost_func = score_hash[scorer]; 
-		/* this->X = X; */
+        
+        /* this->X = X; */
 		/* this->labels = labels; */
 		this->iters = iters;
 		this->n = n;
@@ -150,7 +151,7 @@ namespace FT {
         params.msg("=========================",3);
         ind.program.set_weights(best_weights);
     }
-
+    
     // forward pass
     vector<Trace> AutoBackProp::forward_prop(Individual& ind, const Data& d,
                                MatrixXd& Phi, const Parameters& params) 
@@ -285,5 +286,6 @@ namespace FT {
         /* cout << "Backprop terminated\n"; */
         //print_weights(program);
     }
+    
 }
 
