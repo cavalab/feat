@@ -6,6 +6,7 @@ license: GNU/GPL v3
 #define NODE_CONSTANT
 
 #include "../node.h"
+#include "../../error.h"
 
 namespace FT{
 	class NodeConstant : public Node

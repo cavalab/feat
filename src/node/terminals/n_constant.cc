@@ -3,7 +3,6 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 #include "n_constant.h"
-#include "../error.h"
     		
 namespace FT{
 
