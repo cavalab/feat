@@ -32,6 +32,10 @@ TODO Make it so stops traversing once it hits a non-differentiable node and then
 
 namespace FT {
 
+    /**
+     * @namespace FT::Opt
+     * @brief namespace for backprop classes in Feat
+     */
     namespace Opt{
 
         struct BP_NODE

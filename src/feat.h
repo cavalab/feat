@@ -36,6 +36,10 @@ using std::shared_ptr;
 using std::make_shared;
 using std::cout; 
 
+/**
+* @namespace FT
+* @brief main Feat namespace
+*/
 namespace FT{
 
     using namespace Eval;

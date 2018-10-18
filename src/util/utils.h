@@ -20,6 +20,10 @@ using namespace Eigen;
 
 namespace FT{
 
+    /**
+     * @namespace FT::Util
+     * @brief namespace containing various utility functions used in Feat
+     */
     namespace Util{
      
         extern string PBSTR;

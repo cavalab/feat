@@ -14,6 +14,10 @@ using namespace std;
 
 namespace FT{
 
+    /**
+     * @namespace FT::Vary
+     * @brief namespace containing various variation methods for cross and mutation in Feat
+     */
     namespace Vary{
 
         //struct Individual;  // forward declarations
