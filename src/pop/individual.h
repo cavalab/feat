@@ -5,15 +5,15 @@ license: GNU/GPL v3
 #ifndef INDIVIDUAL_H
 #define INDIVIDUAL_H
 
-#include "../data/stack.h"
-#include "../data/data.h"
+#include "../dat/stack.h"
+#include "../dat/data.h"
 #include "../params.h"
-#include "../ml/ml.h"
+#include "../model/ml.h"
 #include "../util/utils.h"
 
 namespace FT{
 
-    using namespace MLSpace;
+    using namespace Model;
     
     namespace Pop{
         

@@ -13,7 +13,7 @@ license: GNU/GPL v3
 #include <string>
 
 #include "../pop/individual.h"
-#include "../data/data.h"
+#include "../dat/data.h"
 #include "../params.h"
 
 using std::map;

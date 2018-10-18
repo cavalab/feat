@@ -5,7 +5,7 @@ license: GNU/GPL v3
 #ifndef EVALUATION_H
 #define EVALUATION_H
 // internal includes
-#include "../ml/ml.h"
+#include "../model/ml.h"
 #include "metrics.h"
 #include "../opt/auto_backprop.h"
 #include "../opt/hillclimb.h"
