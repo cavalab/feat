@@ -6,12 +6,11 @@
 #include <map>
 #include <vector>
 #include "../pop/nodevector.h"
-#include "../data/stack.h"
-#include "../pop/node/node.h"
-#include "../pop/node/n_Dx.h"
+#include "../dat/stack.h"
+#include "../pop/op/n_Dx.h"
 #include "../eval/metrics.h"
 #include "../pop/individual.h"
-#include "../ml/ml.h"
+#include "../model/ml.h"
 #include "../init.h"
 #include "../params.h"
 

@@ -18,11 +18,11 @@ license: GNU/GPL v3
 #include "util/io.h"
 #include "params.h"
 #include "pop/population.h"
-#include "selection/selection.h"
+#include "sel/selection.h"
 #include "eval/evaluation.h"
 #include "vary/variation.h"
-#include "ml/ml.h"
-#include "pop/node/node.h"
+#include "model/ml.h"
+#include "pop/op/node.h"
 #include "pop/archive.h" 
 
 // stuff being used

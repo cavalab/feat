@@ -5,15 +5,15 @@ license: GNU/GPL v3
 #ifndef NODEVECTOR_H
 #define NODEVECTOR_H
 #include <memory>
-#include "node/node.h"
-#include "node/n_Dx.h"
+#include "op/node.h"
+#include "op/n_Dx.h"
 
 #include "error.h"
 namespace FT{
     
     namespace Pop{
     
-        using namespace NodeSpace;
+        using namespace Op;
         ////////////////////////////////////////////////////////////////////////////////// Declarations
 
         /*!
