@@ -14,41 +14,44 @@ using Eigen::Map;
 
 // code to evaluate GP programs.
 namespace FT{
+
+    namespace Eval{
     
-    ////////////////////////////////////////////////////////////////////////////////// Declarations
-    /*!
-     * @class Evaluation
-     * @brief evaluation mixin class for Feat
-     */
-    typedef double (*funcPointer)(const VectorXd&, const shared_ptr<CLabels>&, VectorXd&,
-                                  const vector<float>&);
-    
-    class Evaluation 
-    {
-        public:
+        ////////////////////////////////////////////////////////////////////////////////// Declarations
+        /*!
+         * @class Evaluation
+         * @brief evaluation mixin class for Feat
+         */
+        typedef double (*funcPointer)(const VectorXd&, const shared_ptr<CLabels>&, VectorXd&,
+                                      const vector<float>&);
         
-            double (* score)(const VectorXd&, const shared_ptr<CLabels>&, VectorXd&, 
-                             const vector<float>&);    // pointer to scoring function
-                             
-            std::map<string, funcPointer> score_hash;
+        class Evaluation 
+        {
+            public:
+            
+                double (* score)(const VectorXd&, const shared_ptr<CLabels>&, VectorXd&, 
+                                 const vector<float>&);    // pointer to scoring function
+                                 
+                std::map<string, funcPointer> score_hash;
 
-            Evaluation(string scorer);
+                Evaluation(string scorer);
 
-            ~Evaluation();
-                
-            void set_score(string scorer);
+                ~Evaluation();
+                    
+                void set_score(string scorer);
 
-            /// fitness of population.
-            void fitness(vector<Individual>& individuals,
-                         const Data& d, 
-                         MatrixXd& F, 
-                         const Parameters& params, 
-                         bool offspring = false,
-                         bool validation = false);
-          
-            /// assign fitness to an individual and to F.  
-            void assign_fit(Individual& ind, MatrixXd& F, const shared_ptr<CLabels>& yhat, 
-                            const VectorXd& y, const Parameters& params,bool val=false);       
-    };
+                /// fitness of population.
+                void fitness(vector<Individual>& individuals,
+                             const Data& d, 
+                             MatrixXd& F, 
+                             const Parameters& params, 
+                             bool offspring = false,
+                             bool validation = false);
+              
+                /// assign fitness to an individual and to F.  
+                void assign_fit(Individual& ind, MatrixXd& F, const shared_ptr<CLabels>& yhat, 
+                                const VectorXd& y, const Parameters& params,bool val=false);       
+        };
+    }
 }
 #endif

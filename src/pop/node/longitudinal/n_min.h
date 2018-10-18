@@ -8,23 +8,28 @@ license: GNU/GPL v3
 #include "../node.h"
 
 namespace FT{
-	class NodeMin : public Node
-    {
-    	public:
-    	
-    		NodeMin();
-    		    		
-            /// Evaluates the node and updates the stack states. 
-            void evaluate(const Data& data, Stacks& stack);
 
-            /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack);
-            
-        protected:
-            NodeMin* clone_impl() const override;
+    namespace Pop{
+        namespace NodeSpace{
+        	class NodeMin : public Node
+            {
+            	public:
+            	
+            		NodeMin();
+            		    		
+                    /// Evaluates the node and updates the stack states. 
+                    void evaluate(const Data& data, Stacks& stack);
 
-            NodeMin* rnd_clone_impl() const override;
-    };
+                    /// Evaluates the node symbolically
+                    void eval_eqn(Stacks& stack);
+                    
+                protected:
+                    NodeMin* clone_impl() const override;
+
+                    NodeMin* rnd_clone_impl() const override;
+            };
+        }
+    }
 }	
 
 #endif

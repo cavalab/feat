@@ -13,65 +13,69 @@ using namespace std;
 #include "../params.h"
 
 namespace FT{
-    //struct Individual;  // forward declarations
-    //struct Parameters;
-    //struct Population;
-    //Rnd r;
-    ////////////////////////////////////////////////////////////////////////////////// Declarations
-    /*!
-     * @class Variation
-     */ 
-    class Variation 
-    {
+
+    namespace Vary{
+
+        //struct Individual;  // forward declarations
+        //struct Parameters;
+        //struct Population;
+        //Rnd r;
+        ////////////////////////////////////////////////////////////////////////////////// Declarations
         /*!
-         * methods for crossover and mutation of programs.
-         */
+         * @class Variation
+         */ 
+        class Variation 
+        {
+            /*!
+             * methods for crossover and mutation of programs.
+             */
 
-        public:
-        
-            /// constructor
-            Variation(float cr);
-                       
-            /// update cross rate
-            void set_cross_rate(float cr);
+            public:
             
-            /// return current cross rate
-            float get_cross_rate();
-            
-             /// destructor
-            ~Variation();
+                /// constructor
+                Variation(float cr);
+                           
+                /// update cross rate
+                void set_cross_rate(float cr);
+                
+                /// return current cross rate
+                float get_cross_rate();
+                
+                 /// destructor
+                ~Variation();
 
-            /// method to handle variation of population
-            void vary(Population& pop, const vector<size_t>& parents, const Parameters& params,
-                      const Data& d);
+                /// method to handle variation of population
+                void vary(Population& pop, const vector<size_t>& parents, const Parameters& params,
+                          const Data& d);
+                
+            private:
             
-        private:
-        
-            /// crossover
-            bool cross(Individual& mom, Individual& dad, Individual& child,
-                       const Parameters& params);
-            
-            /// semantic crossover
-            bool semantic_cross(Individual& mom, Individual& dad, Individual& child,
-                                const Parameters& params, const Data& d);
+                /// crossover
+                bool cross(Individual& mom, Individual& dad, Individual& child,
+                           const Parameters& params);
+                
+                /// semantic crossover
+                bool semantic_cross(Individual& mom, Individual& dad, Individual& child,
+                                    const Parameters& params, const Data& d);
 
-            /// mutation
-            bool mutate(Individual& mom, Individual& child, const Parameters& params);
-            void point_mutate(Individual& child, const Parameters& params);
-            void insert_mutate(Individual& child, const Parameters& params);
-            void delete_mutate(Individual& child, const Parameters& params);
- 
-            /// splice two programs together
-            void splice_programs(NodeVector& vnew, 
-                                 const NodeVector& v1, size_t i1, size_t j1, 
-                                 const NodeVector& v2, size_t i2, size_t j2);
-            /// debugging printout of crossover operation.
-            void print_cross(Individual&,size_t,size_t,Individual&, size_t, size_t, Individual&,
-                             bool after=true);       
-            
-            float cross_rate;     ///< fraction of crossover in total variation
-    };
+                /// mutation
+                bool mutate(Individual& mom, Individual& child, const Parameters& params);
+                void point_mutate(Individual& child, const Parameters& params);
+                void insert_mutate(Individual& child, const Parameters& params);
+                void delete_mutate(Individual& child, const Parameters& params);
+     
+                /// splice two programs together
+                void splice_programs(NodeVector& vnew, 
+                                     const NodeVector& v1, size_t i1, size_t j1, 
+                                     const NodeVector& v2, size_t i2, size_t j2);
+                /// debugging printout of crossover operation.
+                void print_cross(Individual&,size_t,size_t,Individual&, size_t, size_t, Individual&,
+                                 bool after=true);       
+                
+                float cross_rate;     ///< fraction of crossover in total variation
+        };
 
-    std::unique_ptr<Node> random_node(const NodeVector & v);
+        std::unique_ptr<Node> random_node(const NodeVector & v);
+    }
 }
 #endif

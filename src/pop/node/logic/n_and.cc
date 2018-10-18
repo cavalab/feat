@@ -6,28 +6,32 @@ license: GNU/GPL v3
 
 namespace FT{
 
-    NodeAnd::NodeAnd()
-    {
-	    name = "and";
-	    otype = 'b';
-	    arity['b'] = 2;
-	    complexity = 2;
-    }
+    namespace Pop{
+        namespace NodeSpace{
+            NodeAnd::NodeAnd()
+            {
+	            name = "and";
+	            otype = 'b';
+	            arity['b'] = 2;
+	            complexity = 2;
+            }
 
-    /// Evaluates the node and updates the stack states. 
-    void NodeAnd::evaluate(const Data& data, Stacks& stack)
-    {
-        stack.push<bool>(stack.pop<bool>() && stack.pop<bool>());
+            /// Evaluates the node and updates the stack states. 
+            void NodeAnd::evaluate(const Data& data, Stacks& stack)
+            {
+                stack.push<bool>(stack.pop<bool>() && stack.pop<bool>());
 
-    }
+            }
 
-    /// Evaluates the node symbolically
-    void NodeAnd::eval_eqn(Stacks& stack)
-    {
-        stack.push<bool>("(" + stack.popStr<bool>() + " AND " + stack.popStr<bool>() + ")");
+            /// Evaluates the node symbolically
+            void NodeAnd::eval_eqn(Stacks& stack)
+            {
+                stack.push<bool>("(" + stack.popStr<bool>() + " AND " + stack.popStr<bool>() + ")");
+            }
+            
+            NodeAnd* NodeAnd::clone_impl() const { return new NodeAnd(*this); }
+              
+            NodeAnd* NodeAnd::rnd_clone_impl() const { return new NodeAnd(); } 
+        }
     }
-    
-    NodeAnd* NodeAnd::clone_impl() const { return new NodeAnd(*this); }
-      
-    NodeAnd* NodeAnd::rnd_clone_impl() const { return new NodeAnd(); } 
 }

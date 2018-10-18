@@ -10,23 +10,26 @@ license: GNU/GPL v3
 
 namespace FT{
 
-    /*!
-     * @class SelectionOperator
-     * @brief base class for selection operators.
-     */ 
-    struct SelectionOperator 
-    {
-        bool survival; 
-        string name;
+    namespace SelectionSpace{
 
-        //SelectionOperator(){}
+        /*!
+         * @class SelectionOperator
+         * @brief base class for selection operators.
+         */ 
+        struct SelectionOperator 
+        {
+            bool survival; 
+            string name;
 
-        virtual ~SelectionOperator();
-        
-        virtual vector<size_t> select(Population& pop, const MatrixXd& F, const Parameters& p);
-        
-        virtual vector<size_t> survive(Population& pop, const MatrixXd& F, const Parameters& p);
-    };
+            //SelectionOperator(){}
+
+            virtual ~SelectionOperator();
+            
+            virtual vector<size_t> select(Population& pop, const MatrixXd& F, const Parameters& p);
+            
+            virtual vector<size_t> survive(Population& pop, const MatrixXd& F, const Parameters& p);
+        };
+    }
 }
 
 #endif

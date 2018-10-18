@@ -8,27 +8,32 @@ license: GNU/GPL v3
 #include "../node.h"
 
 namespace FT{
-    template <class T>
-	class NodeFloat : public Node
-    {
-    	public:
-    	
-    		NodeFloat();
-    		
-            /// Evaluates the node and updates the stack states. 
-            void evaluate(const Data& data, Stacks& stack);
 
-            /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack);
-           
-            /// Determines whether to convert categorical or boolean inputs
-            bool isCategorical;
+    namespace Pop{
+        namespace NodeSpace{
+            template <class T>
+	        class NodeFloat : public Node
+            {
+            	public:
+            	
+            		NodeFloat();
+            		
+                    /// Evaluates the node and updates the stack states. 
+                    void evaluate(const Data& data, Stacks& stack);
 
-        protected:
-            NodeFloat* clone_impl() const override;
+                    /// Evaluates the node symbolically
+                    void eval_eqn(Stacks& stack);
+                   
+                    /// Determines whether to convert categorical or boolean inputs
+                    bool isCategorical;
 
-            NodeFloat* rnd_clone_impl() const override;
-    };
+                protected:
+                    NodeFloat* clone_impl() const override;
+
+                    NodeFloat* rnd_clone_impl() const override;
+            };
+        }
+    }
     
 }	
 

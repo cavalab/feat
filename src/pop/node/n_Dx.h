@@ -8,24 +8,29 @@
 
 namespace FT{
 
-    class NodeDx : public Node
-    {
-    	public:
-    		std::vector<double> W;
-            std::vector<double> V;  
-    	
-    		virtual ~NodeDx();
+    namespace Pop{
+        namespace NodeSpace{
 
-    		virtual ArrayXd getDerivative(Trace& stack, int loc) = 0;
-    		
-    		void derivative(vector<ArrayXd>& gradients, Trace& stack, int loc);
+            class NodeDx : public Node
+            {
+            	public:
+            		std::vector<double> W;
+                    std::vector<double> V;  
+            	
+            		virtual ~NodeDx();
 
-            void update(vector<ArrayXd>& gradients, Trace& stack, double n, double a);
+            		virtual ArrayXd getDerivative(Trace& stack, int loc) = 0;
+            		
+            		void derivative(vector<ArrayXd>& gradients, Trace& stack, int loc);
 
-            void print_weight();
+                    void update(vector<ArrayXd>& gradients, Trace& stack, double n, double a);
 
-            bool isNodeDx();
-    };
+                    void print_weight();
+
+                    bool isNodeDx();
+            };
+        }
+    }
 }	
 
 #endif

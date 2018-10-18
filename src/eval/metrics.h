@@ -17,7 +17,7 @@ using Eigen::ArrayXf;
 
 namespace FT
 {
-    namespace metrics
+    namespace Eval
     {
 
         /* Scoring functions */

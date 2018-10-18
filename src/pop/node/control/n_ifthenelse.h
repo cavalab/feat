@@ -8,25 +8,29 @@ license: GNU/GPL v3
 #include "../n_Dx.h"
 
 namespace FT{
-	class NodeIfThenElse : public NodeDx
-    {
-    	public:
-    	
-    		NodeIfThenElse();
-    		
-            /// Evaluates the node and updates the stack states. 
-            void evaluate(const Data& data, Stacks& stack);
+    
+    namespace Pop{
+        namespace NodeSpace{
+	        class NodeIfThenElse : public NodeDx
+            {
+            	public:
+            	
+            		NodeIfThenElse();
+            		
+                    /// Evaluates the node and updates the stack states. 
+                    void evaluate(const Data& data, Stacks& stack);
 
-            /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack);            
-            
-            ArrayXd getDerivative(Trace& stack, int loc); 
+                    /// Evaluates the node symbolically
+                    void eval_eqn(Stacks& stack);            
+                    
+                    ArrayXd getDerivative(Trace& stack, int loc); 
 
-        protected:
-            NodeIfThenElse* clone_impl() const override;
-            NodeIfThenElse* rnd_clone_impl() const override;
-    };
-
+                protected:
+                    NodeIfThenElse* clone_impl() const override;
+                    NodeIfThenElse* rnd_clone_impl() const override;
+            };
+        }
+    }
 }	
 
 #endif

@@ -8,32 +8,33 @@ license: GNU/GPL v3
 
 namespace FT
 {
-    bool Stacks::check(std::map<char, unsigned int> &arity)
-    {
-        if(arity.find('z') == arity.end())
-            return (f.size() >= arity['f'] &&
-                    b.size() >= arity['b'] &&
-                    c.size() >= arity['c']);
-        else
-            return (f.size() >= arity['f'] &&
-                    b.size() >= arity['b'] &&
-                    c.size() >= arity['c'] &&
-                    z.size() >= arity['z']);
+    namespace DataSpace{
+        bool Stacks::check(std::map<char, unsigned int> &arity)
+        {
+            if(arity.find('z') == arity.end())
+                return (f.size() >= arity['f'] &&
+                        b.size() >= arity['b'] &&
+                        c.size() >= arity['c']);
+            else
+                return (f.size() >= arity['f'] &&
+                        b.size() >= arity['b'] &&
+                        c.size() >= arity['c'] &&
+                        z.size() >= arity['z']);
+        }
+        
+        ///< checks if arity of node provided satisfies the node names in various string stacks
+        bool Stacks::check_s(std::map<char, unsigned int> &arity)
+        {
+            if(arity.find('z') == arity.end())
+                return (fs.size() >= arity['f'] && 
+                        bs.size() >= arity['b'] &&
+                        cs.size() >= arity['c']);
+            else
+                return (fs.size() >= arity['f'] &&
+                        bs.size() >= arity['b'] &&
+                        cs.size() >= arity['c'] &&
+                        zs.size() >= arity['z']);
+        }
     }
-    
-    ///< checks if arity of node provided satisfies the node names in various string stacks
-    bool Stacks::check_s(std::map<char, unsigned int> &arity)
-    {
-        if(arity.find('z') == arity.end())
-            return (fs.size() >= arity['f'] && 
-                    bs.size() >= arity['b'] &&
-                    cs.size() >= arity['c']);
-        else
-            return (fs.size() >= arity['f'] &&
-                    bs.size() >= arity['b'] &&
-                    cs.size() >= arity['c'] &&
-                    zs.size() >= arity['z']);
-    }
-    
 }
 

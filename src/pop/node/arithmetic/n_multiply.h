@@ -8,25 +8,30 @@ license: GNU/GPL v3
 #include "../n_Dx.h"
 
 namespace FT{
-	class NodeMultiply : public NodeDx
-    {
-    	public:
-    	
-    		NodeMultiply(vector<double> W0 = vector<double>());
 
-            /// Evaluates the node and updates the stack states. 
-            void evaluate(const Data& data, Stacks& stack);
+    namespace Pop{
+        namespace NodeSpace{
+	        class NodeMultiply : public NodeDx
+            {
+            	public:
+            	
+            		NodeMultiply(vector<double> W0 = vector<double>());
 
-            /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack);
+                    /// Evaluates the node and updates the stack states. 
+                    void evaluate(const Data& data, Stacks& stack);
 
-            ArrayXd getDerivative(Trace& stack, int loc);
+                    /// Evaluates the node symbolically
+                    void eval_eqn(Stacks& stack);
 
-        protected:
-            NodeMultiply* clone_impl() const override;
+                    ArrayXd getDerivative(Trace& stack, int loc);
 
-            NodeMultiply* rnd_clone_impl() const override;
-    };
+                protected:
+                    NodeMultiply* clone_impl() const override;
+
+                    NodeMultiply* rnd_clone_impl() const override;
+            };
+        }
+    }
 }	
 
 #endif

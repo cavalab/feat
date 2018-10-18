@@ -8,23 +8,28 @@ license: GNU/GPL v3
 #include "../node.h"
 
 namespace FT{
-	class NodeMode : public Node
-    {
-    	public:
-    	
-    		NodeMode();
-    		
-            /// Evaluates the node and updates the stack states. 
-            void evaluate(const Data& data, Stacks& stack);
 
-            /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack);
-            
-        protected:
-            NodeMode* clone_impl() const override;
+    namespace Pop{
+        namespace NodeSpace{
+	        class NodeMode : public Node
+            {
+            	public:
+            	
+            		NodeMode();
+            		
+                    /// Evaluates the node and updates the stack states. 
+                    void evaluate(const Data& data, Stacks& stack);
 
-            NodeMode* rnd_clone_impl() const override;
-    };
+                    /// Evaluates the node symbolically
+                    void eval_eqn(Stacks& stack);
+                    
+                protected:
+                    NodeMode* clone_impl() const override;
+
+                    NodeMode* rnd_clone_impl() const override;
+            };
+        }
+    }
 }	
 
 #endif

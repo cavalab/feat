@@ -19,22 +19,25 @@ license: GNU/GPL v3
 using namespace Eigen;
 
 namespace FT{
-    /// outputs a progress bar, filled according to @params percentage.
-    void printProgress (double percentage);
 
-    ///   load csv file into matrix. 
-    void load_csv (const std::string & path, MatrixXd& X, VectorXd& y, vector<string>& names, 
-                   vector<char> &dtypes, bool& binary_endpoint, char sep=',');
-    
-    ///  load longitudinal csv file into matrix. 
-    void load_longitudinal(const std::string & path,
-                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
-                           char sep=',');
-    
-    /// load partial longitudinal csv file into matrix according to idx vector
-    void load_partial_longitudinal(const std::string & path,
-                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
-                           char sep, const vector<long>& idx);
+    namespace Util{
+        /// outputs a progress bar, filled according to @params percentage.
+        void printProgress (double percentage);
+
+        ///   load csv file into matrix. 
+        void load_csv (const std::string & path, MatrixXd& X, VectorXd& y, vector<string>& names, 
+                       vector<char> &dtypes, bool& binary_endpoint, char sep=',');
+        
+        ///  load longitudinal csv file into matrix. 
+        void load_longitudinal(const std::string & path,
+                               std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
+                               char sep=',');
+        
+        /// load partial longitudinal csv file into matrix according to idx vector
+        void load_partial_longitudinal(const std::string & path,
+                               std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
+                               char sep, const vector<long>& idx);
+    }
 }
 
 #endif

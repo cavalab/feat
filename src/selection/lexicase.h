@@ -10,24 +10,27 @@ license: GNU/GPL v3
 
 
 namespace FT{
-    ////////////////////////////////////////////////////////////////////////////////// Declarations
-    /*!
-     * @class Lexicase
-     * @brief Lexicase selection operator.
-     */
-    struct Lexicase : SelectionOperator
-    {
-        Lexicase(bool surv);
-        
-        ~Lexicase();
 
-        /// function returns a set of selected indices from F. 
-        vector<size_t> select(Population& pop, const MatrixXd& F, const Parameters& params); 
-        
-        /// lexicase survival
-        vector<size_t> survive(Population& pop, const MatrixXd& F, const Parameters& params); 
+    namespace SelectionSpace{
+        ////////////////////////////////////////////////////////////////////////////////// Declarations
+        /*!
+         * @class Lexicase
+         * @brief Lexicase selection operator.
+         */
+        struct Lexicase : SelectionOperator
+        {
+            Lexicase(bool surv);
+            
+            ~Lexicase();
 
-    };
+            /// function returns a set of selected indices from F. 
+            vector<size_t> select(Population& pop, const MatrixXd& F, const Parameters& params); 
+            
+            /// lexicase survival
+            vector<size_t> survive(Population& pop, const MatrixXd& F, const Parameters& params); 
+
+        };
+    }
 
 }
 
