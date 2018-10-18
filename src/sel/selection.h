@@ -18,6 +18,10 @@ namespace FT{
     
     struct Parameters; // forward declaration of Parameters      
     
+    /**
+     * @namespace FT::Sel
+     * @brief namespace containing Selection methods for best individuals used in Feat
+     */
     namespace Sel{ 
         ////////////////////////////////////////////////////////////////////////////////// Declarations
 	

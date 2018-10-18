@@ -29,6 +29,10 @@ namespace FT{
     using namespace Dat;
 
     namespace Pop{
+        /**
+         * @namespace FT::Pop::Op
+         * @brief namespace representing various operations on population individuals used in Feat
+         */
         namespace Op{
             //////////////////////////////////////////////////////////////////////////////// Declarations
              /*!

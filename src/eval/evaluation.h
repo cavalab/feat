@@ -15,6 +15,10 @@ using Eigen::Map;
 // code to evaluate GP programs.
 namespace FT{
 
+    /**
+     * @namespace FT::Eval
+     * @brief namespace containing various Evaluation classes used in Feat
+     */
     namespace Eval{
     
         ////////////////////////////////////////////////////////////////////////////////// Declarations

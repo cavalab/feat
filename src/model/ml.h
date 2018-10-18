@@ -46,14 +46,17 @@ using sh::CLabels;
 namespace FT{
 
     using namespace Util;
-	
-	/*!
-     * @class ML
-     * @brief class that specifies the machine learning algorithm to pair with Feat. 
-     */
      
+    /**
+     * @namespace FT::Model
+     * @brief namespace containing ML methods used in Feat
+     */
     namespace Model{
     
+        /*!
+         * @class ML
+         * @brief class that specifies the machine learning algorithm to pair with Feat. 
+         */
         class ML 
         {
             public:

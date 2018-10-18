@@ -28,6 +28,10 @@ using namespace std;
 
 namespace FT
 {
+    /**
+    * @namespace FT::Dat
+    * @brief namespace containing Data structures used in Feat
+    */
     namespace Dat{
         /*!
          * @class Data

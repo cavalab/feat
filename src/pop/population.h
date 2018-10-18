@@ -13,6 +13,10 @@ using Eigen::Map;
 
 namespace FT{ 
 
+    /**
+     * @namespace FT::Pop
+     * @brief namespace containing population representations used in Feat
+     */
     namespace Pop{   
         ////////////////////////////////////////////////////////////////////////////////// Declarations
         extern int last;
