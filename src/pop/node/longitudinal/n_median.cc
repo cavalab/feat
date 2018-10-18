@@ -3,7 +3,7 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 #include "n_median.h"
-#include "../../utils.h"
+#include "../../../util/utils.h"
 
 namespace FT{
 

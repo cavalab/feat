@@ -5,10 +5,10 @@ license: GNU/GPL v3
 #ifndef EVALUATION_H
 #define EVALUATION_H
 // internal includes
-#include "ml.h"
+#include "../ml/ml.h"
 #include "metrics.h"
-#include "auto_backprop.h"
-#include "hillclimb.h"
+#include "../opt/auto_backprop.h"
+#include "../opt/hillclimb.h"
 using namespace shogun;
 using Eigen::Map;
 

@@ -10,7 +10,7 @@ license: GNU/GPL v3
 #include <limits>
 #include <vector>
 
-#include "init.h"
+#include "../init.h"
 
 using namespace std;
 using std::swap;

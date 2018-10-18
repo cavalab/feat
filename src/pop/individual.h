@@ -5,11 +5,11 @@ license: GNU/GPL v3
 #ifndef INDIVIDUAL_H
 #define INDIVIDUAL_H
 
-#include "stack.h"
-#include "data.h"
-#include "params.h"
-#include "ml.h"
-#include "utils.h"
+#include "../data/stack.h"
+#include "../data/data.h"
+#include "../params.h"
+#include "../ml/ml.h"
+#include "../util/utils.h"
 
 namespace FT{
     

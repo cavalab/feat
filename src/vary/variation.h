@@ -8,9 +8,9 @@ license: GNU/GPL v3
 #include <iostream>
 using namespace std;
 
-#include "nodevector.h"
-#include "population.h"
-#include "params.h"
+#include "../pop/nodevector.h"
+#include "../pop/population.h"
+#include "../params.h"
 
 namespace FT{
     //struct Individual;  // forward declarations

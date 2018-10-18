@@ -8,7 +8,7 @@ license: GNU/GPL v3
 #include <shogun/labels/RegressionLabels.h>                                                         
 #include <shogun/labels/MulticlassLabels.h>
 #include <shogun/labels/BinaryLabels.h>
-#include "utils.h"
+#include "../util/utils.h"
 namespace sh = shogun;
 using sh::CLabels;
 using sh::SGVector; 

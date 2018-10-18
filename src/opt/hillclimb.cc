@@ -4,8 +4,8 @@ license: GNU/GPL v3
 */
 
 #include "hillclimb.h"
-#include "metrics.h"
-#include "ml.h"
+#include "../eval/metrics.h"
+#include "../ml/ml.h"
 
 namespace FT {
         

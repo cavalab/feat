@@ -22,7 +22,7 @@ typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
 using namespace std;
 // internal includes
 //#include "params.h"
-#include "utils.h"
+#include "../util/utils.h"
 //#include "node/node.h"
 //external includes
 

@@ -6,12 +6,12 @@ license: GNU/GPL v3
 #ifndef SELECTION_H
 #define SELECTION_H
 
-#include "selection/selection_operator.h"
-#include "selection/lexicase.h"
-#include "selection/nsga2.h"
-#include "selection/offspring.h"
-#include "selection/random.h"
-#include "selection/simulated_annealing.h"
+#include "selection_operator.h"
+#include "lexicase.h"
+#include "nsga2.h"
+#include "offspring.h"
+#include "random.h"
+#include "simulated_annealing.h"
 
 namespace FT{
     struct Parameters; // forward declaration of Parameters       
