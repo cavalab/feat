@@ -8,24 +8,26 @@ license: GNU/GPL v3
 #include "selection_operator.h"
 
 namespace FT{
-    ////////////////////////////////////////////////////////////////////////////////// Declarations
-    /*!
-     * @class SimAnneal
-     */
-    struct SimAnneal : SelectionOperator
-    {
-        /** SimAnneal based selection and survival methods. */
 
-        SimAnneal(bool surv);
-        
-        ~SimAnneal();
-       
-        vector<size_t> select(Population& pop, const MatrixXd& F, const Parameters& params);
-        vector<size_t> survive(Population& pop, const MatrixXd& F, const Parameters& params);
-    private:
-        double t;           ///< annealing temperature
-        double t0;          ///< initial temperature
-    };
-    
+    namespace SelectionSpace{
+        ////////////////////////////////////////////////////////////////////////////////// Declarations
+        /*!
+         * @class SimAnneal
+         */
+        struct SimAnneal : SelectionOperator
+        {
+            /** SimAnneal based selection and survival methods. */
+
+            SimAnneal(bool surv);
+            
+            ~SimAnneal();
+           
+            vector<size_t> select(Population& pop, const MatrixXd& F, const Parameters& params);
+            vector<size_t> survive(Population& pop, const MatrixXd& F, const Parameters& params);
+        private:
+            double t;           ///< annealing temperature
+            double t0;          ///< initial temperature
+        };
+    }    
 }
 #endif

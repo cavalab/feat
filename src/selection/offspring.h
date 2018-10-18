@@ -8,22 +8,25 @@ license: GNU/GPL v3
 #include "selection_operator.h"
 
 namespace FT{
-    ////////////////////////////////////////////////////////////////////////////////// Declarations
-    /*!
-     * @class Offspring
-     */
-    struct Offspring : SelectionOperator
-    {
-        /** Offspring based selection and survival methods. */
+    
+    namespace SelectionSpace{
+        ////////////////////////////////////////////////////////////////////////////////// Declarations
+        /*!
+         * @class Offspring
+         */
+        struct Offspring : SelectionOperator
+        {
+            /** Offspring based selection and survival methods. */
 
-        Offspring(bool surv);
-        
-        ~Offspring();
-       
-        vector<size_t> survive(Population& pop, const MatrixXd& F, const Parameters& params);
+            Offspring(bool surv);
+            
+            ~Offspring();
+           
+            vector<size_t> survive(Population& pop, const MatrixXd& F, const Parameters& params);
 
-        bool elitism;       //< whether or not to keep the best individual.
+            bool elitism;       //< whether or not to keep the best individual.
 
-    };
+        };
+    }
 }
 #endif

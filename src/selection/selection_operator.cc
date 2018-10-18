@@ -7,16 +7,21 @@ license: GNU/GPL v3
 
 namespace FT{
 
-    SelectionOperator::~SelectionOperator(){}
-    
-    vector<size_t> SelectionOperator::select(Population& pop, const MatrixXd& F, const Parameters& p) 
-    {   
-        HANDLE_ERROR_THROW("Undefined select() operation");
+    namespace SelectionSpace{
+
+        SelectionOperator::~SelectionOperator(){}
+        
+        vector<size_t> SelectionOperator::select(Population& pop, const MatrixXd& F, const Parameters& p) 
+        {   
+            HANDLE_ERROR_THROW("Undefined select() operation");
+        }
+        
+        vector<size_t> SelectionOperator::survive(Population& pop, const MatrixXd& F, const Parameters& p)
+        {
+            HANDLE_ERROR_THROW("Undefined select() operation");
+        }
+        
     }
-    
-    vector<size_t> SelectionOperator::survive(Population& pop, const MatrixXd& F, const Parameters& p)
-    {
-        HANDLE_ERROR_THROW("Undefined select() operation");
-    }
+
 }
 

@@ -8,25 +8,29 @@ license: GNU/GPL v3
 #include "selection_operator.h"
 
 namespace FT{
-    ////////////////////////////////////////////////////////////////////////////////// Declarations
-    /*!
-     * @class Random
-     */
-    struct Random : SelectionOperator
-    {
-        /** Random based selection and survival methods. */
 
-        Random(bool surv);
+    namespace SelectionSpace{
+        ////////////////////////////////////////////////////////////////////////////////// Declarations
+        /*!
+         * @class Random
+         */
+        struct Random : SelectionOperator
+        {
+            /** Random based selection and survival methods. */
+
+            Random(bool surv);
+            
+            ~Random();
+           
+            vector<size_t> select(Population& pop, const MatrixXd& F, const Parameters& params);
+            vector<size_t> survive(Population& pop, const MatrixXd& F, const Parameters& params);
+            /// replaces worst individual in selected with best individual in Pop.
+            void enforce_elite(Population& pop, vector<size_t>& selected);
+            bool elitism;       //< whether or not to keep the best individual.
+
+        };
         
-        ~Random();
-       
-        vector<size_t> select(Population& pop, const MatrixXd& F, const Parameters& params);
-        vector<size_t> survive(Population& pop, const MatrixXd& F, const Parameters& params);
-        /// replaces worst individual in selected with best individual in Pop.
-        void enforce_elite(Population& pop, vector<size_t>& selected);
-        bool elitism;       //< whether or not to keep the best individual.
-
-    };
+    }
     
 }
 #endif

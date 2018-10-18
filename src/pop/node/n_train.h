@@ -6,13 +6,18 @@
 // to switch between training and validation.
 namespace FT{
 
-    class NodeTrain : public Node
-    {
-    	public:
-            bool train;
+    namespace Pop{
+        namespace NodeSpace{
 
-            bool isNodeTrain(){ return true; };
-    };
+            class NodeTrain : public Node
+            {
+            	public:
+                    bool train;
+
+                    bool isNodeTrain(){ return true; };
+            };
+        }
+    }
 }	
 
 #endif

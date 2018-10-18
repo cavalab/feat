@@ -23,27 +23,30 @@ using Eigen::VectorXd;
 using shogun::CLabels;
 
 namespace FT {
-    class HillClimb
-    {
-        /* @class HillClimb
-         * @brief performs random weight updates and keeps them if they improve the cost function.
-         */
-    public:
-        typedef VectorXd (*callback)(const VectorXd&, shared_ptr<CLabels>&, const vector<float>&);
-        
-        std::map<string, callback> score_hash;
-        
-        HillClimb(string scorer, int iters=1, double step=0.1);
 
-        /// adapt weights
-		shared_ptr<CLabels> run(Individual& ind, Data d,
-                 const Parameters& params, bool& updated);
+    namespace Opt{
+        class HillClimb
+        {
+            /* @class HillClimb
+             * @brief performs random weight updates and keeps them if they improve the cost function.
+             */
+        public:
+            typedef VectorXd (*callback)(const VectorXd&, shared_ptr<CLabels>&, const vector<float>&);
+            
+            std::map<string, callback> score_hash;
+            
+            HillClimb(string scorer, int iters=1, double step=0.1);
 
-    private:
-        callback cost_func;     //< scoring function
-        int iters;              //< number of iterations
-        double step;            //< percent of std dev to perturb weight by
-    };
+            /// adapt weights
+		    shared_ptr<CLabels> run(Individual& ind, Data d,
+                     const Parameters& params, bool& updated);
+
+        private:
+            callback cost_func;     //< scoring function
+            int iters;              //< number of iterations
+            double step;            //< percent of std dev to perturb weight by
+        };
+    }
 
 }
 #endif

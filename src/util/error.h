@@ -16,14 +16,16 @@ using namespace std;
 
 namespace FT
 {
-    /// prints error and throws an exception
-    void HandleErrorThrow(string err, const char *file, int line );
-    
-    ///prints error to stderr and returns
-    void HandleErrorNoThrow(string err, const char *file, int line );
-    
-    #define HANDLE_ERROR_THROW( err ) (FT::HandleErrorThrow( err, __FILE__, __LINE__ ))
-    #define HANDLE_ERROR_NO_THROW( err ) (FT::HandleErrorNoThrow( err, __FILE__, __LINE__ ))
+    namespace Util{
+        /// prints error and throws an exception
+        void HandleErrorThrow(string err, const char *file, int line );
+        
+        ///prints error to stderr and returns
+        void HandleErrorNoThrow(string err, const char *file, int line );
+        
+        #define HANDLE_ERROR_THROW( err ) (FT::Util::HandleErrorThrow( err, __FILE__, __LINE__ ))
+        #define HANDLE_ERROR_NO_THROW( err ) (FT::Util::HandleErrorNoThrow( err, __FILE__, __LINE__ ))
+    }
 }
 
 #endif

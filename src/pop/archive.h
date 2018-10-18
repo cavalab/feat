@@ -12,29 +12,35 @@ using std::vector;
 using std::string;
 using Eigen::Map;
 
-namespace FT{    
+namespace FT{
+
+    using namespace SelectionSpace;
     ////////////////////////////////////////////////////////////////////////////////// Declarations
     /*!
      * @class Archive 
      * @brief Defines a Pareto archive of programs.
      */
-    struct Archive  
-    {
-        vector<Individual> archive;         ///< individual programs in the archive
+     
+    namespace Pop{
+    
+        struct Archive  
+        {
+            vector<Individual> archive;         ///< individual programs in the archive
 
-        NSGA2 selector;                     ///< nsga2 selection operator used for getting the front
+            NSGA2 selector;                     ///< nsga2 selection operator used for getting the front
 
-        Archive();
+            Archive();
 
-        /// Sort population in increasing complexity.
-        static bool sortComplexity(const Individual& lhs, const Individual& rhs);
+            /// Sort population in increasing complexity.
+            static bool sortComplexity(const Individual& lhs, const Individual& rhs);
 
-        static bool sameFitComplexity(const Individual& lhs, const Individual& rhs);
+            static bool sameFitComplexity(const Individual& lhs, const Individual& rhs);
 
-        void init(Population& pop);
+            void init(Population& pop);
 
-        void update(const Population& pop, const Parameters& params);
-       
-    };
+            void update(const Population& pop, const Parameters& params);
+           
+        };
+    }
 }
 #endif

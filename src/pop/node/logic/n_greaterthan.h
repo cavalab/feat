@@ -8,23 +8,28 @@ license: GNU/GPL v3
 #include "../node.h"
 
 namespace FT{
-	class NodeGreaterThan : public Node
-    {
-    	public:
-    	   	
-    		NodeGreaterThan();
-    		
-            /// Evaluates the node and updates the stack states. 
-            void evaluate(const Data& data, Stacks& stack);
 
-            /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack);
+    namespace Pop{
+        namespace NodeSpace{
+        	class NodeGreaterThan : public Node
+            {
+            	public:
+            	   	
+            		NodeGreaterThan();
+            		
+                    /// Evaluates the node and updates the stack states. 
+                    void evaluate(const Data& data, Stacks& stack);
 
-        protected:
-            NodeGreaterThan* clone_impl() const override;
-      
-            NodeGreaterThan* rnd_clone_impl() const override;
-    };
+                    /// Evaluates the node symbolically
+                    void eval_eqn(Stacks& stack);
+
+                protected:
+                    NodeGreaterThan* clone_impl() const override;
+              
+                    NodeGreaterThan* rnd_clone_impl() const override;
+            };
+        }
+    }
 }	
 
 #endif

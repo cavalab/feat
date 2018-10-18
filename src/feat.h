@@ -37,6 +37,9 @@ using std::make_shared;
 using std::cout; 
 
 namespace FT{
+
+    using namespace Eval;
+    using namespace Vary;
     
     ////////////////////////////////////////////////////////////////////////////////// Declarations
     

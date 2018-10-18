@@ -14,31 +14,37 @@ license: GNU/GPL v3
 #include "simulated_annealing.h"
 
 namespace FT{
-    struct Parameters; // forward declaration of Parameters       
-    ////////////////////////////////////////////////////////////////////////////////// Declarations
-	
+
     
-    /*!
-     * @class Selection
-     * @brief interfaces with selection operators. 
-     */
-    struct Selection
-    {
-        shared_ptr<SelectionOperator> pselector; 
+    struct Parameters; // forward declaration of Parameters      
+    
+    namespace SelectionSpace{ 
+        ////////////////////////////////////////////////////////////////////////////////// Declarations
+	
         
-        Selection(string type="lexicase", bool survival=false);
+        /*!
+         * @class Selection
+         * @brief interfaces with selection operators. 
+         */
+        struct Selection
+        {
+            shared_ptr<SelectionOperator> pselector; 
+            
+            Selection(string type="lexicase", bool survival=false);
+            
+            ~Selection();
+            
+            /// return type of selectionoperator
+            string get_type();
+            
+            /// perform selection 
+            vector<size_t> select(Population& pop, const MatrixXd& F, const Parameters& params);
+            
+            /// perform survival
+            vector<size_t> survive(Population& pop, const MatrixXd& F,  const Parameters& params);
+        };
         
-        ~Selection();
-        
-        /// return type of selectionoperator
-        string get_type();
-        
-        /// perform selection 
-        vector<size_t> select(Population& pop, const MatrixXd& F, const Parameters& params);
-        
-        /// perform survival
-        vector<size_t> survive(Population& pop, const MatrixXd& F,  const Parameters& params);
-    };
+    }
     
 }
 #endif

@@ -8,19 +8,21 @@ license: GNU/GPL v3
 //#include "node/node.h"
 //external includes
 
-namespace FT
-{
-    /// prints error and throws an exception
-    void HandleErrorThrow(string err, const char *file, int line )
-    {
-        std::cerr << err << " in "<< file << " at line "<<line<<"\n";
-        throw;
-    }
-    
-    ///prints error to stderr and returns
-    void HandleErrorNoThrow(string err, const char *file, int line )
-    {
-        std::cerr << err << " in "<< file << " at line "<<line<<"\n";
+namespace FT{
+
+    namespace Util{
+            /// prints error and throws an exception
+            void HandleErrorThrow(string err, const char *file, int line )
+            {
+                std::cerr << err << " in "<< file << " at line "<<line<<"\n";
+                throw;
+            }
+            
+            ///prints error to stderr and returns
+            void HandleErrorNoThrow(string err, const char *file, int line )
+            {
+                std::cerr << err << " in "<< file << " at line "<<line<<"\n";
+        }
     }
 }
 

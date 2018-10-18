@@ -12,6 +12,9 @@ license: GNU/GPL v3
 
 namespace FT{
 
+    using namespace Pop;
+    using namespace NodeSpace;
+
     ////////////////////////////////////////////////////////////////////////////////// Declarations
     /*!
      * @class Parameters

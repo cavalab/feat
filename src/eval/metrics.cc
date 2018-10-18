@@ -7,9 +7,11 @@ license: GNU/GPL v3
 
 namespace FT
 {
-    namespace metrics
+    
+    using namespace Util;
+        
+    namespace Eval
     {
-
         /* Scoring functions */
 
         // Squared difference

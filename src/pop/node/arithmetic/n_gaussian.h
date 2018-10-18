@@ -8,25 +8,30 @@ license: GNU/GPL v3
 #include "../n_Dx.h"
 
 namespace FT{
-	class NodeGaussian : public NodeDx
-    {
-    	public:
 
-    		NodeGaussian(vector<double> W0 = vector<double>());
-    		
-            /// Evaluates the node and updates the stack states. 
-            void evaluate(const Data& data, Stacks& stack);
+    namespace Pop{
+        namespace NodeSpace{
+        	class NodeGaussian : public NodeDx
+            {
+            	public:
 
-            /// Evaluates the node symbolically
-            void eval_eqn(Stacks& stack);
+            		NodeGaussian(vector<double> W0 = vector<double>());
+            		
+                    /// Evaluates the node and updates the stack states. 
+                    void evaluate(const Data& data, Stacks& stack);
 
-            ArrayXd getDerivative(Trace& stack, int loc);
-            
-        protected:
-            NodeGaussian* clone_impl() const override;
-      
-            NodeGaussian* rnd_clone_impl() const override;
-    };
+                    /// Evaluates the node symbolically
+                    void eval_eqn(Stacks& stack);
+
+                    ArrayXd getDerivative(Trace& stack, int loc);
+                    
+                protected:
+                    NodeGaussian* clone_impl() const override;
+              
+                    NodeGaussian* rnd_clone_impl() const override;
+            };
+        }
+    }
 }	
 
 #endif
