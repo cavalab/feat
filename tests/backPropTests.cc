@@ -834,7 +834,7 @@ TEST(BackProp, GaussGradient)
        0.37672478, 0.05773657, 0.36211793, 0.0161587 , 0.02614942;
     
     double Wtarget = 2;
-    y = exp(-pow(2 - X.row(0).array(), 2));
+    y = exp(-pow(Wtarget - X.row(0).array(), 2));
 
     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
     
