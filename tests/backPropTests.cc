@@ -71,6 +71,8 @@ Node* parseToNode(std::string token) {
     	return new FT::NodeSign();
     } else if (token == "logit") {
     	return new FT::NodeLogit({1.0});
+    } else if (token == "gauss") {
+        return new FT::NodeGaussian({1.0});
     } else if (token == "max") {
     	return new FT::NodeMax();
     } else if (token == "xor") {
@@ -801,6 +803,47 @@ TEST(BackProp, LogitGradient)
     
     VectorXd yhat;
     FT::Individual ind = testDummyProgram(program, data, 2000, yhat);
+    
+    std::cout << "test program returned:\n";
+    vector<double> What(1);
+	for (const auto& n : ind.program) {
+		std::cout << n->name << ": ";
+		NodeDx* nd = dynamic_cast<NodeDx*>(n.get());
+		if (nd != NULL) {
+			std::cout << " with weight";
+			for (int i = 0; i < nd->arity['f']; i++) {
+				std::cout << " " << nd->W[i];
+                What[i] = nd->W[i];
+			}
+		}
+		std::cout << "\n";
+	}
+
+    /* cout << y - yhat << "\n"; */
+
+    ASSERT_LE((y-yhat).array().pow(2).sum(),0.00001);
+    ASSERT_LE(What[0]-Wtarget,0.01);
+}
+
+TEST(BackProp, GaussGradient)
+{
+    // Create input data and labels
+	MatrixXd X(1, 10);
+	VectorXd y(10);
+	X.row(0) << 0.01933084, 0.46202196, 0.26687028, 0.31371363, 0.27296074,
+       0.37672478, 0.05773657, 0.36211793, 0.0161587 , 0.02614942;
+    
+    double Wtarget = 2;
+    y = exp(-pow(Wtarget - X.row(0).array(), 2));
+
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
+    
+    Data data(X, y, Z);
+    
+    FT::NodeVector program = programGen("x0 gauss");
+    
+    VectorXd yhat;
+    FT::Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
     vector<double> What(1);
