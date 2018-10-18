@@ -24,11 +24,11 @@ license: GNU/GPL v3
 #include <cmath>
 #include <shogun/machine/LinearMulticlassMachine.h>
 // internal includes
-#include "ml/MyCARTree.h"
-#include "ml/MulticlassLogisticRegression.h"
-#include "ml/MyMulticlassLibLinear.h"
-#include "ml/MyLibLinear.h"
-#include "params.h"
+#include "MyCARTree.h"
+#include "MulticlassLogisticRegression.h"
+#include "MyMulticlassLibLinear.h"
+#include "MyLibLinear.h"
+#include "../params.h"
 
 // stuff being used
 using std::string;

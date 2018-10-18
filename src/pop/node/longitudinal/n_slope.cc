@@ -4,7 +4,7 @@ license: GNU/GPL v3
 */
 
 #include "n_slope.h"
-#include "../../utils.h"    	
+#include "../../../util/utils.h"    	
 
 namespace FT{
 

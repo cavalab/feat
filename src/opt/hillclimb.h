@@ -12,9 +12,9 @@ license: GNU/GPL v3
 #include <shogun/labels/Labels.h>
 #include <string>
 
-#include "individual.h"
-#include "data.h"
-#include "params.h"
+#include "../pop/individual.h"
+#include "../data/data.h"
+#include "../params.h"
 
 using std::map;
 using std::shared_ptr;

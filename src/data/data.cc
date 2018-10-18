@@ -4,7 +4,7 @@ license: GNU/GPL v3
 */
 
 #include "data.h"
-#include "rnd.h"
+#include "../util/rnd.h"
 
 //#include "node/node.h"
 //external includes

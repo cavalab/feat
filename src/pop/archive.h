@@ -7,7 +7,7 @@ license: GNU/GPL v3
 
 //#include "node.h" // including node.h since definition of node is in the header
 #include "individual.h"
-#include "selection/nsga2.h"
+#include "../selection/nsga2.h"
 using std::vector;
 using std::string;
 using Eigen::Map;

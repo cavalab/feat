@@ -13,17 +13,17 @@ license: GNU/GPL v3
  
 // internal includes
 #include "init.h"
-#include "rnd.h"
-#include "utils.h"
-#include "io.h"
+#include "util/rnd.h"
+#include "util/utils.h"
+#include "util/io.h"
 #include "params.h"
-#include "population.h"
-#include "selection.h"
-#include "evaluation.h"
-#include "variation.h"
-#include "ml.h"
-#include "node/node.h"
-#include "archive.h" 
+#include "pop/population.h"
+#include "selection/selection.h"
+#include "eval/evaluation.h"
+#include "vary/variation.h"
+#include "ml/ml.h"
+#include "pop/node/node.h"
+#include "pop/archive.h" 
 
 // stuff being used
 using Eigen::MatrixXd;

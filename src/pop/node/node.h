@@ -10,10 +10,10 @@ license: GNU/GPL v3
 #include <vector>
 #include <iostream>
 #include <Eigen/Dense>
-#include "../init.h"
-#include "../stack.h"
-#include "../data.h"
-#include "../rnd.h"
+#include "../../init.h"
+#include "../../data/stack.h"
+#include "../../data/data.h"
+#include "../../util/rnd.h"
 using std::vector;
 using std::string;
 using std::map;

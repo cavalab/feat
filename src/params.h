@@ -5,10 +5,10 @@ license: GNU/GPL v3
 #ifndef PARAMS_H
 #define PARAMS_H
 // internal includes
-#include "nodewrapper.h"
-#include "nodevector.h"
+#include "pop/nodewrapper.h"
+#include "pop/nodevector.h"
 
-#include "utils.h"
+#include "util/utils.h"
 
 namespace FT{
 

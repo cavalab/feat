@@ -5,7 +5,7 @@ license: GNU/GPL v3
 
 
 #include "n_2dgaussian.h"
-#include "../../utils.h"
+#include "../../../util/utils.h"
 
 namespace FT{
     Node2dGaussian::Node2dGaussian(vector<double> W0)
