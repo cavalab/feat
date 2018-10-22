@@ -1,0 +1,33 @@
+site_name: Feat 
+repo_url: https://github.com/lacava/feat/
+site_description: Feature Engineering Archive Tool
+use_directory_urls: true
+
+nav:
+    - 'Introduction': 'index.md'
+    - 'Installation': 'install.md'
+    - 'User Guide': 
+        - 'Basics': 'guide/basics.md'
+        - 'Data': 'guide/data.md'
+        - 'Configuring Feat': 'guide/configuration.md'
+    - 'Examples': 
+        - 'Command line': 'examples/ex_command_line.md'
+    - 'API':
+        - 'C++ API': 'api/c/'
+        - 'Python API': 'api/python' 
+    - 'Contribute': 'contributing.md'
+
+theme: 
+    name: readthedocs
+    highlightjs: true
+    hljs_languages:
+        - python
+        - bash
+        - c++
+    
+markdown_extensions:
+    - toc:
+        permalink: True
+    - fenced_code
+    - smarty
+
