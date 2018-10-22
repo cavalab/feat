@@ -41,7 +41,7 @@ TEST(Evaluation, mse)
 
     // test mean squared error      
     VectorXd loss; 
-    double score = metrics::mse(y, yhat, loss, ft.params.class_weights);
+    double score = mse(y, yhat, loss, ft.params.class_weights);
 
     if (loss != res)
     {
@@ -96,7 +96,7 @@ TEST(Evaluation, bal_accuracy)
            1.0,
            1.0;
            
-    double score = metrics::bal_zero_one_loss(y, yhat, loss, ft.params.class_weights);
+    double score = bal_zero_one_loss(y, yhat, loss, ft.params.class_weights);
     
     if (loss != res)
     {
@@ -151,7 +151,7 @@ TEST(Evaluation, log_loss)
              0.4396698295617455 ,
              0.47602999293839676 ;
     
-    double score = metrics::mean_log_loss(y, yhat, loss);
+    double score = mean_log_loss(y, yhat, loss);
     
     ASSERT_EQ(((int)(score*100000)),45495);
 }
@@ -193,7 +193,7 @@ TEST(Evaluation, multi_log_loss)
     /* for (int i = 0; i < y.size(); ++i) */
         /* weights.push_back(1.0); */
 
-    double score = metrics::mean_multi_log_loss(y, confidences, loss, weights);
+    double score = mean_multi_log_loss(y, confidences, loss, weights);
     //cout << "assertion\n";
 
     ASSERT_EQ(((int)(score*100000)),62344);
