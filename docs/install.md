@@ -15,9 +15,10 @@ Feat uses [cmake](https://cmake.org/) to build. It uses the typical set of instr
 
 The python wrapper is installed using setuptools as follows: 
 
-    cd python
-    python setup.py install
-
+```bash
+cd python
+python setup.py install
+```
 
 # Dependencies
 
@@ -33,13 +34,15 @@ On Debian systems, you can grab the package:
 
 You can also download the headers and put them somewhere. Then you just have to tell cmake where they are with the environmental variable `EIGEN3_INCLUDE_DIR`. Example:
 
-    # grab Eigen 3.3.4
-    wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"
-    tar xzf 3.3.4.tar.gz 
-    mkdir eigen-3.3.4 
-    mv eigen-eigen*/* eigen-3.3.4
-    # set an environmental variable to tell cmake where Eigen is
-    export EIGEN3_INCLUDE_DIR="$(pwd)/eigen-3.3.4/"
+```bash
+# grab Eigen 3.3.4
+wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"
+tar xzf 3.3.4.tar.gz 
+mkdir eigen-3.3.4 
+mv eigen-eigen*/* eigen-3.3.4
+# set an environmental variable to tell cmake where Eigen is
+export EIGEN3_INCLUDE_DIR="$(pwd)/eigen-3.3.4/"
+```
 
 ## Shogun
 
