@@ -1,6 +1,4 @@
-# Examples
-
-## Command line example
+# Command line example
 
 Feat can be run from the command-line. All of its options are configurable there. 
 After a default build, the feat executable will be in the `build` directory.  
