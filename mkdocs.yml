@@ -1,7 +1,7 @@
 site_name: Feat 
 repo_url: https://github.com/lacava/feat/
 site_description: Feature Engineering Archive Tool
-user_directory_urls: true
+use_directory_urls: true
 
 nav:
     - 'Introduction': 'index.md'

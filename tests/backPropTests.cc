@@ -1,5 +1,7 @@
 #include "testsHeader.h"
 
+using namespace Opt;
+
 /**
 Notes
 Add import from util for 2d Gauss
@@ -22,7 +24,7 @@ ArrayXd limited(ArrayXd x)
 
 /*ArrayXd evaluateProgram(NodeVector& program, MatrixXd data, VectorXd labels)
 
-	FT::Stacks stack;
+	Stacks stack;
 
 	std::cout << "Running evaluation.\n";
 	// Iterate through program and calculate results 
@@ -38,45 +40,47 @@ ArrayXd limited(ArrayXd x)
 
 Node* parseToNode(std::string token) {
 	if (token == "+") {
-    	return new FT::NodeAdd({1.0, 1.0});
+    	return new NodeAdd({1.0, 1.0});
     } else if (token == "-") {
-    	return new FT::NodeSubtract({1.0, 1.0});
+    	return new NodeSubtract({1.0, 1.0});
     } else if (token == "/") {
-    	return new FT::NodeDivide({1.0, 1.0});
+    	return new NodeDivide({1.0, 1.0});
     } else if (token == "*") {
-    	return new FT::NodeMultiply({1.0, 1.0});
+    	return new NodeMultiply({1.0, 1.0});
     } else if (token == "cos") {
-    	return new FT::NodeCos({1.0});
+    	return new NodeCos({1.0});
     } else if (token == "sin") {
-    	return new FT::NodeSin({1.0});
+    	return new NodeSin({1.0});
    	} else if (token == "tanh") {
-    	return new FT::NodeTanh({1.0});
+    	return new NodeTanh({1.0});
     } else if (token == "x0") {
-    	return new FT::NodeVariable<double>(0);
+    	return new NodeVariable<double>(0);
     } else if (token == "x1") {
-    	return new FT::NodeVariable<double>(1);
+    	return new NodeVariable<double>(1);
     } else if (token == "c") {
-    return new FT::NodeConstant(1.0);
+    return new NodeConstant(1.0);
     } else if (token == "exponent") {
-    	return new FT::NodeExponent({1.0, 1.0});
+    	return new NodeExponent({1.0, 1.0});
     } else if (token == "exp") {
-    	return new FT::NodeExponential({1.0});
+    	return new NodeExponential({1.0});
     } else if (token == "log") {
-    	return new FT::NodeLog({1.0});
+    	return new NodeLog({1.0});
     } else if (token == "sqrt") {
-    	return new FT::NodeSqrt({1.0});
+    	return new NodeSqrt({1.0});
     } else if (token == "relu") {
-    	return new FT::NodeRelu({1.0});
+    	return new NodeRelu({1.0});
     } else if (token == "sign") {
-    	return new FT::NodeSign();
+    	return new NodeSign();
     } else if (token == "logit") {
-    	return new FT::NodeLogit({1.0});
+    	return new NodeLogit({1.0});
+    } else if (token == "gauss") {
+        return new NodeGaussian({1.0});
     } else if (token == "max") {
-    	return new FT::NodeMax();
+    	return new NodeMax();
     } else if (token == "xor") {
-    	return new FT::NodeXor();
+    	return new NodeXor();
     } else if (token == "step") {
-    	return new FT::NodeStep();
+    	return new NodeStep();
     }
 }
 
@@ -90,7 +94,7 @@ class TestBackProp
 		    this->n = n;
             this->epT = 0.01*this->n;   // min learning rate
 		    this->a = a;
-		    this->engine = new FT::AutoBackProp("mse", iters, n, a);
+		    this->engine = new AutoBackProp("mse", iters, n, a);
         }
         
         void run(Individual& ind, const Data& d,
@@ -143,7 +147,7 @@ class TestBackProp
                             roots.at(s), 1.0, Phi.row(0), db, params.class_weights);
                 }
 
-                current_val_loss = metrics::squared_difference(db_val.y, Phi.row(0)).mean();
+                current_val_loss = squared_difference(db_val.y, Phi.row(0)).mean();
                 
                 if (x==0 || current_val_loss < min_loss)
                 {
@@ -190,11 +194,11 @@ class TestBackProp
             // is equal to the weight the model assigned to this subprogram (Beta)
             // push back derivative of cost function wrt ML output
             /* cout << "Beta: " << Beta << "\n"; */ 
-            derivatives.push_back(metrics::d_squared_difference(d.y, yhat).array() * Beta); //*phi.array()); 
+            derivatives.push_back(d_squared_difference(d.y, yhat).array() * Beta); //*phi.array()); 
             /* cout << "Cost derivative: " << derivatives[derivatives.size() -1 ]<< "\n"; */ 
             // Working according to test program */
             /* pop<ArrayXd>(&f_stack); // Get rid of input to cost function */
-            vector<FT::BP_NODE> executing; // Stores node and its associated derivatves
+            vector<BP_NODE> executing; // Stores node and its associated derivatves
             // Currently I don't think updates will be saved, might want a pointer of nodes so don't 
             // have to restock the list
             // Program we loop through and edit during algorithm (is this a shallow or deep copy?)
@@ -275,12 +279,12 @@ class TestBackProp
         double epT;
         double a;
         double epk;
-        FT::AutoBackProp* engine;
+        AutoBackProp* engine;
         
 };
 
-FT::NodeVector programGen(std::string txt) {
-	FT::NodeVector program;
+NodeVector programGen(std::string txt) {
+	NodeVector program;
 
 	char ch = ' ';
 	size_t pos = txt.find( ch );
@@ -305,7 +309,7 @@ FT::NodeVector programGen(std::string txt) {
     return program;
 }
 
-FT::Individual testDummyProgram(FT::NodeVector p0, Data data, int iters, VectorXd& yhat) {
+Individual testDummyProgram(NodeVector p0, Data data, int iters, VectorXd& yhat) {
 	
 	std::cout << "Testing program: [";
 	
@@ -319,9 +323,9 @@ FT::Individual testDummyProgram(FT::NodeVector p0, Data data, int iters, VectorX
 	// Params
 	double learning_rate = 0.25;
     int bs = 1; 
-    FT::Individual ind;
+    Individual ind;
     ind.program = p0;
-    FT::Feat feat;
+    Feat feat;
     /* feat.set_verbosity(3); */
     
     feat.set_shuffle(false);
@@ -358,9 +362,9 @@ TEST(BackProp, SumGradient)
     
     Data data(X, y, Z);
     
-    FT::NodeVector program = programGen("x0 x1 +");
+    NodeVector program = programGen("x0 x1 +");
     VectorXd yhat; 
-    FT::Individual ind = testDummyProgram(program, data, 1000, yhat);
+    Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
     vector<double> What(2);
@@ -400,9 +404,9 @@ TEST(BackProp, SubtractGradient)
     
     Data data(X, y, Z);
     
-    FT::NodeVector program = programGen("x0 x1 -");
+    NodeVector program = programGen("x0 x1 -");
     VectorXd yhat; 
-    FT::Individual ind = testDummyProgram(program, data, 1000, yhat);
+    Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
 	vector<double> What(2);
@@ -443,9 +447,9 @@ TEST(BackProp, MultiplyGradient)
     
     Data data(X, y, Z);
     
-    FT::NodeVector program = programGen("x0 x1 *");
+    NodeVector program = programGen("x0 x1 *");
     VectorXd yhat; 
-    FT::Individual ind = testDummyProgram(program, data, 1000, yhat);
+    Individual ind = testDummyProgram(program, data, 1000, yhat);
 
     
     std::cout << "test program returned:\n";
@@ -490,10 +494,10 @@ TEST(BackProp, DivideGradient)
     
     Data data(X, y, Z);
     
-    FT::NodeVector program = programGen("x1 x1 /");
+    NodeVector program = programGen("x1 x1 /");
     
     VectorXd yhat;
-    FT::Individual ind = testDummyProgram(program, data, 10000, yhat);
+    Individual ind = testDummyProgram(program, data, 10000, yhat);
     
     std::cout << "test program returned:\n";
     vector<double> What(2);
@@ -535,10 +539,10 @@ TEST(BackProp, SinGradient)
     
     Data data(X, y, Z);
     
-    FT::NodeVector program = programGen("x0 sin");
+    NodeVector program = programGen("x0 sin");
     
     VectorXd yhat;
-    FT::Individual ind = testDummyProgram(program, data, 1000, yhat);
+    Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
 	for (const auto& n : ind.program) {
@@ -573,10 +577,10 @@ TEST(BackProp, CosGradient)
     
     Data data(X, y, Z);
     
-    FT::NodeVector program = programGen("x0 cos");
+    NodeVector program = programGen("x0 cos");
     
     VectorXd yhat;
-    FT::Individual ind = testDummyProgram(program, data, 1000, yhat);
+    Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
 	for (const auto& n : ind.program) {
@@ -610,10 +614,10 @@ TEST(BackProp, TanhGradient)
     
     Data data(X, y, Z);
     
-    FT::NodeVector program = programGen("x0 tanh");
+    NodeVector program = programGen("x0 tanh");
     
     VectorXd yhat;
-    FT::Individual ind = testDummyProgram(program, data, 1000, yhat);
+    Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
 	for (const auto& n : ind.program) {
@@ -647,10 +651,10 @@ TEST(BackProp, ExpGradient)
     
     Data data(X, y, Z);
     
-    FT::NodeVector program = programGen("x0 exp");
+    NodeVector program = programGen("x0 exp");
     
     VectorXd yhat;
-    FT::Individual ind = testDummyProgram(program, data, 1000, yhat);
+    Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
 	for (const auto& n : ind.program) {
@@ -683,10 +687,10 @@ TEST(BackProp, LogGradient)
     
     Data data(X, y, Z);
     
-    FT::NodeVector program = programGen("x0 log");
+    NodeVector program = programGen("x0 log");
     
     VectorXd yhat;
-    FT::Individual ind = testDummyProgram(program, data, 1000, yhat);
+    Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
 	for (const auto& n : ind.program) {
@@ -720,10 +724,10 @@ TEST(BackProp, SqrtGradient)
     
     Data data(X, y, Z);
     
-    FT::NodeVector program = programGen("x0 sqrt");
+    NodeVector program = programGen("x0 sqrt");
     
     VectorXd yhat;
-    FT::Individual ind = testDummyProgram(program, data, 1000, yhat);
+    Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
 	for (const auto& n : ind.program) {
@@ -757,10 +761,10 @@ TEST(BackProp, ReluGradient)
     
     Data data(X, y, Z);
     
-    FT::NodeVector program = programGen("x0 relu");
+    NodeVector program = programGen("x0 relu");
     
     VectorXd yhat;
-    FT::Individual ind = testDummyProgram(program, data, 1000, yhat);
+    Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
 	for (const auto& n : ind.program) {
@@ -797,10 +801,51 @@ TEST(BackProp, LogitGradient)
     
     Data data(X, y, Z);
     
-    FT::NodeVector program = programGen("x0 logit");
+    NodeVector program = programGen("x0 logit");
     
     VectorXd yhat;
-    FT::Individual ind = testDummyProgram(program, data, 2000, yhat);
+    Individual ind = testDummyProgram(program, data, 2000, yhat);
+    
+    std::cout << "test program returned:\n";
+    vector<double> What(1);
+	for (const auto& n : ind.program) {
+		std::cout << n->name << ": ";
+		NodeDx* nd = dynamic_cast<NodeDx*>(n.get());
+		if (nd != NULL) {
+			std::cout << " with weight";
+			for (int i = 0; i < nd->arity['f']; i++) {
+				std::cout << " " << nd->W[i];
+                What[i] = nd->W[i];
+			}
+		}
+		std::cout << "\n";
+	}
+
+    /* cout << y - yhat << "\n"; */
+
+    ASSERT_LE((y-yhat).array().pow(2).sum(),0.00001);
+    ASSERT_LE(What[0]-Wtarget,0.01);
+}
+
+TEST(BackProp, GaussGradient)
+{
+    // Create input data and labels
+	MatrixXd X(1, 10);
+	VectorXd y(10);
+	X.row(0) << 0.01933084, 0.46202196, 0.26687028, 0.31371363, 0.27296074,
+       0.37672478, 0.05773657, 0.36211793, 0.0161587 , 0.02614942;
+    
+    double Wtarget = 2;
+    y = exp(-pow(Wtarget - X.row(0).array(), 2));
+
+    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
+    
+    Data data(X, y, Z);
+    
+    NodeVector program = programGen("x0 gauss");
+    
+    VectorXd yhat;
+    Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
     vector<double> What(1);
@@ -843,7 +888,7 @@ TEST(BackProp, DerivativeTest)
 	trace.f.push_back(input1);
 
 	// ADD NODE CHECK -------------------------------------------------------------------------------
-	NodeDx* toTest = new FT::NodeAdd();
+	NodeDx* toTest = new NodeAdd();
 	
 	// Derivative wrt to first input
 	ArrayXd expectedDerivative(5, 1);
@@ -887,7 +932,7 @@ TEST(BackProp, DerivativeTest)
     
 
 	// SUB NODE CHECK -------------------------------------------------------------------------------
-	toTest = new FT::NodeSubtract({1,1});
+	toTest = new NodeSubtract({1,1});
     
 	expectedDerivative(0,0) = 1;
 	expectedDerivative(1,0) = 1;
@@ -922,7 +967,7 @@ TEST(BackProp, DerivativeTest)
 	ASSERT_LE((expectedDerivative.matrix() - toTest->getDerivative(trace, 3).matrix()).norm(), 0.0001);
 
 	// MULT NODE CHECK-------------------------------------------------------------------------------
-	toTest = new FT::NodeMultiply({1,1});
+	toTest = new NodeMultiply({1,1});
 	
 	expectedDerivative(0,0) = 4;
 	expectedDerivative(1,0) = 3;
@@ -951,7 +996,7 @@ TEST(BackProp, DerivativeTest)
     ASSERT_LE((expectedDerivative.matrix() - toTest->getDerivative(trace, 3).matrix()).norm(), 0.0001);
     
     // DIV NODE CHECK -------------------------------------------------------------------------------
-	toTest = new FT::NodeDivide({1,1});
+	toTest = new NodeDivide({1,1});
 	
 	expectedDerivative(0,0) = 1.0/4;	// Div by 0 (limited to 0)
 	expectedDerivative(1,0) = 1.0/3;
@@ -986,7 +1031,7 @@ TEST(BackProp, DerivativeTest)
 	ASSERT_LE((expectedDerivative.matrix() - toTest->getDerivative(trace, 3).matrix()).norm(), 0.0001);
 
 	// x^y NODE CHECK -------------------------------------------------------------------------------
-	toTest = new FT::NodeExponent({1.0,1.0});
+	toTest = new NodeExponent({1.0,1.0});
 	
 	expectedDerivative(0,0) = 4 * pow(0,4)/0; //div by 0 
 	expectedDerivative(1,0) = 3 * pow(1,3)/1;
@@ -1021,7 +1066,7 @@ TEST(BackProp, DerivativeTest)
 	ASSERT_LE((limited(expectedDerivative).matrix() - toTest->getDerivative(trace, 3).matrix()).norm(), 0.0001);
 	
 	// COS NODE CHECK -------------------------------------------------------------------------------
-	toTest = new FT::NodeCos({1.0});
+	toTest = new NodeCos({1.0});
 	
 	expectedDerivative(0,0) = -1 * sin(0);
 	expectedDerivative(1,0) = -1 * sin(1);
@@ -1040,7 +1085,7 @@ TEST(BackProp, DerivativeTest)
 	ASSERT_LE((expectedDerivative.matrix() - toTest->getDerivative(trace, 1).matrix()).norm(), 0.0001);
 	
 	// SIN NODE CHECK -------------------------------------------------------------------------------
-	toTest = new FT::NodeSin({1.0});
+	toTest = new NodeSin({1.0});
 	
 	expectedDerivative(0,0) = 1 * cos(0);
 	expectedDerivative(1,0) = 1 * cos(1);
@@ -1059,7 +1104,7 @@ TEST(BackProp, DerivativeTest)
 	ASSERT_LE((expectedDerivative.matrix() - toTest->getDerivative(trace, 1).matrix()).norm(), 0.0001);
 	
 	// ^3 NODE CHECK  -------------------------------------------------------------------------------
-	toTest = new FT::NodeCube({1.0});
+	toTest = new NodeCube({1.0});
 	
 	expectedDerivative(0,0) = 3 * pow(0,2);
 	expectedDerivative(1,0) = 3 * pow(1,2);
@@ -1078,7 +1123,7 @@ TEST(BackProp, DerivativeTest)
 	ASSERT_LE((expectedDerivative.matrix() - toTest->getDerivative(trace, 1).matrix()).norm(), 0.0001);
 	
 	// e^x NODE CHECK -------------------------------------------------------------------------------
-	toTest = new FT::NodeExponential({1.0});
+	toTest = new NodeExponential({1.0});
 	
 	expectedDerivative(0,0) = 1 * exp(0);
 	expectedDerivative(1,0) = 1 * exp(1);
@@ -1097,7 +1142,7 @@ TEST(BackProp, DerivativeTest)
 	ASSERT_LE((expectedDerivative.matrix() - toTest->getDerivative(trace, 1).matrix()).norm(), 0.0001);
     
 	// GAUS NODE CHECK-------------------------------------------------------------------------------
-	toTest = new FT::NodeGaussian({1.0});
+	toTest = new NodeGaussian({1.0});
 	
 	expectedDerivative(0,0) = 2 * (1 - 0) * exp(-pow(1 - 0, 2));
 	expectedDerivative(1,0) = 2 * (1 - 1) * exp(-pow(1 - 1, 2));
@@ -1116,7 +1161,7 @@ TEST(BackProp, DerivativeTest)
     ASSERT_LE((expectedDerivative.matrix() - toTest->getDerivative(trace, 1).matrix()).norm(), 0.0001);
     
 	// LOG NODE CHECK -------------------------------------------------------------------------------
-	toTest = new FT::NodeLog({1.0});
+	toTest = new NodeLog({1.0});
 	
 	expectedDerivative(0,0) = MAX_DBL;
 	expectedDerivative(1,0) = 1.0;
@@ -1135,7 +1180,7 @@ TEST(BackProp, DerivativeTest)
 	ASSERT_LE((expectedDerivative.matrix() - toTest->getDerivative(trace, 1).matrix()).norm(), 0.0001);
 
 	// LOGIT NODE CHECK------------------------------------------------------------------------------
-	toTest = new FT::NodeLogit({1.0});
+	toTest = new NodeLogit({1.0});
 	
 	expectedDerivative(0,0) = (1 * exp(1 * 0))/pow(exp(1 * 0) + 1, 2);
 	expectedDerivative(1,0) = (1 * exp(1 * 1))/pow(exp(1 * 1) + 1, 2);
@@ -1154,7 +1199,7 @@ TEST(BackProp, DerivativeTest)
     ASSERT_LE((expectedDerivative.matrix() - toTest->getDerivative(trace, 1).matrix()).norm(), 0.0001);
     
 	// RELU NODE CHECK------------------------------------------------------------------------------
-    toTest = new FT::NodeRelu({1.0});
+    toTest = new NodeRelu({1.0});
     
     expectedDerivative(0,0) = 0.01;
     expectedDerivative(1,0) = 1;
@@ -1173,7 +1218,7 @@ TEST(BackProp, DerivativeTest)
     ASSERT_LE((limited(expectedDerivative).matrix() - toTest->getDerivative(trace, 1).matrix()).norm(), 0.0001);
 
 	// SQRT NODE CHECK-------------------------------------------------------------------------------
-	toTest = new FT::NodeSqrt({1.0});
+	toTest = new NodeSqrt({1.0});
 	
 	expectedDerivative(0,0) = 1/(2 * sqrt(0)); // divide by zero
 	expectedDerivative(1,0) = 1/(2 * sqrt(1));
@@ -1192,7 +1237,7 @@ TEST(BackProp, DerivativeTest)
 	ASSERT_LE((limited(expectedDerivative).matrix() - toTest->getDerivative(trace, 1).matrix()).norm(), 0.0001);
 	
 	// ^2  NODE CHECK -------------------------------------------------------------------------------
-	toTest = new FT::NodeSquare({1.0});
+	toTest = new NodeSquare({1.0});
 	
 	expectedDerivative(0,0) = 2 * 1 * 0;
 	expectedDerivative(1,0) = 2 * 1 * 1;
@@ -1211,7 +1256,7 @@ TEST(BackProp, DerivativeTest)
 	ASSERT_LE((expectedDerivative.matrix() - toTest->getDerivative(trace, 1).matrix()).norm(), 0.0001);
 
 	// TANH NODE CHECK-------------------------------------------------------------------------------
-	toTest = new FT::NodeTanh({1.0});
+	toTest = new NodeTanh({1.0});
 	
 	expectedDerivative(0,0) = 1;
 	expectedDerivative(1,0) = 0.41997434161402606939449673904170;
@@ -1235,7 +1280,7 @@ TEST(BackProp, DerivativeTest)
 /*TEST(BackProp, PropogationTest)
 {
     int iters = 100;
-	FT::NodeVector program = programGen();
+	NodeVector program = programGen();
  	cout << "Running with : " << iters << endl << endl;
 	testDummyProgram(program, iters);
 }*/
