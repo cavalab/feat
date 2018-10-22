@@ -7,6 +7,7 @@ license: GNU/GPL v3
 
 namespace FT{
 
+    using namespace Util;
         
     Parameters::Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
                char ot, int verbosity, string fs, float cr, unsigned int max_depth, 
