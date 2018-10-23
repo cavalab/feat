@@ -12,6 +12,7 @@ nav:
         - 'Configuring Feat': 'guide/configuration.md'
     - 'Examples': 
         - 'Command line': 'examples/ex_command_line.md'
+        - 'Using the archive': 'examples/archive.md'
     - 'API':
         - 'C++ API': 'api/c/'
         - 'Python API': 'api/python' 
