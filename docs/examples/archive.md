@@ -161,8 +161,14 @@ plt.show()
 ```
 
 This produces the figure below. Note that ElasticNet produces a similar test score to the linear representation
-in Feat's archive, and that Random Forest's test score is near the representation [tanh(x_0)][tanh(x_1)]. The
-validation curve shows how models begin to overfit as complexity grows.
+in Feat's archive, and that Random Forest's test score is near the representation 
+$[(x_2 + x_0)][(x1-x_3)][\sin(x)]$.
+
+The best model, marked with a square, is selected from the validation curve (blue line). The validation curve 
+shows how models begin to overfit as complexity grows. By visualizing the archive, we can see that a lower 
+complexity model (the representation beginning with $relu(x_3)$) achieves nearly as good of a validation score. 
+In this case it may be preferable to choose that representation instead. We can also see that the validation scores
+in general oscillate around the test score of the final model. 
 
 ![Feat archive](archive_example.svg)
 
