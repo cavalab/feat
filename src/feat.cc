@@ -25,7 +25,7 @@ Feat::Feat(int pop_size, int gens, string ml,
        string sel, string surv, float cross_rate,
        char otype, string functions, 
        unsigned int max_depth, unsigned int max_dim, int random_state, 
-       bool erc, string obj,bool shuffle, 
+       bool erc, string obj, bool shuffle, 
        double split, double fb, string scorer, string feature_names,
        bool backprop,int iters, double lr, int bs, int n_threads,
        bool hillclimb, string logfile, int max_time, bool use_batch, bool semantic_xo,
@@ -433,13 +433,14 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     //d.setOriginalData(&data);
     
     d.train_test_split(params.shuffle, params.split);
-   
+     
     // define terminals based on size of X
     params.set_terminals(d.o->X.rows(), d.o->Z);        
 
     // initial model on raw input
     params.msg("Setting up data", 2);
     float t0 =  timer.Elapsed().count();
+    
     //data for batch training
     MatrixXd Xb;
     VectorXd yb;
@@ -458,6 +459,7 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     if (params.classification) 
         params.set_sample_weights(d.t->y); 
     
+    // initial model
     params.msg("Fitting initial model", 2);
     t0 =  timer.Elapsed().count();
     initial_model(d);  
@@ -698,7 +700,9 @@ void Feat::initial_model(DataRef &d)
    
     VectorXd tmp;
     best_score = p_eval->score(d.t->y, yhat, tmp, params.class_weights);
-    
+    cout << "d.t->y: " << d.t->y.transpose() << "\n"; 
+    cout << "yhat: " << yhat << "\n"; 
+
     if (params.split < 1.0)
     {
         shared_ptr<CLabels> yhat_v = best_ind.predict(*d.v, params);

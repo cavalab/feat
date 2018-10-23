@@ -68,7 +68,7 @@ namespace FT{
                    string sel ="lexicase", string surv="nsga2", float cross_rate = 0.5,
                    char otype='a', string functions = "", 
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
-                   bool erc = false, string obj="fitness,complexity", bool shuffle=false, 
+                   bool erc = false, string obj="fitness,complexity", bool shuffle=true, 
                    double split=0.75, double fb=0.5, string scorer="", string feature_names="",
                    bool backprop=false,int iters=10, double lr=0.1, int bs=100, int n_threads=0,
                    bool hillclimb=false, string logfile="", int max_time=-1, 

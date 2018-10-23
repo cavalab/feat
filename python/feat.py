@@ -23,7 +23,7 @@ class Feat(BaseEstimator):
                 sel ="lexicase",  surv ="nsga2",  cross_rate=0.5,
                 otype ='a',  functions ="", 
                 max_depth=3,   max_dim=10,  random_state=0, 
-                erc = False,  obj ="fitness,complexity", shuffle=False,  split=0.75,  fb=0.5,
+                erc = False,  obj ="fitness,complexity", shuffle=True,  split=0.75,  fb=0.5,
                 scorer ='',feature_names="", backprop=False, iters=10, lr=0.1, batch_size=100, 
                 n_threads=0, hillclimb=False, logfile="Feat.log", max_time=-1, use_batch=False, 
                 semantic_xo=False, print_pop=0):
