@@ -77,6 +77,8 @@ test_score['elasticnet'] = mse(y_v,linest.predict(X_v))
 
 ```
 
+## Visualize the Archive
+
 Let's visualize this archive with the test scores. This gives us a sense of how increasing the representation 
 complexity affects the quality of the model and its generalization. 
 
