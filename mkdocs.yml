@@ -15,9 +15,9 @@ nav:
         - 'Using the archive': 'examples/archive.md'
     - 'API':
         - 'C++ API': 'api/c/'
-        - 'Python API': 'api/python' 
+        - 'Python API': 'api/python/api_py.md' 
     - 'Contribute': 'contributing.md'
-
+    - 'License': LICENSE.md
 theme: 
     name: readthedocs
     highlightjs: true
