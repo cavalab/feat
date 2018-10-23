@@ -4,7 +4,7 @@ In this example, we apply Feat to a regression problem and visualize the archive
 
 *Note: this code uses the [Penn ML Benchmark Suite](https://github.com/EpistasisLab/penn-ml-benchmarks/) to fetch data. You can install it using `pip install pmlb`.*
 
-Also available as a [notebook](archive.ipynb)
+Also available as a [notebook](http://github.com/lacava/feat/blob/master/docs/examples/archive.ipynb)
 
 ## Training Feat
 
