@@ -657,7 +657,6 @@ void Feat::initial_model(DataRef &d)
     /*!
      * fits an ML model to the raw data as a starting point.
      */
-    cout << "X size: " << d.t->X.rows() << " x " << d.t->X.cols() << "\n"; 
     best_ind = Individual();
     best_ind.set_id(0);
     int j; 
@@ -700,8 +699,6 @@ void Feat::initial_model(DataRef &d)
    
     VectorXd tmp;
     best_score = p_eval->score(d.t->y, yhat, tmp, params.class_weights);
-    cout << "d.t->y: " << d.t->y.transpose() << "\n"; 
-    cout << "yhat: " << yhat << "\n"; 
 
     if (params.split < 1.0)
     {
