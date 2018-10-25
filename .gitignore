@@ -10,3 +10,4 @@ __pycache__
 *.exe
 feat.egg-info
 python/pyfeat.cpp
+docs/api/c/
