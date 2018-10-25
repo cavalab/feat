@@ -155,9 +155,9 @@ namespace FT{
      
         void DataRef::train_test_split(bool shuffle, double split)
         {
-            /* @params X: n_features x n_samples matrix of training data
-             * @params y: n_samples vector of training labels
-             * @params shuffle: whether or not to shuffle X and y
+            /* @param X: n_features x n_samples matrix of training data
+             * @param y: n_samples vector of training labels
+             * @param shuffle: whether or not to shuffle X and y
              * @returns X_t, X_v, y_t, y_v: training and validation matrices
              */
             

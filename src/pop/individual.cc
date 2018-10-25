@@ -209,9 +209,9 @@ namespace FT{
         MatrixXd Individual::out(const Data& d, const Parameters& params, bool predict)
         {
             /*!
-             * @params d: Data structure
-             * @params params: Feat parameters
-             * @params predict: if true, this guarantees nodes like split do not get trained
+             * @param d: Data structure
+             * @param params: Feat parameters
+             * @param predict: if true, this guarantees nodes like split do not get trained
              * @returns Phi: n_features x n_samples transformation
              */
              
@@ -290,10 +290,10 @@ namespace FT{
                          const Parameters& params, vector<Trace>& stack_trace)
         {
             /*!
-             * @params X: n_features x n_samples data
-             * @params Z: longitudinal nodes for samples
-             * @params y: target data
-             * @params: Feat parameters
+             * @param X: n_features x n_samples data
+             * @param Z: longitudinal nodes for samples
+             * @param y: target data
+             * @param: Feat parameters
              * @returns Phi: n_features x n_samples transformation
              */
 

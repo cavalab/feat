@@ -15,8 +15,8 @@ namespace FT{
             void NodeDx::update(vector<ArrayXd>& gradients, Trace& stack, double n, double a) 
             {
                 /*! update weights via gradient descent + momentum
-                 * @params n : learning rate
-                 * @params a : momentum
+                 * @param n : learning rate
+                 * @param a : momentum
                  * v(t+1) = a * v(t) - n * gradient
                  * w(t+1) = w(t) + v(t+1)
                  * */
