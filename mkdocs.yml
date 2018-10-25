@@ -14,8 +14,8 @@ nav:
         - 'Command line': 'examples/ex_command_line.md'
         - 'Using the archive': 'examples/archive.md'
     - 'API':
-        - 'Python API': 'api/python/api_py.md' 
-        - 'C++ API': 'api/c/'
+        - 'Python': 'api/python/api_py.md' 
+        - 'C++': 'api/c/'
     - 'Contribute': 'contributing.md'
     - 'License': https://github.com/lacava/feat/blob/master/LICENSE 
 theme: 
