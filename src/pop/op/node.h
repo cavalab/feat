@@ -14,6 +14,7 @@ license: GNU/GPL v3
 #include "../../dat/stack.h"
 #include "../../dat/data.h"
 #include "../../util/rnd.h"
+#include "../../util/error.h"
 using std::vector;
 using std::string;
 using std::map;
