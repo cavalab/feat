@@ -246,7 +246,7 @@ int Feat::get_n_nodes(){ return best_ind.program.size(); }
 ///return population as string
 string Feat::get_eqns(bool front)
 {
-    string r="complexity,fitness,fitness_v,eqn\n";
+    string r="complexity\tfitness\tfitness_v\teqn\n";
     if (front)  // only return individuals on the Pareto front
     {
         if (use_arch)
