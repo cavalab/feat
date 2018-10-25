@@ -17,7 +17,7 @@ nav:
         - 'C++ API': 'api/c/launchpad.md'
         - 'Python API': 'api/python/api_py.md' 
     - 'Contribute': 'contributing.md'
-    - 'License': LICENSE.md
+    - 'License': https://github.com/lacava/feat/blob/master/LICENSE 
 theme: 
     name: readthedocs
     highlightjs: true
