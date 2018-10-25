@@ -19,9 +19,9 @@ namespace FT{
         {
             /* Selects parents for making offspring.  
              *
-             * @params pop: population of programs, all potential parents. 
-             * @params F: n_samples x 2 * popsize matrix of program behaviors. 
-             * @params params: parameters.
+             * @param pop: population of programs, all potential parents. 
+             * @param F: n_samples x 2 * popsize matrix of program behaviors. 
+             * @param params: parameters.
              *
              * @returns selected: vector of indices corresponding to offspring that are selected.
              *      
@@ -48,9 +48,9 @@ namespace FT{
         {
             /* Selects the offspring for survival. 
              *
-             * @params pop: population of programs, parents + offspring.
-             * @params F: n_samples x 2 * popsize matrix of program behaviors. 
-             * @params params: parameters.
+             * @param pop: population of programs, parents + offspring.
+             * @param F: n_samples x 2 * popsize matrix of program behaviors. 
+             * @param params: parameters.
              *
              * @returns selected: vector of indices corresponding to offspring that are selected.
              *      

@@ -34,14 +34,14 @@ namespace FT{
                                  bool validation)
         {
         	/*!
-             *      @params individuals: population
-             *      @params d: Data structure
-             *      @params F: matrix of raw fitness values
-             *      @params params: algorithm parameters
-             *      @params offspring: if true, only evaluate last half of population
-             *      @params validation: if true, call ind.predict instead of ind.fit
+             *      @param individuals: population
+             *      @param d: Data structure
+             *      @param F: matrix of raw fitness values
+             *      @param params: algorithm parameters
+             *      @param offspring: if true, only evaluate last half of population
+             *      @param validation: if true, call ind.predict instead of ind.fit
              
-             * Output:
+             * Output 
              
              *      F is modified
              *      pop[:].fitness is modified

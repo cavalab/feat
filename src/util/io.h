@@ -21,7 +21,7 @@ using namespace Eigen;
 namespace FT{
 
     namespace Util{
-        /// outputs a progress bar, filled according to @params percentage.
+        /// outputs a progress bar, filled according to @param percentage.
         void printProgress (double percentage);
 
         ///   load csv file into matrix. 

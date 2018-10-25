@@ -61,7 +61,7 @@ namespace FT{
             shared_ptr<CLabels> fit(const Data& d, const Parameters& params, bool& pass);
             
             /*! generates prediction on data using transformation and ML predict. 
-             *  @params drop_idx if specified, the phi output at drop_idx is set to zero, effectively
+             *  @param drop_idx if specified, the phi output at drop_idx is set to zero, effectively
              *  removing its output from the transformation. used in semantic crossover.
              */
             shared_ptr<CLabels> predict(const Data& d, const Parameters& params);
