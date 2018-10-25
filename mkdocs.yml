@@ -14,7 +14,7 @@ nav:
         - 'Command line': 'examples/ex_command_line.md'
         - 'Using the archive': 'examples/archive.md'
     - 'API':
-        - 'C++ API': 'api/c/'
+        - 'C++ API': 'api/c/launchpad.md'
         - 'Python API': 'api/python/api_py.md' 
     - 'Contribute': 'contributing.md'
     - 'License': LICENSE.md
