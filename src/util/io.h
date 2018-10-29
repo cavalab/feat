@@ -36,7 +36,7 @@ namespace FT{
         /// load partial longitudinal csv file into matrix according to idx vector
         void load_partial_longitudinal(const std::string & path,
                                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
-                               char sep, const vector<long>& idx);
+                               char sep, const vector<int>& idx);
     }
 }
 

@@ -156,13 +156,13 @@ class Feat(BaseEstimator):
         """Returns a score for the predictions of Feat on X versus true labels y""" 
         if zfile:
             zfile = zfile.encode() if isinstance(zfile,str) else zfile
-            y = self._pyfeat.predict_with_z(X,zfile,zids).flatten()
+            yhat = self._pyfeat.predict_with_z(X,zfile,zids).flatten()
         else:
-            y = self.predict(X).flatten()
+            yhat = self.predict(X).flatten()
         if ( self.classification ):
-            return log_loss(y,y, labels=y)
+            return log_loss(y,yhat, labels=y)
         else:
-            return mse(y,y)
+            return mse(y,yhat)
 
     def get_model(self):
         """Returns a string with the set of equations and weights in the final representation"""

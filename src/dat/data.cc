@@ -49,7 +49,6 @@ namespace FT{
                     db.Z[val.first].second.at(i) = Z.at(val.first).second.at(idx.at(i));
                }
             }
-            //std::cout << "exiting batch\n";
         }
         
         DataRef::DataRef()
@@ -177,14 +176,18 @@ namespace FT{
                 
                 if(o->Z.size() > 0)
                 {
-                    std::vector<long> zidx(o->y.size());
+                    std::vector<int> zidx(o->y.size());
                     std::iota(zidx.begin(), zidx.end(), 0);
-                    VectorXl zw = Map<VectorXl>(zidx.data(), zidx.size());
-                    zw = (zw.transpose()*perm).transpose();       // shuffle zw too
-                    zidx.assign(((int*)zw.data()), (((int*)zw.data())+zw.size()));
-                    
+                    VectorXi zw = Map<VectorXi>(zidx.data(), zidx.size());
+                    // shuffle z indices 
+                    zw = (zw.transpose()*perm).transpose();       
+                    // assign shuffled zw to zidx
+                    zidx.assign(zw.data(), zw.data() + zw.size());
                     for(auto &val : o->Z)
-                        reorder_longitudinal(val.second.first, val.second.second, zidx);
+					{
+                        reorder_longitudinal(val.second.first, zidx);
+                        reorder_longitudinal(val.second.second, zidx);
+					}
                 }
                 
             }
@@ -196,7 +199,6 @@ namespace FT{
 
             t->y = VectorXd::Map(o->y.data(),t->y.size());
             v->y = VectorXd::Map(o->y.data()+t->y.size(),v->y.size());
-            
             if(o->Z.size() > 0)
                 split_longitudinal(o->Z, t->Z, v->Z, split);
 
