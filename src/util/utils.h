@@ -41,8 +41,7 @@ namespace FT{
 
 
         /// reordering utility for shuffling longitudinal data.
-        void reorder_longitudinal(vector<ArrayXd> &vec1, vector<ArrayXd> &vec2,
-                                 vector<long> const &order); 
+        void reorder_longitudinal(vector<ArrayXd> &vec1, const vector<int>& order); 
 
         /// check if element is in vector.
         template<typename T>

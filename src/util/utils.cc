@@ -81,25 +81,54 @@ namespace FT{
 
 	    }
         
-        void reorder_longitudinal(vector<ArrayXd> &vec1, vector<ArrayXd> &vec2,
-                                 vector<long> const &order)
-        {   
+        /* void reorder_longitudinal(vector<ArrayXd> &vec1, vector<ArrayXd> &vec2, */
+        /*                          vector<long> const &order) */
+        /* { */   
         
-            for( int s = 1, d; s < order.size(); ++ s )
-            {
-                for ( d = order[s]; d < s; d = order[d] );
+        /*     for( int s = 1, d; s < order.size(); ++ s ) */
+        /*     { */
+        /*         cout << "s: " << s << "\n"; */
+        /*         for ( d = order[s]; d < s; d = order[d] ); */
                 
-                if ( d == s )
-                {
-                    while ( d = order[d], d != s )
-                    {
-                        swap(vec1[s], vec1[d]);
-                        swap(vec2[s], vec2[d]);
-                    }
-                }
-            }
+        /*         cout << "d: " << s << "\n"; */
+        /*         if ( d == s ) */
+        /*         { */
+        /*             while ( d = order[d], d != s ) */
+        /*             { */
+        /*                 swap(vec1[s], vec1[d]); */
+        /*                 swap(vec2[s], vec2[d]); */
+        /*             } */
+        /*         } */
+        /*     } */
+        /* } */
+        
+        void reorder_longitudinal(vector<ArrayXd> &vec1, const vector<int>& order)
+        {  
+			vector<int> index = order; 
+			// Fix all elements one by one 
+			for (int i=0; i<index.size(); i++) 
+			{ 
+				// While index[i] and vec1[i] are not fixed 
+				while (index.at(i) != i) 
+				{ 
+					// Store values of the target (or correct)  
+					// position before placing vec1[i] there 
+					int  oldTargetI  = index.at(index.at(i)); 
+					auto oldTargetE  = vec1.at(index.at(i)); 
+		  
+					// Place vec1[i] at its target (or correct) 
+					// position. Also copy corrected index for 
+					// new position 
+					vec1.at(index.at(i)) = vec1.at(i); 
+					index.at(index.at(i)) = index.at(i); 
+		  
+					// Copy old target values to vec1[i] and 
+					// index[i] 
+					index.at(i) = oldTargetI; 
+					vec1.at(i)   = oldTargetE; 
+				} 
+			}   
         }
-
         /// calculate median
         double median(const ArrayXd& v) 
         {
@@ -165,7 +194,7 @@ namespace FT{
             
         }
         
-        double slope(const ArrayXd& x, const ArrayXd& y)
+        double slope(const ArrayXd& y, const ArrayXd& x)
         {
             return covariance(x, y)/variance(x);
         }

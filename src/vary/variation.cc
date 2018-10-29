@@ -374,8 +374,8 @@ namespace FT{
                         mlocs.push_back(i);       
                 if (mlocs.size()==0)        // mom and dad have no overlapping types, can't cross
                 {
-                    params.msg("\tno overlapping types between " + mom.program_str() + "," 
-                                 + dad.program_str() + "\n", 2);
+                    params.msg("WARNING: no overlapping types between " + mom.program_str() + "," 
+                                 + dad.program_str() + "\n", 3);
                     return 0;               
                 }
                 j1 = r.random_choice(mlocs,mom.get_p(mlocs));    
