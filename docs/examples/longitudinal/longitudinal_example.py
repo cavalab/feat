@@ -10,7 +10,7 @@ df.drop('id',axis=1,inplace=True)
 X = df.drop('class',axis=1).values
 y = df['class'].values
 zfile = 'd_example_patients_long.csv'
-kf = StratifiedKFold(n_splits=3)
+kf = StratifiedKFold(n_splits=3,random_state=42)
 kf.get_n_splits(X)
 
 clf = Feat(max_depth=5,
@@ -26,7 +26,8 @@ clf = Feat(max_depth=5,
                      "mean,median,max,min,variance,skew,kurtosis,slope,count",
            backprop=True,
            iters=10,
-           random_state=42)
+           random_state=42,
+           n_threads=1)
 scores=[]
 
 for train_idx, test_idx in kf.split(X,y):
@@ -41,55 +42,59 @@ print('scores:',scores)
 ###################################################################################################
 
 print('fitting longer to all data...')
-clf.gens = 20
 clf.verbosity = 2
+# clf.gens = 1000
+# clf.pop_size = 100
+# clf.max_stall = 20
 clf.fit(X,y,zfile,np.arange(len(X)))
-print('model:',clf.get_model())
+print('representation:\n',clf.get_representation())
+print('model:\n',clf.get_model())
 
 ##################################################################################################
-# Plot t-SNE transformation
+# Visualize the representation
 ###################################################################################################
 
-print('transform:')
 Phi = clf.transform(X,zfile,np.arange(len(X)))
-Phi = np.vstack((Phi[:,0],Phi[:,2])).transpose()
 print('Phi:',Phi.shape,Phi)
-# use t-SNE to visualize transformation
-import sklearn
-from sklearn.manifold import TSNE
+# proj = np.vstack((Phi[:,0],Phi[:,2])).transpose()
+proj = Phi
+#scale the projection to zero mean, unit deviation
+from sklearn.preprocessing import StandardScaler
+proj = StandardScaler().fit_transform(proj)
+
+print('proj:',proj.shape,proj)
 import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib.patheffects as PathEffects
 
-proj = TSNE(random_state=42).fit_transform(Phi)
 
-def scatter(x, colors):
-    # We choose a color palette with seaborn.
-    palette = np.array(sns.color_palette("cividis", 2))
+# We choose a color palette with seaborn.
+palette = np.array(sns.color_palette("cividis", 2))
 
-    # We create a scatter plot.
-    f = plt.figure(figsize=(8, 8))
-    ax = plt.subplot(aspect='equal')
-    sc = ax.scatter(x[:,0], x[:,1], lw=0, s=40,
-                    c=palette[colors.astype(np.int)])
-#     plt.xlim(-25, 25)
-#     plt.ylim(-25, 25)
-    ax.axis('square')
-    ax.axis('off')
-    ax.axis('tight')
+# We create a scatter plot.
+f = plt.figure(figsize=(8, 8))
+ax = plt.subplot(aspect='equal')
+sc = ax.scatter(proj[:,0], proj[:,1], lw=0, s=20,
+                c=palette[y.astype(np.int)])
+ax.axis('square')
+# ax.axis('off')
+ax.axis('tight')
 
-    # We add the labels for each digit.
-    txts = []
-    for i in range(2):
-        # Position of each label.
-        xtext, ytext = np.median(x[colors == i, :], axis=0)
-        txt = ax.text(xtext, ytext, str(i), fontsize=24)
-        txt.set_path_effects([
-            PathEffects.Stroke(linewidth=5, foreground="w"),
-            PathEffects.Normal()])
-        txts.append(txt)
+# We add the labels for each digit.
+txts = []
+for i in range(2):
+    # Position of each label.
+    xtext, ytext = np.median(proj[y == i, :], axis=0)
+    txt = ax.text(xtext, ytext, str(i), fontsize=24)
+    txt.set_path_effects([
+        PathEffects.Stroke(linewidth=5, foreground="w"),
+        PathEffects.Normal()])
+    txts.append(txt)
 
-    return f, ax, sc, txts
+# add labels from representation
+rep = [r.split('[')[-1] for r in clf.get_representation().split(']') if r != '']
+print('rep:',rep)
+plt.xlabel(rep[0])
+plt.ylabel(rep[1])
 
-scatter(proj,y)
-plt.savefig('tsne_transformation.svg', dpi=120)
+plt.savefig('longitudinal_representation.svg', dpi=120)

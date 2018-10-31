@@ -74,10 +74,8 @@ namespace FT{
 
             cout << "dtypes: " ; 
             for (unsigned i = 0; i < dtypes.size(); ++i) 
-            {
-                cout << names.at(i) << " : " << dtypes.at(i);
-                cout << "\n";
-            }
+                cout << names.at(i) << ", " << dtypes.at(i);
+            cout << "\n";
 
 
     /*         // get feature types (binary or continuous/categorical) */
@@ -224,11 +222,9 @@ namespace FT{
             for(const auto& id : idx){
                 auto tmp = idSet.insert(id);
                 if (!tmp.second || *tmp.first != id){
-                    cout << "insert failed on i = " << i << ", id = " << id << ".\n";
-                    if(idSet.find(id) != idSet.end())
-                        cout << "failed because " << id << " is already in idSet\n";
-                    else
+                    if(idSet.find(id) == idSet.end())
                     {
+                        cout << "failed to find " << id << " in idSet\n"; 
                         cout << "retrying..\n";
                         int blrg=0;
                         while (blrg<100 && (!tmp.second || *tmp.first != id) )
@@ -241,8 +237,6 @@ namespace FT{
                                                " id = " + std::to_string(id));
                     }
                 } 
-                /* else */
-                /*     cout << id << " = " << *tmp.first << "\n"; */
                 idLoc[id].push_back(i);
                 locID[i] = id;
                 ++i;

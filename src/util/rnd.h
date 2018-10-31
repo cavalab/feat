@@ -97,7 +97,6 @@ namespace FT {
                     {
                         assert(v.size() == w.size());
                         std::discrete_distribution<size_t> dis(w.begin(), w.end());
-
                         return v[dis(rg[omp_get_thread_num()])]; 
                     }
                 }

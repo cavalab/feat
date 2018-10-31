@@ -25,7 +25,7 @@ FEAT is a wrapper-based learning method that trains ML methods on a population o
     - Reduce $N$ to $P$ individuals using a survival algorithm.  
 - Select and return $n \in N$ with the lowest error on a hold-out validation set. 
 
-Individuals are evaluated using an initial forward pass, after which each representation is used to fit a linear model using ridge regression[^3]. The weights of the differentiable features in the representation are then updated using stochastic gradient descent.  
+Individuals are evaluated using an initial forward pass, after which each representation is used to fit a linear model using ridge regression[^2]. The weights of the differentiable features in the representation are then updated using stochastic gradient descent.  
 
 ## Feature representation
 

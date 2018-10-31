@@ -116,16 +116,18 @@ namespace FT{
                         ti.push_back(i);
                         tw.push_back(term_weights[i]);                    
                     }
-                    /* cout << terminals[i]->name << ": " << terminals[i]->otype << "\n"; */
                         
                 }
                 /* cout << "valid terminals: "; */
-                /* for (const auto& i : ti) cout << terminals.at(i)->name << ","; cout << "\n"; */
+                /* for (const auto& i : ti) */ 
+                /*     cout << terminals[i]->name << "(" << terminals[i]->otype << ", " */ 
+                /*          << tw[i] << "), "; */ 
+                /* cout << "\n"; */
                 
                 if(ti.size() > 0 && tw.size() > 0)
                 {
                     auto t = terminals[r.random_choice(ti,tw)]->clone();
-                    /* std::cout << t->name << " "; */
+                    /* std::cout << "chose " << t->name << " "; */
                     program.push_back(t->rnd_clone());
                 }
                 else
@@ -146,8 +148,8 @@ namespace FT{
                 bool bterms = in(term_types, 'b');   // are there boolean terminals?
                 bool cterms = in(term_types, 'c');   // are there categorical terminals?
                 bool zterms = in(term_types, 'z');   // are there boolean terminals?
-                /* std::cout << "bterms: " << bterms << ",cterms: " << cterms << ",zterms: " << zterms */ 
-                /*             << "\n"; */
+                /* std::cout << "bterms: " << bterms << ",cterms: " << cterms 
+                 * << ",zterms: " << zterms << "\n"; */
                 for (size_t i = 0; i<functions.size(); ++i)
                     if (functions[i]->otype==otype &&
                         (max_d>1 || functions[i]->arity['f']==0 || fterms) &&
@@ -159,7 +161,7 @@ namespace FT{
                     }
                 
                 if (fi.size()==0){
-                    /* cout << "fi size = 0\n"; */
+                    cout << "fi size = 0\n";
 
                     if(otype == 'z')
                     {
@@ -209,7 +211,9 @@ namespace FT{
                 for (size_t i = 0; i < chosen->arity['z']; ++i)
                     make_tree(program, functions, terminals, max_d-1, term_weights, 'z', term_types);
             }
-
+            
+            /* std::cout << "finished program: ["; */
+            /* for (const auto& p : program ) std::cout << p->name << " "; */
         }
 
         void make_program(NodeVector& program, 
@@ -218,10 +222,6 @@ namespace FT{
                           const vector<double>& term_weights, int dim, char otype, 
                           vector<string> longitudinalMap, const vector<char>& term_types)
         {
-            /* cout << "ttypes: \n"; */
-            /* for (const auto& t : term_types) */
-            /*     cout << t << " "; */ 
-            /* cout << "\n"; */
             for (unsigned i = 0; i<dim; ++i)    // build trees
                 make_tree(program, functions, terminals, max_d, term_weights, otype, term_types);
             
@@ -242,7 +242,7 @@ namespace FT{
 
             #pragma omp parallel for
             for (unsigned i = 1; i< individuals.size(); ++i)
-            {           
+            {          
                 // pick a dimensionality for this individual
                 int dim = r.rnd_int(1,params.max_dim);      
                 // pick depth from [params.min_depth, params.max_depth]
@@ -257,7 +257,7 @@ namespace FT{
                 make_program(individuals[i].program, params.functions, params.terminals, depth,
                              params.term_weights,dim,ot, params.longitudinalMap, params.ttypes);
                 
-                /* std::cout << individuals[i].program_str() + " = "; */
+                /* std::cout << individuals[i].program_str() + " -> "; */
                 /* std::cout << individuals[i].get_eqn() + "\n"; */
                
                 // set location of individual and increment counter             

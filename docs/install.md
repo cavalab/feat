@@ -1,4 +1,4 @@
-# Installing
+# Installation
 
 To see our installation process from scratch, check out the [Travis install file](http://github.com/lacava/feat/blob/master/ci/.travis_install.sh).
 
@@ -20,13 +20,13 @@ cd python
 python setup.py install
 ```
 
-# Dependencies
+## Dependencies
 
-## Eigen 
+### Eigen 
 
 Eigen is a header only package. We need Eigen 3 or greater. 
 
-### Debian/Ubuntu 
+#### Debian/Ubuntu 
 
 On Debian systems, you can grab the package: 
 
@@ -44,22 +44,23 @@ mv eigen-eigen*/* eigen-3.3.4
 export EIGEN3_INCLUDE_DIR="$(pwd)/eigen-3.3.4/"
 ```
 
-## Shogun
+### Shogun
 
-You don't have to compile Shogun, just download the binaries. [Their install guide is good.](https://github.com/shogun-toolbox/shogun/blob/develop/doc/readme/INSTALL.md#binaries). We've listed two of the options here.
+You don't have to compile Shogun, just download the binaries. [Their install guide is good.](https://github.com/shogun-toolbox/shogun/blob/develop/doc/readme/INSTALL.md#binaries) We've listed two of the options here.
 
-### Anaconda
+#### Anaconda
 
 A good option for Anaconda users is the Shogun Anaconda package. If you use conda, you can get what you need by 
 
     conda install -c conda-forge shogun-cpp
 
-If you do this, you need cmake to find Anaconda's library and include directories. Set these two variables:
+If you do this, you need tell cmake where to find Anaconda's library and include directories. 
+Set these two variables appropriately:
 
     export SHOGUN_LIB=/home/travis/miniconda/lib/
     export SHOGUN_DIR=/home/travis/miniconda/include/
 
-### Debian/Ubuntu
+#### Debian/Ubuntu
 
 You can also get the Shogun packages:
 
@@ -68,13 +69,12 @@ You can also get the Shogun packages:
     sudo apt-get install -qq --force-yes --no-install-recommends libshogun18
     sudo apt-get install -qq --force-yes --no-install-recommends libshogun-dev
 
-# Running the tests 
+## Running the tests 
 
-*This is totally optional!* If you want to run the tests, you need to install [Google
+*(optional)* If you want to run the tests, you need to install [Google
 Test](https://github.com/google/googletest). A useful guide to doing so is available
 [here](https://www.eriksmistad.no/getting-started-with-google-test-on-ubuntu/). Then you can use
 cmake to build the tests. From the repo root,
-
 
     ./configure tests   # builds the test Makefile
     make -C build tests # compiles the tests

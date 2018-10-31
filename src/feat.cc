@@ -213,7 +213,7 @@ string Feat::get_representation(){ return best_ind.get_eqn();}
 string Feat::get_model()
 {   
     vector<string> features = best_ind.get_features();
-    vector<double> weights = p_ml->get_weights();
+    vector<double> weights = best_ind.ml->get_weights();
     vector<double> aweights(weights.size());
     for (int i =0; i<aweights.size(); ++i) 
         aweights[i] = fabs(weights[i]);
@@ -293,7 +293,7 @@ string Feat::get_eqns(bool front)
 /// return the coefficients or importance scores of the best model. 
 ArrayXd Feat::get_coefs()
 {
-    auto tmpw = p_ml->get_weights();
+    auto tmpw = best_ind.ml->get_weights();
     ArrayXd w = ArrayXd::Map(tmpw.data(), tmpw.size());
     return w;
 }
@@ -416,7 +416,7 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
         set_dtypes(find_dtypes(X));
    
     N.fit_normalize(X,params.dtypes);                   // normalize data
-    p_ml = make_shared<ML>(params); // intialize ML
+    /* p_ml = make_shared<ML>(params); // intialize ML */
     p_pop = make_shared<Population>(params.pop_size);
     p_eval = make_shared<Evaluation>(params.scorer);
 
@@ -470,6 +470,7 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
         random = true;
 
     p_pop->init(best_ind,params,random);
+    cout << "pop initialized\n";
     params.msg("Initial population:\n"+p_pop->print_eqns(),3);
 
     // resize F to be twice the pop-size x number of samples
@@ -640,12 +641,16 @@ void Feat::final_model(DataRef& d)
     bool pass = true;
 
     /* MatrixXd Phi = transform(X); */
-    MatrixXd Phi = best_ind.out(*d.o, params);        
-
-    shared_ptr<CLabels> yhat = p_ml->fit(Phi, d.o->y, params, pass, best_ind.dtypes);
+    /* MatrixXd Phi = best_ind.out(*d.o, params); */        
+    
+    shared_ptr<CLabels> yhat = best_ind.fit(*d.o, params, pass);
     VectorXd tmp;
     /* params.set_sample_weights(y);   // need to set new sample weights for y, */ 
                                     // which is probably from a validation set
+    cout << "d.o->y: " << d.o->y.transpose() << "\n";
+    auto yh = yhat->get_values();
+    cout << "yhat: ";
+    yh.display_vector();
     double score = p_eval->score(d.o->y,yhat,tmp,params.class_weights);
     params.msg("final_model score: " + std::to_string(score),2);
 }
@@ -765,14 +770,14 @@ VectorXd Feat::predict(MatrixXd& X,
                        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
 {        
     MatrixXd Phi = transform(X, Z);
-    return p_ml->predict_vector(Phi);        
+    return best_ind.ml->predict_vector(Phi);        
 }
 
 shared_ptr<CLabels> Feat::predict_labels(MatrixXd& X,
                        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
 {        
     MatrixXd Phi = transform(X, Z);
-    return p_ml->predict(Phi);        
+    return best_ind.ml->predict(Phi);        
 }
 
 VectorXd Feat::predict(double * X, int rowsX,int colsX)
@@ -797,7 +802,7 @@ ArrayXXd Feat::predict_proba(MatrixXd& X,
                          std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
 {
     MatrixXd Phi = transform(X, Z);
-    return p_ml->predict_proba(Phi);        
+    return best_ind.ml->predict_proba(Phi);        
 }
 
 ArrayXXd Feat::predict_proba_with_z(double * X, int rowsX,int colsX, 
