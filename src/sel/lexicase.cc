@@ -18,21 +18,19 @@ namespace FT{
         {
             /*! Selection according to lexicase selection for classification and epsilon-lexicase
              * selection for regression. 
+             * @param pop: population
+             * @param F: n_samples X popsize matrix of model outputs. 
+             * @param params: parameters.
              *
-             * Input: 
+             * @returns selected: vector of indices corresponding to pop that are selected.
              *
-             *      F: n_samples X popsize matrix of model outputs. 
-             *      params: parameters.
-             *
-             * Output:
-             *
-             *      selected: vector of indices corresponding to pop that are selected.
-             *      In selection mode, parents are selected among the first half of columns of F since
-             *      it is assumed that we are selecting for offspring to fill the remaining columns. 
+             * In selection mode, parents are selected among the first half of columns of F since
+             * it is assumed that we are selecting for offspring to fill the remaining columns. 
              */            
+
             unsigned int N = F.rows(); //< number of samples
             unsigned int P = F.cols()/2; //< number of individuals
-
+            
             // define epsilon
             ArrayXd epsilon = ArrayXd::Zero(N);
           
@@ -136,7 +134,7 @@ namespace FT{
                     }
                 }
                 if (!match)
-                    std::cout << "no loc matching " << f << " in pop\n";
+                    HANDLE_ERROR_THROW("no loc matching " + std::to_string(f) + " in pop");
                 match = false;
             }
             if (selected.size() != F_locs.size()){

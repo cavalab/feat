@@ -50,7 +50,7 @@ ids = np.array([1, ...])
 est.fit(X,y,zfile,ids)
 ```
 
-This means that `id=1` associates all data in `Z` with id 1 with the first row of `X` and `y`.
+This means that `id=1` associates all data in `Z` with the first row of `X` and `y`.
 
 See [here](./../examples/longitudinal.md) for an example.
 
