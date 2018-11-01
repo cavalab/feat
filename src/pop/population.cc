@@ -161,7 +161,6 @@ namespace FT{
                     }
                 
                 if (fi.size()==0){
-                    cout << "fi size = 0\n";
 
                     if(otype == 'z')
                     {
