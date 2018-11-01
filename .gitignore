@@ -11,3 +11,5 @@ __pycache__
 feat.egg-info
 python/pyfeat.cpp
 docs/api/c/
+site/
+*.log

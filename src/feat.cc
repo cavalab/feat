@@ -647,10 +647,6 @@ void Feat::final_model(DataRef& d)
     VectorXd tmp;
     /* params.set_sample_weights(y);   // need to set new sample weights for y, */ 
                                     // which is probably from a validation set
-    cout << "d.o->y: " << d.o->y.transpose() << "\n";
-    auto yh = yhat->get_values();
-    cout << "yhat: ";
-    yh.display_vector();
     double score = p_eval->score(d.o->y,yhat,tmp,params.class_weights);
     params.msg("final_model score: " + std::to_string(score),2);
 }
