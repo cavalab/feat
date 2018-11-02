@@ -68,8 +68,6 @@ namespace FT {
 	
             typedef VectorXd (*callback)(const VectorXd&, shared_ptr<CLabels>&, const vector<float>&);
             
-            typedef VectorXd (*callback2)(const VectorXd&, const VectorXd&);
-            
             std::map<string, callback> d_score_hash;
             std::map<string, callback> score_hash;
                     
@@ -91,9 +89,6 @@ namespace FT {
             double a;                   //< momentum
             callback d_cost_func;       //< derivative of cost function pointer
             callback cost_func;         //< cost function pointer
-            
-            callback2 d_cost_func2;       //< derivative of cost function pointer
-            callback2 cost_func2;         //< cost function pointer
             
             int iters;                  //< iterations
             double epk;                 //< current learning rate 
