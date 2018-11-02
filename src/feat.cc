@@ -300,14 +300,15 @@ ArrayXd Feat::get_coefs()
 
 /// get longitudinal data from file s
 std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>> Feat::get_Z(string s, 
-        long * idx, int idx_size)
+        int * idx, int idx_size)
 {
-
     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z;
-    vector<long> ids(idx,idx+idx_size);
+    vector<int> ids(idx,idx+idx_size);
     load_partial_longitudinal(s,Z,',',ids);
-    for (auto& z : Z)
-        reorder_longitudinal(z.second.first, z.second.second, ids);
+    /* for (auto& z : Z){ */
+    /*     reorder_longitudinal(z.second.first, ids); */
+    /*     reorder_longitudinal(z.second.second, ids); */
+    /* } */
     /* cout << "Z:\n"; */
     /* for (auto& z : Z) */
     /* { */
@@ -410,12 +411,11 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
        params.set_classes(y);       
        params.set_scorer(scorer);
     } 
-
+    
     if (params.dtypes.size()==0)    // set feature types if not set
         set_dtypes(find_dtypes(X));
    
     N.fit_normalize(X,params.dtypes);                   // normalize data
-
     p_ml = make_shared<ML>(params); // intialize ML
     p_pop = make_shared<Population>(params.pop_size);
     p_eval = make_shared<Evaluation>(params.scorer);
@@ -431,9 +431,7 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     DataRef d(X, y, Z, params.classification);
     //DataRef d;
     //d.setOriginalData(&data);
-    
     d.train_test_split(params.shuffle, params.split);
-     
     // define terminals based on size of X
     params.set_terminals(d.o->X.rows(), d.o->Z);        
 
@@ -624,7 +622,7 @@ void Feat::fit(double * X, int rowsX, int colsX, double * Y, int lenY)
 }
 
 void Feat::fit_with_z(double * X, int rowsX, int colsX, double * Y, int lenY, string s, 
-                long * idx, int idx_size)
+                int * idx, int idx_size)
 {
 
     MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
@@ -746,7 +744,7 @@ MatrixXd Feat::transform(double * X, int rows_x, int cols_x)
     
 }
 
-MatrixXd Feat::transform_with_z(double * X, int rowsX, int colsX, string s, long * idx, int idx_size)
+MatrixXd Feat::transform_with_z(double * X, int rowsX, int colsX, string s, int * idx, int idx_size)
 {
     MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
     auto Z = get_Z(s, idx, idx_size);
@@ -784,7 +782,7 @@ VectorXd Feat::predict(double * X, int rowsX,int colsX)
 }
 
 VectorXd Feat::predict_with_z(double * X, int rowsX,int colsX, 
-                                string s, long * idx, int idx_size)
+                                string s, int * idx, int idx_size)
 {
 
     MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
@@ -803,7 +801,7 @@ ArrayXXd Feat::predict_proba(MatrixXd& X,
 }
 
 ArrayXXd Feat::predict_proba_with_z(double * X, int rowsX,int colsX, 
-                                string s, long * idx, int idx_size)
+                                string s, int * idx, int idx_size)
 {
     MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
     auto Z = get_Z(s, idx, idx_size);
