@@ -7,6 +7,15 @@ cmake --version
 echo "sudo cmake version:"
 sudo cmake --version
 
+echo "installing pip"
+sudo apt install python3-pip
+
+echo "installing mkdocs"
+sudo pip3 install mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
+
+echo "mkdocs version"
+mkdocs --version
+
 echo "installing eigen..."
 #wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"
 wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.bz2"
