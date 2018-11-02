@@ -74,7 +74,7 @@ namespace FT{
 
             cout << "dtypes: " ; 
             for (unsigned i = 0; i < dtypes.size(); ++i) 
-                cout << names.at(i) << ", " << dtypes.at(i);
+                cout << names.at(i) << " (" << dtypes.at(i) << "), ";
             cout << "\n";
 
 
