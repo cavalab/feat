@@ -76,9 +76,4 @@ output should look like
     predicting with best_ind
     test score: 4.24600e+00
     done!
-
-
-### tab-delimited csv files
-
-When using tab-delimited csv files as input, specify `-sep \\t` or `-sep "\t"` at the command line. 
-
+    

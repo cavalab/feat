@@ -247,11 +247,11 @@ namespace FT {
                     for (int i = 0; i < dNode->arity['f']; i++) {
                         pop<ArrayXd>(&stack.f);
                     }
-                    for (int i = 0; i < dNode->arity['c']; i++) {
-                        pop<ArrayXi>(&stack.c);
-                    }
                     for (int i = 0; i < dNode->arity['b']; i++) {
                         pop<ArrayXb>(&stack.b);
+                    }
+                    for (int i = 0; i < dNode->arity['c']; i++) {
+                        pop<ArrayXi>(&stack.c);
                     }
                     if (!n_derivatives.empty()) {
                         derivatives.push_back(pop_front<ArrayXd>(&n_derivatives));

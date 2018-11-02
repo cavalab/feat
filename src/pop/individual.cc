@@ -239,22 +239,22 @@ namespace FT{
             
             if (stack.f.size()==0)
             {
-                if (stack.c.size() == 0)
+                if (stack.b.size() == 0)
                 {
-                    if (stack.b.size() == 0)
+                    if (stack.c.size() == 0)
                         HANDLE_ERROR_THROW("Error: no outputs in stacks");
                     
-                    cols = stack.b.top().size();
+                    cols = stack.c.top().size();
                 }
                 else
-                    cols = stack.c.top().size();
+                    cols = stack.b.top().size();
             }
             else
                 cols = stack.f.top().size();
                    
             int rows_f = stack.f.size();
-            int rows_c = stack.c.size();
             int rows_b = stack.b.size();
+            int rows_c = stack.c.size();
             
             dtypes.clear();        
             Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
@@ -267,6 +267,12 @@ namespace FT{
                  Phi.row(i) = Row;
                  dtypes.push_back('f'); 
             }
+            // convert stack_b to Phi       
+            for (unsigned int i=0; i<rows_b; ++i)
+            {
+                Phi.row(i+rows_f+rows_c) = ArrayXb::Map(stack.b.at(i).data(),cols).cast<double>();
+                dtypes.push_back('b');
+            }
             // add stack_c to Phi
             for (unsigned int i=0; i<rows_c; ++i)
             {    
@@ -274,12 +280,6 @@ namespace FT{
                  clean(Row); // remove nans, set infs to max and min
                  Phi.row(i+rows_f) = Row;
                  dtypes.push_back('c');
-            }
-            // convert stack_b to Phi       
-            for (unsigned int i=0; i<rows_b; ++i)
-            {
-                Phi.row(i+rows_f+rows_c) = ArrayXb::Map(stack.b.at(i).data(),cols).cast<double>();
-                dtypes.push_back('b');
             }       
 
             return Phi;
@@ -338,16 +338,16 @@ namespace FT{
                                                              (program.at(i)->arity['f'] - j)));
                         }
                         
-                        for (int j = 0; j < program.at(i)->arity['c']; j++) {
-                            /* cout << "push back float arg for " << program.at(i)->name << "\n"; */
-                            stack_trace.at(trace_idx).c.push_back(stack.c.at(stack.c.size() - 
-                                                             (program.at(i)->arity['c'] - j)));
-                        }
-                        
                         for (int j = 0; j < program.at(i)->arity['b']; j++) {
                             /* cout << "push back bool arg for " << program.at(i)->name << "\n"; */
                             stack_trace.at(trace_idx).b.push_back(stack.b.at(stack.b.size() - 
                                                              (program.at(i)->arity['b'] - j)));
+                        }
+
+                        for (int j = 0; j < program.at(i)->arity['c']; j++) {
+                            /* cout << "push back float arg for " << program.at(i)->name << "\n"; */
+                            stack_trace.at(trace_idx).c.push_back(stack.c.at(stack.c.size() - 
+                                                             (program.at(i)->arity['c'] - j)));
                         }
                     }
             	    //cout<<"***enter here "<<n->name<<"\n";
@@ -378,8 +378,8 @@ namespace FT{
                 cols = stack.f.top().size();
                    
             int rows_f = stack.f.size();
-            int rows_c = stack.c.size();
             int rows_b = stack.b.size();
+            int rows_c = stack.c.size();
             
             dtypes.clear();        
             Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
@@ -393,6 +393,13 @@ namespace FT{
                  dtypes.push_back('f'); 
             }
             
+            // convert stack_b to Phi       
+            for (unsigned int i=0; i<rows_b; ++i)
+            {
+                Phi.row(i+rows_f+rows_c) = ArrayXb::Map(stack.b.at(i).data(),cols).cast<double>();
+                dtypes.push_back('b');
+            }
+
             // add stack_c to Phi
             for (unsigned int i=0; i<rows_c; ++i)
             {    
@@ -400,13 +407,6 @@ namespace FT{
                  clean(Row); // remove nans, set infs to max and min
                  Phi.row(i+rows_f) = Row;
                  dtypes.push_back('c'); 
-            }
-            
-            // convert stack_b to Phi       
-            for (unsigned int i=0; i<rows_b; ++i)
-            {
-                Phi.row(i+rows_f+rows_c) = ArrayXb::Map(stack.b.at(i).data(),cols).cast<double>();
-                dtypes.push_back('b');
             }       
             //Phi.transposeInPlace();
             return Phi;
@@ -425,7 +425,8 @@ namespace FT{
                 	if(stack.check_s(n->arity))
                     	n->eval_eqn(stack);
                     else
-                        HANDLE_ERROR_THROW("get_eqn() error: node " + n->name + " in " + program_str() + " is invalid\n");
+                        HANDLE_ERROR_THROW("get_eqn() error: node " + n->name + " in " 
+                                           + program_str() + " is invalid\n");
                 }
                 // tie stack outputs together to return representation
                 for (auto s : stack.fs) 
@@ -452,12 +453,15 @@ namespace FT{
                 if(stack.check_s(n->arity))
                     n->eval_eqn(stack);
                 else
-                    HANDLE_ERROR_THROW("get_eqn() error: node " + n->name + " in " + program_str() + " is invalid\n");
+                    HANDLE_ERROR_THROW("get_eqn() error: node " + n->name + " in " 
+                                       + program_str() + " is invalid\n");
             }
             // tie stack outputs together to return representation
             for (auto s : stack.fs) 
                 features.push_back(s);
             for (auto s : stack.bs) 
+                features.push_back(s);
+            for (auto s : stack.cs)
                 features.push_back(s);
 
             return features;

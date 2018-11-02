@@ -197,7 +197,7 @@ namespace FT{
          */
         void load_partial_longitudinal(const std::string & path,
                                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
-                               char sep, const vector<long>& idx)
+                               char sep, const vector<int>& idx)
         {
             /* loads data from the longitudinal file, with idx providing the id numbers of each row in
              * the main data (X and y).
@@ -207,7 +207,7 @@ namespace FT{
             /* cout << idx.size() << " indices\n"; */
             /* for (unsigned i = 0; i<idx.size(); ++i) */
             /*     cout << i << "," << idx[i] << "\n"; */
-            std::unordered_set<long> idSet; //(idx.begin(), idx.end());
+            std::unordered_set<int> idSet; //(idx.begin(), idx.end());
             /* idSet.insert(idx.begin(), idx.end()); */
             // write out info about unordered_set
             
@@ -313,7 +313,7 @@ namespace FT{
                 if(!firstKey.compare(""))
                     firstKey = name;
                 
-                long sID = std::stol(sampleNo);
+                int sID = std::stol(sampleNo);
                 if(idSet.find(sID) != idSet.end())  // if the sample ID is to be included, store it
                 /* if(in(idx,sNo))  // if the sample ID is to be included, store it */
                 {
