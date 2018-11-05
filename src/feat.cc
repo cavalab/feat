@@ -873,10 +873,11 @@ void Feat::print_stats(std::ofstream& log, double fraction)
     std::cout << std::scientific;
     
     if(params.max_time == -1)
-        std::cout << "Generation " << params.current_gen << "/" << params.gens << " [" + bar + space + "]\n";
+        std::cout << "Generation " << params.current_gen+1 << "/" << params.gens 
+                  << " [" + bar + space + "]\n";
     else
         std::cout << std::fixed << "Time elapsed "<< timer << "/" << params.max_time <<
-                     " seconds (Generation "<< params.current_gen <<") [" + bar + space + "]\n";
+                     " seconds (Generation "<< params.current_gen+1 <<") [" + bar + space + "]\n";
         
     std::cout << "Min Loss\tMedian Loss\tMedian (Max) Size\tTime (s)\n"
               <<  best_score << "\t" << med_score << "\t" ;
