@@ -5,12 +5,15 @@ license: GNU/GPL v3
 #ifndef PARAMS_H
 #define PARAMS_H
 // internal includes
-#include "nodewrapper.h"
-#include "nodevector.h"
+#include "pop/nodewrapper.h"
+#include "pop/nodevector.h"
 
-#include "utils.h"
+#include "util/utils.h"
 
 namespace FT{
+
+    using namespace Pop;
+    using namespace Op;
 
     ////////////////////////////////////////////////////////////////////////////////// Declarations
     /*!
@@ -57,7 +60,7 @@ namespace FT{
         int max_time;                               ///< max time for fit method
         bool use_batch;                             ///< whether to use mini batch for training
         bool semantic_xo;                           ///< use semantic crossover  
-                                                        
+
         struct BP 
         {
            int iters;

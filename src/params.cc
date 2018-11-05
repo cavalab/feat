@@ -7,6 +7,7 @@ license: GNU/GPL v3
 
 namespace FT{
 
+    using namespace Util;
         
     Parameters::Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
                char ot, int verbosity, string fs, float cr, unsigned int max_depth, 
@@ -109,7 +110,6 @@ namespace FT{
     /// sets weights for terminals. 
     void Parameters::set_term_weights(const vector<double>& w)
     {           
-        //assert(w.size()==terminals.size()); 
         /* cout << "weights: "; for (auto tmp : w) cout << tmp << " " ; cout << "\n"; */ 
         string weights;
         double u = 1.0/double(w.size());
@@ -385,6 +385,9 @@ namespace FT{
             
         else if (str.compare("count")==0)
             return std::unique_ptr<Node>(new NodeCount());
+        
+        else if (str.compare("recent")==0)
+            return std::unique_ptr<Node>(new NodeRecent());
 
         // variables and constants
         else if (str.compare("x") == 0)
