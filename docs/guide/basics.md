@@ -7,7 +7,7 @@ is available in [this preprint.](https://arxiv.org/abs/1807.00981)
 
 ## Representation Learning
 
-The goal of representation learning in regression or classification is to learn a new representation of your data that makes it easier to model. As an eample, consider the figure below[^1], where each point is a sample belonging to one of 4 colored classes. Here, we want to learn the equations on the axes of the right plot (labelled on the axes), which will make it easier classify the data belonging to each class.   
+The goal of representation learning in regression or classification is to learn a new representation of your data that makes it easier to model. As an example, consider the figure below[^1], where each point is a sample belonging to one of 4 colored classes. Here, we want to learn the equations on the axes of the right plot (labelled on the axes), which will make it easier classify the data belonging to each class.   
 
 ![Representation Learning Example](rep_learning_demo_2d.svg)
 *(Left) raw data. (Right) Data after transformation according to a 2d representation shown on the axes[^1].*
