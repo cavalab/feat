@@ -21,8 +21,8 @@ nav:
     - Introduction: index.md
     - Installation: install.md
     - User Guide: 
+        - Overview: guide/overview.md
         - Basics: guide/basics.md
-        - Data: guide/data.md
         # - Configuration: guide/configuration.md
     - Examples: 
         - Command line: examples/command_line.md

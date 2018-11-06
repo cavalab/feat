@@ -14,7 +14,7 @@ interpreted correctly.* See the datasets in the examples folder for guidance.
 
 We will run Feat on the [energy
 efficiency](https://archive.ics.uci.edu/ml/datasets/Energy+efficiency) dataset from UCI, which is
-included in `docs/examples/d_enc.txt`. 
+included in `docs/examples/data/d_enc.txt`. 
 To run Feat with a population 1000 for 100 generations using a random seed of 42, type
 
 ```
