@@ -123,6 +123,12 @@ namespace shogun
 	     */
 	    virtual bool is_label_valid(CLabels* lab) const;
 
+        /** WGL: classify data using Classification Tree
+	     * @param data data to be classified
+	     * @return BinaryLabels corresponding to labels of various test vectors
+	     */
+	    virtual CBinaryLabels* apply_binary(CFeatures* data=NULL);
+
 	    /** classify data using Classification Tree
 	     * @param data data to be classified
 	     * @return MulticlassLabels corresponding to labels of various test vectors
@@ -231,6 +237,9 @@ namespace shogun
          */
         std::vector<double> feature_importances();
         
+        /** WGL: gets the probability estimate for each sample
+         * TODO: make this set_probabilities
+         */
         SGVector<float64_t> get_certainty_vector() const;
    
     protected:
