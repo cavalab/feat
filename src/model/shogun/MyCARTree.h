@@ -241,7 +241,10 @@ namespace shogun
          * TODO: make this set_probabilities
          */
         SGVector<float64_t> get_certainty_vector() const;
-   
+ 
+        /** WGL: sets the probabilities on each label according to m_certainty
+         */
+        void set_probabilities(CLabels* labels);  
     protected:
 	    /** train machine - build CART from training data
 	     * @param data training data
@@ -425,7 +428,8 @@ namespace shogun
         /** WGL: recursive function for getting node importance 
          */
         void get_importance(bnode_t* node, vector<double>& importances);
-
+        
+        
     public:
 	    /** denotes that a feature in a vector is missing MISSING = NOT_A_NUMBER */
 	    static const float64_t MISSING;

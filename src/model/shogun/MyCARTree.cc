@@ -112,6 +112,19 @@ bool CMyCARTree::is_label_valid(CLabels* lab) const
         return false;
 }
 
+CBinaryLabels* CMyCARTree::apply_binary(CFeatures* data)
+{
+    REQUIRE(data, "Data required for classification in apply_multiclass\n")
+
+    // apply multiclass starting from root
+    bnode_t* current=dynamic_cast<bnode_t*>(get_root());
+
+    REQUIRE(current, "Tree machine not yet trained.\n");
+    CLabels* ret=apply_from_current_node(dynamic_cast<CDenseFeatures<float64_t>*>(data), current);
+
+    SG_UNREF(current);
+    return dynamic_cast<CBinaryLabels*>(ret);
+}
 CMulticlassLabels* CMyCARTree::apply_multiclass(CFeatures* data)
 {
     REQUIRE(data, "Data required for classification in apply_multiclass\n")
@@ -1217,91 +1230,6 @@ SGVector<float64_t> CMyCARTree::get_certainty_vector() const
     return m_certainty;
 }
 
-/* CLabels* CMyCARTree::apply_from_current_node(CDenseFeatures<float64_t>* feats, bnode_t* current) */
-/* { */
-/*     int32_t num_vecs=feats->get_num_vectors(); */
-/*     REQUIRE(num_vecs>0, "No data provided in apply\n"); */
-
-/*     SGVector<float64_t> labels(num_vecs); */
-/*     for (int32_t i=0;i<num_vecs;i++) */
-/*     { */
-/*         SGVector<float64_t> sample=feats->get_feature_vector(i); */
-/*         bnode_t* node=current; */
-/*         SG_REF(node); */
-
-/*         // until leaf is reached */
-/*         while(node->data.num_leaves!=1) */
-/*         { */
-/*             bnode_t* leftchild=node->left(); */
-
-/*             if (m_nominal[node->data.attribute_id]) */
-/*             { */
-/*                 SGVector<float64_t> comp=leftchild->data.transit_into_values; */
-/*                 bool flag=false; */
-/*                 for (int32_t k=0;k<comp.vlen;k++) */
-/*                 { */
-/*                     if (comp[k]==sample[node->data.attribute_id]) */
-/*                     { */
-/*                         flag=true; */
-/*                         break; */
-/*                     } */
-/*                 } */
-
-/*                 if (flag) */
-/*                 { */
-/*                     SG_UNREF(node); */
-/*                     node=leftchild; */
-/*                     SG_REF(leftchild); */
-/*                 } */
-/*                 else */
-/*                 { */
-/*                     SG_UNREF(node); */
-/*                     node=node->right(); */
-/*                 } */
-/*             } */
-/*             else */
-/*             { */
-/*                 if (sample[node->data.attribute_id]<=leftchild->data.transit_into_values[0]) */
-/*                 { */
-/*                     SG_UNREF(node); */
-/*                     node=leftchild; */
-/*                     SG_REF(leftchild); */
-/*                 } */
-/*                 else */
-/*                 { */
-/*                     SG_UNREF(node); */
-/*                     node=node->right(); */
-/*                 } */
-/*             } */
-
-/*             SG_UNREF(leftchild); */
-/*         } */
-
-/*         labels[i]=node->data.node_label; */
-/*         SG_UNREF(node); */
-/*     } */
-
-/*     switch(m_mode) */
-/*     { */
-/*         case PT_MULTICLASS: */
-/*         { */
-/*             CMulticlassLabels* mlabels=new CMulticlassLabels(labels); */
-/*             return mlabels; */
-/*         } */
-
-/*         case PT_REGRESSION: */
-/*         { */
-/*             CRegressionLabels* rlabels=new CRegressionLabels(labels); */
-/*             return rlabels; */
-/*         } */
-
-/*         default: */
-/*             SG_ERROR("mode should be either PT_MULTICLASS or PT_REGRESSION\n"); */
-/*     } */
-
-/*     return NULL; */
-/* } */
-
 void CMyCARTree::prune_by_cross_validation(CDenseFeatures<float64_t>* data, int32_t folds)
 {
     int32_t num_vecs=data->get_num_vectors();
@@ -1670,4 +1598,17 @@ void CMyCARTree::get_importance(bnode_t* node, vector<double>& importances)
        SG_UNREF(left);
        SG_UNREF(right);
    }
+}
+// WGL: updated definitions to allow probabilities to be calculated
+void CMyCARTree::set_probabilities(CLabels* labels)
+{
+    int size = labels->get_values().size();
+    if (m_certainty.size() != size)
+        std::cout << "ERROR: mismatch in size btw m_certainty and labels\n";
+    // set probabilities using m_certainty
+    for (int i = 0; i < size; ++i)
+    {
+        labels->set_value(m_certainty[i],i);
+    }
+    dynamic_cast<CBinaryLabels*>(labels)->scores_to_probabilities();
 }
