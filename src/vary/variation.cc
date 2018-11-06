@@ -156,7 +156,7 @@ namespace FT{
             /*! 1/n point mutation. 
              * @param child: individual to be mutated
              * @param params: parameters 
-             * @returns modified child
+             * @return modified child
              * */
             params.msg("\tpoint mutation",3);
             float n = child.size(); 
@@ -206,7 +206,7 @@ namespace FT{
             /*! insertion mutation. 
              * @param child: indiviudal to be mutated
              * @param params: parameters
-             * @returns modified child
+             * @return modified child
              * */
             
             params.msg("\tinsert mutation",3);

@@ -10,14 +10,24 @@ using namespace shogun;
 namespace FT{
 
     namespace Model{
-	
+
+        
+
         ML::ML(const Parameters& params, bool norm)
         {
             /*!
              * use string to specify a desired ML algorithm from shogun.
              */
+            ml_hash["LeastAngleRegression"] = LARS;         
+            ml_hash["LinearRidgeRegression"] = Ridge;
+            ml_hash["SVM"] = SVM;
+            ml_hash["RandomForest"] = RF;
+            ml_hash["CART"] = CART;
+            ml_hash["LR"] = LR;
+
+            ml_str  = params.ml;
+            ml_type = ml_hash[params.ml];
             
-            ml_type = params.ml;
             prob_type = PT_REGRESSION;
             max_train_time=30; 
             normalize = norm;
@@ -33,11 +43,11 @@ namespace FT{
         void ML::init()
         {
             // set up ML based on type
-            if (!ml_type.compare("LeastAngleRegression"))
+            if (ml_type == LARS)
                 p_est = make_shared<sh::CLeastAngleRegression>();
-            else if (!ml_type.compare("LinearRidgeRegression"))
+            else if (ml_type == Ridge)
                 p_est = make_shared<sh::CLinearRidgeRegression>();
-            else if (!ml_type.compare("RandomForest"))
+            else if (ml_type == RF)
             {
                 p_est = make_shared<sh::CRandomForest>();
                 dynamic_pointer_cast<sh::CRandomForest>(p_est)->
@@ -56,7 +66,7 @@ namespace FT{
                 }
                 
             }
-            else if (!ml_type.compare("CART"))
+            else if (ml_type == CART)
             {
                 p_est = make_shared<sh::CMyCARTree>();
                 dynamic_pointer_cast<sh::CMyCARTree>(p_est)->
@@ -65,7 +75,7 @@ namespace FT{
                                                            set_max_depth(6);                
             }
                            
-            else if (!ml_type.compare("SVM"))
+            else if (ml_type == SVM)
             {               
             	if(prob_type==PT_BINARY)
                     p_est = make_shared<sh::CMyLibLinear>(sh::L2R_L2LOSS_SVC_DUAL);       
@@ -79,7 +89,7 @@ namespace FT{
                 	p_est = make_shared<sh::CLibLinearRegression>(); 
                 
             }
-            else if (!ml_type.compare("LR"))
+            else if (ml_type == LR)
             {
                 assert(prob_type!=PT_REGRESSION && "LR only works with classification.");
                 if (prob_type == PT_BINARY){
@@ -101,7 +111,7 @@ namespace FT{
             
             }
             else
-                HANDLE_ERROR_NO_THROW("'" + ml_type + "' is not a valid ml choice\n");
+                HANDLE_ERROR_NO_THROW("'" + ml_str + "' is not a valid ml choice\n");
             
             p_est->set_max_train_time(max_train_time);  // set maximum training time per model
         }
@@ -110,15 +120,15 @@ namespace FT{
         
         void ML::set_dtypes(const vector<char>& dtypes)
         {
-            if (!ml_type.compare("CART") || !ml_type.compare("RandomForest"))
+            if (ml_type == CART || ml_type == RF)
             {
                 // set attribute types True if boolean, False if continuous/ordinal
                 sh::SGVector<bool> dt(dtypes.size());
                 for (unsigned i = 0; i< dtypes.size(); ++i)
                     dt[i] = dtypes[i] == 'b';
-                if (!ml_type.compare("CART"))
+                if (ml_type == CART)
                     dynamic_pointer_cast<sh::CMyCARTree>(p_est)->set_feature_types(dt);
-                else if (!ml_type.compare("RandomForest"))
+                else if (ml_type == RF)
                     dynamic_pointer_cast<sh::CRandomForest>(p_est)->set_feature_types(dt);
             }
         }
@@ -126,20 +136,20 @@ namespace FT{
         vector<double> ML::get_weights()
         {    
             /*!
-             * return weight vector from model.
+             * @return weight vector from model.
              */
             vector<double> w;
             
-            if (!ml_type.compare("LeastAngleRegression") || !ml_type.compare("LinearRidgeRegression")||
-            	!ml_type.compare("SVM") || (!ml_type.compare("LR")))
+            if (ml_type == LARS || ml_type == Ridge||
+            	ml_type == SVM || (ml_type == LR))
             {
                 // for multiclass, return the average weight magnitude over the OVR models
-                if(prob_type == PT_MULTICLASS && ( !ml_type.compare("LR") || !ml_type.compare("SVM") ) ) 
+                if(prob_type == PT_MULTICLASS && ( ml_type == LR || ml_type == SVM ) ) 
                 {
                     /* cout << "in get_weights(), multiclass LR\n"; */
                     vector<SGVector<double>> weights;
 
-                    if( !ml_type.compare("LR"))
+                    if( ml_type == LR)
                         weights = dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(p_est)
                                                                                             ->get_w();
                     else //SVM
@@ -184,10 +194,10 @@ namespace FT{
                 /* for (unsigned i =0; i<w.size(); ++i)    // take absolute value of weights */
                 /*     w[i] = fabs(w[i]); */
 	        }
-            else if (!ml_type.compare("CART"))           
+            else if (ml_type == CART)           
                 w = dynamic_pointer_cast<sh::CMyCARTree>(p_est)->feature_importances();
             else
-                HANDLE_ERROR_NO_THROW("ERROR: ML::get_weights not implemented for " + ml_type + "\n");
+                HANDLE_ERROR_NO_THROW("ERROR: ML::get_weights not implemented for " + ml_str + "\n");
             
             /* cout << "get_weights(): w: " << w.size() << ":"; */
             /* for (auto tmp : w) cout << tmp << " " ; */
@@ -201,22 +211,19 @@ namespace FT{
         { 
         	/*!
              * Trains ml on X, y to generate output yhat = f(X). 
+             *     
+             * @param X: n_features x n_samples matrix
+             * @param  y: n_samples vector of training labels
+             * @param params: feat parameters
+             * @param[out] pass: returns True if fit was successful, False if not
+             * @param dtypes: the data types of features in X
              *
-             *  Input: 
-             
-             *       X: n_features x n_samples matrix
-             *       y: n_samples vector of training labels
-             *       params: feat parameters
-             *       ml: the ML model to be trained on X
-             
-             *  Output:
-             
-             *       yhat: n_samples vector of outputs
+             * @return yhat: n_samples vector of outputs
             */ 
             
                     // for random forest we need to set the number of features per bag
             init();
-            if (!ml_type.compare("RandomForest"))
+            if (ml_type == RF)
             {
                 //std::cout << "setting max_feates\n";
                 // set max features to sqrt(n_features)
@@ -224,7 +231,7 @@ namespace FT{
                 dynamic_pointer_cast<sh::CRandomForest>(p_est)->set_num_random_features(max_feats);
             }
             // for tree-based methods we need to specify data types 
-            if (!ml_type.compare("RandomForest") || !ml_type.compare("CART"))
+            if (ml_type == RF || ml_type == CART)
             {            
                 //std::cout << "setting dtypes\n";
                 if (dtypes.empty())
@@ -253,7 +260,7 @@ namespace FT{
             /* cout << "y is " << y.transpose() << "\n"; */
              
             if(prob_type==PT_BINARY && 
-                    (!ml_type.compare("LR") || !ml_type.compare("SVM")))  // binary classification           	
+                    (ml_type == LR || ml_type == SVM))  // binary classification           	
             {
                 p_est->set_labels(some<CBinaryLabels>(SGVector<float64_t>(y), 0.5));       	
                 
@@ -284,16 +291,25 @@ namespace FT{
             shared_ptr<CLabels> labels;
 
             if (prob_type==PT_BINARY && 
-                 (!ml_type.compare("LR") || !ml_type.compare("SVM")))     // binary classification
+                 (ml_type == LR || ml_type == SVM || ml_type == CART))     // binary classification
             {
                 bool proba = params.scorer.compare("log")==0;
 
                 labels = shared_ptr<CLabels>(p_est->apply_binary(features));
                 
                 if (proba)
-                    dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_probabilities(labels.get(), 
-                                                                                     features);
-
+                {
+                    if (ml_type == CART)
+                    {
+                        dynamic_pointer_cast<sh::CMyCARTree>(p_est)->
+                            set_probabilities(labels.get());
+                    }
+                    else
+                    {
+                        dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->
+                            set_probabilities(labels.get(), features);
+                    }
+                }
                 y_pred = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_labels();
 			    /* cout << "y_pred: "; */
 			    /* y_pred.display_vector(); */
@@ -346,7 +362,7 @@ namespace FT{
             shared_ptr<CLabels> labels;
            
             if (prob_type==PT_BINARY && 
-                    (!ml_type.compare("SVM") || !ml_type.compare("LR"))){
+                    (ml_type == SVM || ml_type == LR)){
                 labels = std::shared_ptr<CLabels>(p_est->apply_binary(features));
                 dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_probabilities(labels.get(), 
                                                                                  features);
@@ -371,7 +387,7 @@ namespace FT{
             shared_ptr<CLabels> labels = shared_ptr<CLabels>(predict(X));
                
             if (prob_type==PT_BINARY && 
-                    (!ml_type.compare("SVM") || !ml_type.compare("LR")))
+                    (ml_type == SVM || ml_type == LR))
             {
                 shared_ptr<CBinaryLabels> BLabels = dynamic_pointer_cast<CBinaryLabels>(labels);
                 /* BLabels->scores_to_probabilities(); */
@@ -400,7 +416,7 @@ namespace FT{
         {
             SGVector<double> y_pred;
             if (prob_type==PT_BINARY && 
-                    (!ml_type.compare("SVM") || !ml_type.compare("LR")))
+                    (ml_type == SVM || ml_type == LR))
                 y_pred = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_labels();
             else if (prob_type != PT_REGRESSION)
                 y_pred = dynamic_pointer_cast<sh::CMulticlassLabels>(labels)->get_labels();
@@ -409,7 +425,7 @@ namespace FT{
            
             Map<VectorXd> yhat(y_pred.data(),y_pred.size());
             
-            if (prob_type==PT_BINARY && (!ml_type.compare("LR") || !ml_type.compare("SVM")))
+            if (prob_type==PT_BINARY && (ml_type == LR || ml_type == SVM))
                 // convert -1 to 0
                 yhat = (yhat.cast<int>().array() == -1).select(0,yhat);
 
