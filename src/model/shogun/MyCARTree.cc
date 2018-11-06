@@ -1184,8 +1184,9 @@ CLabels* CMyCARTree::apply_from_current_node(CDenseFeatures<float64_t>* feats, b
 
 		labels[i]=node->data.node_label;
         
-        if (set_certainty)
-			m_certainty[i]=(node->data.total_weight-node->data.weight_minus_node)/node->data.total_weight;
+        if (set_certainty)  // WGL: set certainty of assignment based on sample weights in leaf
+			m_certainty[i]=((node->data.total_weight-node->data.weight_minus_node)/
+                            node->data.total_weight);
 
 		SG_UNREF(node);
 	}
@@ -1210,7 +1211,7 @@ CLabels* CMyCARTree::apply_from_current_node(CDenseFeatures<float64_t>* feats, b
 
 	return NULL;
 }
-        
+// WGL: get the certainty of an output        TODO: change to set_probabilities()
 SGVector<float64_t> CMyCARTree::get_certainty_vector() const
 {
     return m_certainty;
