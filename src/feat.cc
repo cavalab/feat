@@ -518,7 +518,7 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
         g++;
     }
     // =====================
-    if ( stall_count >= params.max_stall)
+    if ( params.max_stall != 0 && stall_count >= params.max_stall)
         params.msg("learning stalled",2);
     else if ( g >= params.gens) 
         params.msg("generation limit reached",2);
