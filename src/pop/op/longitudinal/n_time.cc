@@ -17,26 +17,26 @@ namespace FT{
 	            complexity = 1;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeTime::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeTime::evaluate(const Data& data, State& state)
             {
-                ArrayXd tmp(stack.z.top().first.size());
+                ArrayXd tmp(state.z.top().first.size());
                 
                 int x;
                 
-                for(x = 0; x < stack.z.top().first.size(); x++)
-                    tmp(x) = limited(stack.z.top().first[x])[0];
+                for(x = 0; x < state.z.top().first.size(); x++)
+                    tmp(x) = limited(state.z.top().first[x])[0];
                     
-                stack.z.pop();
+                state.z.pop();
 
-                stack.push<double>(tmp);
+                state.push<double>(tmp);
                 
             }
 
             /// Evaluates the node symbolically
-            void NodeTime::eval_eqn(Stacks& stack)
+            void NodeTime::eval_eqn(State& state)
             {
-                stack.push<double>("time(" + stack.zs.pop() + ")");
+                state.push<double>("time(" + state.zs.pop() + ")");
             }
             
             NodeTime* NodeTime::clone_impl() const { return new NodeTime(*this); }

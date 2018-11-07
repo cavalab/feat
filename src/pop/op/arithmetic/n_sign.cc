@@ -18,22 +18,22 @@ namespace FT{
 
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeSign::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeSign::evaluate(const Data& data, State& state)
             {
-	            ArrayXd x = stack.pop<double>();
+	            ArrayXd x = state.pop<double>();
                 ArrayXd ones = ArrayXd::Ones(x.size());
 
 	            ArrayXd res = ( x > 0).select(ones, 
                                                     (x == 0).select(ArrayXd::Zero(x.size()), 
                                                                     -1*ones)); 
-                stack.push<double>(res);
+                state.push<double>(res);
             }
 
             /// Evaluates the node symbolically
-            void NodeSign::eval_eqn(Stacks& stack)
+            void NodeSign::eval_eqn(State& state)
             {
-                stack.push<double>("sign("+ stack.popStr<double>() +")");
+                state.push<double>("sign("+ state.popStr<double>() +")");
             }
 
             

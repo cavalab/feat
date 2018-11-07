@@ -92,22 +92,7 @@ namespace FT{
                 }
             };
 
-        };
-     
-        bool is_valid_program(NodeVector& program, unsigned num_features, 
-                              vector<string> longitudinalMap);
-       
-        void make_tree(NodeVector& program, 
-                       const NodeVector& functions, 
-                       const NodeVector& terminals, int max_d,  
-                       const vector<double>& term_weights, char otype, const vector<char>& term_types);
-
-        void make_program(NodeVector& program, 
-                          const NodeVector& functions, 
-                          const NodeVector& terminals, int max_d, 
-                          const vector<double>& term_weights, int dim, char otype, 
-                          vector<string> longitudinalMap, const vector<char>& term_types);
-        
+        };        
     }
 }//FT    
 #endif

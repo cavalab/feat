@@ -26,23 +26,23 @@ namespace FT{
                     W = W0;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeTanh::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeTanh::evaluate(const Data& data, State& state)
             {
-                stack.push<double>(limited(tanh(W[0]*stack.pop<double>())));
+                state.push<double>(limited(tanh(W[0]*state.pop<double>())));
             }
 
             /// Evaluates the node symbolically
-            void NodeTanh::eval_eqn(Stacks& stack)
+            void NodeTanh::eval_eqn(State& state)
             {
-                stack.push<double>("tanh(" + stack.popStr<double>() + ")");
+                state.push<double>("tanh(" + state.popStr<double>() + ")");
             }
 
-            ArrayXd NodeTanh::getDerivative(Trace& stack, int loc)
+            ArrayXd NodeTanh::getDerivative(Trace& state, int loc)
             {
                 ArrayXd numerator;
                 ArrayXd denom;
-                ArrayXd x = stack.get<double>()[stack.size<double>()-1];
+                ArrayXd x = state.get<double>()[state.size<double>()-1];
                 switch (loc) {
                     case 1: // d/dw0
                         numerator = 4 * x * exp(2 * this->W[0] * x);
@@ -56,8 +56,8 @@ namespace FT{
                         numerator = 4 * this->W[0] * exp(2 * this->W[0] * x);
                         denom = pow(exp(2 * this->W[0] * x) + 1, 2);
 
-                        // numerator = 4 * W[0] * exp(2 * W[0] * stack.f[stack.f.size() - 1]);
-                        // denom = pow(exp(2 * W[0] * stack.f[stack.f.size()-1]),2);
+                        // numerator = 4 * W[0] * exp(2 * W[0] * state.f[state.f.size() - 1]);
+                        // denom = pow(exp(2 * W[0] * state.f[state.f.size()-1]),2);
                         return numerator/denom;
                 } 
             }

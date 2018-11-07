@@ -27,21 +27,21 @@ namespace FT{
             }
 
             /// Safe log: pushes log(abs(x)) or MIN_DBL if x is near zero. 
-            void NodeLog::evaluate(const Data& data, Stacks& stack)
+            void NodeLog::evaluate(const Data& data, State& state)
             {
-	            ArrayXd x = stack.pop<double>();
-                stack.push<double>( (abs(x) > NEAR_ZERO).select(log(abs(W[0] * x)),MIN_DBL));
+	            ArrayXd x = state.pop<double>();
+                state.push<double>( (abs(x) > NEAR_ZERO).select(log(abs(W[0] * x)),MIN_DBL));
             }
 
             /// Evaluates the node symbolically
-            void NodeLog::eval_eqn(Stacks& stack)
+            void NodeLog::eval_eqn(State& state)
             {
-                stack.push<double>("log(" + stack.popStr<double>() + ")");
+                state.push<double>("log(" + state.popStr<double>() + ")");
             }
 
-            ArrayXd NodeLog::getDerivative(Trace& stack, int loc)
+            ArrayXd NodeLog::getDerivative(Trace& state, int loc)
             {
-                ArrayXd& x = stack.get<double>()[stack.size<double>()-1];
+                ArrayXd& x = state.get<double>()[state.size<double>()-1];
                 
                 switch (loc) {
                     case 1: // d/dw0

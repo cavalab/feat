@@ -17,25 +17,25 @@ namespace FT{
 	            complexity = 1;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeMean::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeMean::evaluate(const Data& data, State& state)
             {
-                ArrayXd tmp(stack.z.top().first.size());
+                ArrayXd tmp(state.z.top().first.size());
                 int x;
                 
-                for(x = 0; x < stack.z.top().first.size(); x++)
-                    tmp(x) = limited(stack.z.top().first[x]).mean();
+                for(x = 0; x < state.z.top().first.size(); x++)
+                    tmp(x) = limited(state.z.top().first[x]).mean();
                   
-                stack.z.pop();
+                state.z.pop();
                 
-                stack.push<double>(tmp);
+                state.push<double>(tmp);
                 
             }
 
             /// Evaluates the node symbolically
-            void NodeMean::eval_eqn(Stacks& stack)
+            void NodeMean::eval_eqn(State& state)
             {
-                stack.push<double>("mean(" + stack.zs.pop() + ")");
+                state.push<double>("mean(" + state.zs.pop() + ")");
             }
             
             NodeMean* NodeMean::clone_impl() const { return new NodeMean(*this); }

@@ -19,17 +19,17 @@ namespace FT{
 	            complexity = 1;
             }
 
-            /// Evaluates the node and updates the stack states. 		
-            void NodeLongitudinal::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 		
+            void NodeLongitudinal::evaluate(const Data& data, State& state)
             {
                 try
                 {
-                    stack.z.push(data.Z.at(zName));
+                    state.z.push(data.Z.at(zName));
                 }
                 catch (const std::out_of_range& e) 
                 {
                     cout << "out of range error on ";
-                    cout << "stack.z.push(data.Z.at(" << zName << "))\n";
+                    cout << "state.z.push(data.Z.at(" << zName << "))\n";
                     cout << "data.Z size: " << data.Z.size() << "\n";
                     cout << "data.Z keys:\n";
                     for (const auto& keys : data.Z)
@@ -39,9 +39,9 @@ namespace FT{
             }
 
             /// Evaluates the node symbolically
-            void NodeLongitudinal::eval_eqn(Stacks& stack)
+            void NodeLongitudinal::eval_eqn(State& state)
             {
-                stack.zs.push(name);
+                state.zs.push(name);
             }
             
             NodeLongitudinal* NodeLongitudinal::clone_impl() const { return new NodeLongitudinal(*this); }

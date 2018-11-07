@@ -25,24 +25,24 @@ namespace FT{
                     W = W0;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeLogit::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeLogit::evaluate(const Data& data, State& state)
             {
-                stack.push<double>(1/(1+(limited(exp(-W[0]*stack.pop<double>())))));
+                state.push<double>(1/(1+(limited(exp(-W[0]*state.pop<double>())))));
             }
 
             /// Evaluates the node symbolically
-            void NodeLogit::eval_eqn(Stacks& stack)
+            void NodeLogit::eval_eqn(State& state)
             {
-                /* stack.push<double>("1/(1+exp(-" + stack.popStr<double>() + "))"); */
-                stack.push<double>("logit(" + stack.popStr<double>() + ")");
+                /* state.push<double>("1/(1+exp(-" + state.popStr<double>() + "))"); */
+                state.push<double>("logit(" + state.popStr<double>() + ")");
             }
 
-            ArrayXd NodeLogit::getDerivative(Trace& stack, int loc) 
+            ArrayXd NodeLogit::getDerivative(Trace& state, int loc) 
             {
                 ArrayXd numerator, denom;
                 
-                ArrayXd& x = stack.get<double>()[stack.size<double>()-1];
+                ArrayXd& x = state.get<double>()[state.size<double>()-1];
                 
                 switch (loc) {
                     case 1: // d/dw0
