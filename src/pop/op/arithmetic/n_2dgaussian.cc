@@ -28,27 +28,27 @@ namespace FT{
                     W = W0;
             }
 
-            /// Evaluates the node and updates the stack states. 
+            /// Evaluates the node and updates the state states. 
             #ifndef USE_CUDA
-            void Node2dGaussian::evaluate(const Data& data, Stacks& stack)
+            void Node2dGaussian::evaluate(const Data& data, State& state)
             {
-                ArrayXd x1 = stack.pop<double>();
-                ArrayXd x2 = stack.pop<double>();
+                ArrayXd x1 = state.pop<double>();
+                ArrayXd x2 = state.pop<double>();
 
-                stack.push<double>(limited(exp(-1*(pow(W[0]*(x1-x1.mean()), 2)/(2*variance(x1)) 
+                state.push<double>(limited(exp(-1*(pow(W[0]*(x1-x1.mean()), 2)/(2*variance(x1)) 
                               + pow(W[1]*(x2 - x2.mean()), 2)/variance(x2)))));
             }
             #endif
 
             /// Evaluates the node symbolically
-            void Node2dGaussian::eval_eqn(Stacks& stack)
+            void Node2dGaussian::eval_eqn(State& state)
             {
-                stack.push<double>("gauss2d(" +stack.popStr<double>()+ "," +stack.popStr<double>()+ ")");
+                state.push<double>("gauss2d(" +state.popStr<double>()+ "," +state.popStr<double>()+ ")");
             }
 
-            ArrayXd Node2dGaussian::getDerivative(Trace& stack, int loc) 
+            ArrayXd Node2dGaussian::getDerivative(Trace& state, int loc) 
             {
-                ArrayXd& x = stack.get<double>()[stack.size<double>()-1];
+                ArrayXd& x = state.get<double>()[state.size<double>()-1];
 
                 switch (loc) {
                     case 1: // d/dw0

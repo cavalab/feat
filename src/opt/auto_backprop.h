@@ -6,7 +6,7 @@
 #include <map>
 #include <vector>
 #include "../pop/nodevector.h"
-#include "../dat/stack.h"
+#include "../dat/state.h"
 #include "../pop/op/n_Dx.h"
 #include "../eval/metrics.h"
 #include "../pop/individual.h"

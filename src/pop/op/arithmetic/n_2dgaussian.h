@@ -19,13 +19,13 @@ namespace FT{
             	
             		Node2dGaussian(vector<double> W0 = vector<double>());
             		    		
-                    /// Evaluates the node and updates the stack states. 
-                    void evaluate(const Data& data, Stacks& stack);
+                    /// Evaluates the node and updates the state states. 
+                    void evaluate(const Data& data, State& state);
 
                     /// Evaluates the node symbolically
-                    void eval_eqn(Stacks& stack);
+                    void eval_eqn(State& state);
 
-                    ArrayXd getDerivative(Trace& stack, int loc); 
+                    ArrayXd getDerivative(Trace& state, int loc); 
 
                 protected:
                         Node2dGaussian* clone_impl() const override;

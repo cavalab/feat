@@ -18,25 +18,25 @@ namespace FT{
 	            complexity = 1;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeCount::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeCount::evaluate(const Data& data, State& state)
             {
-                ArrayXd tmp(stack.z.top().first.size());
+                ArrayXd tmp(state.z.top().first.size());
                 int x;
                 
-                for(x = 0; x < stack.z.top().first.size(); x++)
-                    tmp(x) = limited(stack.z.top().first[x]).cols();
+                for(x = 0; x < state.z.top().first.size(); x++)
+                    tmp(x) = limited(state.z.top().first[x]).cols();
                   
-                stack.z.pop();
+                state.z.pop();
                 
-                stack.push<double>(tmp);
+                state.push<double>(tmp);
                 
             }
 
             /// Evaluates the node symbolically
-            void NodeCount::eval_eqn(Stacks& stack)
+            void NodeCount::eval_eqn(State& state)
             {
-                stack.push<double>("count(" + stack.zs.pop() + ")");
+                state.push<double>("count(" + state.zs.pop() + ")");
             }
             
             NodeCount*NodeCount::clone_impl() const { return new NodeCount(*this); }

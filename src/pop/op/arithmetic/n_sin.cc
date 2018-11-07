@@ -26,22 +26,22 @@ namespace FT{
                     W = W0;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeSin::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeSin::evaluate(const Data& data, State& state)
             {
 
-                stack.push<double>(limited(sin(W[0]*stack.pop<double>())));
+                state.push<double>(limited(sin(W[0]*state.pop<double>())));
             }
 
             /// Evaluates the node symbolically
-            void NodeSin::eval_eqn(Stacks& stack)
+            void NodeSin::eval_eqn(State& state)
             {
-                stack.push<double>("sin(" + stack.popStr<double>() + ")");
+                state.push<double>("sin(" + state.popStr<double>() + ")");
             }
 
-            ArrayXd NodeSin::getDerivative(Trace& stack, int loc)
+            ArrayXd NodeSin::getDerivative(Trace& state, int loc)
             {
-                ArrayXd& x = stack.get<double>()[stack.size<double>()-1];
+                ArrayXd& x = state.get<double>()[state.size<double>()-1];
                 
                 switch (loc) {
                     case 1: // d/dw0

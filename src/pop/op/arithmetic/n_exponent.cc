@@ -26,26 +26,26 @@ namespace FT{
                     W = W0;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeExponent::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeExponent::evaluate(const Data& data, State& state)
             {
-	            ArrayXd x1 = stack.pop<double>();
-                ArrayXd x2 = stack.pop<double>();
+	            ArrayXd x1 = state.pop<double>();
+                ArrayXd x2 = state.pop<double>();
 
-                stack.push<double>(limited(pow(this->W[0] * x1, 
+                state.push<double>(limited(pow(this->W[0] * x1, 
                                                this->W[1] * x2)));
             }
 
             /// Evaluates the node symbolically
-            void NodeExponent::eval_eqn(Stacks& stack)
+            void NodeExponent::eval_eqn(State& state)
             {
-                stack.push<double>("(" + stack.popStr<double>() + ")^(" + stack.popStr<double>() + ")");
+                state.push<double>("(" + state.popStr<double>() + ")^(" + state.popStr<double>() + ")");
             }
 
-            ArrayXd NodeExponent::getDerivative(Trace& stack, int loc)
+            ArrayXd NodeExponent::getDerivative(Trace& state, int loc)
             {
-                ArrayXd& x1 = stack.get<double>()[stack.size<double>()-1];
-                ArrayXd& x2 = stack.get<double>()[stack.size<double>()-2];
+                ArrayXd& x1 = state.get<double>()[state.size<double>()-1];
+                ArrayXd& x2 = state.get<double>()[state.size<double>()-2];
                 
                 switch (loc) {
                     case 3: // Weight for the power

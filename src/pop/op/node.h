@@ -11,7 +11,7 @@ license: GNU/GPL v3
 #include <iostream>
 #include <Eigen/Dense>
 #include "../../init.h"
-#include "../../dat/stack.h"
+#include "../../dat/state.h"
 #include "../../dat/data.h"
 #include "../../util/rnd.h"
 #include "../../util/error.h"
@@ -53,11 +53,11 @@ namespace FT{
 
                     virtual ~Node(){}
                    
-                    /// Evaluates the node and updates the stack states. 
-                    virtual void evaluate(const Data& data, Stacks& stack) = 0; 
+                    /// Evaluates the node and updates the state states. 
+                    virtual void evaluate(const Data& data, State& state) = 0; 
 
                     /// evaluates the node symbolically
-                    virtual void eval_eqn(Stacks& stack) = 0;
+                    virtual void eval_eqn(State& state) = 0;
 
                     // total arity
                     unsigned int total_arity();
@@ -66,10 +66,10 @@ namespace FT{
                     ArrayXd limited(ArrayXd x);
 
                     /// evaluates complexity of this node in the context of its child nodes.
-                    void eval_complexity(map<char, vector<unsigned int>>& cstack);
+                    void eval_complexity(map<char, vector<unsigned int>>& cstate);
                     
                     /// evaluates complexity of this node in the context of its child nodes.
-                    void eval_complexity_db(map<char, vector<string>>& cstack);
+                    void eval_complexity_db(map<char, vector<string>>& cstate);
 
                     /// check of node type
                     virtual bool isNodeDx() {return false;};

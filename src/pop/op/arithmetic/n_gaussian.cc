@@ -27,21 +27,21 @@ namespace FT{
                 
 	        }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeGaussian::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeGaussian::evaluate(const Data& data, State& state)
             {
-                stack.push<double>(limited(exp(-pow(W[0] - stack.pop<double>(), 2))));
+                state.push<double>(limited(exp(-pow(W[0] - state.pop<double>(), 2))));
             }
 
             /// Evaluates the node symbolically
-            void NodeGaussian::eval_eqn(Stacks& stack)
+            void NodeGaussian::eval_eqn(State& state)
             {
-                stack.push<double>("gauss(" + stack.popStr<double>() + ")");
+                state.push<double>("gauss(" + state.popStr<double>() + ")");
             }
 
-            ArrayXd NodeGaussian::getDerivative(Trace& stack, int loc) 
+            ArrayXd NodeGaussian::getDerivative(Trace& state, int loc) 
             {
-                ArrayXd& x = stack.get<double>()[stack.size<double>()-1];
+                ArrayXd& x = state.get<double>()[state.size<double>()-1];
                 
                 switch (loc) {
                     case 1: // d/dw0

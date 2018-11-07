@@ -43,7 +43,7 @@ namespace FT{
             };
 
             /// evaluates complexity of this node in the context of its child nodes.
-            void Node::eval_complexity(map<char, vector<unsigned int>>& cstack)
+            void Node::eval_complexity(map<char, vector<unsigned int>>& cstate)
             {
                 /*! Complexity of a node \f$ n \f$ with \f$ k \f$ arguments is defined as 
                  *  
@@ -56,17 +56,17 @@ namespace FT{
                 {
                     for (unsigned int i = 0; i< a.second; ++i)
                     {
-                        c_args += cstack[a.first].back();
-                        cstack[a.first].pop_back();
+                        c_args += cstate[a.first].back();
+                        cstate[a.first].pop_back();
 
                     }
                 }
-                cstack[otype].push_back(complexity*c_args);
+                cstate[otype].push_back(complexity*c_args);
                
             }
 
             /// evaluates complexity of this node in the context of its child nodes.
-            void Node::eval_complexity_db(map<char, vector<string>>& cstack)
+            void Node::eval_complexity_db(map<char, vector<string>>& cstate)
             {
                 /*! Complexity of a node \f$ n \f$ with \f$ k \f$ arguments is defined as 
                  *  
@@ -76,18 +76,18 @@ namespace FT{
                  */              
                 string c_args="1";                         // sum complexity of the arguments 
                 if (total_arity() ==0)
-                    cstack[otype].push_back(c_args);
+                    cstate[otype].push_back(c_args);
                 else{
                     for (const auto& a: arity)
                     {
                         for (unsigned int i = 0; i< a.second; ++i)
                         {
-                            c_args = "(" + c_args + "+" + cstack[a.first].back() + ")";
-                            cstack[a.first].pop_back();
+                            c_args = "(" + c_args + "+" + cstate[a.first].back() + ")";
+                            cstate[a.first].pop_back();
 
                         }
                     }
-                    cstack[otype].push_back(std::to_string(complexity) + "*" + c_args);
+                    cstate[otype].push_back(std::to_string(complexity) + "*" + c_args);
                 }
             }
 

@@ -86,10 +86,10 @@ namespace FT
         };
         
         /*!
-         * @class Stacks
-         * @brief contains various types of stacks actually used by feat
+         * @class State
+         * @brief contains various types of State actually used by feat
          */
-        struct Stacks
+        struct State
         {
             Stack<ArrayXd> f;                   ///< floating node stack
             Stack<ArrayXb> b;                   ///< boolean node stack
@@ -100,10 +100,10 @@ namespace FT
             Stack<string> cs;                   ///< categorical node string stack
             Stack<string> zs;                   ///< longitudinal node string stack
             
-            ///< checks if arity of node provided satisfies the elements in various value stacks
+            ///< checks if arity of node provided satisfies the elements in various value State
             bool check(std::map<char, unsigned int> &arity);
             
-            ///< checks if arity of node provided satisfies the node names in various string stacks
+            ///< checks if arity of node provided satisfies the node names in various string State
             bool check_s(std::map<char, unsigned int> &arity);
             
             template <typename T> inline Stack<Eigen::Array<T,Eigen::Dynamic,1> >& get()
@@ -143,17 +143,17 @@ namespace FT
             
         };
         
-        template <> inline Stack<ArrayXd>& Stacks::get(){ return f; }
+        template <> inline Stack<ArrayXd>& State::get(){ return f; }
             
-        template <> inline Stack<ArrayXb>& Stacks::get(){ return b; }
+        template <> inline Stack<ArrayXb>& State::get(){ return b; }
         
-        template <> inline Stack<ArrayXi>& Stacks::get(){ return c; }
+        template <> inline Stack<ArrayXi>& State::get(){ return c; }
         
-        template <> inline Stack<string>& Stacks::getStr<double>(){ return fs; }
+        template <> inline Stack<string>& State::getStr<double>(){ return fs; }
             
-        template <> inline Stack<string>& Stacks::getStr<bool>(){ return bs; }
+        template <> inline Stack<string>& State::getStr<bool>(){ return bs; }
         
-        template <> inline Stack<string>& Stacks::getStr<int>(){ return cs; }
+        template <> inline Stack<string>& State::getStr<int>(){ return cs; }
         
         /*!
          * @class Trace

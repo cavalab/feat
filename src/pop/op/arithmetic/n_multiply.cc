@@ -25,25 +25,25 @@ namespace FT{
                     W = W0;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeMultiply::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeMultiply::evaluate(const Data& data, State& state)
             {
-                ArrayXd x1 = stack.pop<double>();
-                ArrayXd x2 = stack.pop<double>();
+                ArrayXd x1 = state.pop<double>();
+                ArrayXd x2 = state.pop<double>();
                
-                stack.push<double>(limited(W[0]*x1 * W[1]*x2));
+                state.push<double>(limited(W[0]*x1 * W[1]*x2));
             }
 
             /// Evaluates the node symbolically
-            void NodeMultiply::eval_eqn(Stacks& stack)
+            void NodeMultiply::eval_eqn(State& state)
             {
-	            stack.push<double>("(" + stack.popStr<double>() + "*" + stack.popStr<double>() + ")");
+	            state.push<double>("(" + state.popStr<double>() + "*" + state.popStr<double>() + ")");
             }
 
-            ArrayXd NodeMultiply::getDerivative(Trace& stack, int loc)
+            ArrayXd NodeMultiply::getDerivative(Trace& state, int loc)
             {
-                ArrayXd& x1 = stack.get<double>()[stack.size<double>()-1];
-                ArrayXd& x2 = stack.get<double>()[stack.size<double>()-2];
+                ArrayXd& x1 = state.get<double>()[state.size<double>()-1];
+                ArrayXd& x2 = state.get<double>()[state.size<double>()-2];
                 
                 switch (loc) {
                     case 3: // d/dW[1]

@@ -26,18 +26,18 @@ namespace FT{
                 complexity = 1;
             }
 
-            /// Evaluates the node and updates the stack states. 
+            /// Evaluates the node and updates the state states. 
             template <class T>
-            void NodeFloat<T>::evaluate(const Data& data, Stacks& stack)
+            void NodeFloat<T>::evaluate(const Data& data, State& state)
             {
-                stack.push<double>(stack.pop<T>().template cast<double>());
+                state.push<double>(state.pop<T>().template cast<double>());
             }
 
             /// Evaluates the node symbolically
             template <class T>
-            void NodeFloat<T>::eval_eqn(Stacks& stack)
+            void NodeFloat<T>::eval_eqn(State& state)
             {
-                stack.push<double>("float(" + stack.popStr<T>() + ")");
+                state.push<double>("float(" + state.popStr<T>() + ")");
             }
             
             template <class T>
