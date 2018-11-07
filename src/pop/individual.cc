@@ -215,7 +215,7 @@ namespace FT{
              * @returns Phi: n_features x n_samples transformation
              */
              
-            Stacks stack;
+            State state;
             
             //cout << "In individua.out()\n";
             params.msg("evaluating program " + get_eqn(),3);
@@ -225,58 +225,58 @@ namespace FT{
             {
                 if (n->isNodeTrain()) // learning nodes are set for fit or predict mode
                     dynamic_cast<NodeTrain*>(n.get())->train = !predict;
-            	if(stack.check(n->arity))
-	                n->evaluate(d, stack);
+            	if(state.check(n->arity))
+	                n->evaluate(d, state);
                 else
                     HANDLE_ERROR_THROW("out() error: node " + n->name + " in " + program_str() + 
                                        " failed arity check\n");
                 
             }
             
-            // convert stack_f to Phi
-            params.msg("converting stacks to Phi",3);
+            // convert state_f to Phi
+            params.msg("converting State to Phi",3);
             int cols;
             
-            if (stack.f.size()==0)
+            if (state.f.size()==0)
             {
-                if (stack.b.size() == 0)
+                if (state.b.size() == 0)
                 {
-                    if (stack.c.size() == 0)
-                        HANDLE_ERROR_THROW("Error: no outputs in stacks");
+                    if (state.c.size() == 0)
+                        HANDLE_ERROR_THROW("Error: no outputs in State");
                     
-                    cols = stack.c.top().size();
+                    cols = state.c.top().size();
                 }
                 else
-                    cols = stack.b.top().size();
+                    cols = state.b.top().size();
             }
             else
-                cols = stack.f.top().size();
+                cols = state.f.top().size();
                    
-            int rows_f = stack.f.size();
-            int rows_b = stack.b.size();
-            int rows_c = stack.c.size();
+            int rows_f = state.f.size();
+            int rows_b = state.b.size();
+            int rows_c = state.c.size();
             
             dtypes.clear();        
             Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
             
-            // add stack_f to Phi
+            // add state_f to Phi
             for (unsigned int i=0; i<rows_f; ++i)
             {    
-                 ArrayXd Row = ArrayXd::Map(stack.f.at(i).data(),cols);
+                 ArrayXd Row = ArrayXd::Map(state.f.at(i).data(),cols);
                  clean(Row); // remove nans, set infs to max and min
                  Phi.row(i) = Row;
                  dtypes.push_back('f'); 
             }
-            // convert stack_b to Phi       
+            // convert state_b to Phi       
             for (unsigned int i=0; i<rows_b; ++i)
             {
-                Phi.row(i+rows_f+rows_c) = ArrayXb::Map(stack.b.at(i).data(),cols).cast<double>();
+                Phi.row(i+rows_f+rows_c) = ArrayXb::Map(state.b.at(i).data(),cols).cast<double>();
                 dtypes.push_back('b');
             }
-            // add stack_c to Phi
+            // add state_c to Phi
             for (unsigned int i=0; i<rows_c; ++i)
             {    
-                 ArrayXd Row = ArrayXi::Map(stack.c.at(i).data(),cols).cast<double>();
+                 ArrayXd Row = ArrayXi::Map(state.c.at(i).data(),cols).cast<double>();
                  clean(Row); // remove nans, set infs to max and min
                  Phi.row(i+rows_f) = Row;
                  dtypes.push_back('c');
@@ -287,7 +287,7 @@ namespace FT{
 
         // calculate program output matrix
         MatrixXd Individual::out_trace(const Data& d,
-                         const Parameters& params, vector<Trace>& stack_trace)
+                         const Parameters& params, vector<Trace>& state_trace)
         {
             /*!
              * @param X: n_features x n_samples data
@@ -297,7 +297,7 @@ namespace FT{
              * @returns Phi: n_features x n_samples transformation
              */
 
-            Stacks stack;
+            State state;
             /* params.msg("evaluating program " + get_eqn(),3); */
             /* params.msg("program length: " + std::to_string(program.size()),3); */
 
@@ -309,7 +309,7 @@ namespace FT{
             if (program.at(roots.at(root))->isNodeDx())
             {
                 trace=true;
-                stack_trace.push_back(Trace());
+                state_trace.push_back(Trace());
             }
             
             // evaluate each node in program
@@ -320,13 +320,13 @@ namespace FT{
                     if (program.at(roots.at(root))->isNodeDx())
                     {
                         trace=true;
-                        stack_trace.push_back(Trace());
+                        state_trace.push_back(Trace());
                         ++trace_idx;
                     }
                     else
                         trace=false;
                 }
-                if(stack.check(program.at(i)->arity))
+                if(state.check(program.at(i)->arity))
             	{
                     if (trace)
                     {
@@ -334,24 +334,24 @@ namespace FT{
                         /*        program.at(i)->arity['f'] << " arguments\n"; */
                         for (int j = 0; j < program.at(i)->arity['f']; j++) {
                             /* cout << "push back float arg for " << program.at(i)->name << "\n"; */
-                            stack_trace.at(trace_idx).f.push_back(stack.f.at(stack.f.size() - 
+                            state_trace.at(trace_idx).f.push_back(state.f.at(state.f.size() - 
                                                              (program.at(i)->arity['f'] - j)));
                         }
                         
                         for (int j = 0; j < program.at(i)->arity['b']; j++) {
                             /* cout << "push back bool arg for " << program.at(i)->name << "\n"; */
-                            stack_trace.at(trace_idx).b.push_back(stack.b.at(stack.b.size() - 
+                            state_trace.at(trace_idx).b.push_back(state.b.at(state.b.size() - 
                                                              (program.at(i)->arity['b'] - j)));
                         }
 
                         for (int j = 0; j < program.at(i)->arity['c']; j++) {
                             /* cout << "push back float arg for " << program.at(i)->name << "\n"; */
-                            stack_trace.at(trace_idx).c.push_back(stack.c.at(stack.c.size() - 
+                            state_trace.at(trace_idx).c.push_back(state.c.at(state.c.size() - 
                                                              (program.at(i)->arity['c'] - j)));
                         }
                     }
             	    //cout<<"***enter here "<<n->name<<"\n";
-	                program.at(i)->evaluate(d, stack);
+	                program.at(i)->evaluate(d, state);
                     program.at(i)->visits = 0;
 	                //cout<<"***exit here "<<n->name<<"\n";
 	            }
@@ -359,51 +359,51 @@ namespace FT{
                     HANDLE_ERROR_THROW("out() error: node " + program.at(i)->name + " in " + program_str() + " is invalid\n");
             }
             
-            // convert stack_f to Phi
-            params.msg("converting stacks to Phi",3);
+            // convert state_f to Phi
+            params.msg("converting State to Phi",3);
             int cols;
-            if (stack.f.size()==0)
+            if (state.f.size()==0)
             {
-                if (stack.c.size() == 0)
+                if (state.c.size() == 0)
                 {
-                    if (stack.b.size() == 0)
-                        HANDLE_ERROR_THROW("Error: no outputs in stacks");
+                    if (state.b.size() == 0)
+                        HANDLE_ERROR_THROW("Error: no outputs in State");
                     
-                    cols = stack.b.top().size();
+                    cols = state.b.top().size();
                 }
                 else
-                    cols = stack.c.top().size();
+                    cols = state.c.top().size();
             }
             else
-                cols = stack.f.top().size();
+                cols = state.f.top().size();
                    
-            int rows_f = stack.f.size();
-            int rows_b = stack.b.size();
-            int rows_c = stack.c.size();
+            int rows_f = state.f.size();
+            int rows_b = state.b.size();
+            int rows_c = state.c.size();
             
             dtypes.clear();        
             Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
             
-            // add stack_f to Phi
+            // add state_f to Phi
             for (unsigned int i=0; i<rows_f; ++i)
             {    
-                 ArrayXd Row = ArrayXd::Map(stack.f.at(i).data(),cols);
+                 ArrayXd Row = ArrayXd::Map(state.f.at(i).data(),cols);
                  clean(Row); // remove nans, set infs to max and min
                  Phi.row(i) = Row;
                  dtypes.push_back('f'); 
             }
             
-            // convert stack_b to Phi       
+            // convert state_b to Phi       
             for (unsigned int i=0; i<rows_b; ++i)
             {
-                Phi.row(i+rows_f+rows_c) = ArrayXb::Map(stack.b.at(i).data(),cols).cast<double>();
+                Phi.row(i+rows_f+rows_c) = ArrayXb::Map(state.b.at(i).data(),cols).cast<double>();
                 dtypes.push_back('b');
             }
 
-            // add stack_c to Phi
+            // add state_c to Phi
             for (unsigned int i=0; i<rows_c; ++i)
             {    
-                 ArrayXd Row = ArrayXi::Map(stack.c.at(i).data(),cols).cast<double>();
+                 ArrayXd Row = ArrayXi::Map(state.c.at(i).data(),cols).cast<double>();
                  clean(Row); // remove nans, set infs to max and min
                  Phi.row(i+rows_f) = Row;
                  dtypes.push_back('c'); 
@@ -419,23 +419,23 @@ namespace FT{
             if (eqn.empty())               // calculate eqn if it doesn't exist yet 
             {
                 //cout << "eqn is empty\n";
-                Stacks stack;
+                State state;
 
                 for (const auto& n : program){
-                	if(stack.check_s(n->arity))
-                    	n->eval_eqn(stack);
+                	if(state.check_s(n->arity))
+                    	n->eval_eqn(state);
                     else
                         HANDLE_ERROR_THROW("get_eqn() error: node " + n->name + " in " 
                                            + program_str() + " is invalid\n");
                 }
-                // tie stack outputs together to return representation
-                for (auto s : stack.fs) 
+                // tie state outputs together to return representation
+                for (auto s : state.fs) 
                     eqn += "[" + s + "]";
-                for (auto s : stack.bs) 
+                for (auto s : state.bs) 
                     eqn += "[" + s + "]";
-                for (auto s : stack.cs)
+                for (auto s : state.cs)
                     eqn += "[" + s + "]";              
-                for (auto s : stack.zs) 
+                for (auto s : state.zs) 
                     eqn += "[" + s + "]";
             }
             
@@ -447,21 +447,21 @@ namespace FT{
         vector<string> Individual::get_features()
         {
             vector<string> features;
-            Stacks stack;
+            State state;
 
             for (const auto& n : program){
-                if(stack.check_s(n->arity))
-                    n->eval_eqn(stack);
+                if(state.check_s(n->arity))
+                    n->eval_eqn(state);
                 else
                     HANDLE_ERROR_THROW("get_eqn() error: node " + n->name + " in " 
                                        + program_str() + " is invalid\n");
             }
-            // tie stack outputs together to return representation
-            for (auto s : stack.fs) 
+            // tie state outputs together to return representation
+            for (auto s : state.fs) 
                 features.push_back(s);
-            for (auto s : stack.bs) 
+            for (auto s : state.bs) 
                 features.push_back(s);
-            for (auto s : stack.cs)
+            for (auto s : state.cs)
                 features.push_back(s);
 
             return features;
@@ -557,21 +557,21 @@ namespace FT{
         {
             if (c==0)
             {
-                std::map<char, vector<unsigned int>> stack_c; 
+                std::map<char, vector<unsigned int>> state_c; 
                 
                 for (const auto& n : program)
-                    n->eval_complexity(stack_c);
+                    n->eval_complexity(state_c);
             
-                for (const auto& s : stack_c)
+                for (const auto& s : state_c)
                     for (const auto& t : s.second)
                         c += t;
                 //// debug
-                //std::map<char, vector<string>> stack_cs; 
+                //std::map<char, vector<string>> state_cs; 
                 //string complex_eqn;
                 //for (const auto& n : program)
-                //    n->eval_complexity_db(stack_cs);
+                //    n->eval_complexity_db(state_cs);
                 //
-                //for (const auto& s : stack_cs)
+                //for (const auto& s : state_cs)
                 //    for (const auto& t : s.second)
                 //        complex_eqn += "+" + t;
 

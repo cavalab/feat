@@ -26,24 +26,24 @@ namespace FT{
                     W = W0;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeRelu::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeRelu::evaluate(const Data& data, State& state)
             {
-                ArrayXd x = stack.pop<double>();
+                ArrayXd x = state.pop<double>();
                 ArrayXd res = (W[0] * x > 0).select(W[0]*x, ArrayXd::Zero(x.size())+0.01); 
-                stack.push<double>(res);
+                state.push<double>(res);
             }
 
             /// Evaluates the node symbolically
-            void NodeRelu::eval_eqn(Stacks& stack)
+            void NodeRelu::eval_eqn(State& state)
             {
-                stack.push<double>("relu("+ stack.popStr<double>() +")");         	
+                state.push<double>("relu("+ state.popStr<double>() +")");         	
             }
 
-            ArrayXd NodeRelu::getDerivative(Trace& stack, int loc)
+            ArrayXd NodeRelu::getDerivative(Trace& state, int loc)
             {
 
-                ArrayXd& x = stack.get<double>()[stack.size<double>()-1];
+                ArrayXd& x = state.get<double>()[state.size<double>()-1];
                 
                 switch (loc) {
                     case 1: // d/dW

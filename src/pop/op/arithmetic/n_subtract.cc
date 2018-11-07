@@ -26,24 +26,24 @@ namespace FT{
                     W = W0;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeSubtract::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeSubtract::evaluate(const Data& data, State& state)
             {
-                ArrayXd x1 = stack.pop<double>();
-                ArrayXd x2 = stack.pop<double>();
-                stack.push<double>(limited(this->W[0]*x1 - this->W[1]*x2));
+                ArrayXd x1 = state.pop<double>();
+                ArrayXd x2 = state.pop<double>();
+                state.push<double>(limited(this->W[0]*x1 - this->W[1]*x2));
             }
 
             /// Evaluates the node symbolically
-            void NodeSubtract::eval_eqn(Stacks& stack)
+            void NodeSubtract::eval_eqn(State& state)
             {
-                stack.push<double>("(" + stack.popStr<double>() + "-" + stack.popStr<double>() + ")");
+                state.push<double>("(" + state.popStr<double>() + "-" + state.popStr<double>() + ")");
             }
 
-            ArrayXd NodeSubtract::getDerivative(Trace& stack, int loc)
+            ArrayXd NodeSubtract::getDerivative(Trace& state, int loc)
             {
-                ArrayXd x1 = stack.get<double>()[stack.size<double>()-1];
-                ArrayXd x2 = stack.get<double>()[stack.size<double>()-2];
+                ArrayXd x1 = state.get<double>()[state.size<double>()-1];
+                ArrayXd x2 = state.get<double>()[state.size<double>()-2];
                 
                 switch (loc) {
                     case 3: // d/dW[1]

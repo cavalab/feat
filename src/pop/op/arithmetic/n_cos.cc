@@ -26,21 +26,21 @@ namespace FT{
                     W = W0;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeCos::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeCos::evaluate(const Data& data, State& state)
             {
-                stack.push<double>(limited(cos(W[0] * stack.pop<double>())));
+                state.push<double>(limited(cos(W[0] * state.pop<double>())));
             }
 
             /// Evaluates the node symbolically
-            void NodeCos::eval_eqn(Stacks& stack)
+            void NodeCos::eval_eqn(State& state)
             {
-                stack.push<double>("cos(" + stack.popStr<double>() + ")");
+                state.push<double>("cos(" + state.popStr<double>() + ")");
             }
 
-            ArrayXd NodeCos::getDerivative(Trace& stack, int loc) {
+            ArrayXd NodeCos::getDerivative(Trace& state, int loc) {
             
-                ArrayXd& x = stack.get<double>()[stack.size<double>()-1];
+                ArrayXd& x = state.get<double>()[state.size<double>()-1];
                 
                 switch (loc) {
                     case 1: // d/dw0

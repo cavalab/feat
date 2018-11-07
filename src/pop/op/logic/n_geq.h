@@ -17,11 +17,11 @@ namespace FT{
             	
            		    NodeGEQ();
             		
-                    /// Evaluates the node and updates the stack states. 
-                    void evaluate(const Data& data, Stacks& stack);
+                    /// Evaluates the node and updates the state states. 
+                    void evaluate(const Data& data, State& state);
 
                     /// Evaluates the node symbolically
-                    void eval_eqn(Stacks& stack);
+                    void eval_eqn(State& state);
                     
                 protected:
                     NodeGEQ* clone_impl() const override;

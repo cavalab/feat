@@ -60,7 +60,7 @@ namespace FT{
         vector<size_t> NodeVector::roots() const
         {
             // find "root" nodes of program, where roots are final values that output 
-            // something directly to the stack
+            // something directly to the state
             // assumes a program's subtrees to be contiguous
              
             vector<size_t> indices;     // returned root indices
@@ -177,7 +177,7 @@ namespace FT{
                                           vector<string> longitudinalMap)
         {
             /*! checks whether program fulfills all its arities. */
-            Stacks stack;
+            State state;
             
             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>> Z;
             
@@ -196,8 +196,8 @@ namespace FT{
             
             unsigned i = 0; 
             for (const auto& n : *this){
-                if (stack.check(n->arity))
-                    n->evaluate(data, stack);
+                if (state.check(n->arity))
+                    n->evaluate(data, state);
                 else
                 {
                     std::cout << "Error: ";

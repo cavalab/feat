@@ -3,13 +3,13 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 
-#include "stack.h"
+#include "state.h"
 #include <iostream>
 
 namespace FT
 {
     namespace Dat{
-        bool Stacks::check(std::map<char, unsigned int> &arity)
+        bool State::check(std::map<char, unsigned int> &arity)
         {
             if(arity.find('z') == arity.end())
                 return (f.size() >= arity['f'] &&
@@ -22,8 +22,8 @@ namespace FT
                         z.size() >= arity['z']);
         }
         
-        ///< checks if arity of node provided satisfies the node names in various string stacks
-        bool Stacks::check_s(std::map<char, unsigned int> &arity)
+        ///< checks if arity of node provided satisfies the node names in various string State
+        bool State::check_s(std::map<char, unsigned int> &arity)
         {
             if(arity.find('z') == arity.end())
                 return (fs.size() >= arity['f'] && 

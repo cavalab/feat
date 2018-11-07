@@ -18,27 +18,27 @@ namespace FT{
 	            complexity = 1;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeVar::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeVar::evaluate(const Data& data, State& state)
             {
-                ArrayXd tmp(stack.z.top().first.size());
+                ArrayXd tmp(state.z.top().first.size());
                 
                 int x;
                 ArrayXd tmp1;
                 
-                for(x = 0; x < stack.z.top().first.size(); x++)
-                    tmp(x) = variance(limited(stack.z.top().first[x]));
+                for(x = 0; x < state.z.top().first.size(); x++)
+                    tmp(x) = variance(limited(state.z.top().first[x]));
                     
-                stack.z.pop();
+                state.z.pop();
 
-                stack.push<double>(tmp);
+                state.push<double>(tmp);
                 
             }
 
             /// Evaluates the node symbolically
-            void NodeVar::eval_eqn(Stacks& stack)
+            void NodeVar::eval_eqn(State& state)
             {
-                stack.push<double>("variance(" + stack.zs.pop() + ")");
+                state.push<double>("variance(" + state.zs.pop() + ")");
             }
 
             NodeVar* NodeVar::clone_impl() const { return new NodeVar(*this); }

@@ -18,24 +18,24 @@ namespace FT{
 	            complexity = 4;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeSlope::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeSlope::evaluate(const Data& data, State& state)
             {
-                ArrayXd tmp(stack.z.top().first.size());
+                ArrayXd tmp(state.z.top().first.size());
                 
-                for(int x = 0; x < stack.z.top().first.size(); x++)                    
-                    tmp(x) = slope(limited(stack.z.top().first[x]), limited(stack.z.top().second[x]));
+                for(int x = 0; x < state.z.top().first.size(); x++)                    
+                    tmp(x) = slope(limited(state.z.top().first[x]), limited(state.z.top().second[x]));
                     
-                stack.z.pop();
+                state.z.pop();
 
-                stack.push<double>(tmp);
+                state.push<double>(tmp);
                 
             }
 
             /// Evaluates the node symbolically
-            void NodeSlope::eval_eqn(Stacks& stack)
+            void NodeSlope::eval_eqn(State& state)
             {
-                stack.push<double>("slope(" + stack.zs.pop() + ")");
+                state.push<double>("slope(" + state.zs.pop() + ")");
             }
             
             double NodeSlope::slope(const ArrayXd& x, const ArrayXd& y)
