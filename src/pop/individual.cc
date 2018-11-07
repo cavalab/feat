@@ -143,7 +143,7 @@ namespace FT{
         {
             // calculate program output matrix Phi
             params.msg("Generating output for " + get_eqn(), 3);
-            Phi = out(d, params);            
+            Phi = out(d, params);       
             // calculate ML model from Phi
             params.msg("ML training on " + get_eqn(), 3);
             ml = std::make_shared<ML>(params);
@@ -255,7 +255,7 @@ namespace FT{
             int rows_f = state.f.size();
             int rows_b = state.b.size();
             int rows_c = state.c.size();
-            
+
             dtypes.clear();        
             Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
             
@@ -281,7 +281,6 @@ namespace FT{
                  Phi.row(i+rows_f) = Row;
                  dtypes.push_back('c');
             }       
-
             return Phi;
         }
 

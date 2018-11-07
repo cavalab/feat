@@ -369,6 +369,7 @@ namespace FT{
             double best_score;                      ///< current best score
             double best_score_v;                    ///< best validation score
             double best_med_score;                  ///< best median population score
+            double med_loss_v;                      ///< current val loss of median individual
             string str_dim;                         ///< dimensionality as multiple of number of columns 
             void update_best(const DataRef& d, bool val=false);       ///< updates best score   
             void print_stats(std::ofstream& log,
@@ -381,7 +382,7 @@ namespace FT{
             /// fits final model to best transformation
             void final_model(DataRef& d);
             /// updates stall count for early stopping
-            void update_stall_count(unsigned& stall_count, MatrixXd& F);
+            void update_stall_count(unsigned& stall_count, MatrixXd& F, const DataRef& d);
     };
 }
 #endif

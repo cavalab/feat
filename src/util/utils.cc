@@ -148,7 +148,23 @@ namespace FT{
             else
                 return x[n];
         }
-        
+        /// returns the (first) index of the element with the middlest value in v
+        int argmiddle(vector<double>& v)
+        {
+            // instantiate a vector
+            vector<double> x = v; 
+            // middle iterator
+            std::vector<double>::iterator middle = x.begin() + x.size()/2;
+            // sort nth element of array
+            nth_element(x.begin(), middle, x.end());
+            // find position of middle value in original array
+            std::vector<double>::iterator it = std::find(v.begin(), v.end(), *middle);
+
+            std::vector<double>::size_type pos = std::distance(v.begin(), it);
+            cout << "middle index: " << pos << "\n";
+            cout << "middle value: " << *it << "\n";
+            return pos;
+        }
         /// calculate variance
         double variance(const ArrayXd& v) 
         {
