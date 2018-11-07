@@ -22,18 +22,18 @@ namespace FT{
 	            loc = l;
             }
 
-            /// Evaluates the node and updates the stack states. 
+            /// Evaluates the node and updates the state states. 
             template <class T>		
-            void NodeVariable<T>::evaluate(const Data& data, Stacks& stack)
+            void NodeVariable<T>::evaluate(const Data& data, State& state)
             {
-                stack.push<T>(data.X.row(loc).template cast<T>());
+                state.push<T>(data.X.row(loc).template cast<T>());
             }
 
             /// Evaluates the node symbolically
             template <class T>
-            void NodeVariable<T>::eval_eqn(Stacks& stack)
+            void NodeVariable<T>::eval_eqn(State& state)
             {
-                stack.push<T>(name);
+                state.push<T>(name);
             }
 
             template <class T>

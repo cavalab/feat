@@ -51,6 +51,18 @@ namespace FT{
             
             vector<vector<double>> get_weights();
             
+            bool is_valid_program(unsigned num_features, 
+                                  vector<string> longitudinalMap);
+       
+            void make_tree(const NodeVector& functions, 
+                           const NodeVector& terminals, int max_d,  
+                           const vector<double>& term_weights, char otype, const vector<char>& term_types);
+
+            void make_program(const NodeVector& functions, 
+                              const NodeVector& terminals, int max_d, 
+                              const vector<double>& term_weights, int dim, char otype, 
+                              vector<string> longitudinalMap, const vector<char>& term_types);
+            
         }; //NodeVector
         
     }
