@@ -173,5 +173,187 @@ namespace FT{
             return weights;
         }
         
+        bool NodeVector::is_valid_program(unsigned num_features, 
+                                          vector<string> longitudinalMap)
+        {
+            /*! checks whether program fulfills all its arities. */
+            Stacks stack;
+            
+            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>> Z;
+            
+            MatrixXd X = MatrixXd::Zero(num_features,2); 
+            VectorXd y = VectorXd::Zero(2);
+            
+             for(auto key : longitudinalMap)
+             {
+                Z[key].first.push_back(ArrayXd::Zero(2));
+                Z[key].first.push_back(ArrayXd::Zero(2));
+                Z[key].second.push_back(ArrayXd::Zero(2));
+                Z[key].second.push_back(ArrayXd::Zero(2));
+             }
+             
+            Data data(X, y, Z, false);
+            
+            unsigned i = 0; 
+            for (const auto& n : *this){
+                if (stack.check(n->arity))
+                    n->evaluate(data, stack);
+                else
+                {
+                    std::cout << "Error: ";
+                    for (const auto& p: *this) std::cout << p->name << " ";
+                    std::cout << "is not a valid program because ";
+                    std::cout << n->name << " at pos " << i << "is not satisfied\n";
+                    return false; 
+                }
+                ++i;
+            }
+            return true;
+        }
+       
+        void NodeVector::make_tree(const NodeVector& functions, 
+                                   const NodeVector& terminals, int max_d,  
+                                   const vector<double>& term_weights,
+                                   char otype, const vector<char>& term_types)
+        {  
+                    
+            /*!
+             * recursively builds a program with complete arguments.
+             */
+            // debugging output
+            /* std::cout << "current program: ["; */
+            /* for (const auto& p : *(this) ) std::cout << p->name << " "; */
+            /* std::cout << "]\n"; */
+            /* std::cout << "otype: " << otype << "\n"; */
+            /* std::cout << "max_d: " << max_d << "\n"; */
+
+            if (max_d == 0 || r.rnd_flt() < terminals.size()/(terminals.size()+functions.size())) 
+            {
+                // append terminal 
+                vector<size_t> ti;  // indices of valid terminals 
+                vector<double> tw;  // weights of valid terminals
+                /* cout << "terminals: " ; */
+                /* for (const auto& t : terminals) cout << t->name << "(" << t->otype << "),"; */ 
+                /* cout << "\n"; */
+                
+                for (size_t i = 0; i<terminals.size(); ++i)
+                {
+                    if (terminals[i]->otype == otype) // grab terminals matching output type
+                    {
+                        ti.push_back(i);
+                        tw.push_back(term_weights[i]);                    
+                    }
+                        
+                }
+                /* cout << "valid terminals: "; */
+                /* for (const auto& i : ti) */ 
+                /*     cout << terminals[i]->name << "(" << terminals[i]->otype << ", " */ 
+                /*          << tw[i] << "), "; */ 
+                /* cout << "\n"; */
+                
+                if(ti.size() > 0 && tw.size() > 0)
+                {
+                    auto t = terminals[r.random_choice(ti,tw)]->clone();
+                    /* std::cout << "chose " << t->name << " "; */
+                    push_back(t->rnd_clone());
+                }
+                else
+                {
+                    string ttypes = "";
+                    for (const auto& t : terminals)
+                        ttypes += t->name + ": " + t->otype + "\n";
+                    HANDLE_ERROR_THROW("Error: make_tree couldn't find properly typed terminals\n"
+                                       + ttypes);
+                }
+            }
+            else
+            {
+                // let fi be indices of functions whose output type matches otype and, if max_d==1,
+                // with no boolean inputs (assuming all input data is floating point) 
+                vector<size_t> fi;
+                bool fterms = in(term_types, 'f');   // are there floating terminals?
+                bool bterms = in(term_types, 'b');   // are there boolean terminals?
+                bool cterms = in(term_types, 'c');   // are there categorical terminals?
+                bool zterms = in(term_types, 'z');   // are there boolean terminals?
+                /* std::cout << "bterms: " << bterms << ",cterms: " << cterms 
+                 * << ",zterms: " << zterms << "\n"; */
+                for (size_t i = 0; i<functions.size(); ++i)
+                    if (functions[i]->otype==otype &&
+                        (max_d>1 || functions[i]->arity['f']==0 || fterms) &&
+                        (max_d>1 || functions[i]->arity['b']==0 || bterms) &&
+                        (max_d>1 || functions[i]->arity['c']==0 || cterms) &&
+                        (max_d>1 || functions[i]->arity['z']==0 || zterms))
+                    {
+                        fi.push_back(i);
+                    }
+                
+                if (fi.size()==0){
+
+                    if(otype == 'z')
+                    {
+                        make_tree(functions, terminals, 0, term_weights, 'z', term_types);
+                        return;
+                    }
+                    else if (otype == 'c')
+                    {
+                        make_tree(functions, terminals, 0, term_weights, 'c', term_types);
+                        return;
+                    }
+                    else{            
+                        std::cout << "---\n";
+                        std::cout << "f1.size()=0. current program: ";
+                        for (const auto& p : *(this)) std::cout << p->name << " ";
+                        std::cout << "\n";
+                        std::cout << "otype: " << otype << "\n";
+                        std::cout << "max_d: " << max_d << "\n";
+                        std::cout << "functions: ";
+                        for (const auto& f: functions) std::cout << f->name << " ";
+                        std::cout << "\n";
+                        std::cout << "---\n";
+                    }
+                }
+                
+                assert(fi.size() > 0 && "The operator set specified results in incomplete programs.");
+                
+                // append a random choice from fs            
+                /* auto t = functions[r.random_choice(fi)]->rnd_clone(); */
+                //std::cout << t->name << " ";
+                /* cout << "choices: \n"; */
+                /* for (const auto& fis : fi) */
+                /*     cout << functions[fis]->name << "," ; */
+                /* cout << "\n"; */
+                push_back(functions[r.random_choice(fi)]->rnd_clone());
+                
+                /* std::cout << "back(): " << back()->name << "\n"; */ 
+                std::unique_ptr<Node> chosen(back()->clone());
+                /* std::cout << "chosen: " << chosen->name << "\n"; */ 
+                // recurse to fulfill the arity of the chosen function
+                for (size_t i = 0; i < chosen->arity['f']; ++i)
+                    make_tree(functions, terminals, max_d-1, term_weights, 'f', term_types);
+                for (size_t i = 0; i < chosen->arity['b']; ++i)
+                    make_tree(functions, terminals, max_d-1, term_weights, 'b', term_types);
+                for (size_t i = 0; i < chosen->arity['c']; ++i)
+                    make_tree(functions, terminals, max_d-1, term_weights, 'c', term_types);
+                for (size_t i = 0; i < chosen->arity['z']; ++i)
+                    make_tree(functions, terminals, max_d-1, term_weights, 'z', term_types);
+            }
+            
+            /* std::cout << "finished program: ["; */
+            /* for (const auto& p : *(this) ) std::cout << p->name << " "; */
+        }
+
+        void NodeVector::make_program(const NodeVector& functions, 
+                                      const NodeVector& terminals, int max_d, 
+                                      const vector<double>& term_weights, int dim, char otype, 
+                                      vector<string> longitudinalMap, const vector<char>& term_types)
+        {
+            for (unsigned i = 0; i<dim; ++i)    // build trees
+                make_tree(functions, terminals, max_d, term_weights, otype, term_types);
+            
+            // reverse program so that it is post-fix notation
+            std::reverse(begin(), end());
+            assert(is_valid_program(terminals.size(), longitudinalMap));
+        }
+        
     }
 } // FT
