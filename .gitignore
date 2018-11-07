@@ -13,3 +13,4 @@ python/pyfeat.cpp
 docs/api/c/
 site/
 *.log
+examples/
