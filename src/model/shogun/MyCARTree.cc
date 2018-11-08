@@ -1,4 +1,5 @@
-/*
+/* Edited by William La Cava 2018 (WGL)
+ *
  * Copyright (c) The Shogun Machine Learning Toolbox
  * Written (w) 2014 Parijat Mazumdar
  * All rights reserved.
@@ -30,12 +31,11 @@
 
 #include "MyCARTree.h"
 #include <iostream>
+#include <shogun/base/some.h>
 using namespace Eigen;
 using namespace shogun;
 using std::vector;
-
-
-
+using std::cout; 
 
 const char* CMyCARTree::get_name() const { return "CARTree"; }
 
@@ -120,10 +120,16 @@ CBinaryLabels* CMyCARTree::apply_binary(CFeatures* data)
     bnode_t* current=dynamic_cast<bnode_t*>(get_root());
 
     REQUIRE(current, "Tree machine not yet trained.\n");
-    CLabels* ret=apply_from_current_node(dynamic_cast<CDenseFeatures<float64_t>*>(data), current);
+    CLabels* ret=apply_from_current_node(dynamic_cast<CDenseFeatures<float64_t>*>(data), current, true);
+    SGVector<double> tmp = dynamic_cast<CMulticlassLabels*>(ret)->get_labels(); 
+    CBinaryLabels* retbc = new CBinaryLabels(tmp,0.5);
+    /* cout << "retbc: " << retbc << "\n"; */
+    /* auto tmpb = retbc->get_labels(); */
+    /* cout << "apply_binary::retbc: "; */
+    /* tmpb.display_vector(); */
 
     SG_UNREF(current);
-    return dynamic_cast<CBinaryLabels*>(ret);
+    return retbc;
 }
 CMulticlassLabels* CMyCARTree::apply_multiclass(CFeatures* data)
 {
@@ -1600,15 +1606,26 @@ void CMyCARTree::get_importance(bnode_t* node, vector<double>& importances)
    }
 }
 // WGL: updated definitions to allow probabilities to be calculated
-void CMyCARTree::set_probabilities(CLabels* labels)
+void CMyCARTree::set_probabilities(CLabels* labels, CFeatures* data)
 {
-    int size = labels->get_values().size();
+    /* cout << "in set_probabilities\n"; */
+    /* cout << "labels: " << labels << "\n"; */
+    int size = labels->get_num_labels();
+    /* cout << "size: " << size << "\n"; */
     if (m_certainty.size() != size)
         std::cout << "ERROR: mismatch in size btw m_certainty and labels\n";
     // set probabilities using m_certainty
     for (int i = 0; i < size; ++i)
     {
-        labels->set_value(m_certainty[i],i);
+        if (labels->get_value(i) > 0)
+            labels->set_value(m_certainty[i],i);
+        else
+            labels->set_value(1-m_certainty[i],i);
     }
-    dynamic_cast<CBinaryLabels*>(labels)->scores_to_probabilities();
+    /* cout << "set labels to \n"; */
+    /* for (int i = 0; i < size; ++i) */
+    /* { */
+    /*     cout << labels->get_value(i) << ", "; */
+    /* } */
+    /* cout << "\n"; */
 }

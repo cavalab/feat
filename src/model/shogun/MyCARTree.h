@@ -244,7 +244,7 @@ namespace shogun
  
         /** WGL: sets the probabilities on each label according to m_certainty
          */
-        void set_probabilities(CLabels* labels);  
+        void set_probabilities(CLabels* labels, CFeatures* data=NULL);  
     protected:
 	    /** train machine - build CART from training data
 	     * @param data training data

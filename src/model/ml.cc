@@ -247,9 +247,7 @@ namespace FT{
                 else 
                     N.fit_normalize(X, dtypes);
             }
-            /* else */
-                /* cout << "normlize is false\n"; */
-
+            
             auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
             /* cout << "Phi:\n"; */
             /* for (int i = 0; i < 10 ; ++i) */
@@ -271,7 +269,9 @@ namespace FT{
                 /* auto labels_train = (CMulticlassLabels *)p_est->get_labels(); */
                 /* SGVector<double> labs = labels_train->get_unique_labels(); */
                 /* std::cout << "unique labels: \n"; */ 
-                /* for (int i = 0; i < labs.size(); ++i) std::cout << labs[i] << " " ; std::cout << "\n"; */
+                /* for (int i = 0; i < labs.size(); ++i) */ 
+                /*     std::cout << labs[i] << " " ; */ 
+                /* std::cout << "\n"; */
 
                 /* int nclasses = labels_train->get_num_classes(); */
                 /* std::cout << "nclasses: " << nclasses << "\n"; */
@@ -280,7 +280,8 @@ namespace FT{
                 p_est->set_labels(some<CRegressionLabels>(SGVector<float64_t>(y)));
             
             // train ml
-            params.msg("ML training on thread" + std::to_string(omp_get_thread_num()) + "...",3," ");       
+            params.msg("ML training on thread" 
+                       + std::to_string(omp_get_thread_num()) + "...",3," ");       
             // *** Train the model ***  
             p_est->train(features);
             // *** Train the model ***
@@ -296,13 +297,13 @@ namespace FT{
                 bool proba = params.scorer.compare("log")==0;
 
                 labels = shared_ptr<CLabels>(p_est->apply_binary(features));
-                
+
                 if (proba)
                 {
                     if (ml_type == CART)
                     {
                         dynamic_pointer_cast<sh::CMyCARTree>(p_est)->
-                            set_probabilities(labels.get());
+                            set_probabilities(labels.get(), features);
                     }
                     else
                     {
@@ -340,7 +341,7 @@ namespace FT{
             {
                 pass = false;
             }
-            //std::cout << "Returning from fit() from the ml.h" << std::endl;
+            /* cout << "Returning from fit() from the ML class" << std::endl; */
             return labels;
         }
 
@@ -362,10 +363,14 @@ namespace FT{
             shared_ptr<CLabels> labels;
            
             if (prob_type==PT_BINARY && 
-                    (ml_type == SVM || ml_type == LR)){
+                    (ml_type == SVM || ml_type == LR || ml_type == CART)){
                 labels = std::shared_ptr<CLabels>(p_est->apply_binary(features));
-                dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_probabilities(labels.get(), 
-                                                                                 features);
+                if (ml_type == CART)
+                    dynamic_pointer_cast<sh::CMyCARTree>(p_est)->set_probabilities(labels.get(), 
+                                                                                   features);
+                else
+                    dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_probabilities(labels.get(), 
+                                                                                     features);
             }
             else if (prob_type != PT_REGRESSION)
                 labels = std::shared_ptr<CLabels>(p_est->apply_multiclass(features));
@@ -387,7 +392,7 @@ namespace FT{
             shared_ptr<CLabels> labels = shared_ptr<CLabels>(predict(X));
                
             if (prob_type==PT_BINARY && 
-                    (ml_type == SVM || ml_type == LR))
+                    (ml_type == SVM || ml_type == LR || ml_type == CART))
             {
                 shared_ptr<CBinaryLabels> BLabels = dynamic_pointer_cast<CBinaryLabels>(labels);
                 /* BLabels->scores_to_probabilities(); */
@@ -416,7 +421,7 @@ namespace FT{
         {
             SGVector<double> y_pred;
             if (prob_type==PT_BINARY && 
-                    (ml_type == SVM || ml_type == LR))
+                    (ml_type == SVM || ml_type == LR || ml_type == CART))
                 y_pred = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_labels();
             else if (prob_type != PT_REGRESSION)
                 y_pred = dynamic_pointer_cast<sh::CMulticlassLabels>(labels)->get_labels();
@@ -425,7 +430,8 @@ namespace FT{
            
             Map<VectorXd> yhat(y_pred.data(),y_pred.size());
             
-            if (prob_type==PT_BINARY && (ml_type == LR || ml_type == SVM))
+            if (prob_type==PT_BINARY && 
+                    (ml_type == LR || ml_type == SVM || ml_type == CART))
                 // convert -1 to 0
                 yhat = (yhat.cast<int>().array() == -1).select(0,yhat);
 
