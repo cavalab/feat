@@ -33,29 +33,29 @@ namespace FT{
 	        }
 
             template <class T>
-            void NodeSplit<T>::evaluate(const Data& data, Stacks& stack)
+            void NodeSplit<T>::evaluate(const Data& data, State& state)
             {
                 ArrayXd x1;
                         
-                x1 = stack.pop<T>().template cast<double>();
+                x1 = state.pop<T>().template cast<double>();
                     
                 if (!data.validation && !data.y.size()==0 && train)
                     set_threshold(x1,data.y, data.classification);
                     
                 if(arity['f'])
-                    stack.push<bool>(x1 < threshold);
+                    state.push<bool>(x1 < threshold);
                 else
-                    stack.push<bool>(x1 == threshold);
+                    state.push<bool>(x1 == threshold);
             }
 
             /// Evaluates the node symbolically
             template <class T>
-            void NodeSplit<T>::eval_eqn(Stacks& stack)
+            void NodeSplit<T>::eval_eqn(State& state)
             {
                 if(arity['f'])
-                    stack.push<bool>("(" + stack.popStr<T>() + "<" + std::to_string(threshold) + ")");
+                    state.push<bool>("(" + state.popStr<T>() + "<" + std::to_string(threshold) + ")");
                 else
-                    stack.push<bool>("(" + stack.popStr<T>() + "==" + std::to_string(threshold) + ")");
+                    state.push<bool>("(" + state.popStr<T>() + "==" + std::to_string(threshold) + ")");
             }
             
             template <class T>

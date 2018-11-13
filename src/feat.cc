@@ -494,9 +494,9 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     unsigned stall_count = 0;
     double fraction = 0;
     // continue until max gens is reached or max_time is up (if it is set)
-    while((params.max_time == -1 || params.max_time > timer.Elapsed().count())
-           && g<params.gens
-           && (params.max_stall == 0 || stall_count < params.max_stall) )
+    while((params.max_time == -1 || params.max_time > timer.Elapsed().count()) // time limit
+           && g<params.gens                                                    // generation limit
+           && (params.max_stall == 0 || stall_count < params.max_stall) )      // stall limit
     {
         fraction = params.max_time == -1 ? ((g+1)*1.0)/params.gens : 
                                            timer.Elapsed().count()/params.max_time;
@@ -518,8 +518,12 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
         g++;
     }
     // =====================
-    
-    params.msg("finished",2);
+    if ( params.max_stall != 0 && stall_count >= params.max_stall)
+        params.msg("learning stalled",2);
+    else if ( g >= params.gens) 
+        params.msg("generation limit reached",2);
+    else
+        params.msg("max time reached",2);
     params.msg("best training representation: " + best_ind.get_eqn(),2);
     params.msg("train score: " + std::to_string(best_score), 2);
     // evaluate population on validation set

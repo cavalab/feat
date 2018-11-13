@@ -16,18 +16,18 @@ namespace FT{
 	            complexity = 2;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeLEQ::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeLEQ::evaluate(const Data& data, State& state)
             {
-              	ArrayXd x1 = stack.pop<double>();
-                ArrayXd x2 = stack.pop<double>();
-                stack.push<bool>(x1 <= x2);
+              	ArrayXd x1 = state.pop<double>();
+                ArrayXd x2 = state.pop<double>();
+                state.push<bool>(x1 <= x2);
             }
 
             /// Evaluates the node symbolically
-            void NodeLEQ::eval_eqn(Stacks& stack)
+            void NodeLEQ::eval_eqn(State& state)
             {
-                stack.push<bool>("(" + stack.popStr<double>() + "<=" + stack.popStr<double>() + ")");
+                state.push<bool>("(" + state.popStr<double>() + "<=" + state.popStr<double>() + ")");
             }
             
             NodeLEQ* NodeLEQ::clone_impl() const { return new NodeLEQ(*this); }  

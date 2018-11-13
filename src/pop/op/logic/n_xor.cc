@@ -18,22 +18,22 @@ namespace FT
 	            complexity = 2;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeXor::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeXor::evaluate(const Data& data, State& state)
             {
-	            ArrayXb x1 = stack.pop<bool>();
-                ArrayXb x2 = stack.pop<bool>();
+	            ArrayXb x1 = state.pop<bool>();
+                ArrayXb x2 = state.pop<bool>();
 
                 ArrayXb res = (x1 != x2).select(ArrayXb::Ones(x1.size()), ArrayXb::Zero(x1.size()));
 
-                stack.push<bool>(res);
+                state.push<bool>(res);
                 
             }
 
             /// Evaluates the node symbolically
-            void NodeXor::eval_eqn(Stacks& stack)
+            void NodeXor::eval_eqn(State& state)
             {
-                stack.push<bool>("(" + stack.popStr<bool>() + " XOR " + stack.popStr<bool>() + ")");
+                state.push<bool>("(" + state.popStr<bool>() + " XOR " + state.popStr<bool>() + ")");
             }
             
             NodeXor* NodeXor::clone_impl() const { return new NodeXor(*this); }

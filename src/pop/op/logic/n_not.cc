@@ -17,16 +17,16 @@ namespace FT{
 	            complexity = 1;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeNot::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeNot::evaluate(const Data& data, State& state)
             {
-                stack.push<bool>(!stack.pop<bool>());
+                state.push<bool>(!state.pop<bool>());
             }
 
             /// Evaluates the node symbolically
-            void NodeNot::eval_eqn(Stacks& stack)
+            void NodeNot::eval_eqn(State& state)
             {
-                stack.push<bool>("NOT(" + stack.popStr<bool>() + ")");
+                state.push<bool>("NOT(" + state.popStr<bool>() + ")");
             }
             
             NodeNot* NodeNot::clone_impl() const { return new NodeNot(*this); }

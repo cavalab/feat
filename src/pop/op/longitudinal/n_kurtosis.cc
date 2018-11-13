@@ -18,25 +18,25 @@ namespace FT{
 	            complexity = 1;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeKurtosis::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeKurtosis::evaluate(const Data& data, State& state)
             {
-                ArrayXd tmp(stack.z.top().first.size());
+                ArrayXd tmp(state.z.top().first.size());
                 
                 int x;
                 
-                for(x = 0; x < stack.z.top().first.size(); x++)
-                    tmp(x) = kurtosis(limited(stack.z.top().first[x]));
+                for(x = 0; x < state.z.top().first.size(); x++)
+                    tmp(x) = kurtosis(limited(state.z.top().first[x]));
                     
-                stack.z.pop();
-                stack.push<double>(tmp);
+                state.z.pop();
+                state.push<double>(tmp);
                 
             }
 
             /// Evaluates the node symbolically
-            void NodeKurtosis::eval_eqn(Stacks& stack)
+            void NodeKurtosis::eval_eqn(State& state)
             {
-                stack.push<double>("kurtosis(" + stack.zs.pop() + ")");
+                state.push<double>("kurtosis(" + state.zs.pop() + ")");
             }
             
             NodeKurtosis* NodeKurtosis::clone_impl() const { return new NodeKurtosis(*this); }

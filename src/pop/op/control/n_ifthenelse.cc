@@ -20,26 +20,26 @@ namespace FT{
                 W = {0.0, 0.0};
 	        }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeIfThenElse::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeIfThenElse::evaluate(const Data& data, State& state)
             {
-                ArrayXd f1 = stack.pop<double>();
-                ArrayXd f2 = stack.pop<double>();
-                stack.push<double>(limited(stack.pop<bool>().select(f1,f2)));
+                ArrayXd f1 = state.pop<double>();
+                ArrayXd f2 = state.pop<double>();
+                state.push<double>(limited(state.pop<bool>().select(f1,f2)));
             }
 
             /// Evaluates the node symbolically
-            void NodeIfThenElse::eval_eqn(Stacks& stack)
+            void NodeIfThenElse::eval_eqn(State& state)
             {
-                stack.push<double>("if-then-else(" + stack.popStr<bool>() + 
-                                   "," + stack.popStr<double>() + "," + 
-                                   stack.popStr<double>() + ")");
+                state.push<double>("if-then-else(" + state.popStr<bool>() + 
+                                   "," + state.popStr<double>() + "," + 
+                                   state.popStr<double>() + ")");
             }
             
-            ArrayXd NodeIfThenElse::getDerivative(Trace& stack, int loc) 
+            ArrayXd NodeIfThenElse::getDerivative(Trace& state, int loc) 
             {
-                ArrayXd& xf = stack.get<double>()[stack.size<double>()-1];
-                ArrayXb& xb = stack.get<bool>()[stack.size<bool>()-1];
+                ArrayXd& xf = state.get<double>()[state.size<double>()-1];
+                ArrayXb& xb = state.get<bool>()[state.size<bool>()-1];
                 
                 switch (loc) {
                     case 3: // d/dW[0]
@@ -50,8 +50,8 @@ namespace FT{
                     case 0: // d/dx1
                     default:
                         return xb.cast<double>(); 
-                        /* .select(ArrayXd::Ones(stack.f[stack.f.size()-1].size(), */
-                        /*                  ArrayXd::Zero(stack.f[stack.f.size()-1].size()); */
+                        /* .select(ArrayXd::Ones(state.f[state.f.size()-1].size(), */
+                        /*                  ArrayXd::Zero(state.f[state.f.size()-1].size()); */
                 } 
             }
 

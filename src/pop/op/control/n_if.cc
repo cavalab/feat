@@ -20,22 +20,22 @@ namespace FT{
                 W.push_back(0);
 	        }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeIf::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeIf::evaluate(const Data& data, State& state)
             {
-                stack.push<double>(limited(stack.pop<bool>().select(stack.pop<double>(),0)));
+                state.push<double>(limited(state.pop<bool>().select(state.pop<double>(),0)));
             }
 
             /// Evaluates the node symbolically
-            void NodeIf::eval_eqn(Stacks& stack)
+            void NodeIf::eval_eqn(State& state)
             {
-              stack.push<double>("if(" + stack.popStr<bool>() + "," + stack.popStr<double>() + "," + "0)");
+              state.push<double>("if(" + state.popStr<bool>() + "," + state.popStr<double>() + "," + "0)");
             }
             
-            ArrayXd NodeIf::getDerivative(Trace& stack, int loc) 
+            ArrayXd NodeIf::getDerivative(Trace& state, int loc) 
             {
-                ArrayXd& xf = stack.get<double>()[stack.size<double>()-1];
-                ArrayXb& xb = stack.get<bool>()[stack.size<bool>()-1];
+                ArrayXd& xf = state.get<double>()[state.size<double>()-1];
+                ArrayXb& xb = state.get<bool>()[state.size<bool>()-1];
                 
                 switch (loc) {
                     case 1: // d/dW[0]
@@ -43,8 +43,8 @@ namespace FT{
                     case 0: // d/dx1
                     default:
                         return xb.cast<double>(); 
-                        /* .select(ArrayXd::Ones(stack.f[stack.f.size()-1].size(), */
-                        /*                  ArrayXd::Zero(stack.f[stack.f.size()-1].size()); */
+                        /* .select(ArrayXd::Ones(state.f[state.f.size()-1].size(), */
+                        /*                  ArrayXd::Zero(state.f[state.f.size()-1].size()); */
                 } 
             }
             

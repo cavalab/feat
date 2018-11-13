@@ -18,18 +18,18 @@ namespace FT{
 	            complexity = 1;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeStep::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeStep::evaluate(const Data& data, State& state)
             {
-	            ArrayXd x = stack.pop<double>();
+	            ArrayXd x = state.pop<double>();
 	            ArrayXd res = (x > 0).select(ArrayXd::Ones(x.size()), ArrayXd::Zero(x.size())); 
-                stack.push<double>(res);
+                state.push<double>(res);
             }
 
             /// Evaluates the node symbolically
-            void NodeStep::eval_eqn(Stacks& stack)
+            void NodeStep::eval_eqn(State& state)
             {
-                stack.push<double>("step("+ stack.popStr<double>() +")");
+                state.push<double>("step("+ state.popStr<double>() +")");
             }
 
             NodeStep* NodeStep::clone_impl() const { return new NodeStep(*this); }
