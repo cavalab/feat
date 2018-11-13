@@ -32,22 +32,22 @@ namespace FT{
 	            d_value = v;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeConstant::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeConstant::evaluate(const Data& data, State& state)
             {
 	            if (otype == 'b')
-                    stack.push<bool>(ArrayXb::Constant(data.X.cols(),int(b_value)));
+                    state.push<bool>(ArrayXb::Constant(data.X.cols(),int(b_value)));
                 else 	
-                    stack.push<double>(limited(ArrayXd::Constant(data.X.cols(),d_value)));
+                    state.push<double>(limited(ArrayXd::Constant(data.X.cols(),d_value)));
             }
 
             /// Evaluates the node symbolically
-            void NodeConstant::eval_eqn(Stacks& stack)
+            void NodeConstant::eval_eqn(State& state)
             {
 	            if (otype == 'b')
-                    stack.push<bool>(std::to_string(b_value));
+                    state.push<bool>(std::to_string(b_value));
                 else 	
-                    stack.push<double>(std::to_string(d_value));
+                    state.push<double>(std::to_string(d_value));
             }
             
             NodeConstant* NodeConstant::clone_impl() const { return new NodeConstant(*this); }

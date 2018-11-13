@@ -26,11 +26,11 @@ namespace FT{
                     /// declares a double constant
             		NodeConstant(const double& v);
             		
-                    /// Evaluates the node and updates the stack states. 
-                    void evaluate(const Data& data, Stacks& stack);
+                    /// Evaluates the node and updates the state states. 
+                    void evaluate(const Data& data, State& state);
 
                     /// Evaluates the node symbolically
-                    void eval_eqn(Stacks& stack);
+                    void eval_eqn(State& state);
 
                     // Make the derivative 1
             		

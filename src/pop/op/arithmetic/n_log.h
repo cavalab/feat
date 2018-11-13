@@ -18,12 +18,12 @@ namespace FT{
             		NodeLog(vector<double> W0 = vector<double>());
             		
                     /// Safe log: pushes log(abs(x)) or MIN_DBL if x is near zero. 
-                    void evaluate(const Data& data, Stacks& stack);
+                    void evaluate(const Data& data, State& state);
 
                     /// Evaluates the node symbolically
-                    void eval_eqn(Stacks& stack);
+                    void eval_eqn(State& state);
 
-                    ArrayXd getDerivative(Trace& stack, int loc);
+                    ArrayXd getDerivative(Trace& state, int loc);
                     
                 protected:
                     NodeLog* clone_impl() const override;

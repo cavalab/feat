@@ -26,21 +26,21 @@ namespace FT{
                     W = W0;
 	        }
 
-            /// Evaluates the node and updates the stack states.  
-            void NodeCube::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states.  
+            void NodeCube::evaluate(const Data& data, State& state)
             {
-                stack.push<double>(limited(pow(this->W[0] * stack.pop<double>(),3)));
+                state.push<double>(limited(pow(this->W[0] * state.pop<double>(),3)));
             }
 
             /// Evaluates the node symbolically
-            void NodeCube::eval_eqn(Stacks& stack)
+            void NodeCube::eval_eqn(State& state)
             {
-                stack.push<double>("(" + stack.popStr<double>() + "^3)");
+                state.push<double>("(" + state.popStr<double>() + "^3)");
             }
 
-            ArrayXd NodeCube::getDerivative(Trace& stack, int loc)
+            ArrayXd NodeCube::getDerivative(Trace& state, int loc)
             {
-                ArrayXd& x = stack.get<double>()[stack.size<double>()-1];
+                ArrayXd& x = state.get<double>()[state.size<double>()-1];
                 
                 switch (loc) {
                     case 1: // d/dw0

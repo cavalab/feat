@@ -26,21 +26,21 @@ namespace FT{
                     W = W0;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeSquare::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeSquare::evaluate(const Data& data, State& state)
             {
-                stack.push<double>(limited(pow(W[0]*stack.pop<double>(),2)));
+                state.push<double>(limited(pow(W[0]*state.pop<double>(),2)));
             }
 
             /// Evaluates the node symbolically
-            void NodeSquare::eval_eqn(Stacks& stack)
+            void NodeSquare::eval_eqn(State& state)
             {
-                stack.push<double>("(" + stack.popStr<double>() + "^2)");
+                state.push<double>("(" + state.popStr<double>() + "^2)");
             }
 
-            ArrayXd NodeSquare::getDerivative(Trace& stack, int loc)
+            ArrayXd NodeSquare::getDerivative(Trace& state, int loc)
             {
-                ArrayXd& x = stack.get<double>()[stack.size<double>()-1];
+                ArrayXd& x = state.get<double>()[state.size<double>()-1];
                 switch (loc) {
                     case 1: // d/dw0
                         return 2 * pow(x, 2) * this->W[0];

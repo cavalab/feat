@@ -1,36 +1,110 @@
-This section describes the basic approach used by FEAT. A more detailed description, along with experiments, 
-is available in [this preprint.](https://arxiv.org/abs/1807.00981)
+Feat handles continuous, categorical and boolean data types, as well as sequential (i.e. longitudinal) data. 
+By default, FEAT will attempt to infer these data types automatically from the input data. 
+The user may also specify types in the C++ API. 
 
-[^1]: La Cava, W., Silva, S., Danai, K., Spector, L., Vanneschi, L., & Moore, J. H. (2018). Multidimensional genetic programming for multiclass classification. Swarm and Evolutionary Computation.
-[^2]: Hoerl, A. E., & Kennard, R. W. (1970). Ridge regression: Biased estimation for nonorthogonal problems. Technometrics, 12(1), 55–67.
-[^3]: La Cava, W., Helmuth, T., Spector, L., & Moore, J. H. (2018). A probabilistic and multi-objective analysis of lexicase selection and ε-lexicase selection. Evolutionary computation, 1-28.
+## Typical use case
+For traditional ML tasks, the user specifies data and trains an estimator like so:
 
-## Representation Learning
+**python** 
 
-The goal of representation learning in regression or classification is to learn a new representation of your data that makes it easier to model. As an example, consider the figure below[^1], where each point is a sample belonging to one of 4 colored classes. Here, we want to learn the equations on the axes of the right plot (labelled on the axes), which will make it easier classify the data belonging to each class.   
+```python
+from feat import Feat
 
-![Representation Learning Example](rep_learning_demo_2d.svg)
-*(Left) raw data. (Right) Data after transformation according to a 2d representation shown on the axes[^1].*
+#here's some random data
+import numpy as np
+X = np.random.rand(100,10)  
+y = np.random.rand(100)
 
-It's worth noting that the representation in the right panel will be easier for certain machine learning methods to classify, and harder for others. For this reason we've written FEAT to wrap around the Shogun ML toolbox, which means it can learn representations for different ML approaches. The default approach is linear and logistic regression, but currently decision trees (CART), support vector machines (SVM) and random forests are also supported. 
+est = Feat()
+est.fit(X,y)
+```
+Note that, in *python*, as in sklearn, FEAT expects `X` to be an $N \times D$ numpy array, 
+with $N$ samples and $D$ features. `y` should be 1d numpy array of length $N$. 
 
-## Approach
+**c++** 
 
-FEAT is a wrapper-based learning method that trains ML methods on a population of representations, and optimizes the representations to produce the lowest error. FEAT uses a typical $\mu$ + $\lambda$ evolutionary updating scheme, where $\mu=\lambda=P$. The method optimizes a population of potential representations, $N = \{n_1\;\dots\;n_P\}$, where $n$ is an ``individual" in the population, iterating through these steps: 
-    
-- Fit a linear model $\hat{y} = \mathbf{x}^T\hat{\beta}$. Create an initial population $N$ consisting of this initial representation, $\mathbf{\phi} = \mathbf{x}$, along with $P-1$ randomly generated representations that sample $\mathbf{x}$ proportionally to $\hat{\beta}$. 
-- While the stop criterion is not met: 
-    - Select parents  $P \subseteq N$ using a selection algorithm. 
-    - Apply variation operators to parents to generate $P$ offspring $O$; $N = N \cup O$ 
-    - Reduce $N$ to $P$ individuals using a survival algorithm.  
-- Select and return $n \in N$ with the lowest error on a hold-out validation set. 
+```c++
+#include "feat.h"
+using FT::Feat;
+#include <Eigen/Dense>
 
-Individuals are evaluated using an initial forward pass, after which each representation is used to fit a linear model using ridge regression[^2]. The weights of the differentiable features in the representation are then updated using stochastic gradient descent.  
+// feed in some data
+Eigen::MatrixXd X(7,2); 
+X << 0,1,  
+     0.47942554,0.87758256,  
+     0.84147098,  0.54030231,
+     0.99749499,  0.0707372,
+     0.90929743, -0.41614684,
+     0.59847214, -0.80114362,
+     0.14112001,-0.9899925;
+X.transposeInPlace();
 
-## Feature representation
+Eigen::VectorXd y(7); 
+y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
+         -1.20648656, -2.68773747;
+// train 
+Feat est;
+est.fit(X,y);
+```
 
-FEAT is designed with interpretability in mind. To this end, the representations it learns are sets of equations. The equations are composed of basic operations, including arithmetic, logical functions, control flow and heuristic spits. FEAT also supports many statistical operators for handling sequential data. 
+In *c++*, FEAT expects `X` to be transposed, i.e., a $D \times N$ Eigen `MatrixXd`. 
+`y` should be an Eigen `VectorXd` of length $N$.
+ 
+## Command line
 
-## Selection and Archiving
+FEAT can learn from a `.csv` or `.tsv` file. In those cases, the target column **must** be labelled one 
+of the following:
 
-By default, FEAT uses lexicase selection[^3] as the selection operation and NSGA-II for survival. This allows FEAT to maintain an archive of accuracy-complexity tradeoffs to aid in interpretability. FEAT also supports simulated annealing, tournament selection and random search.
+ - class
+ - target
+ - label
+
+To use tab-separated data, specify `-sep \\t` at the command line.
+
+If you want to load your own data in a c++ script, you can use Feat's built-in `load_csv` function.
+
+```c++
+#include "feat.h"
+// variables
+string dataset = "my_data.csv";
+MatrixXd X;
+VectorXd y; 
+vector<string> names;
+vector<char> dtypes;
+bool binary_endpoint=false; // true for binary classification
+char delim = ',';   // assuming comma-separated file
+// load the data
+FT::load_csv(dataset,X,y,names,dtypes,binary_endpoint,delim);
+feat.set_feature_names(names);
+feat.set_dtypes(dtypes);
+```
+
+Now `X` and `y` will have your data, and `feat` will know its types and the names of the variables.
+
+## Longitudinal data
+
+Longitudinal data is handled by passing a file of longitudinal data with an identifier that associates
+each entry with a row of `X`. The longitudinal data should have the following format: 
+
+id | date | name | value
+-- | ---- | ----- | ----
+1  | 365  | BloodPressure | 128
+
+Each measurement has a unique identifier (`id`), an integer `date`, a string `name`,
+and a `value`. 
+
+The ids are used to associate rows of data with rows/samples in `X`. To do so, the
+user inputs a numpy array of the same length as `X`, where each value corresponds
+to the `id` value in the longitudinal data associated with that row of `X`. 
+
+For example, 
+
+```python
+zfile = 'longitudinal.csv'
+ids = np.array([1, ...]) 
+est.fit(X,y,zfile,ids)
+```
+
+This means that `id=1` associates all data in `Z` with the first row of `X` and `y`.
+
+See [here](./../examples/longitudinal.md) for an example.

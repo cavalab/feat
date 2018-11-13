@@ -16,17 +16,17 @@ namespace FT{
 	            complexity = 2;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeAnd::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeAnd::evaluate(const Data& data, State& state)
             {
-                stack.push<bool>(stack.pop<bool>() && stack.pop<bool>());
+                state.push<bool>(state.pop<bool>() && state.pop<bool>());
 
             }
 
             /// Evaluates the node symbolically
-            void NodeAnd::eval_eqn(Stacks& stack)
+            void NodeAnd::eval_eqn(State& state)
             {
-                stack.push<bool>("(" + stack.popStr<bool>() + " AND " + stack.popStr<bool>() + ")");
+                state.push<bool>("(" + state.popStr<bool>() + " AND " + state.popStr<bool>() + ")");
             }
             
             NodeAnd* NodeAnd::clone_impl() const { return new NodeAnd(*this); }

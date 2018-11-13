@@ -27,27 +27,27 @@ namespace FT{
                     W = W0;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeDivide::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeDivide::evaluate(const Data& data, State& state)
             {
-                ArrayXd x1 = stack.pop<double>();
-                ArrayXd x2 = stack.pop<double>();
+                ArrayXd x1 = state.pop<double>();
+                ArrayXd x2 = state.pop<double>();
                 // safe division returns x1/x2 if x2 != 0, and MAX_DBL otherwise               
-                stack.push<double>( (abs(x2) > NEAR_ZERO ).select((this->W[0] * x1) / (this->W[1] * x2), 
+                state.push<double>( (abs(x2) > NEAR_ZERO ).select((this->W[0] * x1) / (this->W[1] * x2), 
                                                             1.0) ); 
             }
 
             /// Evaluates the node symbolically
-            void NodeDivide::eval_eqn(Stacks& stack)
+            void NodeDivide::eval_eqn(State& state)
             {
-                stack.push<double>("(" + stack.popStr<double>() + "/" + stack.popStr<double>() + ")");            	
+                state.push<double>("(" + state.popStr<double>() + "/" + state.popStr<double>() + ")");            	
             }
 
             // Might want to check derivative orderings for other 2 arg nodes
-            ArrayXd NodeDivide::getDerivative(Trace& stack, int loc)
+            ArrayXd NodeDivide::getDerivative(Trace& state, int loc)
             {
-                ArrayXd& x1 = stack.get<double>()[stack.size<double>()-1];
-                ArrayXd& x2 = stack.get<double>()[stack.size<double>()-2];
+                ArrayXd& x1 = state.get<double>()[state.size<double>()-1];
+                ArrayXd& x2 = state.get<double>()[state.size<double>()-2];
                 
                 switch (loc) {
                     case 3: // d/dW[1]

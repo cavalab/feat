@@ -14,11 +14,11 @@ interpreted correctly.* See the datasets in the examples folder for guidance.
 
 We will run Feat on the [energy
 efficiency](https://archive.ics.uci.edu/ml/datasets/Energy+efficiency) dataset from UCI, which is
-included in `examples/d_enc.txt`. 
+included in `docs/examples/data/d_enc.txt`. 
 To run Feat with a population 1000 for 100 generations using a random seed of 42, type
 
 ```
-./build/feat examples/d_enc.csv -p 100 -g 100 -r 42
+./build/feat docs/examples/d_enc.csv -p 100 -g 100 -r 42
 ```
 
 The default verbosity=1, so you will get a printout of summary statistics each generation. The final

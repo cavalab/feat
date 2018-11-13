@@ -5,7 +5,7 @@ license: GNU/GPL v3
 #ifndef INDIVIDUAL_H
 #define INDIVIDUAL_H
 
-#include "../dat/stack.h"
+#include "../dat/state.h"
 #include "../dat/data.h"
 #include "../params.h"
 #include "../model/ml.h"

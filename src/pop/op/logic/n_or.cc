@@ -18,17 +18,17 @@ namespace FT{
 	            complexity = 2;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeOr::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeOr::evaluate(const Data& data, State& state)
             {
-                stack.push<bool>(stack.pop<bool>() || stack.pop<bool>());
+                state.push<bool>(state.pop<bool>() || state.pop<bool>());
 
             }
 
             /// Evaluates the node symbolically
-            void NodeOr::eval_eqn(Stacks& stack)
+            void NodeOr::eval_eqn(State& state)
             {
-                stack.push<bool>("(" + stack.popStr<bool>() + " OR " + stack.popStr<bool>() + ")");
+                state.push<bool>("(" + state.popStr<bool>() + " OR " + state.popStr<bool>() + ")");
             }
             
             NodeOr* NodeOr::clone_impl() const { return new NodeOr(*this); }

@@ -26,21 +26,21 @@ namespace FT{
                     W = W0;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeSqrt::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeSqrt::evaluate(const Data& data, State& state)
             {
-                stack.push<double>(sqrt(W[0]*stack.pop<double>().abs()));
+                state.push<double>(sqrt(W[0]*state.pop<double>().abs()));
             }
 
             /// Evaluates the node symbolically
-            void NodeSqrt::eval_eqn(Stacks& stack)
+            void NodeSqrt::eval_eqn(State& state)
             {
-                stack.push<double>("sqrt(|" + stack.popStr<double>() + "|)");
+                state.push<double>("sqrt(|" + state.popStr<double>() + "|)");
             }
 
-            ArrayXd NodeSqrt::getDerivative(Trace& stack, int loc)
+            ArrayXd NodeSqrt::getDerivative(Trace& state, int loc)
             {
-                ArrayXd& x = stack.get<double>()[stack.size<double>()-1];
+                ArrayXd& x = state.get<double>()[state.size<double>()-1];
                 
                 switch (loc) {
                     case 1: // d/dw0

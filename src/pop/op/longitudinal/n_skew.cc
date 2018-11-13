@@ -18,26 +18,26 @@ namespace FT{
 	            complexity = 3;
             }
 
-            /// Evaluates the node and updates the stack states. 
-            void NodeSkew::evaluate(const Data& data, Stacks& stack)
+            /// Evaluates the node and updates the state states. 
+            void NodeSkew::evaluate(const Data& data, State& state)
             {
-                ArrayXd tmp(stack.z.top().first.size());
+                ArrayXd tmp(state.z.top().first.size());
                 
                 int x;
                 
-                for(x = 0; x < stack.z.top().first.size(); x++)
-                    tmp(x) = skew(limited(stack.z.top().first[x]));
+                for(x = 0; x < state.z.top().first.size(); x++)
+                    tmp(x) = skew(limited(state.z.top().first[x]));
                     
-                stack.z.pop();
+                state.z.pop();
 
-                stack.push<double>(tmp);
+                state.push<double>(tmp);
                 
             }
 
             /// Evaluates the node symbolically
-            void NodeSkew::eval_eqn(Stacks& stack)
+            void NodeSkew::eval_eqn(State& state)
             {
-                stack.push<double>("skew(" + stack.zs.pop() + ")");
+                state.push<double>("skew(" + state.zs.pop() + ")");
             }
 
             NodeSkew* NodeSkew::clone_impl() const { return new NodeSkew(*this); }
