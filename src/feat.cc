@@ -378,6 +378,7 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
 
     // start the clock
     timer.Reset();
+
     if (params.use_batch)
     {
         if (params.bp.batch_size >= X.cols()){
@@ -611,27 +612,27 @@ void Feat::update_stall_count(unsigned& stall_count, MatrixXd& F, const DataRef&
     for (unsigned i = 0; i < p_pop->individuals.size(); ++i)
         fitnesses.push_back(p_pop->individuals.at(i).fitness);
     int idx = argmiddle(fitnesses);
-    cout << "fitnesses: \n";
-    for (const auto& f : fitnesses) cout << f << ", "; cout << "\n";
-    cout << "idx: " << idx << "\n";
+    /* cout << "fitnesses: \n"; */
+    /* for (const auto& f : fitnesses) cout << f << ", "; cout << "\n"; */
+    /* cout << "idx: " << idx << "\n"; */
     Individual& med_ind = p_pop->individuals.at(idx);
-    cout << "med_ind: " << med_ind.get_eqn() << "\n";
+    /* cout << "med_ind: " << med_ind.get_eqn() << "\n"; */
     VectorXd tmp;
     shared_ptr<CLabels> yhat_v = med_ind.predict(*d.v, params);
     med_loss_v = p_eval->score(d.v->y, yhat_v, tmp, params.class_weights); 
 
     if (params.current_gen == 0 || med_loss_v < best_med_score)
     {
-        cout << "updating best_med_score to " << med_loss_v << "\n";
+        /* cout << "updating best_med_score to " << med_loss_v << "\n"; */
         best_med_score = med_loss_v;
         stall_count = 0;
     }
     else
     {
         ++stall_count;
-        cout << "stall count: " << stall_count << "\n";
     }
 
+    params.msg("stall count: " + std::to_string(stall_count), 2);
 }
 void Feat::fit(double * X, int rowsX, int colsX, double * Y, int lenY)
 {
@@ -961,6 +962,7 @@ void Feat::print_stats(std::ofstream& log, double fraction)
         if (params.current_gen == 0) // print header
         {
             log << "generation"     << sep
+                << "time"           << sep
                 << "min_loss"       << sep 
                 << "min_loss_val"   << sep 
                 << "med_loss"       << sep 
@@ -987,6 +989,7 @@ void Feat::print_stats(std::ofstream& log, double fraction)
         unsigned med_dim = median(Dims);                          // median program size
 
         log << params.current_gen  << sep
+            << timer.Elapsed().count() << sep
             << best_score          << sep
             << best_score_v        << sep
             << med_score           << sep

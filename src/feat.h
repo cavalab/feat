@@ -352,7 +352,7 @@ namespace FT{
             Parameters params;    					///< hyperparameters of Feat 
             MatrixXd F;                 			///< matrix of fitness values for population
             MatrixXd F_v;                           ///< matrix of validation scores
-            Timer timer;                            ///< start time of training
+            Timer timer;                            ///< provides timing utilities 
             // subclasses for main steps of the evolutionary computation routine
             shared_ptr<Population> p_pop;       	///< population of programs
             shared_ptr<Selection> p_sel;        	///< selection algorithm
