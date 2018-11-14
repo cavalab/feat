@@ -9,11 +9,11 @@ namespace FT{
    	namespace Pop{
    	    namespace Op{	 
            	      		
-            __global__ void Sign( float * x, size_t idx, size_t N, float W0)
+            __global__ void Sign( float * x, size_t idx, size_t N)
             {                    
                 for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
                 {
-                    float res = W0*x[(idx-1)*N+i];
+                    float res = x[(idx-1)*N+i];
                     if (res > 0 )
                         x[(idx-1)*N+i] = 1.0 ; 
                     else if (res == 0)
@@ -23,9 +23,9 @@ namespace FT{
                 }
                 return;
             }
-            void GPU_Sign( float * x, size_t idx, size_t N, float W0)
+            void GPU_Sign( float * x, size_t idx, size_t N)
             {
-                Sign<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N, W0);
+                Sign<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N);
             }
             /// Evaluates the node and updates the stack states. 
             /* void NodeSign::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 

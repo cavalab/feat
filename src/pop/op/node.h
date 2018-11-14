@@ -24,6 +24,15 @@ using Eigen::ArrayXd;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
 #define MAX_DBL std::numeric_limits<double>::max()
 #define MIN_DBL std::numeric_limits<double>::lowest()
+
+#define MAX_INT std::numeric_limits<int>::max()
+#define MIN_INT std::numeric_limits<int>::lowest()
+
+#ifdef USE_CUDA
+    #include "../cuda-op/kernels.h"
+#endif
+
+
 namespace FT{
 
     using namespace Util;

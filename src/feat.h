@@ -26,7 +26,7 @@ license: GNU/GPL v3
 #include "pop/archive.h" 
 
 #ifdef USE_CUDA
-    #include "node-cuda/cuda_utils.h" 
+    #include "pop/cuda-op/cuda_utils.h" 
     #define GPU true
 #else
     #define GPU false

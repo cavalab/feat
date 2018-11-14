@@ -173,7 +173,7 @@ namespace FT
             std::map<char, size_t> idx; 
             size_t N; 
 
-            Stacks();
+            State();
      
             void update_idx(char otype, std::map<char, unsigned>& arity);
             
@@ -235,6 +235,8 @@ namespace FT
             {
                 return get<T>().size();
             }
+            
+            void copy_to_trace(State& state, std::map<char, unsigned int> &arity);
         };
         
         template <> inline vector<ArrayXd>& Trace::get(){ return f; }

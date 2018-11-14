@@ -139,9 +139,9 @@ class TestBackProp
                 for (int i = 0; i < stack_trace.size(); ++i)
                 {
                     while (!ind.program.at(roots[s])->isNodeDx()) ++s;
-//                    cout << "running backprop on " << ind.program_str() << " from "
-//                          << roots.at(s) << " to " 
-//                         << ind.program.subtree(roots.at(s)) << "\n";
+                    //cout << "running backprop on " << ind.program_str() << " from "
+                    //      << roots.at(s) << " to " 
+                    //     << ind.program.subtree(roots.at(s)) << "\n";
                     
                     backprop(stack_trace.at(i), ind.program, ind.program.subtree(roots.at(s)), 
                             roots.at(s), 1.0, Phi.row(0), db, params.class_weights);

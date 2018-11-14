@@ -1,29 +1,29 @@
 #include "cudaTestUtils.h"
 
 #ifdef USE_CUDA
-std::map<char, size_t> get_max_stack_size(NodeVector &nodes)
+std::map<char, size_t> get_max_state_size(NodeVector &nodes)
 {
-    // max stack size is calculated using node arities
-    std::map<char, size_t> stack_size;
-    std::map<char, size_t> max_stack_size;
-    stack_size['f'] = 0;
-    stack_size['c'] = 0;
-    stack_size['b'] = 0; 
-    max_stack_size['f'] = 0;
-    max_stack_size['c'] = 0;
-    max_stack_size['b'] = 0;
+    // max state size is calculated using node arities
+    std::map<char, size_t> state_size;
+    std::map<char, size_t> max_state_size;
+    state_size['f'] = 0;
+    state_size['c'] = 0;
+    state_size['b'] = 0; 
+    max_state_size['f'] = 0;
+    max_state_size['c'] = 0;
+    max_state_size['b'] = 0;
 
     for (const auto& n : nodes)   
     {   	
-        ++stack_size[n->otype];
+        ++state_size[n->otype];
 
-        if ( max_stack_size[n->otype] < stack_size[n->otype])
-            max_stack_size[n->otype] = stack_size[n->otype];
+        if ( max_state_size[n->otype] < state_size[n->otype])
+            max_state_size[n->otype] = state_size[n->otype];
 
         for (const auto& a : n->arity)
-            stack_size[a.first] -= a.second;       
+            state_size[a.first] -= a.second;       
     }	
-    return max_stack_size;
+    return max_state_size;
 }
 
 bool isValidProgram(NodeVector& program, unsigned num_features)
@@ -35,19 +35,19 @@ bool isValidProgram(NodeVector& program, unsigned num_features)
     
     Data data(X, y, z);
     
-    Stacks stack;
+    State state;
     
-    std::map<char, size_t> stack_size = get_max_stack_size(program);
+    std::map<char, size_t> state_size = get_max_state_size(program);
     choose_gpu();        
         
-    stack.allocate(stack_size,data.X.cols());        
+    state.allocate(state_size,data.X.cols());        
 
     for (const auto& n : program)
     {
-    	if(stack.check(n->arity))
+    	if(state.check(n->arity))
     	{
-            n->evaluate(data, stack);
-            stack.update_idx(n->otype, n->arity); 
+            n->evaluate(data, state);
+            state.update_idx(n->otype, n->arity); 
         }
         else
             return false;   

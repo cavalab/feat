@@ -41,6 +41,9 @@ license: GNU/GPL v3
 
 //learn
 //#include "op/learn/n_split.h"
+//extra include 
+//remove after n_split implemented for cuda
+#include "op/n_train.h"
 
 //logic nodes
 #include "op/logic/n_and.h"

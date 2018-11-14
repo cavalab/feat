@@ -15,6 +15,12 @@ namespace FT{
                               int *& c, size_t Sizec,
                               bool *& b, size_t Sizeb);
                               
+            void copy_from_device(float * dev_f, float * host_f, size_t Sizef);
+            
+            void copy_from_device(int * dev_c, int * host_c, size_t Sizec);
+            
+            void copy_from_device(bool * dev_b, bool * host_b, size_t Sizeb);
+                              
             void copy_from_device(float * dev_f, float * host_f, size_t Sizef,
                                   int * dev_c, int * host_c, size_t Sizec,
                                   bool * dev_b, bool * host_b, size_t Sizeb);

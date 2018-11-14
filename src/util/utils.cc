@@ -149,12 +149,18 @@ namespace FT{
                 return x[n];
         }
         
+        /// calculate variance when mean provided
+        double variance(const ArrayXd& v, double mean) 
+        {
+            ArrayXd tmp = mean*ArrayXd::Ones(v.size());
+            return pow((v - tmp), 2).mean();
+        }
+        
         /// calculate variance
         double variance(const ArrayXd& v) 
         {
             double mean = v.mean();
-            ArrayXd tmp = mean*ArrayXd::Ones(v.size());
-            return pow((v - tmp), 2).mean();
+            return variance(v, mean);
         }
         
         /// calculate skew

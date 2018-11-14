@@ -42,7 +42,7 @@ namespace FT{
                 int x;
                 
                 for(x = 0; x < state.z.top().first.size(); x++)
-                    state.f.row(stack.idx['f']) = variance(state.z.top().first[x]);
+                    state.f.row(state.idx['f']) = variance(state.z.top().first[x]);
                     
                 state.z.pop();
                 

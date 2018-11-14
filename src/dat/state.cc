@@ -6,6 +6,10 @@ license: GNU/GPL v3
 #include "state.h"
 #include <iostream>
 
+#ifdef USE_CUDA
+    #include "../pop/op/node.h"
+#endif
+
 namespace FT
 {
     namespace Dat{
@@ -39,7 +43,27 @@ namespace FT
                         zs.size() >= arity['z']);
         }
         
+        void Trace::copy_to_trace(State& state, std::map<char, unsigned int> &arity)
+        {
+            for (int i = 0; i < arity['f']; i++) {
+                /* cout << "push back float arg for " << program.at(i)->name << "\n"; */
+                f.push_back(state.f.at(state.f.size() - (arity['f'] - i)));
+            }
+            
+            for (int i = 0; i < arity['c']; i++) {
+                /* cout << "push back float arg for " << program.at(i)->name << "\n"; */
+                c.push_back(state.c.at(state.c.size() - (arity['c'] - i)));
+            }
+            
+            for (int i = 0; i < arity['b']; i++) {
+                /* cout << "push back bool arg for " << program.at(i)->name << "\n"; */
+                b.push_back(state.b.at(state.b.size() - (arity['b'] - i)));
+            }
+        }
+        
     #else
+        using namespace Pop::Op;
+         
         State::State()
         {
             idx['f'] = 0;
@@ -149,6 +173,47 @@ namespace FT
         State::~State()
         {
             free_device(dev_f, dev_c, dev_b);
+        }
+        
+        void Trace::copy_to_trace(State& state, std::map<char, unsigned int> &arity)
+        {
+            int increment;
+            
+            for (int i = 0; i < arity['f']; i++)
+            {
+                ArrayXf tmp(state.N);
+                
+                increment = (state.idx['f'] - (arity['f'] - i))*state.N;
+                
+                /*cout << "State index " << state.idx['f']
+                     << " i = "<<i
+                     << " arity['f'] = " << arity['f']
+                     << " increment = " << increment<<endl;*/
+                
+                copy_from_device((state.dev_f+increment), tmp.data(), state.N); 
+                
+                f.push_back(tmp.cast<double>());
+            }
+            
+            for (int i = 0; i < arity['c']; i++)
+            {
+                ArrayXi tmp(state.N);
+                
+                increment = (state.idx['c'] - (arity['c'] - i))*state.N;
+                copy_from_device((state.dev_c+increment), tmp.data(), state.N); 
+                
+                c.push_back(tmp);
+            }
+            
+            for (int i = 0; i < arity['b']; i++)
+            {
+                ArrayXb tmp(state.N);
+                
+                increment = (state.idx['b'] - (arity['b'] - i))*state.N;
+                copy_from_device((state.dev_b+increment), tmp.data(), state.N); 
+                
+                b.push_back(tmp);
+            }
         }
 
     #endif

@@ -40,7 +40,7 @@ namespace FT{
                 int x;
                 
                 for(x = 0; x < state.z.top().first.size(); x++)
-                    state.f.row(stack.idx['f']) = state.z.top().first[x][0];
+                    state.f.row(state.idx['f']) = state.z.top().first[x][0];
                     
                 state.z.pop();
 
