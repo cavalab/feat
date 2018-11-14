@@ -14,9 +14,10 @@ namespace FT{
                 for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
                 {
                     if (x[(idx-2)*N+i] > 0.00000001)
-                        x[(idx-2)*N+i] = W0*x[(idx-1)*N+i] / W1*x[(idx-2)*N+i];
+                        x[(idx-2)*N+i] = ((W0*x[(idx-1)*N+i]) / (W1*x[(idx-2)*N+i]));
                     else
                         x[(idx-2)*N+i] = 1.0 ;  
+                    //printf("Result is %f\n", x[(idx-2)*N+i]);
                 }
                 return;
             }
