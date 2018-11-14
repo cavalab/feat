@@ -467,7 +467,7 @@ TEST(NodeTest, Evaluate)
     std::unique_ptr<Node> f1 = std::unique_ptr<Node>(new NodeVariable<double>(0));
     std::unique_ptr<Node> f2 = std::unique_ptr<Node>(new NodeVariable<double>(1));
     
-    std::unique_ptr<Node> addObj = std::unique_ptr<Node>(new NodeAdd());
+    std::unique_ptr<Node> addObj = std::unique_ptr<Node>(new NodeAdd({1.0, 1.0}));
 
     nodes.push_back(f1->clone());
     nodes.push_back(f2->clone());
@@ -475,7 +475,7 @@ TEST(NodeTest, Evaluate)
 
     evaluateCudaNodes(nodes, X1, "add");
     
-    std::unique_ptr<Node> subObj = std::unique_ptr<Node>(new NodeSubtract());
+    std::unique_ptr<Node> subObj = std::unique_ptr<Node>(new NodeSubtract({1.0, 1.0}));
     
     nodes.clear();
     
@@ -485,7 +485,7 @@ TEST(NodeTest, Evaluate)
 
     evaluateCudaNodes(nodes, X1, "subtract");
     
-    std::unique_ptr<Node> mulObj = std::unique_ptr<Node>(new NodeMultiply());
+    std::unique_ptr<Node> mulObj = std::unique_ptr<Node>(new NodeMultiply({1.0, 1.0}));
     
     nodes.clear();
     
@@ -495,7 +495,7 @@ TEST(NodeTest, Evaluate)
 
     evaluateCudaNodes(nodes, X1, "multiply");
     
-    std::unique_ptr<Node> divObj = std::unique_ptr<Node>(new NodeDivide());
+    std::unique_ptr<Node> divObj = std::unique_ptr<Node>(new NodeDivide({1.0, 1.0}));
     
     nodes.clear();
     
@@ -505,7 +505,7 @@ TEST(NodeTest, Evaluate)
 
     evaluateCudaNodes(nodes, X1, "divide");
     
-    std::unique_ptr<Node> expObj = std::unique_ptr<Node>(new NodeExponent());
+    std::unique_ptr<Node> expObj = std::unique_ptr<Node>(new NodeExponent({1.0, 1.0}));
     
     nodes.clear();
     
@@ -518,7 +518,7 @@ TEST(NodeTest, Evaluate)
     MatrixXd X2(1,4); 
     X2 << 0.0, 1.0, 2.0, 3.0;
     
-    std::unique_ptr<Node> cosObj = std::unique_ptr<Node>(new NodeCos());
+    std::unique_ptr<Node> cosObj = std::unique_ptr<Node>(new NodeCos({1.0}));
     
     nodes.clear();
     
@@ -527,7 +527,7 @@ TEST(NodeTest, Evaluate)
 
     evaluateCudaNodes(nodes, X2, "cos");
     
-    std::unique_ptr<Node> cubeObj = std::unique_ptr<Node>(new NodeCube());
+    std::unique_ptr<Node> cubeObj = std::unique_ptr<Node>(new NodeCube({1.0}));
     
     nodes.clear();
     
@@ -536,7 +536,7 @@ TEST(NodeTest, Evaluate)
 
     evaluateCudaNodes(nodes, X2, "cube");
     
-    std::unique_ptr<Node> exptObj = std::unique_ptr<Node>(new NodeExponential());
+    std::unique_ptr<Node> exptObj = std::unique_ptr<Node>(new NodeExponential({1.0}));
     
     nodes.clear();
     
@@ -545,7 +545,7 @@ TEST(NodeTest, Evaluate)
 
     evaluateCudaNodes(nodes, X2, "exponential");
     
-    std::unique_ptr<Node> gaussObj = std::unique_ptr<Node>(new NodeGaussian());
+    std::unique_ptr<Node> gaussObj = std::unique_ptr<Node>(new NodeGaussian({1.0}));
     
     nodes.clear();
     
@@ -554,7 +554,7 @@ TEST(NodeTest, Evaluate)
 
     evaluateCudaNodes(nodes, X2, "gaussian");
     
-    std::unique_ptr<Node> logObj = std::unique_ptr<Node>(new NodeLog());
+    std::unique_ptr<Node> logObj = std::unique_ptr<Node>(new NodeLog({1.0}));
     
     nodes.clear();
     
@@ -563,7 +563,7 @@ TEST(NodeTest, Evaluate)
 
     evaluateCudaNodes(nodes, X2, "log");
     
-    std::unique_ptr<Node> logitObj = std::unique_ptr<Node>(new NodeLogit());
+    std::unique_ptr<Node> logitObj = std::unique_ptr<Node>(new NodeLogit({1.0}));
     
     nodes.clear();
     
@@ -581,7 +581,7 @@ TEST(NodeTest, Evaluate)
 
     evaluateCudaNodes(nodes, X2, "sign");
     
-    std::unique_ptr<Node> sinObj = std::unique_ptr<Node>(new NodeSin());
+    std::unique_ptr<Node> sinObj = std::unique_ptr<Node>(new NodeSin({1.0}));
     
     nodes.clear();
     
@@ -590,7 +590,7 @@ TEST(NodeTest, Evaluate)
 
     evaluateCudaNodes(nodes, X2, "sin");
     
-    std::unique_ptr<Node> sqrtObj = std::unique_ptr<Node>(new NodeSqrt());
+    std::unique_ptr<Node> sqrtObj = std::unique_ptr<Node>(new NodeSqrt({1.0}));
     
     nodes.clear();
     
@@ -599,7 +599,7 @@ TEST(NodeTest, Evaluate)
 
     evaluateCudaNodes(nodes, X2, "sqrt");
     
-    std::unique_ptr<Node> squareObj = std::unique_ptr<Node>(new NodeSquare());
+    std::unique_ptr<Node> squareObj = std::unique_ptr<Node>(new NodeSquare({1.0}));
     
     nodes.clear();
     
@@ -617,7 +617,7 @@ TEST(NodeTest, Evaluate)
 
     evaluateCudaNodes(nodes, X2, "step");
     
-    std::unique_ptr<Node> tanObj = std::unique_ptr<Node>(new NodeTanh());
+    std::unique_ptr<Node> tanObj = std::unique_ptr<Node>(new NodeTanh({1.0}));
     
     nodes.clear();
     
