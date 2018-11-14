@@ -6,13 +6,13 @@ license: GNU/GPL v3
 #define INDIVIDUAL_H
 
 #include "../dat/state.h"
+#ifdef USE_CUDA
+    #include "cuda-op/cuda_utils.h"
+#endif
 #include "../dat/data.h"
 #include "../params.h"
 #include "../model/ml.h"
 #include "../util/utils.h"
-
-//TODO - remove from here after gpu split implemented
-#include "op/n_train.h"
 
 namespace FT{
 
@@ -136,7 +136,7 @@ namespace FT{
             void set_p(const vector<double>& weights, const double& fb);
             
             /// get maximum stack size needed for evaluation.
-            std::map<char,size_t> get_max_stack_size();
+            std::map<char,size_t> get_max_state_size();
             
             typedef Array<bool, Dynamic, Dynamic, RowMajor> ArrayXXb;
             typedef Array<float, Dynamic, Dynamic, RowMajor> ArrayXXf;

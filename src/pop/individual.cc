@@ -290,7 +290,7 @@ namespace FT{
             return Phi;
         }
         #else
-        MatrixXd Individual::out(const Data& d, const Parameters& params)
+        MatrixXd Individual::out(const Data& d, const Parameters& params, bool predict)
         {
         
             /*!
@@ -301,14 +301,14 @@ namespace FT{
              * @returns Phi: n_features x n_samples transformation
              */
 
-            States state;
+            State state;
             params.msg("evaluating program " + get_eqn(),3);
             params.msg("program length: " + std::to_string(program.size()),3);
             // to minimize copying overhead, set the state size to the maximum it will reach for the
             // program 
             std::map<char, size_t> state_size = get_max_state_size();
             // set the device based on the thread number
-            choose_gpu();        
+            Op::choose_gpu();        
             
             // allocate memory for the state on the device
             /* std::cout << "X size: " << X.rows() << "x" << X.cols() << "\n"; */ 
@@ -458,28 +458,8 @@ namespace FT{
                 if(state.check(program.at(i)->arity))
             	{
                     if (trace)
-                    {
-                        /* cout << "storing trace of " << program.at(i)->name << "with " << */
-                        /*        program.at(i)->arity['f'] << " arguments\n"; */
-                        for (int j = 0; j < program.at(i)->arity['f']; j++) {
-                            /* cout << "push back float arg for " << program.at(i)->name << "\n"; */
-                            state_trace.at(trace_idx).f.push_back(state.f.at(state.f.size() - 
-                                                             (program.at(i)->arity['f'] - j)));
-                        }
-                        
-                        for (int j = 0; j < program.at(i)->arity['c']; j++) {
-                            /* cout << "push back float arg for " << program.at(i)->name << "\n"; */
-                            state_trace.at(trace_idx).c.push_back(state.c.at(state.c.size() - 
-                                                             (program.at(i)->arity['c'] - j)));
-                        }
-                        
-                        for (int j = 0; j < program.at(i)->arity['b']; j++) {
-                            /* cout << "push back bool arg for " << program.at(i)->name << "\n"; */
-                            state_trace.at(trace_idx).b.push_back(state.b.at(state.b.size() - 
-                                                             (program.at(i)->arity['b'] - j)));
-                        }
+                        state_trace.at(trace_idx).copy_to_trace(state, program.at(i)->arity);
 
-                    }
             	    //cout<<"***enter here "<<n->name<<"\n";
 	                program.at(i)->evaluate(d, state);
                     program.at(i)->visits = 0;
@@ -558,6 +538,14 @@ namespace FT{
             State state;
             /* params.msg("evaluating program " + get_eqn(),3); */
             /* params.msg("program length: " + std::to_string(program.size()),3); */
+            
+            std::map<char, size_t> state_size = get_max_state_size();
+            //cout << "Max stack size is " << state_size.at('f') << "\n";
+            // set the device based on the thread number
+            choose_gpu();
+            // allocate memory for the state on the device
+            /* std::cout << "X size: " << X.rows() << "x" << X.cols() << "\n"; */ 
+            state.allocate(state_size,d.X.cols());
 
             vector<size_t> roots = program.roots();
             size_t root = 0;
@@ -587,36 +575,20 @@ namespace FT{
                 if(state.check(program.at(i)->arity))
             	{
                     if (trace)
-                    {
-                        /* cout << "storing trace of " << program.at(i)->name << "with " << */
-                        /*        program.at(i)->arity['f'] << " arguments\n"; */
-                        for (int j = 0; j < program.at(i)->arity['f']; j++) {
-                            //TODO change for GPU trace state
-                            //state_trace.at(trace_idx).f.push_back(state.f.at(state.f.size() - 
-                                                             //(program.at(i)->arity['f'] - j)));
-                        }
-                        
-                        for (int j = 0; j < program.at(i)->arity['c']; j++) {
-                            /* cout << "push back float arg for " << program.at(i)->name << "\n"; */
-                            //TODO change for GPU trace state
-                            //state_trace.at(trace_idx).c.push_back(state.c.at(state.c.size() - 
-                              //                               (program.at(i)->arity['c'] - j)));
-                        }
-                        
-                        for (int j = 0; j < program.at(i)->arity['b']; j++) {
-                            //TODO change for GPU trace state
-                            //state_trace.at(trace_idx).b.push_back(state.b.at(state.b.size() - 
-                              //                               (program.at(i)->arity['b'] - j)));
-                        }
-                    }
+                        state_trace.at(trace_idx).copy_to_trace(state, program.at(i)->arity);
                     
                     program.at(i)->evaluate(d, state);
+                    state.update_idx(program.at(i)->otype, program.at(i)->arity); 
+                    //cout << "\nstack.idx[otype]: " << state.idx[program.at(i)->otype];
                     program.at(i)->visits = 0;
+                    //cout << "Evaluated node " << program.at(i)->name << endl;
                     
                 }
                 else
-                    HANDLE_ERROR_THROW("out() error: node " + program.at(i)->name + " in " + program_str() + " is invalid\n");
+                    HANDLE_ERROR_THROW("out_trace() error: node " + program.at(i)->name + " in " + program_str() + " is invalid\n");
             }
+            
+            state.copy_to_host();
             
             // convert state_f to Phi
             params.msg("converting State to Phi",3);
@@ -860,7 +832,7 @@ namespace FT{
             return s;
         }
         
-        std::map<char, size_t> Individual::get_max_stack_size()
+        std::map<char, size_t> Individual::get_max_state_size()
         {
             // max stack size is calculated using node arities
             std::map<char, size_t> stack_size;

@@ -33,7 +33,7 @@ namespace FT{
             #else
             void NodeSign::evaluate(const Data& data, State& state)
             {
-                GPU_Sign(state.dev_f, state.idx[otype], state.N, W[0]);
+                GPU_Sign(state.dev_f, state.idx[otype], state.N);
             }
             #endif
 

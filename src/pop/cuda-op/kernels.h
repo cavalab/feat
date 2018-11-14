@@ -22,7 +22,7 @@ namespace FT{
             void GPU_Exponent(float * x, size_t idx, size_t N, float W0, float W1);
             void GPU_Logit(float * x, size_t idx, size_t N, float W0);
             void GPU_Step(float * x, size_t idx, size_t N);
-            void GPU_Sign(float * x, size_t idx, size_t N, float W0);
+            void GPU_Sign(float * x, size_t idx, size_t N);
             void GPU_Tanh(float * x, size_t idx, size_t N, float W0);
             void GPU_Gaussian(float * x, size_t idx, size_t N, float W0);
             void GPU_Gaussian2D(float * x, size_t idx,

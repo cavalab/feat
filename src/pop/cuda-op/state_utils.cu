@@ -21,6 +21,21 @@ namespace FT{
                 //std::cout << "allocated " << sizeof(float)*Sizef << " bytes at loc " << f << " for stack.f\n";
                 //std::cout << "allocated " << sizeof(bool)*Sizeb << " bytes at loc " << b << " for stack.b\n";
             }
+            
+            void copy_from_device(float * dev_f, float * host_f, size_t Sizef)
+            {
+                HANDLE_ERROR(cudaMemcpy(host_f, dev_f, sizeof(float)*Sizef, cudaMemcpyDeviceToHost));
+            }
+            
+            void copy_from_device(int * dev_c, int * host_c, size_t Sizec)
+            {
+                HANDLE_ERROR(cudaMemcpy(host_c, dev_c, sizeof(int)*Sizec, cudaMemcpyDeviceToHost));
+            }
+            
+            void copy_from_device(bool * dev_b, bool * host_b, size_t Sizeb)
+            {
+                HANDLE_ERROR(cudaMemcpy(host_b, dev_b, sizeof(bool)*Sizeb,  cudaMemcpyDeviceToHost));
+            }
 
             void copy_from_device(float * dev_f, float * host_f, size_t Sizef,
                                   int * dev_c, int * host_c, size_t Sizec,
@@ -28,10 +43,9 @@ namespace FT{
             {
                 //std::cout << "dev_f: " << dev_f << "\nhost_f: " << host_f << "\nSizef: " << Sizef << "\nSizeb: " << Sizeb <<"\n";
                 
-	            HANDLE_ERROR(cudaMemcpy(host_f, dev_f, sizeof(float)*Sizef, cudaMemcpyDeviceToHost));
-	            HANDLE_ERROR(cudaMemcpy(host_c, dev_c, sizeof(int)*Sizec, cudaMemcpyDeviceToHost));
-	            HANDLE_ERROR(cudaMemcpy(host_b, dev_b, sizeof(bool)*Sizeb,  cudaMemcpyDeviceToHost));
-	
+	            copy_from_device(dev_f, host_f, Sizef);
+	            copy_from_device(dev_c, host_c, Sizec);
+	            copy_from_device(dev_b, host_b, Sizeb);	
 	            //HANDLE_ERROR(cudaDeviceSynchronize());
             }
 

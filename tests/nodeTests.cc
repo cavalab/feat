@@ -416,7 +416,7 @@ TEST(NodeTest, Evaluate)
 
 void evaluateCudaNodes(NodeVector &nodes, MatrixXd &X, string testNode)
 {
-    Stacks stack;
+    State state;
     
     VectorXd Y(6); 
     Y << 3.0, 4.0, 5.0, 6.0, 7.0, 8.0;
@@ -425,28 +425,28 @@ void evaluateCudaNodes(NodeVector &nodes, MatrixXd &X, string testNode)
     
     Data data(X, Y, z1);
     
-    std::map<char, size_t> stack_size = get_max_stack_size(nodes);
+    std::map<char, size_t> state_size = get_max_state_size(nodes);
     
     choose_gpu();
     
-    stack.allocate(stack_size,data.X.cols());
+    state.allocate(state_size,data.X.cols());
     
     for (const auto& n : nodes)   
     {
-        n->evaluate(data, stack);
-        stack.update_idx(n->otype, n->arity);
+        n->evaluate(data, state);
+        state.update_idx(n->otype, n->arity);
     }	
     
-    stack.copy_to_host();
+    state.copy_to_host();
     
     std::cout<<"Printing output now for test node " << testNode;
     std::cout<<"\n********************************\n";
     
-    std::cout<<"Floating stack is\n";
-    std::cout<< stack.f << "\n\n";
+    std::cout<<"Floating state is\n";
+    std::cout<< state.f << "\n\n";
     
-    std::cout<<"Boolean stack is\n";
-    std::cout<< stack.b << "\n";
+    std::cout<<"Boolean state is\n";
+    std::cout<< state.b << "\n";
     
     std::cout<<"\n********************************\n";
     
