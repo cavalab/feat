@@ -13,16 +13,17 @@ license: GNU/GPL v3
  
 // internal includes
 #include "init.h"
-#include "rnd.h"
-#include "utils.h"
+#include "util/rnd.h"
+#include "util/utils.h"
+#include "util/io.h"
 #include "params.h"
-#include "population.h"
-#include "selection.h"
-#include "evaluation.h"
-#include "variation.h"
-#include "ml.h"
-#include "node/node.h"
-#include "archive.h" 
+#include "pop/population.h"
+#include "sel/selection.h"
+#include "eval/evaluation.h"
+#include "vary/variation.h"
+#include "model/ml.h"
+#include "pop/op/node.h"
+#include "pop/archive.h" 
 
 #ifdef USE_CUDA
     #include "node-cuda/cuda_utils.h" 
@@ -43,7 +44,14 @@ using std::shared_ptr;
 using std::make_shared;
 using std::cout; 
 
+/**
+* @namespace FT
+* @brief main Feat namespace
+*/
 namespace FT{
+
+    using namespace Eval;
+    using namespace Vary;
     
     ////////////////////////////////////////////////////////////////////////////////// Declarations
     
@@ -68,7 +76,7 @@ namespace FT{
                    string sel ="lexicase", string surv="nsga2", float cross_rate = 0.5,
                    char otype='a', string functions = "", 
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
-                   bool erc = false, string obj="fitness,complexity", bool shuffle=false, 
+                   bool erc = false, string obj="fitness,complexity", bool shuffle=true, 
                    double split=0.75, double fb=0.5, string scorer="", string feature_names="",
                    bool backprop=false,int iters=10, double lr=0.1, int bs=100, int n_threads=0,
                    bool hillclimb=false, string logfile="", int max_time=-1, 
@@ -273,7 +281,8 @@ namespace FT{
                             vector<size_t> survivors,
                             DataRef &d,
                             std::ofstream &log,
-                            double percentage);
+                            double percentage,
+                            unsigned& stall_count);
                      
             /// train a model.             
             void fit(double * X,int rowsX,int colsX, double * Y,int lenY);
@@ -319,7 +328,8 @@ namespace FT{
             MatrixXd transform(double * X,  int rows_x, int cols_x);
             
             /// train a model, first loading longitudinal samples (Z) from file.
-            MatrixXd transform_with_z(double * X, int rowsX, int colsX, string s, int * idx, int idx_size);
+            MatrixXd transform_with_z(double * X, int rowsX, int colsX, string s, 
+                                      int * idx, int idx_size);
             
             /// convenience function calls fit then predict.            
             VectorXd fit_predict(MatrixXd& X,
@@ -366,8 +376,9 @@ namespace FT{
             // performance tracking
             double best_score;                      ///< current best score
             double best_score_v;                    ///< best validation score
+            double best_med_score;                  ///< best median population score
             string str_dim;                         ///< dimensionality as multiple of number of columns 
-            void update_best(bool val=false);       ///< updates best score   
+            void update_best(const DataRef& d, bool val=false);       ///< updates best score   
             void print_stats(std::ofstream& log,
                              double fraction);      ///< prints stats
             Individual best_ind;                    ///< best individual
@@ -377,6 +388,8 @@ namespace FT{
             void initial_model(DataRef &d);
             /// fits final model to best transformation
             void final_model(DataRef& d);
+            /// updates stall count for early stopping
+            void update_stall_count(unsigned& stall_count, MatrixXd& F);
     };
 }
 #endif

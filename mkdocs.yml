@@ -1,0 +1,53 @@
+site_name: Feat 
+repo_url: https://github.com/lacava/feat/
+site_url: https://lacava.github.io/feat/
+site_description: Feature Engineering Automation Tool
+use_directory_urls: true
+
+theme: 
+    name: material
+    palette:
+        primary: 'white'
+        accent: 'Deep Purple'
+    # name: readthedocs
+    # highlightjs: false
+    # hljs_style: Hybrid 
+    # hljs_languages:
+    #     - python
+    #     - bash
+    #     - c++
+
+nav:
+    - Introduction: index.md
+    - Installation: install.md
+    - User Guide: 
+        - Overview: guide/overview.md
+        - Basics: guide/basics.md
+        # - Configuration: guide/configuration.md
+    - Examples: 
+        - Command line: examples/command_line.md
+        - Using the Archive: examples/archive.md
+        - Longitudinal data: examples/longitudinal.md
+    - API:
+        - Python: api/python/api_py.md 
+        - C++: api/c/
+    - Contribute: contributing.md
+    - License: https://github.com/lacava/feat/blob/master/LICENSE 
+
+markdown_extensions:
+    - toc:
+        permalink: true
+    - fenced_code
+    - smarty
+    - extra
+    - tables
+    - codehilite:
+        guess_lang: false
+      
+
+extra_javascript:
+    - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+    - mathjaxhelper.js
+
+extra_css:
+    - css/extra.css

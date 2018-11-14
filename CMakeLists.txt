@@ -101,14 +101,12 @@ endif()
 # gather list of source files
 if (CORE_USE_CUDA)   
     file(GLOB_RECURSE cuda_files "*.cu")
-    #    include_directories("src/node-cuda")
 endif()    
 
 file(GLOB_RECURSE sources "src/*.cc")
 
 list(REMOVE_ITEM sources ${CMAKE_CURRENT_SOURCE_DIR}/src/parser.cc)
 list(REMOVE_ITEM sources ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cc)
-list(REMOVE_ITEM sources ${CMAKE_CURRENT_SOURCE_DIR}/src/cv_main.cc)
 
 # executable
 
@@ -123,17 +121,12 @@ endif()
 #feat executable
 add_executable(feat src/main.cc)
 
-#feat_cv executable
-add_executable(feat_cv src/cv_main.cc) 
-
 #link libraries for different executables
 
 if (CORE_USE_CUDA)
     target_link_libraries(feat feat_lib shogun ${CUDA_LIBRARIES})
-    target_link_libraries(feat_cv feat_lib shogun ${CUDA_LIBRARIES})
 else()
     target_link_libraries(feat feat_lib shogun)
-    target_link_libraries(feat_cv feat_lib shogun)
 endif()
 
 if (TEST)
