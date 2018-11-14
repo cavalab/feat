@@ -9,3 +9,8 @@ __pycache__
 *.so
 *.exe
 feat.egg-info
+python/pyfeat.cpp
+docs/api/c/
+site/
+*.log
+examples/

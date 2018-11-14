@@ -9,12 +9,12 @@ bool isValidProgram(NodeVector& program, unsigned num_features)
     VectorXd y = VectorXd::Zero(2);
     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z; 
     
-    Stacks stack;
+    State state;
     Data data(X, y, z);
    
     for (const auto& n : program){
-        if ( stack.f.size() >= n->arity['f'] && stack.b.size() >= n->arity['b'])
-            n->evaluate(data, stack);
+        if ( state.f.size() >= n->arity['f'] && state.b.size() >= n->arity['b'])
+            n->evaluate(data, state);
         else
             return false; 
     }

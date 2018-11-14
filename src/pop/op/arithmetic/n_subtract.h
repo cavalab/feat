@@ -1,0 +1,36 @@
+/* FEAT
+copyright 2017 William La Cava
+license: GNU/GPL v3
+*/
+#ifndef NODE_SUBTRACT
+#define NODE_SUBTRACT
+
+#include "../n_Dx.h"
+
+namespace FT{
+
+    namespace Pop{
+        namespace Op{
+        	class NodeSubtract : public NodeDx
+            {
+            	public:
+            	
+            		NodeSubtract(vector<double> W0 = vector<double>());
+            		
+                    /// Evaluates the node and updates the state states. 
+                    void evaluate(const Data& data, State& state);
+
+                    /// Evaluates the node symbolically
+                    void eval_eqn(State& state);
+
+                    ArrayXd getDerivative(Trace& state, int loc);
+
+                protected:
+                    NodeSubtract* clone_impl() const override;  
+                    NodeSubtract* rnd_clone_impl() const override;  
+            };
+        }
+    }
+}	
+
+#endif
