@@ -11,6 +11,9 @@ license: GNU/GPL v3
 #include "../model/ml.h"
 #include "../util/utils.h"
 
+//TODO - remove from here after gpu split implemented
+#include "op/n_train.h"
+
 namespace FT{
 
     using namespace Model;

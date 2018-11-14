@@ -17,6 +17,7 @@ namespace FT{
 	            complexity = 2;
             }
 
+            #ifndef USE_CUDA
             /// Evaluates the node and updates the state states. 
             void NodeGEQ::evaluate(const Data& data, State& state)
             {
