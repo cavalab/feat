@@ -157,7 +157,7 @@ namespace FT{
             /* @param X: n_features x n_samples matrix of training data
              * @param y: n_samples vector of training labels
              * @param shuffle: whether or not to shuffle X and y
-             * @returns X_t, X_v, y_t, y_v: training and validation matrices
+             * @param[out] X_t, X_v, y_t, y_v: training and validation matrices
              */
             
             // resize training and test sets

@@ -98,30 +98,6 @@ namespace FT
         double zero_one_loss_label(const VectorXd& y, const shared_ptr<CLabels>& labels, VectorXd& loss, 
                    const vector<float>& class_weights=vector<float>() );
 
-        /* double bal_log_loss(const VectorXd& y, const shared_ptr<CLabels>& labels, VectorXd& loss, */ 
-        /*            const vector<float>& weights=vector<float>() ) */
-        /* { */
-          
-        /*     loss = log_loss(y,yhat); */
-
-        /*     vector<double> uc = unique(y); */
-        /*     vector<int> c; */ 
-        /*     for (const auto& i : uc) */
-        /*         c.push_back(int(i)); */
-            
-        /*     vector<double> class_loss(c.size(),0); */
-
-        /*     for (unsigned i = 0; i < c.size(); ++i) */
-        /*     { */
-        /*         int n = (y.cast<int>().array() == c[i]).count(); */
-        /*         class_loss[i] = (y.cast<int>().array() == c[i]).select(loss.array(),0).sum()/n; */
-            
-        /*     } */
-        /*     // return balanced class losses */ 
-        /*     Map<ArrayXd> cl(class_loss.data(),class_loss.size()); */        
-        /*     return cl.mean(); */
-        /* } */
-        
     } // metrics
 } // FT
 

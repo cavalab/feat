@@ -687,7 +687,7 @@ void Feat::initial_model(DataRef &d)
     
     bool pass = true;
     shared_ptr<CLabels> yhat = best_ind.fit(*d.t,params,pass);
-
+    cout << "setting terminal weights\n";
     // set terminal weights based on model
     vector<double> w;
     if (n_feats == d.t->X.rows())
@@ -699,7 +699,8 @@ void Feat::initial_model(DataRef &d)
         w = vector<double>(d.t->X.rows(),1.0);
     }
     params.set_term_weights(w);
-   
+  
+    cout << "setting score\n";
     VectorXd tmp;
     best_score = p_eval->score(d.t->y, yhat, tmp, params.class_weights);
 
