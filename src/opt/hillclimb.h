@@ -9,7 +9,11 @@ license: GNU/GPL v3
 #include <map>
 #include <memory>
 #include <vector>
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated"
 #include <shogun/labels/Labels.h>
+#pragma GCC diagnostic pop
+
 #include <string>
 
 #include "../pop/individual.h"

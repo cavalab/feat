@@ -21,7 +21,7 @@ namespace FT{
              * * @param F: n_samples x 2 * popsize matrix of program behaviors. 
              * @param params: parameters.
              *
-             * @returns selected: vector of indices corresponding to offspring that are selected.
+             * @return selected: vector of indices corresponding to offspring that are selected.
              *      
              */
           
@@ -47,7 +47,7 @@ namespace FT{
              * @param F: n_samples x 2 * popsize matrix of program behaviors. 
              * @param params: parameters.
              *
-             * @returns selected: vector of indices corresponding to offspring that are selected.
+             * @return selected: vector of indices corresponding to offspring that are selected.
              *      
              */
          
