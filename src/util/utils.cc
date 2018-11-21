@@ -11,9 +11,8 @@ namespace FT{
 
     namespace Util{
 
-        string PBSTR = "============================================================================"
-                       "========================";
-        int PBWIDTH = 80;
+        string PBSTR = "====================";
+        int PBWIDTH = 20;
      
         /// limits node output to be between MIN_DBL and MAX_DBL
         void clean(ArrayXd& x)
