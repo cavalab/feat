@@ -6,6 +6,8 @@ license: GNU/GPL v3
 #define ML_H
 
 //external includes
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated"
 #include <shogun/base/some.h>                                                                       
 #include <shogun/base/init.h>
 #include <shogun/machine/Machine.h>
@@ -21,8 +23,9 @@ license: GNU/GPL v3
 /* #include <shogun/classifier/svm/LibLinear.h> */
 #include <shogun/ensemble/MeanRule.h>
 #include <shogun/ensemble/MajorityVote.h>
-#include <cmath>
 #include <shogun/machine/LinearMulticlassMachine.h>
+#pragma GCC diagnostic pop
+#include <cmath>
 // internal includes
 #include "shogun/MyCARTree.h"
 #include "shogun/MulticlassLogisticRegression.h"
@@ -52,7 +55,15 @@ namespace FT{
      * @brief namespace containing ML methods used in Feat
      */
     namespace Model{
-    
+        
+        enum ML_TYPE {
+                      LARS,   // Least Angle Regression
+                      Ridge,  // Ridge Regression
+                      RF,     // Random Forest
+                      SVM,    // Support Vector Machines
+                      CART,   // Classification and Regression Trees
+                      LR      // Logistic Regression
+                     };
         /*!
          * @class ML
          * @brief class that specifies the machine learning algorithm to pair with Feat. 
@@ -67,6 +78,8 @@ namespace FT{
             
                 ~ML();
 
+                // map ml string names to enum values. 
+                std::map<string, ML_TYPE> ml_hash;
                 // return vector of weights for model. 
                 vector<double> get_weights();
                 
@@ -95,7 +108,8 @@ namespace FT{
                 void set_dtypes(const vector<char>& dtypes);
 
                 shared_ptr<sh::CMachine> p_est;     ///< pointer to the ML object
-                string ml_type;                     ///< user specified ML type
+                ML_TYPE ml_type;                    ///< user specified ML type
+                string ml_str;                   ///< user specified ML type (string)
                 sh::EProblemType prob_type;         ///< type of learning problem; binary, multiclass 
                                                     ///  or regression 
                 Normalizer N;                       ///< normalization
@@ -114,7 +128,6 @@ namespace FT{
                 /*     } */
                 /* } */
         };
-    /////////////////////////////////////////////////////////////////////////////////////// Definitions
     }
 }
 

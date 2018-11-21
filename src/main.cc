@@ -72,7 +72,8 @@ int main(int argc, char** argv){
     //////////////////////////////////////// parse arguments
     InputParser input(argc, argv);
     if(input.cmdOptionExists("-h") || input.dataset.empty()){
-        if (input.dataset.empty()) HANDLE_ERROR_NO_THROW("Error: no dataset specified.\n---\n");
+        if (input.dataset.empty() && !input.cmdOptionExists("-h")) 
+            HANDLE_ERROR_NO_THROW("Error: no dataset specified.\n---\n");
         // Print help and exit. 
         cout << "Feat is a feature engineering wrapper for learning intelligible models.\n";
         cout << "Usage:\tfeat path/to/dataset [options]\n";
@@ -264,23 +265,30 @@ int main(int argc, char** argv){
         /* cout << "tmp score: " << tmp << "\n"; */
         /* VectorXd yhat = feat.predict(X_tcopy,Z_tcopy); */
 
-        double SSres = (y_tcopy-yhat).array().pow(2).sum() ;
-        double SStot =  (y_tcopy.array() - y_tcopy.mean()).array().pow(2).sum();
-        double r2t = (1 - SSres/SStot );
-
         cout.precision(4);
         cout << "train score: " << score_t << "\n";
-        cout << "train r2: " << r2t << "\n";
+       
+        if (!feat.get_classification())
+        {
+            double SSres = (y_tcopy-yhat).array().pow(2).sum() ;
+            double SStot =  (y_tcopy.array() - y_tcopy.mean()).array().pow(2).sum();
+            double r2t = (1 - SSres/SStot );
+            cout << "train r2: " << r2t << "\n";
+        }
         
         cout << "generating test prediction...\n";
         VectorXd yhatv = feat.predict(X_vcopy,Z_vcopy);
-        double SSresv = (y_vcopy-yhatv).array().pow(2).sum() ;
-        double SStotv =  (y_vcopy.array() - y_vcopy.mean()).array().pow(2).sum();
-        double r2v = (1 - SSresv/SStotv );
-        double score = feat.score(d.v->X,d.v->y,d.v->Z);
+                double score = feat.score(d.v->X,d.v->y,d.v->Z);
         cout << "test score: " << score << "\n";
-        cout << "test r2: " << r2v << "\n";
 
+        if (!feat.get_classification())
+        {
+            double SSresv = (y_vcopy-yhatv).array().pow(2).sum() ;
+            double SStotv =  (y_vcopy.array() - y_vcopy.mean()).array().pow(2).sum();
+            double r2v = (1 - SSresv/SStotv );
+
+            cout << "test r2: " << r2v << "\n";
+        }
     }
     else
     {

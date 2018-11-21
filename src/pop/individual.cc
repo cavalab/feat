@@ -103,7 +103,7 @@ namespace FT{
         double Individual::get_p(const size_t i) const
         {
             /*! @param i index in program 
-             * @returns weight associated with node */
+             * @return weight associated with node */
             vector<size_t> rts = program.roots();
             std::reverse(rts.begin(),rts.end()); 
             size_t j = 0;
@@ -212,7 +212,7 @@ namespace FT{
              * @param d: Data structure
              * @param params: Feat parameters
              * @param predict: if true, this guarantees nodes like split do not get trained
-             * @returns Phi: n_features x n_samples transformation
+             * @return Phi: n_features x n_samples transformation
              */
              
             State state;
@@ -293,7 +293,7 @@ namespace FT{
              * @param Z: longitudinal nodes for samples
              * @param y: target data
              * @param: Feat parameters
-             * @returns Phi: n_features x n_samples transformation
+             * @return Phi: n_features x n_samples transformation
              */
 
             State state;
@@ -472,7 +472,7 @@ namespace FT{
             /*!
              * Output:
              
-             *	 	returns the dimensionality, i.e. number of outputs, of a program.
+             *	 	@return the dimensionality, i.e. number of outputs, of a program.
              *   	the dimensionality is equal to the number of times the program arities are fully
              *   	satisfied. 
              */
@@ -581,7 +581,7 @@ namespace FT{
 
         string Individual::program_str() const
         {
-            /* returns a string of program names. */
+            /* @return a string of node names. */
             string s = "";
             for (const auto& p : program)
             {

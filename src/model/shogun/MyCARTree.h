@@ -38,7 +38,10 @@ using std::vector;
 namespace shogun
 {
 
-    /** @brief This class implements the Classification And Regression Trees algorithm by Breiman et al for decision tree learning.
+
+    class CMyCARTree : public CTreeMachine<MyCARTreeNodeData>
+    {
+        /** @brief This class implements the Classification And Regression Trees algorithm by Breiman et al for decision tree learning.
      * A CART tree is a binary decision tree that is constructed by splitting a node into two child nodes repeatedly, beginning with
      * the root node that contains the whole dataset. \n \n
      * TREE GROWING PROCESS : \n
@@ -73,8 +76,6 @@ namespace shogun
      * have gone from the node. \n
      * cf. http://pic.dhe.ibm.com/infocenter/spssstat/v20r0m0/index.jsp?topic=%2Fcom.ibm.spss.statistics.help%2Falg_tree-cart.htm
      */
-    class CMyCARTree : public CTreeMachine<MyCARTreeNodeData>
-    {
     public:
 	    /** default constructor */
 	    CMyCARTree();
@@ -121,6 +122,12 @@ namespace shogun
 	     * @return true for valid labels, false for invalid labels
 	     */
 	    virtual bool is_label_valid(CLabels* lab) const;
+
+        /** WGL: classify data using Classification Tree
+	     * @param data data to be classified
+	     * @return BinaryLabels corresponding to labels of various test vectors
+	     */
+	    virtual CBinaryLabels* apply_binary(CFeatures* data=NULL);
 
 	    /** classify data using Classification Tree
 	     * @param data data to be classified
@@ -230,6 +237,14 @@ namespace shogun
          */
         std::vector<double> feature_importances();
         
+        /** WGL: gets the probability estimate for each sample
+         * TODO: make this set_probabilities
+         */
+        SGVector<float64_t> get_certainty_vector() const;
+ 
+        /** WGL: sets the probabilities on each label according to m_certainty
+         */
+        void set_probabilities(CLabels* labels, CFeatures* data=NULL);  
     protected:
 	    /** train machine - build CART from training data
 	     * @param data training data
@@ -359,7 +374,8 @@ namespace shogun
 	     * @param current root of current subtree
 	     * @return classification/regression labels of input data
 	     */
-	    CLabels* apply_from_current_node(CDenseFeatures<float64_t>* feats, bnode_t* current);
+	    CLabels* apply_from_current_node(CDenseFeatures<float64_t>* feats, bnode_t* current, 
+                                         bool set_certainty=false);
 
 	    /** prune by cross validation
 	     *
@@ -412,7 +428,8 @@ namespace shogun
         /** WGL: recursive function for getting node importance 
          */
         void get_importance(bnode_t* node, vector<double>& importances);
-
+        
+        
     public:
 	    /** denotes that a feature in a vector is missing MISSING = NOT_A_NUMBER */
 	    static const float64_t MISSING;
@@ -465,6 +482,11 @@ namespace shogun
 
 	    /** minimum number of feature vectors required in a node **/
 	    int32_t m_min_node_size;
+        
+        /** percentage of certainty of labels predicted by decision tree
+         * ie. weight of elements belonging to predicted class in a node/ total weight in a node
+         */
+        SGVector<float64_t> m_certainty;
     };
 } 
 
