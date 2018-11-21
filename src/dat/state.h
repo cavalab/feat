@@ -71,6 +71,10 @@ namespace FT
                 ///< returns element at particular location in stack
                 type& at(int i){ return st.at(i); }
                 
+                type& operator[](int i){ return at(i); }
+                
+                void resize(int i){ st.resize(i); };
+                
                 ///< clears the stack
                 void clear(){ st.clear(); }
                 
