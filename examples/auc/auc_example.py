@@ -14,14 +14,18 @@ kf = KFold(n_splits=n_splits)
 kf.get_n_splits(X)
 
 clf = Feat(max_depth=6,
+        gens=100,
         # max_dim=X.shape[1],
         max_dim=min(50,2*X.shape[1]),
-        pop_size=500,
-        ml='CART',
-        verbosity=0,
+        pop_size=100,
+        # ml='CART',
+        ml='LR',
+        verbosity=1,
         shuffle=True,
         classification=True,
-        functions="+,-,*,/,exp,log,and,or,not,xor,=,<,>,ite,gauss,gauss2d,sign,logit,tanh",
+        backprop=True,
+        n_threads=0,
+        # functions="+,-,*,/,exp,log,and,or,not,xor,=,<,>,ite,gauss,relu,sign,logit,tanh",
         random_state=42)
 lr = LR()
 rocs = []
@@ -36,7 +40,7 @@ for train_idx, test_idx in kf.split(X):
     probabilities = clf.predict_proba(X[test_idx])
     lr_probabilities = lr.predict_proba(X[test_idx])
     print('lr_probabilities shape:',lr_probabilities.shape) 
-    fpr,tpr,_ = roc_curve(y[test_idx], probabilities)
+    fpr,tpr,_ = roc_curve(y[test_idx], probabilities[:,1])
     lr_fpr,lr_tpr,_ = roc_curve(y[test_idx], lr_probabilities[:,1])
 
     aucs.append( auc(fpr,tpr) )
