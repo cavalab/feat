@@ -14,7 +14,7 @@ kf = KFold(n_splits=n_splits)
 kf.get_n_splits(X)
 
 clf = Feat(max_depth=6,
-        gens=100,
+        max_stall=20,
         # max_dim=X.shape[1],
         max_dim=min(50,2*X.shape[1]),
         pop_size=100,
@@ -24,8 +24,6 @@ clf = Feat(max_depth=6,
         shuffle=True,
         classification=True,
         backprop=True,
-        n_threads=0,
-        # functions="+,-,*,/,exp,log,and,or,not,xor,=,<,>,ite,gauss,relu,sign,logit,tanh",
         random_state=42)
 lr = LR()
 rocs = []

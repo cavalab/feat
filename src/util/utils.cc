@@ -161,8 +161,8 @@ namespace FT{
             std::vector<double>::iterator it = std::find(v.begin(), v.end(), *middle);
 
             std::vector<double>::size_type pos = std::distance(v.begin(), it);
-            cout << "middle index: " << pos << "\n";
-            cout << "middle value: " << *it << "\n";
+            /* cout << "middle index: " << pos << "\n"; */
+            /* cout << "middle value: " << *it << "\n"; */
             return pos;
         }
         /// calculate variance

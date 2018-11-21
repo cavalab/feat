@@ -301,9 +301,9 @@ namespace FT{
             /* params.msg("program length: " + std::to_string(program.size()),3); */
 
             vector<size_t> roots = program.roots();
-            cout << "roots: " ;
-            for (auto rt : roots) cout << rt << ", ";
-            cout << "\n";
+            /* cout << "roots: " ; */
+            /* for (auto rt : roots) cout << rt << ", "; */
+            /* cout << "\n"; */
             size_t root = 0;
             bool trace=false;
             size_t trace_idx=-1;
@@ -319,7 +319,7 @@ namespace FT{
             // evaluate each node in program
             for (unsigned i = 0; i<program.size(); ++i)
             {
-                cout << "i = " << i << ", root = " << roots.at(root) << "\n";
+                /* cout << "i = " << i << ", root = " << roots.at(root) << "\n"; */
                 if (i > roots.at(root)){
                     trace=false;
                     if (root + 1 < roots.size())
@@ -338,25 +338,25 @@ namespace FT{
             	{
                     if (trace)
                     {
-                        cout << "storing trace of " << program.at(i)->name 
-                             << " for " << program.at(roots.at(root))->name 
-                             << " with " << program.at(i)->arity['f'] << " arguments\n";
+                        /* cout << "storing trace of " << program.at(i)->name */ 
+                        /*      << " for " << program.at(roots.at(root))->name */ 
+                        /*      << " with " << program.at(i)->arity['f'] << " arguments\n"; */
                         for (int j = 0; j < program.at(i)->arity['f']; j++) {
-                            cout << "push back float arg for " << program.at(i)->name << "\n";
-                            cout << "trace_idx: " << trace_idx 
-                                 << ", state_trace size: " << state_trace.size() << "\n";
+                            /* cout << "push back float arg for " << program.at(i)->name << "\n"; */
+                            /* cout << "trace_idx: " << trace_idx */ 
+                            /*      << ", state_trace size: " << state_trace.size() << "\n"; */
                             state_trace.at(trace_idx).f.push_back(state.f.at(state.f.size() - 
                                                              (program.at(i)->arity['f'] - j)));
                         }
                         
                         for (int j = 0; j < program.at(i)->arity['b']; j++) {
-                            cout << "push back bool arg for " << program.at(i)->name << "\n";
+                            /* cout << "push back bool arg for " << program.at(i)->name << "\n"; */
                             state_trace.at(trace_idx).b.push_back(state.b.at(state.b.size() - 
                                                              (program.at(i)->arity['b'] - j)));
                         }
 
                         for (int j = 0; j < program.at(i)->arity['c']; j++) {
-                            cout << "push back categorial arg for " << program.at(i)->name << "\n";
+                            /* cout << "push back categorial arg for " << program.at(i)->name << "\n"; */
                             state_trace.at(trace_idx).c.push_back(state.c.at(state.c.size() - 
                                                              (program.at(i)->arity['c'] - j)));
                         }
