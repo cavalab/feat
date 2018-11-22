@@ -285,8 +285,8 @@ namespace FT{
         }
 
         // calculate program output matrix
-        MatrixXd Individual::out_trace(const Data& d,
-                         const Parameters& params, vector<Trace>& state_trace)
+        MatrixXd Individual::out_trace(const Data& d, const Parameters& params, 
+                                       vector<Trace>& state_trace)
         {
             /*!
              * @param X: n_features x n_samples data
@@ -320,7 +320,8 @@ namespace FT{
             for (unsigned i = 0; i<program.size(); ++i)
             {
                 /* cout << "i = " << i << ", root = " << roots.at(root) << "\n"; */
-                if (i > roots.at(root)){
+                if (i > roots.at(root))
+                {
                     trace=false;
                     if (root + 1 < roots.size())
                     {
