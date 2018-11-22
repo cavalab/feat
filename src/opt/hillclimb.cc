@@ -55,15 +55,10 @@ namespace FT {
                     break;
                 // evaluate perturbed program 
                 params.msg("Generating output for " + tmp.get_eqn(), 3);
-                MatrixXd Phi = tmp.out(d, params);            
 
-                // calculate ML model from Phi
-                params.msg("ML training on " + tmp.get_eqn(), 3);
                 bool pass = true;
-                auto ml = std::make_shared<ML>(params);
 
-                shared_ptr<CLabels> yhat = ml->fit(Phi,d.y,params,pass,tmp.dtypes);
-                
+                shared_ptr<CLabels> yhat = tmp.fit(d, params, pass);
                 if (!pass)
                     continue;
 
