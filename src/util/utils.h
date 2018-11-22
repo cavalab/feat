@@ -200,6 +200,10 @@ namespace FT{
         MatrixXd corrcoef(const MatrixXd& X);
         // returns the mean of the pairwise correlations of a matrix.
         double mean_square_corrcoef(const MatrixXd& X);
+        
+        /// returns the (first) index of the element with the middlest value in v
+        int argmiddle(vector<double>& v);
+
     }
 
 } 
