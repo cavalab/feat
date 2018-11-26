@@ -121,7 +121,6 @@ namespace FT
         /*     Map<ArrayXf> cl(class_loss.data(),class_loss.size()); */        
         /*     return cl.mean(); */
         /* } */
-        
     } // metrics
 } // FT
 

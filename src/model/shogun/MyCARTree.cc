@@ -1,4 +1,5 @@
-/*
+/* Edited by William La Cava 2018 (WGL)
+ *
  * Copyright (c) The Shogun Machine Learning Toolbox
  * Written (w) 2014 Parijat Mazumdar
  * All rights reserved.
@@ -30,12 +31,11 @@
 
 #include "MyCARTree.h"
 #include <iostream>
+#include <shogun/base/some.h>
 using namespace Eigen;
 using namespace shogun;
 using std::vector;
-
-
-
+using std::cout; 
 
 const char* CMyCARTree::get_name() const { return "CARTree"; }
 
@@ -112,6 +112,25 @@ bool CMyCARTree::is_label_valid(CLabels* lab) const
         return false;
 }
 
+CBinaryLabels* CMyCARTree::apply_binary(CFeatures* data)
+{
+    REQUIRE(data, "Data required for classification in apply_multiclass\n")
+
+    // apply multiclass starting from root
+    bnode_t* current=dynamic_cast<bnode_t*>(get_root());
+
+    REQUIRE(current, "Tree machine not yet trained.\n");
+    CLabels* ret=apply_from_current_node(dynamic_cast<CDenseFeatures<float64_t>*>(data), current, true);
+    SGVector<double> tmp = dynamic_cast<CMulticlassLabels*>(ret)->get_labels(); 
+    CBinaryLabels* retbc = new CBinaryLabels(tmp,0.5);
+    /* cout << "retbc: " << retbc << "\n"; */
+    /* auto tmpb = retbc->get_labels(); */
+    /* cout << "apply_binary::retbc: "; */
+    /* tmpb.display_vector(); */
+
+    SG_UNREF(current);
+    return retbc;
+}
 CMulticlassLabels* CMyCARTree::apply_multiclass(CFeatures* data)
 {
     REQUIRE(data, "Data required for classification in apply_multiclass\n")
@@ -1118,90 +1137,103 @@ float64_t CMyCARTree::least_squares_deviation(const SGVector<float64_t>& feats, 
 
     return dev/total_weight;
 }
-
-CLabels* CMyCARTree::apply_from_current_node(CDenseFeatures<float64_t>* feats, bnode_t* current)
+CLabels* CMyCARTree::apply_from_current_node(CDenseFeatures<float64_t>* feats, bnode_t* current,
+                                             bool set_certainty)
 {
-    int32_t num_vecs=feats->get_num_vectors();
-    REQUIRE(num_vecs>0, "No data provided in apply\n");
+	int32_t num_vecs=feats->get_num_vectors();
+	REQUIRE(num_vecs>0, "No data provided in apply\n");
 
-    SGVector<float64_t> labels(num_vecs);
-    for (int32_t i=0;i<num_vecs;i++)
-    {
-        SGVector<float64_t> sample=feats->get_feature_vector(i);
-        bnode_t* node=current;
-        SG_REF(node);
+    if (set_certainty)
+		m_certainty=SGVector<float64_t>(num_vecs);
 
-        // until leaf is reached
-        while(node->data.num_leaves!=1)
-        {
-            bnode_t* leftchild=node->left();
+	SGVector<float64_t> labels(num_vecs);
+	for (int32_t i=0;i<num_vecs;i++)
+	{
+		SGVector<float64_t> sample=feats->get_feature_vector(i);
+		bnode_t* node=current;
+		SG_REF(node);
 
-            if (m_nominal[node->data.attribute_id])
-            {
-                SGVector<float64_t> comp=leftchild->data.transit_into_values;
-                bool flag=false;
-                for (int32_t k=0;k<comp.vlen;k++)
-                {
-                    if (comp[k]==sample[node->data.attribute_id])
-                    {
-                        flag=true;
-                        break;
-                    }
-                }
+		// until leaf is reached
+		while(node->data.num_leaves!=1)
+		{
+			bnode_t* leftchild=node->left();
 
-                if (flag)
-                {
-                    SG_UNREF(node);
-                    node=leftchild;
-                    SG_REF(leftchild);
-                }
-                else
-                {
-                    SG_UNREF(node);
-                    node=node->right();
-                }
-            }
-            else
-            {
-                if (sample[node->data.attribute_id]<=leftchild->data.transit_into_values[0])
-                {
-                    SG_UNREF(node);
-                    node=leftchild;
-                    SG_REF(leftchild);
-                }
-                else
-                {
-                    SG_UNREF(node);
-                    node=node->right();
-                }
-            }
+			if (m_nominal[node->data.attribute_id])
+			{
+				SGVector<float64_t> comp=leftchild->data.transit_into_values;
+				bool flag=false;
+				for (int32_t k=0;k<comp.vlen;k++)
+				{
+					if (comp[k]==sample[node->data.attribute_id])
+					{
+						flag=true;
+						break;
+					}
+				}
 
-            SG_UNREF(leftchild);
-        }
+				if (flag)
+				{
+					SG_UNREF(node);
+					node=leftchild;
+					SG_REF(leftchild);
+				}
+				else
+				{
+					SG_UNREF(node);
+					node=node->right();
+				}
+			}
+			else
+			{
+				if (sample[node->data.attribute_id]<=leftchild->data.transit_into_values[0])
+				{
+					SG_UNREF(node);
+					node=leftchild;
+					SG_REF(leftchild);
+				}
+				else
+				{
+					SG_UNREF(node);
+					node=node->right();
+				}
+			}
 
-        labels[i]=node->data.node_label;
-        SG_UNREF(node);
-    }
+			SG_UNREF(leftchild);
+		}
 
-    switch(m_mode)
-    {
-        case PT_MULTICLASS:
-        {
-            CMulticlassLabels* mlabels=new CMulticlassLabels(labels);
-            return mlabels;
-        }
+		labels[i]=node->data.node_label;
+        
+        if (set_certainty)  // WGL: set certainty of assignment based on sample weights in leaf
+			m_certainty[i]=((node->data.total_weight-node->data.weight_minus_node)/
+                            node->data.total_weight);
 
-        case PT_REGRESSION:
-        {
-            CRegressionLabels* rlabels=new CRegressionLabels(labels);
-            return rlabels;
-        }
+		SG_UNREF(node);
+	}
 
-        default:
-            SG_ERROR("mode should be either PT_MULTICLASS or PT_REGRESSION\n");
-    }
+	switch(m_mode)
+	{
+		case PT_MULTICLASS:
+		{
+			CMulticlassLabels* mlabels=new CMulticlassLabels(labels);
+			return mlabels;
+		}
 
-    return NULL;
+		case PT_REGRESSION:
+		{
+			CRegressionLabels* rlabels=new CRegressionLabels(labels);
+			return rlabels;
+		}
+
+		default:
+			SG_ERROR("mode should be either PT_MULTICLASS or PT_REGRESSION\n");
+	}
+
+	return NULL;
+}
+// WGL: get the certainty of an output        TODO: change to set_probabilities()
+SGVector<float64_t> CMyCARTree::get_certainty_vector() const
+{
+    return m_certainty;
 }
 
 void CMyCARTree::prune_by_cross_validation(CDenseFeatures<float64_t>* data, int32_t folds)
@@ -1572,4 +1604,28 @@ void CMyCARTree::get_importance(bnode_t* node, vector<double>& importances)
        SG_UNREF(left);
        SG_UNREF(right);
    }
+}
+// WGL: updated definitions to allow probabilities to be calculated
+void CMyCARTree::set_probabilities(CLabels* labels, CFeatures* data)
+{
+    /* cout << "in set_probabilities\n"; */
+    /* cout << "labels: " << labels << "\n"; */
+    int size = labels->get_num_labels();
+    /* cout << "size: " << size << "\n"; */
+    if (m_certainty.size() != size)
+        std::cout << "ERROR: mismatch in size btw m_certainty and labels\n";
+    // set probabilities using m_certainty
+    for (int i = 0; i < size; ++i)
+    {
+        if (labels->get_value(i) > 0)
+            labels->set_value(m_certainty[i],i);
+        else
+            labels->set_value(1-m_certainty[i],i);
+    }
+    /* cout << "set labels to \n"; */
+    /* for (int i = 0; i < size; ++i) */
+    /* { */
+    /*     cout << labels->get_value(i) << ", "; */
+    /* } */
+    /* cout << "\n"; */
 }

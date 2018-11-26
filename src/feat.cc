@@ -381,6 +381,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
 
     // start the clock
     timer.Reset();
+
     if (params.use_batch)
     {
         if (params.bp.batch_size >= X.cols()){
@@ -473,7 +474,6 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
         random = true;
 
     p_pop->init(best_ind,params,random);
-    cout << "pop initialized\n";
     params.msg("Initial population:\n"+p_pop->print_eqns(),3);
 
     // resize F to be twice the pop-size x number of samples
@@ -587,7 +587,7 @@ void Feat::run_generation(unsigned int g,
     update_best(d);
 
     if (params.max_stall > 0)
-        update_stall_count(stall_count, F);
+        update_stall_count(stall_count, F, d);
 
     if (use_arch) 
         arch.update(*p_pop,params);
@@ -608,12 +608,26 @@ void Feat::run_generation(unsigned int g,
 
 }
 
-void Feat::update_stall_count(unsigned& stall_count, MatrixXf& F)
+void Feat::update_stall_count(unsigned& stall_count, MatrixXf& F, const DataRef& d)
 {
-    float med_score = median(F.colwise().mean().array());  // median loss
-    if (params.current_gen == 0 || med_score < best_med_score)
+    /* double med_score = median(F.colwise().mean().array());  // median loss */
+    vector<float> fitnesses;
+    for (unsigned i = 0; i < p_pop->individuals.size(); ++i)
+        fitnesses.push_back(p_pop->individuals.at(i).fitness);
+    int idx = argmiddle(fitnesses);
+    /* cout << "fitnesses: \n"; */
+    /* for (const auto& f : fitnesses) cout << f << ", "; cout << "\n"; */
+    /* cout << "idx: " << idx << "\n"; */
+    Individual& med_ind = p_pop->individuals.at(idx);
+    /* cout << "med_ind: " << med_ind.get_eqn() << "\n"; */
+    VectorXf tmp;
+    shared_ptr<CLabels> yhat_v = med_ind.predict(*d.v, params);
+    med_loss_v = p_eval->score(d.v->y, yhat_v, tmp, params.class_weights); 
+
+    if (params.current_gen == 0 || med_loss_v < best_med_score)
     {
-        best_med_score = med_score;
+        /* cout << "updating best_med_score to " << med_loss_v << "\n"; */
+        best_med_score = med_loss_v;
         stall_count = 0;
     }
     else
@@ -621,6 +635,7 @@ void Feat::update_stall_count(unsigned& stall_count, MatrixXf& F)
         ++stall_count;
     }
 
+    params.msg("stall count: " + std::to_string(stall_count), 2);
 }
 void Feat::fit(float * X, int rowsX, int colsX, float * Y, int lenY)
 {
@@ -691,7 +706,6 @@ void Feat::initial_model(DataRef &d)
     
     bool pass = true;
     shared_ptr<CLabels> yhat = best_ind.fit(*d.t,params,pass);
-
     // set terminal weights based on model
     vector<float> w;
     if (n_feats == d.t->X.rows())
@@ -958,9 +972,11 @@ void Feat::print_stats(std::ofstream& log, float fraction)
         if (params.current_gen == 0) // print header
         {
             log << "generation"     << sep
+                << "time"           << sep
                 << "min_loss"       << sep 
                 << "min_loss_val"   << sep 
                 << "med_loss"       << sep 
+                << "med_loss_val"   << sep 
                 << "med_size"       << sep 
                 << "med_complexity" << sep 
                 << "med_num_params" << sep
@@ -983,9 +999,11 @@ void Feat::print_stats(std::ofstream& log, float fraction)
         unsigned med_dim = median(Dims);                          // median program size
 
         log << params.current_gen  << sep
+            << timer.Elapsed().count() << sep
             << best_score          << sep
             << best_score_v        << sep
             << med_score           << sep
+            << med_loss_v          << sep
             << med_size            << sep
             << med_complexity      << sep
             << med_num_params      << sep

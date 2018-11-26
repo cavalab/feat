@@ -103,7 +103,7 @@ namespace FT{
         float Individual::get_p(const size_t i) const
         {
             /*! @param i index in program 
-             * @returns weight associated with node */
+             * @return weight associated with node */
             vector<size_t> rts = program.roots();
             std::reverse(rts.begin(),rts.end()); 
             size_t j = 0;
@@ -143,7 +143,7 @@ namespace FT{
         {
             // calculate program output matrix Phi
             params.msg("Generating output for " + get_eqn(), 3);
-            Phi = out(d, params);            
+            Phi = out(d, params);       
             // calculate ML model from Phi
             params.msg("ML training on " + get_eqn(), 3);
             ml = std::make_shared<ML>(params);
@@ -214,7 +214,7 @@ namespace FT{
              * @param d: Data structure
              * @param params: Feat parameters
              * @param predict: if true, this guarantees nodes like split do not get trained
-             * @returns Phi: n_features x n_samples transformation
+             * @return Phi: n_features x n_samples transformation
              */
              
             State state;
@@ -286,7 +286,6 @@ namespace FT{
                 dtypes.push_back('b');
             }
             
-
             return Phi;
         }
         #else
@@ -423,47 +422,54 @@ namespace FT{
              * @param Z: longitudinal nodes for samples
              * @param y: target data
              * @param: Feat parameters
-             * @returns Phi: n_features x n_samples transformation
+             * @return Phi: n_features x n_samples transformation
              */
 
             State state;
-            /* params.msg("evaluating program " + get_eqn(),3); */
+            params.msg("evaluating program " + program_str(),3);
             /* params.msg("program length: " + std::to_string(program.size()),3); */
 
             vector<size_t> roots = program.roots();
+            /* cout << "roots: " ; */
+            /* for (auto rt : roots) cout << rt << ", "; */
+            /* cout << "\n"; */
             size_t root = 0;
             bool trace=false;
-            size_t trace_idx=0;
+            size_t trace_idx=-1;
 
+            // if first root is a Dx node, start off storing its subprogram
             if (program.at(roots.at(root))->isNodeDx())
             {
                 trace=true;
+                ++trace_idx;
                 state_trace.push_back(Trace());
             }
             
             // evaluate each node in program
             for (unsigned i = 0; i<program.size(); ++i)
             {
+                /* cout << "i = " << i << ", root = " << roots.at(root) << "\n"; */
                 if (i > roots.at(root)){
-                    ++root;
-                    if (program.at(roots.at(root))->isNodeDx())
+                    trace=false;
+                    if (root + 1 < roots.size())
                     {
-                        trace=true;
-                        state_trace.push_back(Trace());
-                        ++trace_idx;
+                        ++root; // move to next root
+                        // if new root is a Dx node, start storing its subprogram
+                        if (program.at(roots.at(root))->isNodeDx())
+                        {
+                            trace=true;
+                            ++trace_idx;
+                            state_trace.push_back(Trace());
+                        }
                     }
-                    else
-                        trace=false;
                 }
                 if(state.check(program.at(i)->arity))
             	{
                     if (trace)
                         state_trace.at(trace_idx).copy_to_trace(state, program.at(i)->arity);
 
-            	    //cout<<"***enter here "<<n->name<<"\n";
 	                program.at(i)->evaluate(d, state);
                     program.at(i)->visits = 0;
-	                //cout<<"***exit here "<<n->name<<"\n";
 	            }
                 else
                     HANDLE_ERROR_THROW("out() error: node " + program.at(i)->name + " in " + program_str() + " is invalid\n");
@@ -713,7 +719,7 @@ namespace FT{
             /*!
              * Output:
              
-             *	 	returns the dimensionality, i.e. number of outputs, of a program.
+             *	 	@return the dimensionality, i.e. number of outputs, of a program.
              *   	the dimensionality is equal to the number of times the program arities are fully
              *   	satisfied. 
              */
@@ -822,7 +828,7 @@ namespace FT{
 
         string Individual::program_str() const
         {
-            /* returns a string of program names. */
+            /* @return a string of node names. */
             string s = "";
             for (const auto& p : program)
             {

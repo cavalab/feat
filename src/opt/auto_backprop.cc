@@ -87,6 +87,7 @@ namespace FT {
                 MatrixXf Phi; 
                 /* cout << "forward pass\n"; */
                 vector<Trace> stack_trace = forward_prop(ind, db, Phi, params);
+                /* cout << "just finished forward_pass\n"; */
                 // Evaluate ML model on Phi
                 bool pass = true;
                 auto ml = std::make_shared<ML>(params, true);
@@ -116,14 +117,17 @@ namespace FT {
 
                 // check validation fitness for early stopping
                 MatrixXf Phival = ind.out(db_val,params);
+                /* cout << "checking validation fitness\n"; */
+                /* cout << "Phival: " << Phival.rows() << " x " << Phival.cols() << "\n"; */
+                /* cout << "y_val\n"; */
                 shared_ptr<CLabels> y_val = ml->predict(Phival);
+                /* cout << "val_loss\n"; */
                 current_val_loss = this->cost_func(db_val.y, y_val, params.class_weights).mean();
-                
+                /* cout << "check for min loss\n"; */ 
                 if (x==0 || current_val_loss < min_loss)
                 {
                     min_loss = current_val_loss;
                     best_weights = ind.program.get_weights();
-                    params.msg("new min loss: " + std::to_string(min_loss), 3);
                 }
                 else
                 {
@@ -134,8 +138,11 @@ namespace FT {
                 if (missteps == patience || std::isnan(min_loss) || std::isinf(min_loss)
                         || min_loss <= NEAR_ZERO)       // early stopping trigger
                     break;
+                else
+                    params.msg("min loss: " + std::to_string(min_loss), 3);
 
                 float alpha = float(x)/float(iters);
+
                 this->epk = (1 - alpha)*this->epk + alpha*this->epT;  
                 /* this->epk = this->epk + this->epT; */ 
                 /* cout << "epk: " << this->epk << "\n"; */
