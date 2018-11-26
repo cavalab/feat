@@ -22,7 +22,7 @@ namespace FT{
             /// Evaluates the node and updates the state states. 
             void NodeKurtosis::evaluate(const Data& data, State& state)
             {
-                ArrayXd tmp(state.z.top().first.size());
+                ArrayXf tmp(state.z.top().first.size());
                 
                 int x;
                 
@@ -30,7 +30,7 @@ namespace FT{
                     tmp(x) = kurtosis(limited(state.z.top().first[x]));
                     
                 state.z.pop();
-                state.push<double>(tmp);
+                state.push<float>(tmp);
                 
             }
             #else
@@ -50,7 +50,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeKurtosis::eval_eqn(State& state)
             {
-                state.push<double>("kurtosis(" + state.zs.pop() + ")");
+                state.push<float>("kurtosis(" + state.zs.pop() + ")");
             }
             
             NodeKurtosis* NodeKurtosis::clone_impl() const { return new NodeKurtosis(*this); }

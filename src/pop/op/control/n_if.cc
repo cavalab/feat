@@ -10,7 +10,7 @@ namespace FT{
 
     namespace Pop{
         namespace Op{       	
-            NodeIf::NodeIf(vector<double> W0)
+            NodeIf::NodeIf(vector<float> W0)
             {
 		        name = "if";
 		        otype = 'f';
@@ -25,7 +25,7 @@ namespace FT{
             /// Evaluates the node and updates the state states. 
             void NodeIf::evaluate(const Data& data, State& state)
             {
-                state.push<double>(limited(state.pop<bool>().select(state.pop<double>(),0)));
+                state.push<float>(limited(state.pop<bool>().select(state.pop<float>(),0)));
             }
             #else
             void NodeIf::evaluate(const Data& data, State& state)
@@ -37,22 +37,22 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeIf::eval_eqn(State& state)
             {
-              state.push<double>("if(" + state.popStr<bool>() + "," + state.popStr<double>() + "," + "0)");
+              state.push<float>("if(" + state.popStr<bool>() + "," + state.popStr<float>() + "," + "0)");
             }
             
-            ArrayXd NodeIf::getDerivative(Trace& state, int loc) 
+            ArrayXf NodeIf::getDerivative(Trace& state, int loc) 
             {
-                ArrayXd& xf = state.get<double>()[state.size<double>()-1];
+                ArrayXf& xf = state.get<float>()[state.size<float>()-1];
                 ArrayXb& xb = state.get<bool>()[state.size<bool>()-1];
                 
                 switch (loc) {
                     case 1: // d/dW[0]
-                        return ArrayXd::Zero(xf.size()); 
+                        return ArrayXf::Zero(xf.size()); 
                     case 0: // d/dx1
                     default:
-                        return xb.cast<double>(); 
-                        /* .select(ArrayXd::Ones(state.f[state.f.size()-1].size(), */
-                        /*                  ArrayXd::Zero(state.f[state.f.size()-1].size()); */
+                        return xb.cast<float>(); 
+                        /* .select(ArrayXf::Ones(state.f[state.f.size()-1].size(), */
+                        /*                  ArrayXf::Zero(state.f[state.f.size()-1].size()); */
                 } 
             }
             

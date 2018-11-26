@@ -127,13 +127,15 @@ namespace FT
             // clean floating point stack. 
             for (unsigned r = 0 ; r < f.rows(); ++r)
             {
-                f.row(r) = (isinf(f.row(r))).select(MAX_DBL,f.row(r));
+                f.row(r) = (f.row(r) < MIN_FLT).select(MIN_FLT,f.row(r));
+                f.row(r) = (f.row(r) > MAX_FLT).select(MAX_FLT,f.row(r));
                 f.row(r) = (isnan(f.row(r))).select(0,f.row(r));
             }
             
             for (unsigned r = 0 ; r < c.rows(); ++r)
             {
-                c.row(r) = (isinf(c.row(r))).select(MAX_INT, c.row(r));
+                c.row(r) = (c.row(r) < MIN_FLT).select(MIN_FLT,c.row(r));
+                c.row(r) = (c.row(r) > MAX_FLT).select(MAX_FLT,c.row(r));
                 c.row(r) = (isnan(c.row(r))).select(0, c.row(r));
             }
         }
@@ -192,7 +194,7 @@ namespace FT
                 
                 copy_from_device((state.dev_f+increment), tmp.data(), state.N); 
                 
-                f.push_back(tmp.cast<double>());
+                f.push_back(tmp.cast<float>());
             }
             
             for (int i = 0; i < arity['c']; i++)

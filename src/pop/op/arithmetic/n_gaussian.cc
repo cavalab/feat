@@ -9,7 +9,7 @@ namespace FT{
 
     namespace Pop{
         namespace Op{
-            NodeGaussian::NodeGaussian(vector<double> W0)
+            NodeGaussian::NodeGaussian(vector<float> W0)
             {
                 name = "gaussian";
 		        otype = 'f';
@@ -31,7 +31,7 @@ namespace FT{
             /// Evaluates the node and updates the state states. 
             void NodeGaussian::evaluate(const Data& data, State& state)
             {
-                state.push<double>(limited(exp(-pow(W[0] - state.pop<double>(), 2))));
+                state.push<float>(limited(exp(-pow(W[0] - state.pop<float>(), 2))));
             }
             #else
             void NodeGaussian::evaluate(const Data& data, State& state)
@@ -43,12 +43,12 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeGaussian::eval_eqn(State& state)
             {
-                state.push<double>("gauss(" + state.popStr<double>() + ")");
+                state.push<float>("gauss(" + state.popStr<float>() + ")");
             }
 
-            ArrayXd NodeGaussian::getDerivative(Trace& state, int loc) 
+            ArrayXf NodeGaussian::getDerivative(Trace& state, int loc) 
             {
-                ArrayXd& x = state.get<double>()[state.size<double>()-1];
+                ArrayXf& x = state.get<float>()[state.size<float>()-1];
                 
                 switch (loc) {
                     case 1: // d/dw0

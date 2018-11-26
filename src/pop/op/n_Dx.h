@@ -14,16 +14,16 @@ namespace FT{
             class NodeDx : public Node
             {
             	public:
-            		std::vector<double> W;
-                    std::vector<double> V;  
+            		std::vector<float> W;
+                    std::vector<float> V;  
             	
             		virtual ~NodeDx();
 
-            		virtual ArrayXd getDerivative(Trace& state, int loc) = 0;
+            		virtual ArrayXf getDerivative(Trace& state, int loc) = 0;
             		
-            		void derivative(vector<ArrayXd>& gradients, Trace& state, int loc);
+            		void derivative(vector<ArrayXf>& gradients, Trace& state, int loc);
 
-                    void update(vector<ArrayXd>& gradients, Trace& state, double n, double a);
+                    void update(vector<ArrayXf>& gradients, Trace& state, float n, float a);
 
                     void print_weight();
 

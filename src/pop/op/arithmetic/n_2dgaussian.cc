@@ -11,7 +11,7 @@ namespace FT{
 
     namespace Pop{
         namespace Op{
-            Node2dGaussian::Node2dGaussian(vector<double> W0)
+            Node2dGaussian::Node2dGaussian(vector<float> W0)
             {
                 name = "gaussian2d";
 	            otype = 'f';
@@ -32,10 +32,10 @@ namespace FT{
             #ifndef USE_CUDA
             void Node2dGaussian::evaluate(const Data& data, State& state)
             {
-                ArrayXd x1 = state.pop<double>();
-                ArrayXd x2 = state.pop<double>();
+                ArrayXf x1 = state.pop<float>();
+                ArrayXf x2 = state.pop<float>();
 
-                state.push<double>(limited(exp(-1*(pow(W[0]*(x1-x1.mean()), 2)/(2*variance(x1)) 
+                state.push<float>(limited(exp(-1*(pow(W[0]*(x1-x1.mean()), 2)/(2*variance(x1)) 
                               + pow(W[1]*(x2 - x2.mean()), 2)/variance(x2)))));
             }
             #else
@@ -45,8 +45,8 @@ namespace FT{
                 float x1mean = state.f.row(state.idx['f']-1).mean();
                 float x2mean = state.f.row(state.idx['f']-2).mean();
                 
-                double x1var = variance(state.f.row(state.idx['f']-1).cast<double>(), x1mean);
-                double x2var = variance(state.f.row(state.idx['f']-2).cast<double>(), x2mean);
+                float x1var = variance(state.f.row(state.idx['f']-1).cast<float>(), x1mean);
+                float x2var = variance(state.f.row(state.idx['f']-2).cast<float>(), x2mean);
                               
                 GPU_Gaussian2D(state.dev_f, state.idx[otype],
                                (float)x1mean, (float)x1var,
@@ -58,12 +58,12 @@ namespace FT{
             /// Evaluates the node symbolically
             void Node2dGaussian::eval_eqn(State& state)
             {
-                state.push<double>("gauss2d(" +state.popStr<double>()+ "," +state.popStr<double>()+ ")");
+                state.push<float>("gauss2d(" +state.popStr<float>()+ "," +state.popStr<float>()+ ")");
             }
 
-            ArrayXd Node2dGaussian::getDerivative(Trace& state, int loc) 
+            ArrayXf Node2dGaussian::getDerivative(Trace& state, int loc) 
             {
-                ArrayXd& x = state.get<double>()[state.size<double>()-1];
+                ArrayXf& x = state.get<float>()[state.size<float>()-1];
 
                 switch (loc) {
                     case 1: // d/dw0

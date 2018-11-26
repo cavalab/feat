@@ -22,11 +22,11 @@ namespace FT{
                 GEQ<<< DIM_GRID, DIM_BLOCK >>>(xf, xb, idxf, idxb, N);
             }
             /// Evaluates the node and updates the stack states. 
-            /* void NodeGEQ::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 
+            /* void NodeGEQ::evaluate(const MatrixXf& X, const VectorXf& y, vector<ArrayXf>& stack_f, */ 
             /*         vector<ArrayXb>& stack_b) */
             /* { */
-            /*     ArrayXd x2 = stack_f.back(); stack_f.pop_back(); */
-            /*     ArrayXd x1 = stack_f.back(); stack_f.pop_back(); */
+            /*     ArrayXf x2 = stack_f.back(); stack_f.pop_back(); */
+            /*     ArrayXf x1 = stack_f.back(); stack_f.pop_back(); */
             /*     // evaluate on the GPU */
             /*     ArrayXb result = ArrayXb(x1.size()); */
             /*     size_t N = result.size(); */
@@ -34,13 +34,13 @@ namespace FT{
             /*     int numSMs; */
             /*     cudaDeviceGetAttribute(&numSMs, cudaDevAttrMultiProcessorCount, 0); */
             /*     // allocate device arrays */
-            /*     double * dev_x1, * dev_x2 ; */ 
-            /*     HANDLE_ERROR(cudaMalloc((void **)& dev_x1, sizeof(double)*N)); */
-            /*     HANDLE_ERROR(cudaMalloc((void **)& dev_x2, sizeof(double)*N)); */
+            /*     float * dev_x1, * dev_x2 ; */ 
+            /*     HANDLE_ERROR(cudaMalloc((void **)& dev_x1, sizeof(float)*N)); */
+            /*     HANDLE_ERROR(cudaMalloc((void **)& dev_x2, sizeof(float)*N)); */
             /*     HANDLE_ERROR(cudaMalloc((void **)&dev_res, sizeof(bool)*N)); */
             /*     // Copy to device */
-            /*     HANDLE_ERROR(cudaMemcpy(dev_x1, x1.data(), sizeof(double)*N, cudaMemcpyHostToDevice)); */
-            /*     HANDLE_ERROR(cudaMemcpy(dev_x2, x2.data(), sizeof(double)*N, cudaMemcpyHostToDevice)); */
+            /*     HANDLE_ERROR(cudaMemcpy(dev_x1, x1.data(), sizeof(float)*N, cudaMemcpyHostToDevice)); */
+            /*     HANDLE_ERROR(cudaMemcpy(dev_x2, x2.data(), sizeof(float)*N, cudaMemcpyHostToDevice)); */
 
             /*     GEQ<<< 32*numSMs, 128 >>>(dev_x1, dev_x2, dev_res, N); */
                

@@ -15,7 +15,7 @@ namespace FT{
             {
             	public:
             		
-            		double d_value;           ///< value, for k and x types
+            		float d_value;           ///< value, for k and x types
             		bool b_value;
             		
             		NodeConstant();
@@ -23,8 +23,8 @@ namespace FT{
                     /// declares a boolean constant
             		NodeConstant(bool& v);
 
-                    /// declares a double constant
-            		NodeConstant(const double& v);
+                    /// declares a float constant
+            		NodeConstant(const float& v);
             		
                     /// Evaluates the node and updates the state states. 
                     void evaluate(const Data& data, State& state);

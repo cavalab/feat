@@ -53,16 +53,16 @@ namespace FT{
          
            
         /// get probabilities of variation
-        vector<double> Individual::get_p() const { return p; }     
+        vector<float> Individual::get_p() const { return p; }     
         
-        void Individual::set_p(const vector<double>& weights, const double& fb)
+        void Individual::set_p(const vector<float>& weights, const float& fb)
         {   
             //cout<<"Weights size = "<<weights.size()<<"\n";
             //cout<<"Roots size = "<<roots().size()<<"\n";
             if(weights.size() != program.roots().size())
             {
                 cout<<"Weights are\n";
-                for(double weight : weights)
+                for(float weight : weights)
                     cout<<weight<<"\n";
                     
                 cout<<"Roots are\n";
@@ -79,7 +79,7 @@ namespace FT{
             p.resize(0);
             
             // normalize the sum of the weights
-            double sum = 0;
+            float sum = 0;
             for (unsigned i =0; i<weights.size(); ++i)
                 sum += fabs(weights.at(i));
 
@@ -88,7 +88,7 @@ namespace FT{
                 p[i] = 1 - fabs(weights[i]/sum);
             /* for (unsigned i=0; i<p.size(); ++i) */
             /*     p[i] = 1-p[i]; */
-            double u = 1.0/double(p.size());    // uniform probability
+            float u = 1.0/float(p.size());    // uniform probability
             /* std::cout << "p: "; */
             /* for (auto tmp : p) cout << tmp << " " ; cout << "\n"; */
             /* std::cout << "softmax(p)\n"; */
@@ -100,14 +100,14 @@ namespace FT{
             this->w = weights;
         }
         
-        double Individual::get_p(const size_t i) const
+        float Individual::get_p(const size_t i) const
         {
             /*! @param i index in program 
              * @returns weight associated with node */
             vector<size_t> rts = program.roots();
             std::reverse(rts.begin(),rts.end()); 
             size_t j = 0;
-            double size = rts[0];
+            float size = rts[0];
             
             
 
@@ -127,14 +127,14 @@ namespace FT{
                 return 0.0;
             }
             // normalize weight by size of subtree
-            double norm_weight = p.at(j)/size;
+            float norm_weight = p.at(j)/size;
             return norm_weight;
 
         }
         
-        vector<double> Individual::get_p(const vector<size_t>& locs) const
+        vector<float> Individual::get_p(const vector<size_t>& locs) const
         {
-            vector<double> ps;
+            vector<float> ps;
             for (const auto& el : locs) ps.push_back(get_p(el));
             return ps;
         }
@@ -167,7 +167,7 @@ namespace FT{
             /* if (drop_idx >= 0)  // if drop_idx specified, mask that phi output */
             /* { */
             /*     cout << "dropping row " + std::to_string(drop_idx) + "\n"; */
-            /*     Phi.row(drop_idx) = VectorXd::Zero(Phi.cols()); */
+            /*     Phi.row(drop_idx) = VectorXf::Zero(Phi.cols()); */
             /* } */
             // calculate ML model from Phi
             params.msg("ML predicting on " + get_eqn(), 3);
@@ -176,12 +176,12 @@ namespace FT{
             return yhat;
         }
 
-        VectorXd Individual::predict_drop(const Data& d, const Parameters& params, int drop_idx)
+        VectorXf Individual::predict_drop(const Data& d, const Parameters& params, int drop_idx)
         {
             // calculate program output matrix Phi
             params.msg("Generating output for " + get_eqn(), 3);
             // toggle validation
-            MatrixXd PhiDrop = Phi;           // TODO: guarantee this is not changing nodes
+            MatrixXf PhiDrop = Phi;           // TODO: guarantee this is not changing nodes
              
             if (Phi.size()==0)
                 HANDLE_ERROR_THROW("Phi must be generated before predict_drop() is called\n");
@@ -191,24 +191,24 @@ namespace FT{
                     HANDLE_ERROR_THROW("drop_idx ( " + std::to_string(drop_idx) + " > Phi size (" 
                                        + std::to_string(Phi.rows()) + ")\n");
                 cout << "dropping row " + std::to_string(drop_idx) + "\n";
-                /* PhiDrop.row(drop_idx) = VectorXd::Zero(Phi.cols()); */
+                /* PhiDrop.row(drop_idx) = VectorXf::Zero(Phi.cols()); */
                 PhiDrop.row(drop_idx).setZero();
             }
             // calculate ML model from Phi
             /* params.msg("ML predicting on " + get_eqn(), 3); */
             // assumes ML is already trained
-            VectorXd yh = ml->predict_vector(PhiDrop);
+            VectorXf yh = ml->predict_vector(PhiDrop);
             return yh;
         }
 
-        VectorXd Individual::predict_vector(const Data& d, const Parameters& params)
+        VectorXf Individual::predict_vector(const Data& d, const Parameters& params)
         {
             return ml->labels_to_vector(this->predict(d,params));
         }
         
         #ifndef USE_CUDA
         // calculate program output matrix
-        MatrixXd Individual::out(const Data& d, const Parameters& params, bool predict)
+        MatrixXf Individual::out(const Data& d, const Parameters& params, bool predict)
         {
             /*!
              * @param d: Data structure
@@ -259,12 +259,12 @@ namespace FT{
             int rows_b = state.b.size();
             
             dtypes.clear();        
-            Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
+            Matrix<float,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
             
             // add state_f to Phi
             for (unsigned int i=0; i<rows_f; ++i)
             {    
-                 ArrayXd Row = ArrayXd::Map(state.f.at(i).data(),cols);
+                 ArrayXf Row = ArrayXf::Map(state.f.at(i).data(),cols);
                  clean(Row); // remove nans, set infs to max and min
                  Phi.row(i) = Row;
                  dtypes.push_back('f'); 
@@ -273,7 +273,7 @@ namespace FT{
             // add state_c to Phi
             for (unsigned int i=0; i<rows_c; ++i)
             {    
-                 ArrayXd Row = ArrayXi::Map(state.c.at(i).data(),cols).cast<double>();
+                 ArrayXf Row = ArrayXi::Map(state.c.at(i).data(),cols).cast<float>();
                  clean(Row); // remove nans, set infs to max and min
                  Phi.row(i+rows_f) = Row;
                  dtypes.push_back('c');
@@ -282,7 +282,7 @@ namespace FT{
             // convert state_b to Phi       
             for (unsigned int i=0; i<rows_b; ++i)
             {
-                Phi.row(i+rows_f+rows_c) = ArrayXb::Map(state.b.at(i).data(),cols).cast<double>();
+                Phi.row(i+rows_f+rows_c) = ArrayXb::Map(state.b.at(i).data(),cols).cast<float>();
                 dtypes.push_back('b');
             }
             
@@ -290,7 +290,7 @@ namespace FT{
             return Phi;
         }
         #else
-        MatrixXd Individual::out(const Data& d, const Parameters& params, bool predict)
+        MatrixXf Individual::out(const Data& d, const Parameters& params, bool predict)
         {
         
             /*!
@@ -378,32 +378,32 @@ namespace FT{
             int rows_b = state.b.rows();
             
             dtypes.clear();        
-            Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b+rows_c, cols);
+            Matrix<float,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b+rows_c, cols);
 
             // combine states into Phi 
-            Phi <<  state.f.cast<double>(),
-                    state.c.cast<double>(),
-                    state.b.cast<double>();
+            Phi <<  state.f.cast<float>(),
+                    state.c.cast<float>(),
+                    state.b.cast<float>();
                     
             
             /* std::cout << "Phi:" << Phi.rows() << "x" << Phi.cols() << "\n"; */
 
             for (unsigned int i=0; i<rows_f; ++i)
             {    
-                 /* Phi.row(i) = VectorXd::Map(state.f.at(i).data(),cols); */
+                 /* Phi.row(i) = VectorXf::Map(state.f.at(i).data(),cols); */
                  dtypes.push_back('f'); 
             }
             
             for (unsigned int i=0; i<rows_c; ++i)
             {    
-                 /* Phi.row(i) = VectorXd::Map(state.f.at(i).data(),cols); */
+                 /* Phi.row(i) = VectorXf::Map(state.f.at(i).data(),cols); */
                  dtypes.push_back('c'); 
             }
             
             // convert state_b to Phi       
             for (unsigned int i=0; i<rows_b; ++i)
             {
-                /* Phi.row(i+rows_f) = ArrayXb::Map(state.b.at(i).data(),cols).cast<double>(); */
+                /* Phi.row(i+rows_f) = ArrayXb::Map(state.b.at(i).data(),cols).cast<float>(); */
                 dtypes.push_back('b');
             }
             
@@ -415,7 +415,7 @@ namespace FT{
 
         #ifndef USE_CUDA
         // calculate program output matrix
-        MatrixXd Individual::out_trace(const Data& d,
+        MatrixXf Individual::out_trace(const Data& d,
                          const Parameters& params, vector<Trace>& state_trace)
         {
             /*!
@@ -492,12 +492,12 @@ namespace FT{
             int rows_b = state.b.size();
             
             dtypes.clear();        
-            Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
+            Matrix<float,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
             
             // add state_f to Phi
             for (unsigned int i=0; i<rows_f; ++i)
             {    
-                 ArrayXd Row = ArrayXd::Map(state.f.at(i).data(),cols);
+                 ArrayXf Row = ArrayXf::Map(state.f.at(i).data(),cols);
                  clean(Row); // remove nans, set infs to max and min
                  Phi.row(i) = Row;
                  dtypes.push_back('f'); 
@@ -506,7 +506,7 @@ namespace FT{
             // add state_c to Phi
             for (unsigned int i=0; i<rows_c; ++i)
             {    
-                 ArrayXd Row = ArrayXi::Map(state.c.at(i).data(),cols).cast<double>();
+                 ArrayXf Row = ArrayXi::Map(state.c.at(i).data(),cols).cast<float>();
                  clean(Row); // remove nans, set infs to max and min
                  Phi.row(i+rows_f) = Row;
                  dtypes.push_back('c'); 
@@ -515,7 +515,7 @@ namespace FT{
             // convert state_b to Phi       
             for (unsigned int i=0; i<rows_b; ++i)
             {
-                Phi.row(i+rows_f+rows_c) = ArrayXb::Map(state.b.at(i).data(),cols).cast<double>();
+                Phi.row(i+rows_f+rows_c) = ArrayXb::Map(state.b.at(i).data(),cols).cast<float>();
                 dtypes.push_back('b');
             }
 
@@ -524,7 +524,7 @@ namespace FT{
         }
         #else
         // calculate program output matrix
-        MatrixXd Individual::out_trace(const Data& d,
+        MatrixXf Individual::out_trace(const Data& d,
                          const Parameters& params, vector<Trace>& state_trace)
         {
             /*!
@@ -615,35 +615,35 @@ namespace FT{
             
             dtypes.clear();        
             
-            Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
+            Matrix<float,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
 
             ArrayXXf PhiF = ArrayXXf::Map(state.f.data(),state.f.rows(),state.f.cols());
             ArrayXXi PhiC = ArrayXXi::Map(state.c.data(),state.c.rows(),state.c.cols());
             ArrayXXb PhiB = ArrayXXb::Map(state.b.data(),state.b.rows(),state.b.cols());
             
             // combine State into Phi 
-            Phi <<  PhiF.cast<double>(),
-                    PhiC.cast<double>(),
-                    PhiB.cast<double>();
+            Phi <<  PhiF.cast<float>(),
+                    PhiC.cast<float>(),
+                    PhiB.cast<float>();
             
             /* std::cout << "Phi:" << Phi.rows() << "x" << Phi.cols() << "\n"; */
 
             for (unsigned int i=0; i<rows_f; ++i)
             {    
-                 /* Phi.row(i) = VectorXd::Map(state.f.at(i).data(),cols); */
+                 /* Phi.row(i) = VectorXf::Map(state.f.at(i).data(),cols); */
                  dtypes.push_back('f'); 
             }
             
             for (unsigned int i=0; i<rows_c; ++i)
             {    
-                 /* Phi.row(i) = VectorXd::Map(state.f.at(i).data(),cols); */
+                 /* Phi.row(i) = VectorXf::Map(state.f.at(i).data(),cols); */
                  dtypes.push_back('c'); 
             }
             
             // convert state_b to Phi       
             for (unsigned int i=0; i<rows_b; ++i)
             {
-                /* Phi.row(i+rows_f) = ArrayXb::Map(state.b.at(i).data(),cols).cast<double>(); */
+                /* Phi.row(i+rows_f) = ArrayXb::Map(state.b.at(i).data(),cols).cast<float>(); */
                 dtypes.push_back('b');
             }
                    

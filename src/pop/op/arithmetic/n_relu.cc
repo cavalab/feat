@@ -8,7 +8,7 @@ namespace FT{
 
     namespace Pop{
         namespace Op{ 	
-            NodeRelu::NodeRelu(vector<double> W0)
+            NodeRelu::NodeRelu(vector<float> W0)
             {
 	            name = "relu";
 	            otype = 'f';
@@ -30,9 +30,9 @@ namespace FT{
             /// Evaluates the node and updates the state states. 
             void NodeRelu::evaluate(const Data& data, State& state)
             {
-                ArrayXd x = state.pop<double>();
-                ArrayXd res = (W[0] * x > 0).select(W[0]*x, ArrayXd::Zero(x.size())+0.01); 
-                state.push<double>(res);
+                ArrayXf x = state.pop<float>();
+                ArrayXf res = (W[0] * x > 0).select(W[0]*x, ArrayXf::Zero(x.size())+0.01); 
+                state.push<float>(res);
             }
             #else
             /// Evaluates the node and updates the state states. 
@@ -45,20 +45,20 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeRelu::eval_eqn(State& state)
             {
-                state.push<double>("relu("+ state.popStr<double>() +")");         	
+                state.push<float>("relu("+ state.popStr<float>() +")");         	
             }
 
-            ArrayXd NodeRelu::getDerivative(Trace& state, int loc)
+            ArrayXf NodeRelu::getDerivative(Trace& state, int loc)
             {
 
-                ArrayXd& x = state.get<double>()[state.size<double>()-1];
+                ArrayXf& x = state.get<float>()[state.size<float>()-1];
                 
                 switch (loc) {
                     case 1: // d/dW
-                        return (x>0).select(x,ArrayXd::Zero(x.size())+0.01);
+                        return (x>0).select(x,ArrayXf::Zero(x.size())+0.01);
                     case 0: // d/dx
                     default:
-                        return (x>0).select(W[0],ArrayXd::Zero(x.size())+0.01);
+                        return (x>0).select(W[0],ArrayXf::Zero(x.size())+0.01);
                 } 
             }
             

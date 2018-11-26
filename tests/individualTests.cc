@@ -34,8 +34,8 @@ TEST(Individual, EvalEquation)
 	Feat feat(100, 100, "LinearRidgeRegression", false, 1);
 	feat.set_random_state(666);
 	
-    MatrixXd X(4,2); 
-    MatrixXd X_v(3,2); 
+    MatrixXf X(4,2); 
+    MatrixXf X_v(3,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
          0.84147098,  0.54030231,
@@ -47,13 +47,13 @@ TEST(Individual, EvalEquation)
     X.transposeInPlace();
     X_v.transposeInPlace();
 
-    VectorXd y(4); 
-    VectorXd y_v(3); 
+    VectorXf y(4); 
+    VectorXf y_v(3); 
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158;
     y_v << 0.57015434, -1.20648656, -2.68773747;
     
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z; 
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > z; 
 
     feat.params.init();       
   
@@ -107,11 +107,11 @@ TEST(Individual, Subtree)
 {
 	Individual a;
 	
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(1)));
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(2)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<float>(1)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<float>(2)));
 	a.program.push_back(std::unique_ptr<Node>(new NodeAdd()));
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(3)));
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(4)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<float>(3)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<float>(4)));
 	a.program.push_back(std::unique_ptr<Node>(new NodeSubtract()));
 	a.program.push_back(std::unique_ptr<Node>(new NodeMultiply()));
 	
@@ -122,9 +122,9 @@ TEST(Individual, Subtree)
 	
 	a.program.clear();
 	
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(1)));
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(2)));
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(3)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<float>(1)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<float>(2)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<float>(3)));
 	a.program.push_back(std::unique_ptr<Node>(new NodeConstant(true)));
 	a.program.push_back(std::unique_ptr<Node>(new NodeIfThenElse()));
 	a.program.push_back(std::unique_ptr<Node>(new NodeAdd()));
@@ -138,11 +138,11 @@ TEST(Individual, Complexity)
 {
 	Individual a;
 	
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(1)));
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(2)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<float>(1)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<float>(2)));
 	a.program.push_back(std::unique_ptr<Node>(new NodeAdd()));
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(3)));
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(4)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<float>(3)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<float>(4)));
 	a.program.push_back(std::unique_ptr<Node>(new NodeSubtract()));
 	a.program.push_back(std::unique_ptr<Node>(new NodeMultiply()));
 	
@@ -151,8 +151,8 @@ TEST(Individual, Complexity)
 	a.program.clear();
 	a.c = 0;
 	
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(1)));
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(2)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<float>(1)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<float>(2)));
 	a.program.push_back(std::unique_ptr<Node>(new NodeMultiply()));
 	
 	ASSERT_EQ(a.complexity(), 6);
@@ -160,7 +160,7 @@ TEST(Individual, Complexity)
 	a.program.clear();
 	a.c = 0;
 	
-	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(1)));
+	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<float>(1)));
 	a.program.push_back(std::unique_ptr<Node>(new NodeSin()));
 	
 	ASSERT_EQ(a.complexity(), 6);

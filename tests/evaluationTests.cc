@@ -5,7 +5,7 @@ TEST(Evaluation, mse)
 	
     Feat ft;
     
-    VectorXd yhat(10), y(10), res(10);
+    VectorXf yhat(10), y(10), res(10);
 	yhat << 0.0,
 	        1.0,
 	        2.0,
@@ -40,8 +40,8 @@ TEST(Evaluation, mse)
            81.0;
 
     // test mean squared error      
-    VectorXd loss; 
-    double score = mse(y, yhat, loss, ft.params.class_weights);
+    VectorXf loss; 
+    float score = mse(y, yhat, loss, ft.params.class_weights);
 
     if (loss != res)
     {
@@ -59,7 +59,7 @@ TEST(Evaluation, bal_accuracy)
 	
     Feat ft;
     
-    VectorXd yhat(10), y(10), res(10), loss(10);
+    VectorXf yhat(10), y(10), res(10), loss(10);
 	
   
     y << 0.0,
@@ -96,7 +96,7 @@ TEST(Evaluation, bal_accuracy)
            1.0,
            1.0;
            
-    double score = bal_zero_one_loss(y, yhat, loss, ft.params.class_weights);
+    float score = bal_zero_one_loss(y, yhat, loss, ft.params.class_weights);
     
     if (loss != res)
     {
@@ -112,8 +112,8 @@ TEST(Evaluation, log_loss)
 {
     // test log loss
 	
-    VectorXd yhat(10), y(10), loss(10);
-    ArrayXXd confidences(10,2);
+    VectorXf yhat(10), y(10), loss(10);
+    ArrayXXf confidences(10,2);
 
     // test log loss
     y << 0, 
@@ -151,7 +151,7 @@ TEST(Evaluation, log_loss)
              0.4396698295617455 ,
              0.47602999293839676 ;
     
-    double score = mean_log_loss(y, yhat, loss);
+    float score = mean_log_loss(y, yhat, loss);
     
     ASSERT_EQ(((int)(score*100000)),45495);
 }
@@ -159,8 +159,8 @@ TEST(Evaluation, log_loss)
 TEST(Evaluation, multi_log_loss)
 {
     // test log loss   
-    VectorXd y(10), loss(10);
-    ArrayXXd confidences(10,3);
+    VectorXf y(10), loss(10);
+    ArrayXXf confidences(10,3);
 
     // test log loss
     y << 0, 
@@ -193,7 +193,7 @@ TEST(Evaluation, multi_log_loss)
     /* for (int i = 0; i < y.size(); ++i) */
         /* weights.push_back(1.0); */
 
-    double score = mean_multi_log_loss(y, confidences, loss, weights);
+    float score = mean_multi_log_loss(y, confidences, loss, weights);
     //cout << "assertion\n";
 
     ASSERT_EQ(((int)(score*100000)),62344);
@@ -203,7 +203,7 @@ TEST(Evaluation, fitness)
 {
 	Feat ft;
 	
-	MatrixXd X(10,1); 
+	MatrixXf X(10,1); 
     X << 0.0,  
          1.0,  
          2.0,
@@ -217,29 +217,29 @@ TEST(Evaluation, fitness)
 
     X.transposeInPlace();
     
-    VectorXd y(10); 
+    VectorXf y(10); 
     // y = 2*sin(x0) + 3*cos(x0)
     y << 3.0,  3.30384889,  0.57015434, -2.68773747, -3.47453585,
              -1.06686199,  2.32167986,  3.57567996,  1.54221639, -1.90915382;
              
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z; 
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > z; 
     
     Data d(X, y, z);
 
     // make population 
     Population pop(2);
     // individual 0 = [sin(x0) cos(x0)]
-    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(0)));
+    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeVariable<float>(0)));
     pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeSin({1.0})));
-    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(0)));
+    pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeVariable<float>(0)));
     pop.individuals[0].program.push_back(std::unique_ptr<Node>(new NodeCos({1.0})));
     pop.individuals[0].loc = 0;
     //std::cout << pop.individuals[0].get_eqn() + "\n";
     // individual 1 = [x0] 
-    pop.individuals[1].program.push_back(std::unique_ptr<Node>(new NodeVariable<double>(0)));
+    pop.individuals[1].program.push_back(std::unique_ptr<Node>(new NodeVariable<float>(0)));
     pop.individuals[1].loc = 1;
     //std::cout << pop.individuals[1].get_eqn() + "\n";    
-    MatrixXd F(10,2);   // output matrix
+    MatrixXf F(10,2);   // output matrix
 
     // get fitness
     Evaluation eval("mse"); 
@@ -257,7 +257,7 @@ TEST(Evaluation, out_ml)
 {
     Feat ft;
 
-	MatrixXd X(7,2); 
+	MatrixXf X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
          0.84147098,  0.54030231,
@@ -268,7 +268,7 @@ TEST(Evaluation, out_ml)
 
     X.transposeInPlace();
     
-    VectorXd y(7); 
+    VectorXf y(7); 
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
@@ -278,9 +278,9 @@ TEST(Evaluation, out_ml)
     shared_ptr<ML> p_ml = make_shared<ML>(ft.params);
              
     bool pass = true;
-    VectorXd yhat = p_ml->fit_vector(X, y, ft.params, pass);
+    VectorXf yhat = p_ml->fit_vector(X, y, ft.params, pass);
      
-    double mean = ((yhat - y).array().pow(2)).mean();
+    float mean = ((yhat - y).array().pow(2)).mean();
     
     //cout << "MSE is " << mean;
     

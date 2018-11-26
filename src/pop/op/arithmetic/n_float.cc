@@ -31,7 +31,7 @@ namespace FT{
             template <class T>
             void NodeFloat<T>::evaluate(const Data& data, State& state)
             {
-                state.push<double>(state.pop<T>().template cast<double>());
+                state.push<float>(state.pop<T>().template cast<float>());
             }
             #else
             template <class T>
@@ -48,7 +48,7 @@ namespace FT{
             template <class T>
             void NodeFloat<T>::eval_eqn(State& state)
             {
-                state.push<double>("float(" + state.popStr<T>() + ")");
+                state.push<float>("float(" + state.popStr<T>() + ")");
             }
             
             template <class T>

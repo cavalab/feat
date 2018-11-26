@@ -5,19 +5,19 @@
 //#ifndef USE_CUDA
 //TEST(NodeTest, Evaluate)
 //{
-//	ArrayXd f;
+//	ArrayXf f;
 //	ArrayXb b;
-//	std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z1;
+//	std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > z1;
 //	
 //	State state;
 //	
-//	MatrixXd X1(3,2); 
+//	MatrixXf X1(3,2); 
 //    X1 << 1.0, 2.0, 3.0,
 //          4.0, 5.0, 6.0;   
 //          	 
 //    X1.transposeInPlace();
 //    
-//    VectorXd Y(6); 
+//    VectorXf Y(6); 
 //    Y << 3.0, 4.0, 5.0, 6.0, 7.0, 8.0;
 //    
 //    Data data(X1, Y, z1);
@@ -26,12 +26,12 @@
 //	
 //	state.f.clear();
 //	state.b.clear();
-//	state.push<double>(X1.row(0));
-//	state.push<double>(X1.row(1));
+//	state.push<float>(X1.row(0));
+//	state.push<float>(X1.row(1));
 //	
 //	addObj->evaluate(data, state);	
 //	
-//	x = state.pop<double>(); 
+//	x = state.pop<float>(); 
 //	
 //	ASSERT_FALSE((isinf(x)).any());
 //	ASSERT_FALSE((isnan(abs(x)).any()));
@@ -40,12 +40,12 @@
 //	
 //	state.f.clear();
 //	state.b.clear();
-//	state.push<double>(X1.row(0));
-//	state.push<double>(X1.row(1));
+//	state.push<float>(X1.row(0));
+//	state.push<float>(X1.row(1));
 //	
 //	subObj->evaluate(data, state);
 //	
-//	x = state.pop<double>(); 
+//	x = state.pop<float>(); 
 //	
 //	ASSERT_FALSE((isinf(x)).any());
 //	ASSERT_FALSE((isnan(abs(x)).any()));
@@ -54,12 +54,12 @@
 //	
 //	state.f.clear();
 //	state.b.clear();
-//	state.push<double>(X1.row(0));
-//	state.push<double>(X1.row(1));
+//	state.push<float>(X1.row(0));
+//	state.push<float>(X1.row(1));
 //	
 //	mulObj->evaluate(data, state);
 //	
-//	x = state.pop<double>(); 
+//	x = state.pop<float>(); 
 //	
 //	ASSERT_FALSE((isinf(x)).any());
 //	ASSERT_FALSE((isnan(abs(x)).any()));
@@ -68,12 +68,12 @@
 //	
 //	state.f.clear();
 //	state.b.clear();
-//	state.push<double>(X1.row(0));
-//	state.push<double>(X1.row(1));
+//	state.push<float>(X1.row(0));
+//	state.push<float>(X1.row(1));
 //	
 //	divObj->evaluate(data, state);
 //	
-//	x = state.pop<double>(); 
+//	x = state.pop<float>(); 
 //	
 //	ASSERT_FALSE((isinf(x)).any());
 //	ASSERT_FALSE((isnan(abs(x)).any()));
@@ -82,28 +82,28 @@
 //	
 //	state.f.clear();
 //	state.b.clear();
-//	state.push<double>(X1.row(0));
-//	state.push<double>(X1.row(1));
+//	state.push<float>(X1.row(0));
+//	state.push<float>(X1.row(1));
 //	
 //	expObj->evaluate(data, state);
 //	
-//	x = state.pop<double>(); 
+//	x = state.pop<float>(); 
 //	
 //	ASSERT_FALSE((isinf(x)).any());
 //	ASSERT_FALSE((isnan(abs(x)).any()));
 //	
-//	MatrixXd X2(1,4); 
+//	MatrixXf X2(1,4); 
 //    X2 << 0.0, 1.0, 2.0, 3.0;
 //    
 //    std::unique_ptr<Node> cosObj = std::unique_ptr<Node>(new NodeCos());
 //	
 //	state.f.clear();
 //	state.b.clear();
-//	state.push<double>(X2.row(0));
+//	state.push<float>(X2.row(0));
 //	
 //	cosObj->evaluate(data, state);
 //	
-//	x = state.pop<double>(); 
+//	x = state.pop<float>(); 
 //	
 //	ASSERT_FALSE((isinf(x)).any());
 //	ASSERT_FALSE((isnan(abs(x)).any()));
@@ -114,11 +114,11 @@
 //	
 //	state.f.clear();
 //	state.b.clear();
-//	state.push<double>(X2.row(0));
+//	state.push<float>(X2.row(0));
 //	
 //	exptObj->evaluate(data, state);
 //	
-//	x = state.pop<double>(); 
+//	x = state.pop<float>(); 
 //	
 //	ASSERT_FALSE((isinf(x)).any());
 //	ASSERT_FALSE((isnan(abs(x)).any()));
@@ -127,11 +127,11 @@
 //	
 //	state.f.clear();
 //	state.b.clear();
-//	state.push<double>(X2.row(0));
+//	state.push<float>(X2.row(0));
 //	
 //	gausObj->evaluate(data, state);
 //	
-//	x = state.pop<double>(); 
+//	x = state.pop<float>(); 
 //	
 //	ASSERT_FALSE((isinf(x)).any());
 //	ASSERT_FALSE((isnan(abs(x)).any()));
@@ -140,11 +140,11 @@
 //	
 //	state.f.clear();
 //	state.b.clear();
-//	state.push<double>(X2.row(0));
+//	state.push<float>(X2.row(0));
 //	
 //	logObj->evaluate(data, state);
 //	
-//	x = state.pop<double>(); 
+//	x = state.pop<float>(); 
 //	
 //	ASSERT_FALSE((isinf(x)).any());
 //	ASSERT_FALSE((isnan(abs(x)).any()));
@@ -153,11 +153,11 @@
 //	
 //	state.f.clear();
 //	state.b.clear();
-//	state.push<double>(X2.row(0));
+//	state.push<float>(X2.row(0));
 //	
 //	logitObj->evaluate(data, state);
 //	
-//	x = state.pop<double>(); 
+//	x = state.pop<float>(); 
 //	
 //	ASSERT_FALSE((isinf(x)).any());
 //	ASSERT_FALSE((isnan(abs(x)).any()));
@@ -166,11 +166,11 @@
 //	
 //	state.f.clear();
 //	state.b.clear();
-//	state.push<double>(X2.row(0));
+//	state.push<float>(X2.row(0));
 //	
 //	signObj->evaluate(data, state);
 //	
-//	x = state.pop<double>(); 
+//	x = state.pop<float>(); 
 //	
 //	ASSERT_FALSE((isinf(x)).any());
 //	ASSERT_FALSE((isnan(abs(x)).any()));
@@ -179,11 +179,11 @@
 //	
 //	state.f.clear();
 //	state.b.clear();
-//	state.push<double>(X2.row(0));
+//	state.push<float>(X2.row(0));
 //	
 //	sinObj->evaluate(data, state);	
 //	
-//	x = state.pop<double>(); 
+//	x = state.pop<float>(); 
 //	
 //	ASSERT_FALSE((isinf(x)).any());
 //	ASSERT_FALSE((isnan(abs(x)).any()));
@@ -192,11 +192,11 @@
 //	
 //	state.f.clear();
 //	state.b.clear();
-//	state.push<double>(X2.row(0));
+//	state.push<float>(X2.row(0));
 //	
 //	sqrtObj->evaluate(data, state);
 //	
-//	x = state.pop<double>(); 
+//	x = state.pop<float>(); 
 //	
 //	ASSERT_FALSE((isinf(x)).any());
 //	ASSERT_FALSE((isnan(abs(x)).any()));
@@ -205,11 +205,11 @@
 //	
 //	state.f.clear();
 //	state.b.clear();
-//	state.push<double>(X2.row(0));
+//	state.push<float>(X2.row(0));
 //	
 //	squareObj->evaluate(data, state);
 //	
-//	x = state.pop<double>(); 
+//	x = state.pop<float>(); 
 //	
 //	ASSERT_FALSE((isinf(x)).any());
 //	ASSERT_FALSE((isnan(abs(x)).any()));
@@ -218,11 +218,11 @@
 //	
 //	state.f.clear();
 //	state.b.clear();
-//	state.push<double>(X2.row(0));
+//	state.push<float>(X2.row(0));
 //	
 //	stepObj->evaluate(data, state);
 //	
-//	x = state.pop<double>(); 
+//	x = state.pop<float>(); 
 //	
 //	ASSERT_FALSE((isinf(x)).any());
 //	ASSERT_FALSE((isnan(abs(x)).any()));
@@ -231,16 +231,16 @@
 //	
 //	state.f.clear();
 //	state.b.clear();
-//	state.push<double>(X2.row(0));
+//	state.push<float>(X2.row(0));
 //	
 //	tanObj->evaluate(data, state);
 //	
-//	x = state.pop<double>(); 
+//	x = state.pop<float>(); 
 //	
 //	ASSERT_FALSE((isinf(x)).any());
 //	ASSERT_FALSE((isnan(abs(x)).any()));
 //	
-//	MatrixXd X3(2,3); 
+//	MatrixXf X3(2,3); 
 //    X3 << 0.0, 1.0, 1.0,
 //          0.0, 1.0, 0.0;
 //	
@@ -286,7 +286,7 @@
 //	ASSERT_FALSE((isinf(z)).any());
 //	ASSERT_FALSE((isnan(abs(z)).any()));
 //	
-//	MatrixXd X4(2,3); 
+//	MatrixXf X4(2,3); 
 //    X4 << 1.0, 2.0, 3.0,
 //          1.0, 1.0, 4.0;
 //          
@@ -294,8 +294,8 @@
 //	
 //	state.f.clear();
 //	state.b.clear();
-//	state.push<double>(X4.row(0));
-//	state.push<double>(X4.row(1));
+//	state.push<float>(X4.row(0));
+//	state.push<float>(X4.row(1));
 //	
 //	eqObj->evaluate(data, state);
 //	
@@ -308,8 +308,8 @@
 //	
 //	state.f.clear();
 //	state.b.clear();
-//	state.push<double>(X4.row(0));
-//	state.push<double>(X4.row(1));
+//	state.push<float>(X4.row(0));
+//	state.push<float>(X4.row(1));
 //	
 //	geqObj->evaluate(data, state);
 //	
@@ -322,8 +322,8 @@
 //	
 //	state.f.clear();
 //	state.b.clear();
-//	state.push<double>(X4.row(0));
-//	state.push<double>(X4.row(1));
+//	state.push<float>(X4.row(0));
+//	state.push<float>(X4.row(1));
 //	
 //	gtObj->evaluate(data, state);
 //	
@@ -336,8 +336,8 @@
 //	
 //	state.f.clear();
 //	state.b.clear();
-//	state.push<double>(X4.row(0));
-//	state.push<double>(X4.row(1));
+//	state.push<float>(X4.row(0));
+//	state.push<float>(X4.row(1));
 //	
 //	leqObj->evaluate(data, state);
 //	
@@ -350,8 +350,8 @@
 //	
 //	state.f.clear();
 //	state.b.clear();
-//	state.push<double>(X4.row(0));
-//	state.push<double>(X4.row(1));
+//	state.push<float>(X4.row(0));
+//	state.push<float>(X4.row(1));
 //	
 //	ltObj->evaluate(data, state);
 //	
@@ -360,7 +360,7 @@
 //	ASSERT_FALSE((isinf(z)).any());
 //	ASSERT_FALSE((isnan(abs(z)).any()));
 //	
-//	MatrixXd X5(2,3); 
+//	MatrixXf X5(2,3); 
 //    X5 << 1.0, 2.0, 3.0,
 //          1.0, 0.0, 1.0;	
 //	
@@ -368,17 +368,17 @@
 //	
 //	state.f.clear();
 //	state.b.clear();
-//	state.push<double>(X5.row(0));
+//	state.push<float>(X5.row(0));
 //	state.push<bool>(X5.row(1));
 //	
 //	ifObj->evaluate(data, state);
 //	
-//	x = state.pop<double>(); 
+//	x = state.pop<float>(); 
 //	
 //	ASSERT_FALSE((isinf(x)).any());
 //	ASSERT_FALSE((isnan(abs(x)).any()));
 //	
-//	MatrixXd X6(3,3); 
+//	MatrixXf X6(3,3); 
 //    X6 << 1.0, 2.0, 3.0,
 //          4.0, 5.0, 6.0,
 //          0.0, 1.0, 0.0;
@@ -387,18 +387,18 @@
 //	
 //	state.f.clear();
 //	state.b.clear();
-//	state.push<double>(X6.row(0));
-//	state.push<double>(X6.row(1));
+//	state.push<float>(X6.row(0));
+//	state.push<float>(X6.row(1));
 //	state.push<bool>(X6.row(2));
 //	
 //	iteObj->evaluate(data, state);
 //	
-//	x = state.pop<double>(); 
+//	x = state.pop<float>(); 
 //	
 //	ASSERT_FALSE((isinf(x)).any());
 //	ASSERT_FALSE((isnan(abs(x)).any()));
 //	
-//	MatrixXd X7(1,2); 
+//	MatrixXf X7(1,2); 
 //    X7 << 1.0, 0.0;
 //    
 //    std::unique_ptr<Node> notObj = std::unique_ptr<Node>(new NodeNot());
@@ -418,17 +418,17 @@
 //}
 //#else
 
-State evaluateNodes(NodeVector &nodes, MatrixXd &X, string testNode)
+State evaluateNodes(NodeVector &nodes, MatrixXf &X, string testNode)
 {
 
     cout << "Running for " << testNode << endl;
      
     State state;
     
-    VectorXd Y(6); 
+    VectorXf Y(6); 
     Y << 3.0, 4.0, 5.0, 6.0, 7.0, 8.0;
     
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z1;
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > z1;
     
     Data data(X, Y, z1);
     
@@ -441,7 +441,7 @@ State evaluateNodes(NodeVector &nodes, MatrixXd &X, string testNode)
 //    std::cout<<"\n********************************\n";
 //    
 //    std::cout<<"Floating state is\n";
-//    std::cout<< state.pop<double>() << "\n\n";
+//    std::cout<< state.pop<float>() << "\n\n";
 //    
 //    std::cout<<"Boolean state is\n";
 //    std::cout<< state.pop<bool>() << "\n";
@@ -478,22 +478,22 @@ void compareStates(State output, State expected, char otype)
     
     if(otype == 'f')
     {
-        int index = output.size<double>()-1;
+        int index = output.size<float>()-1;
         
-        cout << "Output is\n" << output.get<double>()[index] << endl;
-        cout << "Expected is\n" << expected.get<double>()[index] << endl;
-        cout << "Difference is\n" << abs(output.get<double>()[index] - expected.get<double>()[index]) << endl;
+        cout << "Output is\n" << output.get<float>()[index] << endl;
+        cout << "Expected is\n" << expected.get<float>()[index] << endl;
+        cout << "Difference is\n" << abs(output.get<float>()[index] - expected.get<float>()[index]) << endl;
         
-        ASSERT_TRUE((abs(output.get<double>()[index] - expected.get<double>()[index]) < NEAR_ZERO).all());
-        ASSERT_FALSE((isinf(output.get<double>()[index])).any());
-        ASSERT_FALSE((isnan(abs(output.get<double>()[index])).any()));
+        ASSERT_TRUE((abs(output.get<float>()[index] - expected.get<float>()[index]) < NEAR_ZERO).all());
+        ASSERT_FALSE((isinf(output.get<float>()[index])).any());
+        ASSERT_FALSE((isnan(abs(output.get<float>()[index])).any()));
     }
     
     if(otype == 'b')
     {
         int index = output.size<bool>()-1;
         
-        ArrayXb exp = expected.get<double>()[index].template cast<bool>();
+        ArrayXb exp = expected.get<float>()[index].template cast<bool>();
         ArrayXb out = output.get<bool>()[index];
        
         ASSERT_TRUE((abs(out - exp) < NEAR_ZERO).all());
@@ -556,9 +556,9 @@ State createExpectedState(vector<type> expectedValues)
 TEST(NodeTest, Evaluate)
 {
     
-//    vector<double> vec{1, 0, 1, 0};
+//    vector<float> vec{1, 0, 1, 0};
 //    
-//    Map<Eigen::Array<double,Eigen::Dynamic,1> > arr(vec.data(), vec.size());
+//    Map<Eigen::Array<float,Eigen::Dynamic,1> > arr(vec.data(), vec.size());
 //    
 //    vector<bool> vec{1, 0, 1, 0};
 //    
@@ -567,15 +567,15 @@ TEST(NodeTest, Evaluate)
     
     initialize_cuda(); 
 
-	MatrixXd X1(2,3); 
+	MatrixXf X1(2,3); 
     X1 << 1.0, 2.0, 3.0,
           4.0, 5.0, 6.0;   
    
     //vector<std::unique_ptr<Node> > nodes;
     NodeVector nodes;
     
-    std::unique_ptr<Node> f1 = std::unique_ptr<Node>(new NodeVariable<double>(0));
-    std::unique_ptr<Node> f2 = std::unique_ptr<Node>(new NodeVariable<double>(1));
+    std::unique_ptr<Node> f1 = std::unique_ptr<Node>(new NodeVariable<float>(0));
+    std::unique_ptr<Node> f2 = std::unique_ptr<Node>(new NodeVariable<float>(1));
     
     std::unique_ptr<Node> addObj = std::unique_ptr<Node>(new NodeAdd({1.0, 1.0}));
 
@@ -583,7 +583,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f2->clone());
     nodes.push_back(addObj->clone());
 
-    compareStates(evaluateNodes(nodes, X1, "add"), createExpectedState<double>({5.0, 7.0, 9.0}), 'f');
+    compareStates(evaluateNodes(nodes, X1, "add"), createExpectedState<float>({5.0, 7.0, 9.0}), 'f');
     
     std::unique_ptr<Node> subObj = std::unique_ptr<Node>(new NodeSubtract({1.0, 1.0}));
     
@@ -593,7 +593,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f2->clone());
     nodes.push_back(subObj->clone());
 
-    compareStates(evaluateNodes(nodes, X1, "subtract"), createExpectedState<double>({3.0, 3.0, 3.0}), 'f');
+    compareStates(evaluateNodes(nodes, X1, "subtract"), createExpectedState<float>({3.0, 3.0, 3.0}), 'f');
     
     std::unique_ptr<Node> mulObj = std::unique_ptr<Node>(new NodeMultiply({1.0, 1.0}));
     
@@ -603,7 +603,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f2->clone());
     nodes.push_back(mulObj->clone());
 
-    compareStates(evaluateNodes(nodes, X1, "multiply"), createExpectedState<double>({4.0, 10.0, 18.0}), 'f');
+    compareStates(evaluateNodes(nodes, X1, "multiply"), createExpectedState<float>({4.0, 10.0, 18.0}), 'f');
     
     std::unique_ptr<Node> divObj = std::unique_ptr<Node>(new NodeDivide({1.0, 1.0}));
     
@@ -613,7 +613,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f2->clone());
     nodes.push_back(divObj->clone());
 
-    compareStates(evaluateNodes(nodes, X1, "divide"), createExpectedState<double>({4.0, 2.5, 2.0}), 'f');
+    compareStates(evaluateNodes(nodes, X1, "divide"), createExpectedState<float>({4.0, 2.5, 2.0}), 'f');
     
     std::unique_ptr<Node> expObj = std::unique_ptr<Node>(new NodeExponent({1.0, 1.0}));
     
@@ -623,9 +623,9 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f2->clone());
     nodes.push_back(expObj->clone());
 
-    compareStates(evaluateNodes(nodes, X1, "exponent"), createExpectedState<double>({4.0, 25.0, 216.0}), 'f');
+    compareStates(evaluateNodes(nodes, X1, "exponent"), createExpectedState<float>({4.0, 25.0, 216.0}), 'f');
     
-    MatrixXd X2(1,4); 
+    MatrixXf X2(1,4); 
     X2 << 0.0, 1.0, 2.0, 3.0;
     
     std::unique_ptr<Node> cosObj = std::unique_ptr<Node>(new NodeCos({1.0}));
@@ -635,7 +635,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f1->clone());
     nodes.push_back(cosObj->clone());
 
-    compareStates(evaluateNodes(nodes, X2, "cos"), createExpectedState<double>({1, 0.540302, -0.416147, -0.989992}), 'f');
+    compareStates(evaluateNodes(nodes, X2, "cos"), createExpectedState<float>({1, 0.540302, -0.416147, -0.989992}), 'f');
     
     std::unique_ptr<Node> cubeObj = std::unique_ptr<Node>(new NodeCube({1.0}));
     
@@ -644,7 +644,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f1->clone());
     nodes.push_back(cubeObj->clone());
 
-    compareStates(evaluateNodes(nodes, X2, "cube"), createExpectedState<double>({0.0, 1, 8, 27}), 'f');
+    compareStates(evaluateNodes(nodes, X2, "cube"), createExpectedState<float>({0.0, 1, 8, 27}), 'f');
     
     std::unique_ptr<Node> exptObj = std::unique_ptr<Node>(new NodeExponential({1.0}));
     
@@ -653,7 +653,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f1->clone());
     nodes.push_back(exptObj->clone());
 
-    compareStates(evaluateNodes(nodes, X2, "exponential"), createExpectedState<double>({1, 2.71828, 7.38906, 20.0855}), 'f');
+    compareStates(evaluateNodes(nodes, X2, "exponential"), createExpectedState<float>({1, 2.71828, 7.38906, 20.0855}), 'f');
     
     std::unique_ptr<Node> gaussObj = std::unique_ptr<Node>(new NodeGaussian({1.0}));
     
@@ -662,7 +662,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f1->clone());
     nodes.push_back(gaussObj->clone());
 
-    compareStates(evaluateNodes(nodes, X2, "gaussian"), createExpectedState<double>({0.367879, 1, 0.367879, 0.0183156}), 'f');
+    compareStates(evaluateNodes(nodes, X2, "gaussian"), createExpectedState<float>({0.367879, 1, 0.367879, 0.0183156}), 'f');
     
     std::unique_ptr<Node> logObj = std::unique_ptr<Node>(new NodeLog({1.0}));
     
@@ -671,7 +671,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f1->clone());
     nodes.push_back(logObj->clone());
 
-    compareStates(evaluateNodes(nodes, X2, "log"), createExpectedState<double>({MIN_DBL, 0, 0.693147, 1.09861}), 'f');
+    compareStates(evaluateNodes(nodes, X2, "log"), createExpectedState<float>({MIN_FLT, 0, 0.693147, 1.09861}), 'f');
     
     std::unique_ptr<Node> logitObj = std::unique_ptr<Node>(new NodeLogit({1.0}));
     
@@ -680,7 +680,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f1->clone());
     nodes.push_back(logitObj->clone());
 
-    compareStates(evaluateNodes(nodes, X2, "logit"), createExpectedState<double>({0.5, 0.731059, 0.880797, 0.952574}), 'f');
+    compareStates(evaluateNodes(nodes, X2, "logit"), createExpectedState<float>({0.5, 0.731059, 0.880797, 0.952574}), 'f');
     
     std::unique_ptr<Node> signObj = std::unique_ptr<Node>(new NodeSign());
     
@@ -689,7 +689,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f1->clone());
     nodes.push_back(signObj->clone());
 
-    compareStates(evaluateNodes(nodes, X2, "sign"), createExpectedState<double>({0, 1, 1, 1}), 'f');
+    compareStates(evaluateNodes(nodes, X2, "sign"), createExpectedState<float>({0, 1, 1, 1}), 'f');
     
     std::unique_ptr<Node> sinObj = std::unique_ptr<Node>(new NodeSin({1.0}));
     
@@ -698,7 +698,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f1->clone());
     nodes.push_back(sinObj->clone());
 
-    compareStates(evaluateNodes(nodes, X2, "sin"), createExpectedState<double>({0, 0.841471, 0.909297, 0.14112}), 'f');
+    compareStates(evaluateNodes(nodes, X2, "sin"), createExpectedState<float>({0, 0.841471, 0.909297, 0.14112}), 'f');
     
     std::unique_ptr<Node> sqrtObj = std::unique_ptr<Node>(new NodeSqrt({1.0}));
     
@@ -707,7 +707,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f1->clone());
     nodes.push_back(sqrtObj->clone());
 
-    compareStates(evaluateNodes(nodes, X2, "sqrt"), createExpectedState<double>({0, 1, 1.41421, 1.73205}), 'f');
+    compareStates(evaluateNodes(nodes, X2, "sqrt"), createExpectedState<float>({0, 1, 1.41421, 1.73205}), 'f');
     
     std::unique_ptr<Node> squareObj = std::unique_ptr<Node>(new NodeSquare({1.0}));
     
@@ -716,7 +716,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f1->clone());
     nodes.push_back(squareObj->clone());
 
-    compareStates(evaluateNodes(nodes, X2, "square"), createExpectedState<double>({0, 1, 4, 9}), 'f');
+    compareStates(evaluateNodes(nodes, X2, "square"), createExpectedState<float>({0, 1, 4, 9}), 'f');
     
     std::unique_ptr<Node> stepObj = std::unique_ptr<Node>(new NodeStep());
     
@@ -725,7 +725,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f1->clone());
     nodes.push_back(stepObj->clone());
 
-    compareStates(evaluateNodes(nodes, X2, "step"), createExpectedState<double>({0, 1, 1, 1}), 'f');
+    compareStates(evaluateNodes(nodes, X2, "step"), createExpectedState<float>({0, 1, 1, 1}), 'f');
     
     std::unique_ptr<Node> tanObj = std::unique_ptr<Node>(new NodeTanh({1.0}));
     
@@ -734,9 +734,9 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f1->clone());
     nodes.push_back(tanObj->clone());
 
-    compareStates(evaluateNodes(nodes, X2, "tan"), createExpectedState<double>({0, 0.761594, 0.964028, 0.995055}), 'f');
+    compareStates(evaluateNodes(nodes, X2, "tan"), createExpectedState<float>({0, 0.761594, 0.964028, 0.995055}), 'f');
     
-    MatrixXd X3(2,3); 
+    MatrixXf X3(2,3); 
     X3 << 0.0, 1.0, 1.0,
           0.0, 1.0, 0.0;
           
@@ -751,7 +751,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(b2->clone());
     nodes.push_back(andObj->clone());
 
-    compareStates(evaluateNodes(nodes, X3, "and"), createExpectedState<double>({0, 1, 0}), 'b');
+    compareStates(evaluateNodes(nodes, X3, "and"), createExpectedState<float>({0, 1, 0}), 'b');
     
     std::unique_ptr<Node> orObj = std::unique_ptr<Node>(new NodeOr());
     
@@ -761,7 +761,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(b2->clone());
     nodes.push_back(orObj->clone());
 
-    compareStates(evaluateNodes(nodes, X3, "or"), createExpectedState<double>({0, 1, 1}), 'b');
+    compareStates(evaluateNodes(nodes, X3, "or"), createExpectedState<float>({0, 1, 1}), 'b');
     
     std::unique_ptr<Node> xorObj = std::unique_ptr<Node>(new NodeXor());
     
@@ -771,9 +771,9 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(b2->clone());
     nodes.push_back(xorObj->clone());
 
-    compareStates(evaluateNodes(nodes, X3, "xor"), createExpectedState<double>({0, 0, 1}), 'b');
+    compareStates(evaluateNodes(nodes, X3, "xor"), createExpectedState<float>({0, 0, 1}), 'b');
     
-    MatrixXd X4(2,3); 
+    MatrixXf X4(2,3); 
     X4 << 1.0, 2.0, 3.0,
           1.0, 1.0, 4.0;
     
@@ -785,7 +785,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f2->clone());
     nodes.push_back(eqObj->clone());
 
-    compareStates(evaluateNodes(nodes, X4, "equal"), createExpectedState<double>({1, 0, 0}), 'b');
+    compareStates(evaluateNodes(nodes, X4, "equal"), createExpectedState<float>({1, 0, 0}), 'b');
     
     std::unique_ptr<Node> geqObj = std::unique_ptr<Node>(new NodeGEQ());
     
@@ -795,7 +795,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f2->clone());
     nodes.push_back(geqObj->clone());
 
-    compareStates(evaluateNodes(nodes, X4, "GEQ"), createExpectedState<double>({1, 0, 1}), 'b');
+    compareStates(evaluateNodes(nodes, X4, "GEQ"), createExpectedState<float>({1, 0, 1}), 'b');
     
     std::unique_ptr<Node> gtObj = std::unique_ptr<Node>(new NodeGreaterThan());
     
@@ -805,7 +805,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f2->clone());
     nodes.push_back(gtObj->clone());
 
-    compareStates(evaluateNodes(nodes, X4, "GreaterThan"), createExpectedState<double>({0, 0, 1}), 'b');
+    compareStates(evaluateNodes(nodes, X4, "GreaterThan"), createExpectedState<float>({0, 0, 1}), 'b');
     
     std::unique_ptr<Node> leqObj = std::unique_ptr<Node>(new NodeLEQ());
     
@@ -815,7 +815,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f2->clone());
     nodes.push_back(leqObj->clone());
 
-    compareStates(evaluateNodes(nodes, X4, "LEQ"), createExpectedState<double>({1, 1, 0}), 'b');
+    compareStates(evaluateNodes(nodes, X4, "LEQ"), createExpectedState<float>({1, 1, 0}), 'b');
     
     std::unique_ptr<Node> ltObj = std::unique_ptr<Node>(new NodeLessThan());
     
@@ -825,9 +825,9 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(f2->clone());
     nodes.push_back(ltObj->clone());
 
-    compareStates(evaluateNodes(nodes, X4, "LessThan"), createExpectedState<double>({0, 1, 0}), 'b');
+    compareStates(evaluateNodes(nodes, X4, "LessThan"), createExpectedState<float>({0, 1, 0}), 'b');
     
-    MatrixXd X5(2,3); 
+    MatrixXf X5(2,3); 
     X5 << 1.0, 2.0, 3.0,
           1.0, 0.0, 1.0;
           
@@ -839,9 +839,9 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(b2->clone());
     nodes.push_back(ifObj->clone());
 
-    compareStates(evaluateNodes(nodes, X5, "If"), createExpectedState<double>({1, 0, 3}), 'f');
+    compareStates(evaluateNodes(nodes, X5, "If"), createExpectedState<float>({1, 0, 3}), 'f');
     
-    MatrixXd X6(3,3); 
+    MatrixXf X6(3,3); 
     X6 << 1.0, 2.0, 3.0,
           4.0, 5.0, 6.0,
           0.0, 1.0, 0.0;
@@ -857,9 +857,9 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(b3->clone());
     nodes.push_back(iteObj->clone());
 
-    compareStates(evaluateNodes(nodes, X6, "IfThenElse"), createExpectedState<double>({1, 5, 3}), 'f');
+    compareStates(evaluateNodes(nodes, X6, "IfThenElse"), createExpectedState<float>({1, 5, 3}), 'f');
     
-    MatrixXd X7(1,2); 
+    MatrixXf X7(1,2); 
     X7 << 1.0, 0.0;
     
     std::unique_ptr<Node> notObj = std::unique_ptr<Node>(new NodeNot());
@@ -869,7 +869,7 @@ TEST(NodeTest, Evaluate)
     nodes.push_back(b1->clone());
     nodes.push_back(notObj->clone());
 
-    compareStates(evaluateNodes(nodes, X7, "Not"), createExpectedState<double>({0, 1}), 'b');
+    compareStates(evaluateNodes(nodes, X7, "Not"), createExpectedState<float>({0, 1}), 'b');
     
     //TODO NodeVariable, NodeConstant(both types)
 }

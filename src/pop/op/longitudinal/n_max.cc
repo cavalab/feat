@@ -20,7 +20,7 @@ namespace FT{
             /// Evaluates the node and updates the state states. 
             void NodeMax::evaluate(const Data& data, State& state)
             {
-                ArrayXd tmp(state.z.top().first.size());
+                ArrayXf tmp(state.z.top().first.size());
                 int x;
                 
                 for(x = 0; x < state.z.top().first.size(); x++)
@@ -28,7 +28,7 @@ namespace FT{
 
                 state.z.pop();
                 
-                state.push<double>(tmp);
+                state.push<float>(tmp);
                 
             }
             #else
@@ -49,7 +49,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeMax::eval_eqn(State& state)
             {
-                state.push<double>("max(" + state.zs.pop() + ")");
+                state.push<float>("max(" + state.zs.pop() + ")");
             }
             
             NodeMax* NodeMax::clone_impl() const { return new NodeMax(*this); }

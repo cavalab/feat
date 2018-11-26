@@ -9,7 +9,7 @@ namespace FT{
 
     namespace Pop{
         namespace Op{
-            NodeExponential::NodeExponential(vector<double> W0)
+            NodeExponential::NodeExponential(vector<float> W0)
             {
 	            name = "exp";
 	            otype = 'f';
@@ -31,7 +31,7 @@ namespace FT{
             /// Evaluates the node and updates the state states. 
             void NodeExponential::evaluate(const Data& data, State& state)
             {
-                state.push<double>(limited(exp(this->W[0] * state.pop<double>())));
+                state.push<float>(limited(exp(this->W[0] * state.pop<float>())));
             }
             #else
             void NodeExponential::evaluate(const Data& data, State& state)
@@ -43,12 +43,12 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeExponential::eval_eqn(State& state)
             {
-                state.push<double>("exp(" + state.popStr<double>() + ")");
+                state.push<float>("exp(" + state.popStr<float>() + ")");
             }
 
-            ArrayXd NodeExponential::getDerivative(Trace& state, int loc)
+            ArrayXf NodeExponential::getDerivative(Trace& state, int loc)
             {
-                ArrayXd& x = state.get<double>()[state.size<double>()-1];
+                ArrayXf& x = state.get<float>()[state.size<float>()-1];
                 
                 switch (loc) {
                     case 1: // d/dw0

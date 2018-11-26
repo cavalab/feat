@@ -9,7 +9,7 @@ namespace FT{
 
     namespace Pop{
         namespace Op{
-            NodeLog::NodeLog(vector<double> W0)
+            NodeLog::NodeLog(vector<float> W0)
             {
 	            name = "log";
 	            otype = 'f';
@@ -27,11 +27,11 @@ namespace FT{
             }
 
             #ifndef USE_CUDA
-            /// Safe log: pushes log(abs(x)) or MIN_DBL if x is near zero. 
+            /// Safe log: pushes log(abs(x)) or MIN_FLT if x is near zero. 
             void NodeLog::evaluate(const Data& data, State& state)
             {
-	            ArrayXd x = state.pop<double>();
-                state.push<double>( (abs(x) > NEAR_ZERO).select(log(abs(W[0] * x)),MIN_DBL));
+	            ArrayXf x = state.pop<float>();
+                state.push<float>( (abs(x) > NEAR_ZERO).select(log(abs(W[0] * x)),MIN_FLT));
             }
             #else
             void NodeLog::evaluate(const Data& data, State& state)
@@ -43,16 +43,16 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeLog::eval_eqn(State& state)
             {
-                state.push<double>("log(" + state.popStr<double>() + ")");
+                state.push<float>("log(" + state.popStr<float>() + ")");
             }
 
-            ArrayXd NodeLog::getDerivative(Trace& state, int loc)
+            ArrayXf NodeLog::getDerivative(Trace& state, int loc)
             {
-                ArrayXd& x = state.get<double>()[state.size<double>()-1];
+                ArrayXf& x = state.get<float>()[state.size<float>()-1];
                 
                 switch (loc) {
                     case 1: // d/dw0
-                        return limited(1/(W[0] * ArrayXd::Ones(x.size())));
+                        return limited(1/(W[0] * ArrayXf::Ones(x.size())));
                     case 0: // d/dx0
                     default:
                         return limited(1/x);

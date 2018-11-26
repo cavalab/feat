@@ -22,14 +22,14 @@ namespace FT{
             /// Evaluates the node and updates the state states. 
             void NodeSlope::evaluate(const Data& data, State& state)
             {
-                ArrayXd tmp(state.z.top().first.size());
+                ArrayXf tmp(state.z.top().first.size());
                 
                 for(int x = 0; x < state.z.top().first.size(); x++)                    
                     tmp(x) = slope(limited(state.z.top().first[x]), limited(state.z.top().second[x]));
                     
                 state.z.pop();
 
-                state.push<double>(tmp);
+                state.push<float>(tmp);
                 
             }
             #else
@@ -50,12 +50,12 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeSlope::eval_eqn(State& state)
             {
-                state.push<double>("slope(" + state.zs.pop() + ")");
+                state.push<float>("slope(" + state.zs.pop() + ")");
             }
             
-            double NodeSlope::slope(const ArrayXd& x, const ArrayXd& y)
+            float NodeSlope::slope(const ArrayXf& x, const ArrayXf& y)
             {
-                double varx = variance(x);
+                float varx = variance(x);
                 if (varx > NEAR_ZERO)
                     return covariance(x, y)/varx;
                 else

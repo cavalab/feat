@@ -8,7 +8,7 @@ namespace FT{
 
     namespace Pop{
         namespace Op{
-            NodeExponent::NodeExponent(vector<double> W0)
+            NodeExponent::NodeExponent(vector<float> W0)
             {
 	            name = "^";
 	            otype = 'f';
@@ -30,10 +30,10 @@ namespace FT{
             /// Evaluates the node and updates the state states. 
             void NodeExponent::evaluate(const Data& data, State& state)
             {
-	            ArrayXd x1 = state.pop<double>();
-                ArrayXd x2 = state.pop<double>();
+	            ArrayXf x1 = state.pop<float>();
+                ArrayXf x2 = state.pop<float>();
 
-                state.push<double>(limited(pow(this->W[0] * x1, 
+                state.push<float>(limited(pow(this->W[0] * x1, 
                                                this->W[1] * x2)));
             }
             #else
@@ -46,13 +46,13 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeExponent::eval_eqn(State& state)
             {
-                state.push<double>("(" + state.popStr<double>() + ")^(" + state.popStr<double>() + ")");
+                state.push<float>("(" + state.popStr<float>() + ")^(" + state.popStr<float>() + ")");
             }
 
-            ArrayXd NodeExponent::getDerivative(Trace& state, int loc)
+            ArrayXf NodeExponent::getDerivative(Trace& state, int loc)
             {
-                ArrayXd& x1 = state.get<double>()[state.size<double>()-1];
-                ArrayXd& x2 = state.get<double>()[state.size<double>()-2];
+                ArrayXf& x1 = state.get<float>()[state.size<float>()-1];
+                ArrayXf& x2 = state.get<float>()[state.size<float>()-2];
                 
                 switch (loc) {
                     case 3: // Weight for the power

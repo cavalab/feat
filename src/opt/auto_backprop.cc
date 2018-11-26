@@ -13,7 +13,7 @@ namespace FT {
     
     namespace Opt{
 	    
-        AutoBackProp::AutoBackProp(string scorer, int iters, double n, double a) 
+        AutoBackProp::AutoBackProp(string scorer, int iters, float n, float a) 
         {
 		    /* this->program = program.get_data(); */
             score_hash["mse"] = &Eval::squared_difference;
@@ -56,13 +56,13 @@ namespace FT {
                                 const Parameters& params)
         {
             vector<size_t> roots = ind.program.roots();
-            double min_loss;
-            double current_loss, current_val_loss;
-            vector<vector<double>> best_weights;
+            float min_loss;
+            float current_loss, current_val_loss;
+            vector<vector<float>> best_weights;
             // batch data
-            MatrixXd Xb, Xb_v;
-            VectorXd yb, yb_v;
-            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Zb, Zb_v;
+            MatrixXf Xb, Xb_v;
+            VectorXf yb, yb_v;
+            std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Zb, Zb_v;
             /* cout << "y: " << d.y.transpose() << "\n"; */ 
             Data db(Xb, yb, Zb, params.classification);
             Data db_val(Xb_v, yb_v, Zb_v, params.classification);
@@ -84,7 +84,7 @@ namespace FT {
                 d.get_batch(db, params.bp.batch_size); 
                 /* cout << "db.y: " << db.y.transpose() << "\n"; */ 
                 // Evaluate forward pass
-                MatrixXd Phi; 
+                MatrixXf Phi; 
                 /* cout << "forward pass\n"; */
                 vector<Trace> stack_trace = forward_prop(ind, db, Phi, params);
                 // Evaluate ML model on Phi
@@ -93,7 +93,7 @@ namespace FT {
 
                 /* cout << "ml fit\n"; */
                 shared_ptr<CLabels> yhat = ml->fit(Phi,db.y,params,pass,ind.dtypes);
-                vector<double> Beta = ml->get_weights();
+                vector<float> Beta = ml->get_weights();
                 /* cout << "cost func\n"; */
                 current_loss = this->cost_func(db.y,yhat, params.class_weights).mean();
                 
@@ -115,7 +115,7 @@ namespace FT {
                 }
 
                 // check validation fitness for early stopping
-                MatrixXd Phival = ind.out(db_val,params);
+                MatrixXf Phival = ind.out(db_val,params);
                 shared_ptr<CLabels> y_val = ml->predict(Phival);
                 current_val_loss = this->cost_func(db_val.y, y_val, params.class_weights).mean();
                 
@@ -135,7 +135,7 @@ namespace FT {
                         || min_loss <= NEAR_ZERO)       // early stopping trigger
                     break;
 
-                double alpha = double(x)/double(iters);
+                float alpha = float(x)/float(iters);
                 this->epk = (1 - alpha)*this->epk + alpha*this->epT;  
                 /* this->epk = this->epk + this->epT; */ 
                 /* cout << "epk: " << this->epk << "\n"; */
@@ -156,7 +156,7 @@ namespace FT {
         
         // forward pass
         vector<Trace> AutoBackProp::forward_prop(Individual& ind, const Data& d,
-                                   MatrixXd& Phi, const Parameters& params) 
+                                   MatrixXf& Phi, const Parameters& params) 
         {
             /* cout << "Forward pass\n"; */
             // Iterate through all the nodes evaluating and tracking ouputs
@@ -169,7 +169,7 @@ namespace FT {
         }   
         // Updates stacks to have proper value on top
         void AutoBackProp::next_branch(vector<BP_NODE>& executing, vector<Node*>& bp_program, 
-                                       vector<ArrayXd>& derivatives) 
+                                       vector<ArrayXf>& derivatives) 
         {
             // While there are still nodes with branches to explore
             if(!executing.empty()) {
@@ -180,7 +180,7 @@ namespace FT {
                     bp_node = pop<BP_NODE>(&executing); // Get node and its derivatves
 
                     // For some reason this function is not removing element from the stack
-                    pop<ArrayXd>(&derivatives); // Remove associated gradients from stack
+                    pop<ArrayXf>(&derivatives); // Remove associated gradients from stack
                     if (executing.empty()) {
                         return;
                     }
@@ -191,7 +191,7 @@ namespace FT {
                 {
                     bp_program.push_back(bp_node.n);
                     // Pull derivative from front of list due to how we stored them earlier
-                    derivatives.push_back(pop_front<ArrayXd>(&(bp_node.deriv_list)));                 
+                    derivatives.push_back(pop_front<ArrayXf>(&(bp_node.deriv_list)));                 
                     // Push it back on the stack in order to sync all the stacks
                     executing.push_back(bp_node);             
                 }
@@ -200,12 +200,12 @@ namespace FT {
 
         // Compute gradients and update weights 
         void AutoBackProp::backprop(Trace& stack, NodeVector& program, int start, int end, 
-                                    double Beta, shared_ptr<CLabels>& yhat, 
+                                    float Beta, shared_ptr<CLabels>& yhat, 
                                     const Data& d,
                                     vector<float> sw)    
         {
             /* cout << "Backward pass \n"; */
-            vector<ArrayXd> derivatives;
+            vector<ArrayXf> derivatives;
             // start with derivative of cost function wrt ML output times dyhat/dprogram output, which
             // is equal to the weight the model assigned to this subprogram (Beta)
             // push back derivative of cost function wrt ML output
@@ -213,7 +213,7 @@ namespace FT {
             derivatives.push_back(this->d_cost_func(d.y, yhat, sw).array() * Beta); //*phi.array()); 
             /* cout << "Cost derivative: " << derivatives[derivatives.size() -1 ]<< "\n"; */ 
             // Working according to test program */
-            /* pop<ArrayXd>(&f_stack); // Get rid of input to cost function */
+            /* pop<ArrayXf>(&f_stack); // Get rid of input to cost function */
             vector<BP_NODE> executing; // Stores node and its associated derivatves
             // Currently I don't think updates will be saved, might want a pointer of nodes so don't 
             // have to restock the list
@@ -230,7 +230,7 @@ namespace FT {
                 /* cout << "bp_program: " ; */ 
                 /* for (const auto& bpe : bp_program) cout << bpe->name << " " ; cout << "\n"; */
                 /* cout << "derivatives size: " << derivatives.size() << "\n"; */ 
-                vector<ArrayXd> n_derivatives;
+                vector<ArrayXf> n_derivatives;
 
                 if (node->isNodeDx() && node->visits == 0 && node->arity['f'] > 0) {
                     NodeDx* dNode = dynamic_cast<NodeDx*>(node); // Could probably put this up one and have the if condition check if null
@@ -245,7 +245,7 @@ namespace FT {
                     /* cout << "popping input arguments\n"; */
                     // Get rid of the input arguments for the node
                     for (int i = 0; i < dNode->arity['f']; i++) {
-                        pop<ArrayXd>(&stack.f);
+                        pop<ArrayXf>(&stack.f);
                     }
                     for (int i = 0; i < dNode->arity['b']; i++) {
                         pop<ArrayXb>(&stack.b);
@@ -254,7 +254,7 @@ namespace FT {
                         pop<ArrayXi>(&stack.c);
                     }
                     if (!n_derivatives.empty()) {
-                        derivatives.push_back(pop_front<ArrayXd>(&n_derivatives));
+                        derivatives.push_back(pop_front<ArrayXf>(&n_derivatives));
                     }
 
                     executing.push_back({dNode, n_derivatives});
@@ -268,7 +268,7 @@ namespace FT {
                     // Clean up gradients and find the parent node
                     /* cout << "popping derivatives\n"; */
                     if (!derivatives.empty())
-                        pop<ArrayXd>(&derivatives);	// TODO check if this fixed
+                        pop<ArrayXf>(&derivatives);	// TODO check if this fixed
                     next_branch(executing, bp_program, derivatives);
                 } 
                 else 

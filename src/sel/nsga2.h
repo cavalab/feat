@@ -23,10 +23,10 @@ namespace FT{
             ~NSGA2();
 
             /// selection according to the survival scheme of NSGA-II
-            vector<size_t> select(Population& pop, const MatrixXd& F, const Parameters& p);
+            vector<size_t> select(Population& pop, const MatrixXf& F, const Parameters& p);
             
             /// survival according to the survival scheme of NSGA-II
-            vector<size_t> survive(Population& pop, const MatrixXd& F, const Parameters& p);
+            vector<size_t> survive(Population& pop, const MatrixXf& F, const Parameters& p);
 
             vector<vector<int>> front;                //< the Pareto fronts
             

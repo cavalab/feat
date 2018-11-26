@@ -29,9 +29,9 @@ std::map<char, size_t> get_max_state_size(NodeVector &nodes)
 bool isValidProgram(NodeVector& program, unsigned num_features)
 {
     //checks whether program fulfills all its arities.
-    MatrixXd X = MatrixXd::Zero(num_features,2); 
-    VectorXd y = VectorXd::Zero(2);
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z; 
+    MatrixXf X = MatrixXf::Zero(num_features,2); 
+    VectorXf y = VectorXf::Zero(2);
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > z; 
     
     Data data(X, y, z);
     
