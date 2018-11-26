@@ -15,7 +15,7 @@ namespace FT{
         
         Random::~Random(){}
            
-        vector<size_t> Random::select(Population& pop, const MatrixXd& F, const Parameters& params)
+        vector<size_t> Random::select(Population& pop, const MatrixXf& F, const Parameters& params)
         {
             /* Selects parents for making offspring.  
              *
@@ -44,7 +44,7 @@ namespace FT{
             return selected;
         }
 
-        vector<size_t> Random::survive(Population& pop, const MatrixXd& F, const Parameters& params)
+        vector<size_t> Random::survive(Population& pop, const MatrixXf& F, const Parameters& params)
         {
             /* Selects the offspring for survival. 
              *
@@ -76,7 +76,7 @@ namespace FT{
         {
             // find best and worst inds and if best is not in selected, replace worst with it
             size_t best_idx, worst_idx;
-            double min_fit, max_fit;
+            float min_fit, max_fit;
 
             for (unsigned i = 0; i < pop.individuals.size(); ++i)
             {

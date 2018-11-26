@@ -15,8 +15,8 @@ namespace FT{
     
     namespace Dat{
 
-        Data::Data(MatrixXd& X, VectorXd& y, std::map<string, std::pair<vector<ArrayXd>, 
-                        vector<ArrayXd>>>& Z, bool c): X(X), y(y), Z(Z), classification(c) 
+        Data::Data(MatrixXf& X, VectorXf& y, std::map<string, std::pair<vector<ArrayXf>, 
+                        vector<ArrayXf>>>& Z, bool c): X(X), y(y), Z(Z), classification(c) 
         {
             validation=false;
         }
@@ -58,8 +58,8 @@ namespace FT{
             vCreated = false;
         }
      
-        DataRef::DataRef(MatrixXd& X, VectorXd& y, 
-                         std::map<string,std::pair<vector<ArrayXd>, vector<ArrayXd>>>& Z, bool c)
+        DataRef::DataRef(MatrixXf& X, VectorXf& y, 
+                         std::map<string,std::pair<vector<ArrayXf>, vector<ArrayXf>>>& Z, bool c)
         {
             o = new Data(X, y, Z, c);
             oCreated = true;
@@ -95,8 +95,8 @@ namespace FT{
             }
         }
         
-        void DataRef::setOriginalData(MatrixXd& X, VectorXd& y, 
-                                      std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>>& Z,
+        void DataRef::setOriginalData(MatrixXf& X, VectorXf& y, 
+                                      std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>>& Z,
                                       bool c)
         {
             o = new Data(X, y, Z, c);
@@ -121,8 +121,8 @@ namespace FT{
             vCreated = true;
         }
         
-        void DataRef::setTrainingData(MatrixXd& X_t, VectorXd& y_t, 
-                                    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>>& Z_t,
+        void DataRef::setTrainingData(MatrixXf& X_t, VectorXf& y_t, 
+                                    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>>& Z_t,
                                     bool c)
         {
             t = new Data(X_t, y_t, Z_t, c);
@@ -138,8 +138,8 @@ namespace FT{
                 tCreated = true;
         }
         
-        void DataRef::setValidationData(MatrixXd& X_v, VectorXd& y_v, 
-                                    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>>& Z_v,
+        void DataRef::setValidationData(MatrixXf& X_v, VectorXf& y_v, 
+                                    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>>& Z_v,
                                     bool c)
         {
             v = new Data(X_v, y_v, Z_v, c);
@@ -152,7 +152,7 @@ namespace FT{
             vCreated = false;
         }
      
-        void DataRef::train_test_split(bool shuffle, double split)
+        void DataRef::train_test_split(bool shuffle, float split)
         {
             /* @param X: n_features x n_samples matrix of training data
              * @param y: n_samples vector of training labels
@@ -193,22 +193,22 @@ namespace FT{
             }
             
             // map training and test sets  
-            t->X = MatrixXd::Map(o->X.data(),t->X.rows(),t->X.cols());
-            v->X = MatrixXd::Map(o->X.data()+t->X.rows()*t->X.cols(),
+            t->X = MatrixXf::Map(o->X.data(),t->X.rows(),t->X.cols());
+            v->X = MatrixXf::Map(o->X.data()+t->X.rows()*t->X.cols(),
                                        v->X.rows(),v->X.cols());
 
-            t->y = VectorXd::Map(o->y.data(),t->y.size());
-            v->y = VectorXd::Map(o->y.data()+t->y.size(),v->y.size());
+            t->y = VectorXf::Map(o->y.data(),t->y.size());
+            v->y = VectorXf::Map(o->y.data()+t->y.size(),v->y.size());
             if(o->Z.size() > 0)
                 split_longitudinal(o->Z, t->Z, v->Z, split);
 
         }  
         
         void DataRef::split_longitudinal(
-                                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
-                                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_t,
-                                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_v,
-                                double split)
+                                std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > &Z,
+                                std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > &Z_t,
+                                std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > &Z_v,
+                                float split)
         {
         
             int size;
@@ -223,7 +223,7 @@ namespace FT{
                 
             for ( const auto &val: Z )
             {
-                vector<ArrayXd> _Z_t_v, _Z_t_t, _Z_v_v, _Z_v_t;
+                vector<ArrayXf> _Z_t_v, _Z_t_t, _Z_v_v, _Z_v_t;
                 _Z_t_v.assign(Z[val.first].first.begin(), Z[val.first].first.begin()+testSize);
                 _Z_t_t.assign(Z[val.first].second.begin(), Z[val.first].second.begin()+testSize);
                 _Z_v_v.assign(Z[val.first].first.begin()+testSize, 

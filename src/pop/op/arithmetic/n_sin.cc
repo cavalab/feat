@@ -9,7 +9,7 @@ namespace FT{
 
     namespace Pop{
         namespace Op{
-            NodeSin::NodeSin(vector<double> W0)
+            NodeSin::NodeSin(vector<float> W0)
             {
 	            name = "sin";
 	            otype = 'f';
@@ -31,7 +31,7 @@ namespace FT{
             void NodeSin::evaluate(const Data& data, State& state)
             {
 
-                state.push<double>(limited(sin(W[0]*state.pop<double>())));
+                state.push<float>(limited(sin(W[0]*state.pop<float>())));
             }
             #else
             void NodeSin::evaluate(const Data& data, State& state)
@@ -43,12 +43,12 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeSin::eval_eqn(State& state)
             {
-                state.push<double>("sin(" + state.popStr<double>() + ")");
+                state.push<float>("sin(" + state.popStr<float>() + ")");
             }
 
-            ArrayXd NodeSin::getDerivative(Trace& state, int loc)
+            ArrayXf NodeSin::getDerivative(Trace& state, int loc)
             {
-                ArrayXd& x = state.get<double>()[state.size<double>()-1];
+                ArrayXf& x = state.get<float>()[state.size<float>()-1];
                 
                 switch (loc) {
                     case 1: // d/dw0

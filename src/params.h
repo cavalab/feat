@@ -33,7 +33,7 @@ namespace FT{
         char otype;                                 ///< user parameter for output type setup
         int verbosity;                  			///< amount of printing. 0: none, 1: minimal, 
                                                     // 2: all
-        vector<double> term_weights;    			///< probability weighting of terminals
+        vector<float> term_weights;    			///< probability weighting of terminals
         NodeVector functions;                       ///< function nodes available in programs
         NodeVector terminals;                       ///< terminal nodes available in programs
         vector<std::string> longitudinalMap;        ///<vector storing longitudinal data keys
@@ -45,9 +45,9 @@ namespace FT{
         unsigned num_features;                      ///< number of features
         vector<string> objectives;                  ///< Pareto objectives 
         bool shuffle;                               ///< option to shuffle the data
-        double split;                               ///< fraction of data to use for training
+        float split;                               ///< fraction of data to use for training
         vector<char> dtypes;                        ///< data types of input parameters
-        double feedback;                            ///< strength of ml feedback on probabilities
+        float feedback;                            ///< strength of ml feedback on probabilities
         unsigned int n_classes;                     ///< number of classes for classification 
         float cross_rate;                           ///< cross rate for variation
         vector<int> classes;                        ///< class labels
@@ -64,9 +64,9 @@ namespace FT{
         struct BP 
         {
            int iters;
-           double learning_rate;
+           float learning_rate;
            int batch_size;
-           BP(int i, double l, int bs): iters(i), learning_rate(l), batch_size(bs) {}
+           BP(int i, float l, int bs): iters(i), learning_rate(l), batch_size(bs) {}
         };
 
         BP bp;                                      ///< backprop parameters
@@ -74,16 +74,16 @@ namespace FT{
         struct HC 
         {
            int iters;
-           double step;
-           HC(int i, double s): iters(i), step(s) {}
+           float step;
+           HC(int i, float s): iters(i), step(s) {}
         };
         
         HC hc;                                      ///< stochastic hill climbing parameters       
         
         Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
                    char ot, int verbosity, string fs, float cr, unsigned int max_depth, 
-                   unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
-                   double fb, string sc, string fn, bool bckprp, int iters, double lr,
+                   unsigned int max_dim, bool constant, string obj, bool sh, float sp, 
+                   float fb, string sc, string fn, bool bckprp, int iters, float lr,
                    int bs, bool hclimb, int maxt, bool useb, bool sem_xo);
         
         ~Parameters();
@@ -105,10 +105,10 @@ namespace FT{
         void set_scorer(string sc);
         
         /// sets weights for terminals. 
-        void set_term_weights(const vector<double>& w);
+        void set_term_weights(const vector<float>& w);
         
         /// return unique pointer to a node based on the string passed
-        std::unique_ptr<Node> createNode(std::string str, double d_val = 0, bool b_val = false, 
+        std::unique_ptr<Node> createNode(std::string str, float d_val = 0, bool b_val = false, 
                                          size_t loc = 0, string name = "");
         
         /// sets available functions based on comma-separated list.
@@ -125,8 +125,8 @@ namespace FT{
         
         /// set the terminals
         void set_terminals(int nf,
-                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
-                           std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > ());
+                           std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z = 
+                           std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > ());
 
         void set_feature_names(string fn); 
         /// set the objectives
@@ -143,10 +143,10 @@ namespace FT{
         void set_otypes(bool terminals_set=false);
         
         /// sets the number of classes based on target vector y.
-        void set_classes(VectorXd& y);    
+        void set_classes(VectorXf& y);    
         
         /// sets the weights of each sample (and class weights)
-        void set_sample_weights(VectorXd& y);
+        void set_sample_weights(VectorXf& y);
 
     };
 }

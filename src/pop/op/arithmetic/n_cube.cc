@@ -8,7 +8,7 @@ namespace FT{
 
     namespace Pop{
         namespace Op{    		  
-            NodeCube::NodeCube(vector<double> W0)
+            NodeCube::NodeCube(vector<float> W0)
             {
 		        name = "cube";
 		        otype = 'f';
@@ -30,7 +30,7 @@ namespace FT{
             /// Evaluates the node and updates the state states.  
             void NodeCube::evaluate(const Data& data, State& state)
             {
-                state.push<double>(limited(pow(this->W[0] * state.pop<double>(),3)));
+                state.push<float>(limited(pow(this->W[0] * state.pop<float>(),3)));
             }   
             #else
             void NodeCube::evaluate(const Data& data, State& state)
@@ -42,12 +42,12 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeCube::eval_eqn(State& state)
             {
-                state.push<double>("(" + state.popStr<double>() + "^3)");
+                state.push<float>("(" + state.popStr<float>() + "^3)");
             }
 
-            ArrayXd NodeCube::getDerivative(Trace& state, int loc)
+            ArrayXf NodeCube::getDerivative(Trace& state, int loc)
             {
-                ArrayXd& x = state.get<double>()[state.size<double>()-1];
+                ArrayXf& x = state.get<float>()[state.size<float>()-1];
                 
                 switch (loc) {
                     case 1: // d/dw0

@@ -9,7 +9,7 @@ namespace FT{
 
     namespace Pop{
         namespace Op{
-            NodeDivide::NodeDivide(vector<double> W0)
+            NodeDivide::NodeDivide(vector<float> W0)
             {
 	            name = "/";
 	            otype = 'f';
@@ -31,10 +31,10 @@ namespace FT{
             /// Evaluates the node and updates the state states. 
             void NodeDivide::evaluate(const Data& data, State& state)
             {
-                ArrayXd x1 = state.pop<double>();
-                ArrayXd x2 = state.pop<double>();
-                // safe division returns x1/x2 if x2 != 0, and MAX_DBL otherwise               
-                state.push<double>( (abs(x2) > NEAR_ZERO ).select((this->W[0] * x1) / (this->W[1] * x2), 
+                ArrayXf x1 = state.pop<float>();
+                ArrayXf x2 = state.pop<float>();
+                // safe division returns x1/x2 if x2 != 0, and MAX_FLT otherwise               
+                state.push<float>( (abs(x2) > NEAR_ZERO ).select((this->W[0] * x1) / (this->W[1] * x2), 
                                                             1.0) ); 
             }
             #else
@@ -47,14 +47,14 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeDivide::eval_eqn(State& state)
             {
-                state.push<double>("(" + state.popStr<double>() + "/" + state.popStr<double>() + ")");            	
+                state.push<float>("(" + state.popStr<float>() + "/" + state.popStr<float>() + ")");            	
             }
 
             // Might want to check derivative orderings for other 2 arg nodes
-            ArrayXd NodeDivide::getDerivative(Trace& state, int loc)
+            ArrayXf NodeDivide::getDerivative(Trace& state, int loc)
             {
-                ArrayXd& x1 = state.get<double>()[state.size<double>()-1];
-                ArrayXd& x2 = state.get<double>()[state.size<double>()-2];
+                ArrayXf& x1 = state.get<float>()[state.size<float>()-1];
+                ArrayXf& x2 = state.get<float>()[state.size<float>()-2];
                 
                 switch (loc) {
                     case 3: // d/dW[1]
@@ -64,9 +64,9 @@ namespace FT{
                     case 1: // d/dx2 
                     {
                         /* std::cout << "x1: " << x1.transpose() << "\n"; */
-                        /* ArrayXd num = -this->W[0] * x1; */
-                        /* ArrayXd denom = limited(this->W[1] * pow(x2, 2)); */
-                        /* ArrayXd val = num/denom; */
+                        /* ArrayXf num = -this->W[0] * x1; */
+                        /* ArrayXf denom = limited(this->W[1] * pow(x2, 2)); */
+                        /* ArrayXf val = num/denom; */
                         return limited((-this->W[0] * x1)/(this->W[1] * pow(x2, 2)));
                     }
                     case 0: // d/dx1 

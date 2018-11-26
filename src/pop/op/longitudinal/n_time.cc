@@ -21,7 +21,7 @@ namespace FT{
             /// Evaluates the node and updates the state states. 
             void NodeTime::evaluate(const Data& data, State& state)
             {
-                ArrayXd tmp(state.z.top().first.size());
+                ArrayXf tmp(state.z.top().first.size());
                 
                 int x;
                 
@@ -30,7 +30,7 @@ namespace FT{
                     
                 state.z.pop();
 
-                state.push<double>(tmp);
+                state.push<float>(tmp);
                 
             }
             #else
@@ -51,7 +51,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeTime::eval_eqn(State& state)
             {
-                state.push<double>("time(" + state.zs.pop() + ")");
+                state.push<float>("time(" + state.zs.pop() + ")");
             }
             
             NodeTime* NodeTime::clone_impl() const { return new NodeTime(*this); }

@@ -123,7 +123,7 @@ namespace FT{
             }
         }
         
-        vector<double> ML::get_weights()
+        vector<float> ML::get_weights()
         {    
             /*!
              * return weight vector from model.
@@ -175,7 +175,7 @@ namespace FT{
                     /* for (unsigned i =0; i<weights.size(); ++i) */
                     /*     weights[i].unref(); */
 
-	                return w;		
+	                return vector<float>(w.begin(), w.end());
                 }
 	            // otherwise, return the true weights 
                 auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_w();
@@ -193,10 +193,10 @@ namespace FT{
             /* for (auto tmp : w) cout << tmp << " " ; */
             /* cout << "\n"; */                 
 
-            return w;
+            return vector<float>(w.begin(), w.end());
         }
 
-        shared_ptr<CLabels> ML::fit(MatrixXd& X, VectorXd& y, const Parameters& params, bool& pass,
+        shared_ptr<CLabels> ML::fit(MatrixXf& X, VectorXf& y, const Parameters& params, bool& pass,
                          const vector<char>& dtypes)
         { 
         	/*!
@@ -242,8 +242,10 @@ namespace FT{
             }
             /* else */
                 /* cout << "normlize is false\n"; */
+                
+            MatrixXd _X = X.template cast<double>();
 
-            auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
+            auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(_X));
             /* cout << "Phi:\n"; */
             /* for (int i = 0; i < 10 ; ++i) */
             /* { */
@@ -251,16 +253,18 @@ namespace FT{
             /* } */
             //std::cout << "setting labels (n_classes = " << params.n_classes << ")\n"; 
             /* cout << "y is " << y.transpose() << "\n"; */
+            
+            VectorXd _y = y.template cast<double>();
              
             if(prob_type==PT_BINARY && 
                     (!ml_type.compare("LR") || !ml_type.compare("SVM")))  // binary classification           	
             {
-                p_est->set_labels(some<CBinaryLabels>(SGVector<float64_t>(y), 0.5));       	
+                p_est->set_labels(some<CBinaryLabels>(SGVector<float64_t>(_y), 0.5));       	
                 
             }
             else if (prob_type!=PT_REGRESSION)                         // multiclass classification       
             {
-                p_est->set_labels(some<CMulticlassLabels>(SGVector<float64_t>(y)));
+                p_est->set_labels(some<CMulticlassLabels>(SGVector<float64_t>(_y)));
                 /* auto labels_train = (CMulticlassLabels *)p_est->get_labels(); */
                 /* SGVector<double> labs = labels_train->get_unique_labels(); */
                 /* std::cout << "unique labels: \n"; */ 
@@ -270,7 +274,7 @@ namespace FT{
                 /* std::cout << "nclasses: " << nclasses << "\n"; */
             }
             else                                                    // regression
-                p_est->set_labels(some<CRegressionLabels>(SGVector<float64_t>(y)));
+                p_est->set_labels(some<CRegressionLabels>(SGVector<float64_t>(_y)));
             
             // train ml
             params.msg("ML training on thread" + std::to_string(omp_get_thread_num()) + "...",3," ");       
@@ -328,7 +332,7 @@ namespace FT{
             return labels;
         }
 
-        VectorXd ML::fit_vector(MatrixXd& X, VectorXd& y, const Parameters& params, bool& pass,
+        VectorXf ML::fit_vector(MatrixXf& X, VectorXf& y, const Parameters& params, bool& pass,
                          const vector<char>& dtypes)
         {
             shared_ptr<CLabels> labels = fit(X, y, params, pass, dtypes); 
@@ -336,12 +340,14 @@ namespace FT{
             return labels_to_vector(labels);     
         }
 
-        shared_ptr<CLabels> ML::predict(MatrixXd& X)
+        shared_ptr<CLabels> ML::predict(MatrixXf& X)
         {
 
             if (normalize)
                 N.normalize(X);
-            auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(X));
+                
+            MatrixXd _X = X.template cast<double>();
+            auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(_X));
             
             shared_ptr<CLabels> labels;
            
@@ -359,14 +365,14 @@ namespace FT{
             return labels ;
         }
 
-        VectorXd ML::predict_vector(MatrixXd& X)
+        VectorXf ML::predict_vector(MatrixXf& X)
         {
             shared_ptr<CLabels> labels = predict(X);
             return labels_to_vector(labels);     
             
         }
 
-        ArrayXXd ML::predict_proba(MatrixXd& X)
+        ArrayXXf ML::predict_proba(MatrixXf& X)
         {
             shared_ptr<CLabels> labels = shared_ptr<CLabels>(predict(X));
                
@@ -378,7 +384,7 @@ namespace FT{
                 SGVector<double> tmp= BLabels->get_values();
                 ArrayXXd confidences(1,tmp.size());
                 confidences.row(0) = Map<ArrayXd>(tmp.data(),tmp.size()); 
-                return confidences;
+                return confidences.template cast<float>();
             }
             else if (prob_type == PT_MULTICLASS)
             {
@@ -390,13 +396,13 @@ namespace FT{
                     confidences.row(i) = Map<ArrayXd>(tmp.data(),tmp.size());
                     /* std::cout << confidences.row(i) << "\n"; */
                 }
-                return confidences;
+                return confidences.template cast<float>();;
             }
             else
                 HANDLE_ERROR_THROW("Error: predict_proba not defined for problem type or ML method");
         }
 
-        VectorXd ML::labels_to_vector(const shared_ptr<CLabels>& labels)
+        VectorXf ML::labels_to_vector(const shared_ptr<CLabels>& labels)
         {
             SGVector<double> y_pred;
             if (prob_type==PT_BINARY && 
@@ -413,7 +419,7 @@ namespace FT{
                 // convert -1 to 0
                 yhat = (yhat.cast<int>().array() == -1).select(0,yhat);
 
-            return yhat;
+            return yhat.template cast<float>();
         }
     }
 }

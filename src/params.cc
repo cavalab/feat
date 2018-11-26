@@ -11,8 +11,8 @@ namespace FT{
         
     Parameters::Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
                char ot, int verbosity, string fs, float cr, unsigned int max_depth, 
-               unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
-               double fb, string sc, string fn, bool bckprp, int iters, double lr,
+               unsigned int max_dim, bool constant, string obj, bool sh, float sp, 
+               float fb, string sc, string fn, bool bckprp, int iters, float lr,
                int bs, bool hclimb, int maxt, bool useb, bool sem_xo):    
             pop_size(pop_size),
             gens(gens),
@@ -110,23 +110,23 @@ namespace FT{
     }
     
     /// sets weights for terminals. 
-    void Parameters::set_term_weights(const vector<double>& w)
+    void Parameters::set_term_weights(const vector<float>& w)
     {           
         /* cout << "weights: "; for (auto tmp : w) cout << tmp << " " ; cout << "\n"; */ 
         string weights;
-        double u = 1.0/double(w.size());
+        float u = 1.0/float(w.size());
         term_weights.clear();
 
         // take abs value of weights
-        vector<double> aw = w;
-        double sum = 0;
+        vector<float> aw = w;
+        float sum = 0;
         for (unsigned i = 0; i < aw.size(); ++i)
         { 
             aw[i] = fabs(aw[i]); 
             sum += aw[i];
         }
         // softmax transform values
-        /* vector<double> sw = softmax(aw); */
+        /* vector<float> sw = softmax(aw); */
         /* cout << "sw: "; for (auto tmp : sw) cout << tmp << " " ; cout << "\n"; */ 
         // normalize weights to one
         for (unsigned i = 0; i < aw.size(); ++i)
@@ -251,7 +251,7 @@ namespace FT{
     }
     
     std::unique_ptr<Node> Parameters::createNode(string str,
-                                                 double d_val,
+                                                 float d_val,
                                                  bool b_val,
                                                  size_t loc,
                                                  string name)
@@ -394,9 +394,9 @@ namespace FT{
             if(dtypes.size() == 0)
             {
                 if (feature_names.size() == 0)
-                    return std::unique_ptr<Node>(new NodeVariable<double>(loc));
+                    return std::unique_ptr<Node>(new NodeVariable<float>(loc));
                 else
-                    return std::unique_ptr<Node>(new NodeVariable<double>(loc,'f', feature_names.at(loc)));
+                    return std::unique_ptr<Node>(new NodeVariable<float>(loc,'f', feature_names.at(loc)));
             }
             else if (feature_names.size() == 0)
             {
@@ -406,7 +406,7 @@ namespace FT{
                                                                                   dtypes[loc]));
                     case 'c': return std::unique_ptr<Node>(new NodeVariable<int>(loc,
                                                                                   dtypes[loc]));
-                    case 'f': return std::unique_ptr<Node>(new NodeVariable<double>(loc,
+                    case 'f': return std::unique_ptr<Node>(new NodeVariable<float>(loc,
                                                                                   dtypes[loc]));
                 }
             }
@@ -420,7 +420,7 @@ namespace FT{
                     case 'c': return std::unique_ptr<Node>(new NodeVariable<int>(loc, 
                                                            dtypes[loc],feature_names.at(loc)));
                     
-                    case 'f': return std::unique_ptr<Node>(new NodeVariable<double>(loc, 
+                    case 'f': return std::unique_ptr<Node>(new NodeVariable<float>(loc, 
                                                            dtypes[loc],feature_names.at(loc)));
                 }
             }
@@ -495,7 +495,7 @@ namespace FT{
     }
 
     void Parameters::set_terminals(int nf,
-                                   std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
+                                   std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
     {
         /*!
          * based on number of features.
@@ -546,12 +546,12 @@ namespace FT{
         }
     }
 
-    void Parameters::set_classes(VectorXd& y)
+    void Parameters::set_classes(VectorXf& y)
     {
         classes.clear();
 
         // set class labels
-        vector<double> uc = unique(y);
+        vector<float> uc = unique(y);
         
         n_classes = uc.size();
 
@@ -559,7 +559,7 @@ namespace FT{
             classes.push_back(int(c));
     }
 
-    void Parameters::set_sample_weights(VectorXd& y)
+    void Parameters::set_sample_weights(VectorXf& y)
     {
         // set class weights
         /* cout << "setting sample weights\n"; */

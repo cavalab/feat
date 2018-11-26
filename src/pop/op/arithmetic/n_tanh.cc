@@ -9,7 +9,7 @@ namespace FT{
 
     namespace Pop{
         namespace Op{
-            NodeTanh::NodeTanh(vector<double> W0)
+            NodeTanh::NodeTanh(vector<float> W0)
             {
                 name = "tanh";
 	            otype = 'f';
@@ -30,7 +30,7 @@ namespace FT{
             /// Evaluates the node and updates the state states. 
             void NodeTanh::evaluate(const Data& data, State& state)
             {
-                state.push<double>(limited(tanh(W[0]*state.pop<double>())));
+                state.push<float>(limited(tanh(W[0]*state.pop<float>())));
             }
             #else
             void NodeTanh::evaluate(const Data& data, State& state)
@@ -42,14 +42,14 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeTanh::eval_eqn(State& state)
             {
-                state.push<double>("tanh(" + state.popStr<double>() + ")");
+                state.push<float>("tanh(" + state.popStr<float>() + ")");
             }
 
-            ArrayXd NodeTanh::getDerivative(Trace& state, int loc)
+            ArrayXf NodeTanh::getDerivative(Trace& state, int loc)
             {
-                ArrayXd numerator;
-                ArrayXd denom;
-                ArrayXd x = state.get<double>()[state.size<double>()-1];
+                ArrayXf numerator;
+                ArrayXf denom;
+                ArrayXf x = state.get<float>()[state.size<float>()-1];
                 switch (loc) {
                     case 1: // d/dw0
                         numerator = 4 * x * exp(2 * this->W[0] * x);

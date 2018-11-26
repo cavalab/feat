@@ -20,21 +20,21 @@ namespace FT{
             /// Evaluates the node and updates the state states. 
             void NodeRecent::evaluate(const Data& data, State& state)
             {
-                ArrayXd tmp(state.z.top().first.size());
+                ArrayXf tmp(state.z.top().first.size());
                 int x;
                 
                 for(x = 0; x < state.z.top().first.size(); x++)
                 {
                     // find max time
-                    ArrayXd::Index maxIdx; 
-                    double maxtime = state.z.top().second[x].maxCoeff(&maxIdx);
+                    ArrayXf::Index maxIdx; 
+                    float maxtime = state.z.top().second[x].maxCoeff(&maxIdx);
                     // return value at max time 
                     tmp(x) = state.z.top().first[x](maxIdx);
                 }
 
                 state.z.pop();
                 
-                state.push<double>(tmp);
+                state.push<float>(tmp);
                 
             }
             #else
@@ -46,7 +46,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeRecent::eval_eqn(State& state)
             {
-                state.push<double>("recent(" + state.zs.pop() + ")");
+                state.push<float>("recent(" + state.zs.pop() + ")");
             }
             
             NodeRecent* NodeRecent::clone_impl() const { return new NodeRecent(*this); }

@@ -21,7 +21,7 @@ namespace FT{
             /// Evaluates the node and updates the state states. 
             void NodeMean::evaluate(const Data& data, State& state)
             {
-                ArrayXd tmp(state.z.top().first.size());
+                ArrayXf tmp(state.z.top().first.size());
                 int x;
                 
                 for(x = 0; x < state.z.top().first.size(); x++)
@@ -29,7 +29,7 @@ namespace FT{
                   
                 state.z.pop();
                 
-                state.push<double>(tmp);
+                state.push<float>(tmp);
                 
             }
             #else
@@ -46,7 +46,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeMean::eval_eqn(State& state)
             {
-                state.push<double>("mean(" + state.zs.pop() + ")");
+                state.push<float>("mean(" + state.zs.pop() + ")");
             }
             
             NodeMean* NodeMean::clone_impl() const { return new NodeMean(*this); }

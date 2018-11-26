@@ -18,12 +18,12 @@ license: GNU/GPL v3
 using std::vector;
 using std::string;
 using std::map;
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
-using Eigen::ArrayXd;
+using Eigen::MatrixXf;
+using Eigen::VectorXf;
+using Eigen::ArrayXf;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
-#define MAX_DBL std::numeric_limits<double>::max()
-#define MIN_DBL std::numeric_limits<double>::lowest()
+#define MAX_FLT std::numeric_limits<float>::max()
+#define MIN_FLT std::numeric_limits<float>::lowest()
 
 #define MAX_INT std::numeric_limits<int>::max()
 #define MIN_INT std::numeric_limits<int>::lowest()
@@ -71,8 +71,8 @@ namespace FT{
                     // total arity
                     unsigned int total_arity();
 
-                    /// limits node output to be between MIN_DBL and MAX_DBL
-                    ArrayXd limited(ArrayXd x);
+                    /// limits node output to be between MIN_FLT and MAX_FLT
+                    ArrayXf limited(ArrayXf x);
 
                     /// evaluates complexity of this node in the context of its child nodes.
                     void eval_complexity(map<char, vector<unsigned int>>& cstate);

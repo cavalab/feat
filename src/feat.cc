@@ -26,8 +26,8 @@ Feat::Feat(int pop_size, int gens, string ml,
        char otype, string functions, 
        unsigned int max_depth, unsigned int max_dim, int random_state, 
        bool erc, string obj, bool shuffle, 
-       double split, double fb, string scorer, string feature_names,
-       bool backprop,int iters, double lr, int bs, int n_threads,
+       float split, float fb, string scorer, string feature_names,
+       bool backprop,int iters, float lr, int bs, int n_threads,
        bool hillclimb, string logfile, int max_time, bool use_batch, bool semantic_xo,
        int print_pop):
           // construct subclasses
@@ -114,13 +114,13 @@ void Feat::set_shuffle(bool sh){params.shuffle = sh;}
 void Feat::set_objectives(string obj){ params.set_objectives(obj); }
 
 /// set train fraction of dataset
-void Feat::set_split(double sp){params.split = sp;}
+void Feat::set_split(float sp){params.split = sp;}
 
 ///set data types for input parameters
 void Feat::set_dtypes(vector<char> dtypes){params.dtypes = dtypes;}
 
 ///set feedback
-void Feat::set_feedback(double fb){ params.feedback = fb;}
+void Feat::set_feedback(float fb){ params.feedback = fb;}
 
 ///set name for files
 void Feat::set_logfile(string s){logfile = s;}
@@ -138,7 +138,7 @@ void Feat::set_hillclimb(bool hc){params.hillclimb=hc;}
 
 void Feat::set_iters(int iters){params.bp.iters = iters; params.hc.iters=iters;}
 
-void Feat::set_lr(double lr){params.bp.learning_rate = lr;}
+void Feat::set_lr(float lr){params.bp.learning_rate = lr;}
 
 void Feat::set_batch_size(int bs){params.bp.batch_size = bs;}
  
@@ -199,7 +199,7 @@ int Feat::get_num_features(){ return params.num_features; }
 bool Feat::get_shuffle(){ return params.shuffle; }
 
 ///return fraction of data to use for training
-double Feat::get_split(){ return params.split; }
+float Feat::get_split(){ return params.split; }
 
 ///add custom node into feat
 /* void add_function(unique_ptr<Node> N){ params.functions.push_back(N->clone()); } */
@@ -208,7 +208,7 @@ double Feat::get_split(){ return params.split; }
 vector<char> Feat::get_dtypes(){ return params.dtypes; }
 
 ///return feedback setting
-double Feat::get_feedback(){ return params.feedback; }
+float Feat::get_feedback(){ return params.feedback; }
 
 ///return best model
 string Feat::get_representation(){ return best_ind.get_eqn();}
@@ -216,8 +216,8 @@ string Feat::get_representation(){ return best_ind.get_eqn();}
 string Feat::get_model()
 {   
     vector<string> features = best_ind.get_features();
-    vector<double> weights = best_ind.ml->get_weights();
-    vector<double> aweights(weights.size());
+    vector<float> weights = best_ind.ml->get_weights();
+    vector<float> aweights(weights.size());
     for (int i =0; i<aweights.size(); ++i) 
         aweights[i] = fabs(weights[i]);
     vector<size_t> order = argsort(aweights);
@@ -294,18 +294,18 @@ string Feat::get_eqns(bool front)
 }
 
 /// return the coefficients or importance scores of the best model. 
-ArrayXd Feat::get_coefs()
+ArrayXf Feat::get_coefs()
 {
     auto tmpw = best_ind.ml->get_weights();
-    ArrayXd w = ArrayXd::Map(tmpw.data(), tmpw.size());
+    ArrayXf w = ArrayXf::Map(tmpw.data(), tmpw.size());
     return w;
 }
 
 /// get longitudinal data from file s
-std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>> Feat::get_Z(string s, 
+std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>> Feat::get_Z(string s, 
         int * idx, int idx_size)
 {
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z;
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z;
     vector<int> ids(idx,idx+idx_size);
     load_partial_longitudinal(s,Z,',',ids);
     /* for (auto& z : Z){ */
@@ -329,41 +329,41 @@ std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>> Feat::get_Z(string
 /// destructor             
 Feat::~Feat(){} 
             
-ArrayXXd Feat::predict_proba(double * X, int rows_x, int cols_x) 
+ArrayXXf Feat::predict_proba(float * X, int rows_x, int cols_x) 
 {			    
-    MatrixXd matX = Map<MatrixXd>(X,rows_x,cols_x);
+    MatrixXf matX = Map<MatrixXf>(X,rows_x,cols_x);
     return predict_proba(matX);
 }
 
 /// convenience function calls fit then predict.            
-VectorXd Feat::fit_predict(MatrixXd& X,
-                     VectorXd& y,
-                     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
+VectorXf Feat::fit_predict(MatrixXf& X,
+                     VectorXf& y,
+                     std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
                      { fit(X, y, Z); return predict(X, Z); } 
                      
-VectorXd Feat::fit_predict(double * X, int rows_x, int cols_x, double * Y, int len_y)
+VectorXf Feat::fit_predict(float * X, int rows_x, int cols_x, float * Y, int len_y)
 {
-    MatrixXd matX = Map<MatrixXd>(X,rows_x,cols_x);
-    VectorXd vectY = Map<VectorXd>(Y,len_y);
+    MatrixXf matX = Map<MatrixXf>(X,rows_x,cols_x);
+    VectorXf vectY = Map<VectorXf>(Y,len_y);
     fit(matX,vectY); 
     return predict(matX); 
 } 
 
 /// convenience function calls fit then transform. 
-MatrixXd Feat::fit_transform(MatrixXd& X,
-                       VectorXd& y,
-                       std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
+MatrixXf Feat::fit_transform(MatrixXf& X,
+                       VectorXf& y,
+                       std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
                        { fit(X, y, Z); return transform(X, Z); }                                         
 
-void Feat::fit(MatrixXd& X, VectorXd& y,
-               std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
+void Feat::fit(MatrixXf& X, VectorXf& y,
+               std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
 {
 
     /*! 
      *  Input:
      
-     *       X: n_features x n_samples MatrixXd of features
-     *       y: VectorXd of labels 
+     *       X: n_features x n_samples MatrixXf of features
+     *       y: VectorXf of labels 
      
      *  Output:
      
@@ -443,9 +443,9 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     float t0 =  timer.Elapsed().count();
     
     //data for batch training
-    MatrixXd Xb;
-    VectorXd yb;
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Zb;
+    MatrixXf Xb;
+    VectorXf yb;
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Zb;
     Data db(Xb, yb, Zb, params.classification);
     
     Data *tmp_train;
@@ -495,7 +495,7 @@ void Feat::fit(MatrixXd& X, VectorXd& y,
     // main generational loop
     unsigned g = 0;
     unsigned stall_count = 0;
-    double fraction = 0;
+    float fraction = 0;
     // continue until max gens is reached or max_time is up (if it is set)
     while((params.max_time == -1 || params.max_time > timer.Elapsed().count()) // time limit
            && g<params.gens                                                    // generation limit
@@ -558,7 +558,7 @@ void Feat::run_generation(unsigned int g,
                       vector<size_t> survivors,
                       DataRef &d,
                       std::ofstream &log,
-                      double fraction,
+                      float fraction,
                       unsigned& stall_count)
 {
     params.set_current_gen(g);
@@ -602,15 +602,15 @@ void Feat::run_generation(unsigned int g,
 
     if (params.backprop)
     {
-        params.bp.learning_rate = (1-1/(1+double(params.gens)))*params.bp.learning_rate;
+        params.bp.learning_rate = (1-1/(1+float(params.gens)))*params.bp.learning_rate;
         params.msg("learning rate: " + std::to_string(params.bp.learning_rate),3);
     }
 
 }
 
-void Feat::update_stall_count(unsigned& stall_count, MatrixXd& F)
+void Feat::update_stall_count(unsigned& stall_count, MatrixXf& F)
 {
-    double med_score = median(F.colwise().mean().array());  // median loss
+    float med_score = median(F.colwise().mean().array());  // median loss
     if (params.current_gen == 0 || med_score < best_med_score)
     {
         best_med_score = med_score;
@@ -622,20 +622,20 @@ void Feat::update_stall_count(unsigned& stall_count, MatrixXd& F)
     }
 
 }
-void Feat::fit(double * X, int rowsX, int colsX, double * Y, int lenY)
+void Feat::fit(float * X, int rowsX, int colsX, float * Y, int lenY)
 {
-    MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
-    VectorXd vectY = Map<VectorXd>(Y,lenY);
+    MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
+    VectorXf vectY = Map<VectorXf>(Y,lenY);
 
     Feat::fit(matX,vectY);
 }
 
-void Feat::fit_with_z(double * X, int rowsX, int colsX, double * Y, int lenY, string s, 
+void Feat::fit_with_z(float * X, int rowsX, int colsX, float * Y, int lenY, string s, 
                 int * idx, int idx_size)
 {
 
-    MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
-    VectorXd vectY = Map<VectorXd>(Y,lenY);
+    MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
+    VectorXf vectY = Map<VectorXf>(Y,lenY);
     auto Z = get_Z(s, idx, idx_size);
     // TODO: make sure long fns are set
     /* string longfns = "mean,median,max,min,variance,skew,kurtosis,slope,count"; */
@@ -648,14 +648,14 @@ void Feat::final_model(DataRef& d)
     // fits final model to best tranformation found.
     bool pass = true;
 
-    /* MatrixXd Phi = transform(X); */
-    /* MatrixXd Phi = best_ind.out(*d.o, params); */        
+    /* MatrixXf Phi = transform(X); */
+    /* MatrixXf Phi = best_ind.out(*d.o, params); */        
     
     shared_ptr<CLabels> yhat = best_ind.fit(*d.o, params, pass);
-    VectorXd tmp;
+    VectorXf tmp;
     /* params.set_sample_weights(y);   // need to set new sample weights for y, */ 
                                     // which is probably from a validation set
-    double score = p_eval->score(d.o->y,yhat,tmp,params.class_weights);
+    float score = p_eval->score(d.o->y,yhat,tmp,params.class_weights);
     params.msg("final_model score: " + std::to_string(score),2);
 }
 
@@ -693,14 +693,14 @@ void Feat::initial_model(DataRef &d)
     shared_ptr<CLabels> yhat = best_ind.fit(*d.t,params,pass);
 
     // set terminal weights based on model
-    vector<double> w;
+    vector<float> w;
     if (n_feats == d.t->X.rows())
     {
         w = best_ind.ml->get_weights();
     }
     else
     {
-        w = vector<double>(d.t->X.rows(),1.0);
+        w = vector<float>(d.t->X.rows(),1.0);
     }
     
     /*cout << "Weights are \n";
@@ -712,7 +712,7 @@ void Feat::initial_model(DataRef &d)
     
     params.set_term_weights(w);
    
-    VectorXd tmp;
+    VectorXf tmp;
     best_score = p_eval->score(d.t->y, yhat, tmp, params.class_weights);
 
     if (params.split < 1.0)
@@ -729,8 +729,8 @@ void Feat::initial_model(DataRef &d)
     params.msg("initial validation score: " +std::to_string(best_score_v),2);
 }
 
-MatrixXd Feat::transform(MatrixXd& X,
-                         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z,
+MatrixXf Feat::transform(MatrixXf& X,
+                         std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z,
                          Individual *ind)
 {
     /*!
@@ -739,7 +739,7 @@ MatrixXd Feat::transform(MatrixXd& X,
     
     N.normalize(X);       
     
-    VectorXd y = VectorXd();
+    VectorXf y = VectorXf();
     
     Data d(X, y, Z, get_classification());
     
@@ -754,55 +754,55 @@ MatrixXd Feat::transform(MatrixXd& X,
     return ind->out(d, params, true);
 }
 
-MatrixXd Feat::transform(double * X, int rows_x, int cols_x)
+MatrixXf Feat::transform(float * X, int rows_x, int cols_x)
 {
-    MatrixXd matX = Map<MatrixXd>(X,rows_x,cols_x);
+    MatrixXf matX = Map<MatrixXf>(X,rows_x,cols_x);
     return transform(matX);
     
 }
 
-MatrixXd Feat::transform_with_z(double * X, int rowsX, int colsX, string s, int * idx, int idx_size)
+MatrixXf Feat::transform_with_z(float * X, int rowsX, int colsX, string s, int * idx, int idx_size)
 {
-    MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
+    MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
     auto Z = get_Z(s, idx, idx_size);
     
     return transform(matX, Z);
     
 }
 
-MatrixXd Feat::fit_transform(double * X, int rows_x, int cols_x, double * Y, int len_y)
+MatrixXf Feat::fit_transform(float * X, int rows_x, int cols_x, float * Y, int len_y)
 {
-    MatrixXd matX = Map<MatrixXd>(X,rows_x,cols_x);
-    VectorXd vectY = Map<VectorXd>(Y,len_y);
+    MatrixXf matX = Map<MatrixXf>(X,rows_x,cols_x);
+    VectorXf vectY = Map<VectorXf>(Y,len_y);
     fit(matX,vectY); 
     return transform(matX);
 }
 
-VectorXd Feat::predict(MatrixXd& X,
-                       std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
+VectorXf Feat::predict(MatrixXf& X,
+                       std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
 {        
-    MatrixXd Phi = transform(X, Z);
+    MatrixXf Phi = transform(X, Z);
     return best_ind.ml->predict_vector(Phi);        
 }
 
-shared_ptr<CLabels> Feat::predict_labels(MatrixXd& X,
-                       std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
+shared_ptr<CLabels> Feat::predict_labels(MatrixXf& X,
+                       std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
 {        
-    MatrixXd Phi = transform(X, Z);
+    MatrixXf Phi = transform(X, Z);
     return best_ind.ml->predict(Phi);        
 }
 
-VectorXd Feat::predict(double * X, int rowsX,int colsX)
+VectorXf Feat::predict(float * X, int rowsX,int colsX)
 {
-    MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
+    MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
     return predict(matX);
 }
 
-VectorXd Feat::predict_with_z(double * X, int rowsX,int colsX, 
+VectorXf Feat::predict_with_z(float * X, int rowsX,int colsX, 
                                 string s, int * idx, int idx_size)
 {
 
-    MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
+    MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
     auto Z = get_Z(s, idx, idx_size);
     // TODO: make sure long fns are set
     /* string longfns = "mean,median,max,min,variance,skew,kurtosis,slope,count"; */
@@ -810,17 +810,17 @@ VectorXd Feat::predict_with_z(double * X, int rowsX,int colsX,
     return predict(matX,Z); 
 }
 
-ArrayXXd Feat::predict_proba(MatrixXd& X,
-                         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
+ArrayXXf Feat::predict_proba(MatrixXf& X,
+                         std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
 {
-    MatrixXd Phi = transform(X, Z);
+    MatrixXf Phi = transform(X, Z);
     return best_ind.ml->predict_proba(Phi);        
 }
 
-ArrayXXd Feat::predict_proba_with_z(double * X, int rowsX,int colsX, 
+ArrayXXf Feat::predict_proba_with_z(float * X, int rowsX,int colsX, 
                                 string s, int * idx, int idx_size)
 {
-    MatrixXd matX = Map<MatrixXd>(X,rowsX,colsX);
+    MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
     auto Z = get_Z(s, idx, idx_size);
     // TODO: make sure long fns are set
     /* string longfns = "mean,median,max,min,variance,skew,kurtosis,slope,count"; */
@@ -833,9 +833,9 @@ void Feat::update_best(const DataRef& d, bool validation)
 {
     params.msg("updating best..",2);
 
-    double bs;
+    float bs;
     bs = validation ? best_score_v : best_score ; 
-    double f; 
+    float f; 
     vector<Individual>& pop = use_arch && validation ? arch.archive : p_pop->individuals; 
 
     for (const auto& i: pop)
@@ -856,7 +856,7 @@ void Feat::update_best(const DataRef& d, bool validation)
 
         if (params.split < 1.0)
         {
-            VectorXd tmp;
+            VectorXf tmp;
             shared_ptr<CLabels> yhat_v = best_ind.predict(*d.v, params);
             best_score_v = p_eval->score(d.v->y, yhat_v, tmp, params.class_weights); 
             best_ind.fitness_v = best_score_v;
@@ -864,19 +864,19 @@ void Feat::update_best(const DataRef& d, bool validation)
     }
 }
 
-double Feat::score(MatrixXd& X, const VectorXd& y,
-                   std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
+float Feat::score(MatrixXf& X, const VectorXf& y,
+                   std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
 {
     shared_ptr<CLabels> labels = predict_labels(X, Z);
-    VectorXd loss; 
+    VectorXf loss; 
     return p_eval->score(y,labels,loss,params.class_weights);
 }
 
-void Feat::print_stats(std::ofstream& log, double fraction)
+void Feat::print_stats(std::ofstream& log, float fraction)
 {
     unsigned num_models = std::min(50,p_pop->size());
-    double med_score = median(F.colwise().mean().array());  // median loss
-    ArrayXd Sizes(p_pop->size()); unsigned i = 0;           // collect program sizes
+    float med_score = median(F.colwise().mean().array());  // median loss
+    ArrayXf Sizes(p_pop->size()); unsigned i = 0;           // collect program sizes
     for (const auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;}
     unsigned med_size = median(Sizes);                        // median program size
     unsigned max_size = Sizes.maxCoeff();
@@ -966,14 +966,14 @@ void Feat::print_stats(std::ofstream& log, double fraction)
                 << "med_num_params" << sep
                 <<  "med_dim\n";
         }
-        /* double med_score = median(F.colwise().mean().array());  // median loss */
-        /* ArrayXd Sizes(p_pop->size());                           // collect program sizes */
+        /* float med_score = median(F.colwise().mean().array());  // median loss */
+        /* ArrayXf Sizes(p_pop->size());                           // collect program sizes */
         /* i = 0; for (auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;} */
-        ArrayXd Complexities(p_pop->size()); 
+        ArrayXf Complexities(p_pop->size()); 
         i = 0; for (auto& p : p_pop->individuals){ Complexities(i) = p.complexity(); ++i;}
-        ArrayXd Nparams(p_pop->size()); 
+        ArrayXf Nparams(p_pop->size()); 
         i = 0; for (auto& p : p_pop->individuals){ Nparams(i) = p.get_n_params(); ++i;}
-        ArrayXd Dims(p_pop->size()); 
+        ArrayXf Dims(p_pop->size()); 
         i = 0; for (auto& p : p_pop->individuals){ Dims(i) = p.get_dim(); ++i;}
 
         

@@ -22,7 +22,7 @@ namespace FT{
                 And<<< DIM_GRID, DIM_BLOCK >>>(x, idx, N);
             }
             /// Evaluates the node and updates the stack states. 
-            /* void NodeAnd::evaluate(const MatrixXd& X, const VectorXd& y, vector<ArrayXd>& stack_f, */ 
+            /* void NodeAnd::evaluate(const MatrixXf& X, const VectorXf& y, vector<ArrayXf>& stack_f, */ 
             /*         vector<ArrayXb>& stack_b) */
             /* { */
             /*     ArrayXb x2 = stack_b.back(); stack_b.pop_back(); */

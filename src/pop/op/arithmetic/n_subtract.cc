@@ -9,7 +9,7 @@ namespace FT{
 
     namespace Pop{
         namespace Op{
-            NodeSubtract::NodeSubtract(vector<double> W0)
+            NodeSubtract::NodeSubtract(vector<float> W0)
             {
 	            name = "-";
 	            otype = 'f';
@@ -30,9 +30,9 @@ namespace FT{
             /// Evaluates the node and updates the state states. 
             void NodeSubtract::evaluate(const Data& data, State& state)
             {
-                ArrayXd x1 = state.pop<double>();
-                ArrayXd x2 = state.pop<double>();
-                state.push<double>(limited(this->W[0]*x1 - this->W[1]*x2));
+                ArrayXf x1 = state.pop<float>();
+                ArrayXf x2 = state.pop<float>();
+                state.push<float>(limited(this->W[0]*x1 - this->W[1]*x2));
             }
             #else
             void NodeSubtract::evaluate(const Data& data, State& state)
@@ -44,13 +44,13 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeSubtract::eval_eqn(State& state)
             {
-                state.push<double>("(" + state.popStr<double>() + "-" + state.popStr<double>() + ")");
+                state.push<float>("(" + state.popStr<float>() + "-" + state.popStr<float>() + ")");
             }
 
-            ArrayXd NodeSubtract::getDerivative(Trace& state, int loc)
+            ArrayXf NodeSubtract::getDerivative(Trace& state, int loc)
             {
-                ArrayXd x1 = state.get<double>()[state.size<double>()-1];
-                ArrayXd x2 = state.get<double>()[state.size<double>()-2];
+                ArrayXf x1 = state.get<float>()[state.size<float>()-1];
+                ArrayXf x2 = state.get<float>()[state.size<float>()-2];
                 
                 switch (loc) {
                     case 3: // d/dW[1]
@@ -58,10 +58,10 @@ namespace FT{
                     case 2: // d/dW[0]
                         return x1;
                     case 1: // d/dx2
-                        return -this->W[1] * ArrayXd::Ones(x2.size());
+                        return -this->W[1] * ArrayXf::Ones(x2.size());
                     case 0: //d/dx1
                     default:
-                       return this->W[0] * ArrayXd::Ones(x1.size());
+                       return this->W[0] * ArrayXf::Ones(x1.size());
                 } 
             }
 

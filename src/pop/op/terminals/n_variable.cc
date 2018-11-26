@@ -74,7 +74,7 @@ namespace FT{
             
             template class NodeVariable<bool>;
             template class NodeVariable<int>;
-            template class NodeVariable<double>;
+            template class NodeVariable<float>;
         }
     }
 }

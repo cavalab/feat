@@ -22,17 +22,17 @@ namespace FT{
             /// Evaluates the node and updates the state states. 
             void NodeVar::evaluate(const Data& data, State& state)
             {
-                ArrayXd tmp(state.z.top().first.size());
+                ArrayXf tmp(state.z.top().first.size());
                 
                 int x;
-                ArrayXd tmp1;
+                ArrayXf tmp1;
                 
                 for(x = 0; x < state.z.top().first.size(); x++)
                     tmp(x) = variance(limited(state.z.top().first[x]));
                     
                 state.z.pop();
 
-                state.push<double>(tmp);
+                state.push<float>(tmp);
                 
             }
             #else
@@ -52,7 +52,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeVar::eval_eqn(State& state)
             {
-                state.push<double>("variance(" + state.zs.pop() + ")");
+                state.push<float>("variance(" + state.zs.pop() + ")");
             }
 
             NodeVar* NodeVar::clone_impl() const { return new NodeVar(*this); }

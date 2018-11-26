@@ -75,13 +75,13 @@ namespace FT {
             return dist(rg[omp_get_thread_num()]);
         }
 
-        double Rnd::rnd_dbl(double min, double max)
+        float Rnd::rnd_dbl(float min, float max)
         {
-            std::uniform_real_distribution<double> dist(min, max);
+            std::uniform_real_distribution<float> dist(min, max);
             return dist(rg[omp_get_thread_num()]);
         }
         
-        double Rnd::operator()(unsigned i) 
+        float Rnd::operator()(unsigned i) 
         {
             return rnd_dbl(0.0,i);
         }

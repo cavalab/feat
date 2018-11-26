@@ -17,9 +17,9 @@ license: GNU/GPL v3
 #include <iostream>
 
 using std::vector;
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
-using Eigen::ArrayXd;
+using Eigen::MatrixXf;
+using Eigen::VectorXf;
+using Eigen::ArrayXf;
 using Eigen::ArrayXi;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
 using namespace std;
@@ -100,10 +100,10 @@ namespace FT
          */
         struct State
         {
-            Stack<ArrayXd> f;                   ///< floating node stack
+            Stack<ArrayXf> f;                   ///< floating node stack
             Stack<ArrayXb> b;                   ///< boolean node stack
             Stack<ArrayXi> c;                   ///<categorical stack
-            Stack<std::pair<vector<ArrayXd>, vector<ArrayXd> > > z;     ///< longitudinal node stack
+            Stack<std::pair<vector<ArrayXf>, vector<ArrayXf> > > z;     ///< longitudinal node stack
             Stack<string> fs;                   ///< floating node string stack
             Stack<string> bs;                   ///< boolean node string stack
             Stack<string> cs;                   ///< categorical node string stack
@@ -152,7 +152,7 @@ namespace FT
             
         };
         
-        template <> inline Stack<ArrayXd>& State::get(){ return f; }
+        template <> inline Stack<ArrayXf>& State::get(){ return f; }
             
         template <> inline Stack<ArrayXb>& State::get(){ return b; }
         
@@ -165,7 +165,7 @@ namespace FT
             Eigen::Array<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> f;
             Eigen::Array<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> c;
             Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>  b;
-            Stack<std::pair<vector<ArrayXd>, vector<ArrayXd> > > z;
+            Stack<std::pair<vector<ArrayXf>, vector<ArrayXf> > > z;
             Stack<string> fs;
             Stack<string> cs;
             Stack<string> bs;
@@ -214,7 +214,7 @@ namespace FT
 
 #endif
         
-        template <> inline Stack<string>& State::getStr<double>(){ return fs; }
+        template <> inline Stack<string>& State::getStr<float>(){ return fs; }
             
         template <> inline Stack<string>& State::getStr<bool>(){ return bs; }
         
@@ -226,7 +226,7 @@ namespace FT
          */
         struct Trace
         {
-            vector<ArrayXd> f;
+            vector<ArrayXf> f;
             vector<ArrayXi> c;
             vector<ArrayXb> b;
             
@@ -243,7 +243,7 @@ namespace FT
             void copy_to_trace(State& state, std::map<char, unsigned int> &arity);
         };
         
-        template <> inline vector<ArrayXd>& Trace::get(){ return f; }
+        template <> inline vector<ArrayXf>& Trace::get(){ return f; }
             
         template <> inline vector<ArrayXb>& Trace::get(){ return b; }
         

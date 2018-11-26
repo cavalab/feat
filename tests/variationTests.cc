@@ -5,9 +5,9 @@
 bool isValidProgram(NodeVector& program, unsigned num_features)
 {
     //checks whether program fulfills all its arities.
-    MatrixXd X = MatrixXd::Zero(num_features,2); 
-    VectorXd y = VectorXd::Zero(2);
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z; 
+    MatrixXf X = MatrixXf::Zero(num_features,2); 
+    VectorXf y = VectorXf::Zero(2);
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > z; 
     
     State state;
     Data data(X, y, z);
@@ -27,8 +27,8 @@ TEST(Variation, MutationTests)
 	Feat feat(100, 100, "LinearRidgeRegression", false, 1);
 	feat.set_random_state(666);
 	
-    MatrixXd X(4,2); 
-    MatrixXd X_v(3,2); 
+    MatrixXf X(4,2); 
+    MatrixXf X_v(3,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
          0.84147098,  0.54030231,
@@ -40,10 +40,10 @@ TEST(Variation, MutationTests)
     X.transposeInPlace();
     X_v.transposeInPlace();
 
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z;
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > z;
 
-    VectorXd y(4); 
-    VectorXd y_v(3); 
+    VectorXf y(4); 
+    VectorXf y_v(3); 
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158;
     y_v << 0.57015434, -1.20648656, -2.68773747;
@@ -110,8 +110,8 @@ TEST(Variation, CrossoverTests)
     Feat feat(100, 100, "LinearRidgeRegression", false, 1);
 	feat.set_random_state(666);
 	
-    MatrixXd X(4,2); 
-    MatrixXd X_v(3,2); 
+    MatrixXf X(4,2); 
+    MatrixXf X_v(3,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
          0.84147098,  0.54030231,
@@ -123,13 +123,13 @@ TEST(Variation, CrossoverTests)
     X.transposeInPlace();
     X_v.transposeInPlace();
 
-    VectorXd y(4); 
-    VectorXd y_v(3); 
+    VectorXf y(4); 
+    VectorXf y_v(3); 
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158;
     y_v << 0.57015434, -1.20648656, -2.68773747;
 
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > z; 
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > z; 
 
     feat.params.init();       
   

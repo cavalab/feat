@@ -13,7 +13,7 @@ namespace FT{
         
         SimAnneal::~SimAnneal(){}
            
-        vector<size_t> SimAnneal::select(Population& pop, const MatrixXd& F, const Parameters& params)
+        vector<size_t> SimAnneal::select(Population& pop, const MatrixXf& F, const Parameters& params)
         {
             /* Selects parents for making offspring.  
              *
@@ -32,7 +32,7 @@ namespace FT{
             return all_idx;
         }
 
-        vector<size_t> SimAnneal::survive(Population& pop, const MatrixXd& F, const Parameters& params)
+        vector<size_t> SimAnneal::survive(Population& pop, const MatrixXf& F, const Parameters& params)
         {
             /* Selects the offspring for survival using simulated annealing.
              *
@@ -53,7 +53,7 @@ namespace FT{
          
             // decrease temperature linearly based on current generation
             // cooling schedule: Tg = (0.9)^g * t0, g = current generation
-            this->t = pow(0.9, double(params.current_gen))*this->t0;  
+            this->t = pow(0.9, float(params.current_gen))*this->t0;  
             /* cout << "t: " << this->t << "\n"; */
 
             int P = F.cols()/2; // index P is where the offspring begin, and also the size of the pop
@@ -77,7 +77,7 @@ namespace FT{
                 /* cout << "parent: " << parent.get_eqn() << "\n"; */
                 /* cout << "offspring fitness: " << offspring.fitness << "\n"; */
                 /* cout << "parent fitness: " << parent.fitness << "\n"; */           
-                double probability = exp ( (parent.fitness - offspring.fitness)/this->t );
+                float probability = exp ( (parent.fitness - offspring.fitness)/this->t );
 
                 /* cout << "probability: " << probability << "\n"; */
                 if (r() < probability)
