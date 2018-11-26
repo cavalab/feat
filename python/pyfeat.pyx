@@ -22,28 +22,28 @@ cdef extern from "feat.h" namespace "FT":
                char otype, string functions, 
                unsigned int max_depth, unsigned int max_dim, int random_state, 
                bool erc, string obj,bool shuffle, 
-               double split, double fb, string scorer, 
-               string feature_names, bool backprop, int iters, double lr, int bs,
+               float split, float fb, string scorer, 
+               string feature_names, bool backprop, int iters, float lr, int bs,
                int n_threads, bool hillclimb, string logfile, int max_time, bool use_batch,
                bool semantic_xo, int print_pop) except + 
 
-        void fit(double * X, int rowsX, int colsX, double*  y , int lenY)
-        VectorXd predict(double * X, int rowsX,int colsX)
-        ArrayXXd predict_proba(double * X, int rowsX,int colsX)
-        MatrixXd transform(double * X, int rowsX,int colsX)
-        VectorXd fit_predict(double * X, int rowsX,int colsX, double*  y , int lenY)
-        MatrixXd fit_transform(double * X, int rowsX,int colsX, double*  y , int lenY)
+        void fit(float * X, int rowsX, int colsX, float*  y , int lenY)
+        VectorXd predict(float * X, int rowsX,int colsX)
+        ArrayXXd predict_proba(float * X, int rowsX,int colsX)
+        MatrixXd transform(float * X, int rowsX,int colsX)
+        VectorXd fit_predict(float * X, int rowsX,int colsX, float*  y , int lenY)
+        MatrixXd fit_transform(float * X, int rowsX,int colsX, float*  y , int lenY)
         string get_representation()
         string get_eqns()
         string get_model()
 
-        void fit_with_z(double * X,int rowsX,int colsX, double * Y,int lenY, string s, 
+        void fit_with_z(float * X,int rowsX,int colsX, float * Y,int lenY, string s, 
                             int * train_idx, int train_size)
-        VectorXd predict_with_z(double * X,int rowsX,int colsX, string s, 
+        VectorXd predict_with_z(float * X,int rowsX,int colsX, string s, 
                             int * idx, int idx_size)
-        MatrixXd transform_with_z(double * X,int rowsX,int colsX, string s, 
+        MatrixXd transform_with_z(float * X,int rowsX,int colsX, string s, 
                             int * train_idx, int train_size)
-        ArrayXXd predict_proba_with_z(double * X,int rowsX,int colsX, string s, 
+        ArrayXXd predict_proba_with_z(float * X,int rowsX,int colsX, string s, 
                             int * idx, int idx_size)
         ArrayXd get_coefs()
         int get_n_params()
@@ -57,8 +57,8 @@ cdef class PyFeat:
                   int max_stall,string sel, string surv, float cross_rate,string otype, 
                   string functions, unsigned int max_depth, unsigned int max_dim, 
                   int random_state, 
-                  bool erc , string obj, bool shuffle, double split, double fb,
-                  string scorer, string feature_names, bool backprop, int iters, double lr, int bs,
+                  bool erc , string obj, bool shuffle, float split, float fb,
+                  string scorer, string feature_names, bool backprop, int iters, float lr, int bs,
                   int n_threads, bool hillclimb, string logfile, int max_time, bool use_batch,
                   bool semantic_xo, int print_pop):
         
@@ -73,51 +73,51 @@ cdef class PyFeat:
         use_batch, semantic_xo, print_pop)
 
     def fit(self,np.ndarray X,np.ndarray y):
-        cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
-        cdef np.ndarray[np.double_t, ndim=1, mode="fortran"] arr_y
+        cdef np.ndarray[np.float_t, ndim=2, mode="fortran"] arr_x
+        cdef np.ndarray[np.float_t, ndim=1, mode="fortran"] arr_y
         check_X_y(X,y,ensure_2d=True,ensure_min_samples=1)
         X = X.transpose()
-        arr_x = np.asfortranarray(X, dtype=np.double)
-        arr_y = np.asfortranarray(y, dtype=np.double)
+        arr_x = np.asfortranarray(X, dtype=np.float)
+        arr_y = np.asfortranarray(y, dtype=np.float)
 
         self.ft.fit(&arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y))
 
     def fit_with_z(self,np.ndarray X,np.ndarray y, string zfile, np.ndarray zids):
-        cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
-        cdef np.ndarray[np.double_t, ndim=1, mode="fortran"] arr_y
+        cdef np.ndarray[np.float_t, ndim=2, mode="fortran"] arr_x
+        cdef np.ndarray[np.float_t, ndim=1, mode="fortran"] arr_y
         cdef np.ndarray[int, ndim=1, mode="fortran"] arr_z_id
         check_X_y(X,y,ensure_2d=True,ensure_min_samples=1)
         X = X.transpose()
-        arr_x = np.asfortranarray(X, dtype=np.double)
-        arr_y = np.asfortranarray(y, dtype=np.double)
+        arr_x = np.asfortranarray(X, dtype=np.float)
+        arr_y = np.asfortranarray(y, dtype=np.float)
         arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
 
         self.ft.fit_with_z(&arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y),
                            zfile, &arr_z_id[0], len(arr_z_id))
                            
     def transform_with_z(self,np.ndarray X, string zfile, np.ndarray zids):
-        cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
+        cdef np.ndarray[np.float_t, ndim=2, mode="fortran"] arr_x
         cdef np.ndarray[int, ndim=1, mode="fortran"] arr_z_id
         X = X.transpose()
-        arr_x = np.asfortranarray(X, dtype=np.double)
+        arr_x = np.asfortranarray(X, dtype=np.float)
         arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
         res = ndarray(self.ft.transform_with_z(&arr_x[0,0],X.shape[0],X.shape[1], zfile, &arr_z_id[0], len(arr_z_id)))
         return res.transpose()
 
 
     def predict(self,np.ndarray X):
-        cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
+        cdef np.ndarray[np.float_t, ndim=2, mode="fortran"] arr_x
         X = X.transpose()
-        arr_x = np.asfortranarray(X, dtype=np.double)
+        arr_x = np.asfortranarray(X, dtype=np.float)
 
         res = ndarray(self.ft.predict(&arr_x[0,0],X.shape[0],X.shape[1]))
         return res.flatten()
 
     def predict_with_z(self,np.ndarray X, string zfile, np.ndarray zids):
-        cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
+        cdef np.ndarray[np.float_t, ndim=2, mode="fortran"] arr_x
         cdef np.ndarray[int, ndim=1, mode="fortran"] arr_z_id
         X = X.transpose()
-        arr_x = np.asfortranarray(X, dtype=np.double)
+        arr_x = np.asfortranarray(X, dtype=np.float)
         arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
         
         res = ndarray(self.ft.predict_with_z(&arr_x[0,0],X.shape[0],X.shape[1],
@@ -125,18 +125,18 @@ cdef class PyFeat:
         return res.flatten()
 
     def predict_proba(self,np.ndarray X):
-        cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
+        cdef np.ndarray[np.float_t, ndim=2, mode="fortran"] arr_x
         X = X.transpose()
-        arr_x = np.asfortranarray(X, dtype=np.double)
+        arr_x = np.asfortranarray(X, dtype=np.float)
 
         res = ndarray(self.ft.predict_proba(&arr_x[0,0],X.shape[0],X.shape[1]))
         return res.flatten()
 
     def predict_proba_with_z(self,np.ndarray X, string zfile, np.ndarray zids):
-        cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
+        cdef np.ndarray[np.float_t, ndim=2, mode="fortran"] arr_x
         cdef np.ndarray[int, ndim=1, mode="fortran"] arr_z_id
         X = X.transpose()
-        arr_x = np.asfortranarray(X, dtype=np.double)
+        arr_x = np.asfortranarray(X, dtype=np.float)
         arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
         
         res = ndarray(self.ft.predict_proba_with_z(&arr_x[0,0],X.shape[0],X.shape[1],
@@ -144,30 +144,30 @@ cdef class PyFeat:
         return res.flatten()
 
     def transform(self,np.ndarray X):
-        cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
+        cdef np.ndarray[np.float_t, ndim=2, mode="fortran"] arr_x
         X = X.transpose()
-        arr_x = np.asfortranarray(X, dtype=np.double)
+        arr_x = np.asfortranarray(X, dtype=np.float)
 
         X = ndarray(self.ft.transform(&arr_x[0,0],X.shape[0],X.shape[1]))
         return X.transpose()
 
     def fit_predict(self,np.ndarray X,np.ndarray y):
-        cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
-        cdef np.ndarray[np.double_t, ndim=1, mode="fortran"] arr_y
+        cdef np.ndarray[np.float_t, ndim=2, mode="fortran"] arr_x
+        cdef np.ndarray[np.float_t, ndim=1, mode="fortran"] arr_y
         check_X_y(X,y,ensure_2d=True,ensure_min_samples=1)
         X = X.transpose()
-        arr_x = np.asfortranarray(X, dtype=np.double)
-        arr_y = np.asfortranarray(y, dtype=np.double)
+        arr_x = np.asfortranarray(X, dtype=np.float)
+        arr_y = np.asfortranarray(y, dtype=np.float)
         
         return ndarray(self.ft.fit_predict( &arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y) ))
 
     def fit_transform(self,np.ndarray X,np.ndarray y):
-        cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
-        cdef np.ndarray[np.double_t, ndim=1, mode="fortran"] arr_y
+        cdef np.ndarray[np.float_t, ndim=2, mode="fortran"] arr_x
+        cdef np.ndarray[np.float_t, ndim=1, mode="fortran"] arr_y
         check_X_y(X,y,ensure_2d=True,ensure_min_samples=1)
         X = X.transpose()
-        arr_x = np.asfortranarray(X, dtype=np.double)
-        arr_y = np.asfortranarray(y, dtype=np.double)
+        arr_x = np.asfortranarray(X, dtype=np.float)
+        arr_y = np.asfortranarray(y, dtype=np.float)
         
         X = ndarray(self.ft.fit_transform( &arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y) ))
         return X.transpose()
