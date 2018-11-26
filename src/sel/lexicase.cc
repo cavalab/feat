@@ -22,7 +22,7 @@ namespace FT{
              * @param F: n_samples X popsize matrix of model outputs. 
              * @param params: parameters.
              *
-             * @returns selected: vector of indices corresponding to pop that are selected.
+             * @return selected: vector of indices corresponding to pop that are selected.
              *
              * In selection mode, parents are selected among the first half of columns of F since
              * it is assumed that we are selecting for offspring to fill the remaining columns. 

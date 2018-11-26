@@ -201,8 +201,13 @@ namespace FT{
           
         /// returns the pearson correlation coefficients of matrix.
         MatrixXf corrcoef(const MatrixXf& X);
+        
         // returns the mean of the pairwise correlations of a matrix.
         float mean_square_corrcoef(const MatrixXf& X);
+
+        /// returns the (first) index of the element with the middlest value in v
+        int argmiddle(vector<float>& v);
+
     }
 
 } 

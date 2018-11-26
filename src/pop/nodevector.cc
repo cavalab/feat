@@ -78,6 +78,7 @@ namespace FT{
                
             }
            
+            std::reverse(indices.begin(), indices.end()); 
             return indices; 
         }
 

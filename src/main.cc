@@ -72,7 +72,8 @@ int main(int argc, char** argv){
     //////////////////////////////////////// parse arguments
     InputParser input(argc, argv);
     if(input.cmdOptionExists("-h") || input.dataset.empty()){
-        if (input.dataset.empty()) HANDLE_ERROR_NO_THROW("Error: no dataset specified.\n---\n");
+        if (input.dataset.empty() && !input.cmdOptionExists("-h")) 
+            HANDLE_ERROR_NO_THROW("Error: no dataset specified.\n---\n");
         // Print help and exit. 
         cout << "Feat is a feature engineering wrapper for learning intelligible models.\n";
         cout << "Usage:\tfeat path/to/dataset [options]\n";
@@ -263,24 +264,31 @@ int main(int argc, char** argv){
         float score_t = (yhat.array() - y_tcopy.array()).pow(2).mean();
         /* cout << "tmp score: " << tmp << "\n"; */
         /* VectorXf yhat = feat.predict(X_tcopy,Z_tcopy); */
-
-        float SSres = (y_tcopy-yhat).array().pow(2).sum() ;
-        float SStot =  (y_tcopy.array() - y_tcopy.mean()).array().pow(2).sum();
-        float r2t = (1 - SSres/SStot );
-
+        
         cout.precision(4);
         cout << "train score: " << score_t << "\n";
-        cout << "train r2: " << r2t << "\n";
+        
+        if (!feat.get_classification())
+        {
+            float SSres = (y_tcopy-yhat).array().pow(2).sum() ;
+            float SStot =  (y_tcopy.array() - y_tcopy.mean()).array().pow(2).sum();
+            float r2t = (1 - SSres/SStot );
+            cout << "train r2: " << r2t << "\n";
+        }
         
         cout << "generating test prediction...\n";
+        
         VectorXf yhatv = feat.predict(X_vcopy,Z_vcopy);
-        float SSresv = (y_vcopy-yhatv).array().pow(2).sum() ;
-        float SStotv =  (y_vcopy.array() - y_vcopy.mean()).array().pow(2).sum();
-        float r2v = (1 - SSresv/SStotv );
         float score = feat.score(d.v->X,d.v->y,d.v->Z);
         cout << "test score: " << score << "\n";
-        cout << "test r2: " << r2v << "\n";
-
+        
+        if (!feat.get_classification())
+        {
+            float SSresv = (y_vcopy-yhatv).array().pow(2).sum() ;
+            float SStotv =  (y_vcopy.array() - y_vcopy.mean()).array().pow(2).sum();
+            float r2v = (1 - SSresv/SStotv );
+            cout << "test r2: " << r2v << "\n"; 
+        }
     }
     else
     {
@@ -296,5 +304,4 @@ int main(int argc, char** argv){
     return 0;
 
 }
-
 
