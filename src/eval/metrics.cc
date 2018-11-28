@@ -25,6 +25,7 @@ namespace FT
         {
             SGVector<double> _tmp = dynamic_pointer_cast<sh::CRegressionLabels>(labels)->get_labels();
             SGVector<float> tmp(_tmp.begin(), _tmp.end());
+            
             Map<VectorXf> yhat(tmp.data(),tmp.size());
             return squared_difference(y,yhat);
             /* if (weights.empty()) */
@@ -117,6 +118,7 @@ namespace FT
             /* dynamic_pointer_cast<sh::CBinaryLabels>(labels)->scores_to_probabilities(); */
             SGVector<double> _tmp = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_values();
             SGVector<float> tmp(_tmp.begin(), _tmp.end());
+            
             Map<VectorXf> yhat(tmp.data(),tmp.size());
            
             VectorXf loss = log_loss(y,yhat,class_weights);
