@@ -71,7 +71,7 @@ namespace FT {
                     ind.program = tmp.program;
                     ind.fitness = new_loss; 
                     min_loss = new_loss;
-                    ind.set_p(ml->get_weights(),params.feedback);
+                    /* ind.set_p(ind.ml->get_weights(),params.feedback); */
                     min_yhat = yhat;
                 }
             }

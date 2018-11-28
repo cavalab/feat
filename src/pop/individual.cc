@@ -147,9 +147,15 @@ namespace FT{
             // calculate ML model from Phi
             params.msg("ML training on " + get_eqn(), 3);
             ml = std::make_shared<ML>(params);
-
             shared_ptr<CLabels> yh = ml->fit(Phi,d.y,params,pass,dtypes);
 
+            if (pass)
+                set_p(ml->get_weights(),params.feedback);
+            else
+            {   // set weights to zero
+                vector<double> w(Phi.rows(), 0);                     
+                set_p(w,params.feedback);
+            }
             this->yhat = ml->labels_to_vector(yh);
 
             return yh;
