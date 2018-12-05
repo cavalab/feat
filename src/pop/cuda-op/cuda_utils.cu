@@ -26,7 +26,8 @@ namespace FT{
 	            cudaGetDeviceCount(&n_gpus);
 	            int device = omp_get_thread_num() % n_gpus ; 
 	            cudaSetDevice(device);
-            }
+            }           
+            
         }
     }
 }

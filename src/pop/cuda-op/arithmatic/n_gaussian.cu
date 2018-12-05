@@ -4,6 +4,7 @@ license: GNU/GPL v3
 */
 #include "../error_handling.h"
 #include "../cuda_utils.h"
+#include "../cuda_device.cuh"
 
 namespace FT{
    	namespace Pop{
@@ -12,7 +13,7 @@ namespace FT{
             {                    
                 for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
                 {
-                    x[(idx-1)*N+i] = exp ( - pow ( W0 - x[(idx-1)*N+i], 2 ) ) ;
+                    x[(idx-1)*N+i] = limited(exp ( - pow ( W0 - x[(idx-1)*N+i], 2 ) ) ) ;
                 }
                 return;
             }

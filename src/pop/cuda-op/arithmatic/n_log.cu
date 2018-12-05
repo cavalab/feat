@@ -4,7 +4,7 @@ license: GNU/GPL v3
 */
 #include "../error_handling.h"
 #include "../cuda_utils.h"
-
+#include "../cuda_device.cuh"
 
 namespace FT{
    	namespace Pop{
