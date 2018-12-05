@@ -217,6 +217,12 @@ string Feat::get_model()
 {   
     vector<string> features = best_ind.get_features();
     vector<float> weights = best_ind.ml->get_weights();
+    
+    cout << "Weights are \n";
+    
+    for(int x = 0; x < weights.size(); x++)
+        cout << weights[x] << "\t";
+    cout << endl;
     vector<float> aweights(weights.size());
     for (int i =0; i<aweights.size(); ++i) 
         aweights[i] = fabs(weights[i]);

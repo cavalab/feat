@@ -126,18 +126,6 @@ TEST(Evaluation, log_loss)
          1, 
          0,
          0;
-
-    /*yhat << 0, 
-            0,
-            0,
-            1,
-            1,
-            1,
-            1,
-            1,
-            0,
-            0,
-            0;*/
    
     //cout << "setting confidences\n";
     yhat << 0.17299064146709298 ,
@@ -154,8 +142,6 @@ TEST(Evaluation, log_loss)
     float score = mean_log_loss(y, yhat, loss);
     
     ASSERT_EQ(((int)(score*100000)),45495);
-    
-    cout << "ran till here\n";
 }
 
 TEST(Evaluation, multi_log_loss)

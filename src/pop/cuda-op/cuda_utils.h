@@ -26,6 +26,7 @@ namespace FT{
             void choose_gpu();
 
             void initialize_cuda();
+            
         }
     }
 }

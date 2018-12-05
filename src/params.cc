@@ -258,55 +258,55 @@ namespace FT{
     {
         // algebraic operators
     	if (str.compare("+") == 0) 
-    		return std::unique_ptr<Node>(new NodeAdd());
+    		return std::unique_ptr<Node>(new NodeAdd({1.0, 1.0}));
         
         else if (str.compare("-") == 0)
-    		return std::unique_ptr<Node>(new NodeSubtract());
+    		return std::unique_ptr<Node>(new NodeSubtract({1.0, 1.0}));
 
         else if (str.compare("*") == 0)
-    		return std::unique_ptr<Node>(new NodeMultiply());
+    		return std::unique_ptr<Node>(new NodeMultiply({1.0, 1.0}));
 
      	else if (str.compare("/") == 0)
-    		return std::unique_ptr<Node>(new NodeDivide());
+    		return std::unique_ptr<Node>(new NodeDivide({1.0, 1.0}));
 
         else if (str.compare("sqrt") == 0)
-    		return std::unique_ptr<Node>(new NodeSqrt());
+    		return std::unique_ptr<Node>(new NodeSqrt({1.0}));
     	
     	else if (str.compare("sin") == 0)
-    		return std::unique_ptr<Node>(new NodeSin());
+    		return std::unique_ptr<Node>(new NodeSin({1.0}));
     		
     	else if (str.compare("cos") == 0)
-    		return std::unique_ptr<Node>(new NodeCos());
+    		return std::unique_ptr<Node>(new NodeCos({1.0}));
     		
     	else if (str.compare("tanh")==0)
-            return std::unique_ptr<Node>(new NodeTanh());
+            return std::unique_ptr<Node>(new NodeTanh({1.0}));
     	   
         else if (str.compare("^2") == 0)
-    		return std::unique_ptr<Node>(new NodeSquare());
+    		return std::unique_ptr<Node>(new NodeSquare({1.0}));
  	
         else if (str.compare("^3") == 0)
-    		return std::unique_ptr<Node>(new NodeCube());
+    		return std::unique_ptr<Node>(new NodeCube({1.0}));
     	
         else if (str.compare("^") == 0)
-    		return std::unique_ptr<Node>(new NodeExponent());
+    		return std::unique_ptr<Node>(new NodeExponent({1.0, 1.0}));
 
         else if (str.compare("exp") == 0)
-    		return std::unique_ptr<Node>(new NodeExponential());
+    		return std::unique_ptr<Node>(new NodeExponential({1.0}));
     		
     	else if (str.compare("gauss")==0)
-            return std::unique_ptr<Node>(new NodeGaussian());
+            return std::unique_ptr<Node>(new NodeGaussian({1.0}));
         
         else if (str.compare("gauss2d")==0)
-            return std::unique_ptr<Node>(new Node2dGaussian());
+            return std::unique_ptr<Node>(new Node2dGaussian({1.0, 1.0}));
 
         else if (str.compare("log") == 0)
-    		return std::unique_ptr<Node>(new NodeLog());   
+    		return std::unique_ptr<Node>(new NodeLog({1.0}));   
     		
     	else if (str.compare("logit")==0)
-            return std::unique_ptr<Node>(new NodeLogit());
+            return std::unique_ptr<Node>(new NodeLogit({1.0}));
 
         else if (str.compare("relu")==0)
-            return std::unique_ptr<Node>(new NodeRelu());
+            return std::unique_ptr<Node>(new NodeRelu({1.0}));
 
         else if (str.compare("b2f")==0)
             return std::unique_ptr<Node>(new NodeFloat<bool>());

@@ -1,7 +1,7 @@
 #include "testsHeader.h"
 #include "cudaTestUtils.h"
 
-#define NEAR_ZERO 0.0001
+#define NEAR_ZERO 0.000001
 //#ifndef USE_CUDA
 //TEST(NodeTest, Evaluate)
 //{

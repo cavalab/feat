@@ -151,6 +151,8 @@ namespace FT{
             shared_ptr<CLabels> yh = ml->fit(Phi,d.y,params,pass,dtypes);
 
             this->yhat = ml->labels_to_vector(yh);
+            
+            cout << "Yhat is \n " << this->yhat << endl;
 
             return yh;
         }
@@ -286,6 +288,8 @@ namespace FT{
                 dtypes.push_back('b');
             }
             
+            cout << "Phi is "<<endl<<Phi;
+            
             return Phi;
         }
         #else
@@ -354,7 +358,7 @@ namespace FT{
             /*     std::cout << "\n\n"; */
             /* } */
             // convert state_f to Phi
-            params.msg("converting state to Phi",3);
+            params.msg("converting State to Phi",3);
             int cols;
             
             if (state.f.size()==0)
@@ -408,6 +412,8 @@ namespace FT{
             
                    
             //Phi.transposeInPlace();
+            
+            cout << "Phi is "<<endl<<Phi;
             return Phi;
         }
         #endif
