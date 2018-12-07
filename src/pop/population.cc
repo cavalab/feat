@@ -67,7 +67,8 @@ namespace FT{
                 if (random)
                     depth = r.rnd_int(1, params.max_depth);
                 else
-                    depth =  r.rnd_int(1, std::min(params.max_depth,unsigned(3)));
+                    /* depth =  r.rnd_int(1, std::min(params.max_depth,unsigned(3))); */
+                    depth =  r.rnd_int(1, params.max_depth);
                 // make a program for each individual
                 char ot = r.random_choice(params.otypes);
                 individuals[i].program.make_program(params.functions, params.terminals, depth,
