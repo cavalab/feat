@@ -1,11 +1,14 @@
 #!/bin/bash
-make -C build -j
 
 check_for_python=true
+choice="n"
+nobuild=false
 
 if [ $# > 0 ] ; then 
     for var in $@ ; do
-        if [ $var == "lpc" ] ; then
+        if [ $var == "debug" ] ; then
+            make -C debug -j
+        elif [ $var == "lpc" ] ; then
             module load gcc/5.2.0
             export EIGEN3_INCLUDE_DIR="$HOME/eigen-3.3.4/"
             export SHOGUN_DIR="$HOME/anaconda3/include/"
@@ -13,26 +16,32 @@ if [ $# > 0 ] ; then
         elif [ $var == "n" ] ; then
             check_for_python=false
         elif [ $var == "y" ] || [ $var == "python" ] ; then
-            echo "installing python module..."
-            cd python
-            rm -rf build 
-            rm -rf dist
-            python setup.py install
-            cd ..
+            # echo "installing python module..."
+            # cd python
+            # rm -rf build 
+            # rm -rf dist
+            # python setup.py install
+            # cd ..
             check_for_python=false
+            choice="y"
         fi 
     done
 fi
 
+if [ $nobuild == false ] ; then
+    make -C build -j 
+fi
 if [ $check_for_python == true ] ; then
     read -p "Install python wrapper? (y/n) " choice
-    if [ $choice == "y" ] ; then 
+fi
+
+if [ $choice == "y" ] ; then 
         echo "installing python module..."
         cd python
         rm -rf build 
         rm -rf dist
         python setup.py install
         cd ..
-    fi
 fi
+
 echo "done"
