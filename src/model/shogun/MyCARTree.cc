@@ -127,7 +127,7 @@ CBinaryLabels* CMyCARTree::apply_binary(CFeatures* data)
     /* auto tmpb = retbc->get_labels(); */
     /* cout << "apply_binary::retbc: "; */
     /* tmpb.display_vector(); */
-
+    SG_UNREF(ret);
     SG_UNREF(current);
     return retbc;
 }

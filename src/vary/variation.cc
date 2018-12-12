@@ -133,17 +133,17 @@ namespace FT{
             float rf = r();
             if (rf < 1.0/3.0 && child.get_dim() > 1){
                 delete_mutate(child,params); 
-                assert(is_valid_program(child.program, params.num_features, params.longitudinalMap));
+                assert(child.program.is_valid_program(params.num_features, params.longitudinalMap));
             }
             else if (rf < 2.0/3.0 && child.size() < params.max_size)
             {
                 insert_mutate(child,params);
-                assert(is_valid_program(child.program, params.num_features, params.longitudinalMap));
+                assert(child.program.is_valid_program(params.num_features, params.longitudinalMap));
             }
             else
             {        
                 point_mutate(child,params);
-                assert(is_valid_program(child.program, params.num_features, params.longitudinalMap));
+                assert(child.program.is_valid_program(params.num_features, params.longitudinalMap));
             }
      
             // check child depth and dimensionality
@@ -408,7 +408,7 @@ namespace FT{
             if (params.verbosity >= 3)
                 print_cross(mom,i1,j1,dad,i2,j2,child);     
 
-            assert(is_valid_program(child.program,params.num_features, params.longitudinalMap));
+            assert(child.program.is_valid_program(params.num_features, params.longitudinalMap));
             // check child depth and dimensionality
             return child.size()>0 && child.size() <= params.max_size 
                         && child.get_dim() <= params.max_dim;
@@ -493,7 +493,7 @@ namespace FT{
                 print_cross(mom,i1,j1,dad,i2,j2,child,true);     
                  
             
-            assert(is_valid_program(child.program,params.num_features, params.longitudinalMap));
+            assert(child.program.is_valid_program(params.num_features, params.longitudinalMap));
             // check child depth and dimensionality
             return child.size()>0 && child.size() <= params.max_size 
                         && child.get_dim() <= params.max_dim;
