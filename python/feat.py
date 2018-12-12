@@ -14,6 +14,7 @@ import pyfeat
 from sklearn.metrics import mean_squared_error as mse
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import log_loss
+import pdb
 
 class Feat(BaseEstimator):
     """Feat uses GP to find a data representation that improves the performance of a given ML
@@ -112,6 +113,8 @@ class Feat(BaseEstimator):
             self._pyfeat.fit_with_z(X,y,zfile,zids)
         else:
             self._pyfeat.fit(X,y)
+
+        return self
 
     def predict(self,X,zfile=None,zids=None):
         """Predict on X."""
