@@ -9,7 +9,7 @@ namespace FT{
 
     namespace Pop{
         namespace Op{    	
-            NodeSqrt::NodeSqrt(vector<double> W0)
+            NodeSqrt::NodeSqrt(vector<float> W0)
             {
                 name = "sqrt";
 	            otype = 'f';
@@ -26,21 +26,28 @@ namespace FT{
                     W = W0;
             }
 
+            #ifndef USE_CUDA
             /// Evaluates the node and updates the state states. 
             void NodeSqrt::evaluate(const Data& data, State& state)
             {
-                state.push<double>(sqrt(W[0]*state.pop<double>().abs()));
+                state.push<float>(sqrt(W[0]*state.pop<float>().abs()));
             }
+            #else
+            void NodeSqrt::evaluate(const Data& data, State& state)
+            {
+                GPU_Sqrt(state.dev_f, state.idx[otype], state.N, W[0]);
+            }
+            #endif
 
             /// Evaluates the node symbolically
             void NodeSqrt::eval_eqn(State& state)
             {
-                state.push<double>("sqrt(|" + state.popStr<double>() + "|)");
+                state.push<float>("sqrt(|" + state.popStr<float>() + "|)");
             }
 
-            ArrayXd NodeSqrt::getDerivative(Trace& state, int loc)
+            ArrayXf NodeSqrt::getDerivative(Trace& state, int loc)
             {
-                ArrayXd& x = state.get<double>()[state.size<double>()-1];
+                ArrayXf& x = state.get<float>()[state.size<float>()-1];
                 
                 switch (loc) {
                     case 1: // d/dw0

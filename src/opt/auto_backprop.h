@@ -18,8 +18,8 @@
 #include <shogun/labels/Labels.h>
 
 using shogun::CLabels;
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
+using Eigen::MatrixXf;
+using Eigen::VectorXf;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
 using std::cout;
 /**
@@ -41,7 +41,7 @@ namespace FT {
         struct BP_NODE
 	    {
 		    NodeDx* n;
-		    vector<ArrayXd> deriv_list;
+		    vector<ArrayXf> deriv_list;
 	    };
 
        
@@ -66,12 +66,12 @@ namespace FT {
              */
 	    public:
 	
-            typedef VectorXd (*callback)(const VectorXd&, shared_ptr<CLabels>&, const vector<float>&);
+            typedef VectorXf (*callback)(const VectorXf&, shared_ptr<CLabels>&, const vector<float>&);
             
             std::map<string, callback> d_score_hash;
             std::map<string, callback> score_hash;
                     
-            AutoBackProp(string scorer, int iters=1000, double n=0.1, double a=0.9); 
+            AutoBackProp(string scorer, int iters=1000, float n=0.1, float a=0.9); 
 
             /// adapt weights
 		    void run(Individual& ind, const Data& d,
@@ -85,34 +85,34 @@ namespace FT {
 
 
 	    private:
-		    double n;                   //< learning rate
-            double a;                   //< momentum
+		    float n;                   //< learning rate
+            float a;                   //< momentum
             callback d_cost_func;       //< derivative of cost function pointer
             callback cost_func;         //< cost function pointer
             
             int iters;                  //< iterations
-            double epk;                 //< current learning rate 
-            double epT;                  //< min learning rate
+            float epk;                 //< current learning rate 
+            float epT;                  //< min learning rate
 
 		    void print_weights(NodeVector& program);
 		
 		    /// Return the f_stack
 		    vector<Trace> forward_prop(Individual& ind, const Data& d,
-                                   MatrixXd& Phi, const Parameters& params);
+                                   MatrixXf& Phi, const Parameters& params);
 
 		    /// Updates stacks to have proper value on top
 		    void next_branch(vector<BP_NODE>& executing, vector<Node*>& bp_program, 
-                             vector<ArrayXd>& derivatives);
+                             vector<ArrayXf>& derivatives);
 
             /// Compute gradients and update weights 
             void backprop(Trace& f_stack, NodeVector& program, int start, int end, 
-                                    double Beta, shared_ptr<CLabels>& yhat, 
+                                    float Beta, shared_ptr<CLabels>& yhat, 
                                     const Data& d,
                                    vector<float> sw);
                                    
             /// Compute gradients and update weights 
             void backprop2(Trace& f_stack, NodeVector& program, int start, int end, 
-                                    double Beta, const VectorXd& yhat, 
+                                    float Beta, const VectorXf& yhat, 
                                     const Data& d,
                                    vector<float> sw);
 

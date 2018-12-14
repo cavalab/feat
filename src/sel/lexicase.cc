@@ -14,7 +14,7 @@ namespace FT{
         
         Lexicase::~Lexicase(){}
         
-        vector<size_t> Lexicase::select(Population& pop, const MatrixXd& F, const Parameters& params)
+        vector<size_t> Lexicase::select(Population& pop, const MatrixXf& F, const Parameters& params)
         {
             /*! Selection according to lexicase selection for classification and epsilon-lexicase
              * selection for regression. 
@@ -32,7 +32,7 @@ namespace FT{
             unsigned int P = F.cols()/2; //< number of individuals
             
             // define epsilon
-            ArrayXd epsilon = ArrayXd::Zero(N);
+            ArrayXf epsilon = ArrayXf::Zero(N);
           
             // if output is continuous, use epsilon lexicase            
             if (!params.classification || params.scorer.compare("log")==0 
@@ -87,7 +87,7 @@ namespace FT{
                 while(pass){    // main loop
 
                   winner.resize(0);   // winners                  
-                  double minfit = std::numeric_limits<double>::max();   // minimum error on case
+                  float minfit = std::numeric_limits<float>::max();   // minimum error on case
                   
                   // get minimum
                   for (size_t j = 0; j<pool.size(); ++j)
@@ -149,7 +149,7 @@ namespace FT{
             return selected;
         }
 
-        vector<size_t> Lexicase::survive(Population& pop, const MatrixXd& F, const Parameters& params)
+        vector<size_t> Lexicase::survive(Population& pop, const MatrixXf& F, const Parameters& params)
         {
             /* Lexicase survival */
         }

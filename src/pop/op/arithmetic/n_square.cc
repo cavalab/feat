@@ -9,7 +9,7 @@ namespace FT{
 
     namespace Pop{
         namespace Op{
-            NodeSquare::NodeSquare(vector<double> W0)
+            NodeSquare::NodeSquare(vector<float> W0)
             {
 	            name = "^2";
 	            otype = 'f';
@@ -25,22 +25,29 @@ namespace FT{
                 else
                     W = W0;
             }
-
+            
+            #ifndef USE_CUDA
             /// Evaluates the node and updates the state states. 
             void NodeSquare::evaluate(const Data& data, State& state)
             {
-                state.push<double>(limited(pow(W[0]*state.pop<double>(),2)));
+                state.push<float>(limited(pow(W[0]*state.pop<float>(),2)));
             }
+            #else
+            void NodeSquare::evaluate(const Data& data, State& state)
+            {
+                GPU_Square(state.dev_f, state.idx[otype], state.N, W[0]);
+            }
+            #endif
 
             /// Evaluates the node symbolically
             void NodeSquare::eval_eqn(State& state)
             {
-                state.push<double>("(" + state.popStr<double>() + "^2)");
+                state.push<float>("(" + state.popStr<float>() + "^2)");
             }
 
-            ArrayXd NodeSquare::getDerivative(Trace& state, int loc)
+            ArrayXf NodeSquare::getDerivative(Trace& state, int loc)
             {
-                ArrayXd& x = state.get<double>()[state.size<double>()-1];
+                ArrayXf& x = state.get<float>()[state.size<float>()-1];
                 switch (loc) {
                     case 1: // d/dw0
                         return 2 * pow(x, 2) * this->W[0];

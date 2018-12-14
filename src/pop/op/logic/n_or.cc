@@ -18,12 +18,19 @@ namespace FT{
 	            complexity = 2;
             }
 
+            #ifndef USE_CUDA
             /// Evaluates the node and updates the state states. 
             void NodeOr::evaluate(const Data& data, State& state)
             {
                 state.push<bool>(state.pop<bool>() || state.pop<bool>());
 
             }
+            #else
+            void NodeOr::evaluate(const Data& data, State& state)
+            {
+                GPU_Or(state.dev_b, state.idx[otype], state.N);
+            }
+            #endif
 
             /// Evaluates the node symbolically
             void NodeOr::eval_eqn(State& state)

@@ -11,8 +11,8 @@ namespace FT{
         
     Parameters::Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
                char ot, int verbosity, string fs, float cr, unsigned int max_depth, 
-               unsigned int max_dim, bool constant, string obj, bool sh, double sp, 
-               double fb, string sc, string fn, bool bckprp, int iters, double lr,
+               unsigned int max_dim, bool constant, string obj, bool sh, float sp, 
+               float fb, string sc, string fn, bool bckprp, int iters, float lr,
                int bs, bool hclimb, int maxt, bool useb, bool sem_xo):    
             pop_size(pop_size),
             gens(gens),
@@ -38,8 +38,10 @@ namespace FT{
             set_verbosity(verbosity);
             if (fs.empty())
                 fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
-                      "logit,tanh,gauss,relu,split,split_c,b2f,"
-                      "c2f,and,or,not,xor,=,<,<=,>,>=,if,ite";
+                      "logit,tanh,gauss,relu,"
+                      "split,split_c,"
+                      "b2f,c2f,and,or,not,xor,=,<,<=,>,>=,if,ite";
+                
             set_functions(fs);
             set_objectives(obj);
             set_feature_names(fn);
@@ -69,7 +71,8 @@ namespace FT{
     string Parameters::msg(string m, int v, string sep) const
     {
         /* prints messages based on verbosity level. */
-		string msg = "";
+	string msg = "";
+	
         if (verbosity >= v)
         {
             std::cout << m << sep;
@@ -108,23 +111,23 @@ namespace FT{
     }
     
     /// sets weights for terminals. 
-    void Parameters::set_term_weights(const vector<double>& w)
+    void Parameters::set_term_weights(const vector<float>& w)
     {           
         /* cout << "weights: "; for (auto tmp : w) cout << tmp << " " ; cout << "\n"; */ 
         string weights;
-        double u = 1.0/double(w.size());
+        float u = 1.0/float(w.size());
         term_weights.clear();
 
         // take abs value of weights
-        vector<double> aw = w;
-        double sum = 0;
+        vector<float> aw = w;
+        float sum = 0;
         for (unsigned i = 0; i < aw.size(); ++i)
         { 
             aw[i] = fabs(aw[i]); 
             sum += aw[i];
         }
         // softmax transform values
-        /* vector<double> sw = softmax(aw); */
+        /* vector<float> sw = softmax(aw); */
         /* cout << "sw: "; for (auto tmp : sw) cout << tmp << " " ; cout << "\n"; */ 
         // normalize weights to one
         for (unsigned i = 0; i < aw.size(); ++i)
@@ -249,62 +252,62 @@ namespace FT{
     }
     
     std::unique_ptr<Node> Parameters::createNode(string str,
-                                                 double d_val,
+                                                 float d_val,
                                                  bool b_val,
                                                  size_t loc,
                                                  string name)
     {
         // algebraic operators
     	if (str.compare("+") == 0) 
-    		return std::unique_ptr<Node>(new NodeAdd());
+    		return std::unique_ptr<Node>(new NodeAdd({1.0, 1.0}));
         
         else if (str.compare("-") == 0)
-    		return std::unique_ptr<Node>(new NodeSubtract());
+    		return std::unique_ptr<Node>(new NodeSubtract({1.0, 1.0}));
 
         else if (str.compare("*") == 0)
-    		return std::unique_ptr<Node>(new NodeMultiply());
+    		return std::unique_ptr<Node>(new NodeMultiply({1.0, 1.0}));
 
      	else if (str.compare("/") == 0)
-    		return std::unique_ptr<Node>(new NodeDivide());
+    		return std::unique_ptr<Node>(new NodeDivide({1.0, 1.0}));
 
         else if (str.compare("sqrt") == 0)
-    		return std::unique_ptr<Node>(new NodeSqrt());
+    		return std::unique_ptr<Node>(new NodeSqrt({1.0}));
     	
     	else if (str.compare("sin") == 0)
-    		return std::unique_ptr<Node>(new NodeSin());
+    		return std::unique_ptr<Node>(new NodeSin({1.0}));
     		
     	else if (str.compare("cos") == 0)
-    		return std::unique_ptr<Node>(new NodeCos());
+    		return std::unique_ptr<Node>(new NodeCos({1.0}));
     		
     	else if (str.compare("tanh")==0)
-            return std::unique_ptr<Node>(new NodeTanh());
+            return std::unique_ptr<Node>(new NodeTanh({1.0}));
     	   
         else if (str.compare("^2") == 0)
-    		return std::unique_ptr<Node>(new NodeSquare());
+    		return std::unique_ptr<Node>(new NodeSquare({1.0}));
  	
         else if (str.compare("^3") == 0)
-    		return std::unique_ptr<Node>(new NodeCube());
+    		return std::unique_ptr<Node>(new NodeCube({1.0}));
     	
         else if (str.compare("^") == 0)
-    		return std::unique_ptr<Node>(new NodeExponent());
+    		return std::unique_ptr<Node>(new NodeExponent({1.0, 1.0}));
 
         else if (str.compare("exp") == 0)
-    		return std::unique_ptr<Node>(new NodeExponential());
+    		return std::unique_ptr<Node>(new NodeExponential({1.0}));
     		
     	else if (str.compare("gauss")==0)
-            return std::unique_ptr<Node>(new NodeGaussian());
+            return std::unique_ptr<Node>(new NodeGaussian({1.0}));
         
         else if (str.compare("gauss2d")==0)
-            return std::unique_ptr<Node>(new Node2dGaussian());
+            return std::unique_ptr<Node>(new Node2dGaussian({1.0, 1.0}));
 
         else if (str.compare("log") == 0)
-    		return std::unique_ptr<Node>(new NodeLog());   
+    		return std::unique_ptr<Node>(new NodeLog({1.0}));   
     		
     	else if (str.compare("logit")==0)
-            return std::unique_ptr<Node>(new NodeLogit());
+            return std::unique_ptr<Node>(new NodeLogit({1.0}));
 
         else if (str.compare("relu")==0)
-            return std::unique_ptr<Node>(new NodeRelu());
+            return std::unique_ptr<Node>(new NodeRelu({1.0}));
 
         else if (str.compare("b2f")==0)
             return std::unique_ptr<Node>(new NodeFloat<bool>());
@@ -340,11 +343,13 @@ namespace FT{
     	else if (str.compare("<=") == 0)
     		return std::unique_ptr<Node>(new NodeLEQ());
  
-        else if (str.compare("split") == 0)
-  		    return std::unique_ptr<Node>(new NodeSplit<double>());
-  		
-  		else if (str.compare("split_c") == 0)
-  		    return std::unique_ptr<Node>(new NodeSplit<int>());
+        #ifndef USE_CUDA
+            else if (str.compare("split") == 0)
+      		    return std::unique_ptr<Node>(new NodeSplit<float>());
+      		
+      		else if (str.compare("split_c") == 0)
+      		    return std::unique_ptr<Node>(new NodeSplit<int>());
+        #endif
     	
      	else if (str.compare("if") == 0)
     		return std::unique_ptr<Node>(new NodeIf());   	    		
@@ -395,9 +400,9 @@ namespace FT{
             if(dtypes.size() == 0)
             {
                 if (feature_names.size() == 0)
-                    return std::unique_ptr<Node>(new NodeVariable<double>(loc));
+                    return std::unique_ptr<Node>(new NodeVariable<float>(loc));
                 else
-                    return std::unique_ptr<Node>(new NodeVariable<double>(loc,'f', feature_names.at(loc)));
+                    return std::unique_ptr<Node>(new NodeVariable<float>(loc,'f', feature_names.at(loc)));
             }
             else if (feature_names.size() == 0)
             {
@@ -407,7 +412,7 @@ namespace FT{
                                                                                   dtypes[loc]));
                     case 'c': return std::unique_ptr<Node>(new NodeVariable<int>(loc,
                                                                                   dtypes[loc]));
-                    case 'f': return std::unique_ptr<Node>(new NodeVariable<double>(loc,
+                    case 'f': return std::unique_ptr<Node>(new NodeVariable<float>(loc,
                                                                                   dtypes[loc]));
                 }
             }
@@ -421,7 +426,7 @@ namespace FT{
                     case 'c': return std::unique_ptr<Node>(new NodeVariable<int>(loc, 
                                                            dtypes[loc],feature_names.at(loc)));
                     
-                    case 'f': return std::unique_ptr<Node>(new NodeVariable<double>(loc, 
+                    case 'f': return std::unique_ptr<Node>(new NodeVariable<float>(loc, 
                                                            dtypes[loc],feature_names.at(loc)));
                 }
             }
@@ -482,8 +487,16 @@ namespace FT{
         while ((pos = fs.find(delim)) != string::npos) 
         {
             token = fs.substr(0, pos);
-            functions.push_back(createNode(token));
-
+            #ifdef USE_CUDA
+            if (token.compare("split") == 0 || token.compare("split_c") == 0)
+            {
+                HANDLE_ERROR_NO_THROW("Split node is not implemented in non cuda version\n");
+            }
+	    else
+		functions.push_back(createNode(token));
+            #else
+                functions.push_back(createNode(token));
+	    #endif
             fs.erase(0, pos + delim.length());
         } 
         if (verbosity > 2){
@@ -496,7 +509,7 @@ namespace FT{
     }
 
     void Parameters::set_terminals(int nf,
-                                   std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z)
+                                   std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
     {
         /*!
          * based on number of features.
@@ -547,12 +560,12 @@ namespace FT{
         }
     }
 
-    void Parameters::set_classes(VectorXd& y)
+    void Parameters::set_classes(VectorXf& y)
     {
         classes.clear();
 
         // set class labels
-        vector<double> uc = unique(y);
+        vector<float> uc = unique(y);
         
         n_classes = uc.size();
 
@@ -560,7 +573,7 @@ namespace FT{
             classes.push_back(int(c));
     }
 
-    void Parameters::set_sample_weights(VectorXd& y)
+    void Parameters::set_sample_weights(VectorXf& y)
     {
         // set class weights
         /* cout << "setting sample weights\n"; */

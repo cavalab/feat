@@ -53,16 +53,16 @@ namespace FT{
          
            
         /// get probabilities of variation
-        vector<double> Individual::get_p() const { return p; }     
+        vector<float> Individual::get_p() const { return p; }     
         
-        void Individual::set_p(const vector<double>& weights, const double& fb)
+        void Individual::set_p(const vector<float>& weights, const float& fb)
         {   
             //cout<<"Weights size = "<<weights.size()<<"\n";
             //cout<<"Roots size = "<<roots().size()<<"\n";
             if(weights.size() != program.roots().size())
             {
                 cout<<"Weights are\n";
-                for(double weight : weights)
+                for(float weight : weights)
                     cout<<weight<<"\n";
                     
                 cout<<"Roots are\n";
@@ -79,7 +79,7 @@ namespace FT{
             p.resize(0);
             
             // normalize the sum of the weights
-            double sum = 0;
+            float sum = 0;
             for (unsigned i =0; i<weights.size(); ++i)
                 sum += fabs(weights.at(i));
 
@@ -88,7 +88,7 @@ namespace FT{
                 p[i] = 1 - fabs(weights[i]/sum);
             /* for (unsigned i=0; i<p.size(); ++i) */
             /*     p[i] = 1-p[i]; */
-            double u = 1.0/double(p.size());    // uniform probability
+            float u = 1.0/float(p.size());    // uniform probability
             /* std::cout << "p: "; */
             /* for (auto tmp : p) cout << tmp << " " ; cout << "\n"; */
             /* std::cout << "softmax(p)\n"; */
@@ -100,14 +100,14 @@ namespace FT{
             this->w = weights;
         }
         
-        double Individual::get_p(const size_t i) const
+        float Individual::get_p(const size_t i) const
         {
             /*! @param i index in program 
              * @return weight associated with node */
             vector<size_t> rts = program.roots();
             std::reverse(rts.begin(),rts.end()); 
             size_t j = 0;
-            double size = rts[0];
+            float size = rts[0];
             
             
 
@@ -127,14 +127,14 @@ namespace FT{
                 return 0.0;
             }
             // normalize weight by size of subtree
-            double norm_weight = p.at(j)/size;
+            float norm_weight = p.at(j)/size;
             return norm_weight;
 
         }
         
-        vector<double> Individual::get_p(const vector<size_t>& locs) const
+        vector<float> Individual::get_p(const vector<size_t>& locs) const
         {
-            vector<double> ps;
+            vector<float> ps;
             for (const auto& el : locs) ps.push_back(get_p(el));
             return ps;
         }
@@ -153,10 +153,12 @@ namespace FT{
                 set_p(ml->get_weights(),params.feedback);
             else
             {   // set weights to zero
-                vector<double> w(Phi.rows(), 0);                     
+                vector<float> w(Phi.rows(), 0);                     
                 set_p(w,params.feedback);
             }
             this->yhat = ml->labels_to_vector(yh);
+            
+            //cout << "Yhat is \n " << this->yhat << endl;
 
             return yh;
         }
@@ -173,7 +175,7 @@ namespace FT{
             /* if (drop_idx >= 0)  // if drop_idx specified, mask that phi output */
             /* { */
             /*     cout << "dropping row " + std::to_string(drop_idx) + "\n"; */
-            /*     Phi.row(drop_idx) = VectorXd::Zero(Phi.cols()); */
+            /*     Phi.row(drop_idx) = VectorXf::Zero(Phi.cols()); */
             /* } */
             // calculate ML model from Phi
             params.msg("ML predicting on " + get_eqn(), 3);
@@ -182,12 +184,12 @@ namespace FT{
             return yhat;
         }
 
-        VectorXd Individual::predict_drop(const Data& d, const Parameters& params, int drop_idx)
+        VectorXf Individual::predict_drop(const Data& d, const Parameters& params, int drop_idx)
         {
             // calculate program output matrix Phi
             params.msg("Generating output for " + get_eqn(), 3);
             // toggle validation
-            MatrixXd PhiDrop = Phi;           // TODO: guarantee this is not changing nodes
+            MatrixXf PhiDrop = Phi;           // TODO: guarantee this is not changing nodes
              
             if (Phi.size()==0)
                 HANDLE_ERROR_THROW("Phi must be generated before predict_drop() is called\n");
@@ -197,22 +199,24 @@ namespace FT{
                     HANDLE_ERROR_THROW("drop_idx ( " + std::to_string(drop_idx) + " > Phi size (" 
                                        + std::to_string(Phi.rows()) + ")\n");
                 cout << "dropping row " + std::to_string(drop_idx) + "\n";
-                /* PhiDrop.row(drop_idx) = VectorXd::Zero(Phi.cols()); */
+                /* PhiDrop.row(drop_idx) = VectorXf::Zero(Phi.cols()); */
                 PhiDrop.row(drop_idx).setZero();
             }
             // calculate ML model from Phi
             /* params.msg("ML predicting on " + get_eqn(), 3); */
             // assumes ML is already trained
-            VectorXd yh = ml->predict_vector(PhiDrop);
+            VectorXf yh = ml->predict_vector(PhiDrop);
             return yh;
         }
 
-        VectorXd Individual::predict_vector(const Data& d, const Parameters& params)
+        VectorXf Individual::predict_vector(const Data& d, const Parameters& params)
         {
             return ml->labels_to_vector(this->predict(d,params));
         }
+        
+        #ifndef USE_CUDA
         // calculate program output matrix
-        MatrixXd Individual::out(const Data& d, const Parameters& params, bool predict)
+        MatrixXf Individual::out(const Data& d, const Parameters& params, bool predict)
         {
             /*!
              * @param d: Data structure
@@ -245,53 +249,184 @@ namespace FT{
             
             if (state.f.size()==0)
             {
-                if (state.b.size() == 0)
+                if (state.c.size() == 0)
                 {
-                    if (state.c.size() == 0)
+                    if (state.b.size() == 0)
                         HANDLE_ERROR_THROW("Error: no outputs in State");
                     
-                    cols = state.c.top().size();
+                    cols = state.b.top().size();
                 }
                 else
-                    cols = state.b.top().size();
+                    cols = state.c.top().size();
             }
             else
                 cols = state.f.top().size();
                    
             int rows_f = state.f.size();
-            int rows_b = state.b.size();
             int rows_c = state.c.size();
-
+            int rows_b = state.b.size();
+            
             dtypes.clear();        
-            Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
+            Matrix<float,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
             
             // add state_f to Phi
             for (unsigned int i=0; i<rows_f; ++i)
             {    
-                 ArrayXd Row = ArrayXd::Map(state.f.at(i).data(),cols);
+                 ArrayXf Row = ArrayXf::Map(state.f.at(i).data(),cols);
                  clean(Row); // remove nans, set infs to max and min
                  Phi.row(i) = Row;
                  dtypes.push_back('f'); 
             }
-            // convert state_b to Phi       
-            for (unsigned int i=0; i<rows_b; ++i)
-            {
-                Phi.row(i+rows_f+rows_c) = ArrayXb::Map(state.b.at(i).data(),cols).cast<double>();
-                dtypes.push_back('b');
-            }
+            
             // add state_c to Phi
             for (unsigned int i=0; i<rows_c; ++i)
             {    
-                 ArrayXd Row = ArrayXi::Map(state.c.at(i).data(),cols).cast<double>();
+                 ArrayXf Row = ArrayXi::Map(state.c.at(i).data(),cols).cast<float>();
                  clean(Row); // remove nans, set infs to max and min
                  Phi.row(i+rows_f) = Row;
                  dtypes.push_back('c');
             }       
+            
+            // convert state_b to Phi       
+            for (unsigned int i=0; i<rows_b; ++i)
+            {
+                Phi.row(i+rows_f+rows_c) = ArrayXb::Map(state.b.at(i).data(),cols).cast<float>();
+                dtypes.push_back('b');
+            }
+            
+            //cout << "Phi is "<<endl<<Phi;
+            
             return Phi;
         }
+        #else
+        MatrixXf Individual::out(const Data& d, const Parameters& params, bool predict)
+        {
+        
+            /*!
+             * @params X: n_features x n_samples data
+             * @params Z: longitudinal nodes for samples
+             * @params y: target data
+             * @params: Feat parameters
+             * @returns Phi: n_features x n_samples transformation
+             */
 
+            State state;
+            params.msg("evaluating program " + get_eqn(),3);
+            params.msg("program length: " + std::to_string(program.size()),3);
+            // to minimize copying overhead, set the state size to the maximum it will reach for the
+            // program 
+            std::map<char, size_t> state_size = get_max_state_size();
+            // set the device based on the thread number
+            Op::choose_gpu();        
+            
+            // allocate memory for the state on the device
+            /* std::cout << "X size: " << X.rows() << "x" << X.cols() << "\n"; */ 
+            state.allocate(state_size,d.X.cols());        
+            /* state.f.resize( */
+            // evaluate each node in program
+            for (const auto& n : program)
+            {
+                if (n->isNodeTrain()) // learning nodes are set for fit or predict mode
+                    dynamic_cast<NodeTrain*>(n.get())->train = !predict;
+            	if(state.check(n->arity))
+            	{
+            	    //cout<<"***enter here "<<n->name<<"\n";
+	                n->evaluate(d, state);
+	                //cout<<"***exit here "<<n->name<<"\n";
+                    // adjust indices
+                    state.update_idx(n->otype, n->arity); 
+	            }
+                else
+                {
+                    std::cout << "individual::out() error: node " << n->name << " in " + program_str() + 
+                                 " is invalid\n";
+                    std::cout << "float state size: " << state.f.size() << "\n";
+                    std::cout << "bool state size: " << state.b.size() << "\n";
+                    std::cout << "op arity: " << n->arity['f'] << "f, " << n->arity['b'] << "b\n";
+                    exit(1);
+                }
+            }
+            // copy data from GPU to state (calls trim also)
+            state.copy_to_host();
+            // remove extraneous rows from states
+            //state.trim();
+            //check state
+            /* std::cout << "state.f:" << state.f.rows() << "x" << state.f.cols() << "\n"; */
+            /* for (unsigned i = 0; i < state.f.rows() ; ++i){ */
+            /*     for (unsigned j = 0; j<10 ; ++j) */
+            /*         std::cout << state.f(i,j) << ","; */
+            /*     std::cout << "\n\n"; */
+            /* } */
+            /* std::cout << "state.b:" << state.b.rows() << "x" << state.b.cols() << "\n"; */
+            /* for (unsigned i = 0; i < state.b.rows() ; ++i){ */
+            /*     for (unsigned j = 0; j<10 ; ++j) */
+            /*         std::cout << state.b(i,j) << ","; */
+            /*     std::cout << "\n\n"; */
+            /* } */
+            // convert state_f to Phi
+            params.msg("converting State to Phi",3);
+            int cols;
+            
+            if (state.f.size()==0)
+            {
+                if (state.c.size() == 0)
+                {
+                    if (state.b.size() == 0)
+                        HANDLE_ERROR_THROW("Error: no outputs in state");
+                    
+                    cols = state.b.cols();
+                }
+                else
+                    cols = state.c.cols();
+            }
+            else
+                cols = state.f.cols();
+                   
+            int rows_f = state.f.rows();
+            int rows_c = state.c.rows();
+            int rows_b = state.b.rows();
+            
+            dtypes.clear();        
+            Matrix<float,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_b+rows_c, cols);
+
+            // combine states into Phi 
+            Phi <<  state.f.cast<float>(),
+                    state.c.cast<float>(),
+                    state.b.cast<float>();
+                    
+            
+            /* std::cout << "Phi:" << Phi.rows() << "x" << Phi.cols() << "\n"; */
+
+            for (unsigned int i=0; i<rows_f; ++i)
+            {    
+                 /* Phi.row(i) = VectorXf::Map(state.f.at(i).data(),cols); */
+                 dtypes.push_back('f'); 
+            }
+            
+            for (unsigned int i=0; i<rows_c; ++i)
+            {    
+                 /* Phi.row(i) = VectorXf::Map(state.f.at(i).data(),cols); */
+                 dtypes.push_back('c'); 
+            }
+            
+            // convert state_b to Phi       
+            for (unsigned int i=0; i<rows_b; ++i)
+            {
+                /* Phi.row(i+rows_f) = ArrayXb::Map(state.b.at(i).data(),cols).cast<float>(); */
+                dtypes.push_back('b');
+            }
+            
+                   
+            //Phi.transposeInPlace();
+            
+            //cout << "Phi is "<<endl<<Phi;
+            return Phi;
+        }
+        #endif
+
+        #ifndef USE_CUDA
         // calculate program output matrix
-        MatrixXd Individual::out_trace(const Data& d, const Parameters& params, 
+        MatrixXf Individual::out_trace(const Data& d, const Parameters& params, 
                                        vector<Trace>& state_trace)
         {
             /*!
@@ -344,30 +479,8 @@ namespace FT{
                 if(state.check(program.at(i)->arity))
             	{
                     if (trace)
-                    {
-                        /* cout << "storing trace of " << program.at(i)->name */ 
-                        /*      << " for " << program.at(roots.at(root))->name */ 
-                        /*      << " with " << program.at(i)->arity['f'] << " arguments\n"; */
-                        for (int j = 0; j < program.at(i)->arity['f']; j++) {
-                            /* cout << "push back float arg for " << program.at(i)->name << "\n"; */
-                            /* cout << "trace_idx: " << trace_idx */ 
-                            /*      << ", state_trace size: " << state_trace.size() << "\n"; */
-                            state_trace.at(trace_idx).f.push_back(state.f.at(state.f.size() - 
-                                                             (program.at(i)->arity['f'] - j)));
-                        }
-                        
-                        for (int j = 0; j < program.at(i)->arity['b']; j++) {
-                            /* cout << "push back bool arg for " << program.at(i)->name << "\n"; */
-                            state_trace.at(trace_idx).b.push_back(state.b.at(state.b.size() - 
-                                                             (program.at(i)->arity['b'] - j)));
-                        }
+                        state_trace.at(trace_idx).copy_to_trace(state, program.at(i)->arity);
 
-                        for (int j = 0; j < program.at(i)->arity['c']; j++) {
-                            /* cout << "push back categorial arg for " << program.at(i)->name << "\n"; */
-                            state_trace.at(trace_idx).c.push_back(state.c.at(state.c.size() - 
-                                                             (program.at(i)->arity['c'] - j)));
-                        }
-                    }
 	                program.at(i)->evaluate(d, state);
                     program.at(i)->visits = 0;
 	            }
@@ -394,39 +507,169 @@ namespace FT{
                 cols = state.f.top().size();
                    
             int rows_f = state.f.size();
-            int rows_b = state.b.size();
             int rows_c = state.c.size();
+            int rows_b = state.b.size();
             
             dtypes.clear();        
-            Matrix<double,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
+            Matrix<float,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
             
             // add state_f to Phi
             for (unsigned int i=0; i<rows_f; ++i)
             {    
-                 ArrayXd Row = ArrayXd::Map(state.f.at(i).data(),cols);
+                 ArrayXf Row = ArrayXf::Map(state.f.at(i).data(),cols);
                  clean(Row); // remove nans, set infs to max and min
                  Phi.row(i) = Row;
                  dtypes.push_back('f'); 
             }
             
-            // convert state_b to Phi       
-            for (unsigned int i=0; i<rows_b; ++i)
-            {
-                Phi.row(i+rows_f+rows_c) = ArrayXb::Map(state.b.at(i).data(),cols).cast<double>();
-                dtypes.push_back('b');
-            }
-
             // add state_c to Phi
             for (unsigned int i=0; i<rows_c; ++i)
             {    
-                 ArrayXd Row = ArrayXi::Map(state.c.at(i).data(),cols).cast<double>();
+                 ArrayXf Row = ArrayXi::Map(state.c.at(i).data(),cols).cast<float>();
                  clean(Row); // remove nans, set infs to max and min
                  Phi.row(i+rows_f) = Row;
                  dtypes.push_back('c'); 
             }       
+            
+            // convert state_b to Phi       
+            for (unsigned int i=0; i<rows_b; ++i)
+            {
+                Phi.row(i+rows_f+rows_c) = ArrayXb::Map(state.b.at(i).data(),cols).cast<float>();
+                dtypes.push_back('b');
+            }
+
             //Phi.transposeInPlace();
             return Phi;
         }
+        #else
+        // calculate program output matrix
+        MatrixXf Individual::out_trace(const Data& d,
+                         const Parameters& params, vector<Trace>& state_trace)
+        {
+            /*!
+             * @params X: n_features x n_samples data
+             * @params Z: longitudinal nodes for samples
+             * @params y: target data
+             * @params: Feat parameters
+             * @returns Phi: n_features x n_samples transformation
+             */
+
+            State state;
+            /* params.msg("evaluating program " + get_eqn(),3); */
+            /* params.msg("program length: " + std::to_string(program.size()),3); */
+            
+            std::map<char, size_t> state_size = get_max_state_size();
+            //cout << "Max stack size is " << state_size.at('f') << "\n";
+            // set the device based on the thread number
+            choose_gpu();
+            // allocate memory for the state on the device
+            /* std::cout << "X size: " << X.rows() << "x" << X.cols() << "\n"; */ 
+            state.allocate(state_size,d.X.cols());
+
+            vector<size_t> roots = program.roots();
+            size_t root = 0;
+            bool trace=false;
+            size_t trace_idx=0;
+
+            if (program.at(roots.at(root))->isNodeDx())
+            {
+                trace=true;
+                state_trace.push_back(Trace());
+            }
+            
+            // evaluate each node in program
+            for (unsigned i = 0; i<program.size(); ++i)
+            {
+                if (i > roots.at(root)){
+                    ++root;
+                    if (program.at(roots.at(root))->isNodeDx())
+                    {
+                        trace=true;
+                        state_trace.push_back(Trace());
+                        ++trace_idx;
+                    }
+                    else
+                        trace=false;
+                }
+                if(state.check(program.at(i)->arity))
+            	{
+                    if (trace)
+                        state_trace.at(trace_idx).copy_to_trace(state, program.at(i)->arity);
+                    
+                    program.at(i)->evaluate(d, state);
+                    state.update_idx(program.at(i)->otype, program.at(i)->arity); 
+                    //cout << "\nstack.idx[otype]: " << state.idx[program.at(i)->otype];
+                    program.at(i)->visits = 0;
+                    //cout << "Evaluated node " << program.at(i)->name << endl;
+                    
+                }
+                else
+                    HANDLE_ERROR_THROW("out_trace() error: node " + program.at(i)->name + " in " + program_str() + " is invalid\n");
+            }
+            
+            state.copy_to_host();
+            
+            // convert state_f to Phi
+            params.msg("converting State to Phi",3);
+            int cols;
+            
+            if (state.f.size()==0)
+            {
+                if (state.c.size() == 0)
+                {
+                    if (state.b.size() == 0)
+                        HANDLE_ERROR_THROW("Error: no outputs in State");
+                    
+                    cols = state.b.cols();
+                }
+                else
+                    cols = state.c.cols();
+            }
+            else
+                cols = state.f.cols();
+                   
+            int rows_f = state.f.rows();
+            int rows_c = state.c.rows();
+            int rows_b = state.b.rows();
+            
+            dtypes.clear();        
+            
+            Matrix<float,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
+
+            ArrayXXf PhiF = ArrayXXf::Map(state.f.data(),state.f.rows(),state.f.cols());
+            ArrayXXi PhiC = ArrayXXi::Map(state.c.data(),state.c.rows(),state.c.cols());
+            ArrayXXb PhiB = ArrayXXb::Map(state.b.data(),state.b.rows(),state.b.cols());
+            
+            // combine State into Phi 
+            Phi <<  PhiF.cast<float>(),
+                    PhiC.cast<float>(),
+                    PhiB.cast<float>();
+            
+            /* std::cout << "Phi:" << Phi.rows() << "x" << Phi.cols() << "\n"; */
+
+            for (unsigned int i=0; i<rows_f; ++i)
+            {    
+                 /* Phi.row(i) = VectorXf::Map(state.f.at(i).data(),cols); */
+                 dtypes.push_back('f'); 
+            }
+            
+            for (unsigned int i=0; i<rows_c; ++i)
+            {    
+                 /* Phi.row(i) = VectorXf::Map(state.f.at(i).data(),cols); */
+                 dtypes.push_back('c'); 
+            }
+            
+            // convert state_b to Phi       
+            for (unsigned int i=0; i<rows_b; ++i)
+            {
+                /* Phi.row(i+rows_f) = ArrayXb::Map(state.b.at(i).data(),cols).cast<float>(); */
+                dtypes.push_back('b');
+            }
+                   
+            //Phi.transposeInPlace();
+            return Phi;
+        }
+        #endif
         
         // return symbolic representation of program 
         string Individual::get_eqn()
@@ -607,6 +850,32 @@ namespace FT{
             }
             return s;
         }
+        
+        std::map<char, size_t> Individual::get_max_state_size()
+        {
+            // max stack size is calculated using node arities
+            std::map<char, size_t> stack_size;
+            std::map<char, size_t> max_stack_size;
+            stack_size['f'] = 0;
+            stack_size['c'] = 0; 
+            stack_size['b'] = 0; 
+            max_stack_size['f'] = 0;
+            max_stack_size['c'] = 0;
+            max_stack_size['b'] = 0;
+
+            for (const auto& n : program)   
+            {   	
+                ++stack_size[n->otype];
+
+                if ( max_stack_size[n->otype] < stack_size[n->otype])
+                    max_stack_size[n->otype] = stack_size[n->otype];
+
+                for (const auto& a : n->arity)
+                    stack_size[a.first] -= a.second;       
+            }	
+            return max_stack_size;
+        }
+
     }
 
 }

@@ -15,7 +15,7 @@ namespace FT{
             {
             	public:
             	  	
-            		NodeDivide(vector<double> W0 = vector<double>());
+            		NodeDivide(vector<float> W0 = vector<float>());
             		
                     /// Evaluates the node and updates the state states. 
                     void evaluate(const Data& data, State& state);
@@ -24,7 +24,7 @@ namespace FT{
                     void eval_eqn(State& state);
 
                     // Might want to check derivative orderings for other 2 arg nodes
-                    ArrayXd getDerivative(Trace& state, int loc);
+                    ArrayXf getDerivative(Trace& state, int loc);
                     
                 protected:
                     NodeDivide* clone_impl() const override;

@@ -15,7 +15,7 @@ namespace FT{
             {
             	public:
             	
-            		NodeLogit(vector<double> W0 = vector<double>());
+            		NodeLogit(vector<float> W0 = vector<float>());
             		
                     /// Evaluates the node and updates the state states. 
                     void evaluate(const Data& data, State& state);
@@ -23,7 +23,7 @@ namespace FT{
                     /// Evaluates the node symbolically
                     void eval_eqn(State& state);
 
-                    ArrayXd getDerivative(Trace& state, int loc);
+                    ArrayXf getDerivative(Trace& state, int loc);
 
                 protected:
                     NodeLogit* clone_impl() const override;

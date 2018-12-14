@@ -17,10 +17,11 @@ namespace FT{
 	            complexity = 1;
             }
 
+            #ifndef USE_CUDA
             /// Evaluates the node and updates the state states. 
             void NodeMedian::evaluate(const Data& data, State& state)
             {
-                ArrayXd tmp(state.z.top().first.size());
+                ArrayXf tmp(state.z.top().first.size());
                 
                 int x;
                 
@@ -29,14 +30,32 @@ namespace FT{
                     
                 state.z.pop();
 
-                state.push<double>(tmp);
+                state.push<float>(tmp);
                 
             }
+            #else
+            void NodeMedian::evaluate(const Data& data, State& state)
+            {
+                
+                ArrayXf tmp(state.z.top().first.size());
+                
+                int x;
+                
+                for(x = 0; x < state.z.top().first.size(); x++)
+                    tmp(x) = median(limited(state.z.top().first[x]));
+                    
+                state.z.pop();
+
+                GPU_Variable(state.dev_f, tmp.data(), state.idx[otype], state.N);
+
+                
+            }
+            #endif
 
             /// Evaluates the node symbolically
             void NodeMedian::eval_eqn(State& state)
             {
-                state.push<double>("median(" + state.zs.pop() + ")");
+                state.push<float>("median(" + state.zs.pop() + ")");
             }
             
             NodeMedian* NodeMedian::clone_impl() const { return new NodeMedian(*this); }

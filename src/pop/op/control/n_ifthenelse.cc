@@ -20,38 +20,45 @@ namespace FT{
                 W = {0.0, 0.0};
 	        }
 
+            #ifndef USE_CUDA
             /// Evaluates the node and updates the state states. 
             void NodeIfThenElse::evaluate(const Data& data, State& state)
             {
-                ArrayXd f1 = state.pop<double>();
-                ArrayXd f2 = state.pop<double>();
-                state.push<double>(limited(state.pop<bool>().select(f1,f2)));
+                ArrayXf f1 = state.pop<float>();
+                ArrayXf f2 = state.pop<float>();
+                state.push<float>(limited(state.pop<bool>().select(f1,f2)));
             }
+            #else
+            void NodeIfThenElse::evaluate(const Data& data, State& state)
+            {
+                GPU_IfThenElse(state.dev_f, state.dev_b, state.idx[otype], state.idx['b'], state.N);
+            }
+            #endif
 
             /// Evaluates the node symbolically
             void NodeIfThenElse::eval_eqn(State& state)
             {
-                state.push<double>("if-then-else(" + state.popStr<bool>() + 
-                                   "," + state.popStr<double>() + "," + 
-                                   state.popStr<double>() + ")");
+                state.push<float>("if-then-else(" + state.popStr<bool>() + 
+                                   "," + state.popStr<float>() + "," + 
+                                   state.popStr<float>() + ")");
             }
             
-            ArrayXd NodeIfThenElse::getDerivative(Trace& state, int loc) 
+            ArrayXf NodeIfThenElse::getDerivative(Trace& state, int loc) 
             {
-                ArrayXd& xf = state.get<double>()[state.size<double>()-1];
+                ArrayXf& xf = state.get<float>()[state.size<float>()-1];
                 ArrayXb& xb = state.get<bool>()[state.size<bool>()-1];
                 
                 switch (loc) {
                     case 3: // d/dW[0]
                     case 2: 
-                        return ArrayXd::Zero(xf.size()); 
+                        return ArrayXf::Zero(xf.size()); 
                     case 1: // d/dx2
-                        return (!xb).cast<double>(); 
+                        return (!xb).cast<float>(); 
                     case 0: // d/dx1
                     default:
-                        return xb.cast<double>(); 
-                        /* .select(ArrayXd::Ones(state.f[state.f.size()-1].size(), */
-                        /*                  ArrayXd::Zero(state.f[state.f.size()-1].size()); */
+                        return xb.cast<float>(); 
+                        /* .select(ArrayXf::Ones(state.f[state.f.size()-1].size(), */
+                        /*                  ArrayXf::Zero(state.f[state.f.size()-1].size()); */
                 } 
             }
 

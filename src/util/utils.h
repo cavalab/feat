@@ -30,8 +30,8 @@ namespace FT{
         
         extern int PBWIDTH;
      
-        /// limits node output to be between MIN_DBL and MAX_DBL
-        void clean(ArrayXd& x);
+        /// limits node output to be between MIN_FLT and MAX_FLT
+        void clean(ArrayXf& x);
 
         std::string ltrim(std::string str, const std::string& chars = "\t\n\v\f\r ");
          
@@ -41,7 +41,7 @@ namespace FT{
 
 
         /// reordering utility for shuffling longitudinal data.
-        void reorder_longitudinal(vector<ArrayXd> &vec1, const vector<int>& order); 
+        void reorder_longitudinal(vector<ArrayXf> &vec1, const vector<int>& order); 
 
         /// check if element is in vector.
         template<typename T>
@@ -51,28 +51,31 @@ namespace FT{
         }
        
         /// calculate median
-        double median(const ArrayXd& v);
+        float median(const ArrayXf& v);
+        
+        /// calculate variance when mean provided
+        float variance(const ArrayXf& v, float mean);
         
         /// calculate variance
-        double variance(const ArrayXd& v);
+        float variance(const ArrayXf& v);
         
         /// calculate skew
-        double skew(const ArrayXd& v);
+        float skew(const ArrayXf& v);
         
         /// calculate kurtosis
-        double kurtosis(const ArrayXd& v);
+        float kurtosis(const ArrayXf& v);
        
         /// covariance of x and y
-        double covariance(const ArrayXd& x, const ArrayXd& y);
+        float covariance(const ArrayXf& x, const ArrayXf& y);
        
         /// slope of x/y
-        double slope(const ArrayXd& x, const ArrayXd& y);
+        float slope(const ArrayXf& x, const ArrayXf& y);
 
         /// the normalized covariance of x and y
-        double pearson_correlation(const ArrayXd& x, const ArrayXd& y);
+        float pearson_correlation(const ArrayXf& x, const ArrayXf& y);
         
         /// median absolute deviation
-        double mad(const ArrayXd& x);
+        float mad(const ArrayXf& x);
 
         /// return indices that sort a vector
 	    template <typename T>
@@ -109,7 +112,7 @@ namespace FT{
 			
 			    void Reset();
 			
-                std::chrono::duration<double> Elapsed() const;
+                std::chrono::duration<float> Elapsed() const;
                 
 			    template <typename T, typename Traits>
 			    friend std::basic_ostream<T, Traits>& operator<<(std::basic_ostream<T, Traits>& out, 
@@ -143,27 +146,27 @@ namespace FT{
         /// normalizes a matrix to unit variance, 0 mean centered.
         struct Normalizer
         {
-            vector<double> scale;
-            vector<double> offset;
+            vector<float> scale;
+            vector<float> offset;
             vector<char> dtypes;
 
             /// fit the scale and offset of data. 
-            void fit(MatrixXd& X, const vector<char>& dt);
+            void fit(MatrixXf& X, const vector<char>& dt);
             
             /// normalize matrix.
-            void normalize(MatrixXd& X);
+            void normalize(MatrixXf& X);
             
-            void fit_normalize(MatrixXd& X, const vector<char>& dtypes);
+            void fit_normalize(MatrixXf& X, const vector<char>& dtypes);
         };
 
         /// returns true for elements of x that are infinite
-        ArrayXb isinf(const ArrayXd& x);
+        ArrayXb isinf(const ArrayXf& x);
         
         /// returns true for elements of x that are NaN
-        ArrayXb isnan(const ArrayXd& x);
+        ArrayXb isnan(const ArrayXf& x);
        
         /// calculates data types for each column of X
-        vector<char> find_dtypes(MatrixXd &X);
+        vector<char> find_dtypes(MatrixXf &X);
 	
         /// returns unique elements in vector
         template <typename T>
@@ -194,15 +197,16 @@ namespace FT{
         }
          
         /// returns the condition number of a matrix.
-        double condition_number(const MatrixXd& X);
+        float condition_number(const MatrixXf& X);
           
         /// returns the pearson correlation coefficients of matrix.
-        MatrixXd corrcoef(const MatrixXd& X);
-        // returns the mean of the pairwise correlations of a matrix.
-        double mean_square_corrcoef(const MatrixXd& X);
+        MatrixXf corrcoef(const MatrixXf& X);
         
+        // returns the mean of the pairwise correlations of a matrix.
+        float mean_square_corrcoef(const MatrixXf& X);
+
         /// returns the (first) index of the element with the middlest value in v
-        int argmiddle(vector<double>& v);
+        int argmiddle(vector<float>& v);
 
     }
 

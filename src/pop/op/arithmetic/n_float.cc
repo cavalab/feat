@@ -26,18 +26,29 @@ namespace FT{
                 complexity = 1;
             }
 
+            #ifndef USE_CUDA 
             /// Evaluates the node and updates the state states. 
             template <class T>
             void NodeFloat<T>::evaluate(const Data& data, State& state)
             {
-                state.push<double>(state.pop<T>().template cast<double>());
+                state.push<float>(state.pop<T>().template cast<float>());
             }
+            #else
+            template <class T>
+            void NodeFloat<T>::evaluate(const Data& data, State& state)
+            {
+                if(arity['b'])
+                    GPU_Float(state.dev_f, state.dev_b, state.idx[otype], state.idx['b'], state.N);
+                else
+                    GPU_Float(state.dev_f, state.dev_c, state.idx[otype], state.idx['c'], state.N);
+            }
+            #endif
 
             /// Evaluates the node symbolically
             template <class T>
             void NodeFloat<T>::eval_eqn(State& state)
             {
-                state.push<double>("float(" + state.popStr<T>() + ")");
+                state.push<float>("float(" + state.popStr<T>() + ")");
             }
             
             template <class T>

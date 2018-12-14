@@ -18,6 +18,7 @@ namespace FT
 	            complexity = 2;
             }
 
+            #ifndef USE_CUDA
             /// Evaluates the node and updates the state states. 
             void NodeXor::evaluate(const Data& data, State& state)
             {
@@ -29,6 +30,12 @@ namespace FT
                 state.push<bool>(res);
                 
             }
+            #else
+            void NodeXor::evaluate(const Data& data, State& state)
+            {
+                GPU_Xor(state.dev_b, state.idx[otype], state.N);
+            }
+            #endif
 
             /// Evaluates the node symbolically
             void NodeXor::eval_eqn(State& state)

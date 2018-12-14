@@ -33,12 +33,12 @@ namespace FT{
                 return arity['f'] + arity['b'] + arity['c'] + arity['z'];
             }
 
-            /// limits node output to be between MIN_DBL and MAX_DBL
-            ArrayXd Node::limited(ArrayXd x)
+            /// limits node output to be between MIN_FLT and MAX_FLT
+            ArrayXf Node::limited(ArrayXf x)
             {
                 x = (isnan(x)).select(0,x);
-                x = (x < MIN_DBL).select(MIN_DBL,x);
-                x = (x > MAX_DBL).select(MAX_DBL,x);
+                x = (x < MIN_FLT).select(MIN_FLT,x);
+                x = (x > MAX_FLT).select(MAX_FLT,x);
                 return x;
             };
 

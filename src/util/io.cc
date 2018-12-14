@@ -12,7 +12,7 @@ namespace FT{
     
     namespace Util{
     
-        void printProgress (double percentage)
+        void printProgress (float percentage)
         {
             int val = (int) (percentage * 100);
             int lpad = (int) (percentage * PBWIDTH);
@@ -24,7 +24,7 @@ namespace FT{
         }
 
         /// load csv file into matrix. 
-        void load_csv (const std::string & path, MatrixXd& X, VectorXd& y, vector<string>& names, 
+        void load_csv (const std::string & path, MatrixXf& X, VectorXf& y, vector<string>& names, 
                        vector<char> &dtypes, bool& binary_endpoint, char sep) 
         {
             std::ifstream indata;
@@ -33,7 +33,7 @@ namespace FT{
                 HANDLE_ERROR_THROW("Invalid input file " + path + "\n"); 
                 
             std::string line;
-            std::vector<double> values, targets;
+            std::vector<float> values, targets;
             unsigned rows=0, col=0, target_col = 0;
             
             while (std::getline(indata, line)) 
@@ -64,8 +64,8 @@ namespace FT{
                 col=0;   
             }
             
-            X = Map<MatrixXd>(values.data(), values.size()/(rows-1), rows-1);
-            y = Map<VectorXd>(targets.data(), targets.size());
+            X = Map<MatrixXf>(values.data(), values.size()/(rows-1), rows-1);
+            y = Map<VectorXf>(targets.data(), targets.size());
             
             assert(X.cols() == y.size() && "different numbers of samples in X and y");
             assert(X.rows() == names.size() && "header missing or incorrect number of feature names");
@@ -82,7 +82,7 @@ namespace FT{
     /*         int i, j; */
     /*         bool isBinary; */
     /*         bool isCategorical; */
-    /*         std::map<double, bool> uniqueMap; */
+    /*         std::map<float, bool> uniqueMap; */
     /*         for(i = 0; i < X.rows(); i++) */
     /*         { */
     /*             isBinary = true; */
@@ -117,11 +117,11 @@ namespace FT{
         
         /// load longitudinal csv file into matrix. 
         void load_longitudinal(const std::string & path,
-                               std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
+                               std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > &Z,
                                char sep)
         {
             cout << "in load_longitudinal\n";
-            std::map<string, std::map<int, std::pair<vector<double>, vector<double> > > > dataMap;
+            std::map<string, std::map<int, std::pair<vector<float>, vector<float> > > > dataMap;
             std::ifstream indata;
             indata.open(path);
             if (!indata.good())
@@ -176,9 +176,9 @@ namespace FT{
             {
                 for(x = 0; x < numSamples; ++x)
                 {
-                    ArrayXd arr1 = Map<ArrayXd>(dataMap[val.first].at(x).first.data(), 
+                    ArrayXf arr1 = Map<ArrayXf>(dataMap[val.first].at(x).first.data(), 
                                                 dataMap[val.first].at(x).first.size());
-                    ArrayXd arr2 = Map<ArrayXd>(dataMap[val.first].at(x).second.data(), 
+                    ArrayXf arr2 = Map<ArrayXf>(dataMap[val.first].at(x).second.data(), 
                                                 dataMap[val.first].at(x).second.size());
                     Z[val.first].first.push_back(arr1);
                     Z[val.first].second.push_back(arr2);
@@ -194,7 +194,7 @@ namespace FT{
          * load partial longitudinal csv file into matrix according to idx vector
          */
         void load_partial_longitudinal(const std::string & path,
-                               std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
+                               std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > &Z,
                                char sep, const vector<int>& idx)
         {
             /* loads data from the longitudinal file, with idx providing the id numbers of each row in
@@ -252,7 +252,7 @@ namespace FT{
             // 1) the sample row index in X/y, and 2) a pair consisting of 
             //      - the variable value (first) and 
             //      - variable date (second)
-            std::map<string, std::map<int, std::pair<vector<double>, vector<double> > > > dataMap;
+            std::map<string, std::map<int, std::pair<vector<float>, vector<float> > > > dataMap;
             std::ifstream indata;
             indata.open(path);
             if (!indata.good())
@@ -359,9 +359,9 @@ namespace FT{
                 for(int x = 0; x < numSamples; ++x)
                 {
                     /* cout << x << ","; */
-                    ArrayXd arr1 = Map<ArrayXd>(dataMap[val.first].at(x).first.data(), 
+                    ArrayXf arr1 = Map<ArrayXf>(dataMap[val.first].at(x).first.data(), 
                                                 dataMap[val.first].at(x).first.size());
-                    ArrayXd arr2 = Map<ArrayXd>(dataMap[val.first].at(x).second.data(), 
+                    ArrayXf arr2 = Map<ArrayXf>(dataMap[val.first].at(x).second.data(), 
                                                 dataMap[val.first].at(x).second.size());
                     Z[val.first].first.push_back(arr1);
                     Z[val.first].second.push_back(arr2);

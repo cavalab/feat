@@ -22,20 +22,20 @@ namespace FT{
 
     namespace Util{
         /// outputs a progress bar, filled according to @param percentage.
-        void printProgress (double percentage);
+        void printProgress (float percentage);
 
         ///   load csv file into matrix. 
-        void load_csv (const std::string & path, MatrixXd& X, VectorXd& y, vector<string>& names, 
+        void load_csv (const std::string & path, MatrixXf& X, VectorXf& y, vector<string>& names, 
                        vector<char> &dtypes, bool& binary_endpoint, char sep=',');
         
         ///  load longitudinal csv file into matrix. 
         void load_longitudinal(const std::string & path,
-                               std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
+                               std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > &Z,
                                char sep=',');
         
         /// load partial longitudinal csv file into matrix according to idx vector
         void load_partial_longitudinal(const std::string & path,
-                               std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
+                               std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > &Z,
                                char sep, const vector<int>& idx);
     }
 }
