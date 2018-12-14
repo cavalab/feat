@@ -147,9 +147,15 @@ namespace FT{
             // calculate ML model from Phi
             params.msg("ML training on " + get_eqn(), 3);
             ml = std::make_shared<ML>(params);
-
             shared_ptr<CLabels> yh = ml->fit(Phi,d.y,params,pass,dtypes);
 
+            if (pass)
+                set_p(ml->get_weights(),params.feedback);
+            else
+            {   // set weights to zero
+                vector<double> w(Phi.rows(), 0);                     
+                set_p(w,params.feedback);
+            }
             this->yhat = ml->labels_to_vector(yh);
             
             //cout << "Yhat is \n " << this->yhat << endl;
@@ -420,8 +426,8 @@ namespace FT{
 
         #ifndef USE_CUDA
         // calculate program output matrix
-        MatrixXf Individual::out_trace(const Data& d,
-                         const Parameters& params, vector<Trace>& state_trace)
+        MatrixXd Individual::out_trace(const Data& d, const Parameters& params, 
+                                       vector<Trace>& state_trace)
         {
             /*!
              * @param X: n_features x n_samples data
@@ -455,7 +461,8 @@ namespace FT{
             for (unsigned i = 0; i<program.size(); ++i)
             {
                 /* cout << "i = " << i << ", root = " << roots.at(root) << "\n"; */
-                if (i > roots.at(root)){
+                if (i > roots.at(root))
+                {
                     trace=false;
                     if (root + 1 < roots.size())
                     {
