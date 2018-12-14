@@ -77,8 +77,8 @@ cdef class PyFeat:
         cdef np.ndarray[np.float32_t, ndim=1, mode="fortran"] arr_y
         check_X_y(X,y,ensure_2d=True,ensure_min_samples=1)
         X = X.transpose()
-        arr_x = np.asfortranarray(X, dtype=np.float)
-        arr_y = np.asfortranarray(y, dtype=np.float)
+        arr_x = np.asfortranarray(X, dtype=np.float32)
+        arr_y = np.asfortranarray(y, dtype=np.float32)
 
         self.ft.fit(&arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y))
 
