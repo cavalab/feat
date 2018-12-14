@@ -153,7 +153,7 @@ namespace FT{
                 set_p(ml->get_weights(),params.feedback);
             else
             {   // set weights to zero
-                vector<double> w(Phi.rows(), 0);                     
+                vector<float> w(Phi.rows(), 0);                     
                 set_p(w,params.feedback);
             }
             this->yhat = ml->labels_to_vector(yh);
