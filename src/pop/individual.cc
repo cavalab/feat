@@ -152,7 +152,7 @@ namespace FT{
 
             this->yhat = ml->labels_to_vector(yh);
             
-            cout << "Yhat is \n " << this->yhat << endl;
+            //cout << "Yhat is \n " << this->yhat << endl;
 
             return yh;
         }
@@ -288,7 +288,7 @@ namespace FT{
                 dtypes.push_back('b');
             }
             
-            cout << "Phi is "<<endl<<Phi;
+            //cout << "Phi is "<<endl<<Phi;
             
             return Phi;
         }
@@ -413,7 +413,7 @@ namespace FT{
                    
             //Phi.transposeInPlace();
             
-            cout << "Phi is "<<endl<<Phi;
+            //cout << "Phi is "<<endl<<Phi;
             return Phi;
         }
         #endif
