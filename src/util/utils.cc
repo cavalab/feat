@@ -75,7 +75,10 @@ namespace FT{
                         dtypes.push_back('f');
                 }
             }
-
+            cout << "dtypes: " ; 
+            for (const auto& dt : dtypes)
+                cout << dt << ", ";
+            cout << "\n";
             return dtypes;
 
 	    }

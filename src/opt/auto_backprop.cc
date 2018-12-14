@@ -163,7 +163,7 @@ namespace FT {
         
         // forward pass
         vector<Trace> AutoBackProp::forward_prop(Individual& ind, const Data& d,
-                                   MatrixXf& Phi, const Parameters& params) 
+                                                 MatrixXf& Phi, const Parameters& params) 
         {
             /* cout << "Forward pass\n"; */
             // Iterate through all the nodes evaluating and tracking ouputs

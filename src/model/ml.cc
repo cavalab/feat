@@ -256,10 +256,7 @@ namespace FT{
             auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(_X));
 
             /* cout << "Phi:\n"; */
-            /* for (int i = 0; i < 10 ; ++i) */
-            /* { */
-            /*     cout << X.col(i) << (i < 10 ? " " : "\n"); */ 
-            /* } */
+            /* cout << X << "\n"; */
             //std::cout << "setting labels (n_classes = " << params.n_classes << ")\n"; 
             /* cout << "y is " << y.transpose() << "\n"; */
             

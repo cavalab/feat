@@ -71,8 +71,9 @@ namespace FT{
 
                 if (!pass)
                 {
-                    vector<float> w(ind.Phi.rows(), 0);     // set weights to zero
-                    ind.set_p(w,params.feedback);
+
+                    /* vector<double> w(ind.Phi.rows(), 0);     // set weights to zero */
+                    /* ind.set_p(w,params.feedback); */
                     
                     if (validation) 
                         ind.fitness_v = MAX_FLT; 
@@ -84,7 +85,7 @@ namespace FT{
                 else
                 {
                     // assign weights to individual
-                    ind.set_p(ind.ml->get_weights(),params.feedback);
+                    /* ind.set_p(ind.ml->get_weights(),params.feedback); */
                     assign_fit(ind,F,yhat,d.y,params,validation);
 
                     if (params.hillclimb && !validation)

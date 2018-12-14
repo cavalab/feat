@@ -93,7 +93,8 @@ int main(int argc, char** argv){
         cout << "-dim\tMaximum program dimensionality. (10)\n";
         cout << "-r\tSet random seed. (set randomly)\n";
         cout << "-sep\tInput file separator / delimiter. Choices: , or ""\\\\t"" for tab (,)\n";
-        cout << "--shuffle\tShuffle data before splitting into train/validate sets. (false)\n";
+        cout << "--no-shuffle\tDon't shuffle data before splitting into train/validate sets."
+                "(false)\n";
         cout << "-split\tFraction of data to use for training (0.75)\n";
         cout << "-isplit\tInternal slit for Feat's training procedure (0.75)\n";
         cout << "-f\tfeedback strength of ML on variation probabilities (0.5)\n";
