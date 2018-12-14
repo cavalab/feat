@@ -39,8 +39,9 @@ namespace FT{
             if (fs.empty())
                 fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
                       "logit,tanh,gauss,relu,"
-                      /*"split,split_c,"*/
+                      "split,split_c,"
                       "b2f,c2f,and,or,not,xor,=,<,<=,>,>=,if,ite";
+                
             set_functions(fs);
             set_objectives(obj);
             set_feature_names(fn);
@@ -342,8 +343,20 @@ namespace FT{
     	else if (str.compare("<=") == 0)
     		return std::unique_ptr<Node>(new NodeLEQ());
  
-        //else if (str.compare("split") == 0)
-    	//	return std::unique_ptr<Node>(new NodeSplit());
+        #ifndef USE_CUDA
+            else if (str.compare("split") == 0)
+      		    return std::unique_ptr<Node>(new NodeSplit<double>());
+      		
+      		else if (str.compare("split_c") == 0)
+      		    return std::unique_ptr<Node>(new NodeSplit<int>());
+        #else
+            else if (str.compare("split") == 0 || str.compare("split_c") == 0)
+            {
+                HANDLE_ERROR_NO_THROW("'" + std::to_string(verbosity) + 
+                                      "Split node is not implemented in non cuda version\n");
+                return NULL;
+            }
+        #endif
     	
      	else if (str.compare("if") == 0)
     		return std::unique_ptr<Node>(new NodeIf());   	    		
@@ -481,7 +494,11 @@ namespace FT{
         while ((pos = fs.find(delim)) != string::npos) 
         {
             token = fs.substr(0, pos);
-            functions.push_back(createNode(token));
+            
+            std::unique_ptr<Node> cur_node = createNode(token)
+            
+            if(cur_node != NULL)
+                functions.push_back(cur_node);
 
             fs.erase(0, pos + delim.length());
         } 
