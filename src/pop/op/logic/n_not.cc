@@ -17,11 +17,18 @@ namespace FT{
 	            complexity = 1;
             }
 
+            #ifndef USE_CUDA
             /// Evaluates the node and updates the state states. 
             void NodeNot::evaluate(const Data& data, State& state)
             {
                 state.push<bool>(!state.pop<bool>());
             }
+            #else
+            void NodeNot::evaluate(const Data& data, State& state)
+            {
+                GPU_Not(state.dev_b, state.idx[otype], state.N);
+            }
+            #endif
 
             /// Evaluates the node symbolically
             void NodeNot::eval_eqn(State& state)

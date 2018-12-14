@@ -81,27 +81,27 @@ namespace FT{
                 // map ml string names to enum values. 
                 std::map<string, ML_TYPE> ml_hash;
                 // return vector of weights for model. 
-                vector<double> get_weights();
+                vector<float> get_weights();
                 
                 // train ml model on X and return label object. 
-                shared_ptr<CLabels> fit(MatrixXd& X, VectorXd& y, const Parameters& params, bool& pass,
+                shared_ptr<CLabels> fit(MatrixXf& X, VectorXf& y, const Parameters& params, bool& pass,
                              const vector<char>& dtypes=vector<char>());
 
                 // train ml model on X and return estimation y. 
-                VectorXd fit_vector(MatrixXd& X, VectorXd& y, const Parameters& params, bool& pass,
+                VectorXf fit_vector(MatrixXf& X, VectorXf& y, const Parameters& params, bool& pass,
                              const vector<char>& dtypes=vector<char>());
 
                 // predict using a trained ML model, returning a label object. 
-                shared_ptr<CLabels> predict(MatrixXd& X);
+                shared_ptr<CLabels> predict(MatrixXf& X);
                 
                 // predict using a trained ML model, returning a vector of predictions. 
-                VectorXd predict_vector(MatrixXd& X);
+                VectorXf predict_vector(MatrixXf& X);
      
                 // predict using a trained ML model, returning a vector of predictions. 
-                ArrayXXd predict_proba(MatrixXd& X);
+                ArrayXXf predict_proba(MatrixXf& X);
                
                 /// utility function to convert CLabels types to VectorXd types. 
-                VectorXd labels_to_vector(const shared_ptr<CLabels>& labels);
+                VectorXf labels_to_vector(const shared_ptr<CLabels>& labels);
 
                 /* VectorXd predict(MatrixXd& X); */
                 // set data types (for tree-based methods)            

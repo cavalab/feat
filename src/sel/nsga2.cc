@@ -36,7 +36,7 @@ namespace FT{
                 return i; 
         }
         
-        vector<size_t> NSGA2::select(Population& pop, const MatrixXd& F, const Parameters& params)
+        vector<size_t> NSGA2::select(Population& pop, const MatrixXf& F, const Parameters& params)
         {
             /* Selection using Pareto tournaments. 
              *
@@ -68,7 +68,7 @@ namespace FT{
             return selected;
         }
 
-        vector<size_t> NSGA2::survive(Population& pop, const MatrixXd& F, const Parameters& params)
+        vector<size_t> NSGA2::survive(Population& pop, const MatrixXf& F, const Parameters& params)
         {
             /* Selection using the survival scheme of NSGA-II. 
              *
@@ -210,13 +210,13 @@ namespace FT{
 
                 // in the paper dist=INF for the first and last, in the code
                 // this is only done to the first one or to the two first when size=2
-                pop.individuals[F[0]].crowd_dist = std::numeric_limits<double>::max();
+                pop.individuals[F[0]].crowd_dist = std::numeric_limits<float>::max();
                 if (fsize > 1)
-                    pop.individuals[F[fsize-1]].crowd_dist = std::numeric_limits<double>::max();
+                    pop.individuals[F[fsize-1]].crowd_dist = std::numeric_limits<float>::max();
             
                 for (int i = 1; i < fsize-1; ++i) 
                 {
-                    if (pop.individuals[F[i]].crowd_dist != std::numeric_limits<double>::max()) 
+                    if (pop.individuals[F[i]].crowd_dist != std::numeric_limits<float>::max()) 
                     {   // crowd over obj
                         pop.individuals[F[i]].crowd_dist +=
                             (pop.individuals[F[i+1]].obj[m] - pop.individuals[F[i-1]].obj[m]) 

@@ -40,9 +40,9 @@ namespace FT {
 
                 float rnd_flt(float min=0.0, float max=1.0);
 
-                double rnd_dbl(double min=0.0, double max=1.0);
+                float rnd_dbl(float min=0.0, float max=1.0);
                 
-                double operator()(unsigned i);
+                float operator()(unsigned i);
                 
                 float operator()();
 

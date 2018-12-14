@@ -7,6 +7,10 @@ license: GNU/GPL v3
 
 #include <memory>
 
+#ifdef USE_CUDA
+    #include "cuda-op/kernels.h"
+#endif
+
 #include "op/node.h"
 
 //arithmatic nodes
@@ -36,7 +40,13 @@ license: GNU/GPL v3
 #include "op/control/n_ifthenelse.h"
 
 //learn
-#include "op/learn/n_split.h"
+#ifndef USE_CUDA
+    #include "op/learn/n_split.h"
+#else
+    //extra include 
+    //remove after n_split implemented for cuda
+    #include "op/n_train.h"
+#endif
 
 //logic nodes
 #include "op/logic/n_and.h"

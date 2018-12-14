@@ -16,18 +16,25 @@ namespace FT{
 	            complexity = 2;
             }
 
+            #ifndef USE_CUDA
             /// Evaluates the node and updates the state states. 
             void NodeLEQ::evaluate(const Data& data, State& state)
             {
-              	ArrayXd x1 = state.pop<double>();
-                ArrayXd x2 = state.pop<double>();
+              	ArrayXf x1 = state.pop<float>();
+                ArrayXf x2 = state.pop<float>();
                 state.push<bool>(x1 <= x2);
             }
+            #else
+            void NodeLEQ::evaluate(const Data& data, State& state)
+            {
+                GPU_LEQ(state.dev_f, state.dev_b, state.idx['f'], state.idx[otype], state.N);
+            }
+            #endif
 
             /// Evaluates the node symbolically
             void NodeLEQ::eval_eqn(State& state)
             {
-                state.push<bool>("(" + state.popStr<double>() + "<=" + state.popStr<double>() + ")");
+                state.push<bool>("(" + state.popStr<float>() + "<=" + state.popStr<float>() + ")");
             }
             
             NodeLEQ* NodeLEQ::clone_impl() const { return new NodeLEQ(*this); }  

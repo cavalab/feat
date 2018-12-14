@@ -23,7 +23,7 @@ namespace FT{
                     /// Evaluates the node symbolically
                     void eval_eqn(State& state);            
                     
-                    ArrayXd getDerivative(Trace& state, int loc); 
+                    ArrayXf getDerivative(Trace& state, int loc); 
 
                 protected:
                     NodeIfThenElse* clone_impl() const override;

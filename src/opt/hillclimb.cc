@@ -11,7 +11,7 @@ namespace FT {
 
     namespace Opt{
         
-        HillClimb::HillClimb(string scorer, int iters, double step)
+        HillClimb::HillClimb(string scorer, int iters, float step)
         {
             score_hash["mse"] = &Eval::squared_difference;
             score_hash["log"] =  &Eval::log_loss; 
@@ -28,7 +28,7 @@ namespace FT {
                      const Parameters& params, bool& updated)
         {
             updated = false;    // keep track of whether we update this individual
-            double min_loss = ind.fitness; 
+            float min_loss = ind.fitness; 
             shared_ptr<CLabels> min_yhat;
 
             for (int x = 0; x < this->iters; x++)
@@ -43,7 +43,7 @@ namespace FT {
                     {
                         anychanges = true;
                         auto pd = dynamic_cast<NodeDx*>(p.get());
-                        vector<double> W0 = pd->W;
+                        vector<float> W0 = pd->W;
                         for (int i = 0; i < pd->W.size(); ++i)
                         {   // perturb W[i] with gaussian noise
                             pd->W[i] += r.gasdev()*pd->W[i]*this->step; 
@@ -62,7 +62,7 @@ namespace FT {
                 if (!pass)
                     continue;
 
-                double new_loss = this->cost_func(d.y,yhat, params.class_weights).mean();
+                float new_loss = this->cost_func(d.y,yhat, params.class_weights).mean();
                 /* cout << "old loss: " << min_loss << ", new_loss: " << new_loss << "\n"; */
                 if (new_loss < min_loss)
                 {

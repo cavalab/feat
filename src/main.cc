@@ -4,8 +4,8 @@
 using FT::Feat;
 #include <Eigen/Dense>
 #include <shogun/base/init.h>
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
+using Eigen::MatrixXf;
+using Eigen::VectorXf;
 using std::string;
 using std::stoi;
 using std::to_string;
@@ -59,7 +59,7 @@ int main(int argc, char** argv){
     Feat feat;
     std::string sep = ",";
     std::string ldataFile = "";
-    double split = 0.75;    // split of input data used to trian Feat
+    float split = 0.75;    // split of input data used to trian Feat
 
     cout << "\n" << 
     "/////////////////////////////////////////////////////////////////////////////////////////////"
@@ -214,8 +214,8 @@ int main(int argc, char** argv){
     else if (!sep.compare(",")) delim = ',';
     else delim = sep[0];
     
-    MatrixXd X;
-    VectorXd y; 
+    MatrixXf X;
+    VectorXf y; 
     vector<string> names;
     vector<char> dtypes;
     bool binary_endpoint=false;
@@ -235,7 +235,7 @@ int main(int argc, char** argv){
                       
     }
     
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z;
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z;
    
     if(ldataFile.compare("")) 
         FT::load_longitudinal(ldataFile, Z);
@@ -247,12 +247,12 @@ int main(int argc, char** argv){
         
         d.train_test_split(feat.get_shuffle(), split);
        
-        MatrixXd X_tcopy = d.t->X;     
-        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_tcopy = d.t->Z;
-        VectorXd y_tcopy = d.t->y;
-        MatrixXd X_vcopy = d.v->X;     
-        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_vcopy = d.v->Z;
-        VectorXd y_vcopy = d.v->y;
+        MatrixXf X_tcopy = d.t->X;     
+        std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z_tcopy = d.t->Z;
+        VectorXf y_tcopy = d.t->y;
+        MatrixXf X_vcopy = d.v->X;     
+        std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z_vcopy = d.v->Z;
+        VectorXf y_vcopy = d.v->y;
 
         cout << "fitting model...\n";
         
@@ -260,35 +260,35 @@ int main(int argc, char** argv){
 
         cout << "\ngenerating training prediction...\n";
 
-        VectorXd yhat = feat.predict(X_tcopy,Z_tcopy);
-        /* double score_t = feat.score(X_tcopy, y_tcopy, Z_tcopy); */
-        double score_t = (yhat.array() - y_tcopy.array()).pow(2).mean();
+        VectorXf yhat = feat.predict(X_tcopy,Z_tcopy);
+        /* float score_t = feat.score(X_tcopy, y_tcopy, Z_tcopy); */
+        float score_t = (yhat.array() - y_tcopy.array()).pow(2).mean();
         /* cout << "tmp score: " << tmp << "\n"; */
-        /* VectorXd yhat = feat.predict(X_tcopy,Z_tcopy); */
-
+        /* VectorXf yhat = feat.predict(X_tcopy,Z_tcopy); */
+        
         cout.precision(4);
         cout << "train score: " << score_t << "\n";
-       
+        
         if (!feat.get_classification())
         {
-            double SSres = (y_tcopy-yhat).array().pow(2).sum() ;
-            double SStot =  (y_tcopy.array() - y_tcopy.mean()).array().pow(2).sum();
-            double r2t = (1 - SSres/SStot );
+            float SSres = (y_tcopy-yhat).array().pow(2).sum() ;
+            float SStot =  (y_tcopy.array() - y_tcopy.mean()).array().pow(2).sum();
+            float r2t = (1 - SSres/SStot );
             cout << "train r2: " << r2t << "\n";
         }
         
         cout << "generating test prediction...\n";
-        VectorXd yhatv = feat.predict(X_vcopy,Z_vcopy);
-                double score = feat.score(d.v->X,d.v->y,d.v->Z);
+        
+        VectorXf yhatv = feat.predict(X_vcopy,Z_vcopy);
+        float score = feat.score(d.v->X,d.v->y,d.v->Z);
         cout << "test score: " << score << "\n";
-
+        
         if (!feat.get_classification())
         {
-            double SSresv = (y_vcopy-yhatv).array().pow(2).sum() ;
-            double SStotv =  (y_vcopy.array() - y_vcopy.mean()).array().pow(2).sum();
-            double r2v = (1 - SSresv/SStotv );
-
-            cout << "test r2: " << r2v << "\n";
+            float SSresv = (y_vcopy-yhatv).array().pow(2).sum() ;
+            float SStotv =  (y_vcopy.array() - y_vcopy.mean()).array().pow(2).sum();
+            float r2v = (1 - SSresv/SStotv );
+            cout << "test r2: " << r2v << "\n"; 
         }
     }
     else
@@ -305,5 +305,4 @@ int main(int argc, char** argv){
     return 0;
 
 }
-
 

@@ -14,7 +14,7 @@ namespace FT{
         Offspring::~Offspring(){}
            
         vector<size_t> Offspring::survive(Population& pop,
-                                          const MatrixXd& F, 
+                                          const MatrixXf& F, 
                                           const Parameters& params)
         {
             /* Selects the offspring for survival. 
@@ -41,7 +41,7 @@ namespace FT{
             if (elitism)
             {   // find best and worst inds and if best is not in selected, replace worst with it
                 size_t best_idx, worst_idx;
-                double min_fit, max_fit;
+                float min_fit, max_fit;
 
                 for (unsigned i = 0; i < pop.individuals.size(); ++i)
                 {

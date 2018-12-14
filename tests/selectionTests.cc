@@ -5,7 +5,7 @@ TEST(Selection, SelectionOperator)
     Feat feat(100, 100, "LinearRidgeRegression", false, 1);
     feat.set_random_state(666);
     
-    MatrixXd X(7,2); 
+    MatrixXf X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
          0.84147098,  0.54030231,
@@ -16,20 +16,20 @@ TEST(Selection, SelectionOperator)
 
     X.transposeInPlace();
     
-    VectorXd y(7); 
+    VectorXf y(7); 
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
              
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z;
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_t;
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_v;
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z;
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z_t;
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z_v;
 
 	feat.timer.Reset();
 	
-	/* MatrixXd X_t(X.rows(),int(X.cols()*feat.params.split)); */
-    /* MatrixXd X_v(X.rows(),int(X.cols()*(1-feat.params.split))); */
-    /* VectorXd y_t(int(y.size()*feat.params.split)), y_v(int(y.size()*(1-feat.params.split))); */
+	/* MatrixXf X_t(X.rows(),int(X.cols()*feat.params.split)); */
+    /* MatrixXf X_v(X.rows(),int(X.cols()*(1-feat.params.split))); */
+    /* VectorXf y_t(int(y.size()*feat.params.split)), y_v(int(y.size()*(1-feat.params.split))); */
     
     DataRef d(X, y, Z);
     

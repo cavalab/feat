@@ -26,14 +26,14 @@ namespace FT{
          * @class Evaluation
          * @brief evaluation mixin class for Feat
          */
-        typedef double (*funcPointer)(const VectorXd&, const shared_ptr<CLabels>&, VectorXd&,
+        typedef float (*funcPointer)(const VectorXf&, const shared_ptr<CLabels>&, VectorXf&,
                                       const vector<float>&);
         
         class Evaluation 
         {
             public:
             
-                double (* score)(const VectorXd&, const shared_ptr<CLabels>&, VectorXd&, 
+                float (* score)(const VectorXf&, const shared_ptr<CLabels>&, VectorXf&, 
                                  const vector<float>&);    // pointer to scoring function
                                  
                 std::map<string, funcPointer> score_hash;
@@ -47,14 +47,14 @@ namespace FT{
                 /// fitness of population.
                 void fitness(vector<Individual>& individuals,
                              const Data& d, 
-                             MatrixXd& F, 
+                             MatrixXf& F, 
                              const Parameters& params, 
                              bool offspring = false,
                              bool validation = false);
               
                 /// assign fitness to an individual and to F.  
-                void assign_fit(Individual& ind, MatrixXd& F, const shared_ptr<CLabels>& yhat, 
-                                const VectorXd& y, const Parameters& params,bool val=false);       
+                void assign_fit(Individual& ind, MatrixXf& F, const shared_ptr<CLabels>& yhat, 
+                                const VectorXf& y, const Parameters& params,bool val=false);       
         };
     }
 }

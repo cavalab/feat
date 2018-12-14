@@ -28,7 +28,7 @@ namespace FT{
         // fitness of population
         void Evaluation::fitness(vector<Individual>& individuals,
                                  const Data& d, 
-                                 MatrixXd& F, 
+                                 MatrixXf& F, 
                                  const Parameters& params, 
                                  bool offspring,
                                  bool validation)
@@ -71,15 +71,16 @@ namespace FT{
 
                 if (!pass)
                 {
+
                     /* vector<double> w(ind.Phi.rows(), 0);     // set weights to zero */
                     /* ind.set_p(w,params.feedback); */
                     
                     if (validation) 
-                        ind.fitness_v = MAX_DBL; 
+                        ind.fitness_v = MAX_FLT; 
                     else 
-                        ind.fitness = MAX_DBL;
+                        ind.fitness = MAX_FLT;
 
-                    F.col(ind.loc) = MAX_DBL*VectorXd::Ones(d.y.size());
+                    F.col(ind.loc) = MAX_FLT*VectorXf::Ones(d.y.size());
                 }
                 else
                 {
@@ -104,8 +105,8 @@ namespace FT{
         }
         
         // assign fitness to program
-        void Evaluation::assign_fit(Individual& ind, MatrixXd& F, const shared_ptr<CLabels>& yhat, 
-                                    const VectorXd& y, const Parameters& params, bool val)
+        void Evaluation::assign_fit(Individual& ind, MatrixXf& F, const shared_ptr<CLabels>& yhat, 
+                                    const VectorXf& y, const Parameters& params, bool val)
         {
             /*!
              * assign raw errors to F, and aggregate fitnesses to individuals. 
@@ -123,8 +124,8 @@ namespace FT{
              *       modifies F and ind.fitness
             */ 
             assert(F.cols()>ind.loc);
-            VectorXd loss;
-            double f = score(y, yhat, loss, params.class_weights);
+            VectorXf loss;
+            float f = score(y, yhat, loss, params.class_weights);
             
             if (val)
                 ind.fitness_v = f;

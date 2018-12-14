@@ -23,7 +23,7 @@ license: GNU/GPL v3
 using std::map;
 using std::shared_ptr;
 using std::vector;
-using Eigen::VectorXd;
+using Eigen::VectorXf;
 using shogun::CLabels;
 
 namespace FT {
@@ -35,11 +35,11 @@ namespace FT {
              * @brief performs random weight updates and keeps them if they improve the cost function.
              */
         public:
-            typedef VectorXd (*callback)(const VectorXd&, shared_ptr<CLabels>&, const vector<float>&);
+            typedef VectorXf (*callback)(const VectorXf&, shared_ptr<CLabels>&, const vector<float>&);
             
             std::map<string, callback> score_hash;
             
-            HillClimb(string scorer, int iters=1, double step=0.1);
+            HillClimb(string scorer, int iters=1, float step=0.1);
 
             /// adapt weights
 		    shared_ptr<CLabels> run(Individual& ind, Data d,
@@ -48,7 +48,7 @@ namespace FT {
         private:
             callback cost_func;     //< scoring function
             int iters;              //< number of iterations
-            double step;            //< percent of std dev to perturb weight by
+            float step;            //< percent of std dev to perturb weight by
         };
     }
 

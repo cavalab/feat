@@ -25,9 +25,17 @@ license: GNU/GPL v3
 #include "pop/op/node.h"
 #include "pop/archive.h" 
 
+#ifdef USE_CUDA
+    #include "pop/cuda-op/cuda_utils.h" 
+    #define GPU true
+#else
+    #define GPU false
+    #define initialize_cuda() 0
+#endif
+
 // stuff being used
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
+using Eigen::MatrixXf;
+using Eigen::VectorXf;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
 using std::vector;
 using std::string;
@@ -69,8 +77,8 @@ namespace FT{
                    char otype='a', string functions = "", 
                    unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
                    bool erc = false, string obj="fitness,complexity", bool shuffle=true, 
-                   double split=0.75, double fb=0.5, string scorer="", string feature_names="",
-                   bool backprop=false,int iters=10, double lr=0.1, int bs=100, int n_threads=0,
+                   float split=0.75, float fb=0.5, string scorer="", string feature_names="",
+                   bool backprop=false,int iters=10, float lr=0.1, int bs=100, int n_threads=0,
                    bool hillclimb=false, string logfile="", int max_time=-1, 
                    bool use_batch = false, bool semantic_xo = false, int print_pop=0);
             
@@ -129,13 +137,13 @@ namespace FT{
             void set_objectives(string obj);
             
             /// set train fraction of dataset
-            void set_split(double sp);
+            void set_split(float sp);
             
             ///set data types for input parameters
             void set_dtypes(vector<char> dtypes);
 
             ///set feedback
-            void set_feedback(double fb);
+            void set_feedback(float fb);
 
             ///set name for files
             void set_logfile(string s);
@@ -154,7 +162,7 @@ namespace FT{
             
             void set_iters(int iters);
             
-            void set_lr(double lr);
+            void set_lr(float lr);
             
             void set_batch_size(int bs);
              
@@ -221,7 +229,7 @@ namespace FT{
             bool get_shuffle();
             
             ///return fraction of data to use for training
-            double get_split();
+            float get_split();
             
             ///add custom node into feat
             /* void add_function(unique_ptr<Node> N){ params.functions.push_back(N->clone()); } */
@@ -230,7 +238,7 @@ namespace FT{
             vector<char> get_dtypes();
 
             ///return feedback setting
-            double get_feedback();
+            float get_feedback();
            
             ///return best model
             string get_representation();
@@ -251,108 +259,109 @@ namespace FT{
             string get_eqns(bool front=true);
            
             /// return the coefficients or importance scores of the best model. 
-            ArrayXd get_coefs();
+            ArrayXf get_coefs();
 
             /// return the number of nodes in the best model
             int get_n_nodes();
 
             /// get longitudinal data from file s
-            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>> get_Z(string s, 
+            std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>> get_Z(string s, 
                     int * idx, int idx_size);
 
             /// destructor             
             ~Feat();
                         
             /// train a model.             
-            void fit(MatrixXd& X,
-                     VectorXd& y,
-                     std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
-                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());
+            void fit(MatrixXf& X,
+                     VectorXf& y,
+                     std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z = 
+                            std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > >());
                             
             void run_generation(unsigned int g,
                             vector<size_t> survivors,
                             DataRef &d,
                             std::ofstream &log,
-                            double percentage,
+                            float percentage,
                             unsigned& stall_count);
                      
             /// train a model.             
-            void fit(double * X,int rowsX,int colsX, double * Y,int lenY);
+            void fit(float * X,int rowsX,int colsX, float * Y,int lenY);
 
             /// train a model, first loading longitudinal samples (Z) from file.
-            void fit_with_z(double * X, int rowsX, int colsX, double * Y, int lenY, string s, 
+            void fit_with_z(float * X, int rowsX, int colsX, float * Y, int lenY, string s, 
                             int * idx, int idx_size);
            
             /// predict on unseen data.             
-            VectorXd predict(MatrixXd& X,
-                             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
-                                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());  
+            VectorXf predict(MatrixXf& X,
+                             std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z = 
+                                std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > >());  
             
             /// predict on unseen data. return CLabels.
-            shared_ptr<CLabels> predict_labels(MatrixXd& X,
-                             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
-                              std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());  
+            shared_ptr<CLabels> predict_labels(MatrixXf& X,
+                             std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z = 
+                              std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > >());  
 
             /// predict probabilities of each class.
-            ArrayXXd predict_proba(MatrixXd& X,
-                             std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
-                              std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());  
+            ArrayXXf predict_proba(MatrixXf& X,
+                             std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z = 
+                              std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > >());  
             
-            ArrayXXd predict_proba(double * X, int rows_x, int cols_x);
+            ArrayXXf predict_proba(float * X, int rows_x, int cols_x);
 	
             /// predict on unseen data, loading longitudinal samples (Z) from file.
-            VectorXd predict_with_z(double * X, int rowsX,int colsX, 
+            VectorXf predict_with_z(float * X, int rowsX,int colsX, 
                                     string s, int * idx, int idx_size);
 
             /// predict probabilities of each class.
-            ArrayXXd predict_proba_with_z(double * X, int rowsX,int colsX, 
+            ArrayXXf predict_proba_with_z(float * X, int rowsX,int colsX, 
                                     string s, int * idx, int idx_size);  
 
             /// predict on unseen data.             
-            VectorXd predict(double * X, int rowsX, int colsX);      
+            VectorXf predict(float * X, int rowsX, int colsX);      
             
             /// transform an input matrix using a program.                          
-            MatrixXd transform(MatrixXd& X,
-                               std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
-                                 std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >(),
+            MatrixXf transform(MatrixXf& X,
+                               std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z = 
+                                 std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > >(),
                                Individual *ind = 0);
             
-            MatrixXd transform(double * X,  int rows_x, int cols_x);
+            MatrixXf transform(float * X,  int rows_x, int cols_x);
             
             /// train a model, first loading longitudinal samples (Z) from file.
-            MatrixXd transform_with_z(double * X, int rowsX, int colsX, string s, 
+            MatrixXf transform_with_z(float * X, int rowsX, int colsX, string s, 
                                       int * idx, int idx_size);
             
             /// convenience function calls fit then predict.            
-            VectorXd fit_predict(MatrixXd& X,
-                                 VectorXd& y,
-                                 std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
-                                 std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());
+            VectorXf fit_predict(MatrixXf& X,
+                                 VectorXf& y,
+                                 std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z = 
+                                 std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > >());
                                  
-            VectorXd fit_predict(double * X, int rows_x, int cols_x, double * Y, int len_y);
+            VectorXf fit_predict(float * X, int rows_x, int cols_x, float * Y, int len_y);
             
             /// convenience function calls fit then transform. 
-            MatrixXd fit_transform(MatrixXd& X,
-                                   VectorXd& y,
-                                   std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
-                                   std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());
+            MatrixXf fit_transform(MatrixXf& X,
+                                   VectorXf& y,
+                                   std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z = 
+                                   std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > >());
                                    
-            MatrixXd fit_transform(double * X, int rows_x, int cols_x, double * Y, int len_y);
+            MatrixXf fit_transform(float * X, int rows_x, int cols_x, float * Y, int len_y);
                   
             /// scoring function 
-            double score(MatrixXd& X,
-                         const VectorXd& y,
-                         std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z = 
-                               std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >());
+            float score(MatrixXf& X,
+                         const VectorXf& y,
+                         std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z = 
+                               std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > >());
             
             /// prints population obj scores each generation 
             void print_population();
         private:
             // Parameters
             Parameters params;    					///< hyperparameters of Feat 
-            MatrixXd F;                 			///< matrix of fitness values for population
-            MatrixXd F_v;                           ///< matrix of validation scores
-            Timer timer;                            ///< provides timing utilities 
+
+            MatrixXf F;                 			///< matrix of fitness values for population
+            MatrixXf F_v;                           ///< matrix of validation scores
+            Timer timer;                            ///< start time of training
             // subclasses for main steps of the evolutionary computation routine
             shared_ptr<Population> p_pop;       	///< population of programs
             shared_ptr<Selection> p_sel;        	///< selection algorithm
@@ -366,14 +375,14 @@ namespace FT{
             Normalizer N;                           ///< scales training data.
             string scorer;                          ///< scoring function name.
             // performance tracking
-            double best_score;                      ///< current best score
-            double best_score_v;                    ///< best validation score
-            double best_med_score;                  ///< best median population score
-            double med_loss_v;                      ///< current val loss of median individual
+            float best_score;                      ///< current best score
+            float best_score_v;                    ///< best validation score
+            float best_med_score;                  ///< best median population score
+            float med_loss_v;                      ///< current val loss of median individual
             string str_dim;                         ///< dimensionality as multiple of number of columns 
             void update_best(const DataRef& d, bool val=false);       ///< updates best score   
             void print_stats(std::ofstream& log,
-                             double fraction);      ///< prints stats
+                             float fraction);      ///< prints stats
             Individual best_ind;                    ///< best individual
             string logfile;                         ///< log filename
             int print_pop;                         ///< controls whether pop is printed each gen
@@ -382,7 +391,7 @@ namespace FT{
             /// fits final model to best transformation
             void final_model(DataRef& d);
             /// updates stall count for early stopping
-            void update_stall_count(unsigned& stall_count, MatrixXd& F, const DataRef& d);
+            void update_stall_count(unsigned& stall_count, MatrixXf& F, const DataRef& d);
     };
 }
 #endif

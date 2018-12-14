@@ -16,18 +16,18 @@ namespace FT{
             {
             	public:
             
-                    double threshold; 
+                    float threshold; 
 
             		NodeSplit();
             		
                     /// Uses a heuristic to set a splitting threshold.
-                    void set_threshold(ArrayXd& x, VectorXd& y, bool classification);
+                    void set_threshold(ArrayXf& x, VectorXf& y, bool classification);
 
                     /// returns the gain of a split 
-                    double gain(const VectorXd& lsplit, const VectorXd& rsplit, bool classification=false);
+                    float gain(const VectorXf& lsplit, const VectorXf& rsplit, bool classification=false);
                     
                     /// gini impurity of classes in classes
-                    double gini_impurity_index(const VectorXd& classes);
+                    float gini_impurity_index(const VectorXf& classes);
                     
                     /// Evaluates the node and updates the state states. 
                     void evaluate(const Data& data, State& state);            

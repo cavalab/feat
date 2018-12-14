@@ -3,8 +3,12 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 
-#ifndef STACK_H
-#define STACK_H
+#ifndef STATE_H
+#define STATE_H
+
+#ifdef USE_CUDA
+    #include "../pop/cuda-op/state_utils.h"
+#endif
 
 #include <string>
 #include <Eigen/Dense>
@@ -13,9 +17,9 @@ license: GNU/GPL v3
 #include <iostream>
 
 using std::vector;
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
-using Eigen::ArrayXd;
+using Eigen::MatrixXf;
+using Eigen::VectorXf;
+using Eigen::ArrayXf;
 using Eigen::ArrayXi;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
 using namespace std;
@@ -67,6 +71,10 @@ namespace FT
                 ///< returns element at particular location in stack
                 type& at(int i){ return st.at(i); }
                 
+                type& operator[](int i){ return at(i); }
+                
+                void resize(int i){ st.resize(i); };
+                
                 ///< clears the stack
                 void clear(){ st.clear(); }
                 
@@ -85,16 +93,17 @@ namespace FT
                 ~Stack(){}
         };
         
+#ifndef USE_CUDA    
         /*!
          * @class State
          * @brief contains various types of State actually used by feat
          */
         struct State
         {
-            Stack<ArrayXd> f;                   ///< floating node stack
+            Stack<ArrayXf> f;                   ///< floating node stack
             Stack<ArrayXb> b;                   ///< boolean node stack
             Stack<ArrayXi> c;                   ///<categorical stack
-            Stack<std::pair<vector<ArrayXd>, vector<ArrayXd> > > z;     ///< longitudinal node stack
+            Stack<std::pair<vector<ArrayXf>, vector<ArrayXf> > > z;     ///< longitudinal node stack
             Stack<string> fs;                   ///< floating node string stack
             Stack<string> bs;                   ///< boolean node string stack
             Stack<string> cs;                   ///< categorical node string stack
@@ -143,13 +152,69 @@ namespace FT
             
         };
         
-        template <> inline Stack<ArrayXd>& State::get(){ return f; }
+        template <> inline Stack<ArrayXf>& State::get(){ return f; }
             
         template <> inline Stack<ArrayXb>& State::get(){ return b; }
         
         template <> inline Stack<ArrayXi>& State::get(){ return c; }
         
-        template <> inline Stack<string>& State::getStr<double>(){ return fs; }
+#else
+
+        struct State
+        {
+            Eigen::Array<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> f;
+            Eigen::Array<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> c;
+            Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>  b;
+            Stack<std::pair<vector<ArrayXf>, vector<ArrayXf> > > z;
+            Stack<string> fs;
+            Stack<string> cs;
+            Stack<string> bs;
+            Stack<string> zs;
+
+            float * dev_f;
+            int * dev_c; 
+            bool * dev_b; 
+            std::map<char, size_t> idx; 
+            size_t N; 
+
+            State();
+     
+            void update_idx(char otype, std::map<char, unsigned>& arity);
+            
+            bool check(std::map<char, unsigned int> &arity);
+            
+            bool check_s(std::map<char, unsigned int> &arity);
+            
+            void allocate(const std::map<char, size_t>& stack_size, size_t N);
+
+            void limit();
+            
+            /// resize the f and b stacks to match the outputs of the program
+            void trim();
+            
+            void copy_to_host();
+            
+            ~State();
+            
+            template <typename T> inline Stack<string>& getStr()
+            {
+                return getStr<T>();
+            }
+            
+            template <typename T> void push(string value)
+            {
+                getStr<T>().push(value);
+            }
+            
+            template <typename T> string popStr()
+            {
+                return getStr<T>().pop();
+            }
+        };
+
+#endif
+        
+        template <> inline Stack<string>& State::getStr<float>(){ return fs; }
             
         template <> inline Stack<string>& State::getStr<bool>(){ return bs; }
         
@@ -161,7 +226,7 @@ namespace FT
          */
         struct Trace
         {
-            vector<ArrayXd> f;
+            vector<ArrayXf> f;
             vector<ArrayXi> c;
             vector<ArrayXb> b;
             
@@ -174,9 +239,11 @@ namespace FT
             {
                 return get<T>().size();
             }
+            
+            void copy_to_trace(State& state, std::map<char, unsigned int> &arity);
         };
         
-        template <> inline vector<ArrayXd>& Trace::get(){ return f; }
+        template <> inline vector<ArrayXf>& Trace::get(){ return f; }
             
         template <> inline vector<ArrayXb>& Trace::get(){ return b; }
         
