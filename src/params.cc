@@ -345,17 +345,10 @@ namespace FT{
  
         #ifndef USE_CUDA
             else if (str.compare("split") == 0)
-      		    return std::unique_ptr<Node>(new NodeSplit<double>());
+      		    return std::unique_ptr<Node>(new NodeSplit<float>());
       		
       		else if (str.compare("split_c") == 0)
       		    return std::unique_ptr<Node>(new NodeSplit<int>());
-        #else
-            else if (str.compare("split") == 0 || str.compare("split_c") == 0)
-            {
-                HANDLE_ERROR_NO_THROW("'" + std::to_string(verbosity) + 
-                                      "Split node is not implemented in non cuda version\n");
-                return NULL;
-            }
         #endif
     	
      	else if (str.compare("if") == 0)
@@ -494,12 +487,16 @@ namespace FT{
         while ((pos = fs.find(delim)) != string::npos) 
         {
             token = fs.substr(0, pos);
-            
-            std::unique_ptr<Node> cur_node = createNode(token)
-            
-            if(cur_node != NULL)
-                functions.push_back(cur_node);
-
+            #ifdef USE_CUDA
+            if (token.compare("split") == 0 || token.compare("split_c") == 0)
+            {
+                HANDLE_ERROR_NO_THROW("Split node is not implemented in non cuda version\n");
+            }
+	    else
+		functions.push_back(createNode(token));
+            #else
+                functions.push_back(createNode(token));
+	    #endif
             fs.erase(0, pos + delim.length());
         } 
         if (verbosity > 2){
