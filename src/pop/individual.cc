@@ -426,7 +426,7 @@ namespace FT{
 
         #ifndef USE_CUDA
         // calculate program output matrix
-        MatrixXd Individual::out_trace(const Data& d, const Parameters& params, 
+        MatrixXf Individual::out_trace(const Data& d, const Parameters& params, 
                                        vector<Trace>& state_trace)
         {
             /*!
