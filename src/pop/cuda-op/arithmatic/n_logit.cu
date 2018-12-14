@@ -4,7 +4,8 @@ license: GNU/GPL v3
 */
 #include "../error_handling.h"
 #include "../cuda_utils.h"
-#include "../cuda_device.cuh"
+
+#include <limits>
 
 namespace FT{
    	namespace Pop{
@@ -14,7 +15,15 @@ namespace FT{
             {                    
                 for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
                 {
-                    x[(idx-1)*N+i] = 1 / (1 + limited(exp(-W0*x[(idx-1)*N+i])));
+                    float ex = exp(-W0*x[(idx-1)*N+i]);
+                    
+                    float MAX_FLT = std::numeric_limits<float>::max();
+                    float MIN_FLT = std::numeric_limits<float>::lowest();
+                    ex = (isnan(ex)) ? 0 : ex;
+                    ex = (ex < MIN_FLT) ? MIN_FLT : ex;
+                    ex = (ex > MAX_FLT) ? MAX_FLT : ex;
+                    
+                    x[(idx-1)*N+i] = (1 / (1 + ex));
                 }
                 return;
             }

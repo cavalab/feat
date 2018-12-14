@@ -152,8 +152,8 @@ int main(int argc, char** argv){
         feat.set_random_state(stoi(input.getCmdOption("-r")));
     if(input.cmdOptionExists("-sep")) // separator
         sep = input.getCmdOption("-sep");   
-    if(input.cmdOptionExists("--shuffle"))
-        feat.set_shuffle(true);
+    if(input.cmdOptionExists("--no-shuffle"))
+        feat.set_shuffle(false);
     if(input.cmdOptionExists("-split"))
         split = std::stod(input.getCmdOption("-split"));
     if(input.cmdOptionExists("-isplit"))
