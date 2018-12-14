@@ -36,12 +36,14 @@ namespace FT{
             void NodeSlope::evaluate(const Data& data, State& state)
             {
                 
-                int x;
+                ArrayXf tmp(state.z.top().first.size());
                 
-                for(x = 0; x < state.z.top().first.size(); x++)                    
-                    state.f.row(state.idx['f']) = slope(state.z.top().first[x], state.z.top().second[x]);
+                for(int x = 0; x < state.z.top().first.size(); x++)                    
+                    tmp(x) = slope(limited(state.z.top().first[x]), limited(state.z.top().second[x]));
                     
                 state.z.pop();
+
+                GPU_Variable(state.dev_f, tmp.data(), state.idx[otype], state.N);
 
                 
             }

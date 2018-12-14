@@ -25,7 +25,6 @@ namespace FT{
                 ArrayXf tmp(state.z.top().first.size());
                 
                 int x;
-                ArrayXf tmp1;
                 
                 for(x = 0; x < state.z.top().first.size(); x++)
                     tmp(x) = variance(limited(state.z.top().first[x]));
@@ -39,12 +38,16 @@ namespace FT{
             void NodeVar::evaluate(const Data& data, State& state)
             {
                 
+                ArrayXf tmp(state.z.top().first.size());
+                
                 int x;
                 
                 for(x = 0; x < state.z.top().first.size(); x++)
-                    state.f.row(state.idx['f']) = variance(state.z.top().first[x]);
+                    tmp(x) = variance(limited(state.z.top().first[x]));
                     
                 state.z.pop();
+
+                GPU_Variable(state.dev_f, tmp.data(), state.idx[otype], state.N);
                 
             }
             #endif
