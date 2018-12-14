@@ -40,6 +40,21 @@ namespace FT{
             #else
             void NodeRecent::evaluate(const Data& data, State& state)
             {
+                ArrayXf tmp(state.z.top().first.size());
+                int x;
+                
+                for(x = 0; x < state.z.top().first.size(); x++)
+                {
+                    // find max time
+                    ArrayXf::Index maxIdx; 
+                    float maxtime = state.z.top().second[x].maxCoeff(&maxIdx);
+                    // return value at max time 
+                    tmp(x) = state.z.top().first[x](maxIdx);
+                }
+
+                state.z.pop();
+                
+                GPU_Variable(state.dev_f, tmp.data(), state.idx[otype], state.N);
             }
             #endif
 

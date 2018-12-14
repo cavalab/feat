@@ -37,12 +37,15 @@ namespace FT{
             void NodeKurtosis::evaluate(const Data& data, State& state)
             {
                 
+                ArrayXf tmp(state.z.top().first.size());
+                
                 int x;
                 
                 for(x = 0; x < state.z.top().first.size(); x++)
-                    state.f.row(state.idx['f']) = kurtosis(state.z.top().first[x]);
+                    tmp(x) = kurtosis(limited(state.z.top().first[x]));
                     
                 state.z.pop();
+                GPU_Variable(state.dev_f, tmp.data(), state.idx[otype], state.N);
                 
             }
             #endif

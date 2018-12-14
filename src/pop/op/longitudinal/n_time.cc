@@ -37,12 +37,16 @@ namespace FT{
             void NodeTime::evaluate(const Data& data, State& state)
             {
                 
+                ArrayXf tmp(state.z.top().first.size());
+                
                 int x;
                 
                 for(x = 0; x < state.z.top().first.size(); x++)
-                    state.f.row(state.idx['f']) = state.z.top().first[x][0];
+                    tmp(x) = limited(state.z.top().first[x])[0];
                     
                 state.z.pop();
+
+                GPU_Variable(state.dev_f, tmp.data(), state.idx[otype], state.N);
 
                 
            }
