@@ -73,12 +73,12 @@ cdef class PyFeat:
         use_batch, semantic_xo, print_pop)
 
     def fit(self,np.ndarray X,np.ndarray y):
-        cdef np.ndarray[np.double_t, ndim=2, mode="fortran"] arr_x
-        cdef np.ndarray[np.double_t, ndim=1, mode="fortran"] arr_y
+        cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
+        cdef np.ndarray[np.float32_t, ndim=1, mode="fortran"] arr_y
         check_X_y(X,y,ensure_2d=True,ensure_min_samples=1)
         X = X.transpose()
-        arr_x = np.asfortranarray(X, dtype=np.double)
-        arr_y = np.asfortranarray(y, dtype=np.double)
+        arr_x = np.asfortranarray(X, dtype=np.float)
+        arr_y = np.asfortranarray(y, dtype=np.float)
 
         self.ft.fit(&arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y))
 
