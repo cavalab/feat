@@ -88,8 +88,8 @@ cdef class PyFeat:
         cdef np.ndarray[int, ndim=1, mode="fortran"] arr_z_id
         check_X_y(X,y,ensure_2d=True,ensure_min_samples=1)
         X = X.transpose()
-        arr_x = np.asfortranarray(X, dtype=np.float)
-        arr_y = np.asfortranarray(y, dtype=np.float)
+        arr_x = np.asfortranarray(X, dtype=np.float32)
+        arr_y = np.asfortranarray(y, dtype=np.float32)
         arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
 
         self.ft.fit_with_z(&arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y),
@@ -99,7 +99,7 @@ cdef class PyFeat:
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
         cdef np.ndarray[int, ndim=1, mode="fortran"] arr_z_id
         X = X.transpose()
-        arr_x = np.asfortranarray(X, dtype=np.float)
+        arr_x = np.asfortranarray(X, dtype=np.float32)
         arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
         res = ndarray(self.ft.transform_with_z(&arr_x[0,0],X.shape[0],X.shape[1], zfile, &arr_z_id[0], len(arr_z_id)))
         return res.transpose()
@@ -108,7 +108,7 @@ cdef class PyFeat:
     def predict(self,np.ndarray X):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
         X = X.transpose()
-        arr_x = np.asfortranarray(X, dtype=np.float)
+        arr_x = np.asfortranarray(X, dtype=np.float32)
 
         res = ndarray(self.ft.predict(&arr_x[0,0],X.shape[0],X.shape[1]))
         return res.flatten()
@@ -117,7 +117,7 @@ cdef class PyFeat:
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
         cdef np.ndarray[int, ndim=1, mode="fortran"] arr_z_id
         X = X.transpose()
-        arr_x = np.asfortranarray(X, dtype=np.float)
+        arr_x = np.asfortranarray(X, dtype=np.float32)
         arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
         
         res = ndarray(self.ft.predict_with_z(&arr_x[0,0],X.shape[0],X.shape[1],
@@ -127,7 +127,7 @@ cdef class PyFeat:
     def predict_proba(self,np.ndarray X):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
         X = X.transpose()
-        arr_x = np.asfortranarray(X, dtype=np.float)
+        arr_x = np.asfortranarray(X, dtype=np.float32)
 
         res = ndarray(self.ft.predict_proba(&arr_x[0,0],X.shape[0],X.shape[1]))
         return res.flatten()
@@ -136,7 +136,7 @@ cdef class PyFeat:
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
         cdef np.ndarray[int, ndim=1, mode="fortran"] arr_z_id
         X = X.transpose()
-        arr_x = np.asfortranarray(X, dtype=np.float)
+        arr_x = np.asfortranarray(X, dtype=np.float32)
         arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
         
         res = ndarray(self.ft.predict_proba_with_z(&arr_x[0,0],X.shape[0],X.shape[1],
@@ -146,7 +146,7 @@ cdef class PyFeat:
     def transform(self,np.ndarray X):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
         X = X.transpose()
-        arr_x = np.asfortranarray(X, dtype=np.float)
+        arr_x = np.asfortranarray(X, dtype=np.float32)
 
         X = ndarray(self.ft.transform(&arr_x[0,0],X.shape[0],X.shape[1]))
         return X.transpose()
@@ -156,8 +156,8 @@ cdef class PyFeat:
         cdef np.ndarray[np.float32_t, ndim=1, mode="fortran"] arr_y
         check_X_y(X,y,ensure_2d=True,ensure_min_samples=1)
         X = X.transpose()
-        arr_x = np.asfortranarray(X, dtype=np.float)
-        arr_y = np.asfortranarray(y, dtype=np.float)
+        arr_x = np.asfortranarray(X, dtype=np.float32)
+        arr_y = np.asfortranarray(y, dtype=np.float32)
         
         return ndarray(self.ft.fit_predict( &arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y) ))
 
@@ -166,8 +166,8 @@ cdef class PyFeat:
         cdef np.ndarray[np.float32_t, ndim=1, mode="fortran"] arr_y
         check_X_y(X,y,ensure_2d=True,ensure_min_samples=1)
         X = X.transpose()
-        arr_x = np.asfortranarray(X, dtype=np.float)
-        arr_y = np.asfortranarray(y, dtype=np.float)
+        arr_x = np.asfortranarray(X, dtype=np.float32)
+        arr_y = np.asfortranarray(y, dtype=np.float32)
         
         X = ndarray(self.ft.fit_transform( &arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y) ))
         return X.transpose()
