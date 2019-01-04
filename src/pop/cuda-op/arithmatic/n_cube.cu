@@ -11,14 +11,16 @@ namespace FT{
    	    namespace Op{	
            		
             __global__ void Cube( float * x, size_t idx, size_t N, float W0)
-            {                    
+            {  
+
+                float MAX_FLT = std::numeric_limits<float>::max();
+                float MIN_FLT = std::numeric_limits<float>::lowest();                  
+
                 for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
                 {
                     //printf("From cube %f, %f \n", (W0*x[(idx-1)*N+i]), pow(W0*x[(idx-1)*N+i] , 3 ));
                     x[(idx-1)*N+i] = pow(W0*x[(idx-1)*N+i] , 3 );
-                    
-                    float MAX_FLT = std::numeric_limits<float>::max();
-                    float MIN_FLT = std::numeric_limits<float>::lowest();
+
                     x[(idx-1)*N+i] = (isnan(x[(idx-1)*N+i])) ? 0 : x[(idx-1)*N+i];
                     x[(idx-1)*N+i] = (x[(idx-1)*N+i] < MIN_FLT) ? MIN_FLT : x[(idx-1)*N+i];
                     x[(idx-1)*N+i] = (x[(idx-1)*N+i] > MAX_FLT) ? MAX_FLT : x[(idx-1)*N+i];

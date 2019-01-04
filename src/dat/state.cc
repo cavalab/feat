@@ -172,6 +172,16 @@ namespace FT
             limit();
         }
         
+        void State::copy_to_host(float* host_f, int increment)
+        {
+            copy_from_device((dev_f+increment), host_f, N); 
+        }
+        
+        void State::copy_to_host(int* host_i, int increment)
+        {
+            copy_from_device((dev_c+increment), host_i, N); 
+        }
+        
         State::~State()
         {
             free_device(dev_f, dev_c, dev_b);

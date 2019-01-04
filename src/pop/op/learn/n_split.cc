@@ -25,13 +25,12 @@ namespace FT{
 	        {
 	            name = "split_c";
 	            arity['c'] = 1;
-                arity['b'] = 0;
-                arity['f'] = 0;
 	            otype = 'b';
                 complexity = 2;
                 threshold = 0;
 	        }
 
+             #ifndef USE_CUDA
             template <class T>
             void NodeSplit<T>::evaluate(const Data& data, State& state)
             {
@@ -47,6 +46,35 @@ namespace FT{
                 else
                     state.push<bool>(x1 == threshold);
             }
+            #else
+            template <class T>
+            void NodeSplit<T>::evaluate(const Data& data, State& state)
+            {
+                ArrayXf x1(state.N);
+                
+                if(arity['f'])
+                {
+                    ArrayXf x(state.N);
+                    state.copy_to_host(x.data(), (state.idx['f']-1)*state.N);
+                    x1 = x.cast<float>();                    
+                }
+                else
+                {
+                    ArrayXi x(state.N);
+                    state.copy_to_host(x.data(), (state.idx['c']-1)*state.N);
+                    x1 = x.cast<float>();
+                }
+                    
+                    
+                if (!data.validation && !data.y.size()==0 && train)
+                    set_threshold(x1,data.y, data.classification);
+                    
+                if(arity['f'])
+                    GPU_Split(state.dev_f, state.dev_b, state.idx['f'], state.idx[otype], state.N, threshold);
+                else
+                    GPU_Split(state.dev_c, state.dev_b, state.idx['c'], state.idx[otype], state.N, threshold);
+            }
+            #endif
 
             /// Evaluates the node symbolically
             template <class T>

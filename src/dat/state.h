@@ -117,6 +117,7 @@ namespace FT
             
             template <typename T> inline Stack<Eigen::Array<T,Eigen::Dynamic,1> >& get()
             {
+                cout << "From here 1\n";
                 return get<Eigen::Array<T,Eigen::Dynamic,1> >();
             }
             
@@ -193,6 +194,10 @@ namespace FT
             void trim();
             
             void copy_to_host();
+            
+            void copy_to_host(float* host_f, int increment);
+            
+            void copy_to_host(int* host_f, int increment);
             
             ~State();
             

@@ -12,13 +12,15 @@ namespace FT{
                         
            		
             __global__ void ConstantF(float * x, float value, size_t idx, size_t N)
-            {                    
+            {       
+            
+                float MAX_FLT = std::numeric_limits<float>::max();
+                float MIN_FLT = std::numeric_limits<float>::lowest();                  
+             
                 for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
                 {
                     x[(idx)*N + i] = value;
                     
-                    float MAX_FLT = std::numeric_limits<float>::max();
-                    float MIN_FLT = std::numeric_limits<float>::lowest();
                     x[(idx)*N+i] = (isnan(x[(idx)*N+i])) ? 0 : x[(idx)*N+i];
                     x[(idx)*N+i] = (x[(idx)*N+i] < MIN_FLT) ? MIN_FLT : x[(idx)*N+i];
                     x[(idx)*N+i] = (x[(idx)*N+i] > MAX_FLT) ? MAX_FLT : x[(idx)*N+i];
