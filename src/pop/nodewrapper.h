@@ -40,13 +40,7 @@ license: GNU/GPL v3
 #include "op/control/n_ifthenelse.h"
 
 //learn
-#ifndef USE_CUDA
-    #include "op/learn/n_split.h"
-#else
-    //extra include 
-    //remove after n_split implemented for cuda
-    #include "op/n_train.h"
-#endif
+#include "op/learn/n_split.h"
 
 //logic nodes
 #include "op/logic/n_and.h"

@@ -45,6 +45,10 @@ namespace FT{
             void GPU_GreaterThan(float * xf, bool * xb, size_t idxf, size_t idxb, size_t N);
             void GPU_If(float * xf, bool * xb, size_t idxf, size_t idxb, size_t N);
             void GPU_IfThenElse(float * xf, bool * xb, size_t idxf, size_t idxb, size_t N);
+            
+            //learn
+            void GPU_Split(float * xf, bool * xb, size_t idxf, size_t idxb, size_t N, float threshold);
+            void GPU_Split(int * xi, bool * xb, size_t idxi, size_t idxb, size_t N, float threshold);
 
             // leaves
             void GPU_Constant(float * dev_x, float value, size_t idx, size_t N);

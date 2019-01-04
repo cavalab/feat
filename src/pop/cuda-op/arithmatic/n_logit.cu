@@ -13,12 +13,14 @@ namespace FT{
            	      		
             __global__ void Logit( float * x, size_t idx, size_t N, float W0)
             {                    
+            
+                float MAX_FLT = std::numeric_limits<float>::max();
+                float MIN_FLT = std::numeric_limits<float>::lowest();                  
+
                 for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < N; i += blockDim.x * gridDim.x)
                 {
                     float ex = exp(-W0*x[(idx-1)*N+i]);
                     
-                    float MAX_FLT = std::numeric_limits<float>::max();
-                    float MIN_FLT = std::numeric_limits<float>::lowest();
                     ex = (isnan(ex)) ? 0 : ex;
                     ex = (ex < MIN_FLT) ? MIN_FLT : ex;
                     ex = (ex > MAX_FLT) ? MAX_FLT : ex;
