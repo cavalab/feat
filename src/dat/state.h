@@ -117,7 +117,6 @@ namespace FT
             
             template <typename T> inline Stack<Eigen::Array<T,Eigen::Dynamic,1> >& get()
             {
-                cout << "From here 1\n";
                 return get<Eigen::Array<T,Eigen::Dynamic,1> >();
             }
             
