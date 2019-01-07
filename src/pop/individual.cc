@@ -93,31 +93,32 @@ namespace FT{
             /* for (auto tmp : p) cout << tmp << " " ; cout << "\n"; */
             /* std::cout << "softmax(p)\n"; */
             p = softmax(p);
+            // do partial uniform, partial weighted probability, using feedback ratio
             for (unsigned i=0; i<p.size(); ++i)
-                p[i] = u + fb*(u-p[i]);
+                p[i] = (1-fb)*u + fb*p[i];
             /* cout << "exiting set_p\n"; */
             // set weights
             this->w = weights;
         }
         
-        float Individual::get_p(const size_t i) const
+        float Individual::get_p(const size_t i, bool normalize) const
         {
             /*! @param i index in program 
+             *  @param normalize (true): normalizes the probability by the size of the subprogram. 
+             *   Useful when the total probability over the program nodes should sum to 1.
              * @return weight associated with node */
+                
             vector<size_t> rts = program.roots();
-            std::reverse(rts.begin(),rts.end()); 
             size_t j = 0;
             float size = rts[0];
             
-            
-
             while ( j < rts.size())
             {
                 if (j > 1) 
                     size = rts.at(j) - rts.at(j-1);
                 
                 if (i <= rts.at(j))
-                    return p.at(j)/size;    
+                    return normalize ? p.at(j)/size : p.at(j) ;    
                 else
                     ++j;
             }
@@ -127,15 +128,17 @@ namespace FT{
                 return 0.0;
             }
             // normalize weight by size of subtree
-            float norm_weight = p.at(j)/size;
-            return norm_weight;
-
+            return normalize ? p.at(j)/size : p.at(j) ;    
         }
         
-        vector<float> Individual::get_p(const vector<size_t>& locs) const
+        vector<float> Individual::get_p(const vector<size_t>& locs, bool normalize) const
         {
+            /*! @param locs: program indices to return probabilities for. 
+             *  @param normalize (false): normalize probabilities by size of subprogram
+             *  @returns float vector of probabilities
+             */
             vector<float> ps;
-            for (const auto& el : locs) ps.push_back(get_p(el));
+            for (const auto& el : locs) ps.push_back(get_p(el,normalize));
             return ps;
         }
         

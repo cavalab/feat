@@ -164,7 +164,7 @@ namespace FT{
             // loop thru child's program
             for (auto& p : child.program)
             {
-                if (r() < child.get_p(i)/n)  // mutate p. 
+                if (r() < child.get_p(i))  // mutate p. 
                 {
                     params.msg("\t\tmutating node " + p->name, 3);
                     NodeVector replacements;  // potential replacements for p
@@ -218,7 +218,7 @@ namespace FT{
                 for (unsigned i = 0; i< child.program.size(); ++i)
                 {
                     
-                    if (r() < child.get_p(i)/n)  // mutate with weighted probability
+                    if (r() < child.get_p(i))  // mutate with weighted probability
                     {
                         params.msg("\t\tinsert mutating node " + child.program[i]->name +
                                    " with probability " + std::to_string(child.get_p(i)) + 
@@ -378,7 +378,7 @@ namespace FT{
                                  + dad.program_str() + "\n", 3);
                     return 0;               
                 }
-                j1 = r.random_choice(mlocs,mom.get_p(mlocs));    
+                j1 = r.random_choice(mlocs,mom.get_p(mlocs,true));    
 
                 // get locations in dad's program that match the subtree type picked from mom
                 for (size_t i =0; i<dad.size(); ++i) 
@@ -410,7 +410,7 @@ namespace FT{
 
             assert(child.program.is_valid_program(params.num_features, params.longitudinalMap));
             // check child depth and dimensionality
-            return child.size()>0 && child.size() <= params.max_size 
+            return child.size() > 0 && child.size() <= params.max_size 
                         && child.get_dim() <= params.max_dim;
         }
 
@@ -419,7 +419,7 @@ namespace FT{
                             const Parameters& params, const Data& d)
         {
             /*!
-             * crossover by either swapping in a dimension most correlated with the residual of mom. 
+             * crossover by swapping in a dimension most correlated with the residual of mom. 
              *
              * @param   mom: root parent
              * @param   dad: parent from which subtree is chosen
@@ -453,7 +453,7 @@ namespace FT{
             VectorXf tree = mom.ml->get_weights().at(j1_idx)*mom.Phi.row(j1_idx).array();
             /* cout << "tree (idx=" << j1_idx << "): " << tree.transpose() << "\n"; */
             VectorXf mom_pred_minus_tree = mom.yhat - tree; 
-    /* #pragma omp critical */
+            /* #pragma omp critical */
             /* { */
             /* VectorXf mom_pred_minus_tree = mom.predict_drop(d,params,j1_idx); */ 
             /* } */
