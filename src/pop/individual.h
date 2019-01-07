@@ -127,10 +127,10 @@ namespace FT{
             vector<float> get_p() const;
             
             /// get inverted weight probability for pogram location i
-            float get_p(const size_t i) const;
+            float get_p(const size_t i, bool normalize=true) const;
             
             /// get probability of variation for program locations locs
-            vector<float> get_p(const vector<size_t>& locs) const; 
+            vector<float> get_p(const vector<size_t>& locs, bool normalize=false) const; 
 
             /// set probabilities
             void set_p(const vector<float>& weights, const float& fb);
