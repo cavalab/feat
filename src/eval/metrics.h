@@ -23,81 +23,104 @@ namespace FT
         /* Scoring functions */
 
         // Squared difference
-        VectorXd squared_difference(const VectorXd& y, const VectorXd& yhat);
+        VectorXf squared_difference(const VectorXf& y, const VectorXf& yhat);
 
-        VectorXd squared_difference(const VectorXd& y, shared_ptr<CLabels>& labels,  
+        VectorXf squared_difference(const VectorXf& y, shared_ptr<CLabels>& labels,  
                    const vector<float>& weights=vector<float>());
 
         // Derivative of squared difference with respec to yhat
-        VectorXd d_squared_difference(const VectorXd& y, const VectorXd& yhat);
+        VectorXf d_squared_difference(const VectorXf& y, const VectorXf& yhat);
        
         // Derivative of squared difference with respec to yhat
-        VectorXd d_squared_difference(const VectorXd& y, shared_ptr<CLabels>& labels,
+        VectorXf d_squared_difference(const VectorXf& y, shared_ptr<CLabels>& labels,
                                const vector<float>& weights=vector<float>());
 
         /// mean squared error
-        double mse(const VectorXd& y, const VectorXd& yhat, VectorXd& loss, 
+        float mse(const VectorXf& y, const VectorXf& yhat, VectorXf& loss, 
                    const vector<float>& weights=vector<float>() );
         
-        double mse_label(const VectorXd& y, const shared_ptr<CLabels>& labels, VectorXd& loss, 
+        float mse_label(const VectorXf& y, const shared_ptr<CLabels>& labels, VectorXf& loss, 
                    const vector<float>& weights=vector<float>() );
      
-        VectorXd log_loss(const VectorXd& y, const VectorXd& yhat, 
+        VectorXf log_loss(const VectorXf& y, const VectorXf& yhat, 
                           const vector<float>& class_weights=vector<float>());
        
-        VectorXd log_loss(const VectorXd& y, shared_ptr<CLabels>& labels, 
+        VectorXf log_loss(const VectorXf& y, shared_ptr<CLabels>& labels, 
                           const vector<float>& class_weights=vector<float>());
         
         /// log loss
-        double mean_log_loss(const VectorXd& y, const VectorXd& yhat, VectorXd& loss,
+        float mean_log_loss(const VectorXf& y, const VectorXf& yhat, VectorXf& loss,
                           const vector<float>& class_weights = vector<float>());
         /// log loss
-        double log_loss_label(const VectorXd& y, const shared_ptr<CLabels>& labels, VectorXd& loss,
+        float log_loss_label(const VectorXf& y, const shared_ptr<CLabels>& labels, VectorXf& loss,
                           const vector<float>& class_weights=vector<float>());
 
-        VectorXd d_log_loss(const VectorXd& y, const VectorXd& yhat, 
+        VectorXf d_log_loss(const VectorXf& y, const VectorXf& yhat, 
                             const vector<float>& class_weights=vector<float>());
 
-        VectorXd d_log_loss(const VectorXd& y, shared_ptr<CLabels>& labels, 
+        VectorXf d_log_loss(const VectorXf& y, shared_ptr<CLabels>& labels, 
                             const vector<float>& class_weights=vector<float>());
 
-        /* double weighted_average(const VectorXd& y, const VectorXd& w) */
+        /* float weighted_average(const VectorXf& y, const VectorXf& w) */
         /* { */
         /*     w = w.array() / w.sum(); */
         /*     return (y.array() * w.array()).mean(); */
         /* } */
         /// multinomial log loss
-        VectorXd multi_log_loss(const VectorXd& y, const ArrayXXd& confidences, 
+        VectorXf multi_log_loss(const VectorXf& y, const ArrayXXf& confidences, 
                 const vector<float>& class_weights=vector<float>());
 
-        double mean_multi_log_loss(const VectorXd& y, const ArrayXXd& confidences, VectorXd& loss,
+        float mean_multi_log_loss(const VectorXf& y, const ArrayXXf& confidences, VectorXf& loss,
                           const vector<float>& class_weights=vector<float>());
 
         /// multinomial log loss
-        double multi_log_loss_label(const VectorXd& y, const shared_ptr<CLabels>& labels, VectorXd& loss,
+        float multi_log_loss_label(const VectorXf& y, const shared_ptr<CLabels>& labels, VectorXf& loss,
                           const vector<float>& class_weights=vector<float>());
 
-        VectorXd multi_log_loss(const VectorXd& y, shared_ptr<CLabels>& labels, 
+        VectorXf multi_log_loss(const VectorXf& y, shared_ptr<CLabels>& labels, 
                           const vector<float>& class_weights=vector<float>());
                           
         /// derivative of multinomial log loss
-        VectorXd d_multi_log_loss(const VectorXd& y, shared_ptr<CLabels>& labels, 
+        VectorXf d_multi_log_loss(const VectorXf& y, shared_ptr<CLabels>& labels, 
                           const vector<float>& class_weights=vector<float>());
                           
         /// 1 - balanced accuracy 
-        double bal_zero_one_loss(const VectorXd& y, const VectorXd& yhat, VectorXd& loss, 
+        float bal_zero_one_loss(const VectorXf& y, const VectorXf& yhat, VectorXf& loss, 
                    const vector<float>& class_weights=vector<float>() );
 
-        double bal_zero_one_loss_label(const VectorXd& y, const shared_ptr<CLabels>& labels, 
-                                       VectorXd& loss, const vector<float>& class_weights=vector<float>() );
+        float bal_zero_one_loss_label(const VectorXf& y, const shared_ptr<CLabels>& labels, 
+                                       VectorXf& loss, const vector<float>& class_weights=vector<float>() );
 
-        double zero_one_loss(const VectorXd& y, const VectorXd& yhat, VectorXd& loss, 
+        float zero_one_loss(const VectorXf& y, const VectorXf& yhat, VectorXf& loss, 
                    const vector<float>& class_weights=vector<float>() );
         
         /// 1 - accuracy 
-        double zero_one_loss_label(const VectorXd& y, const shared_ptr<CLabels>& labels, VectorXd& loss, 
+        float zero_one_loss_label(const VectorXf& y, const shared_ptr<CLabels>& labels, VectorXf& loss, 
                    const vector<float>& class_weights=vector<float>() );
 
+        /* float bal_log_loss(const VectorXf& y, const shared_ptr<CLabels>& labels, VectorXf& loss, */ 
+        /*            const vector<float>& weights=vector<float>() ) */
+        /* { */
+          
+        /*     loss = log_loss(y,yhat); */
+
+        /*     vector<float> uc = unique(y); */
+        /*     vector<int> c; */ 
+        /*     for (const auto& i : uc) */
+        /*         c.push_back(int(i)); */
+            
+        /*     vector<float> class_loss(c.size(),0); */
+
+        /*     for (unsigned i = 0; i < c.size(); ++i) */
+        /*     { */
+        /*         int n = (y.cast<int>().array() == c[i]).count(); */
+        /*         class_loss[i] = (y.cast<int>().array() == c[i]).select(loss.array(),0).sum()/n; */
+            
+        /*     } */
+        /*     // return balanced class losses */ 
+        /*     Map<ArrayXf> cl(class_loss.data(),class_loss.size()); */        
+        /*     return cl.mean(); */
+        /* } */
     } // metrics
 } // FT
 

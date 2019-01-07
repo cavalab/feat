@@ -2,11 +2,35 @@
 # copyright 2017 William La Cava 
 # license: GNU/GPL v3
 
+######### Options ###########################
+option( CORE_USE_CUDA   "Use CUDA to speed up certain parts of the code."  OFF )
+#############################################
+
+######### CUDA decisions ####################
+#if (CORE_USE_CUDA)
+#    MESSAGE( STATUS ">> --------------  USING CUDA --------------" )
+#    set( CUDA_TOOLKIT_ROOT_DIR "/usr/local/cuda-8.0")
+#    if (APPLE OR UNIX)
+#        set(CMAKE_C_COMPILER   /usr/bin/gcc)
+#        set(CMAKE_CXX_COMPILER /usr/bin/g++)
+#    elseif (WIN32)
+#        ### By default we use VS
+#        MESSAGE( STATUS ">> User compiler:             MSVC" )
+#        MESSAGE( STATUS ">> Choosing a different compiler is not yet implemented for Windows" )
+#    endif()
+#endif()
+#############################################
+
 # version requirement for Eigen
 cmake_minimum_required (VERSION 3.0)
 # use c++ 14
 set (CMAKE_CXX_STANDARD 14)
 
+#set (CMAKE_CXX_FLAGS "--std=c++11")
+
+#set (CUDA_PROPAGATE_HOST_FLAGS ON)
+
+  
 # project name
 project(Feat)
 
@@ -64,15 +88,33 @@ if (OMP)
     endif()
 endif()
 
+######### CUDA decisions ####################
+if (CORE_USE_CUDA)
+    find_package(CUDA REQUIRED)
+    add_definitions(-DUSE_CUDA)
+    #enable_language(CUDA)
+    list(APPEND CUDA_NVCC_FLAGS "-std=c++11 --expt-relaxed-constexpr --default-stream per-thread -Wno-deprecated-gpu-targets")
+
+endif()
+#############################################
+
 # gather list of source files
+if (CORE_USE_CUDA)   
+    file(GLOB_RECURSE cuda_files "*.cu")
+endif()    
+
 file(GLOB_RECURSE sources "src/*.cc")
 
 list(REMOVE_ITEM sources ${CMAKE_CURRENT_SOURCE_DIR}/src/parser.cc)
 list(REMOVE_ITEM sources ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cc)
-list(REMOVE_ITEM sources ${CMAKE_CURRENT_SOURCE_DIR}/src/cv_main.cc)
 
-#feat library
-add_library(feat_lib SHARED ${sources})
+# executable
+
+if (CORE_USE_CUDA)
+    cuda_add_library(feat_lib SHARED ${sources} ${cuda_files})
+else()
+    add_library(feat_lib SHARED ${sources})
+endif()
 
 # executables
 
@@ -80,14 +122,24 @@ add_library(feat_lib SHARED ${sources})
 add_executable(feat src/main.cc)
 
 #link libraries for different executables
-target_link_libraries(feat feat_lib shogun)
+
+if (CORE_USE_CUDA)
+    target_link_libraries(feat feat_lib shogun ${CUDA_LIBRARIES})
+else()
+    target_link_libraries(feat feat_lib shogun)
+endif()
 
 if (TEST)
     # Link runTests with what we want to test and the GTest and pthread library
     file(GLOB_RECURSE testsSrc "tests/*.cc")
     
     add_executable(tests ${testsSrc})
-    target_link_libraries(tests feat_lib shogun ${GTEST_LIBRARIES} pthread)
+    
+    if (CORE_USE_CUDA)
+        target_link_libraries(tests feat_lib shogun ${CUDA_LIBRARIES} ${GTEST_LIBRARIES} pthread)
+    else()
+        target_link_libraries(tests feat_lib shogun ${GTEST_LIBRARIES} pthread)
+    endif()
 endif()
 
 

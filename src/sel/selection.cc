@@ -36,12 +36,12 @@ namespace FT{
         string Selection::get_type(){ return pselector->name; }
         
         /// perform selection 
-        vector<size_t> Selection::select(Population& pop, const MatrixXd& F, const Parameters& params)
+        vector<size_t> Selection::select(Population& pop, const MatrixXf& F, const Parameters& params)
         {       
             return pselector->select(pop, F, params);
         }
         /// perform survival
-        vector<size_t> Selection::survive(Population& pop, const MatrixXd& F,  const Parameters& params)
+        vector<size_t> Selection::survive(Population& pop, const MatrixXf& F,  const Parameters& params)
         {       
             return pselector->survive(pop, F, params);
         }

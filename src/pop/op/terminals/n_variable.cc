@@ -22,12 +22,41 @@ namespace FT{
 	            loc = l;
             }
 
+            #ifndef USE_CUDA
             /// Evaluates the node and updates the state states. 
             template <class T>		
             void NodeVariable<T>::evaluate(const Data& data, State& state)
             {
                 state.push<T>(data.X.row(loc).template cast<T>());
             }
+            
+            #else
+            template <class T>
+            void NodeVariable<T>::evaluate(const Data& data, State& state)
+            {
+                if(otype == 'b')
+                {
+                    ArrayXb tmp = data.X.row(loc).cast<bool>();
+                    GPU_Variable(state.dev_b, tmp.data(), state.idx[otype], state.N);
+                }
+                else if (otype == 'c')
+                {
+                    ArrayXi tmp = data.X.row(loc).cast<int>();
+                    GPU_Variable(state.dev_c, tmp.data(), state.idx[otype], state.N);
+                }
+                else
+                {
+                    ArrayXf tmp = data.X.row(loc).cast<float>() ;
+                    // std::cout << "NodeVariable:\n stack.dev_f: " << state.dev_f
+                    //           << "\ntmp.data(): " << tmp.data() 
+                    //           << "\ntmp.size(): " << tmp.size()
+                    //           << "\nstack.idx[otype]: " << state.idx[otype]
+                    //           << "\nstate.N: " << state.N <<"\n";
+                    GPU_Variable(state.dev_f, tmp.data(), state.idx[otype], state.N);
+                    //std::cout << "Variable exit\n";
+                }
+            }
+        #endif
 
             /// Evaluates the node symbolically
             template <class T>
@@ -45,7 +74,7 @@ namespace FT{
             
             template class NodeVariable<bool>;
             template class NodeVariable<int>;
-            template class NodeVariable<double>;
+            template class NodeVariable<float>;
         }
     }
 }

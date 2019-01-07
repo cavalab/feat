@@ -18,22 +18,29 @@ namespace FT{
 
             }
 
+            #ifndef USE_CUDA
             /// Evaluates the node and updates the state states. 
             void NodeSign::evaluate(const Data& data, State& state)
             {
-	            ArrayXd x = state.pop<double>();
-                ArrayXd ones = ArrayXd::Ones(x.size());
+	            ArrayXf x = state.pop<float>();
+                ArrayXf ones = ArrayXf::Ones(x.size());
 
-	            ArrayXd res = ( x > 0).select(ones, 
-                                                    (x == 0).select(ArrayXd::Zero(x.size()), 
+	            ArrayXf res = ( x > 0).select(ones, 
+                                                    (x == 0).select(ArrayXf::Zero(x.size()), 
                                                                     -1*ones)); 
-                state.push<double>(res);
+                state.push<float>(res);
             }
+            #else
+            void NodeSign::evaluate(const Data& data, State& state)
+            {
+                GPU_Sign(state.dev_f, state.idx[otype], state.N);
+            }
+            #endif
 
             /// Evaluates the node symbolically
             void NodeSign::eval_eqn(State& state)
             {
-                state.push<double>("sign("+ state.popStr<double>() +")");
+                state.push<float>("sign("+ state.popStr<float>() +")");
             }
 
             

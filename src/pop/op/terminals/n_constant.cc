@@ -23,8 +23,8 @@ namespace FT{
 	            b_value = v;
             }
 
-            /// declares a double constant
-            NodeConstant::NodeConstant(const double& v)
+            /// declares a float constant
+            NodeConstant::NodeConstant(const float& v)
             {
 	            name = "k_d";
 	            otype = 'f';
@@ -32,14 +32,29 @@ namespace FT{
 	            d_value = v;
             }
 
+            #ifndef USE_CUDA    
             /// Evaluates the node and updates the state states. 
             void NodeConstant::evaluate(const Data& data, State& state)
             {
 	            if (otype == 'b')
                     state.push<bool>(ArrayXb::Constant(data.X.cols(),int(b_value)));
                 else 	
-                    state.push<double>(limited(ArrayXd::Constant(data.X.cols(),d_value)));
+                    state.push<float>(limited(ArrayXf::Constant(data.X.cols(),d_value)));
             }
+            #else
+            void NodeConstant::evaluate(const Data& data, State& state)
+            {
+                if (otype == 'b')
+                {
+                    GPU_Constant(state.dev_b, b_value, state.idx['b'], state.N);
+                }
+                else
+                {
+                    GPU_Constant(state.dev_f, d_value, state.idx['f'], state.N);
+                }
+
+            }
+            #endif
 
             /// Evaluates the node symbolically
             void NodeConstant::eval_eqn(State& state)
@@ -47,7 +62,7 @@ namespace FT{
 	            if (otype == 'b')
                     state.push<bool>(std::to_string(b_value));
                 else 	
-                    state.push<double>(std::to_string(d_value));
+                    state.push<float>(std::to_string(d_value));
             }
             
             NodeConstant* NodeConstant::clone_impl() const { return new NodeConstant(*this); }

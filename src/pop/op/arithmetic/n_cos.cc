@@ -9,7 +9,7 @@ namespace FT{
 
     namespace Pop{
         namespace Op{
-            NodeCos::NodeCos(vector<double> W0)
+            NodeCos::NodeCos(vector<float> W0)
             {
 	            name = "cos";
 	            otype = 'f';
@@ -26,21 +26,28 @@ namespace FT{
                     W = W0;
             }
 
+            #ifndef USE_CUDA    
             /// Evaluates the node and updates the state states. 
             void NodeCos::evaluate(const Data& data, State& state)
             {
-                state.push<double>(limited(cos(W[0] * state.pop<double>())));
+                state.push<float>(limited(cos(W[0] * state.pop<float>())));
             }
+            #else
+            void NodeCos::evaluate(const Data& data, State& state)
+            {
+                GPU_Cos(state.dev_f, state.idx[otype], state.N, W[0]);
+            }
+            #endif
 
             /// Evaluates the node symbolically
             void NodeCos::eval_eqn(State& state)
             {
-                state.push<double>("cos(" + state.popStr<double>() + ")");
+                state.push<float>("cos(" + state.popStr<float>() + ")");
             }
 
-            ArrayXd NodeCos::getDerivative(Trace& state, int loc) {
+            ArrayXf NodeCos::getDerivative(Trace& state, int loc) {
             
-                ArrayXd& x = state.get<double>()[state.size<double>()-1];
+                ArrayXf& x = state.get<float>()[state.size<float>()-1];
                 
                 switch (loc) {
                     case 1: // d/dw0

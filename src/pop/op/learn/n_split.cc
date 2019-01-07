@@ -10,7 +10,7 @@ namespace FT{
         namespace Op{
 
 	        template <>
-	        NodeSplit<double>::NodeSplit()
+	        NodeSplit<float>::NodeSplit()
 	        {
 	            name = "split";
 	            arity['f'] = 1;
@@ -25,19 +25,18 @@ namespace FT{
 	        {
 	            name = "split_c";
 	            arity['c'] = 1;
-                arity['b'] = 0;
-                arity['f'] = 0;
 	            otype = 'b';
                 complexity = 2;
                 threshold = 0;
 	        }
 
+             #ifndef USE_CUDA
             template <class T>
             void NodeSplit<T>::evaluate(const Data& data, State& state)
             {
-                ArrayXd x1;
+                ArrayXf x1;
                         
-                x1 = state.pop<T>().template cast<double>();
+                x1 = state.pop<T>().template cast<float>();
                     
                 if (!data.validation && !data.y.size()==0 && train)
                     set_threshold(x1,data.y, data.classification);
@@ -47,6 +46,35 @@ namespace FT{
                 else
                     state.push<bool>(x1 == threshold);
             }
+            #else
+            template <class T>
+            void NodeSplit<T>::evaluate(const Data& data, State& state)
+            {
+                ArrayXf x1(state.N);
+                
+                if(arity['f'])
+                {
+                    ArrayXf x(state.N);
+                    state.copy_to_host(x.data(), (state.idx['f']-1)*state.N);
+                    x1 = x.cast<float>();                    
+                }
+                else
+                {
+                    ArrayXi x(state.N);
+                    state.copy_to_host(x.data(), (state.idx['c']-1)*state.N);
+                    x1 = x.cast<float>();
+                }
+                    
+                    
+                if (!data.validation && !data.y.size()==0 && train)
+                    set_threshold(x1,data.y, data.classification);
+                    
+                if(arity['f'])
+                    GPU_Split(state.dev_f, state.dev_b, state.idx['f'], state.idx[otype], state.N, threshold);
+                else
+                    GPU_Split(state.dev_c, state.dev_b, state.idx['c'], state.idx[otype], state.N, threshold);
+            }
+            #endif
 
             /// Evaluates the node symbolically
             template <class T>
@@ -65,26 +93,26 @@ namespace FT{
             NodeSplit<T>* NodeSplit<T>::rnd_clone_impl() const { return new NodeSplit<T>(); };  
             
             template <class T>
-            void NodeSplit<T>::set_threshold(ArrayXd& x, VectorXd& y, bool classification)
+            void NodeSplit<T>::set_threshold(ArrayXf& x, VectorXf& y, bool classification)
             {
                 /* cout << "setting threshold\n"; */
                 // for each unique value in x, calculate the reduction in the heuristic brought about by
                 // splitting between that value and the next. 
                 // set threshold according to the biggest reduction. 
-                vector<double> s;
+                vector<float> s;
                 for (unsigned i = 0; i < x.size(); ++i) s.push_back(x(i)); //(x.data(),x.size());
                 vector<int> idx(s.size());
                 std::iota(idx.begin(),idx.end(), 0);
                 Map<ArrayXi> midx(idx.data(),idx.size());
                 s = unique(s);
-                double score = 0;
-                double best_score = 0;
+                float score = 0;
+                float best_score = 0;
                 /* cout << "s: " ; */ 
                 /* for (auto ss : s) cout << ss << " " ; cout << "\n"; */
                 for (unsigned i =0; i<s.size()-1; ++i)
                 {
 
-                    double val;
+                    float val;
                     ArrayXi split_idx;
                     
                     if(arity['f'])
@@ -101,7 +129,7 @@ namespace FT{
                     /* cout << "split val: " << val << "\n"; */
 
                     // split data
-                    vector<double> d1, d2; 
+                    vector<float> d1, d2; 
                     for (unsigned j=0; j< split_idx.size(); ++j)
                     {
                         if (split_idx(j) <0)
@@ -112,8 +140,8 @@ namespace FT{
                     if (d1.empty() || d2.empty())
                         continue;
 
-                    Map<VectorXd> map_d1(d1.data(), d1.size());  
-                    Map<VectorXd> map_d2(d2.data(), d2.size());  
+                    Map<VectorXf> map_d1(d1.data(), d1.size());  
+                    Map<VectorXf> map_d2(d2.data(), d2.size());  
                     /* cout << "d1: " << map_d1.transpose() << "\n"; */
                     /* cout << "d2: " << map_d2.transpose() << "\n"; */
                     score = gain(map_d1, map_d2, classification);
@@ -129,21 +157,21 @@ namespace FT{
             }
            
             template <class T>
-            double NodeSplit<T>::gain(const VectorXd& lsplit, const VectorXd& rsplit, 
+            float NodeSplit<T>::gain(const VectorXf& lsplit, const VectorXf& rsplit, 
                     bool classification)
             {
-                double lscore, rscore, score;
+                float lscore, rscore, score;
                 if (classification)
                 {
                     lscore = gini_impurity_index(lsplit);
                     rscore = gini_impurity_index(rsplit);
-                    score = (lscore*double(lsplit.size()) + rscore*double(rsplit.size()))
-                                /(double(lsplit.size()) + double(rsplit.size()));
+                    score = (lscore*float(lsplit.size()) + rscore*float(rsplit.size()))
+                                /(float(lsplit.size()) + float(rsplit.size()));
                 }
                 else
                 {
-                    lscore = variance(lsplit.array())/double(lsplit.size());
-                    rscore = variance(rsplit.array())/double(rsplit.size());
+                    lscore = variance(lsplit.array())/float(lsplit.size());
+                    rscore = variance(rsplit.array())/float(rsplit.size());
                     score = lscore + rscore; 
                 }
 
@@ -151,26 +179,26 @@ namespace FT{
             }
 
             template <class T>
-            double NodeSplit<T>::gini_impurity_index(const VectorXd& classes)
+            float NodeSplit<T>::gini_impurity_index(const VectorXf& classes)
             {
-                vector<double> uc = unique(classes);
-                VectorXd class_weights(uc.size());
+                vector<float> uc = unique(classes);
+                VectorXf class_weights(uc.size());
                 for (auto c : uc){
-                    class_weights(c) = double((classes.cast<int>().array() == int(c)).count())
+                    class_weights(c) = float((classes.cast<int>().array() == int(c)).count())
                                                 /classes.size(); 
                 }
-                /* double total_weight=class_weights.sum(); */
-                double gini = 1 - class_weights.dot(class_weights);
+                /* float total_weight=class_weights.sum(); */
+                float gini = 1 - class_weights.dot(class_weights);
 
                 return gini;
             }
 
-            /* double NodeSplit::least_squares_deviation(const VectorXd& feats) */
+            /* float NodeSplit::least_squares_deviation(const VectorXf& feats) */
             /* { */
 
             /*     return variance(feats.array()); */
-            /*     /1* Map<VectorXd> map_weights(weights.vector, weights.size()); *1/ */
-            /*     /1* Map<VectorXd> map_feats(feats.vector, weights.size()); *1/ */
+            /*     /1* Map<VectorXf> map_weights(weights.vector, weights.size()); *1/ */
+            /*     /1* Map<VectorXf> map_feats(feats.vector, weights.size()); *1/ */
             /*     /1* float64_t mean=map_weights.dot(map_feats); *1/ */
             /*     /1* total_weight=map_weights.sum(); *1/ */
 

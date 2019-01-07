@@ -14,11 +14,11 @@ namespace FT{
         string PBSTR = "====================";
         int PBWIDTH = 20;
      
-        /// limits node output to be between MIN_DBL and MAX_DBL
-        void clean(ArrayXd& x)
+        /// limits node output to be between MIN_FLT and MAX_FLT
+        void clean(ArrayXf& x)
         {
-            x = (x < MIN_DBL).select(MIN_DBL,x);
-            x = (isinf(x)).select(MAX_DBL,x);
+            x = (x < MIN_FLT).select(MIN_FLT,x);
+            x = (isinf(x)).select(MAX_FLT,x);
             x = (isnan(x)).select(0,x);
         };  
 
@@ -40,7 +40,7 @@ namespace FT{
         }
 
         /// determines data types of columns of matrix X.
-        vector<char> find_dtypes(MatrixXd &X)
+        vector<char> find_dtypes(MatrixXf &X)
         {
 	        vector<char> dtypes;
 	        
@@ -48,7 +48,7 @@ namespace FT{
             int i, j;
             bool isBinary;
             bool isCategorical;
-            std::map<double, bool> uniqueMap;
+            std::map<float, bool> uniqueMap;
             for(i = 0; i < X.rows(); i++)
             {
                 isBinary = true;
@@ -83,7 +83,7 @@ namespace FT{
 
 	    }
         
-        /* void reorder_longitudinal(vector<ArrayXd> &vec1, vector<ArrayXd> &vec2, */
+        /* void reorder_longitudinal(vector<ArrayXf> &vec1, vector<ArrayXf> &vec2, */
         /*                          vector<long> const &order) */
         /* { */   
         
@@ -104,7 +104,7 @@ namespace FT{
         /*     } */
         /* } */
         
-        void reorder_longitudinal(vector<ArrayXd> &vec1, const vector<int>& order)
+        void reorder_longitudinal(vector<ArrayXf> &vec1, const vector<int>& order)
         {  
 			vector<int> index = order; 
 			// Fix all elements one by one 
@@ -132,10 +132,10 @@ namespace FT{
 			}   
         }
         /// calculate median
-        double median(const ArrayXd& v) 
+        float median(const ArrayXf& v) 
         {
             // instantiate a vector
-            vector<double> x(v.size());
+            vector<float> x(v.size());
             x.assign(v.data(),v.data()+v.size());
             // middle element
             size_t n = x.size()/2;
@@ -150,86 +150,94 @@ namespace FT{
             else
                 return x[n];
         }
+        
         /// returns the (first) index of the element with the middlest value in v
-        int argmiddle(vector<double>& v)
+        int argmiddle(vector<float>& v)
         {
             // instantiate a vector
-            vector<double> x = v; 
+            vector<float> x = v; 
             // middle iterator
-            std::vector<double>::iterator middle = x.begin() + x.size()/2;
+            std::vector<float>::iterator middle = x.begin() + x.size()/2;
             // sort nth element of array
             nth_element(x.begin(), middle, x.end());
             // find position of middle value in original array
-            std::vector<double>::iterator it = std::find(v.begin(), v.end(), *middle);
+            std::vector<float>::iterator it = std::find(v.begin(), v.end(), *middle);
 
-            std::vector<double>::size_type pos = std::distance(v.begin(), it);
+            std::vector<float>::size_type pos = std::distance(v.begin(), it);
             /* cout << "middle index: " << pos << "\n"; */
             /* cout << "middle value: " << *it << "\n"; */
             return pos;
         }
-        /// calculate variance
-        double variance(const ArrayXd& v) 
+        
+        /// calculate variance when mean provided
+        float variance(const ArrayXf& v, float mean) 
         {
-            double mean = v.mean();
-            ArrayXd tmp = mean*ArrayXd::Ones(v.size());
+            ArrayXf tmp = mean*ArrayXf::Ones(v.size());
             return pow((v - tmp), 2).mean();
         }
         
-        /// calculate skew
-        double skew(const ArrayXd& v) 
+        /// calculate variance
+        float variance(const ArrayXf& v) 
         {
-            double mean = v.mean();
-            ArrayXd tmp = mean*ArrayXd::Ones(v.size());
+            float mean = v.mean();
+            return variance(v, mean);
+        }
+        
+        /// calculate skew
+        float skew(const ArrayXf& v) 
+        {
+            float mean = v.mean();
+            ArrayXf tmp = mean*ArrayXf::Ones(v.size());
             
-            double thirdMoment = pow((v - tmp), 3).mean();
-            double variance = pow((v - tmp), 2).mean();
+            float thirdMoment = pow((v - tmp), 3).mean();
+            float variance = pow((v - tmp), 2).mean();
             
             return thirdMoment/sqrt(pow(variance, 3));
         }
         
         /// calculate kurtosis
-        double kurtosis(const ArrayXd& v) 
+        float kurtosis(const ArrayXf& v) 
         {
-            double mean = v.mean();
-            ArrayXd tmp = mean*ArrayXd::Ones(v.size());
+            float mean = v.mean();
+            ArrayXf tmp = mean*ArrayXf::Ones(v.size());
             
-            double fourthMoment = pow((v - tmp), 4).mean();
-            double variance = pow((v - tmp), 2).mean();
+            float fourthMoment = pow((v - tmp), 4).mean();
+            float variance = pow((v - tmp), 2).mean();
             
             return fourthMoment/pow(variance, 2);
         }
         
-        double covariance(const ArrayXd& x, const ArrayXd& y)
+        float covariance(const ArrayXf& x, const ArrayXf& y)
         {
-            double meanX = x.mean();
-            double meanY = y.mean();
-            //double count = x.size();
+            float meanX = x.mean();
+            float meanY = y.mean();
+            //float count = x.size();
             
-            ArrayXd tmp1 = meanX*ArrayXd::Ones(x.size());
-            ArrayXd tmp2 = meanY*ArrayXd::Ones(y.size());
+            ArrayXf tmp1 = meanX*ArrayXf::Ones(x.size());
+            ArrayXf tmp2 = meanY*ArrayXf::Ones(y.size());
             
             return ((x - tmp1)*(y - tmp2)).mean();
             
         }
         
-        double slope(const ArrayXd& y, const ArrayXd& x)
+        float slope(const ArrayXf& y, const ArrayXf& x)
         {
             return covariance(x, y)/variance(x);
         }
 
         // Pearson correlation    
-        double pearson_correlation(const ArrayXd& x, const ArrayXd& y)
+        float pearson_correlation(const ArrayXf& x, const ArrayXf& y)
         {
             return pow(covariance(x,y),2) / (variance(x) * variance(y));
         }
         /// median absolute deviation
-        double mad(const ArrayXd& x) 
+        float mad(const ArrayXf& x) 
         {
             // returns median absolute deviation (MAD)
             // get median of x
-            double x_median = median(x);
+            float x_median = median(x);
             //calculate absolute deviation from median
-            ArrayXd dev(x.size());
+            ArrayXf dev(x.size());
             for (int i =0; i < x.size(); ++i)
                 dev(i) = fabs(x(i) - x_median);
             // return median of the absolute deviation
@@ -245,20 +253,20 @@ namespace FT{
 	    {
 		    _start = high_resolution_clock::now();
 	    }
-        std::chrono::duration<double> Timer::Elapsed() const
+        std::chrono::duration<float> Timer::Elapsed() const
 	    {
 		    return high_resolution_clock::now() - _start;
 	    }
        
         /// fit the scale and offset of data. 
-        void Normalizer::fit(MatrixXd& X, const vector<char>& dt)
+        void Normalizer::fit(MatrixXf& X, const vector<char>& dt)
         {
             scale.clear();
             offset.clear();
             dtypes = dt; 
             for (unsigned int i=0; i<X.rows(); ++i)
             {
-                VectorXd tmp = X.row(i).array()-X.row(i).mean();
+                VectorXf tmp = X.row(i).array()-X.row(i).mean();
                 scale.push_back(tmp.norm());
                 offset.push_back(X.row(i).mean());
             }
@@ -266,14 +274,14 @@ namespace FT{
         }
         
         /// normalize matrix.
-        void Normalizer::normalize(MatrixXd& X)
+        void Normalizer::normalize(MatrixXf& X)
         {  
             // normalize features
             for (unsigned int i=0; i<X.rows(); ++i)
             {
                 if (std::isinf(scale.at(i)))
                 {
-                    X.row(i) = VectorXd::Zero(X.row(i).size());
+                    X.row(i) = VectorXf::Zero(X.row(i).size());
                     continue;
                 }
                 if (dtypes.at(i)=='f')   // skip binary and categorical rows
@@ -285,14 +293,14 @@ namespace FT{
             }
         }
         
-        void Normalizer::fit_normalize(MatrixXd& X, const vector<char>& dtypes)
+        void Normalizer::fit_normalize(MatrixXf& X, const vector<char>& dtypes)
         {
             fit(X, dtypes);
             normalize(X);
         }
 
         /// returns true for elements of x that are infinite
-        ArrayXb isinf(const ArrayXd& x)
+        ArrayXb isinf(const ArrayXf& x)
         {
             ArrayXb infs(x.size());
             for (unsigned i =0; i < infs.size(); ++i)
@@ -301,7 +309,7 @@ namespace FT{
         }
         
         /// returns true for elements of x that are NaN
-        ArrayXb isnan(const ArrayXd& x)
+        ArrayXb isnan(const ArrayXf& x)
         {
             ArrayXb nans(x.size());
             for (unsigned i =0; i < nans.size(); ++i)
@@ -320,18 +328,18 @@ namespace FT{
             return ss.str();
         }*/
         /// returns the condition number of a matrix.
-        double condition_number(const MatrixXd& X)
+        float condition_number(const MatrixXf& X)
         {
             /* cout << "X (" << X.rows() << "x" << X.cols() << "): " << X.transpose() << "\n"; */
-            /* MatrixXd Y = X; */
+            /* MatrixXf Y = X; */
             /* try */
             /* { */
-            /* JacobiSVD<MatrixXd> svd(Y); */
-            BDCSVD<MatrixXd> svd(X);
+            /* JacobiSVD<MatrixXf> svd(Y); */
+            BDCSVD<MatrixXf> svd(X);
             /* cout << "JacobiSVD declared\n"; */
-            double cond=MAX_DBL; 
+            float cond=MAX_FLT; 
             /* cout << "running svals\n"; */
-            ArrayXd svals = svd.singularValues();
+            ArrayXf svals = svd.singularValues();
             /* cout << "svals: " << svals.transpose() << "\n"; */
             if (svals.size()>0)
             {
@@ -343,34 +351,34 @@ namespace FT{
             /* } */
             /* catch (...) */
             /* { */
-            return MAX_DBL;
+            return MAX_FLT;
             /* } */
         }
 
         /// returns the pearson correlation coefficients of matrix.
-        MatrixXd corrcoef(const MatrixXd& X)
+        MatrixXf corrcoef(const MatrixXf& X)
         { 
-            MatrixXd centered = X.colwise() - X.rowwise().mean();
+            MatrixXf centered = X.colwise() - X.rowwise().mean();
 
             /* std::cout << "centered: " << centered.rows() << "x" << centered.cols() << ": " */ 
             /*           << centered << "\n\n"; */
-            MatrixXd cov = ( centered * centered.adjoint()) / double(X.cols() - 1);
+            MatrixXf cov = ( centered * centered.adjoint()) / float(X.cols() - 1);
             /* std::cout << "cov: " << cov.rows() << "x" << cov.cols() << ": " << cov << "\n\n"; */
-            VectorXd tmp = 1/cov.diagonal().array().sqrt();
+            VectorXf tmp = 1/cov.diagonal().array().sqrt();
             auto d = tmp.asDiagonal();
             /* std::cout << "1/sqrt(diag(cov)): " << d.rows() << "x" << d.cols() << ": " */ 
             /*           << d.diagonal() << "\n"; */
-            MatrixXd corrcoef = d * cov * d;
+            MatrixXf corrcoef = d * cov * d;
             /* std::cout << "cov/d: " << corrcoef.rows() << "x" << corrcoef.cols() << ": " */ 
             /*           << corrcoef << "\n"; */
             return corrcoef;
         }
 
         // returns the mean of the pairwise correlations of a matrix.
-        double mean_square_corrcoef(const MatrixXd& X)
+        float mean_square_corrcoef(const MatrixXf& X)
         {
-            MatrixXd tmp = corrcoef(X).triangularView<StrictlyUpper>();
-            double N = tmp.rows()*(tmp.rows()-1)/2;
+            MatrixXf tmp = corrcoef(X).triangularView<StrictlyUpper>();
+            float N = tmp.rows()*(tmp.rows()-1)/2;
             /* cout << "triangular strictly upper view: " << tmp << "\n"; */
             return tmp.array().square().sum()/N;
         }

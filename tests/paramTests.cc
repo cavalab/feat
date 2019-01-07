@@ -16,7 +16,7 @@ TEST(Parameters, paramsTests)
 	
 	ASSERT_EQ(ft.params.terminals.size(), 10);
 	
-	vector<double> weights;
+	vector<float> weights;
 	weights.resize(10);
 	weights[0] = 10;
 	ASSERT_NO_THROW(ft.params.set_term_weights(weights)); //TODO should throw error here as vector is empty just 
