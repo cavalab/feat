@@ -432,7 +432,7 @@ namespace FT{
             vector<size_t> mlocs, dlocs; // mom and dad locations for consideration
             size_t i1, j1, j1_idx, i2, j2;       // i1-j1: mom portion, i2-j2: dad portion
             
-            params.msg("\troot xo",3);
+            params.msg("\tsemantic xo",3);
             mlocs = mom.program.roots();
             vector<int> mlocs_indices(mlocs.size());
             std::iota(mlocs_indices.begin(),mlocs_indices.end(),0);
