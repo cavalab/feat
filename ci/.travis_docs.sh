@@ -1,5 +1,5 @@
 # build docs if on master branch
-if [ "$TRAVIS_BRANCH" = 'master' ]
+if [ "$TRAVIS_BRANCH" = "master" ]
 then
     echo "building doxygen docs"
     cd docs

@@ -17,10 +17,11 @@ namespace FT{
 	            complexity = 1;
             }
 
+            #ifndef USE_CUDA
             /// Evaluates the node and updates the state states. 
             void NodeMin::evaluate(const Data& data, State& state)
             {
-                ArrayXd tmp(state.z.top().first.size());
+                ArrayXf tmp(state.z.top().first.size());
                 
                 int x;
                 
@@ -29,14 +30,32 @@ namespace FT{
                     
                 state.z.pop();
 
-                state.push<double>(tmp);
+                state.push<float>(tmp);
                 
             }
+            #else
+            void NodeMin::evaluate(const Data& data, State& state)
+            {
+                
+                ArrayXf tmp(state.z.top().first.size());
+                
+                int x;
+                
+                for(x = 0; x < state.z.top().first.size(); x++)
+                    tmp(x) = limited(state.z.top().first[x]).minCoeff();
+                    
+                state.z.pop();
+
+                GPU_Variable(state.dev_f, tmp.data(), state.idx[otype], state.N);
+
+                
+            }
+            #endif
 
             /// Evaluates the node symbolically
             void NodeMin::eval_eqn(State& state)
             {
-                state.push<double>("min(" + state.zs.pop() + ")");
+                state.push<float>("min(" + state.zs.pop() + ")");
             }
             
             NodeMin* NodeMin::clone_impl() const { return new NodeMin(*this); }

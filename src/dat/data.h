@@ -12,9 +12,9 @@ license: GNU/GPL v3
 #include <map>
 
 using std::vector;
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
-using Eigen::ArrayXd;
+using Eigen::MatrixXf;
+using Eigen::VectorXf;
+using Eigen::ArrayXf;
 using Eigen::VectorXi;
 using Eigen::Dynamic;
 using Eigen::Map;
@@ -39,18 +39,18 @@ namespace FT
          */
         class Data
         {
-            //Data(MatrixXd& X, VectorXd& y, std::map<string, 
-            //std::pair<vector<ArrayXd>, vector<ArrayXd>>>& Z): X(X), y(y), Z(Z){}
+            //Data(MatrixXf& X, VectorXf& y, std::map<string, 
+            //std::pair<vector<ArrayXf>, vector<ArrayXf>>>& Z): X(X), y(y), Z(Z){}
             public:
      
-                MatrixXd& X;
-                VectorXd& y;
-                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>>& Z;
+                MatrixXf& X;
+                VectorXf& y;
+                std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>>& Z;
                 bool classification;
                 bool validation; 
 
-                Data(MatrixXd& X, VectorXd& y, std::map<string, std::pair<vector<ArrayXd>, 
-                        vector<ArrayXd>>>& Z, bool c = false);
+                Data(MatrixXf& X, VectorXf& y, std::map<string, std::pair<vector<ArrayXf>, 
+                        vector<ArrayXf>>>& Z, bool c = false);
 
                 void set_validation(bool v=true);
                 
@@ -69,12 +69,12 @@ namespace FT
                 bool tCreated;
                 bool vCreated;
                 // training and validation data
-                MatrixXd X_t;
-                MatrixXd X_v;
-                VectorXd y_t;
-                VectorXd y_v;
-                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_t;
-                std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z_v;
+                MatrixXf X_t;
+                MatrixXf X_v;
+                VectorXf y_t;
+                VectorXf y_v;
+                std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z_t;
+                std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z_v;
 
             public:
                 Data *o = NULL;     //< pointer to original data
@@ -86,35 +86,35 @@ namespace FT
                 ~DataRef();
                 
         
-                DataRef(MatrixXd& X, VectorXd& y, 
-                                 std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > >& Z, 
+                DataRef(MatrixXf& X, VectorXf& y, 
+                                 std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > >& Z, 
                                  bool c=false);
                         
-                void setOriginalData(MatrixXd& X, VectorXd& y, 
-                        std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>>& Z, bool c=false);
+                void setOriginalData(MatrixXf& X, VectorXf& y, 
+                        std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>>& Z, bool c=false);
                 
                 void setOriginalData(Data *d);
                 
-                void setTrainingData(MatrixXd& X_t, VectorXd& y_t, 
-                                   std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>>& Z_t,
+                void setTrainingData(MatrixXf& X_t, VectorXf& y_t, 
+                                   std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>>& Z_t,
                                    bool c = false);
                 
                 void setTrainingData(Data *d, bool toDelete = false);
                 
-                void setValidationData(MatrixXd& X_v, VectorXd& y_v, 
-                                   std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>>& Z_v,
+                void setValidationData(MatrixXf& X_v, VectorXf& y_v, 
+                                   std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>>& Z_v,
                                    bool c = false);
                 
                 void setValidationData(Data *d);
                
                 /// splits data into training and validation folds.
-                void train_test_split(bool shuffle, double split);
+                void train_test_split(bool shuffle, float split);
 
                 void split_longitudinal(
-                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z,
-                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_t,
-                            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > &Z_v,
-                            double split);
+                            std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > &Z,
+                            std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > &Z_t,
+                            std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > &Z_v,
+                            float split);
 
         };
     }

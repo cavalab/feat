@@ -132,7 +132,7 @@ namespace FT{
            return std::min(i,i4);
         }
         
-        void NodeVector::set_weights(vector<vector<double>>& weights)
+        void NodeVector::set_weights(vector<vector<float>>& weights)
         {
             if (weights.size()==0) return;
             int count = 0;
@@ -161,9 +161,9 @@ namespace FT{
             }
         }
         
-        vector<vector<double>> NodeVector::get_weights()
+        vector<vector<float>> NodeVector::get_weights()
         {
-            vector<vector<double>> weights;
+            vector<vector<float>> weights;
             for (unsigned i = 0; i< this->size(); ++i)
             {
                 if (this->at(i)->isNodeDx())
@@ -180,17 +180,17 @@ namespace FT{
             /*! checks whether program fulfills all its arities. */
             State state;
             
-            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd>>> Z;
+            std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>> Z;
             
-            MatrixXd X = MatrixXd::Zero(num_features,2); 
-            VectorXd y = VectorXd::Zero(2);
+            MatrixXf X = MatrixXf::Zero(num_features,2); 
+            VectorXf y = VectorXf::Zero(2);
             
              for(auto key : longitudinalMap)
              {
-                Z[key].first.push_back(ArrayXd::Zero(2));
-                Z[key].first.push_back(ArrayXd::Zero(2));
-                Z[key].second.push_back(ArrayXd::Zero(2));
-                Z[key].second.push_back(ArrayXd::Zero(2));
+                Z[key].first.push_back(ArrayXf::Zero(2));
+                Z[key].first.push_back(ArrayXf::Zero(2));
+                Z[key].second.push_back(ArrayXf::Zero(2));
+                Z[key].second.push_back(ArrayXf::Zero(2));
              }
              
             Data data(X, y, Z, false);
@@ -214,7 +214,7 @@ namespace FT{
        
         void NodeVector::make_tree(const NodeVector& functions, 
                                    const NodeVector& terminals, int max_d,  
-                                   const vector<double>& term_weights,
+                                   const vector<float>& term_weights,
                                    char otype, const vector<char>& term_types)
         {  
                     
@@ -232,7 +232,7 @@ namespace FT{
             {
                 // append terminal 
                 vector<size_t> ti;  // indices of valid terminals 
-                vector<double> tw;  // weights of valid terminals
+                vector<float> tw;  // weights of valid terminals
                 /* cout << "terminals: " ; */
                 /* for (const auto& t : terminals) cout << t->name << "(" << t->otype << "),"; */ 
                 /* cout << "\n"; */
@@ -345,7 +345,7 @@ namespace FT{
 
         void NodeVector::make_program(const NodeVector& functions, 
                                       const NodeVector& terminals, int max_d, 
-                                      const vector<double>& term_weights, int dim, char otype, 
+                                      const vector<float>& term_weights, int dim, char otype, 
                                       vector<string> longitudinalMap, const vector<char>& term_types)
         {
             for (unsigned i = 0; i<dim; ++i)    // build trees

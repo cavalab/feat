@@ -64,7 +64,7 @@ TEST(Feat, predict)
     feat.set_random_state(666);
 
     
-    MatrixXd X(7,2); 
+    MatrixXf X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
          0.84147098,  0.54030231,
@@ -75,7 +75,7 @@ TEST(Feat, predict)
 
     X.transposeInPlace();
     
-    VectorXd y(7); 
+    VectorXf y(7); 
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
@@ -101,7 +101,7 @@ TEST(Feat, transform)
     Feat feat(100, 100, "LinearRidgeRegression", false, 1);
     feat.set_random_state(666);
     
-    MatrixXd X(7,2); 
+    MatrixXf X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
          0.84147098,  0.54030231,
@@ -112,7 +112,7 @@ TEST(Feat, transform)
 
     X.transposeInPlace();
     
-    VectorXd y(7); 
+    VectorXf y(7); 
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
@@ -127,7 +127,7 @@ TEST(Feat, transform)
          0.5, -0.8,
          0.1,-0.9;
        
-    MatrixXd res = feat.transform(X);
+    MatrixXf res = feat.transform(X);
     ASSERT_EQ(res.cols(), 7);
 
     if (res.rows() > feat.params.max_dim){
@@ -143,7 +143,7 @@ TEST(Feat, fit_predict)
     Feat feat(100, 100, "LinearRidgeRegression", false, 1);
     feat.set_random_state(666);
     
-    MatrixXd X(7,2); 
+    MatrixXf X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
          0.84147098,  0.54030231,
@@ -154,7 +154,7 @@ TEST(Feat, fit_predict)
 
     X.transposeInPlace();
     
-    VectorXd y(7); 
+    VectorXf y(7); 
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
@@ -171,7 +171,7 @@ TEST(Feat, fit_transform)
    
     feat.set_verbosity(1);
 
-    MatrixXd X(7,2); 
+    MatrixXf X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
          0.84147098,  0.54030231,
@@ -182,12 +182,12 @@ TEST(Feat, fit_transform)
 
     X.transposeInPlace();
     
-    VectorXd y(7); 
+    VectorXf y(7); 
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
     
-    MatrixXd res = feat.fit_transform(X, y);
+    MatrixXf res = feat.fit_transform(X, y);
     ASSERT_EQ(res.cols(), 7);
     
     if (res.rows() > feat.params.max_dim)

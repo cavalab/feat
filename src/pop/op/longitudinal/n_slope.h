@@ -23,7 +23,7 @@ namespace FT{
                     /// Evaluates the node symbolically
                     void eval_eqn(State& state);
 
-                    double slope(const ArrayXd& x, const ArrayXd& y);
+                    float slope(const ArrayXf& x, const ArrayXf& y);
 
                 protected:
                     NodeSlope* clone_impl() const override; 

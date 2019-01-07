@@ -8,7 +8,7 @@ namespace FT{
 
     namespace Pop{
         namespace Op{
-            NodeLogit::NodeLogit(vector<double> W0)
+            NodeLogit::NodeLogit(vector<float> W0)
             {
                 name = "logit";
 	            otype = 'f';
@@ -25,24 +25,31 @@ namespace FT{
                     W = W0;
             }
 
+            #ifndef USE_CUDA
             /// Evaluates the node and updates the state states. 
             void NodeLogit::evaluate(const Data& data, State& state)
             {
-                state.push<double>(1/(1+(limited(exp(-W[0]*state.pop<double>())))));
+                state.push<float>(1/(1+(limited(exp(-W[0]*state.pop<float>())))));
             }
+            #else
+            void NodeLogit::evaluate(const Data& data, State& state)
+            {
+                GPU_Logit(state.dev_f, state.idx[otype], state.N, W[0]);
+            }
+            #endif
 
             /// Evaluates the node symbolically
             void NodeLogit::eval_eqn(State& state)
             {
-                /* state.push<double>("1/(1+exp(-" + state.popStr<double>() + "))"); */
-                state.push<double>("logit(" + state.popStr<double>() + ")");
+                /* state.push<float>("1/(1+exp(-" + state.popStr<float>() + "))"); */
+                state.push<float>("logit(" + state.popStr<float>() + ")");
             }
 
-            ArrayXd NodeLogit::getDerivative(Trace& state, int loc) 
+            ArrayXf NodeLogit::getDerivative(Trace& state, int loc) 
             {
-                ArrayXd numerator, denom;
+                ArrayXf numerator, denom;
                 
-                ArrayXd& x = state.get<double>()[state.size<double>()-1];
+                ArrayXf& x = state.get<float>()[state.size<float>()-1];
                 
                 switch (loc) {
                     case 1: // d/dw0

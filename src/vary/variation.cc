@@ -450,22 +450,22 @@ namespace FT{
             // j2 = index in dad.Phi that maximizes R2(d.y, w*mom.Phi - w_i1*Phi_i1)
             /* cout << "mom: " << mom.get_eqn() << "\n"; */
             /* cout << "mom yhat: " << mom.yhat.transpose() << "\n"; */
-            VectorXd tree = mom.ml->get_weights().at(j1_idx)*mom.Phi.row(j1_idx).array();
+            VectorXf tree = mom.ml->get_weights().at(j1_idx)*mom.Phi.row(j1_idx).array();
             /* cout << "tree (idx=" << j1_idx << "): " << tree.transpose() << "\n"; */
-            VectorXd mom_pred_minus_tree = mom.yhat - tree; 
+            VectorXf mom_pred_minus_tree = mom.yhat - tree; 
     /* #pragma omp critical */
             /* { */
-            /* VectorXd mom_pred_minus_tree = mom.predict_drop(d,params,j1_idx); */ 
+            /* VectorXf mom_pred_minus_tree = mom.predict_drop(d,params,j1_idx); */ 
             /* } */
             /* cout << "mom_pred_minus_tree: " << mom_pred_minus_tree.transpose() << "\n"; */
-            VectorXd mom_residual = d.y - mom_pred_minus_tree;
+            VectorXf mom_residual = d.y - mom_pred_minus_tree;
             /* cout << "mom_residual: " << mom_residual.transpose() << "\n"; */
            
             // get correlations of dad's features with the residual from mom, less the swap choice
-            vector<double> corrs(dad.Phi.rows());
+            vector<float> corrs(dad.Phi.rows());
             int best_corr_idx = 0;
-            double best_corr = 0;
-            double corr; 
+            float best_corr = 0;
+            float corr; 
 
             for (int i = 0; i < dad.Phi.rows(); ++i)
             {

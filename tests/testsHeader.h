@@ -15,8 +15,8 @@
 
 using namespace std;
 
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
+using Eigen::MatrixXf;
+using Eigen::VectorXf;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
 using std::vector;
 using std::string;

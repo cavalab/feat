@@ -20,8 +20,8 @@ license: GNU/GPL v3
 #include <iostream>
 #include <numeric>
 
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
+using Eigen::MatrixXf;
+using Eigen::VectorXf;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
 typedef Eigen::Matrix<long,Eigen::Dynamic,1> VectorXl;
 using std::vector;
@@ -34,9 +34,9 @@ using std::cout;
 
 namespace FT{
 
-    static double NEAR_ZERO = 0.0000001;
-    static double MAX_DBL = std::numeric_limits<double>::max();
-    static double MIN_DBL = std::numeric_limits<double>::lowest();
+    static float NEAR_ZERO = 0.0000001;
+    static float MAX_FLT = std::numeric_limits<float>::max();
+    static float MIN_FLT = std::numeric_limits<float>::lowest();
 
 }
 

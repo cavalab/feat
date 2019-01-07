@@ -8,7 +8,7 @@ namespace FT{
 
     namespace Pop{
         namespace Op{
-            NodeMultiply::NodeMultiply(vector<double> W0)
+            NodeMultiply::NodeMultiply(vector<float> W0)
             {
 	            name = "*";
 	            otype = 'f';
@@ -25,25 +25,32 @@ namespace FT{
                     W = W0;
             }
 
+            #ifndef USE_CUDA
             /// Evaluates the node and updates the state states. 
             void NodeMultiply::evaluate(const Data& data, State& state)
             {
-                ArrayXd x1 = state.pop<double>();
-                ArrayXd x2 = state.pop<double>();
+                ArrayXf x1 = state.pop<float>();
+                ArrayXf x2 = state.pop<float>();
                
-                state.push<double>(limited(W[0]*x1 * W[1]*x2));
+                state.push<float>(limited(W[0]*x1 * W[1]*x2));
             }
+            #else
+            void NodeMultiply::evaluate(const Data& data, State& state)
+            {
+                GPU_Multiply(state.dev_f, state.idx[otype], state.N, W[0], W[1]);
+            }
+            #endif
 
             /// Evaluates the node symbolically
             void NodeMultiply::eval_eqn(State& state)
             {
-	            state.push<double>("(" + state.popStr<double>() + "*" + state.popStr<double>() + ")");
+	            state.push<float>("(" + state.popStr<float>() + "*" + state.popStr<float>() + ")");
             }
 
-            ArrayXd NodeMultiply::getDerivative(Trace& state, int loc)
+            ArrayXf NodeMultiply::getDerivative(Trace& state, int loc)
             {
-                ArrayXd& x1 = state.get<double>()[state.size<double>()-1];
-                ArrayXd& x2 = state.get<double>()[state.size<double>()-2];
+                ArrayXf& x1 = state.get<float>()[state.size<float>()-1];
+                ArrayXf& x2 = state.get<float>()[state.size<float>()-2];
                 
                 switch (loc) {
                     case 3: // d/dW[1]

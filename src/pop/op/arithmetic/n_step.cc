@@ -18,18 +18,25 @@ namespace FT{
 	            complexity = 1;
             }
 
+            #ifndef USE_CUDA
             /// Evaluates the node and updates the state states. 
             void NodeStep::evaluate(const Data& data, State& state)
             {
-	            ArrayXd x = state.pop<double>();
-	            ArrayXd res = (x > 0).select(ArrayXd::Ones(x.size()), ArrayXd::Zero(x.size())); 
-                state.push<double>(res);
+	            ArrayXf x = state.pop<float>();
+	            ArrayXf res = (x > 0).select(ArrayXf::Ones(x.size()), ArrayXf::Zero(x.size())); 
+                state.push<float>(res);
             }
+            #else
+            void NodeStep::evaluate(const Data& data, State& state)
+            {
+                GPU_Step(state.dev_f, state.idx[otype], state.N);
+            }
+            #endif
 
             /// Evaluates the node symbolically
             void NodeStep::eval_eqn(State& state)
             {
-                state.push<double>("step("+ state.popStr<double>() +")");
+                state.push<float>("step("+ state.popStr<float>() +")");
             }
 
             NodeStep* NodeStep::clone_impl() const { return new NodeStep(*this); }

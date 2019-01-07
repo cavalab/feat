@@ -18,10 +18,11 @@ namespace FT{
 	            complexity = 3;
             }
 
+            #ifndef USE_CUDA
             /// Evaluates the node and updates the state states. 
             void NodeSkew::evaluate(const Data& data, State& state)
             {
-                ArrayXd tmp(state.z.top().first.size());
+                ArrayXf tmp(state.z.top().first.size());
                 
                 int x;
                 
@@ -30,14 +31,32 @@ namespace FT{
                     
                 state.z.pop();
 
-                state.push<double>(tmp);
+                state.push<float>(tmp);
                 
             }
+            #else
+            void NodeSkew::evaluate(const Data& data, State& state)
+            {
+                
+                ArrayXf tmp(state.z.top().first.size());
+                
+                int x;
+                
+                for(x = 0; x < state.z.top().first.size(); x++)
+                    tmp(x) = skew(limited(state.z.top().first[x]));
+                    
+                state.z.pop();
+
+                GPU_Variable(state.dev_f, tmp.data(), state.idx[otype], state.N);
+
+                
+            }
+            #endif
 
             /// Evaluates the node symbolically
             void NodeSkew::eval_eqn(State& state)
             {
-                state.push<double>("skew(" + state.zs.pop() + ")");
+                state.push<float>("skew(" + state.zs.pop() + ")");
             }
 
             NodeSkew* NodeSkew::clone_impl() const { return new NodeSkew(*this); }

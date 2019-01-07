@@ -7,6 +7,10 @@ license: GNU/GPL v3
 
 #include <memory>
 
+#ifdef USE_CUDA
+    #include "cuda-op/kernels.h"
+#endif
+
 #include "op/node.h"
 
 //arithmatic nodes
@@ -57,11 +61,9 @@ license: GNU/GPL v3
 #include "op/longitudinal/n_mean.h"
 #include "op/longitudinal/n_median.h"
 #include "op/longitudinal/n_min.h"
-#include "op/longitudinal/n_mode.h"
 #include "op/longitudinal/n_recent.h"
 #include "op/longitudinal/n_skew.h"
 #include "op/longitudinal/n_slope.h"
-#include "op/longitudinal/n_time.h"
 #include "op/longitudinal/n_var.h"
 
 //terminal nodes

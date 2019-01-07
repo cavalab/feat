@@ -6,6 +6,9 @@ license: GNU/GPL v3
 #define INDIVIDUAL_H
 
 #include "../dat/state.h"
+#ifdef USE_CUDA
+    #include "cuda-op/cuda_utils.h"
+#endif
 #include "../dat/data.h"
 #include "../params.h"
 #include "../model/ml.h"
@@ -26,18 +29,18 @@ namespace FT{
         class Individual{
         public:        
             NodeVector program;                         ///< executable data structure
-            MatrixXd Phi;                               ///< transformation output of program 
-            VectorXd yhat;                              ///< current output
+            MatrixXf Phi;                               ///< transformation output of program 
+            VectorXf yhat;                              ///< current output
             shared_ptr<ML> ml;                          ///< ML model, trained on Phi
-            double fitness;             				///< aggregate fitness score
-            double fitness_v;             				///< aggregate validation fitness score
-            double CN;
+            float fitness;             				///< aggregate fitness score
+            float fitness_v;             				///< aggregate validation fitness score
+            float CN;
             size_t loc;                 				///< index of individual in semantic matrix F
             string eqn;                 				///< symbolic representation of program
-            vector<double> w;            				///< weights from ML training on program output
-            vector<double> p;                           ///< probability of variation of subprograms
+            vector<float> w;            				///< weights from ML training on program output
+            vector<float> p;                           ///< probability of variation of subprograms
             unsigned int dim;           				///< dimensionality of individual
-            vector<double> obj;                         ///< objectives for use with Pareto selection
+            vector<float> obj;                         ///< objectives for use with Pareto selection
             unsigned int dcounter;                      ///< number of individuals this dominates
             vector<unsigned int> dominated;             ///< individual indices this dominates
             unsigned int rank;                          ///< pareto front rank
@@ -51,10 +54,10 @@ namespace FT{
             Individual();
 
             /// calculate program output matrix Phi
-            MatrixXd out(const Data& d, const Parameters& params, bool predict=false);
+            MatrixXf out(const Data& d, const Parameters& params, bool predict=false);
 
             /// calculate program output while maintaining stack trace
-            MatrixXd out_trace(const Data& d,
+            MatrixXf out_trace(const Data& d,
                          const Parameters& params, vector<Trace>& stack_trace);
 
             /// fits an ML model to the data after transformation
@@ -65,8 +68,8 @@ namespace FT{
              *  removing its output from the transformation. used in semantic crossover.
              */
             shared_ptr<CLabels> predict(const Data& d, const Parameters& params);
-            VectorXd predict_vector(const Data& d, const Parameters& params);
-            VectorXd predict_drop(const Data& d, const Parameters& params, int drop_idx);
+            VectorXf predict_vector(const Data& d, const Parameters& params);
+            VectorXf predict_drop(const Data& d, const Parameters& params, int drop_idx);
             /// return symbolic representation of program
             string get_eqn();
 
@@ -121,16 +124,22 @@ namespace FT{
             void set_parents(const vector<int>& parents){ parent_id = parents; }
 
             /// get probabilities of variation
-            vector<double> get_p() const;
+            vector<float> get_p() const;
             
             /// get inverted weight probability for pogram location i
-            double get_p(const size_t i) const;
+            float get_p(const size_t i) const;
             
             /// get probability of variation for program locations locs
-            vector<double> get_p(const vector<size_t>& locs) const; 
+            vector<float> get_p(const vector<size_t>& locs) const; 
 
             /// set probabilities
-            void set_p(const vector<double>& weights, const double& fb);
+            void set_p(const vector<float>& weights, const float& fb);
+            
+            /// get maximum stack size needed for evaluation.
+            std::map<char,size_t> get_max_state_size();
+            
+            typedef Array<bool, Dynamic, Dynamic, RowMajor> ArrayXXb;
+            typedef Array<float, Dynamic, Dynamic, RowMajor> ArrayXXf;
         };
     }
 }

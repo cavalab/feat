@@ -11,18 +11,18 @@ bool isNodeDx(Node* n) {
 	return NULL != dynamic_cast<NodeDx*>(n); 
 }
 
-ArrayXd limited(ArrayXd x)
+ArrayXf limited(ArrayXf x)
 {
     //cout << "\n From limited function\n INPUT \n"<<x<<"\n";
     x = (isnan(x)).select(0,x);
-    x = (x < MIN_DBL).select(MIN_DBL,x);
-    x = (x > MAX_DBL).select(MAX_DBL,x);
+    x = (x < MIN_FLT).select(MIN_FLT,x);
+    x = (x > MAX_FLT).select(MAX_FLT,x);
     
     //cout << "\n From limited function\n OUTPUT \n"<<x<<"\n";
     return x;
 };
 
-/*ArrayXd evaluateProgram(NodeVector& program, MatrixXd data, VectorXd labels)
+/*ArrayXf evaluateProgram(NodeVector& program, MatrixXf data, VectorXf labels)
 
 	Stacks stack;
 
@@ -54,9 +54,9 @@ Node* parseToNode(std::string token) {
    	} else if (token == "tanh") {
     	return new NodeTanh({1.0});
     } else if (token == "x0") {
-    	return new NodeVariable<double>(0);
+    	return new NodeVariable<float>(0);
     } else if (token == "x1") {
-    	return new NodeVariable<double>(1);
+    	return new NodeVariable<float>(1);
     } else if (token == "c") {
     return new NodeConstant(1.0);
     } else if (token == "exponent") {
@@ -88,7 +88,7 @@ class TestBackProp
 {
     public:
     
-        TestBackProp(int iters=1000, double n=0.1, double a=0.9)
+        TestBackProp(int iters=1000, float n=0.1, float a=0.9)
         {
             this->iters = iters;
 		    this->n = n;
@@ -101,13 +101,13 @@ class TestBackProp
                             const Parameters& params)
         {
             vector<size_t> roots = ind.program.roots();
-            double min_loss;
-            double current_loss, current_val_loss;
-            vector<vector<double>> best_weights;
+            float min_loss;
+            float current_loss, current_val_loss;
+            vector<vector<float>> best_weights;
             // batch data
-            MatrixXd Xb, Xb_v;
-            VectorXd yb, yb_v;
-            std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Zb, Zb_v;
+            MatrixXf Xb, Xb_v;
+            VectorXf yb, yb_v;
+            std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Zb, Zb_v;
             /* cout << "y: " << d.y.transpose() << "\n"; */ 
             Data db(Xb, yb, Zb, params.classification);
             Data db_val(Xb_v, yb_v, Zb_v, params.classification);
@@ -130,7 +130,7 @@ class TestBackProp
                 d.get_batch(db, params.bp.batch_size); 
                 /* cout << "db.y: " << db.y.transpose() << "\n"; */ 
                 // Evaluate forward pass
-                MatrixXd Phi; 
+                MatrixXf Phi; 
                 /* cout << "forward pass\n"; */
                 vector<Trace> stack_trace = engine->forward_prop(ind, db, Phi, params);
 
@@ -139,9 +139,9 @@ class TestBackProp
                 for (int i = 0; i < stack_trace.size(); ++i)
                 {
                     while (!ind.program.at(roots[s])->isNodeDx()) ++s;
-//                    cout << "running backprop on " << ind.program_str() << " from "
-//                          << roots.at(s) << " to " 
-//                         << ind.program.subtree(roots.at(s)) << "\n";
+                    //cout << "running backprop on " << ind.program_str() << " from "
+                    //      << roots.at(s) << " to " 
+                    //     << ind.program.subtree(roots.at(s)) << "\n";
                     
                     backprop(stack_trace.at(i), ind.program, ind.program.subtree(roots.at(s)), 
                             roots.at(s), 1.0, Phi.row(0), db, params.class_weights);
@@ -165,7 +165,7 @@ class TestBackProp
 //                    params.msg("",3);           // update learning rate
                 }
                 
-                /* double alpha = double(x)/double(iters); */
+                /* float alpha = float(x)/float(iters); */
                 /* this->epk = (1 - alpha)*this->epk + alpha*this->epT; */  
 //                cout << "Verbosity is " << params.verbosity << "\n";
 //                if (params.verbosity>2)
@@ -184,12 +184,12 @@ class TestBackProp
         }
         
         void backprop(Trace& stack, NodeVector& program, int start, int end, 
-                                double Beta, const VectorXd& yhat, 
+                                float Beta, const VectorXf& yhat, 
                                 const Data& d,
                                 vector<float> sw)    
         {
             /* cout << "Backward pass \n"; */
-            vector<ArrayXd> derivatives;
+            vector<ArrayXf> derivatives;
             // start with derivative of cost function wrt ML output times dyhat/dprogram output, which
             // is equal to the weight the model assigned to this subprogram (Beta)
             // push back derivative of cost function wrt ML output
@@ -197,7 +197,7 @@ class TestBackProp
             derivatives.push_back(d_squared_difference(d.y, yhat).array() * Beta); //*phi.array()); 
             /* cout << "Cost derivative: " << derivatives[derivatives.size() -1 ]<< "\n"; */ 
             // Working according to test program */
-            /* pop<ArrayXd>(&f_stack); // Get rid of input to cost function */
+            /* pop<ArrayXf>(&f_stack); // Get rid of input to cost function */
             vector<BP_NODE> executing; // Stores node and its associated derivatves
             // Currently I don't think updates will be saved, might want a pointer of nodes so don't 
             // have to restock the list
@@ -214,7 +214,7 @@ class TestBackProp
                 /* cout << "bp_program: " ; */ 
                 /* for (const auto& bpe : bp_program) cout << bpe->name << " " ; cout << "\n"; */
                 /* cout << "derivatives size: " << derivatives.size() << "\n"; */ 
-                vector<ArrayXd> n_derivatives;
+                vector<ArrayXf> n_derivatives;
 
                 if (node->isNodeDx() && node->visits == 0 && node->arity['f'] > 0) {
                     NodeDx* dNode = dynamic_cast<NodeDx*>(node); // Could probably put this up one and have the if condition check if null
@@ -229,7 +229,7 @@ class TestBackProp
                     /* cout << "popping input arguments\n"; */
                     // Get rid of the input arguments for the node
                     for (int i = 0; i < dNode->arity['f']; i++) {
-                        pop<ArrayXd>(&stack.f);
+                        pop<ArrayXf>(&stack.f);
                     }
                     for (int i = 0; i < dNode->arity['c']; i++) {
                         pop<ArrayXi>(&stack.c);
@@ -238,7 +238,7 @@ class TestBackProp
                         pop<ArrayXb>(&stack.b);
                     }
                     if (!n_derivatives.empty()) {
-                        derivatives.push_back(pop_front<ArrayXd>(&n_derivatives));
+                        derivatives.push_back(pop_front<ArrayXf>(&n_derivatives));
                     }
 
                     executing.push_back({dNode, n_derivatives});
@@ -252,7 +252,7 @@ class TestBackProp
                     // Clean up gradients and find the parent node
                     /* cout << "popping derivatives\n"; */
                     if (!derivatives.empty())
-                        pop<ArrayXd>(&derivatives);	// TODO check if this fixed
+                        pop<ArrayXf>(&derivatives);	// TODO check if this fixed
                     engine->next_branch(executing, bp_program, derivatives);
                 } 
                 else 
@@ -275,10 +275,10 @@ class TestBackProp
         
     private:
         int iters;
-        double n;
-        double epT;
-        double a;
-        double epk;
+        float n;
+        float epT;
+        float a;
+        float epk;
         AutoBackProp* engine;
         
 };
@@ -309,7 +309,7 @@ NodeVector programGen(std::string txt) {
     return program;
 }
 
-Individual testDummyProgram(NodeVector p0, Data data, int iters, VectorXd& yhat) {
+Individual testDummyProgram(NodeVector p0, Data data, int iters, VectorXf& yhat) {
 	
 	std::cout << "Testing program: [";
 	
@@ -321,7 +321,7 @@ Individual testDummyProgram(NodeVector p0, Data data, int iters, VectorXd& yhat)
 	std::cout << "Number of iterations are "<< iters <<"\n";
 
 	// Params
-	double learning_rate = 0.25;
+	float learning_rate = 0.25;
     int bs = 1; 
     Individual ind;
     ind.program = p0;
@@ -333,7 +333,7 @@ Individual testDummyProgram(NodeVector p0, Data data, int iters, VectorXd& yhat)
 	TestBackProp* engine = new TestBackProp(iters, learning_rate, 0.9);	
 
     engine->run(ind, data, feat.params); // Update pointer to NodeVector internally
-    MatrixXd Phi = ind.out(data,feat.params); 
+    MatrixXf Phi = ind.out(data,feat.params); 
     yhat = Phi.row(0); 
 	return ind;
 
@@ -343,8 +343,8 @@ Individual testDummyProgram(NodeVector p0, Data data, int iters, VectorXd& yhat)
 TEST(BackProp, SumGradient)
 {   
     // Create input data and labels
-	MatrixXd X(2, 10);
-	VectorXd y(10);
+	MatrixXf X(2, 10);
+	VectorXf y(10);
 	
 	X.row(0) << -0.44485052, -0.49109715,  0.88231917,  0.94669031, -0.80300709,
        -0.581858  , -0.91693663, -0.98437617, -0.52860637, -0.89671113;
@@ -358,16 +358,16 @@ TEST(BackProp, SumGradient)
     /* cout << "X[0]: " << X.row(0) << "\n"; */
     /* cout << "X[1]: " << X.row(1) << "\n"; */
     /* cout << "y: " << y.transpose() << "\n"; */
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z; 
     
     Data data(X, y, Z);
     
     NodeVector program = programGen("x1 x0 +");
-    VectorXd yhat; 
+    VectorXf yhat; 
     Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
-    vector<double> What(2);
+    vector<float> What(2);
 	for (const auto& n : ind.program) {
 		std::cout << n->name << ": ";
 		NodeDx* nd = dynamic_cast<NodeDx*>(n.get());
@@ -389,8 +389,8 @@ TEST(BackProp, SumGradient)
 TEST(BackProp, SubtractGradient)
 {   
     // Create input data and labels
-	MatrixXd X(2, 10);
-	VectorXd y(10);
+	MatrixXf X(2, 10);
+	VectorXf y(10);
 	
 	X.row(0) << -0.44485052, -0.49109715,  0.88231917,  0.94669031, -0.80300709,
        -0.581858  , -0.91693663, -0.98437617, -0.52860637, -0.89671113;
@@ -400,16 +400,16 @@ TEST(BackProp, SubtractGradient)
 
     y = 2*X.row(0)-3*X.row(1);
         
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z; 
     
     Data data(X, y, Z);
     
     NodeVector program = programGen("x1 x0 -");
-    VectorXd yhat; 
+    VectorXf yhat; 
     Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
-	vector<double> What(2);
+	vector<float> What(2);
 	for (const auto& n : ind.program) {
 		std::cout << n->name << ": ";
 		NodeDx* nd = dynamic_cast<NodeDx*>(n.get());
@@ -434,8 +434,8 @@ TEST(BackProp, SubtractGradient)
 TEST(BackProp, MultiplyGradient)
 {   
     // Create input data and labels
-	MatrixXd X(2, 10);
-	VectorXd y(10);
+	MatrixXf X(2, 10);
+	VectorXf y(10);
 	
 	X.row(0) << -0.44485052, -0.49109715,  0.88231917,  0.94669031, -0.80300709,
        -0.581858  , -0.91693663, -0.98437617, -0.52860637, -0.89671113;
@@ -444,17 +444,17 @@ TEST(BackProp, MultiplyGradient)
 
     y = (2*X.row(0))*(3*X.row(1));
         
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z; 
     
     Data data(X, y, Z);
     
     NodeVector program = programGen("x0 x1 *");
-    VectorXd yhat; 
+    VectorXf yhat; 
     Individual ind = testDummyProgram(program, data, 1000, yhat);
 
     
     std::cout << "test program returned:\n";
-	vector<double> What(2);
+	vector<float> What(2);
 	for (const auto& n : ind.program) {
 		std::cout << n->name << ": ";
 		NodeDx* nd = dynamic_cast<NodeDx*>(n.get());
@@ -477,31 +477,31 @@ TEST(BackProp, MultiplyGradient)
 TEST(BackProp, DivideGradient)
 {   
     // Create input data and labels
-	MatrixXd X(2, 10);
-	VectorXd y(10);
+	MatrixXf X(2, 10);
+	VectorXf y(10);
 	
 	X.row(0) << -0.44485052, -0.49109715,  0.88231917,  0.94669031, -0.80300709,
        -0.581858  , -0.91693663, -0.98437617, -0.52860637, -0.89671113;
     X.row(1) << 0.89560483,  0.87110481, -0.47065155,  0.32214509,  0.59596947,
         0.81329039,  0.39903285,  0.17607827,  0.84886707, -0.44261626;
  
-    double Wnom = 1.234;
-    double Wden = 0.9876;
+    float Wnom = 1.234;
+    float Wden = 0.9876;
     /* y = ((Wnom*X.row(0).array())/(Wden*X.row(1).array())); */
     // y = 1/ (x)
     /* y = Wnom/(Wden*X.row(0).array()); */
-    y = Wnom/Wden*ArrayXd::Ones(X.rows());
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
+    y = Wnom/Wden*ArrayXf::Ones(X.rows());
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z; 
     
     Data data(X, y, Z);
     
     NodeVector program = programGen("x1 x1 /");
     
-    VectorXd yhat;
+    VectorXf yhat;
     Individual ind = testDummyProgram(program, data, 10000, yhat);
     
     std::cout << "test program returned:\n";
-    vector<double> What(2);
+    vector<float> What(2);
 	for (const auto& n : ind.program) {
 		std::cout << n->name << ": ";
 		NodeDx* nd = dynamic_cast<NodeDx*>(n.get());
@@ -527,8 +527,8 @@ TEST(BackProp, DivideGradient)
 TEST(BackProp, SinGradient)
 {
     // Create input data and labels
-	MatrixXd X(1, 10);
-	VectorXd y(10);
+	MatrixXf X(1, 10);
+	VectorXf y(10);
 	X.row(0) << 0.9916109 , 0.78727861, 0.73439047, 0.70957884, 0.27303089,
        0.59444715, 0.14955871, 0.95985467, 0.29628456, 0.36876264;
     
@@ -536,13 +536,13 @@ TEST(BackProp, SinGradient)
     y << 0.91615131, 0.99999293, 0.99480094, 0.98852488, 0.51932576,
        0.92795746, 0.29467693, 0.93974488, 0.55849396, 0.67245834;
         
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z; 
     
     Data data(X, y, Z);
     
     NodeVector program = programGen("x0 sin");
     
-    VectorXd yhat;
+    VectorXf yhat;
     Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
@@ -565,8 +565,8 @@ TEST(BackProp, SinGradient)
 TEST(BackProp, CosGradient)
 {
     // Create input data and labels
-	MatrixXd X(1, 10);
-	VectorXd y(10);
+	MatrixXf X(1, 10);
+	VectorXf y(10);
 	X.row(0) << 0.9916109 , 0.78727861, 0.73439047, 0.70957884, 0.27303089,
        0.59444715, 0.14955871, 0.95985467, 0.29628456, 0.36876264;
     
@@ -574,13 +574,13 @@ TEST(BackProp, CosGradient)
     y << -0.40083261, -0.00376088,  0.10183854,  0.15105817,  0.85457636,
         0.37268613,  0.95559694, -0.34187653,  0.82950858,  0.74013498;
         
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z; 
     
     Data data(X, y, Z);
     
     NodeVector program = programGen("x0 cos");
     
-    VectorXd yhat;
+    VectorXf yhat;
     Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
@@ -602,8 +602,8 @@ TEST(BackProp, CosGradient)
 TEST(BackProp, TanhGradient)
 {
     // Create input data and labels
-	MatrixXd X(1, 10);
-	VectorXd y(10);
+	MatrixXf X(1, 10);
+	VectorXf y(10);
 	X.row(0) << 0.9916109 , 0.78727861, 0.73439047, 0.70957884, 0.27303089,
        0.59444715, 0.14955871, 0.95985467, 0.29628456, 0.36876264;
     
@@ -611,13 +611,13 @@ TEST(BackProp, TanhGradient)
     y << 0.96282281, 0.91774763, 0.89934465, 0.88942308, 0.49756278,
        0.83023564, 0.29050472, 0.95789335, 0.53174082, 0.62764766;
         
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z; 
     
     Data data(X, y, Z);
     
     NodeVector program = programGen("x0 tanh");
     
-    VectorXd yhat;
+    VectorXf yhat;
     Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
@@ -640,21 +640,21 @@ TEST(BackProp, TanhGradient)
 TEST(BackProp, ExpGradient)
 {
     // Create input data and labels
-	MatrixXd X(1, 10);
-	VectorXd y(10);
+	MatrixXf X(1, 10);
+	VectorXf y(10);
 	X.row(0) << 0.9916109 , 0.78727861, 0.73439047, 0.70957884, 0.27303089,
        0.59444715, 0.14955871, 0.95985467, 0.29628456, 0.36876264;
     
     //y = exp(2x)
     y << exp(1.2345*X.row(0).array());
         
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z; 
     
     Data data(X, y, Z);
     
     NodeVector program = programGen("x0 exp");
     
-    VectorXd yhat;
+    VectorXf yhat;
     Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
@@ -676,21 +676,21 @@ TEST(BackProp, ExpGradient)
 TEST(BackProp, LogGradient)
 {
     // Create input data and labels
-	MatrixXd X(1, 10);
-	VectorXd y(10);
+	MatrixXf X(1, 10);
+	VectorXf y(10);
 	X.row(0) << 0.9916109 , 0.78727861, 0.73439047, 0.70957884, 0.27303089,
        0.59444715, 0.14955871, 0.95985467, 0.29628456, 0.36876264;
     
     //y = log(2x)
     y << log(2*X.row(0).array());
         
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z; 
     
     Data data(X, y, Z);
     
     NodeVector program = programGen("x0 log");
     
-    VectorXd yhat;
+    VectorXf yhat;
     Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
@@ -713,21 +713,21 @@ TEST(BackProp, LogGradient)
 TEST(BackProp, SqrtGradient)
 {
     // Create input data and labels
-	MatrixXd X(1, 10);
-	VectorXd y(10);
+	MatrixXf X(1, 10);
+	VectorXf y(10);
 	X.row(0) << 0.9916109 , 0.78727861, 0.73439047, 0.70957884, 0.27303089,
        0.59444715, 0.14955871, 0.95985467, 0.29628456, 0.36876264;
     
     //y = sqrt(2x)
     y << sqrt(2*X.row(0).array());
         
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z; 
     
     Data data(X, y, Z);
     
     NodeVector program = programGen("x0 sqrt");
     
-    VectorXd yhat;
+    VectorXf yhat;
     Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
@@ -749,8 +749,8 @@ TEST(BackProp, SqrtGradient)
 TEST(BackProp, ReluGradient)
 {
     // Create input data and labels
-	MatrixXd X(1, 10);
-	VectorXd y(10);
+	MatrixXf X(1, 10);
+	VectorXf y(10);
 	X.row(0) << 0.9916109 , 0, 0.73439047, 0.70957884, 0,
        0.59444715, 0, 0.95985467, 0, 0;
     
@@ -758,13 +758,13 @@ TEST(BackProp, ReluGradient)
     y << 1.9832218, 0.01, 1.46878094, 1.41915768, 0.01,
          1.1888943, 0.01, 1.91970934, 0.01, 0.01;
         
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z; 
     
     Data data(X, y, Z);
     
     NodeVector program = programGen("x0 relu");
     
-    VectorXd yhat;
+    VectorXf yhat;
     Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
@@ -787,28 +787,28 @@ TEST(BackProp, ReluGradient)
 TEST(BackProp, LogitGradient)
 {
     // Create input data and labels
-	MatrixXd X(1, 10);
-	VectorXd y(10);
+	MatrixXf X(1, 10);
+	VectorXf y(10);
 	X.row(0) << 0.01933084, 0.46202196, 0.26687028, 0.31371363, 0.27296074,
        0.37672478, 0.05773657, 0.36211793, 0.0161587 , 0.02614942;
     
     //y = logit(2x)
     /* y << -3.21347748,  2.49860441,  0.13516769,  0.52119546,  0.18420504, */
     /*     1.11709547, -2.03601496,  0.9655712 , -3.39929844, -2.89706515; */
-    double Wtarget = 1.234;
+    float Wtarget = 1.234;
     y = 1/(1 + exp(-Wtarget*X.row(0).array()));
 
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z; 
     
     Data data(X, y, Z);
     
     NodeVector program = programGen("x0 logit");
     
-    VectorXd yhat;
+    VectorXf yhat;
     Individual ind = testDummyProgram(program, data, 2000, yhat);
     
     std::cout << "test program returned:\n";
-    vector<double> What(1);
+    vector<float> What(1);
 	for (const auto& n : ind.program) {
 		std::cout << n->name << ": ";
 		NodeDx* nd = dynamic_cast<NodeDx*>(n.get());
@@ -831,25 +831,25 @@ TEST(BackProp, LogitGradient)
 TEST(BackProp, GaussGradient)
 {
     // Create input data and labels
-	MatrixXd X(1, 10);
-	VectorXd y(10);
+	MatrixXf X(1, 10);
+	VectorXf y(10);
 	X.row(0) << 0.01933084, 0.46202196, 0.26687028, 0.31371363, 0.27296074,
        0.37672478, 0.05773657, 0.36211793, 0.0161587 , 0.02614942;
     
-    double Wtarget = 2;
+    float Wtarget = 2;
     y = exp(-pow(Wtarget - X.row(0).array(), 2));
 
-    std::map<string, std::pair<vector<ArrayXd>, vector<ArrayXd> > > Z; 
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z; 
     
     Data data(X, y, Z);
     
     NodeVector program = programGen("x0 gauss");
     
-    VectorXd yhat;
+    VectorXf yhat;
     Individual ind = testDummyProgram(program, data, 1000, yhat);
     
     std::cout << "test program returned:\n";
-    vector<double> What(1);
+    vector<float> What(1);
 	for (const auto& n : ind.program) {
 		std::cout << n->name << ": ";
 		NodeDx* nd = dynamic_cast<NodeDx*>(n.get());
@@ -872,14 +872,14 @@ TEST(BackProp, GaussGradient)
 TEST(BackProp, DerivativeTest)
 {
 	Trace trace;
-	//vector<ArrayXd> inputs;
-	ArrayXd input1(5,1);
+	//vector<ArrayXf> inputs;
+	ArrayXf input1(5,1);
 	input1(0,0) = 0;
 	input1(1,0) = 1;
 	input1(2,0) = 2;
 	input1(3,0) = 3;
 	input1(4,0) = 4;
-	ArrayXd input2(5,1);
+	ArrayXf input2(5,1);
 	input2(0,0) = 4;
 	input2(1,0) = 3;
 	input2(2,0) = 2;
@@ -892,7 +892,7 @@ TEST(BackProp, DerivativeTest)
 	NodeDx* toTest = new NodeAdd();
 	
 	// Derivative wrt to first input
-	ArrayXd expectedDerivative(5, 1);
+	ArrayXf expectedDerivative(5, 1);
 	expectedDerivative(0,0) = toTest->W[0];
 	expectedDerivative(1,0) = toTest->W[0];
 	expectedDerivative(2,0) = toTest->W[0];
@@ -1003,7 +1003,7 @@ TEST(BackProp, DerivativeTest)
 	expectedDerivative(1,0) = 1.0/3;
 	expectedDerivative(2,0) = 1.0/2;
 	expectedDerivative(3,0) = 1.0/1;
-	expectedDerivative(4,0) = MAX_DBL;
+	expectedDerivative(4,0) = MAX_FLT;
 	
 	ASSERT_LE((expectedDerivative.matrix() - toTest->getDerivative(trace, 0).matrix()).norm(), 0.0001);
 	 
@@ -1011,7 +1011,7 @@ TEST(BackProp, DerivativeTest)
 	expectedDerivative(1,0) = -1.0/9;
 	expectedDerivative(2,0) = -2.0/4;
 	expectedDerivative(3,0) = -3.0/1;
-	expectedDerivative(4,0) = MIN_DBL; 
+	expectedDerivative(4,0) = MIN_FLT; 
 	
 	ASSERT_LE((expectedDerivative.matrix() - toTest->getDerivative(trace, 1).matrix()).norm(), 0.0001);
 	
@@ -1019,7 +1019,7 @@ TEST(BackProp, DerivativeTest)
 	expectedDerivative(1,0) = 1.0/3;
 	expectedDerivative(2,0) = 2.0/2;
 	expectedDerivative(3,0) = 3.0/1;
-	expectedDerivative(4,0) = MAX_DBL;
+	expectedDerivative(4,0) = MAX_FLT;
 	
 	ASSERT_LE((expectedDerivative.matrix() - toTest->getDerivative(trace, 2).matrix()).norm(), 0.0001);
 	
@@ -1027,7 +1027,7 @@ TEST(BackProp, DerivativeTest)
 	expectedDerivative(1,0) = -1.0/3;
 	expectedDerivative(2,0) = -2.0/2;
 	expectedDerivative(3,0) = -3.0/1;
-	expectedDerivative(4,0) = -MAX_DBL;
+	expectedDerivative(4,0) = -MAX_FLT;
 	
 	ASSERT_LE((expectedDerivative.matrix() - toTest->getDerivative(trace, 3).matrix()).norm(), 0.0001);
 
@@ -1164,7 +1164,7 @@ TEST(BackProp, DerivativeTest)
 	// LOG NODE CHECK -------------------------------------------------------------------------------
 	toTest = new NodeLog({1.0});
 	
-	expectedDerivative(0,0) = MAX_DBL;
+	expectedDerivative(0,0) = MAX_FLT;
 	expectedDerivative(1,0) = 1.0;
 	expectedDerivative(2,0) = 1.0/2;
 	expectedDerivative(3,0) = 1.0/3;
@@ -1277,11 +1277,3 @@ TEST(BackProp, DerivativeTest)
 	
 }
 
-
-/*TEST(BackProp, PropogationTest)
-{
-    int iters = 100;
-	NodeVector program = programGen();
- 	cout << "Running with : " << iters << endl << endl;
-	testDummyProgram(program, iters);
-}*/
