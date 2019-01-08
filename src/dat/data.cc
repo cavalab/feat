@@ -199,13 +199,11 @@ namespace FT{
                     
             std::map<float, vector<int>>::iterator it = label_indices.begin();
             
-            int t_size = 0;
-            int v_size = 0;
-            
             vector<int> t_indices;
             vector<int> v_indices;
             
-            int count = 0;
+            int t_size;
+            int x;
             
             for(; it != label_indices.end(); it++)
             {
