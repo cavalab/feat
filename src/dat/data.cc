@@ -187,6 +187,7 @@ namespace FT{
         
         void DataRef::split_stratified(float split)
         {
+            cout << "Stratify split called with initial data size as " << o->X.cols() << endl;
 //            cout << o->X.rows() << "\t" << o->X.cols() << "\t" << o->y.size()<< endl;
 //            
 //            cout << "Split is " << split << endl;
@@ -215,9 +216,10 @@ namespace FT{
                 for(; x < it->second.size(); x++)
                     v_indices.push_back(it->second[x]);
                 
-//                cout << "Label is " << it->first << endl;
-//                cout << "Total size "<<it->second.size() << endl;             
-//                cout << "t_size = " << t_indices.size() << endl;
+                cout << "Label is " << it->first << "\t";
+                cout << "Total size = "<<it->second.size() << "\t";             
+                cout << "training_size = " << t_size << "\t";
+                cout << "verification size = " << it->second.size() - t_size << endl << endl;
 //                cout << "v_size = " << v_indices.size() << endl << endl;
                 
             }

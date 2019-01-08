@@ -271,6 +271,8 @@ namespace FT{
             else if (prob_type!=PT_REGRESSION)                         // multiclass classification       
             {
                 p_est->set_labels(some<CMulticlassLabels>(SGVector<float64_t>(_y)));
+                
+                cout << "\n\n*****************\nBefore training (ml.cc line 275)\n";
                 auto labels_train = (CMulticlassLabels *)p_est->get_labels();
                 SGVector<double> labs = labels_train->get_unique_labels();
                 std::cout << "unique labels: \n";
@@ -279,7 +281,7 @@ namespace FT{
                 std::cout << "\n";
 
                 int nclasses = labels_train->get_num_classes();
-                std::cout << "nclasses: " << nclasses << "\n";
+                std::cout << "nclasses: " << nclasses << "\n\n";
             }
             else                                                    // regression
                 p_est->set_labels(some<CRegressionLabels>(SGVector<float64_t>(_y)));
