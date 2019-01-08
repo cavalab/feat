@@ -156,6 +156,7 @@ namespace FT{
                 vector<float> w(Phi.rows(), 0);                     
                 set_p(w,params.feedback);
             }
+            
             this->yhat = ml->labels_to_vector(yh);
             
             //cout << "Yhat is \n " << this->yhat << endl;
