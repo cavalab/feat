@@ -9,6 +9,8 @@
 
 #include "MulticlassLogisticRegression.h"
 
+#include<iostream>  
+
 namespace shogun
 {
 		
@@ -80,8 +82,11 @@ namespace shogun
         vector<SGVector<float64_t>> weights_vector;
         
         int n_classes = ((CMulticlassLabels*)m_labels)->get_num_classes();
+        
+        std::cout << "Classes are " << n_classes << "\n";
         for (int32_t i=0; i<n_classes; i++)
 	    {
+	        std::cout << "i = "<<i<<std::endl;
 		    CLinearMachine* machine = (CLinearMachine*)m_machines->get_element(i);
 		    weights_vector.push_back(machine->get_w());
 	    }
