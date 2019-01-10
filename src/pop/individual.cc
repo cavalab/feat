@@ -148,10 +148,8 @@ namespace FT{
             params.msg("ML training on " + get_eqn(), 3);
             ml = std::make_shared<ML>(params);
             
-            cout << "Individual.cc line 151...calling ml.fit\n";
             shared_ptr<CLabels> yh = ml->fit(Phi,d.y,params,pass,dtypes);
 
-            cout << "Individual.cc line 154 getting weights\n";
             if (pass)
                 set_p(ml->get_weights(),params.feedback);
             else
