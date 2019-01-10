@@ -81,16 +81,12 @@ namespace shogun
     {
         vector<SGVector<float64_t>> weights_vector;
         
-        int n_classes = ((CMulticlassLabels*)m_labels)->get_num_classes();
+        int n_machines = get_num_machines();
         
-        std::cout << "\n\nFrom MulticlassLogisticRegression.cc line 86 \n";
-        std::cout << "Classes are " << n_classes << "\n";
-        for (int32_t i=0; i<n_classes; i++)
+        for (int32_t i=0; i<n_machines; i++)
 	    {
-	        std::cout << "Attempting for i = "<<i<<std::endl;
 		    CLinearMachine* machine = (CLinearMachine*)m_machines->get_element(i);
 		    weights_vector.push_back(machine->get_w());
-		    std::cout << "i = "<<i<<" succeeded\n"<<std::endl;
 	    }
 	
          return weights_vector;	
