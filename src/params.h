@@ -60,6 +60,7 @@ namespace FT{
         int max_time;                               ///< max time for fit method
         bool use_batch;                             ///< whether to use mini batch for training
         bool semantic_xo;                           ///< use semantic crossover  
+        bool stagewise_xo;                           ///< use stagewise crossover  
 
         struct BP 
         {
@@ -84,7 +85,7 @@ namespace FT{
                    char ot, int verbosity, string fs, float cr, unsigned int max_depth, 
                    unsigned int max_dim, bool constant, string obj, bool sh, float sp, 
                    float fb, string sc, string fn, bool bckprp, int iters, float lr,
-                   int bs, bool hclimb, int maxt, bool useb, bool sem_xo);
+                   int bs, bool hclimb, int maxt, bool useb, bool sem_xo, bool stg_xo);
         
         ~Parameters();
         

@@ -29,12 +29,12 @@ Feat::Feat(int pop_size, int gens, string ml,
        float split, float fb, string scorer, string feature_names,
        bool backprop,int iters, float lr, int bs, int n_threads,
        bool hillclimb, string logfile, int max_time, bool use_batch, bool semantic_xo,
-       int print_pop):
+       bool stagewise_xo, int print_pop):
           // construct subclasses
           params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
                  functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, 
                  fb, scorer, feature_names, backprop, iters, lr, bs, hillclimb, max_time, 
-                 use_batch, semantic_xo), 
+                 use_batch, semantic_xo, stagewise_xo), 
           p_sel( make_shared<Selection>(sel) ),
           p_surv( make_shared<Selection>(surv, true) ),
           p_variation( make_shared<Variation>(cross_rate) ),
@@ -43,7 +43,7 @@ Feat::Feat(int pop_size, int gens, string ml,
     r.set_seed(random_state);
     str_dim = "";
     set_logfile(logfile);
-    scorer=scorer;
+    this->scorer=scorer;
     if (n_threads!=0)
         omp_set_num_threads(n_threads);
     survival = surv;

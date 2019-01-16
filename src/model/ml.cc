@@ -46,7 +46,10 @@ namespace FT{
             if (ml_type == LARS)
                 p_est = make_shared<sh::CLeastAngleRegression>();
             else if (ml_type == Ridge)
+            {
                 p_est = make_shared<sh::CLinearRidgeRegression>();
+                dynamic_pointer_cast<sh::CLinearRidgeRegression>(p_est)->set_compute_bias(true);
+            }
             else if (ml_type == RF)
             {
                 p_est = make_shared<sh::CRandomForest>();
@@ -95,7 +98,7 @@ namespace FT{
                 if (prob_type == PT_BINARY){
             	    p_est = make_shared<sh::CMyLibLinear>(sh::L2R_LR);
                     // setting parameters to match sklearn defaults
-                    dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_compute_bias(false);
+                    dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_compute_bias(true);
                     dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_epsilon(0.0001);
                     /* dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_C(1.0,1.0); */
                     dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_max_iterations(1000);

@@ -113,6 +113,7 @@ int main(int argc, char** argv){
         cout << "-obj\tComma-separated objectives. Choices: fitness, complexity, size, CN, corr" \
                 " (size,complexity)\n";
         cout << "--semantic_xo\tSet flag for semantic crossover\n";
+        cout << "--stagewise_xo\tSet flag for stagewise crossover\n";
         cout << "-print_pop\tPrint the population objective scores. 0: never, 1: at end, "
                 "2: each generation. (0)\n";
         cout << "-h\tDisplay this help message and exit.\n";
@@ -202,6 +203,8 @@ int main(int argc, char** argv){
         feat.set_objectives(input.getCmdOption("-obj"));
     if(input.cmdOptionExists("--semantic_xo"))
         feat.set_semantic_xo();
+    if(input.cmdOptionExists("--stagewise_xo"))
+        feat.set_stagewise_xo();
     if(input.cmdOptionExists("-print_pop"))
         feat.set_print_pop(std::stoi(input.getCmdOption("-print_pop")));
 
