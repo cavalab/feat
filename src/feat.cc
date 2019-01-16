@@ -503,6 +503,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     unsigned stall_count = 0;
     float fraction = 0;
     // continue until max gens is reached or max_time is up (if it is set)
+    
     while((params.max_time == -1 || params.max_time > timer.Elapsed().count()) // time limit
            && g<params.gens                                                    // generation limit
            && (params.max_stall == 0 || stall_count < params.max_stall) )      // stall limit
@@ -685,12 +686,15 @@ void Feat::initial_model(DataRef &d)
     /*!
      * fits an ML model to the raw data as a starting point.
      */
+     
     best_ind = Individual();
     best_ind.set_id(0);
     int j; 
     int n_feats = std::min(params.max_dim, unsigned(d.t->X.rows()));
+    
     vector<size_t> var_idx(d.t->X.rows());
     std::iota(var_idx.begin(),var_idx.end(),0);
+    
     for (unsigned i =0; i<n_feats; ++i)
     {
         if (n_feats < d.t->X.rows())
@@ -712,6 +716,7 @@ void Feat::initial_model(DataRef &d)
     
     bool pass = true;
     shared_ptr<CLabels> yhat = best_ind.fit(*d.t,params,pass);
+    
     // set terminal weights based on model
     vector<float> w;
     if (n_feats == d.t->X.rows())

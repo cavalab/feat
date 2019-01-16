@@ -39,10 +39,6 @@ namespace FT{
          
         std::string trim(std::string str, const std::string& chars = "\t\n\v\f\r ");
 
-
-        /// reordering utility for shuffling longitudinal data.
-        void reorder_longitudinal(vector<ArrayXf> &vec1, const vector<int>& order); 
-
         /// check if element is in vector.
         template<typename T>
         bool in(const vector<T> v, const T& i)
