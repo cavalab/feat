@@ -70,17 +70,19 @@ namespace FT{
                         Individual& dad = pop.individuals.at(r.random_choice(parents));
                         /* int dad = r.random_choice(parents); */
                         // create child
-                        params.msg("crossing " + mom.get_eqn() + " with " + 
-                                   dad.get_eqn(), 3);
+                        params.msg("\n===\ncrossing " + mom.get_eqn() + "\nwith\n " + 
+                                   dad.get_eqn() , 2);
                        
                         if (params.semantic_xo)
                             pass = semantic_cross(mom, dad, child, params, d);
+                        else if (params.stagewise_xo)
+                            pass = stagewise_cross(mom, dad, child, params, d);
                         else
                             pass = cross(mom, dad, child, params);
                         
-                        params.msg("crossing " + mom.get_eqn() + " with " + 
-                               dad.get_eqn() + " produced " + child.get_eqn() + 
-                               ", pass: " + std::to_string(pass),3);    
+                        params.msg("crossing " + mom.get_eqn() + "\nwith\n " + 
+                               dad.get_eqn() + "\nproduced " + child.get_eqn() + 
+                               ", pass: " + std::to_string(pass) + "\n===\n",2);    
 
                         child.set_parents({mom, dad});
                     }
@@ -451,32 +453,34 @@ namespace FT{
             /* cout << "mom: " << mom.get_eqn() << "\n"; */
             /* cout << "mom yhat: " << mom.yhat.transpose() << "\n"; */
             VectorXf tree = mom.ml->get_weights().at(j1_idx)*mom.Phi.row(j1_idx).array();
-            /* cout << "tree (idx=" << j1_idx << "): " << tree.transpose() << "\n"; */
+            cout << "tree (idx=" << j1_idx << "): " << tree.transpose() << "\n";
             VectorXf mom_pred_minus_tree = mom.yhat - tree; 
             /* #pragma omp critical */
             /* { */
             /* VectorXf mom_pred_minus_tree = mom.predict_drop(d,params,j1_idx); */ 
             /* } */
-            /* cout << "mom_pred_minus_tree: " << mom_pred_minus_tree.transpose() << "\n"; */
+            cout << "mom_pred_minus_tree: " << mom_pred_minus_tree.transpose() << "\n";
             VectorXf mom_residual = d.y - mom_pred_minus_tree;
-            /* cout << "mom_residual: " << mom_residual.transpose() << "\n"; */
+            cout << "mom_residual: " << mom_residual.transpose() << "\n";
            
             // get correlations of dad's features with the residual from mom, less the swap choice
             vector<float> corrs(dad.Phi.rows());
             int best_corr_idx = 0;
-            float best_corr = 0;
+            float best_corr = -1;
             float corr; 
 
             for (int i = 0; i < dad.Phi.rows(); ++i)
             {
                 corr = pearson_correlation(mom_residual.array(), dad.Phi.row(i).array());
+                cout << "corr( " << i << "): " << corr << "\n";
                 corrs.at(i) = corr; // this can be removed
-                if (corr > best_corr || i == 0 )
+                if (corr > best_corr )
                 {
                     best_corr_idx = i; 
                     best_corr = corr;
                 }
             }
+            cout << "best_corr_idx: " << best_corr_idx << ", R^2: " << best_corr << "\n";
             /* cout << "corrs: "; */
             /* for (auto c : corrs) cout << c << ", "; cout << "\n"; */
             /* cout << "chose corr at " << best_corr_idx << "\n"; */
@@ -500,6 +504,134 @@ namespace FT{
             
         }
         
+        /// stagewise crossover
+        bool Variation::stagewise_cross(Individual& mom, Individual& dad, Individual& child,
+                            const Parameters& params, const Data& d)
+        {
+            /*!
+             * crossover by forward stagewise selection, matching mom's dimensionality. 
+             *
+             * @param   mom: root parent
+             * @param   dad: parent from which subtree is chosen
+             * @param   child: result of cross
+             * @param   params: parameters
+             *
+             * @return  child: mom with dad subtree graft
+             * procedure: 
+             * set the residual equal to target $y$. center means around zero for all $\phi$. 
+             * set $\phi_A$ to be all subprograms in $\phi_{p0}$ and $\phi_{p1}$.
+             * while $|\phi_{c}| < |\phi_{p0}|$: 
+             *     - pick $\phi^*$ from $\phi_{A}$ which is most correlated with $\mathbf{r}$. 
+             *     - compute the least squares coefficient $b$ for $\phi^*$ fit to $\mathbf{r}$. 
+             *     - update $\mathbf{r} = r - b\phi^*$ 
+             * $\phi_c$ = all $\phi^*$ that were chosen 
+             */
+            params.msg("\tstagewise xo",3);
+            
+            VectorXf R = d.y.array() - d.y.mean();
+            cout << "R: " << R.transpose() << "\n";
+            cout << "R mean: " << R.mean() << "\n";
+            MatrixXf PhiA(mom.Phi.rows()+dad.Phi.rows(), mom.Phi.cols()); 
+            PhiA << mom.Phi, 
+                    dad.Phi; 
+            cout << "mom Phi: " << mom.Phi.rows() << "x" << mom.Phi.cols() << "\n";
+            cout << "dad Phi: " << dad.Phi.rows() << "x" << dad.Phi.cols() << "\n";
+            cout << "PhiA: " << PhiA.rows() << "x" << PhiA.cols() << "\n";
+            for (int i = 0; i < PhiA.rows(); ++i)
+            {
+                PhiA.row(i) = PhiA.row(i).array() - PhiA.row(i).mean();
+                cout << "PhiA( " << i << ").mean(): " << PhiA.row(i).mean() << "\n";
+            }
+            //TODO: normalize y and PhiA?
+            vector<int> sel_idx;
+            float best_corr_idx;
+            unsigned nsel = 0;
+            while (nsel < mom.Phi.rows())
+            {
+                float best_corr = -1;
+                float corr;
+                // correlation of PhiA with residual
+                // pick most correlated (store index)
+                for (int i = 0; i < dad.Phi.rows(); ++i)
+                {
+                    if (!in(sel_idx,i))
+                    {
+                        corr = pearson_correlation(R.array(), PhiA.row(i).array());
+                        cout << "corr( " << i << "): " << corr << "\n";
+                        if (corr > best_corr)
+                        {
+                            best_corr_idx = i; 
+                            best_corr = corr;
+                        }
+                    }
+                }
+                if (best_corr > 0)
+                {
+                    cout << "best_corr_idx: " << best_corr_idx << ", R^2: " << best_corr << "\n";
+                    // least squares coefficient of phi* w.r.t. R
+                    float b =  (covariance(PhiA.row(best_corr_idx),R) / 
+                                variance(PhiA.row(best_corr_idx)));
+                    cout << "b: " << b << "\n";
+                    cout << "b*phi: " << b*PhiA.row(best_corr_idx) << "\n";
+                    R = R - b*PhiA.row(best_corr_idx).transpose();
+                    cout << "R: " << R.transpose() << "\n";
+                    cout << "R norm: " << R.norm() << "\n";
+                    // select best correlation index
+                    sel_idx.push_back(best_corr_idx);
+                }
+                ++nsel;
+            }
+            cout << "sel_idx: ";
+            for (auto s: sel_idx) cout << s << ","; cout << "\n";
+            // take stored indices and find corresponding program positions for them
+            //
+            /* std::sort(sel_idx.begin(), sel_idx.end()); */
+            // TODO: compose a child from each feature referenced in sel_idx. 
+            // 
+            vector<size_t> mlocs, dlocs; // mom and dad locations for consideration
+            
+            mlocs = mom.program.roots();
+            dlocs = dad.program.roots();
+            for (int idx : sel_idx)
+            {
+                int start, stop;
+                if (idx < mom.Phi.rows())
+                {
+                    stop = mlocs.at(idx);
+                    // get subtree indices
+                    start = mom.program.subtree(stop);
+                    // construct child program
+                    for (unsigned i = start; i <= stop ; ++i)        
+                        child.program.push_back(mom.program.at(i)->clone());
+                }
+                else
+                {
+                    stop = dlocs.at(idx - mom.Phi.rows());
+                    // get subtree indices
+                    start = dad.program.subtree(stop);
+                    // construct child program
+                    for (unsigned i = start; i <= stop ; ++i)        
+                        child.program.push_back(dad.program.at(i)->clone());
+                }
+                
+            }
+                                
+            /* if (params.verbosity >= 3) */
+            /*     print_cross(mom,i1,j1,dad,i2,j2,child,false); */     
+           
+            /* // make child program by splicing mom and dad */
+            /* splice_programs(child.program, mom.program, i1, j1, dad.program, i2, j2 ); */
+            
+            /* if (params.verbosity >= 3) */
+            /*     print_cross(mom,i1,j1,dad,i2,j2,child,true); */     
+
+
+            assert(child.program.is_valid_program(params.num_features, params.longitudinalMap));
+            // check child depth and dimensionality
+            return child.size()>0 && child.size() <= params.max_size 
+                        && child.get_dim() <= params.max_dim;
+            
+        }
         // swap vector subsets with different sizes. 
         void Variation::splice_programs( NodeVector& vnew,
                                          const NodeVector& v1, size_t i1, size_t j1, 

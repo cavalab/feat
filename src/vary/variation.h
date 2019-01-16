@@ -62,6 +62,10 @@ namespace FT{
                 bool semantic_cross(Individual& mom, Individual& dad, Individual& child,
                                     const Parameters& params, const Data& d);
 
+                /// stagewise crossover 
+                bool stagewise_cross(Individual& mom, Individual& dad, Individual& child,
+                                     const Parameters& params, const Data& d);
+
                 /// mutation
                 bool mutate(Individual& mom, Individual& child, const Parameters& params);
                 void point_mutate(Individual& child, const Parameters& params);
