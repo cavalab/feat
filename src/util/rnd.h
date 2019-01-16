@@ -85,6 +85,8 @@ namespace FT {
                     if(w.size() == 0)
                     {   
                         cout<<"random_choice() w.size() = 0 Calling random_choice(v)\n";
+                        
+                        cout << "W size is " << w.size() << "v size is " << v.size() << "\n"; 
                         return random_choice(v);
                     }
                     if(w.size() != v.size())
