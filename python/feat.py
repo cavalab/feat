@@ -21,13 +21,13 @@ class Feat(BaseEstimator):
     method."""
     def __init__(self, pop_size=100,  gens=100,  ml = "LinearRidgeRegression", 
                 classification=False,  verbosity=0,  max_stall=0,
-                sel ="lexicase",  surv ="nsga2",  cross_rate=0.5,
+                sel ="lexicase",  surv ="nsga2",  cross_rate=0.5, root_xo_rate=0.5,
                 otype ='a',  functions ="", 
                 max_depth=3,   max_dim=10,  random_state=0, 
                 erc = False,  obj ="fitness,complexity", shuffle=True,  split=0.75,  fb=0.5,
                 scorer ='',feature_names="", backprop=False, iters=10, lr=0.1, batch_size=100, 
                 n_threads=0, hillclimb=False, logfile="Feat.log", max_time=-1, use_batch=False, 
-                semantic_xo=False, print_pop=0):
+                residual_xo=False, stagewise_xo=False, print_pop=0):
         self.pop_size = pop_size
         self.gens = gens
         self.ml = ml.encode() if( isinstance(ml,str) )  else ml
@@ -38,6 +38,7 @@ class Feat(BaseEstimator):
         self.sel = sel.encode() if( isinstance(sel,str) )  else sel
         self.surv = surv.encode() if( isinstance(surv,str) )  else surv
         self.cross_rate = cross_rate
+        self.root_xo_rate = root_xo_rate
         self.otype = otype.encode() if( isinstance(otype,str) )  else otype
         self.functions = functions.encode() if( isinstance(functions,str) )  else functions
         self.max_depth = max_depth
@@ -65,7 +66,8 @@ class Feat(BaseEstimator):
         self.logfile = logfile.encode() if isinstance(logfile,str) else logfile
         self.max_time = max_time
         self.use_batch = use_batch
-        self.semantic_xo = semantic_xo
+        self.residual_xo = residual_xo
+        self.stagewise_xo = stagewise_xo
         self.print_pop = print_pop
         # if self.verbosity>0:
         #print('self.__dict__: ' , self.__dict__)
@@ -75,7 +77,7 @@ class Feat(BaseEstimator):
         """set up pyfeat glue class object"""
         self._pyfeat = pyfeat.PyFeat( self.pop_size,  self.gens,  self.ml, 
                 self.classification,  self.verbosity,  self.max_stall,
-                self.sel,  self.surv,  self.cross_rate,
+                self.sel,  self.surv,  self.cross_rate, self.root_xo_rate,
                 self.otype,  self.functions, 
                 self.max_depth,   self.max_dim,  self.random_state, 
                 self.erc,  
@@ -94,7 +96,8 @@ class Feat(BaseEstimator):
                 self.logfile,
                 self.max_time,
                 self.use_batch,
-                self.semantic_xo,
+                self.residual_xo,
+                self.stagewise_xo,
                 self.print_pop)
    
     def fit(self,X,y,zfile=None,zids=None):
