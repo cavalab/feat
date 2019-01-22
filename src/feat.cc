@@ -22,19 +22,19 @@ using namespace FT;
     
 Feat::Feat(int pop_size, int gens, string ml, 
        bool classification, int verbosity, int max_stall,
-       string sel, string surv, float cross_rate,
+       string sel, string surv, float cross_rate, float root_xo_rate,
        char otype, string functions, 
        unsigned int max_depth, unsigned int max_dim, int random_state, 
        bool erc, string obj, bool shuffle, 
        float split, float fb, string scorer, string feature_names,
        bool backprop,int iters, float lr, int bs, int n_threads,
-       bool hillclimb, string logfile, int max_time, bool use_batch, bool semantic_xo,
+       bool hillclimb, string logfile, int max_time, bool use_batch, bool residual_xo,
        bool stagewise_xo, int print_pop):
           // construct subclasses
           params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
-                 functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, 
+                 functions, cross_rate, root_xo_rate, max_depth, max_dim, erc, obj, shuffle, split, 
                  fb, scorer, feature_names, backprop, iters, lr, bs, hillclimb, max_time, 
-                 use_batch, semantic_xo, stagewise_xo), 
+                 use_batch, residual_xo, stagewise_xo), 
           p_sel( make_shared<Selection>(sel) ),
           p_surv( make_shared<Selection>(surv, true) ),
           p_variation( make_shared<Variation>(cross_rate) ),
@@ -86,6 +86,12 @@ void Feat::set_cross_rate(float cross_rate)
     params.cross_rate = cross_rate; p_variation->set_cross_rate(cross_rate);
 }
             
+/// set root cross rate in variation              
+void Feat::set_root_xo_rate(float cross_rate)
+{
+    params.root_xo_rate = cross_rate; 
+}
+
 /// set program output type ('f', 'b')              
 void Feat::set_otype(char ot){ params.set_otype(ot); }
             

@@ -39,8 +39,8 @@ namespace FT{
             return v.at(idx)->clone();
         }
      
-        void Variation::vary(Population& pop, const vector<size_t>& parents, const Parameters& params,
-                             const Data& d)
+        void Variation::vary(Population& pop, const vector<size_t>& parents, 
+                             const Parameters& params, const Data& d)
         {
             /*!
              * performs variation on the current population. 
@@ -71,18 +71,14 @@ namespace FT{
                         /* int dad = r.random_choice(parents); */
                         // create child
                         params.msg("\n===\ncrossing " + mom.get_eqn() + "\nwith\n " + 
-                                   dad.get_eqn() , 2);
+                                   dad.get_eqn() , 3);
                        
-                        if (params.semantic_xo)
-                            pass = semantic_cross(mom, dad, child, params, d);
-                        else if (params.stagewise_xo)
-                            pass = stagewise_cross(mom, dad, child, params, d);
-                        else
-                            pass = cross(mom, dad, child, params);
+                        // perform crossover
+                        pass = cross(mom, dad, child, params, d);
                         
                         params.msg("crossing " + mom.get_eqn() + "\nwith\n " + 
                                dad.get_eqn() + "\nproduced " + child.get_eqn() + 
-                               ", pass: " + std::to_string(pass) + "\n===\n",2);    
+                               ", pass: " + std::to_string(pass) + "\n===\n",3);    
 
                         child.set_parents({mom, dad});
                     }
@@ -343,7 +339,7 @@ namespace FT{
         
 
         bool Variation::cross(Individual& mom, Individual& dad, Individual& child, 
-                              const Parameters& params)
+                              const Parameters& params, const Data& d)
         {
             /*!
              * crossover by either subtree crossover or swapping of dimensions. 
@@ -356,8 +352,9 @@ namespace FT{
              * @return  child: mom with dad subtree graft
              */
                         
-            bool subtree = r() <0.5;     // half the time, do subtree xo. 
-                                         // half the time, swap dimensions.
+            // some of the time, do subtree xo. the reset of the time, 
+            // do some version of root crossover.
+            bool subtree = r() > params.root_xo_rate;                 
             vector<size_t> mlocs, dlocs; // mom and dad locations for consideration
             size_t i1, j1, i2, j2;       // i1-j1: mom portion, i2-j2: dad portion
             
@@ -388,12 +385,19 @@ namespace FT{
             } 
             else             // half the time, pick a root node
             {
-                params.msg("\troot xo",3);
-                mlocs = mom.program.roots();
-                dlocs = dad.program.roots();
-                params.msg("\t\trandom choice mlocs (size "+
-                           std::to_string(mlocs.size())+"), p size: "+std::to_string(mom.p.size()),3);
-                j1 = r.random_choice(mlocs,mom.get_p(mlocs));   // weighted probability choice    
+                if (params.residual_xo)
+                    return residual_cross(mom, dad, child, params, d);
+                else if (params.stagewise_xo)
+                    return stagewise_cross(mom, dad, child, params, d);
+                else
+                {
+                    params.msg("\troot xo",3);
+                    mlocs = mom.program.roots();
+                    dlocs = dad.program.roots();
+                    params.msg("\t\trandom choice mlocs (size "+
+                               std::to_string(mlocs.size())+"), p size: "+std::to_string(mom.p.size()),3);
+                    j1 = r.random_choice(mlocs,mom.get_p(mlocs));   // weighted probability choice    
+                }
             }
             /* cout << "mom subtree\t" << mom.program_str() << "\n"; */
             // get subtree              
@@ -416,8 +420,8 @@ namespace FT{
                         && child.get_dim() <= params.max_dim;
         }
 
-        /// semantic crossover
-        bool Variation::semantic_cross(Individual& mom, Individual& dad, Individual& child,
+        /// residual crossover
+        bool Variation::residual_cross(Individual& mom, Individual& dad, Individual& child,
                             const Parameters& params, const Data& d)
         {
             /*!
@@ -434,7 +438,7 @@ namespace FT{
             vector<size_t> mlocs, dlocs; // mom and dad locations for consideration
             size_t i1, j1, j1_idx, i2, j2;       // i1-j1: mom portion, i2-j2: dad portion
             
-            params.msg("\tsemantic xo",3);
+            params.msg("\tresidual xo",3);
             mlocs = mom.program.roots();
             vector<int> mlocs_indices(mlocs.size());
             std::iota(mlocs_indices.begin(),mlocs_indices.end(),0);
@@ -442,7 +446,8 @@ namespace FT{
             dlocs = dad.program.roots();
             params.msg("\t\trandom choice mlocs (size "+
                        std::to_string(mlocs.size())+"), p size: "+std::to_string(mom.p.size()),3);
-            j1_idx = r.random_choice(mlocs_indices,mom.get_p(mlocs));   // weighted probability choice    
+            // weighted probability choice
+            j1_idx = r.random_choice(mlocs_indices,mom.get_p(mlocs));
             j1 = mlocs.at(j1_idx); 
             // get subtree              
             i1 = mom.program.subtree(j1);
@@ -453,15 +458,15 @@ namespace FT{
             /* cout << "mom: " << mom.get_eqn() << "\n"; */
             /* cout << "mom yhat: " << mom.yhat.transpose() << "\n"; */
             VectorXf tree = mom.ml->get_weights().at(j1_idx)*mom.Phi.row(j1_idx).array();
-            cout << "tree (idx=" << j1_idx << "): " << tree.transpose() << "\n";
+            /* cout << "tree (idx=" << j1_idx << "): " << tree.transpose() << "\n"; */
             VectorXf mom_pred_minus_tree = mom.yhat - tree; 
             /* #pragma omp critical */
             /* { */
             /* VectorXf mom_pred_minus_tree = mom.predict_drop(d,params,j1_idx); */ 
             /* } */
-            cout << "mom_pred_minus_tree: " << mom_pred_minus_tree.transpose() << "\n";
+            /* cout << "mom_pred_minus_tree: " << mom_pred_minus_tree.transpose() << "\n"; */
             VectorXf mom_residual = d.y - mom_pred_minus_tree;
-            cout << "mom_residual: " << mom_residual.transpose() << "\n";
+            /* cout << "mom_residual: " << mom_residual.transpose() << "\n"; */
            
             // get correlations of dad's features with the residual from mom, less the swap choice
             vector<float> corrs(dad.Phi.rows());
@@ -472,7 +477,7 @@ namespace FT{
             for (int i = 0; i < dad.Phi.rows(); ++i)
             {
                 corr = pearson_correlation(mom_residual.array(), dad.Phi.row(i).array());
-                cout << "corr( " << i << "): " << corr << "\n";
+                /* cout << "corr( " << i << "): " << corr << "\n"; */
                 corrs.at(i) = corr; // this can be removed
                 if (corr > best_corr )
                 {
@@ -480,7 +485,7 @@ namespace FT{
                     best_corr = corr;
                 }
             }
-            cout << "best_corr_idx: " << best_corr_idx << ", R^2: " << best_corr << "\n";
+            /* cout << "best_corr_idx: " << best_corr_idx << ", R^2: " << best_corr << "\n"; */
             /* cout << "corrs: "; */
             /* for (auto c : corrs) cout << c << ", "; cout << "\n"; */
             /* cout << "chose corr at " << best_corr_idx << "\n"; */
@@ -529,18 +534,18 @@ namespace FT{
             params.msg("\tstagewise xo",3);
             
             VectorXf R = d.y.array() - d.y.mean();
-            cout << "R: " << R.transpose() << "\n";
-            cout << "R mean: " << R.mean() << "\n";
+            /* cout << "R: " << R.transpose() << "\n"; */
+            /* cout << "R mean: " << R.mean() << "\n"; */
             MatrixXf PhiA(mom.Phi.rows()+dad.Phi.rows(), mom.Phi.cols()); 
             PhiA << mom.Phi, 
                     dad.Phi; 
-            cout << "mom Phi: " << mom.Phi.rows() << "x" << mom.Phi.cols() << "\n";
-            cout << "dad Phi: " << dad.Phi.rows() << "x" << dad.Phi.cols() << "\n";
-            cout << "PhiA: " << PhiA.rows() << "x" << PhiA.cols() << "\n";
+            /* cout << "mom Phi: " << mom.Phi.rows() << "x" << mom.Phi.cols() << "\n"; */
+            /* cout << "dad Phi: " << dad.Phi.rows() << "x" << dad.Phi.cols() << "\n"; */
+            /* cout << "PhiA: " << PhiA.rows() << "x" << PhiA.cols() << "\n"; */
             for (int i = 0; i < PhiA.rows(); ++i)
             {
                 PhiA.row(i) = PhiA.row(i).array() - PhiA.row(i).mean();
-                cout << "PhiA( " << i << ").mean(): " << PhiA.row(i).mean() << "\n";
+                /* cout << "PhiA( " << i << ").mean(): " << PhiA.row(i).mean() << "\n"; */
             }
             //TODO: normalize y and PhiA?
             vector<int> sel_idx;
@@ -552,12 +557,12 @@ namespace FT{
                 float corr;
                 // correlation of PhiA with residual
                 // pick most correlated (store index)
-                for (int i = 0; i < dad.Phi.rows(); ++i)
+                for (int i = 0; i < PhiA.rows(); ++i)
                 {
                     if (!in(sel_idx,i))
                     {
                         corr = pearson_correlation(R.array(), PhiA.row(i).array());
-                        cout << "corr( " << i << "): " << corr << "\n";
+                        /* cout << "corr( " << i << "): " << corr << "\n"; */
                         if (corr > best_corr)
                         {
                             best_corr_idx = i; 
@@ -567,22 +572,22 @@ namespace FT{
                 }
                 if (best_corr > 0)
                 {
-                    cout << "best_corr_idx: " << best_corr_idx << ", R^2: " << best_corr << "\n";
+                    /* cout << "best_corr_idx: " << best_corr_idx << ", R^2: " << best_corr << "\n"; */
                     // least squares coefficient of phi* w.r.t. R
                     float b =  (covariance(PhiA.row(best_corr_idx),R) / 
                                 variance(PhiA.row(best_corr_idx)));
-                    cout << "b: " << b << "\n";
-                    cout << "b*phi: " << b*PhiA.row(best_corr_idx) << "\n";
+                    /* cout << "b: " << b << "\n"; */
+                    /* cout << "b*phi: " << b*PhiA.row(best_corr_idx) << "\n"; */
                     R = R - b*PhiA.row(best_corr_idx).transpose();
-                    cout << "R: " << R.transpose() << "\n";
-                    cout << "R norm: " << R.norm() << "\n";
+                    /* cout << "R: " << R.transpose() << "\n"; */
+                    /* cout << "R norm: " << R.norm() << "\n"; */
                     // select best correlation index
                     sel_idx.push_back(best_corr_idx);
                 }
                 ++nsel;
             }
-            cout << "sel_idx: ";
-            for (auto s: sel_idx) cout << s << ","; cout << "\n";
+            /* cout << "sel_idx: "; */
+            /* for (auto s: sel_idx) cout << s << ","; cout << "\n"; */
             // take stored indices and find corresponding program positions for them
             //
             /* std::sort(sel_idx.begin(), sel_idx.end()); */
