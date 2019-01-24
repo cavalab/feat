@@ -107,7 +107,7 @@ class TestFeatWrapper(unittest.TestCase):
         self.clf.fit(self.X,self.y)
 
         for key in self.clf.stats:
-            self.assertEqual(len(self.clf.stats[key]), self.clf.gens)
+            self.assertEqual(len(self.clf.stats[key]()), self.clf.gens)
 
 
 if __name__ == '__main__':
