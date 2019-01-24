@@ -355,6 +355,37 @@ namespace FT{
             
             /// prints population obj scores each generation 
             void print_population();
+            
+            /// return generations statistics arrays
+            ArrayXf get_gens();
+            
+            /// return time statistics arrays
+            ArrayXf get_timers();
+            
+            /// return best score statistics arrays
+            ArrayXf get_best_scores();
+            
+            /// return best score values statistics arrays
+            ArrayXf get_best_score_vals();
+            
+            /// return median scores statistics arrays
+            ArrayXf get_med_scores();
+            
+            /// return median loss values statistics arrays
+            ArrayXf get_med_loss_vals();
+            
+            /// return median size statistics arrays
+            ArrayXf get_med_size();
+            
+            /// return median complexity statistics arrays
+            ArrayXf get_med_complexities();
+            
+            /// return median num params statistics arrays
+            ArrayXf get_med_num_params();
+            
+            /// return median dimensions statistics arrays
+            ArrayXf get_med_dim();
+            
         private:
             // Parameters
             Parameters params;    					///< hyperparameters of Feat 
@@ -392,6 +423,8 @@ namespace FT{
             void final_model(DataRef& d);
             /// updates stall count for early stopping
             void update_stall_count(unsigned& stall_count, MatrixXf& F, const DataRef& d);
+            
+            Log_Stats stats;
     };
 }
 #endif

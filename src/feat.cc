@@ -43,6 +43,7 @@ Feat::Feat(int pop_size, int gens, string ml,
     r.set_seed(random_state);
     str_dim = "";
     set_logfile(logfile);
+    stats.resize(gens);
     this->scorer=scorer;
     if (n_threads!=0)
         omp_set_num_threads(n_threads);
@@ -56,7 +57,7 @@ Feat::Feat(int pop_size, int gens, string ml,
 void Feat::set_pop_size(int pop_size){ params.pop_size = pop_size; }            
 
 /// set size of max generations              
-void Feat::set_generations(int gens){ params.gens = gens; }         
+void Feat::set_generations(int gens){ params.gens = gens; stats.resize(gens);}         
             
 /// set ML algorithm to use              
 void Feat::set_ml(string ml){ params.ml = ml; }            
@@ -975,6 +976,33 @@ void Feat::print_stats(std::ofstream& log, float fraction)
     }
    
     std::cout <<"\n\n";
+    
+    /* float med_score = median(F.colwise().mean().array());  // median loss */
+    /* ArrayXf Sizes(p_pop->size());                           // collect program sizes */
+    /* i = 0; for (auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;} */
+    ArrayXf Complexities(p_pop->size()); 
+    i = 0; for (auto& p : p_pop->individuals){ Complexities(i) = p.complexity(); ++i;}
+    ArrayXf Nparams(p_pop->size()); 
+    i = 0; for (auto& p : p_pop->individuals){ Nparams(i) = p.get_n_params(); ++i;}
+    ArrayXf Dims(p_pop->size()); 
+    i = 0; for (auto& p : p_pop->individuals){ Dims(i) = p.get_dim(); ++i;}
+
+    
+    /* unsigned med_size = median(Sizes);                        // median program size */
+    unsigned med_complexity = median(Complexities);           // median 
+    unsigned med_num_params = median(Nparams);                // median program size
+    unsigned med_dim = median(Dims);                          // median program size
+    
+    stats.update(params.current_gen-1,
+                 timer.Elapsed().count(),
+                 best_score,
+                 best_score_v,
+                 med_score,
+                 med_loss_v,
+                 med_size,
+                 med_complexity,
+                 med_num_params,
+                 med_dim);
 
     if (!logfile.empty())
     {
@@ -993,21 +1021,6 @@ void Feat::print_stats(std::ofstream& log, float fraction)
                 << "med_num_params" << sep
                 <<  "med_dim\n";
         }
-        /* float med_score = median(F.colwise().mean().array());  // median loss */
-        /* ArrayXf Sizes(p_pop->size());                           // collect program sizes */
-        /* i = 0; for (auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;} */
-        ArrayXf Complexities(p_pop->size()); 
-        i = 0; for (auto& p : p_pop->individuals){ Complexities(i) = p.complexity(); ++i;}
-        ArrayXf Nparams(p_pop->size()); 
-        i = 0; for (auto& p : p_pop->individuals){ Nparams(i) = p.get_n_params(); ++i;}
-        ArrayXf Dims(p_pop->size()); 
-        i = 0; for (auto& p : p_pop->individuals){ Dims(i) = p.get_dim(); ++i;}
-
-        
-        /* unsigned med_size = median(Sizes);                        // median program size */
-        unsigned med_complexity = median(Complexities);           // median 
-        unsigned med_num_params = median(Nparams);                // median program size
-        unsigned med_dim = median(Dims);                          // median program size
 
         log << params.current_gen  << sep
             << timer.Elapsed().count() << sep
@@ -1054,3 +1067,23 @@ void Feat::print_population()
     }
     out.close();
 }
+
+ArrayXf Feat::get_gens(){return stats.generation;}
+
+ArrayXf Feat::get_timers(){return stats.time;}
+
+ArrayXf Feat::get_best_scores(){return stats.best_score;}
+
+ArrayXf Feat::get_best_score_vals(){return stats.best_score_v;}
+
+ArrayXf Feat::get_med_scores(){return stats.med_score;}
+
+ArrayXf Feat::get_med_loss_vals(){return stats.med_loss_v;}
+
+ArrayXf Feat::get_med_size(){return stats.med_size;}
+
+ArrayXf Feat::get_med_complexities(){return stats.med_complexity;}
+
+ArrayXf Feat::get_med_num_params(){return stats.med_num_params;}
+
+ArrayXf Feat::get_med_dim(){return stats.med_dim;}

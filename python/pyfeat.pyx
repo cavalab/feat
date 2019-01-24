@@ -50,6 +50,17 @@ cdef extern from "feat.h" namespace "FT":
         int get_complexity()
         int get_dim()
         int get_n_nodes()
+        
+        ArrayXf get_gens();        
+        ArrayXf get_timers();
+        ArrayXf get_best_scores();
+        ArrayXf get_best_score_vals();
+        ArrayXf get_med_scores();
+        ArrayXf get_med_loss_vals();
+        ArrayXf get_med_size();
+        ArrayXf get_med_complexities();
+        ArrayXf get_med_num_params();
+        ArrayXf get_med_dim();
 
 cdef class PyFeat:
     cdef Feat ft  # hold a c++ instance which we're wrapping
@@ -195,3 +206,34 @@ cdef class PyFeat:
 
     def get_n_nodes(self):
         return self.ft.get_n_nodes()
+        
+    def get_gens(self):
+        return ndarray(self.ft.get_gens()).flatten()
+              
+    def get_timers(self):
+        return ndarray(self.ft.get_timers()).flatten()
+        
+    def get_best_scores(self):
+        return ndarray(self.ft.get_best_scores()).flatten()
+        
+    def get_best_score_vals(self):
+        return ndarray(self.ft.get_best_score_vals()).flatten()
+        
+    def get_med_scores(self):
+        return ndarray(self.ft.get_med_scores()).flatten()
+        
+    def get_med_loss_vals(self):
+        return ndarray(self.ft.get_med_loss_vals()).flatten()
+        
+    def get_med_size(self):
+        return ndarray(self.ft.get_med_size()).flatten()
+        
+    def get_med_complexities(self):
+        return ndarray(self.ft.get_med_complexities()).flatten()
+        
+    def get_med_num_params(self):
+        return ndarray(self.ft.get_med_num_params()).flatten()
+        
+    def get_med_dim(self):
+        return ndarray(self.ft.get_med_dim()).flatten()
+        

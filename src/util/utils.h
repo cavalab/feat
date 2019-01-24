@@ -203,6 +203,35 @@ namespace FT{
 
         /// returns the (first) index of the element with the middlest value in v
         int argmiddle(vector<float>& v);
+        
+        struct Log_Stats
+        {
+            ArrayXf generation;
+            ArrayXf time;
+            ArrayXf best_score;
+            ArrayXf best_score_v;
+            ArrayXf med_score;
+            ArrayXf med_loss_v;
+            ArrayXf med_size;
+            ArrayXf med_complexity;
+            ArrayXf med_num_params;
+            ArrayXf med_dim;
+            
+            void resize(int new_size);
+            
+            void update(float index,
+                        float timer_count,
+                        float bst_score,
+                        float bst_score_v,
+                        float md_score,
+                        float md_loss_v,
+                        float md_size,
+                        float md_complexity,
+                        float md_num_params,
+                        float md_dim);
+        };
+        
+        typedef struct Log_Stats Log_stats;
 
     }
 
