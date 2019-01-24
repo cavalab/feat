@@ -101,6 +101,15 @@ class TestFeatWrapper(unittest.TestCase):
         # print('dfX.columns:',','.join(dfX.columns).encode())
         assert(self.clf.feature_names == ','.join(dfX.columns).encode())
 
+    #Test 1: Assert the length of labels returned from predict
+    def test_predict_stats_length(self):
+        self.debug("Fit the Data")
+        self.clf.fit(self.X,self.y)
+
+        for key in self.clf.stats:
+            self.assertEqual(len(self.clf.stats[key]), self.clf.gens)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="",add_help=False)
    
