@@ -198,3 +198,43 @@ class Feat(BaseEstimator):
     def get_n_nodes(self):
         """Returns the number of nodes in the final representation"""
         return self._pyfeat.get_n_nodes()
+        
+    def get_gens(self):
+        """return generations statistics arrays"""
+        return self._pyfeat.get_gens()
+              
+    def get_timers(self):
+        """return time statistics arrays"""
+        return self._pyfeat.get_timers()
+        
+    def get_best_scores(self):
+        """return best score statistics arrays"""
+        return self._pyfeat.get_best_scores()
+        
+    def get_best_score_vals(self):
+        """return best score values statistics arrays"""
+        return self._pyfeat.get_best_score_vals()
+        
+    def get_med_scores(self):
+        """return median scores statistics arrays"""
+        return self._pyfeat.get_med_scores()
+        
+    def get_med_loss_vals(self):
+        """return median loss values statistics arrays"""
+        return self._pyfeat.get_med_loss_vals()
+        
+    def get_med_size(self):
+        """return median size statistics arrays"""
+        return self._pyfeat.get_med_size()
+        
+    def get_med_complexities(self):
+        """return median complexity statistics arrays"""
+        return self._pyfeat.get_med_complexities()
+        
+    def get_med_num_params(self):
+        """return median num params statistics arrays"""
+        return self._pyfeat.get_med_num_params()
+        
+    def get_med_dim(self):
+        """return median dimensions statistics arrays"""
+        return self._pyfeat.get_med_dim()

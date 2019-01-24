@@ -335,6 +335,43 @@ namespace FT{
             return tmp.array().square().sum()/N;
         }
         
+        void Log_Stats::resize(int new_size)
+        {
+            generation.resize(new_size);
+            time.resize(new_size);
+            best_score.resize(new_size);
+            best_score_v.resize(new_size);
+            med_score.resize(new_size);
+            med_loss_v.resize(new_size);
+            med_size.resize(new_size);
+            med_complexity.resize(new_size);
+            med_num_params.resize(new_size);
+            med_dim.resize(new_size);
+        }
+        
+        void Log_Stats::update(float index,
+                               float timer_count,
+                               float bst_score,
+                               float bst_score_v,
+                               float md_score,
+                               float md_loss_v,
+                               float md_size,
+                               float md_complexity,
+                               float md_num_params,
+                               float md_dim)
+        {
+            generation[index] = index;
+            time[index] = timer_count;
+            best_score[index] = bst_score;
+            best_score_v[index] = bst_score_v;
+            med_score[index] = md_score;
+            med_loss_v[index] = md_loss_v;
+            med_size[index] = md_size;
+            med_complexity[index] = md_complexity;
+            med_num_params[index] = md_num_params;
+            med_dim[index] = md_dim;
+        }
+        
     }
  
 } 
