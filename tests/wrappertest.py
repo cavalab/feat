@@ -108,8 +108,8 @@ class TestFeatWrapper(unittest.TestCase):
 
         print("Num generations is ", self.clf.gens)
         for key in self.clf.stats:
-            print("Length for ", key, "is ", len(self.clf.stats[key]()))
-            self.assertEqual(len(self.clf.stats[key]()), self.clf.gens)
+            print("Length for ", key, "is ", len(self.clf.stats[key]))
+            self.assertEqual(len(self.clf.stats[key]), self.clf.gens)
 
 
 if __name__ == '__main__':
