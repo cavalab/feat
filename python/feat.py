@@ -69,7 +69,8 @@ class Feat(BaseEstimator):
         self.print_pop = print_pop
         # if self.verbosity>0:
         #print('self.__dict__: ' , self.__dict__)
-        self._pyfeat=None 
+        self._pyfeat=None
+        self.stats = {}
 
     def _init_pyfeat(self):
         """set up pyfeat glue class object"""
@@ -96,6 +97,17 @@ class Feat(BaseEstimator):
                 self.use_batch,
                 self.semantic_xo,
                 self.print_pop)
+
+        self.stats["gens"] = self.get_gens()
+        self.stats["time"] = self.get_timers()
+        self.stats["best_scores"] = self.get_best_scores()
+        self.stats["best_score_vals"] = self.get_best_score_vals()
+        self.stats["med_scores"] = self.get_med_scores()
+        self.stats["med_loss_vals"] = self.get_med_loss_vals()
+        self.stats["med_size"] = self.get_med_size()
+        self.stats["med_complexity"] = self.get_med_complexities()
+        self.stats["med_num_params"] = self.get_med_num_params()
+        self.stats["med_dim"] = self.get_med_dim()
    
     def fit(self,X,y,zfile=None,zids=None):
         """Fit a model."""    
