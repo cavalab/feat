@@ -53,7 +53,7 @@ namespace FT{
              */
             unsigned start= pop.size();
             pop.resize(2*params.pop_size);
-            #pragma omp parallel for
+            /* #pragma omp parallel for */
             for (unsigned i = start; i<pop.size(); ++i)
             {
                 bool pass=false;                      // pass check for children undergoing variation     
@@ -532,22 +532,31 @@ namespace FT{
              * $\phi_c$ = all $\phi^*$ that were chosen 
              */
             params.msg("\tstagewise xo",3);
-            
+            // normalize the residual 
             VectorXf R = d.y.array() - d.y.mean();
             /* cout << "R: " << R.transpose() << "\n"; */
             /* cout << "R mean: " << R.mean() << "\n"; */
+            if (mom.Phi.cols() != dad.Phi.cols())
+            {
+                cout << "!!WARNING!! mom.Phi.cols() = " << mom.Phi.cols() 
+                     << " and dad.Phi.cols() = " << dad.Phi.cols() << "\n";
+                cout << " d.y size: " << d.y.size() << "\n";
+                cout << "mom: " << mom.program_str() << "\n";
+                cout << "dad: " << dad.program_str() << "\n";
+                return false;
+            }
             MatrixXf PhiA(mom.Phi.rows()+dad.Phi.rows(), mom.Phi.cols()); 
             PhiA << mom.Phi, 
                     dad.Phi; 
             /* cout << "mom Phi: " << mom.Phi.rows() << "x" << mom.Phi.cols() << "\n"; */
             /* cout << "dad Phi: " << dad.Phi.rows() << "x" << dad.Phi.cols() << "\n"; */
             /* cout << "PhiA: " << PhiA.rows() << "x" << PhiA.cols() << "\n"; */
+            // normalize Phi
             for (int i = 0; i < PhiA.rows(); ++i)
             {
                 PhiA.row(i) = PhiA.row(i).array() - PhiA.row(i).mean();
                 /* cout << "PhiA( " << i << ").mean(): " << PhiA.row(i).mean() << "\n"; */
             }
-            //TODO: normalize y and PhiA?
             vector<int> sel_idx;
             float best_corr_idx;
             unsigned nsel = 0;
@@ -597,30 +606,43 @@ namespace FT{
             
             mlocs = mom.program.roots();
             dlocs = dad.program.roots();
+            /* cout << "mlocs size: " << mlocs.size() << ", dlocs size: " << dlocs.size() << "\n"; */
+            child.program.clear();
+
             for (int idx : sel_idx)
             {
-                int start, stop;
+                /* cout << "idx: " << idx << "\n"; */
+
                 if (idx < mom.Phi.rows())
                 {
-                    stop = mlocs.at(idx);
+                    int stop = mlocs.at(idx);
                     // get subtree indices
-                    start = mom.program.subtree(stop);
+                    int start = mom.program.subtree(stop);
                     // construct child program
+                    /* cout << "adding mom.program (len= " << mom.program.size() << ") from " << start */
+                    /*     << " to " << stop << "\n"; */
                     for (unsigned i = start; i <= stop ; ++i)        
+                    {
                         child.program.push_back(mom.program.at(i)->clone());
+                    }
                 }
                 else
                 {
-                    stop = dlocs.at(idx - mom.Phi.rows());
+                    int stop = dlocs.at(idx - mom.Phi.rows());
                     // get subtree indices
-                    start = dad.program.subtree(stop);
+                    int start = dad.program.subtree(stop);
                     // construct child program
+                    /* cout << "adding dad.program (len= " << dad.program.size() << ") from " << start */
+                    /*     << " to " << stop << "\n"; */
                     for (unsigned i = start; i <= stop ; ++i)        
+                    {
                         child.program.push_back(dad.program.at(i)->clone());
+                    }
                 }
                 
             }
-                                
+                    
+            /* cout << "child program size: " << child.program.size() << "\n"; */
             /* if (params.verbosity >= 3) */
             /*     print_cross(mom,i1,j1,dad,i2,j2,child,false); */     
            
@@ -630,8 +652,9 @@ namespace FT{
             /* if (params.verbosity >= 3) */
             /*     print_cross(mom,i1,j1,dad,i2,j2,child,true); */     
 
-
+            /* cout << "asserting validity\n"; */
             assert(child.program.is_valid_program(params.num_features, params.longitudinalMap));
+            /* cout << "returning \n"; */
             // check child depth and dimensionality
             return child.size()>0 && child.size() <= params.max_size 
                         && child.get_dim() <= params.max_dim;
