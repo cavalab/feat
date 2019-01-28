@@ -993,7 +993,7 @@ void Feat::print_stats(std::ofstream& log, float fraction)
     unsigned med_num_params = median(Nparams);                // median program size
     unsigned med_dim = median(Dims);                          // median program size
     
-    stats.update(params.current_gen-1,
+    stats.update(params.current_gen,
                  timer.Elapsed().count(),
                  best_score,
                  best_score_v,

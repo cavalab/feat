@@ -349,7 +349,7 @@ namespace FT{
             med_dim.resize(new_size);
         }
         
-        void Log_Stats::update(float index,
+        void Log_Stats::update(int index,
                                float timer_count,
                                float bst_score,
                                float bst_score_v,
@@ -360,7 +360,7 @@ namespace FT{
                                float md_num_params,
                                float md_dim)
         {
-            generation[index] = index;
+            generation[index] = index+1;
             time[index] = timer_count;
             best_score[index] = bst_score;
             best_score_v[index] = bst_score_v;

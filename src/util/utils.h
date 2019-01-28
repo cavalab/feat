@@ -219,7 +219,7 @@ namespace FT{
             
             void resize(int new_size);
             
-            void update(float index,
+            void update(int index,
                         float timer_count,
                         float bst_score,
                         float bst_score_v,
