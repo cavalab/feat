@@ -81,7 +81,7 @@ namespace FT{
                    bool backprop=false,int iters=10, float lr=0.1, int bs=100, int n_threads=0,
                    bool hillclimb=false, string logfile="", int max_time=-1, 
                    bool use_batch = false, bool residual_xo = false, bool stagewise_xo = false,
-                   int print_pop=0);
+                   bool softmax_norm=false, int print_pop=0);
             
             /// set size of population 
             void set_pop_size(int pop_size);
@@ -184,6 +184,9 @@ namespace FT{
             
             /// use stagewise crossover
             void set_stagewise_xo(bool sem_xo=true){params.stagewise_xo=sem_xo;};
+            
+            /// use softmax
+            void set_softmax_norm(bool sftmx=true){params.softmax_norm=sftmx;};
 
             void set_print_pop(int pp){ print_pop=pp; };
             /*                                                      

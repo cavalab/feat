@@ -62,7 +62,8 @@ namespace FT{
         bool residual_xo;                           ///< use residual crossover  
         bool stagewise_xo;                          ///< use stagewise crossover  
         float root_xo_rate;                         ///<  crossover  
-
+        bool softmax_norm;                          ///< use softmax norm on probabilities
+        
         struct BP 
         {
            int iters;
@@ -87,7 +88,7 @@ namespace FT{
                    unsigned int max_depth, unsigned int max_dim, bool constant, string obj, 
                    bool sh, float sp, float fb, string sc, string fn, bool bckprp, 
                    int iters, float lr, int bs, bool hclimb, int maxt, bool useb, bool res_xo, 
-                   bool stg_xo);
+                   bool stg_xo, bool sftmx);
         
         ~Parameters();
         

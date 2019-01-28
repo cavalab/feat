@@ -29,12 +29,12 @@ Feat::Feat(int pop_size, int gens, string ml,
        float split, float fb, string scorer, string feature_names,
        bool backprop,int iters, float lr, int bs, int n_threads,
        bool hillclimb, string logfile, int max_time, bool use_batch, bool residual_xo,
-       bool stagewise_xo, int print_pop):
+       bool stagewise_xo, bool softmax_norm, int print_pop):
           // construct subclasses
           params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
                  functions, cross_rate, root_xo_rate, max_depth, max_dim, erc, obj, shuffle, split, 
                  fb, scorer, feature_names, backprop, iters, lr, bs, hillclimb, max_time, 
-                 use_batch, residual_xo, stagewise_xo), 
+                 use_batch, residual_xo, stagewise_xo, softmax_norm), 
           p_sel( make_shared<Selection>(sel) ),
           p_surv( make_shared<Selection>(surv, true) ),
           p_variation( make_shared<Variation>(cross_rate) ),
@@ -574,6 +574,7 @@ void Feat::run_generation(unsigned int g,
                       unsigned& stall_count)
 {
     params.set_current_gen(g);
+
     // select parents
     params.msg("selection..", 3);
     vector<size_t> parents = p_sel->select(*p_pop, F, params);
@@ -864,13 +865,14 @@ void Feat::update_best(const DataRef& d, bool validation)
     float f; 
     vector<Individual>& pop = use_arch && validation ? arch.archive : p_pop->individuals; 
 
-    for (const auto& i: pop)
+    for (const auto i: pop)
     {
         f = validation ? i.fitness_v : i.fitness ;
         if (f < bs)
         {
             bs = f;
-            best_ind = i;
+            best_ind = i; // should this be i.clone(best_ind); ?
+            /* i.clone(best_ind); */
         }
     }
 

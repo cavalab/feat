@@ -133,7 +133,8 @@ namespace FT{
             vector<float> get_p(const vector<size_t>& locs, bool normalize=false) const; 
 
             /// set probabilities
-            void set_p(const vector<float>& weights, const float& fb);
+            void set_p(const vector<float>& weights, const float& fb, 
+                       const bool softmax_norm=false);
             
             /// get maximum stack size needed for evaluation.
             std::map<char,size_t> get_max_state_size();

@@ -12,8 +12,8 @@ try:
     importlib.import_module('eigency')
 except ImportError:
     try:
-        import pip
-        pip.main(['install', 'eigency'])
+        from pip._internal import main 
+        main(['install', 'eigency'])
     except ImportError:
         raise ImportError('The eigency library must be installed before feat. '
                           'Automatic install with pip failed.')
