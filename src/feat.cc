@@ -43,7 +43,6 @@ Feat::Feat(int pop_size, int gens, string ml,
     r.set_seed(random_state);
     str_dim = "";
     set_logfile(logfile);
-    stats.resize(gens);
     this->scorer=scorer;
     if (n_threads!=0)
         omp_set_num_threads(n_threads);
@@ -57,7 +56,7 @@ Feat::Feat(int pop_size, int gens, string ml,
 void Feat::set_pop_size(int pop_size){ params.pop_size = pop_size; }            
 
 /// set size of max generations              
-void Feat::set_generations(int gens){ params.gens = gens; stats.resize(gens);}         
+void Feat::set_generations(int gens){ params.gens = gens;}         
             
 /// set ML algorithm to use              
 void Feat::set_ml(string ml){ params.ml = ml; }            
@@ -1068,22 +1067,22 @@ void Feat::print_population()
     out.close();
 }
 
-ArrayXf Feat::get_gens(){return stats.generation;}
+vector<float> Feat::get_gens(){return stats.generation;}
 
-ArrayXf Feat::get_timers(){return stats.time;}
+vector<float> Feat::get_timers(){return stats.time;}
 
-ArrayXf Feat::get_best_scores(){return stats.best_score;}
+vector<float> Feat::get_best_scores(){return stats.best_score;}
 
-ArrayXf Feat::get_best_score_vals(){return stats.best_score_v;}
+vector<float> Feat::get_best_score_vals(){return stats.best_score_v;}
 
-ArrayXf Feat::get_med_scores(){return stats.med_score;}
+vector<float> Feat::get_med_scores(){return stats.med_score;}
 
-ArrayXf Feat::get_med_loss_vals(){return stats.med_loss_v;}
+vector<float> Feat::get_med_loss_vals(){return stats.med_loss_v;}
 
-ArrayXf Feat::get_med_size(){return stats.med_size;}
+vector<float> Feat::get_med_size(){return stats.med_size;}
 
-ArrayXf Feat::get_med_complexities(){return stats.med_complexity;}
+vector<float> Feat::get_med_complexities(){return stats.med_complexity;}
 
-ArrayXf Feat::get_med_num_params(){return stats.med_num_params;}
+vector<float> Feat::get_med_num_params(){return stats.med_num_params;}
 
-ArrayXf Feat::get_med_dim(){return stats.med_dim;}
+vector<float> Feat::get_med_dim(){return stats.med_dim;}

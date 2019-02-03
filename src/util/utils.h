@@ -206,18 +206,16 @@ namespace FT{
         
         struct Log_Stats
         {
-            ArrayXf generation;
-            ArrayXf time;
-            ArrayXf best_score;
-            ArrayXf best_score_v;
-            ArrayXf med_score;
-            ArrayXf med_loss_v;
-            ArrayXf med_size;
-            ArrayXf med_complexity;
-            ArrayXf med_num_params;
-            ArrayXf med_dim;
-            
-            void resize(int new_size);
+            vector<float> generation;
+            vector<float> time;
+            vector<float> best_score;
+            vector<float> best_score_v;
+            vector<float> med_score;
+            vector<float> med_loss_v;
+            vector<float> med_size;
+            vector<float> med_complexity;
+            vector<float> med_num_params;
+            vector<float> med_dim;
             
             void update(int index,
                         float timer_count,
