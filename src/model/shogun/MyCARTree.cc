@@ -1579,6 +1579,8 @@ vector<double> CMyCARTree::feature_importances()
    * information criterion brought about by each feature. 
    */
    // need to get feature sizes
+   
+   cout << "Getting features\n";
    SGVector<bool> dt = get_feature_types();
    vector<double> importances(dt.size(),0.0);    //set to zero for all attributes
    
