@@ -80,7 +80,7 @@ cd ..
 make -C build VERBOSE=1
 echo "running feat.."
 
-./build/feat docs/examples/data/d_enc.csv -rs 42 -g 10 -p 10 -ml "RandomForest"
+./build/feat docs/examples/data/d_enc.csv -rs 42 -g 10 -p 10
 
 echo "python path is..."
 which python
