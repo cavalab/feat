@@ -341,10 +341,10 @@ namespace FT{
                                float bst_score_v,
                                float md_score,
                                float md_loss_v,
-                               float md_size,
-                               float md_complexity,
-                               float md_num_params,
-                               float md_dim)
+                               unsigned md_size,
+                               unsigned md_complexity,
+                               unsigned md_num_params,
+                               unsigned md_dim)
         {
             generation.push_back(index+1);
             time.push_back(timer_count);

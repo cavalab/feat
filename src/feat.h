@@ -357,7 +357,7 @@ namespace FT{
             void print_population();
             
             /// return generations statistics arrays
-            vector<float> get_gens();
+            vector<int> get_gens();
             
             /// return time statistics arrays
             vector<float> get_timers();
@@ -375,16 +375,16 @@ namespace FT{
             vector<float> get_med_loss_vals();
             
             /// return median size statistics arrays
-            vector<float> get_med_size();
+            vector<unsigned> get_med_size();
             
             /// return median complexity statistics arrays
-            vector<float> get_med_complexities();
+            vector<unsigned> get_med_complexities();
             
             /// return median num params statistics arrays
-            vector<float> get_med_num_params();
+            vector<unsigned> get_med_num_params();
             
             /// return median dimensions statistics arrays
-            vector<float> get_med_dim();
+            vector<unsigned> get_med_dim();
             
         private:
             // Parameters
@@ -412,6 +412,8 @@ namespace FT{
             float med_loss_v;                      ///< current val loss of median individual
             string str_dim;                         ///< dimensionality as multiple of number of columns 
             void update_best(const DataRef& d, bool val=false);       ///< updates best score   
+            
+            void calculate_stats();
             void print_stats(std::ofstream& log,
                              float fraction);      ///< prints stats
             Individual best_ind;                    ///< best individual
