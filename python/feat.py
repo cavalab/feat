@@ -151,12 +151,16 @@ class Feat(BaseEstimator):
     def fit_predict(self,X,y):
         """Convenience method that runs fit(X,y) then predict(X)"""
         self._init_pyfeat()    
-        return self._pyfeat.fit_predict(X,y)
+        result = self._pyfeat.fit_predict(X,y)
+        self.update_stats()
+        return res
 
     def fit_transform(self,X,y):
         """Convenience method that runs fit(X,y) then transform(X)"""
-        self._init_pyfeat()    
-        return self._pyfeat.fit_transform(X,y)
+        self._init_pyfeat() 
+        result = self._pyfeat.fit_transform(X, y)
+        self.update_stats()   
+        return result
 
     def score(self,X,y,zfile=None,zids=None):
         """Returns a score for the predictions of Feat on X versus true labels y""" 
