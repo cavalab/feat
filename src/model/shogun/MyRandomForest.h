@@ -49,6 +49,15 @@ public:
 	/** constructor */
 	CMyRandomForest();
 	
+	/** destructor */
+	virtual ~CMyRandomForest();
+
+	/** get name
+	 *
+	 * @return RandomForest
+	 */
+	virtual const char* get_name() const { return "RandomForest"; }
+	
 	/** set weights
 	 *
 	 * @param weights of training feature vectors

@@ -70,6 +70,8 @@ public:
 	 * @return size subset size
 	 */
 	index_t get_feature_subset_size() const { return m_randsubset_size; }
+	
+	CMyRandomCARTree* clone();
 
 protected:
 	/** computes best attribute for CARTtrain
