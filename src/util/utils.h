@@ -206,16 +206,16 @@ namespace FT{
         
         struct Log_Stats
         {
-            vector<float> generation;
+            vector<int> generation;
             vector<float> time;
             vector<float> best_score;
             vector<float> best_score_v;
             vector<float> med_score;
             vector<float> med_loss_v;
-            vector<float> med_size;
-            vector<float> med_complexity;
-            vector<float> med_num_params;
-            vector<float> med_dim;
+            vector<unsigned> med_size;
+            vector<unsigned> med_complexity;
+            vector<unsigned> med_num_params;
+            vector<unsigned> med_dim;
             
             void update(int index,
                         float timer_count,
@@ -223,10 +223,10 @@ namespace FT{
                         float bst_score_v,
                         float md_score,
                         float md_loss_v,
-                        float md_size,
-                        float md_complexity,
-                        float md_num_params,
-                        float md_dim);
+                        unsigned md_size,
+                        unsigned md_complexity,
+                        unsigned md_num_params,
+                        unsigned md_dim);
         };
         
         typedef struct Log_Stats Log_stats;

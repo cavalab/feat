@@ -215,4 +215,3 @@ class Feat(BaseEstimator):
         self.stats["med_num_params"] = self._pyfeat.get_med_num_params()
         self.stats["med_dim"] = self._pyfeat.get_med_dim()
 
-        
