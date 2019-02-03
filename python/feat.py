@@ -153,7 +153,7 @@ class Feat(BaseEstimator):
         self._init_pyfeat()    
         result = self._pyfeat.fit_predict(X,y)
         self.update_stats()
-        return res
+        return result
 
     def fit_transform(self,X,y):
         """Convenience method that runs fit(X,y) then transform(X)"""
