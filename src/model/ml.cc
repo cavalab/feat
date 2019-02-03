@@ -49,20 +49,20 @@ namespace FT{
                 p_est = make_shared<sh::CLinearRidgeRegression>();
             else if (ml_type == RF)
             {
-                p_est = make_shared<sh::CRandomForest>();
-                dynamic_pointer_cast<sh::CRandomForest>(p_est)->
+                p_est = make_shared<sh::CMyRandomForest>();
+                dynamic_pointer_cast<sh::CMyRandomForest>(p_est)->
                                                            set_machine_problem_type(prob_type);
-                dynamic_pointer_cast<sh::CRandomForest>(p_est)->set_num_bags(100);
+                dynamic_pointer_cast<sh::CMyRandomForest>(p_est)->set_num_bags(100);
                                    
                 if (prob_type != PT_REGRESSION)
                 {
                     auto CR = some<sh::CMajorityVote>();                        
-                    dynamic_pointer_cast<sh::CRandomForest>(p_est)->set_combination_rule(CR);
+                    dynamic_pointer_cast<sh::CMyRandomForest>(p_est)->set_combination_rule(CR);
                 }
                 else
                 {
                     auto CR = some<sh::CMeanRule>();
-                    dynamic_pointer_cast<sh::CRandomForest>(p_est)->set_combination_rule(CR);
+                    dynamic_pointer_cast<sh::CMyRandomForest>(p_est)->set_combination_rule(CR);
                 }
                 
             }
@@ -129,7 +129,7 @@ namespace FT{
                 if (ml_type == CART)
                     dynamic_pointer_cast<sh::CMyCARTree>(p_est)->set_feature_types(dt);
                 else if (ml_type == RF)
-                    dynamic_pointer_cast<sh::CRandomForest>(p_est)->set_feature_types(dt);
+                    dynamic_pointer_cast<sh::CMyRandomForest>(p_est)->set_feature_types(dt);
             }
         }
         
@@ -197,7 +197,8 @@ namespace FT{
             else if (ml_type == CART)           
                 w = dynamic_pointer_cast<sh::CMyCARTree>(p_est)->feature_importances();
             else
-                HANDLE_ERROR_NO_THROW("ERROR: ML::get_weights not implemented for " + ml_str + "\n");
+                w = dynamic_pointer_cast<sh::CMyRandomForest>(p_est)->feature_importances();
+                //HANDLE_ERROR_NO_THROW("ERROR: ML::get_weights not implemented for " + ml_str + "\n");
             
             /* cout << "get_weights(): w: " << w.size() << ":"; */
             /* for (auto tmp : w) cout << tmp << " " ; */
@@ -223,13 +224,15 @@ namespace FT{
             
                     // for random forest we need to set the number of features per bag
             init();
+            
             if (ml_type == RF)
             {
                 //std::cout << "setting max_feates\n";
                 // set max features to sqrt(n_features)
                 int max_feats = std::sqrt(X.rows());
-                dynamic_pointer_cast<sh::CRandomForest>(p_est)->set_num_random_features(max_feats);
+                dynamic_pointer_cast<sh::CMyRandomForest>(p_est)->set_num_random_features(max_feats);
             }
+            
             // for tree-based methods we need to specify data types 
             if (ml_type == RF || ml_type == CART)
             {            

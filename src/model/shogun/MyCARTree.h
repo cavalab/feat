@@ -32,7 +32,11 @@
 #ifndef _MYCARTREE_H__
 #define _MYCARTREE_H__
 
+#include <shogun/lib/config.h>
+
+#include <shogun/multiclass/tree/TreeMachine.h>
 #include "MyCARTreeNodeData.h"
+#include <shogun/features/DenseFeatures.h>
 
 using std::vector;
 namespace shogun
