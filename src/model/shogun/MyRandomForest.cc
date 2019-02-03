@@ -38,10 +38,11 @@ using namespace shogun;
 
 CMyRandomForest::CMyRandomForest()
 : CBaggingMachine()
-{
-	delete m_machine;
-	
+{	
 	m_machine = new CMyRandomCARTree();
+	m_weights=SGVector<float64_t>();
+
+	SG_ADD(&m_weights,"m_weights","weights",MS_NOT_AVAILABLE)
 }
 
 void CMyRandomForest::set_weights(SGVector<float64_t> weights)
