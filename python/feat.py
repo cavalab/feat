@@ -97,17 +97,6 @@ class Feat(BaseEstimator):
                 self.use_batch,
                 self.semantic_xo,
                 self.print_pop)
-
-        self.stats["gens"] = self.get_gens()
-        self.stats["time"] = self.get_timers()
-        self.stats["best_scores"] = self.get_best_scores()
-        self.stats["best_score_vals"] = self.get_best_score_vals()
-        self.stats["med_scores"] = self.get_med_scores()
-        self.stats["med_loss_vals"] = self.get_med_loss_vals()
-        self.stats["med_size"] = self.get_med_size()
-        self.stats["med_complexity"] = self.get_med_complexities()
-        self.stats["med_num_params"] = self.get_med_num_params()
-        self.stats["med_dim"] = self.get_med_dim()
    
     def fit(self,X,y,zfile=None,zids=None):
         """Fit a model."""    
@@ -125,6 +114,8 @@ class Feat(BaseEstimator):
             self._pyfeat.fit_with_z(X,y,zfile,zids)
         else:
             self._pyfeat.fit(X,y)
+
+        self.update_stats()
 
         return self
 
@@ -210,43 +201,18 @@ class Feat(BaseEstimator):
     def get_n_nodes(self):
         """Returns the number of nodes in the final representation"""
         return self._pyfeat.get_n_nodes()
+
+    def update_stats(self):
+        """updates the statistics of the run"""
+        self.stats["gens"] = self._pyfeat.get_gens()
+        self.stats["time"] = self._pyfeat.get_timers()
+        self.stats["best_scores"] = self._pyfeat.get_best_scores()
+        self.stats["best_score_vals"] = self._pyfeat.get_best_score_vals()
+        self.stats["med_scores"] = self._pyfeat.get_med_scores()
+        self.stats["med_loss_vals"] = self._pyfeat.get_med_loss_vals()
+        self.stats["med_size"] = self._pyfeat.get_med_size()
+        self.stats["med_complexity"] = self._pyfeat.get_med_complexities()
+        self.stats["med_num_params"] = self._pyfeat.get_med_num_params()
+        self.stats["med_dim"] = self._pyfeat.get_med_dim()
+
         
-    def get_gens(self):
-        """return generations statistics arrays"""
-        return self._pyfeat.get_gens()
-              
-    def get_timers(self):
-        """return time statistics arrays"""
-        return self._pyfeat.get_timers()
-        
-    def get_best_scores(self):
-        """return best score statistics arrays"""
-        return self._pyfeat.get_best_scores()
-        
-    def get_best_score_vals(self):
-        """return best score values statistics arrays"""
-        return self._pyfeat.get_best_score_vals()
-        
-    def get_med_scores(self):
-        """return median scores statistics arrays"""
-        return self._pyfeat.get_med_scores()
-        
-    def get_med_loss_vals(self):
-        """return median loss values statistics arrays"""
-        return self._pyfeat.get_med_loss_vals()
-        
-    def get_med_size(self):
-        """return median size statistics arrays"""
-        return self._pyfeat.get_med_size()
-        
-    def get_med_complexities(self):
-        """return median complexity statistics arrays"""
-        return self._pyfeat.get_med_complexities()
-        
-    def get_med_num_params(self):
-        """return median num params statistics arrays"""
-        return self._pyfeat.get_med_num_params()
-        
-    def get_med_dim(self):
-        """return median dimensions statistics arrays"""
-        return self._pyfeat.get_med_dim()
