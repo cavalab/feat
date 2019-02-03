@@ -31,6 +31,9 @@
 #include "MyRandomCARTree.h"
 #include <shogun/mathematics/Math.h>
 
+#include <iostream>
+using namespace std;
+
 using namespace shogun;
 
 CMyRandomCARTree::CMyRandomCARTree()
@@ -66,6 +69,21 @@ index_t CMyRandomCARTree::compute_best_attribute(const SGMatrix<float64_t>& mat,
 
 	return CMyCARTree::compute_best_attribute(mat,weights,labels,left,right,is_left_final,num_missing_final,count_left,count_right, IG, subset_size, active_indices);
 
+}
+
+CMyRandomCARTree* CMyRandomCARTree::clone()
+{
+    //cout << "Clone called\n";
+    
+    CMyRandomCARTree* clone_obj =  new CMyRandomCARTree();
+    
+    SG_REF(clone_obj);
+    
+    clone_obj->set_machine_problem_type(this->get_machine_problem_type());
+    clone_obj->set_feature_subset_size(m_randsubset_size);
+    clone_obj->set_feature_types(this->get_feature_types());
+    
+    return clone_obj;
 }
 
 void CMyRandomCARTree::init()

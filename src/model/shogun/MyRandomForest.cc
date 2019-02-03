@@ -45,6 +45,10 @@ CMyRandomForest::CMyRandomForest()
 	SG_ADD(&m_weights,"m_weights","weights",MS_NOT_AVAILABLE)
 }
 
+CMyRandomForest::~CMyRandomForest()
+{
+}
+
 void CMyRandomForest::set_weights(SGVector<float64_t> weights)
 {
 	m_weights=weights;
@@ -112,16 +116,16 @@ void CMyRandomForest::set_machine_parameters(CMachine* m, SGVector<index_t> idx)
 			weights[i]=m_weights[idx[i]];
 	}
 
-    cout << "\nCalling from here\n";
+    //cout << "\nCalling from here\n";
 	tree->set_weights(weights);
-	//tree->set_sorted_features(m_sorted_transposed_feats, m_sorted_indices);
+	tree->set_sorted_features(m_sorted_transposed_feats, m_sorted_indices);
 	// equate the machine problem types - cloning does not do this
-	//tree->set_machine_problem_type(dynamic_cast<CMyRandomCARTree*>(m_machine)->get_machine_problem_type());
+	tree->set_machine_problem_type(dynamic_cast<CMyRandomCARTree*>(m_machine)->get_machine_problem_type());
 }
 
 bool CMyRandomForest::train_machine(CFeatures* data)
 {
-    cout << "Training called\n";
+    //cout << "Training called\n";
 	if (data)
 	{
 		SG_REF(data);
@@ -138,17 +142,17 @@ bool CMyRandomForest::train_machine(CFeatures* data)
 
 std::vector<double> CMyRandomForest::feature_importances()
 {
-    cout << "Getting importances\n";
+     //cout << "Getting importances\n";
      size_t num_features = get_feature_types().size();
      vector<double> importances(num_features, 0.0);    //set to zero for all attributes
      
-     cout << "num features is " << num_features <<endl;
+     //cout << "num features is " << num_features <<endl;
      for (int32_t i = 0; i < m_num_bags; ++i)
      {  
-         cout << "i = " << i << " num bags are " << m_num_bags << endl;
+         //cout << "i = " << i << " num bags are " << m_num_bags << endl;
          CMyRandomCARTree* m = dynamic_cast<CMyRandomCARTree*>(m_bags->get_element(i));
          
-         cout << "got machine "  << i << endl;
+         //cout << "got machine "  << i << endl;
          
          vector<double> m_imp = m->feature_importances();
          
