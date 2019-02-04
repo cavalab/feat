@@ -37,7 +37,7 @@ using namespace shogun;
 using std::vector;
 using std::cout; 
 
-const char* CMyCARTree::get_name() const { return "CARTree"; }
+const char* CMyCARTree::get_name() const { return "MyCARTree"; }
 
 EProblemType CMyCARTree::get_machine_problem_type() const { return m_mode; }
 

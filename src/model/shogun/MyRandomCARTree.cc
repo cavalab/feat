@@ -79,9 +79,27 @@ CMyRandomCARTree* CMyRandomCARTree::clone()
     
     SG_REF(clone_obj);
     
-    clone_obj->set_machine_problem_type(this->get_machine_problem_type());
+    /*clone_obj->set_machine_problem_type(this->get_machine_problem_type());
     clone_obj->set_feature_subset_size(m_randsubset_size);
-    clone_obj->set_feature_types(this->get_feature_types());
+    clone_obj->set_feature_types(this->get_feature_types());*/
+    
+    //cout << "Cloning params\n";
+    
+    if(!clone_obj->clone_parameters(this))
+    {
+        SG_UNREF(clone_obj);
+        delete clone_obj;
+        return NULL;
+    }
+//    else
+//        cout << "Params cloning succeeded\n";
+//        
+//        
+//    index_t nums = m_parameters->get_num_parameters();
+//    cout << "num params are " << nums << "\n";
+//    
+//    for (index_t i=0; i<nums; ++i)
+//        cout << "i = " << i << " name is " <<  m_parameters->get_parameter(i)->m_name << "\n";
     
     return clone_obj;
 }
