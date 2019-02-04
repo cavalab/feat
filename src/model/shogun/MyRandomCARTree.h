@@ -57,7 +57,7 @@ public:
 	/** get name
 	 * @return class name CARTree
 	 */
-	virtual const char* get_name() const { return "RandomCARTree"; }
+	virtual const char* get_name() const { return "MyRandomCARTree"; }
 
 	/** set number of random features to choose in each node split
 	 *
