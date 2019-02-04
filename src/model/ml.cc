@@ -279,8 +279,10 @@ namespace FT{
             // train ml
             params.msg("ML training on thread" 
                        + std::to_string(omp_get_thread_num()) + "...",3," ");       
-            // *** Train the model ***  
+            // *** Train the model *** 
+            cout << "Here1\n"; 
             p_est->train(features);
+            cout << "Here2\n";
             // *** Train the model ***
             params.msg("done.",3);
            
