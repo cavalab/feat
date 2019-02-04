@@ -51,9 +51,10 @@ namespace FT{
             if (offspring) start = F.cols()/2;
 
             // loop through individuals
-            #pragma omp parallel for
+            //#pragma omp parallel for
             for (unsigned i = start; i<individuals.size(); ++i)
             {
+                cout << "i = " << i << endl;
                 Individual& ind = individuals.at(i);
 
                 if (params.backprop)
