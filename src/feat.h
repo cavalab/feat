@@ -355,6 +355,37 @@ namespace FT{
             
             /// prints population obj scores each generation 
             void print_population();
+            
+            /// return generations statistics arrays
+            vector<int> get_gens();
+            
+            /// return time statistics arrays
+            vector<float> get_timers();
+            
+            /// return best score statistics arrays
+            vector<float> get_best_scores();
+            
+            /// return best score values statistics arrays
+            vector<float> get_best_score_vals();
+            
+            /// return median scores statistics arrays
+            vector<float> get_med_scores();
+            
+            /// return median loss values statistics arrays
+            vector<float> get_med_loss_vals();
+            
+            /// return median size statistics arrays
+            vector<unsigned> get_med_size();
+            
+            /// return median complexity statistics arrays
+            vector<unsigned> get_med_complexities();
+            
+            /// return median num params statistics arrays
+            vector<unsigned> get_med_num_params();
+            
+            /// return median dimensions statistics arrays
+            vector<unsigned> get_med_dim();
+            
         private:
             // Parameters
             Parameters params;    					///< hyperparameters of Feat 
@@ -381,6 +412,8 @@ namespace FT{
             float med_loss_v;                      ///< current val loss of median individual
             string str_dim;                         ///< dimensionality as multiple of number of columns 
             void update_best(const DataRef& d, bool val=false);       ///< updates best score   
+            
+            void calculate_stats();
             void print_stats(std::ofstream& log,
                              float fraction);      ///< prints stats
             Individual best_ind;                    ///< best individual
@@ -392,6 +425,8 @@ namespace FT{
             void final_model(DataRef& d);
             /// updates stall count for early stopping
             void update_stall_count(unsigned& stall_count, MatrixXf& F, const DataRef& d);
+            
+            Log_Stats stats;
     };
 }
 #endif

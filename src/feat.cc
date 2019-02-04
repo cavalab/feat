@@ -56,7 +56,7 @@ Feat::Feat(int pop_size, int gens, string ml,
 void Feat::set_pop_size(int pop_size){ params.pop_size = pop_size; }            
 
 /// set size of max generations              
-void Feat::set_generations(int gens){ params.gens = gens; }         
+void Feat::set_generations(int gens){ params.gens = gens;}         
             
 /// set ML algorithm to use              
 void Feat::set_ml(string ml){ params.ml = ml; }            
@@ -599,6 +599,8 @@ void Feat::run_generation(unsigned int g,
     if (use_arch) 
         arch.update(*p_pop,params);
 
+    calculate_stats();
+    
     if(params.verbosity>1)
         print_stats(log, fraction);    
     else if(params.verbosity == 1)
@@ -897,13 +899,49 @@ float Feat::score(MatrixXf& X, const VectorXf& y,
     return p_eval->score(y,labels,loss,params.class_weights);
 }
 
+void Feat::calculate_stats()
+{
+
+    float med_score = median(F.colwise().mean().array());  // median loss
+    
+    ArrayXf Sizes(p_pop->size());
+    
+    unsigned i = 0;
+    
+    for (const auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;}
+    unsigned med_size = median(Sizes);                        // median program size
+    
+    ArrayXf Complexities(p_pop->size()); 
+    i = 0; for (auto& p : p_pop->individuals){ Complexities(i) = p.complexity(); ++i;}
+    ArrayXf Nparams(p_pop->size()); 
+    i = 0; for (auto& p : p_pop->individuals){ Nparams(i) = p.get_n_params(); ++i;}
+    ArrayXf Dims(p_pop->size()); 
+    i = 0; for (auto& p : p_pop->individuals){ Dims(i) = p.get_dim(); ++i;}
+    
+    /* unsigned med_size = median(Sizes);                        // median program size */
+    unsigned med_complexity = median(Complexities);           // median 
+    unsigned med_num_params = median(Nparams);                // median program size
+    unsigned med_dim = median(Dims);                          // median program size
+    
+    
+    stats.update(params.current_gen,
+                 timer.Elapsed().count(),
+                 best_score,
+                 best_score_v,
+                 med_score,
+                 med_loss_v,
+                 med_size,
+                 med_complexity,
+                 med_num_params,
+                 med_dim);
+}
+
 void Feat::print_stats(std::ofstream& log, float fraction)
 {
     unsigned num_models = std::min(50,p_pop->size());
-    float med_score = median(F.colwise().mean().array());  // median loss
+    //float med_score = median(F.colwise().mean().array());  // median loss
     ArrayXf Sizes(p_pop->size()); unsigned i = 0;           // collect program sizes
     for (const auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;}
-    unsigned med_size = median(Sizes);                        // median program size
     unsigned max_size = Sizes.maxCoeff();
     string bar, space = "";                                 // progress bar
     for (unsigned int i = 0; i<50; ++i){
@@ -921,8 +959,8 @@ void Feat::print_stats(std::ofstream& log, float fraction)
                      " seconds (Generation "<< params.current_gen+1 <<") [" + bar + space + "]\n";
         
     std::cout << "Min Loss\tMedian Loss\tMedian (Max) Size\tTime (s)\n"
-              <<  best_score << "\t" << med_score << "\t" ;
-    std::cout << std::fixed  << med_size << " (" << max_size << ") \t\t" << timer << "\n";
+              <<  best_score << "\t" << stats.med_score.back() << "\t" ;
+    std::cout << std::fixed  << stats.med_size.back() << " (" << max_size << ") \t\t" << timer << "\n";
     std::cout << "Representation Pareto Front--------------------------------------\n";
     std::cout << "Rank\tComplexity\tLoss\tRepresentation\n";
     std::cout << std::scientific;
@@ -975,6 +1013,10 @@ void Feat::print_stats(std::ofstream& log, float fraction)
     }
    
     std::cout <<"\n\n";
+    
+    /* float med_score = median(F.colwise().mean().array());  // median loss */
+    /* ArrayXf Sizes(p_pop->size());                           // collect program sizes */
+    /* i = 0; for (auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;} */ 
 
     if (!logfile.empty())
     {
@@ -993,32 +1035,17 @@ void Feat::print_stats(std::ofstream& log, float fraction)
                 << "med_num_params" << sep
                 <<  "med_dim\n";
         }
-        /* float med_score = median(F.colwise().mean().array());  // median loss */
-        /* ArrayXf Sizes(p_pop->size());                           // collect program sizes */
-        /* i = 0; for (auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;} */
-        ArrayXf Complexities(p_pop->size()); 
-        i = 0; for (auto& p : p_pop->individuals){ Complexities(i) = p.complexity(); ++i;}
-        ArrayXf Nparams(p_pop->size()); 
-        i = 0; for (auto& p : p_pop->individuals){ Nparams(i) = p.get_n_params(); ++i;}
-        ArrayXf Dims(p_pop->size()); 
-        i = 0; for (auto& p : p_pop->individuals){ Dims(i) = p.get_dim(); ++i;}
-
-        
-        /* unsigned med_size = median(Sizes);                        // median program size */
-        unsigned med_complexity = median(Complexities);           // median 
-        unsigned med_num_params = median(Nparams);                // median program size
-        unsigned med_dim = median(Dims);                          // median program size
 
         log << params.current_gen  << sep
             << timer.Elapsed().count() << sep
             << best_score          << sep
             << best_score_v        << sep
-            << med_score           << sep
+            << stats.med_score.back()  << sep
             << med_loss_v          << sep
-            << med_size            << sep
-            << med_complexity      << sep
-            << med_num_params      << sep
-            << med_dim             << "\n"; 
+            << stats.med_size.back()   << sep
+            << stats.med_complexity.back() << sep
+            << stats.med_num_params.back() << sep
+            << stats.med_dim.back()        << "\n"; 
     } 
 }
 void Feat::print_population()
@@ -1054,3 +1081,23 @@ void Feat::print_population()
     }
     out.close();
 }
+
+vector<int> Feat::get_gens(){return stats.generation;}
+
+vector<float> Feat::get_timers(){return stats.time;}
+
+vector<float> Feat::get_best_scores(){return stats.best_score;}
+
+vector<float> Feat::get_best_score_vals(){return stats.best_score_v;}
+
+vector<float> Feat::get_med_scores(){return stats.med_score;}
+
+vector<float> Feat::get_med_loss_vals(){return stats.med_loss_v;}
+
+vector<unsigned> Feat::get_med_size(){return stats.med_size;}
+
+vector<unsigned> Feat::get_med_complexities(){return stats.med_complexity;}
+
+vector<unsigned> Feat::get_med_num_params(){return stats.med_num_params;}
+
+vector<unsigned> Feat::get_med_dim(){return stats.med_dim;}
