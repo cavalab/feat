@@ -34,6 +34,8 @@
 #include <shogun/lib/config.h>
 #include <shogun/machine/BaggingMachine.h>
 
+#include <vector>
+
 namespace shogun
 {
 

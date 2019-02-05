@@ -281,6 +281,7 @@ bool CMyCARTree::train_machine(CFeatures* data)
     REQUIRE(data,"Data required for training\n")
     REQUIRE(data->get_feature_class()==C_DENSE,"Dense data required for training\n")
 
+    //cout << "cartree start\n";
     int32_t num_features=(dynamic_cast<CDenseFeatures<float64_t>*>(data))->get_num_features();
     int32_t num_vectors=(dynamic_cast<CDenseFeatures<float64_t>*>(data))->get_num_vectors();
 
@@ -295,6 +296,8 @@ bool CMyCARTree::train_machine(CFeatures* data)
         m_weights=SGVector<float64_t>(num_vectors);
         m_weights.fill_vector(m_weights.vector,m_weights.vlen,1.0);
     }
+    
+    //cout << "cart tree end\n";
 
     if (m_types_set)
     {

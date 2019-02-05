@@ -116,11 +116,14 @@ void CMyRandomForest::set_machine_parameters(CMachine* m, SGVector<index_t> idx)
 			weights[i]=m_weights[idx[i]];
 	}
 
+    //cout << "Setting mycarttree params\n";
     //cout << "\nCalling from here\n";
 	tree->set_weights(weights);
 	tree->set_sorted_features(m_sorted_transposed_feats, m_sorted_indices);
 	// equate the machine problem types - cloning does not do this
 	tree->set_machine_problem_type(dynamic_cast<CMyRandomCARTree*>(m_machine)->get_machine_problem_type());
+	
+	//cout << "mycarttree params set\n";
 }
 
 bool CMyRandomForest::train_machine(CFeatures* data)
