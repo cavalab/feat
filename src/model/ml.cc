@@ -52,7 +52,7 @@ namespace FT{
                 p_est = make_shared<sh::CMyRandomForest>();
                 dynamic_pointer_cast<sh::CMyRandomForest>(p_est)->
                                                            set_machine_problem_type(prob_type);
-                dynamic_pointer_cast<sh::CMyRandomForest>(p_est)->set_num_bags(100);
+                dynamic_pointer_cast<sh::CMyRandomForest>(p_est)->set_num_bags(10);
                                    
                 if (prob_type != PT_REGRESSION)
                 {
@@ -280,6 +280,8 @@ namespace FT{
             params.msg("ML training on thread" 
                        + std::to_string(omp_get_thread_num()) + "...",3," ");       
             // *** Train the model ***  
+            //cout << "features vector size is " << features->get_num_vectors() << "\n";
+            //cout << "features num size is " << features->get_num_features() << "\n";
             p_est->train(features);
             // *** Train the model ***
             params.msg("done.",3);
