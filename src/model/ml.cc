@@ -255,15 +255,26 @@ namespace FT{
                 /* cout << "normlize is false\n"; */
                 
             MatrixXd _X = X.template cast<double>();
+            VectorXd _y = y.template cast<double>();
+            
+            shared_ptr<CLabels> labels;
+            
+            if(_X.isZero())
+            {
+                labels->resize(_y.size());
+                pass = false;
+                return labels;
+            }
+            //cout << "_X is \n" << _X << "\n";
 
-            auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(_X));
+            auto features = some<CMyDenseFeatures<float64_t>>(SGMatrix<float64_t>(_X));
 
             /* cout << "Phi:\n"; */
             /* cout << X << "\n"; */
             //std::cout << "setting labels (n_classes = " << params.n_classes << ")\n"; 
             /* cout << "y is " << y.transpose() << "\n"; */
             
-            VectorXd _y = y.template cast<double>();
+            
              
             if(prob_type==PT_BINARY && 
                     (ml_type == LR || ml_type == SVM))  // binary classification           	
@@ -282,13 +293,15 @@ namespace FT{
             // *** Train the model ***  
             //cout << "features vector size is " << features->get_num_vectors() << "\n";
             //cout << "features num size is " << features->get_num_features() << "\n";
+            
+            //cout << "Training with feature matrix as \n";
+            //features->get_feature_matrix().display_matrix();
             p_est->train(features);
             // *** Train the model ***
             params.msg("done.",3);
            
             //get output
             SGVector<double> y_pred; 
-            shared_ptr<CLabels> labels;
 
             if (prob_type==PT_BINARY && 
                  (ml_type == LR || ml_type == SVM || ml_type == CART))     // binary classification
@@ -357,7 +370,7 @@ namespace FT{
                 N.normalize(X);
                 
             MatrixXd _X = X.template cast<double>();
-            auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(_X));
+            auto features = some<CMyDenseFeatures<float64_t>>(SGMatrix<float64_t>(_X));
             
             shared_ptr<CLabels> labels;
            

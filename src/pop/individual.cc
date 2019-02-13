@@ -274,32 +274,44 @@ namespace FT{
             dtypes.clear();        
             Matrix<float,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
             
+            cout << "\n\n";
+            cout << "Floats\n";
+            
             // add state_f to Phi
             for (unsigned int i=0; i<rows_f; ++i)
             {    
                  ArrayXf Row = ArrayXf::Map(state.f.at(i).data(),cols);
+                 cout << Row;
                  clean(Row); // remove nans, set infs to max and min
                  Phi.row(i) = Row;
                  dtypes.push_back('f'); 
             }
             
+            cout << "\nChars\n";
+            
             // add state_c to Phi
             for (unsigned int i=0; i<rows_c; ++i)
             {    
                  ArrayXf Row = ArrayXi::Map(state.c.at(i).data(),cols).cast<float>();
+                 cout << Row;
                  clean(Row); // remove nans, set infs to max and min
                  Phi.row(i+rows_f) = Row;
                  dtypes.push_back('c');
             }       
             
+            cout << "\nBools\n";
+            
             // convert state_b to Phi       
             for (unsigned int i=0; i<rows_b; ++i)
             {
                 Phi.row(i+rows_f+rows_c) = ArrayXb::Map(state.b.at(i).data(),cols).cast<float>();
+                cout << Phi.row(i+rows_f+rows_c);
                 dtypes.push_back('b');
             }
             
-            //cout << "Phi is "<<endl<<Phi;
+            cout << "\n\n";
+            
+            //cout << "Phi is "<<endl<<Phi<<endl;
             
             return Phi;
         }

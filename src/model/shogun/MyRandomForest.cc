@@ -138,9 +138,9 @@ bool CMyRandomForest::train_machine(CFeatures* data)
 	
 	REQUIRE(m_features, "Training features not set!\n");
 	
-	cout << "Sorting features\n";
+	//cout << "Sorting features\n";
 	dynamic_cast<CMyRandomCARTree*>(m_machine)->pre_sort_features(m_features, m_sorted_transposed_feats, m_sorted_indices);
-	cout << "Sorting done\n";
+	//cout << "Sorting done\n";
 
 	return CBaggingMachine::train_machine();
 }
