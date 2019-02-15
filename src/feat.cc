@@ -909,7 +909,8 @@ void Feat::print_stats(std::ofstream& log, float fraction)
     unsigned med_size = median(Sizes);                        // median program size
     unsigned max_size = Sizes.maxCoeff();
     string bar, space = "";                                 // progress bar
-    for (unsigned int i = 0; i<50; ++i){
+    for (unsigned int i = 0; i<50; ++i)
+    {
         if (i <= 50*fraction) bar += "/";
         else space += " ";
     }
@@ -994,7 +995,7 @@ void Feat::print_stats(std::ofstream& log, float fraction)
                 << "med_size"       << sep 
                 << "med_complexity" << sep 
                 << "med_num_params" << sep
-                <<  "med_dim\n";
+                << "med_dim\n";
         }
         /* float med_score = median(F.colwise().mean().array());  // median loss */
         /* ArrayXf Sizes(p_pop->size());                           // collect program sizes */
