@@ -3,7 +3,7 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 
-#include "ml.h"
+#include "ml.h"                                                    
 
 using namespace shogun;
 
@@ -259,12 +259,32 @@ namespace FT{
             
             shared_ptr<CLabels> labels;
             
-            if(_X.isZero())
+            //cout << "_X is \n" << _X << "\n";
+            if(_X.isZero(0.0001))
             {
-                labels->resize(_y.size());
+                cout << "Setting to zero\n";
+                //VectorXd empty_vector = VectorXd::Zero(_y.size());
+                //SGVector<float64_t> zeroes_vector(empty_vector);
+                
+                //zeroes_vector.display_vector();
+                
+                cout << "Setting labels\n";
+                
+                switch (prob_type)
+                {
+                    case PT_REGRESSION : labels = std::shared_ptr<CLabels>(new CRegressionLabels(_y.size()));
+                                         break;
+                    case PT_BINARY     : labels = std::shared_ptr<CLabels>(new CBinaryLabels(_y.size()));
+                                         break;
+                    case PT_MULTICLASS : labels = std::shared_ptr<CLabels>(new CMulticlassLabels(_y.size()));
+                                         break;
+                }
+                cout << "Labels set\n";
                 pass = false;
                 return labels;
             }
+            
+            //cout << "not zero\n";
             //cout << "_X is \n" << _X << "\n";
 
             auto features = some<CMyDenseFeatures<float64_t>>(SGMatrix<float64_t>(_X));
@@ -304,7 +324,7 @@ namespace FT{
             SGVector<double> y_pred; 
 
             if (prob_type==PT_BINARY && 
-                 (ml_type == LR || ml_type == SVM || ml_type == CART))     // binary classification
+                 (ml_type == LR || ml_type == SVM || ml_type == CART) || ml_type == RF)     // binary classification
             {
                 bool proba = params.scorer.compare("log")==0;
 
@@ -315,6 +335,11 @@ namespace FT{
                     if (ml_type == CART)
                     {
                         dynamic_pointer_cast<sh::CMyCARTree>(p_est)->
+                            set_probabilities(labels.get(), features);
+                    }
+                    else if(ml_type == RF)
+                    {
+                        dynamic_pointer_cast<sh::CMyRandomForest>(p_est)->
                             set_probabilities(labels.get(), features);
                     }
                     else
@@ -375,7 +400,7 @@ namespace FT{
             shared_ptr<CLabels> labels;
            
             if (prob_type==PT_BINARY && 
-                    (ml_type == SVM || ml_type == LR || ml_type == CART)){
+                    (ml_type == SVM || ml_type == LR || ml_type == CART || ml_type == RF)){
                 labels = std::shared_ptr<CLabels>(p_est->apply_binary(features));
                 if (ml_type == CART)
                     dynamic_pointer_cast<sh::CMyCARTree>(p_est)->set_probabilities(labels.get(), 
@@ -404,7 +429,7 @@ namespace FT{
             shared_ptr<CLabels> labels = shared_ptr<CLabels>(predict(X));
                
             if (prob_type==PT_BINARY && 
-                    (ml_type == SVM || ml_type == LR || ml_type == CART))
+                    (ml_type == SVM || ml_type == LR || ml_type == CART || ml_type == RF))
             {
                 shared_ptr<CBinaryLabels> BLabels = dynamic_pointer_cast<CBinaryLabels>(labels);
                 /* BLabels->scores_to_probabilities(); */
@@ -433,7 +458,7 @@ namespace FT{
         {
             SGVector<double> y_pred;
             if (prob_type==PT_BINARY && 
-                    (ml_type == SVM || ml_type == LR || ml_type == CART))
+                    (ml_type == SVM || ml_type == LR || ml_type == CART || ml_type == RF))
                 y_pred = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_labels();
             else if (prob_type != PT_REGRESSION)
                 y_pred = dynamic_pointer_cast<sh::CMulticlassLabels>(labels)->get_labels();
@@ -443,7 +468,7 @@ namespace FT{
             Map<VectorXd> yhat(y_pred.data(),y_pred.size());
             
             if (prob_type==PT_BINARY && 
-                    (ml_type == LR || ml_type == SVM || ml_type == CART))
+                    (ml_type == LR || ml_type == SVM || ml_type == CART || ml_type == RF))
                 // convert -1 to 0
                 yhat = (yhat.cast<int>().array() == -1).select(0,yhat);
 
