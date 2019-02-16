@@ -172,7 +172,10 @@ TEST(Variation, CrossoverTests)
 		int mom = r.random_choice(parents);
         int dad = r.random_choice(parents);
         
-		int pass = feat.p_variation->cross(feat.p_pop->individuals[mom],feat.p_pop->individuals[dad],child,feat.params);
+		int pass = feat.p_variation->cross(feat.p_pop->individuals[mom],
+                                           feat.p_pop->individuals[dad],
+                                           child,
+                                           feat.params,*d.t);
 		
 		if (pass)                   // congrats! you produced a viable child.
 		{
