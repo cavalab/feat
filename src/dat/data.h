@@ -75,6 +75,8 @@ namespace FT
                 VectorXf y_v;
                 std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z_t;
                 std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z_v;
+                
+                bool classification;
 
             public:
                 Data *o = NULL;     //< pointer to original data
@@ -106,7 +108,13 @@ namespace FT
                                    bool c = false);
                 
                 void setValidationData(Data *d);
-               
+                
+                /// shuffles original data
+                void shuffle_data();
+                
+                /// split classification data as stratas
+                void split_stratified(float split);
+                
                 /// splits data into training and validation folds.
                 void train_test_split(bool shuffle, float split);
 
@@ -115,6 +123,9 @@ namespace FT
                             std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > &Z_t,
                             std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > &Z_v,
                             float split);
+                            
+                /// reordering utility for shuffling longitudinal data.
+                void reorder_longitudinal(vector<ArrayXf> &vec1, const vector<int>& order); 
 
         };
     }

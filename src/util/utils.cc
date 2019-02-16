@@ -83,54 +83,6 @@ namespace FT{
 
 	    }
         
-        /* void reorder_longitudinal(vector<ArrayXf> &vec1, vector<ArrayXf> &vec2, */
-        /*                          vector<long> const &order) */
-        /* { */   
-        
-        /*     for( int s = 1, d; s < order.size(); ++ s ) */
-        /*     { */
-        /*         cout << "s: " << s << "\n"; */
-        /*         for ( d = order[s]; d < s; d = order[d] ); */
-                
-        /*         cout << "d: " << s << "\n"; */
-        /*         if ( d == s ) */
-        /*         { */
-        /*             while ( d = order[d], d != s ) */
-        /*             { */
-        /*                 swap(vec1[s], vec1[d]); */
-        /*                 swap(vec2[s], vec2[d]); */
-        /*             } */
-        /*         } */
-        /*     } */
-        /* } */
-        
-        void reorder_longitudinal(vector<ArrayXf> &vec1, const vector<int>& order)
-        {  
-			vector<int> index = order; 
-			// Fix all elements one by one 
-			for (int i=0; i<index.size(); i++) 
-			{ 
-				// While index[i] and vec1[i] are not fixed 
-				while (index.at(i) != i) 
-				{ 
-					// Store values of the target (or correct)  
-					// position before placing vec1[i] there 
-					int  oldTargetI  = index.at(index.at(i)); 
-					auto oldTargetE  = vec1.at(index.at(i)); 
-		  
-					// Place vec1[i] at its target (or correct) 
-					// position. Also copy corrected index for 
-					// new position 
-					vec1.at(index.at(i)) = vec1.at(i); 
-					index.at(index.at(i)) = index.at(i); 
-		  
-					// Copy old target values to vec1[i] and 
-					// index[i] 
-					index.at(i) = oldTargetI; 
-					vec1.at(i)   = oldTargetE; 
-				} 
-			}   
-        }
         /// calculate median
         float median(const ArrayXf& v) 
         {
@@ -381,6 +333,29 @@ namespace FT{
             float N = tmp.rows()*(tmp.rows()-1)/2;
             /* cout << "triangular strictly upper view: " << tmp << "\n"; */
             return tmp.array().square().sum()/N;
+        }
+        
+        void Log_Stats::update(int index,
+                               float timer_count,
+                               float bst_score,
+                               float bst_score_v,
+                               float md_score,
+                               float md_loss_v,
+                               unsigned md_size,
+                               unsigned md_complexity,
+                               unsigned md_num_params,
+                               unsigned md_dim)
+        {
+            generation.push_back(index+1);
+            time.push_back(timer_count);
+            best_score.push_back(bst_score);
+            best_score_v.push_back(bst_score_v);
+            med_score.push_back(md_score);
+            med_loss_v.push_back(md_loss_v);
+            med_size.push_back(md_size);
+            med_complexity.push_back(md_complexity);
+            med_num_params.push_back(md_num_params);
+            med_dim.push_back(md_dim);
         }
         
     }

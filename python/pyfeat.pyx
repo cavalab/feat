@@ -50,6 +50,17 @@ cdef extern from "feat.h" namespace "FT":
         int get_complexity()
         int get_dim()
         int get_n_nodes()
+        
+        vector[int] get_gens();        
+        vector[float] get_timers();
+        vector[float] get_best_scores();
+        vector[float] get_best_score_vals();
+        vector[float] get_med_scores();
+        vector[float] get_med_loss_vals();
+        vector[unsigned] get_med_size();
+        vector[unsigned] get_med_complexities();
+        vector[unsigned] get_med_num_params();
+        vector[unsigned] get_med_dim();
 
 cdef class PyFeat:
     cdef Feat ft  # hold a c++ instance which we're wrapping
@@ -196,3 +207,34 @@ cdef class PyFeat:
 
     def get_n_nodes(self):
         return self.ft.get_n_nodes()
+        
+    def get_gens(self):
+        return self.ft.get_gens()
+              
+    def get_timers(self):
+        return self.ft.get_timers()
+        
+    def get_best_scores(self):
+        return self.ft.get_best_scores()
+        
+    def get_best_score_vals(self):
+        return self.ft.get_best_score_vals()
+        
+    def get_med_scores(self):
+        return self.ft.get_med_scores()
+        
+    def get_med_loss_vals(self):
+        return self.ft.get_med_loss_vals()
+        
+    def get_med_size(self):
+        return self.ft.get_med_size()
+        
+    def get_med_complexities(self):
+        return self.ft.get_med_complexities()
+        
+    def get_med_num_params(self):
+        return self.ft.get_med_num_params()
+        
+    def get_med_dim(self):
+        return self.ft.get_med_dim()
+        
