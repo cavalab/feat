@@ -39,10 +39,6 @@ namespace FT{
          
         std::string trim(std::string str, const std::string& chars = "\t\n\v\f\r ");
 
-
-        /// reordering utility for shuffling longitudinal data.
-        void reorder_longitudinal(vector<ArrayXf> &vec1, const vector<int>& order); 
-
         /// check if element is in vector.
         template<typename T>
         bool in(const vector<T> v, const T& i)
@@ -207,6 +203,33 @@ namespace FT{
 
         /// returns the (first) index of the element with the middlest value in v
         int argmiddle(vector<float>& v);
+        
+        struct Log_Stats
+        {
+            vector<int> generation;
+            vector<float> time;
+            vector<float> best_score;
+            vector<float> best_score_v;
+            vector<float> med_score;
+            vector<float> med_loss_v;
+            vector<unsigned> med_size;
+            vector<unsigned> med_complexity;
+            vector<unsigned> med_num_params;
+            vector<unsigned> med_dim;
+            
+            void update(int index,
+                        float timer_count,
+                        float bst_score,
+                        float bst_score_v,
+                        float md_score,
+                        float md_loss_v,
+                        unsigned md_size,
+                        unsigned md_complexity,
+                        unsigned md_num_params,
+                        unsigned md_dim);
+        };
+        
+        typedef struct Log_Stats Log_stats;
 
     }
 

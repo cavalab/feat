@@ -72,7 +72,8 @@ class Feat(BaseEstimator):
         self.print_pop = print_pop
         # if self.verbosity>0:
         #print('self.__dict__: ' , self.__dict__)
-        self._pyfeat=None 
+        self._pyfeat=None
+        self.stats = {}
 
     def _init_pyfeat(self):
         """set up pyfeat glue class object"""
@@ -119,6 +120,8 @@ class Feat(BaseEstimator):
         else:
             self._pyfeat.fit(X,y)
 
+        self.update_stats()
+
         return self
 
     def predict(self,X,zfile=None,zids=None):
@@ -153,12 +156,16 @@ class Feat(BaseEstimator):
     def fit_predict(self,X,y):
         """Convenience method that runs fit(X,y) then predict(X)"""
         self._init_pyfeat()    
-        return self._pyfeat.fit_predict(X,y)
+        result = self._pyfeat.fit_predict(X,y)
+        self.update_stats()
+        return result
 
     def fit_transform(self,X,y):
         """Convenience method that runs fit(X,y) then transform(X)"""
-        self._init_pyfeat()    
-        return self._pyfeat.fit_transform(X,y)
+        self._init_pyfeat() 
+        result = self._pyfeat.fit_transform(X, y)
+        self.update_stats()   
+        return result
 
     def score(self,X,y,zfile=None,zids=None):
         """Returns a score for the predictions of Feat on X versus true labels y""" 
@@ -203,3 +210,17 @@ class Feat(BaseEstimator):
     def get_n_nodes(self):
         """Returns the number of nodes in the final representation"""
         return self._pyfeat.get_n_nodes()
+
+    def update_stats(self):
+        """updates the statistics of the run"""
+        self.stats["gens"] = self._pyfeat.get_gens()
+        self.stats["time"] = self._pyfeat.get_timers()
+        self.stats["best_scores"] = self._pyfeat.get_best_scores()
+        self.stats["best_score_vals"] = self._pyfeat.get_best_score_vals()
+        self.stats["med_scores"] = self._pyfeat.get_med_scores()
+        self.stats["med_loss_vals"] = self._pyfeat.get_med_loss_vals()
+        self.stats["med_size"] = self._pyfeat.get_med_size()
+        self.stats["med_complexity"] = self._pyfeat.get_med_complexities()
+        self.stats["med_num_params"] = self._pyfeat.get_med_num_params()
+        self.stats["med_dim"] = self._pyfeat.get_med_dim()
+
