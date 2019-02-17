@@ -56,11 +56,15 @@ namespace FT{
             
                 /// crossover
                 bool cross(Individual& mom, Individual& dad, Individual& child,
-                           const Parameters& params);
+                           const Parameters& params, const Data& d);
                 
-                /// semantic crossover
-                bool semantic_cross(Individual& mom, Individual& dad, Individual& child,
+                /// residual crossover
+                bool residual_cross(Individual& mom, Individual& dad, Individual& child,
                                     const Parameters& params, const Data& d);
+
+                /// stagewise crossover 
+                bool stagewise_cross(Individual& mom, Individual& dad, Individual& child,
+                                     const Parameters& params, const Data& d);
 
                 /// mutation
                 bool mutate(Individual& mom, Individual& child, const Parameters& params);

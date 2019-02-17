@@ -18,14 +18,14 @@ cdef extern from "feat.h" namespace "FT":
         Feat() except +
         Feat(int pop_size, int gens, string ml, 
                bool classification, int verbosity, int max_stall,
-               string sel, string surv, float cross_rate,
+               string sel, string surv, float cross_rate, float root_xo_rate,
                char otype, string functions, 
                unsigned int max_depth, unsigned int max_dim, int random_state, 
                bool erc, string obj,bool shuffle, 
                float split, float fb, string scorer, 
                string feature_names, bool backprop, int iters, float lr, int bs,
                int n_threads, bool hillclimb, string logfile, int max_time, bool use_batch,
-               bool semantic_xo, int print_pop) except + 
+               bool residual_xo, bool stagewise_xo, bool softmax_norm, int print_pop) except + 
 
         void fit(float * X, int rowsX, int colsX, float*  y , int lenY)
         VectorXd predict(float * X, int rowsX,int colsX)
@@ -65,23 +65,24 @@ cdef extern from "feat.h" namespace "FT":
 cdef class PyFeat:
     cdef Feat ft  # hold a c++ instance which we're wrapping
     def __cinit__(self,int pop_size, int gens, string ml, bool classification, int verbosity, 
-                  int max_stall,string sel, string surv, float cross_rate,string otype, 
-                  string functions, unsigned int max_depth, unsigned int max_dim, 
+                  int max_stall,string sel, string surv, float cross_rate, float root_xo_rate, 
+                  string otype, string functions, unsigned int max_depth, unsigned int max_dim, 
                   int random_state, 
                   bool erc , string obj, bool shuffle, float split, float fb,
                   string scorer, string feature_names, bool backprop, int iters, float lr, int bs,
                   int n_threads, bool hillclimb, string logfile, int max_time, bool use_batch,
-                  bool semantic_xo, int print_pop):
+                  bool residual_xo, bool stagewise_xo, bool softmax_norm, int print_pop):
         
         cdef char otype_char
         if ( len(otype) == 0):
             otype_char = 'a' #Defaut Value
         else:
             otype_char = ord(otype)
-        self.ft = Feat(pop_size,gens,ml,classification,verbosity,max_stall,sel,surv,cross_rate,
-        otype_char, functions, max_depth, max_dim, random_state, erc, obj, shuffle, split, fb, scorer,
-        feature_names, backprop, iters, lr, bs, n_threads, hillclimb, logfile, max_time, 
-        use_batch, semantic_xo, print_pop)
+        self.ft = Feat(pop_size,gens,ml,classification,verbosity,max_stall,sel,surv, cross_rate, 
+                       root_xo_rate, otype_char, functions, max_depth, max_dim, random_state, erc, 
+                       obj, shuffle, split, fb, scorer, feature_names, backprop, iters, lr, bs, 
+                       n_threads, hillclimb, logfile, max_time, use_batch, residual_xo, 
+                       stagewise_xo, softmax_norm, print_pop)
 
     def fit(self,np.ndarray X,np.ndarray y):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x

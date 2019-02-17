@@ -55,7 +55,8 @@ namespace FT{
         /// get probabilities of variation
         vector<float> Individual::get_p() const { return p; }     
         
-        void Individual::set_p(const vector<float>& weights, const float& fb)
+        void Individual::set_p(const vector<float>& weights, const float& fb, 
+                               bool softmax_norm)
         {   
             //cout<<"Weights size = "<<weights.size()<<"\n";
             //cout<<"Roots size = "<<roots().size()<<"\n";
@@ -92,7 +93,8 @@ namespace FT{
             /* std::cout << "p: "; */
             /* for (auto tmp : p) cout << tmp << " " ; cout << "\n"; */
             /* std::cout << "softmax(p)\n"; */
-            p = softmax(p);
+            if (softmax_norm)
+                p = softmax(p);
             // do partial uniform, partial weighted probability, using feedback ratio
             for (unsigned i=0; i<p.size(); ++i)
                 p[i] = (1-fb)*u + fb*p[i];
@@ -154,11 +156,11 @@ namespace FT{
             shared_ptr<CLabels> yh = ml->fit(Phi,d.y,params,pass,dtypes);
 
             if (pass)
-                set_p(ml->get_weights(),params.feedback);
+                set_p(ml->get_weights(),params.feedback,params.softmax_norm);
             else
             {   // set weights to zero
                 vector<float> w(Phi.rows(), 0);                     
-                set_p(w,params.feedback);
+                set_p(w,params.feedback,params.softmax_norm);
             }
             
             this->yhat = ml->labels_to_vector(yh);
@@ -171,10 +173,10 @@ namespace FT{
             // calculate program output matrix Phi
             params.msg("Generating output for " + get_eqn(), 3);
             // toggle validation
-            Phi = out(d, params, true);           // TODO: guarantee this is not changing nodes
+            MatrixXf Phi_pred = out(d, params, true);           // TODO: guarantee this is not changing nodes
 
-            if (Phi.size()==0)
-                HANDLE_ERROR_THROW("Phi must be generated before predict() is called\n");
+            if (Phi_pred.size()==0)
+                HANDLE_ERROR_THROW("Phi_pred must be generated before predict() is called\n");
             /* if (drop_idx >= 0)  // if drop_idx specified, mask that phi output */
             /* { */
             /*     cout << "dropping row " + std::to_string(drop_idx) + "\n"; */
@@ -183,7 +185,7 @@ namespace FT{
             // calculate ML model from Phi
             params.msg("ML predicting on " + get_eqn(), 3);
             // assumes ML is already trained
-            shared_ptr<CLabels> yhat = ml->predict(Phi);
+            shared_ptr<CLabels> yhat = ml->predict(Phi_pred);
             return yhat;
         }
 
@@ -258,11 +260,13 @@ namespace FT{
                     
                     cols = state.b.top().size();
                 }
-                else
+                else{
                     cols = state.c.top().size();
+                }
             }
-            else
+            else{
                 cols = state.f.top().size();
+            }
                    
             int rows_f = state.f.size();
             int rows_c = state.c.size();
