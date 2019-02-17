@@ -15,11 +15,13 @@ except ImportError:
         print('trying to install eigency prior to setup..')
         # from pip._internal import main 
         import pip
-        # NOTE: Older versions of pip use this command:
-        # pip.main(['install', 'eigency'])
-        # Newer versions of pip moved main to _internal:
-        pip._internal.main(['install', 'eigency'])
-    except e:
+        if hasattr(pip, 'main'):
+            # NOTE: Older versions of pip use this command:
+            pip.main(['install', 'eigency'])
+        else:
+            # Newer versions of pip moved main to _internal:
+            pip._internal.main(['install', 'eigency'])
+    except Exception as e:
         print(e)
         raise ImportError('The eigency library must be installed before feat. '
                           'Automatic install with pip failed.')
