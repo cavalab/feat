@@ -88,6 +88,7 @@ int main(int argc, char** argv){
         cout << "-sel\tSelection method. (lexicase)\n";
         cout << "-surv\tSurvival method. (nsga2)\n";
         cout << "-xr\tCrossover rate in [0, 1]. Mutation is the reciprocal. (0.5)\n";
+        cout << "-root_xr\tRoot crossover rate in [0, 1]. Subtree crossover is the reciprocal. (0.5)\n";
         cout << "-ops\tComma-separated list of functions to use. (all)\n";
         cout << "-depth\tMaximum feature depth. (3)\n";
         cout << "-dim\tMaximum program dimensionality. (10)\n";
@@ -112,7 +113,9 @@ int main(int argc, char** argv){
         cout << "-otype\tSet output types of features. 'b':bool only,'f':float only,'a':all\n";
         cout << "-obj\tComma-separated objectives. Choices: fitness, complexity, size, CN, corr" \
                 " (size,complexity)\n";
-        cout << "--semantic_xo\tSet flag for semantic crossover\n";
+        cout << "--residual_xo\tSet flag for residual crossover\n";
+        cout << "--stagewise_xo\tSet flag for stagewise crossover\n";
+        cout << "--softmax\tSet flag to use softmax normalization of feedback\n";
         cout << "-print_pop\tPrint the population objective scores. 0: never, 1: at end, "
                 "2: each generation. (0)\n";
         cout << "-h\tDisplay this help message and exit.\n";
@@ -137,6 +140,8 @@ int main(int argc, char** argv){
         feat.set_survival(input.getCmdOption("-surv"));
     if(input.cmdOptionExists("-xr"))
         feat.set_cross_rate(stof(input.getCmdOption("-xr")));
+    if(input.cmdOptionExists("-root_xr"))
+        feat.set_root_xo_rate(stof(input.getCmdOption("-root_xr")));
     if(input.cmdOptionExists("-ops"))
         feat.set_functions(input.getCmdOption("-ops"));
     if(input.cmdOptionExists("-depth"))
@@ -200,8 +205,12 @@ int main(int argc, char** argv){
         feat.set_otype(input.getCmdOption("-otype")[0]);
     if(input.cmdOptionExists("-obj"))
         feat.set_objectives(input.getCmdOption("-obj"));
-    if(input.cmdOptionExists("--semantic_xo"))
-        feat.set_semantic_xo();
+    if(input.cmdOptionExists("--residual_xo"))
+        feat.set_residual_xo();
+    if(input.cmdOptionExists("--stagewise_xo"))
+        feat.set_stagewise_xo();
+    if(input.cmdOptionExists("--softmax"))
+        feat.set_softmax_norm();
     if(input.cmdOptionExists("-print_pop"))
         feat.set_print_pop(std::stoi(input.getCmdOption("-print_pop")));
 

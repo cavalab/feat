@@ -21,19 +21,19 @@ using namespace FT;
     
 Feat::Feat(int pop_size, int gens, string ml, 
        bool classification, int verbosity, int max_stall,
-       string sel, string surv, float cross_rate,
+       string sel, string surv, float cross_rate, float root_xo_rate,
        char otype, string functions, 
        unsigned int max_depth, unsigned int max_dim, int random_state, 
        bool erc, string obj, bool shuffle, 
        float split, float fb, string scorer, string feature_names,
        bool backprop,int iters, float lr, int bs, int n_threads,
-       bool hillclimb, string logfile, int max_time, bool use_batch, bool semantic_xo,
-       int print_pop):
+       bool hillclimb, string logfile, int max_time, bool use_batch, bool residual_xo,
+       bool stagewise_xo, bool softmax_norm, int print_pop):
           // construct subclasses
           params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
-                 functions, cross_rate, max_depth, max_dim, erc, obj, shuffle, split, 
+                 functions, cross_rate, root_xo_rate, max_depth, max_dim, erc, obj, shuffle, split, 
                  fb, scorer, feature_names, backprop, iters, lr, bs, hillclimb, max_time, 
-                 use_batch, semantic_xo), 
+                 use_batch, residual_xo, stagewise_xo, softmax_norm), 
           p_sel( make_shared<Selection>(sel) ),
           p_surv( make_shared<Selection>(surv, true) ),
           p_variation( make_shared<Variation>(cross_rate) ),
@@ -85,6 +85,12 @@ void Feat::set_cross_rate(float cross_rate)
     params.cross_rate = cross_rate; p_variation->set_cross_rate(cross_rate);
 }
             
+/// set root cross rate in variation              
+void Feat::set_root_xo_rate(float cross_rate)
+{
+    params.root_xo_rate = cross_rate; 
+}
+
 /// set program output type ('f', 'b')              
 void Feat::set_otype(char ot){ params.set_otype(ot); }
             
@@ -568,6 +574,7 @@ void Feat::run_generation(unsigned int g,
                       unsigned& stall_count)
 {
     params.set_current_gen(g);
+
     // select parents
     params.msg("selection..", 3);
     vector<size_t> parents = p_sel->select(*p_pop, F, params);
@@ -855,13 +862,14 @@ void Feat::update_best(const DataRef& d, bool validation)
     float f; 
     vector<Individual>& pop = use_arch && validation ? arch.archive : p_pop->individuals; 
 
-    for (const auto& i: pop)
+    for (const auto i: pop)
     {
         f = validation ? i.fitness_v : i.fitness ;
         if (f < bs)
         {
             bs = f;
-            best_ind = i;
+            best_ind = i; // should this be i.clone(best_ind); ?
+            /* i.clone(best_ind); */
         }
     }
 
@@ -934,7 +942,8 @@ void Feat::print_stats(std::ofstream& log, float fraction)
     for (const auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;}
     unsigned max_size = Sizes.maxCoeff();
     string bar, space = "";                                 // progress bar
-    for (unsigned int i = 0; i<50; ++i){
+    for (unsigned int i = 0; i<50; ++i)
+    {
         if (i <= 50*fraction) bar += "/";
         else space += " ";
     }
@@ -1023,7 +1032,7 @@ void Feat::print_stats(std::ofstream& log, float fraction)
                 << "med_size"       << sep 
                 << "med_complexity" << sep 
                 << "med_num_params" << sep
-                <<  "med_dim\n";
+                << "med_dim\n";
         }
 
         log << params.current_gen  << sep
