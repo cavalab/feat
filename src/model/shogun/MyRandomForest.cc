@@ -172,3 +172,16 @@ std::vector<double> CMyRandomForest::feature_importances()
 
 //       return dynamic_cast<CMyRandomCARTree*>(m_machine)->feature_importances();
 }
+
+void CMyRandomForest::set_probabilities(CLabels* labels, CFeatures* data)
+{
+    SGMatrix<float64_t> output = apply_outputs_without_combination(data);
+
+    CMeanRule* mean_rule = new CMeanRule();
+
+    SGVector<float64_t> probabilities = mean_rule->combine(output);
+
+    labels->set_values(probabilities);
+
+    SG_UNREF(mean_rule);
+}  

@@ -405,6 +405,9 @@ namespace FT{
                 if (ml_type == CART)
                     dynamic_pointer_cast<sh::CMyCARTree>(p_est)->set_probabilities(labels.get(), 
                                                                                    features);
+                else if(ml_type == RF)
+                    dynamic_pointer_cast<sh::CMyRandomForest>(p_est)->set_probabilities(labels.get(), 
+                                                                                   features);
                 else
                     dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_probabilities(labels.get(), 
                                                                                      features);
