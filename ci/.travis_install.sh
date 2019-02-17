@@ -88,6 +88,10 @@ which python
 echo "cython path is..."
 which cython
 
+echo "upgrading pip..."
+pip install --upgrade pip
+
+echo "installing wrapper"
 cd ./python
 python setup.py install
 
