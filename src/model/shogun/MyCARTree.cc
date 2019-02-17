@@ -120,7 +120,7 @@ CBinaryLabels* CMyCARTree::apply_binary(CFeatures* data)
     bnode_t* current=dynamic_cast<bnode_t*>(get_root());
 
     REQUIRE(current, "Tree machine not yet trained.\n");
-    CLabels* ret=apply_from_current_node(dynamic_cast<CMyDenseFeatures<float64_t>*>(data), current, true);
+    CLabels* ret=apply_from_current_node(dynamic_cast<CDenseFeatures<float64_t>*>(data), current, true);
     SGVector<double> tmp = dynamic_cast<CMulticlassLabels*>(ret)->get_labels(); 
     CBinaryLabels* retbc = new CBinaryLabels(tmp,0.5);
     /* cout << "retbc: " << retbc << "\n"; */
@@ -139,7 +139,7 @@ CMulticlassLabels* CMyCARTree::apply_multiclass(CFeatures* data)
     bnode_t* current=dynamic_cast<bnode_t*>(get_root());
 
     REQUIRE(current, "Tree machine not yet trained.\n");
-    CLabels* ret=apply_from_current_node(dynamic_cast<CMyDenseFeatures<float64_t>*>(data), current);
+    CLabels* ret=apply_from_current_node(dynamic_cast<CDenseFeatures<float64_t>*>(data), current);
 
     SG_UNREF(current);
     return dynamic_cast<CMulticlassLabels*>(ret);
@@ -151,13 +151,13 @@ CRegressionLabels* CMyCARTree::apply_regression(CFeatures* data)
 
     // apply regression starting from root
     bnode_t* current=dynamic_cast<bnode_t*>(get_root());
-    CLabels* ret=apply_from_current_node(dynamic_cast<CMyDenseFeatures<float64_t>*>(data), current);
+    CLabels* ret=apply_from_current_node(dynamic_cast<CDenseFeatures<float64_t>*>(data), current);
 
     SG_UNREF(current);
     return dynamic_cast<CRegressionLabels*>(ret);
 }
 
-void CMyCARTree::prune_using_test_dataset(CMyDenseFeatures<float64_t>* feats, CLabels* gnd_truth, SGVector<float64_t> weights)
+void CMyCARTree::prune_using_test_dataset(CDenseFeatures<float64_t>* feats, CLabels* gnd_truth, SGVector<float64_t> weights)
 {
     if (weights.vlen==0)
     {
@@ -281,11 +281,9 @@ bool CMyCARTree::train_machine(CFeatures* data)
     REQUIRE(data,"Data required for training\n")
     REQUIRE(data->get_feature_class()==C_DENSE,"Dense data required for training\n")
 
-    //cout << "cartree start\n";
-    int32_t num_features=(dynamic_cast<CMyDenseFeatures<float64_t>*>(data))->get_num_features();
-    int32_t num_vectors=(dynamic_cast<CMyDenseFeatures<float64_t>*>(data))->get_num_vectors();
+    int32_t num_features=(dynamic_cast<CDenseFeatures<float64_t>*>(data))->get_num_features();
+    int32_t num_vectors=(dynamic_cast<CDenseFeatures<float64_t>*>(data))->get_num_vectors();
 
-    //cout << "Got features\n";
     if (m_weights_set)
     {
         REQUIRE(m_weights.vlen==num_vectors,"Length of weights vector (currently %d) should be same as"
@@ -310,14 +308,11 @@ bool CMyCARTree::train_machine(CFeatures* data)
         m_nominal.fill_vector(m_nominal.vector,m_nominal.vlen,false);
     }
 
-    //cout << "Setting root\n";
     set_root(CARTtrain(data,m_weights,m_labels,0));
 
-    //cout << "Root set\n";
-    
     if (m_apply_cv_pruning)
     {
-        CMyDenseFeatures<float64_t>* feats=dynamic_cast<CMyDenseFeatures<float64_t>*>(data);
+        CDenseFeatures<float64_t>* feats=dynamic_cast<CDenseFeatures<float64_t>*>(data);
         prune_by_cross_validation(feats,m_folds);
     }
     
@@ -333,7 +328,7 @@ void CMyCARTree::set_sorted_features(SGMatrix<float64_t>& sorted_feats, SGMatrix
 
 void CMyCARTree::pre_sort_features(CFeatures* data, SGMatrix<float64_t>& sorted_feats, SGMatrix<index_t>& sorted_indices)
 {
-    SGMatrix<float64_t> mat=(dynamic_cast<CMyDenseFeatures<float64_t>*>(data))->get_feature_matrix();
+    SGMatrix<float64_t> mat=(dynamic_cast<CDenseFeatures<float64_t>*>(data))->get_feature_matrix();
     sorted_feats = SGMatrix<float64_t>(mat.num_cols, mat.num_rows);
     sorted_indices = SGMatrix<index_t>(mat.num_cols, mat.num_rows);
     for(int32_t i=0; i<sorted_indices.num_cols; i++)
@@ -356,14 +351,11 @@ CBinaryTreeMachineNode<MyCARTreeNodeData>* CMyCARTree::CARTtrain(CFeatures* data
     REQUIRE(labels,"labels have to be supplied\n");
     REQUIRE(data,"data matrix has to be supplied\n");
 
-    //cout << "features vector size is " << (dynamic_cast<CMyDenseFeatures<float64_t>*>(data))->get_num_vectors() << "\n";
-    //cout << "features num size is " << (dynamic_cast<CMyDenseFeatures<float64_t>*>(data))->get_num_features() << "\n";
     bnode_t* node=new bnode_t();
     SGVector<float64_t> labels_vec=(dynamic_cast<CDenseLabels*>(labels))->get_labels();
     
-    //cout << "Getting matrix\n";
-    SGMatrix<float64_t> mat=(dynamic_cast<CMyDenseFeatures<float64_t>*>(data))->get_feature_matrix();
-    //cout << "Got matrix\n";
+    SGMatrix<float64_t> mat=(dynamic_cast<CDenseFeatures<float64_t>*>(data))->get_feature_matrix();
+
     int32_t num_feats=mat.num_rows;
     int32_t num_vecs=mat.num_cols;
 
@@ -1147,7 +1139,7 @@ float64_t CMyCARTree::least_squares_deviation(const SGVector<float64_t>& feats, 
 
     return dev/total_weight;
 }
-CLabels* CMyCARTree::apply_from_current_node(CMyDenseFeatures<float64_t>* feats, bnode_t* current,
+CLabels* CMyCARTree::apply_from_current_node(CDenseFeatures<float64_t>* feats, bnode_t* current,
                                              bool set_certainty)
 {
 	int32_t num_vecs=feats->get_num_vectors();
@@ -1246,7 +1238,7 @@ SGVector<float64_t> CMyCARTree::get_certainty_vector() const
     return m_certainty;
 }
 
-void CMyCARTree::prune_by_cross_validation(CMyDenseFeatures<float64_t>* data, int32_t folds)
+void CMyCARTree::prune_by_cross_validation(CDenseFeatures<float64_t>* data, int32_t folds)
 {
     int32_t num_vecs=data->get_num_vectors();
 

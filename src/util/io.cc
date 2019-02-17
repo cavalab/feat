@@ -120,7 +120,6 @@ namespace FT{
                                std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > &Z,
                                char sep)
         {
-            cout << "in load_longitudinal\n";
             std::map<string, std::map<int, std::pair<vector<float>, vector<float> > > > dataMap;
             std::ifstream indata;
             indata.open(path);
@@ -187,7 +186,6 @@ namespace FT{
                 
             }
 
-            cout << "exiting load_longitudinal\n";
         }
         
         /*!
@@ -327,8 +325,8 @@ namespace FT{
                 }
                 ++nl;
             }
-            cout << "read " << nl << " lines of " << path << "\n";
-            cout << "stored " << nfound << " lines, skipped " << nskip << "\n";
+            //cout << "read " << nl << " lines of " << path << "\n";
+            //cout << "stored " << nfound << " lines, skipped " << nskip << "\n";
             // validate dataMap
             // for each dataMap[name], there should be map names from 0 ... numSamples -1
             for ( const auto &val: dataMap )

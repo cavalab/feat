@@ -163,8 +163,6 @@ namespace FT{
             
             this->yhat = ml->labels_to_vector(yh);
             
-            //cout << "Yhat is \n " << this->yhat << endl;
-
             return yh;
         }
 
@@ -232,7 +230,6 @@ namespace FT{
              
             State state;
             
-            //cout << "In individua.out()\n";
             params.msg("evaluating program " + get_eqn(),3);
             params.msg("program length: " + std::to_string(program.size()),3);
             // evaluate each node in program
@@ -274,44 +271,30 @@ namespace FT{
             dtypes.clear();        
             Matrix<float,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
             
-            //cout << "\n\n";
-            //cout << "Floats\n";
-            
             // add state_f to Phi
             for (unsigned int i=0; i<rows_f; ++i)
             {    
                  ArrayXf Row = ArrayXf::Map(state.f.at(i).data(),cols);
-                 //cout << Row;
                  clean(Row); // remove nans, set infs to max and min
                  Phi.row(i) = Row;
                  dtypes.push_back('f'); 
             }
             
-            //cout << "\nChars\n";
-            
             // add state_c to Phi
             for (unsigned int i=0; i<rows_c; ++i)
             {    
                  ArrayXf Row = ArrayXi::Map(state.c.at(i).data(),cols).cast<float>();
-                 //cout << Row;
                  clean(Row); // remove nans, set infs to max and min
                  Phi.row(i+rows_f) = Row;
                  dtypes.push_back('c');
             }       
             
-            //cout << "\nBools\n";
-            
             // convert state_b to Phi       
             for (unsigned int i=0; i<rows_b; ++i)
             {
                 Phi.row(i+rows_f+rows_c) = ArrayXb::Map(state.b.at(i).data(),cols).cast<float>();
-                //cout << Phi.row(i+rows_f+rows_c);
                 dtypes.push_back('b');
             }
-            
-            //cout << "\n\n";
-            
-            //cout << "Phi is "<<endl<<Phi<<endl;
             
             return Phi;
         }
@@ -347,9 +330,7 @@ namespace FT{
                     dynamic_cast<NodeTrain*>(n.get())->train = !predict;
             	if(state.check(n->arity))
             	{
-            	    //cout<<"***enter here "<<n->name<<"\n";
 	                n->evaluate(d, state);
-	                //cout<<"***exit here "<<n->name<<"\n";
                     // adjust indices
                     state.update_idx(n->otype, n->arity); 
 	            }
@@ -432,11 +413,7 @@ namespace FT{
                 /* Phi.row(i+rows_f) = ArrayXb::Map(state.b.at(i).data(),cols).cast<float>(); */
                 dtypes.push_back('b');
             }
-            
                    
-            //Phi.transposeInPlace();
-            
-            //cout << "Phi is "<<endl<<Phi;
             return Phi;
         }
         #endif
@@ -576,7 +553,6 @@ namespace FT{
             /* params.msg("program length: " + std::to_string(program.size()),3); */
             
             std::map<char, size_t> state_size = get_max_state_size();
-            //cout << "Max stack size is " << state_size.at('f') << "\n";
             // set the device based on the thread number
             choose_gpu();
             // allocate memory for the state on the device
@@ -683,7 +659,6 @@ namespace FT{
                 dtypes.push_back('b');
             }
                    
-            //Phi.transposeInPlace();
             return Phi;
         }
         #endif
@@ -691,10 +666,8 @@ namespace FT{
         // return symbolic representation of program 
         string Individual::get_eqn()
         {
-            //cout << "Called get_eqn()"<<"\n";
             if (eqn.empty())               // calculate eqn if it doesn't exist yet 
             {
-                //cout << "eqn is empty\n";
                 State state;
 
                 for (const auto& n : program){
@@ -715,7 +688,6 @@ namespace FT{
                     eqn += "[" + s + "]";
             }
             
-            //cout << "returning equation as "<<eqn << "\n"; 
             return eqn;
         }
         

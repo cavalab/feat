@@ -227,8 +227,6 @@ namespace FT{
             
             if (ml_type == RF)
             {
-                //std::cout << "setting max_feates\n";
-                // set max features to sqrt(n_features)
                 int max_feats = std::sqrt(X.rows());
                 dynamic_pointer_cast<sh::CMyRandomForest>(p_est)->set_num_random_features(max_feats);
             }
@@ -259,16 +257,9 @@ namespace FT{
             
             shared_ptr<CLabels> labels;
             
-            //cout << "_X is \n" << _X << "\n";
             if(_X.isZero(0.0001))
             {
-                cout << "Setting to zero\n";
-                //VectorXd empty_vector = VectorXd::Zero(_y.size());
-                //SGVector<float64_t> zeroes_vector(empty_vector);
-                
-                //zeroes_vector.display_vector();
-                
-                cout << "Setting labels\n";
+                params.msg("Setting labels to zero as all features are zero\n", 3);
                 
                 switch (prob_type)
                 {
@@ -279,15 +270,13 @@ namespace FT{
                     case PT_MULTICLASS : labels = std::shared_ptr<CLabels>(new CMulticlassLabels(_y.size()));
                                          break;
                 }
-                cout << "Labels set\n";
+
                 pass = false;
                 return labels;
             }
             
-            //cout << "not zero\n";
-            //cout << "_X is \n" << _X << "\n";
 
-            auto features = some<CMyDenseFeatures<float64_t>>(SGMatrix<float64_t>(_X));
+            auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(_X));
 
             /* cout << "Phi:\n"; */
             /* cout << X << "\n"; */
@@ -311,13 +300,8 @@ namespace FT{
             params.msg("ML training on thread" 
                        + std::to_string(omp_get_thread_num()) + "...",3," ");       
             // *** Train the model ***  
-            //cout << "features vector size is " << features->get_num_vectors() << "\n";
-            //cout << "features num size is " << features->get_num_features() << "\n";
-            
-            //cout << "Training with feature matrix as \n";
-            //features->get_feature_matrix().display_matrix();
             p_est->train(features);
-            // *** Train the model ***
+
             params.msg("done.",3);
            
             //get output
@@ -395,7 +379,7 @@ namespace FT{
                 N.normalize(X);
                 
             MatrixXd _X = X.template cast<double>();
-            auto features = some<CMyDenseFeatures<float64_t>>(SGMatrix<float64_t>(_X));
+            auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(_X));
             
             shared_ptr<CLabels> labels;
            

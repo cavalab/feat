@@ -31,9 +31,6 @@
 #include "MyRandomForest.h"
 #include "MyRandomCARTree.h"
 
-#include <iostream>
-using namespace std;
-
 using namespace shogun;
 
 CMyRandomForest::CMyRandomForest()
@@ -116,19 +113,15 @@ void CMyRandomForest::set_machine_parameters(CMachine* m, SGVector<index_t> idx)
 			weights[i]=m_weights[idx[i]];
 	}
 
-    //cout << "Setting mycarttree params\n";
-    //cout << "\nCalling from here\n";
 	tree->set_weights(weights);
 	tree->set_sorted_features(m_sorted_transposed_feats, m_sorted_indices);
 	// equate the machine problem types - cloning does not do this
 	tree->set_machine_problem_type(dynamic_cast<CMyRandomCARTree*>(m_machine)->get_machine_problem_type());
 	
-	//cout << "mycarttree params set\n";
 }
 
 bool CMyRandomForest::train_machine(CFeatures* data)
 {
-    //cout << "Training called\n";
 	if (data)
 	{
 		SG_REF(data);
@@ -138,26 +131,19 @@ bool CMyRandomForest::train_machine(CFeatures* data)
 	
 	REQUIRE(m_features, "Training features not set!\n");
 	
-	//cout << "Sorting features\n";
 	dynamic_cast<CMyRandomCARTree*>(m_machine)->pre_sort_features(m_features, m_sorted_transposed_feats, m_sorted_indices);
-	//cout << "Sorting done\n";
 
 	return CBaggingMachine::train_machine();
 }
 
 std::vector<double> CMyRandomForest::feature_importances()
 {
-     //cout << "Getting importances\n";
      size_t num_features = get_feature_types().size();
      vector<double> importances(num_features, 0.0);    //set to zero for all attributes
      
-     //cout << "num features is " << num_features <<endl;
      for (int32_t i = 0; i < m_num_bags; ++i)
      {  
-         //cout << "i = " << i << " num bags are " << m_num_bags << endl;
          CMyRandomCARTree* m = dynamic_cast<CMyRandomCARTree*>(m_bags->get_element(i));
-         
-         //cout << "got machine "  << i << endl;
          
          vector<double> m_imp = m->feature_importances();
          
@@ -169,8 +155,6 @@ std::vector<double> CMyRandomForest::feature_importances()
             importances[i] += m_num_bags;
             
      return importances;
-
-//       return dynamic_cast<CMyRandomCARTree*>(m_machine)->feature_importances();
 }
 
 void CMyRandomForest::set_probabilities(CLabels* labels, CFeatures* data)
