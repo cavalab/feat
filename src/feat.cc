@@ -718,8 +718,6 @@ void Feat::initial_model(DataRef &d)
     bool pass = true;
     shared_ptr<CLabels> yhat = best_ind.fit(*d.t,params,pass);
     
-    yhat->get_values().display_vector();
-    
     // set terminal weights based on model
     vector<float> w;
     if (n_feats == d.t->X.rows())
