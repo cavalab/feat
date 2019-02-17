@@ -3,7 +3,7 @@ import sys
 from setuptools import setup, find_packages
 from setuptools.extension import Extension
 from Cython.Build import cythonize
-
+import subprocess
 # the setup file relies on eigency to import its include paths for the
 # extension modules. however eigency isn't known as a dependency until after
 # setup is parsed; so we need to check for and install eigency before setup.
@@ -13,14 +13,15 @@ try:
 except ImportError:
     try:
         print('trying to install eigency prior to setup..')
-        # from pip._internal import main 
-        import pip
-        if hasattr(pip, 'main'):
-            # NOTE: Older versions of pip use this command:
-            pip.main(['install', 'eigency'])
-        else:
-            # Newer versions of pip moved main to _internal:
-            pip._internal.main(['install', 'eigency'])
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'eigency'])
+        # # from pip._internal import main 
+        # import pip
+        # if hasattr(pip, 'main'):
+        #     # NOTE: Older versions of pip use this command:
+        #     pip.main(['install', 'eigency'])
+        # else:
+        #     # Newer versions of pip moved main to _internal:
+        #     pip._internal.main(['install', 'eigency'])
     except Exception as e:
         print(e)
         raise ImportError('The eigency library must be installed before feat. '
