@@ -13,7 +13,6 @@ void __attribute__ ((constructor)) ctor()
 
 void __attribute__ ((destructor))  dtor()
 {
-    //cout<< "EXITING SHOGUN\n";
     exit_shogun();
     FT::Rnd::destroy();
 }
@@ -719,35 +718,21 @@ void Feat::initial_model(DataRef &d)
     bool pass = true;
     shared_ptr<CLabels> yhat = best_ind.fit(*d.t,params,pass);
     
-    cout << "Pass is " <<pass << "\n";
-    cout << "y_hat is \n";
     yhat->get_values().display_vector();
     
     // set terminal weights based on model
     vector<float> w;
     if (n_feats == d.t->X.rows())
-    {
         w = best_ind.ml->get_weights();
-    }
     else
-    {
         w = vector<float>(d.t->X.rows(),1.0);
-    }
-    
-    /*cout << "Weights are \n";
-    for(auto i : w)
-        cout << i << "\n";
-    cout <<"\n";
-    HANDLE_ERROR_THROW("Exiting");*/
-    
+        
     
     params.set_term_weights(w);
    
-    cout << "Setting score\n";
     VectorXf tmp;
     best_score = p_eval->score(d.t->y, yhat, tmp, params.class_weights);
     
-    cout << "Got score\n";
 
     if (params.split < 1.0)
     {
@@ -757,7 +742,6 @@ void Feat::initial_model(DataRef &d)
     else
         best_score_v = best_score;
     
-    cout << "Score set\n";
     best_ind.fitness = best_score;
     
     params.msg("initial training score: " +std::to_string(best_score),2);

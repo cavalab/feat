@@ -36,7 +36,7 @@
 #include <shogun/lib/config.h>
 
 #include <shogun/multiclass/tree/TreeMachine.h>
-#include "MyDenseFeatures.h"
+#include <shogun/features/DenseFeatures.h>
 #include <shogun/mathematics/Math.h>
 #include <shogun/mathematics/eigen3.h>
 

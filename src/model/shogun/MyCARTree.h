@@ -36,8 +36,8 @@
 
 #include <shogun/multiclass/tree/TreeMachine.h>
 #include <shogun/ensemble/MeanRule.h>
+#include <shogun/features/DenseFeatures.h>
 #include "MyCARTreeNodeData.h"
-#include "MyDenseFeatures.h"
 
 using std::vector;
 namespace shogun
@@ -153,7 +153,7 @@ namespace shogun
 	     * @param gnd_truth test labels
 	     * @param weights weights of data points
 	     */
-	    void prune_using_test_dataset(CMyDenseFeatures<float64_t>* feats, CLabels* gnd_truth, SGVector<float64_t> weights=SGVector<float64_t>());
+	    void prune_using_test_dataset(CDenseFeatures<float64_t>* feats, CLabels* gnd_truth, SGVector<float64_t> weights=SGVector<float64_t>());
 
 	    /** set weights of data points
 	     * @param w vector of weights
@@ -380,7 +380,7 @@ namespace shogun
 	     * @param current root of current subtree
 	     * @return classification/regression labels of input data
 	     */
-	    CLabels* apply_from_current_node(CMyDenseFeatures<float64_t>* feats, bnode_t* current, 
+	    CLabels* apply_from_current_node(CDenseFeatures<float64_t>* feats, bnode_t* current, 
                                          bool set_certainty=false);
 
 	    /** prune by cross validation
@@ -388,7 +388,7 @@ namespace shogun
 	     * @param data training data
 	     * @param folds the integer V for V-fold cross validation
 	     */
-	    void prune_by_cross_validation(CMyDenseFeatures<float64_t>* data, int32_t folds);
+	    void prune_by_cross_validation(CDenseFeatures<float64_t>* data, int32_t folds);
 
 	    /** computes error in classification/regression
 	     * for classification it eveluates weight_missclassified/total_weight
