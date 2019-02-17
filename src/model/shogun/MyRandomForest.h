@@ -111,6 +111,10 @@ public:
 	/** WGL: return Gini importance scores for features
      */
     std::vector<double> feature_importances();
+    
+    /** WGL: sets the probabilities on each label according to m_certainty
+     */
+    void set_probabilities(CLabels* labels, CFeatures* data=NULL);  
 
 protected:
 

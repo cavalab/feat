@@ -35,6 +35,7 @@
 //#include <shogun/lib/config.h>
 
 #include <shogun/multiclass/tree/TreeMachine.h>
+#include <shogun/ensemble/MeanRule.h>
 #include "MyCARTreeNodeData.h"
 #include "MyDenseFeatures.h"
 
