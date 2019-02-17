@@ -80,7 +80,7 @@ cd ..
 make -C build VERBOSE=1
 echo "running feat.."
 
-./build/feat docs/examples/data/d_enc.csv -rs 42 -g 10 -p 10
+./build/feat docs/examples/data/d_enc.csv -rs 42 -g 2 -p 5
 
 echo "python path is..."
 which python
@@ -88,6 +88,10 @@ which python
 echo "cython path is..."
 which cython
 
+echo "upgrading pip..."
+pip install --upgrade pip
+
+echo "installing wrapper"
 cd ./python
 python setup.py install
 
