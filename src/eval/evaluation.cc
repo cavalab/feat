@@ -49,7 +49,7 @@ namespace FT{
             
             unsigned start =0;
             if (offspring) start = F.cols()/2;
-
+            
             // loop through individuals
             #pragma omp parallel for
             for (unsigned i = start; i<individuals.size(); ++i)

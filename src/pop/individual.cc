@@ -165,7 +165,6 @@ namespace FT{
             
             this->yhat = ml->labels_to_vector(yh);
             
-            //cout << "Yhat is \n " << this->yhat << endl;
             return yh;
         }
 
@@ -233,7 +232,6 @@ namespace FT{
              
             State state;
             
-            //cout << "In individua.out()\n";
             params.msg("evaluating program " + get_eqn(),3);
             params.msg("program length: " + std::to_string(program.size()),3);
             // evaluate each node in program
@@ -302,8 +300,6 @@ namespace FT{
                 dtypes.push_back('b');
             }
             
-            //cout << "Phi is "<<endl<<Phi;
-            
             return Phi;
         }
         #else
@@ -338,9 +334,7 @@ namespace FT{
                     dynamic_cast<NodeTrain*>(n.get())->train = !predict;
             	if(state.check(n->arity))
             	{
-            	    //cout<<"***enter here "<<n->name<<"\n";
 	                n->evaluate(d, state);
-	                //cout<<"***exit here "<<n->name<<"\n";
                     // adjust indices
                     state.update_idx(n->otype, n->arity); 
 	            }
@@ -423,11 +417,7 @@ namespace FT{
                 /* Phi.row(i+rows_f) = ArrayXb::Map(state.b.at(i).data(),cols).cast<float>(); */
                 dtypes.push_back('b');
             }
-            
                    
-            //Phi.transposeInPlace();
-            
-            //cout << "Phi is "<<endl<<Phi;
             return Phi;
         }
         #endif
@@ -567,7 +557,6 @@ namespace FT{
             /* params.msg("program length: " + std::to_string(program.size()),3); */
             
             std::map<char, size_t> state_size = get_max_state_size();
-            //cout << "Max stack size is " << state_size.at('f') << "\n";
             // set the device based on the thread number
             choose_gpu();
             // allocate memory for the state on the device
@@ -674,7 +663,6 @@ namespace FT{
                 dtypes.push_back('b');
             }
                    
-            //Phi.transposeInPlace();
             return Phi;
         }
         #endif
@@ -682,10 +670,8 @@ namespace FT{
         // return symbolic representation of program 
         string Individual::get_eqn()
         {
-            //cout << "Called get_eqn()"<<"\n";
             if (eqn.empty())               // calculate eqn if it doesn't exist yet 
             {
-                //cout << "eqn is empty\n";
                 State state;
 
                 for (const auto& n : program){
@@ -706,7 +692,6 @@ namespace FT{
                     eqn += "[" + s + "]";
             }
             
-            //cout << "returning equation as "<<eqn << "\n"; 
             return eqn;
         }
         
