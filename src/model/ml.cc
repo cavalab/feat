@@ -352,9 +352,9 @@ namespace FT{
             }
             else                                                    // regression
             {
-                cout << "applying regression\n";
+                /* cout << "applying regression\n"; */
                 labels = shared_ptr<CLabels>(p_est->apply_regression(features));
-                cout << "getting regression labels\n";
+                /* cout << "getting regression labels\n"; */
                 y_pred = dynamic_pointer_cast<sh::CRegressionLabels>(labels)->get_labels();
                 /* delete reg; */
             }
