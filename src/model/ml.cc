@@ -28,15 +28,15 @@ namespace FT{
             ml_str  = params.ml;
             ml_type = ml_hash[params.ml];
             
-            prob_type = PT_REGRESSION;
+            this->prob_type = PT_REGRESSION;
             max_train_time=30; 
             normalize = norm;
             if (params.classification)
             { 
                 if (params.n_classes==2)
-                    prob_type = PT_BINARY;
+                    this->prob_type = PT_BINARY;
                 else
-                    prob_type = PT_MULTICLASS;               
+                    this->prob_type = PT_MULTICLASS;               
             }
         }
         
@@ -54,10 +54,10 @@ namespace FT{
             {
                 p_est = make_shared<sh::CMyRandomForest>();
                 dynamic_pointer_cast<sh::CMyRandomForest>(p_est)->
-                                                           set_machine_problem_type(prob_type);
+                                                           set_machine_problem_type(this->prob_type);
                 dynamic_pointer_cast<sh::CMyRandomForest>(p_est)->set_num_bags(10);
                                    
-                if (prob_type != PT_REGRESSION)
+                if (this->prob_type != PT_REGRESSION)
                 {
                     auto CR = some<sh::CMajorityVote>();                        
                     dynamic_pointer_cast<sh::CMyRandomForest>(p_est)->set_combination_rule(CR);
@@ -73,16 +73,16 @@ namespace FT{
             {
                 p_est = make_shared<sh::CMyCARTree>();
                 dynamic_pointer_cast<sh::CMyCARTree>(p_est)->
-                                                           set_machine_problem_type(prob_type);
+                                                           set_machine_problem_type(this->prob_type);
                 dynamic_pointer_cast<sh::CMyCARTree>(p_est)->
                                                            set_max_depth(6);                
             }
                            
             else if (ml_type == SVM)
             {               
-            	if(prob_type==PT_BINARY)
+            	if(this->prob_type==PT_BINARY)
                     p_est = make_shared<sh::CMyLibLinear>(sh::L2R_L2LOSS_SVC_DUAL);       
-                else if (prob_type==PT_MULTICLASS){
+                else if (this->prob_type==PT_MULTICLASS){
                     p_est = make_shared<CMyMulticlassLibLinear>();
                     dynamic_pointer_cast<CMyMulticlassLibLinear>(p_est)->
                                                                  set_prob_heuris(sh::OVA_NORM);
@@ -94,8 +94,8 @@ namespace FT{
             }
             else if (ml_type == LR)
             {
-                assert(prob_type!=PT_REGRESSION && "LR only works with classification.");
-                if (prob_type == PT_BINARY){
+                assert(this->prob_type!=PT_REGRESSION && "LR only works with classification.");
+                if (this->prob_type == PT_BINARY){
             	    p_est = make_shared<sh::CMyLibLinear>(sh::L2R_LR);
                     // setting parameters to match sklearn defaults
                     dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_compute_bias(true);
@@ -147,7 +147,7 @@ namespace FT{
             	ml_type == SVM || (ml_type == LR))
             {
                 // for multiclass, return the average weight magnitude over the OVR models
-                if(prob_type == PT_MULTICLASS && ( ml_type == LR || ml_type == SVM ) ) 
+                if(this->prob_type == PT_MULTICLASS && ( ml_type == LR || ml_type == SVM ) ) 
                 {
                     /* cout << "in get_weights(), multiclass LR\n"; */
                     vector<SGVector<double>> weights;
@@ -264,7 +264,7 @@ namespace FT{
             {
                 params.msg("Setting labels to zero as all features are zero\n", 3);
                 
-                switch (prob_type)
+                switch (this->prob_type)
                 {
                     case PT_REGRESSION : labels = std::shared_ptr<CLabels>(new CRegressionLabels(_y.size()));
                                          break;
@@ -288,13 +288,13 @@ namespace FT{
             
             
              
-            if(prob_type==PT_BINARY && 
+            if(this->prob_type==PT_BINARY && 
                     (ml_type == LR || ml_type == SVM))  // binary classification           	
             {
                 p_est->set_labels(some<CBinaryLabels>(SGVector<float64_t>(_y), 0.5));       	
                 
             }
-            else if (prob_type!=PT_REGRESSION)                         // multiclass classification       
+            else if (this->prob_type==PT_MULTICLASS)                         // multiclass classification       
                 p_est->set_labels(some<CMulticlassLabels>(SGVector<float64_t>(_y)));
             else                                                    // regression
                 p_est->set_labels(some<CRegressionLabels>(SGVector<float64_t>(_y)));
@@ -309,9 +309,10 @@ namespace FT{
            
             //get output
             SGVector<double> y_pred; 
-
-            if (prob_type==PT_BINARY && 
-                 (ml_type == LR || ml_type == SVM || ml_type == CART) || ml_type == RF)     // binary classification
+            
+            if (this->prob_type==PT_BINARY && 
+                 (ml_type == LR || ml_type == SVM || ml_type == CART || ml_type == RF)     // binary classification
+                )
             {
                 bool proba = params.scorer.compare("log")==0;
 
@@ -351,7 +352,9 @@ namespace FT{
             }
             else                                                    // regression
             {
+                cout << "applying regression\n";
                 labels = shared_ptr<CLabels>(p_est->apply_regression(features));
+                cout << "getting regression labels\n";
                 y_pred = dynamic_pointer_cast<sh::CRegressionLabels>(labels)->get_labels();
                 /* delete reg; */
             }
@@ -359,7 +362,7 @@ namespace FT{
             // map to Eigen vector
             Map<VectorXd> yhat(y_pred.data(),y_pred.size());
            
-            //std::cout << "yhat: " << yhat.transpose() << "\n"; 
+            std::cout << "yhat: " << yhat.transpose() << "\n"; 
 
             if (isinf(yhat.array()).any() || isnan(yhat.array()).any() || yhat.size()==0)
                 pass = false;
@@ -386,7 +389,7 @@ namespace FT{
             
             shared_ptr<CLabels> labels;
            
-            if (prob_type==PT_BINARY && 
+            if (this->prob_type==PT_BINARY && 
                     (ml_type == SVM || ml_type == LR || ml_type == CART || ml_type == RF)){
                 labels = std::shared_ptr<CLabels>(p_est->apply_binary(features));
                 if (ml_type == CART)
@@ -399,7 +402,7 @@ namespace FT{
                     dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_probabilities(labels.get(), 
                                                                                      features);
             }
-            else if (prob_type != PT_REGRESSION)
+            else if (this->prob_type != PT_REGRESSION)
                 labels = std::shared_ptr<CLabels>(p_est->apply_multiclass(features));
             else
                 labels = std::shared_ptr<CLabels>(p_est->apply_regression(features));
@@ -418,7 +421,7 @@ namespace FT{
         {
             shared_ptr<CLabels> labels = shared_ptr<CLabels>(predict(X));
                
-            if (prob_type==PT_BINARY && 
+            if (this->prob_type==PT_BINARY && 
                     (ml_type == SVM || ml_type == LR || ml_type == CART || ml_type == RF))
             {
                 shared_ptr<CBinaryLabels> BLabels = dynamic_pointer_cast<CBinaryLabels>(labels);
@@ -428,7 +431,7 @@ namespace FT{
                 confidences.row(0) = Map<ArrayXd>(tmp.data(),tmp.size()); 
                 return confidences.template cast<float>();
             }
-            else if (prob_type == PT_MULTICLASS)
+            else if (this->prob_type == PT_MULTICLASS)
             {
                 shared_ptr<CMulticlassLabels> MLabels = dynamic_pointer_cast<CMulticlassLabels>(labels);
                 MatrixXd confidences(MLabels->get_num_classes(), MLabels->get_num_labels()) ; 
@@ -447,17 +450,17 @@ namespace FT{
         VectorXf ML::labels_to_vector(const shared_ptr<CLabels>& labels)
         {
             SGVector<double> y_pred;
-            if (prob_type==PT_BINARY && 
+            if (this->prob_type==PT_BINARY && 
                     (ml_type == SVM || ml_type == LR || ml_type == CART || ml_type == RF))
                 y_pred = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_labels();
-            else if (prob_type != PT_REGRESSION)
+            else if (this->prob_type != PT_REGRESSION)
                 y_pred = dynamic_pointer_cast<sh::CMulticlassLabels>(labels)->get_labels();
             else
                 y_pred = dynamic_pointer_cast<sh::CRegressionLabels>(labels)->get_labels();
            
             Map<VectorXd> yhat(y_pred.data(),y_pred.size());
             
-            if (prob_type==PT_BINARY && 
+            if (this->prob_type==PT_BINARY && 
                     (ml_type == LR || ml_type == SVM || ml_type == CART || ml_type == RF))
                 // convert -1 to 0
                 yhat = (yhat.cast<int>().array() == -1).select(0,yhat);
