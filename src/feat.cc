@@ -13,7 +13,6 @@ void __attribute__ ((constructor)) ctor()
 
 void __attribute__ ((destructor))  dtor()
 {
-    //cout<< "EXITING SHOGUN\n";
     exit_shogun();
     FT::Rnd::destroy();
 }
@@ -729,25 +728,16 @@ void Feat::initial_model(DataRef &d)
     // set terminal weights based on model
     vector<float> w;
     if (n_feats == d.t->X.rows())
-    {
         w = best_ind.ml->get_weights();
-    }
     else
-    {
         w = vector<float>(d.t->X.rows(),1.0);
-    }
-    
-    /*cout << "Weights are \n";
-    for(auto i : w)
-        cout << i << "\n";
-    cout <<"\n";
-    HANDLE_ERROR_THROW("Exiting");*/
-    
+        
     
     params.set_term_weights(w);
    
     VectorXf tmp;
     best_score = p_eval->score(d.t->y, yhat, tmp, params.class_weights);
+    
 
     if (params.split < 1.0)
     {

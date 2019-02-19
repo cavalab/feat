@@ -18,7 +18,7 @@ license: GNU/GPL v3
 #include <shogun/machine/LinearMachine.h>
 #include <shogun/regression/LeastAngleRegression.h>
 #include <shogun/regression/LinearRidgeRegression.h>
-#include <shogun/machine/RandomForest.h>
+//#include <shogun/machine/RandomForest.h>
 #include <shogun/regression/svr/LibLinearRegression.h>
 /* #include <shogun/classifier/svm/LibLinear.h> */
 #include <shogun/ensemble/MeanRule.h>
@@ -31,7 +31,9 @@ license: GNU/GPL v3
 #include "shogun/MulticlassLogisticRegression.h"
 #include "shogun/MyMulticlassLibLinear.h"
 #include "shogun/MyLibLinear.h"
+#include "shogun/MyRandomForest.h"
 #include "../params.h"
+
 
 // stuff being used
 using std::string;

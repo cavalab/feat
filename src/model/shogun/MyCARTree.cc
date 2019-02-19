@@ -37,7 +37,7 @@ using namespace shogun;
 using std::vector;
 using std::cout; 
 
-const char* CMyCARTree::get_name() const { return "CARTree"; }
+const char* CMyCARTree::get_name() const { return "MyCARTree"; }
 
 EProblemType CMyCARTree::get_machine_problem_type() const { return m_mode; }
 
@@ -315,7 +315,7 @@ bool CMyCARTree::train_machine(CFeatures* data)
         CDenseFeatures<float64_t>* feats=dynamic_cast<CDenseFeatures<float64_t>*>(data);
         prune_by_cross_validation(feats,m_folds);
     }
-
+    
     return true;
 }
 
@@ -353,7 +353,9 @@ CBinaryTreeMachineNode<MyCARTreeNodeData>* CMyCARTree::CARTtrain(CFeatures* data
 
     bnode_t* node=new bnode_t();
     SGVector<float64_t> labels_vec=(dynamic_cast<CDenseLabels*>(labels))->get_labels();
+    
     SGMatrix<float64_t> mat=(dynamic_cast<CDenseFeatures<float64_t>*>(data))->get_feature_matrix();
+
     int32_t num_feats=mat.num_rows;
     int32_t num_vecs=mat.num_cols;
 
@@ -1579,6 +1581,8 @@ vector<double> CMyCARTree::feature_importances()
    * information criterion brought about by each feature. 
    */
    // need to get feature sizes
+   
+   //cout << "Getting features\n";
    SGVector<bool> dt = get_feature_types();
    vector<double> importances(dt.size(),0.0);    //set to zero for all attributes
    

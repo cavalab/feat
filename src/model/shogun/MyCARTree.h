@@ -32,6 +32,11 @@
 #ifndef _MYCARTREE_H__
 #define _MYCARTREE_H__
 
+//#include <shogun/lib/config.h>
+
+#include <shogun/multiclass/tree/TreeMachine.h>
+#include <shogun/ensemble/MeanRule.h>
+#include <shogun/features/DenseFeatures.h>
 #include "MyCARTreeNodeData.h"
 
 using std::vector;
@@ -78,6 +83,7 @@ namespace shogun
      */
     public:
 	    /** default constructor */
+	    
 	    CMyCARTree();
 
 	    /** constructor
