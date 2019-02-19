@@ -362,7 +362,7 @@ namespace FT{
             // map to Eigen vector
             Map<VectorXd> yhat(y_pred.data(),y_pred.size());
            
-            std::cout << "yhat: " << yhat.transpose() << "\n"; 
+            /* std::cout << "yhat: " << yhat.transpose() << "\n"; */ 
 
             if (isinf(yhat.array()).any() || isnan(yhat.array()).any() || yhat.size()==0)
                 pass = false;
