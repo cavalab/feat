@@ -70,13 +70,13 @@ namespace FT{
                         Individual& dad = pop.individuals.at(r.random_choice(parents));
                         /* int dad = r.random_choice(parents); */
                         // create child
-                        params.msg("\n===\ncrossing " + mom.get_eqn() + "\nwith\n " + 
+                        logger.log("\n===\ncrossing " + mom.get_eqn() + "\nwith\n " + 
                                    dad.get_eqn() , 3);
                        
                         // perform crossover
                         pass = cross(mom, dad, child, params, d);
                         
-                        params.msg("crossing " + mom.get_eqn() + "\nwith\n " + 
+                        logger.log("crossing " + mom.get_eqn() + "\nwith\n " + 
                                dad.get_eqn() + "\nproduced " + child.get_eqn() + 
                                ", pass: " + std::to_string(pass) + "\n===\n",3);    
 
@@ -87,12 +87,12 @@ namespace FT{
                         // get random mom
                         Individual& mom = pop.individuals.at(r.random_choice(parents));
                         /* int mom = r.random_choice(parents); */                
-                        params.msg("mutating " + mom.get_eqn() + "(" + 
+                        logger.log("mutating " + mom.get_eqn() + "(" + 
                                 mom.program_str() + ")", 3);
                         // create child
                         pass = mutate(mom,child,params);
                         
-                        params.msg("mutating " + mom.get_eqn() + " produced " + 
+                        logger.log("mutating " + mom.get_eqn() + " produced " + 
                                 child.get_eqn() + ", pass: " + std::to_string(pass),3);
                         child.set_parents({mom});
                     }
@@ -100,7 +100,7 @@ namespace FT{
                     {
                         assert(child.size()>0);
                         assert(pop.open_loc.size()>i-start);
-                        params.msg("assigning " + child.program_str() + " to pop.individuals[" + 
+                        logger.log("assigning " + child.program_str() + " to pop.individuals[" + 
                             std::to_string(i) + "] with pop.open_loc[" + std::to_string(i-start) + 
                             "]=" + std::to_string(pop.open_loc[i-start]),3);
 
@@ -156,7 +156,7 @@ namespace FT{
              * @param params: parameters 
              * @return modified child
              * */
-            params.msg("\tpoint mutation",3);
+            logger.log("\tpoint mutation",3);
             float n = child.size(); 
             unsigned i = 0;
             // loop thru child's program
@@ -164,7 +164,7 @@ namespace FT{
             {
                 if (r() < child.get_p(i))  // mutate p. 
                 {
-                    params.msg("\t\tmutating node " + p->name, 3);
+                    logger.log("\t\tmutating node " + p->name, 3);
                     NodeVector replacements;  // potential replacements for p
 
                     if (p->total_arity() > 0) // then it is an instruction
@@ -207,7 +207,7 @@ namespace FT{
              * @return modified child
              * */
             
-            params.msg("\tinsert mutation",3);
+            logger.log("\tinsert mutation",3);
             float n = child.size(); 
             
             if (r()<0.5 || child.get_dim() == params.max_dim)
@@ -218,7 +218,7 @@ namespace FT{
                     
                     if (r() < child.get_p(i))  // mutate with weighted probability
                     {
-                        params.msg("\t\tinsert mutating node " + child.program[i]->name +
+                        logger.log("\t\tinsert mutating node " + child.program[i]->name +
                                    " with probability " + std::to_string(child.get_p(i)) + 
                                    "/" + std::to_string(n), 3);
                         NodeVector insertion;  // inserted segment
@@ -277,7 +277,7 @@ namespace FT{
                        
                         string s; 
                         for (const auto& ins : insertion) s += ins->name + " "; 
-                        params.msg("\t\tinsertion: " + s + "\n", 3);
+                        logger.log("\t\tinsertion: " + s + "\n", 3);
                         NodeVector new_program; 
                         splice_programs(new_program, 
                                         child.program, i, i, 
@@ -314,8 +314,8 @@ namespace FT{
              * @param params: parameters  
              * @return mutated child
              * */
-            params.msg("\tdeletion mutation",3);
-            params.msg("\t\tprogram: " + child.program_str(),3);
+            logger.log("\tdeletion mutation",3);
+            logger.log("\t\tprogram: " + child.program_str(),3);
             vector<size_t> roots = child.program.roots();
             
             size_t end = r.random_choice(roots,child.p); 
@@ -324,7 +324,7 @@ namespace FT{
             { 
                 std::string s="";
                 for (unsigned i = start; i<=end; ++i) s+= child.program[i]->name + " ";
-                params.msg("\t\tdeleting " + std::to_string(start) + " to " + std::to_string(end) 
+                logger.log("\t\tdeleting " + std::to_string(start) + " to " + std::to_string(end) 
                            + ": " + s, 3);
             }    
             child.program.erase(child.program.begin()+start,child.program.begin()+end+1);
@@ -333,7 +333,7 @@ namespace FT{
             /* vector<std::unique_ptr<Node>>blanks; */
             /* splice_programs(child.program, child.program, start, end, */ 
             /*                 blanks,size_t(0),size_t(-1)); */
-            params.msg("\t\tresult of delete mutation: " + child.program_str(), 3);
+            logger.log("\t\tresult of delete mutation: " + child.program_str(), 3);
         }
         
         
@@ -360,7 +360,7 @@ namespace FT{
             
             if (subtree) 
             {
-                params.msg("\tsubtree xo",3);
+                logger.log("\tsubtree xo",3);
                 // limit xo choices to matching output types in the programs. 
                 vector<char> d_otypes;
                 for (const auto& p : dad.program)
@@ -373,7 +373,7 @@ namespace FT{
                         mlocs.push_back(i);       
                 if (mlocs.size()==0)        // mom and dad have no overlapping types, can't cross
                 {
-                    params.msg("WARNING: no overlapping types between " + mom.program_str() + "," 
+                    logger.log("WARNING: no overlapping types between " + mom.program_str() + "," 
                                  + dad.program_str() + "\n", 3);
                     return 0;               
                 }
@@ -391,10 +391,10 @@ namespace FT{
                     return stagewise_cross(mom, dad, child, params, d);
                 else
                 {
-                    params.msg("\troot xo",3);
+                    logger.log("\troot xo",3);
                     mlocs = mom.program.roots();
                     dlocs = dad.program.roots();
-                    params.msg("\t\trandom choice mlocs (size "+
+                    logger.log("\t\trandom choice mlocs (size "+
                                std::to_string(mlocs.size())+"), p size: "+std::to_string(mom.p.size()),3);
                     j1 = r.random_choice(mlocs,mom.get_p(mlocs));   // weighted probability choice    
                 }
@@ -438,13 +438,13 @@ namespace FT{
             vector<size_t> mlocs, dlocs; // mom and dad locations for consideration
             size_t i1, j1, j1_idx, i2, j2;       // i1-j1: mom portion, i2-j2: dad portion
             
-            params.msg("\tresidual xo",3);
+            logger.log("\tresidual xo",3);
             mlocs = mom.program.roots();
             vector<int> mlocs_indices(mlocs.size());
             std::iota(mlocs_indices.begin(),mlocs_indices.end(),0);
 
             dlocs = dad.program.roots();
-            params.msg("\t\trandom choice mlocs (size "+
+            logger.log("\t\trandom choice mlocs (size "+
                        std::to_string(mlocs.size())+"), p size: "+std::to_string(mom.p.size()),3);
             // weighted probability choice
             j1_idx = r.random_choice(mlocs_indices,mom.get_p(mlocs));
@@ -531,7 +531,7 @@ namespace FT{
              *     - update $\mathbf{r} = r - b\phi^*$ 
              * $\phi_c$ = all $\phi^*$ that were chosen 
              */
-            params.msg("\tstagewise xo",3);
+            logger.log("\tstagewise xo",3);
             // normalize the residual 
             VectorXf R = d.y.array() - d.y.mean();
             /* cout << "R: " << R.transpose() << "\n"; */
