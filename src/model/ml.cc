@@ -262,7 +262,7 @@ namespace FT{
             
             if(_X.isZero(0.0001))
             {
-                params.msg("Setting labels to zero as all features are zero\n", 3);
+                logger.log("Setting labels to zero as all features are zero\n", 3);
                 
                 switch (this->prob_type)
                 {
@@ -300,12 +300,12 @@ namespace FT{
                 p_est->set_labels(some<CRegressionLabels>(SGVector<float64_t>(_y)));
             
             // train ml
-            params.msg("ML training on thread" 
+            logger.log("ML training on thread" 
                        + std::to_string(omp_get_thread_num()) + "...",3," ");       
             // *** Train the model ***  
             p_est->train(features);
 
-            params.msg("done.",3);
+            logger.log("done.",3);
            
             //get output
             SGVector<double> y_pred; 

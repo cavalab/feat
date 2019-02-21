@@ -73,10 +73,10 @@ namespace FT {
             int missteps = 0;
 
             this->epk = n;  // starting learning rate
-            /* params.msg("running backprop on " + ind.get_eqn(), 2); */
-            params.msg("=========================",3);
-            params.msg("Iteration,Train Loss,Val Loss,Weights",3);
-            params.msg("=========================",3);
+            /* logger.log("running backprop on " + ind.get_eqn(), 2); */
+            logger.log("=========================",3);
+            logger.log("Iteration,Train Loss,Val Loss,Weights",3);
+            logger.log("=========================",3);
             for (int x = 0; x < this->iters; x++)
             {
                 /* cout << "get batch\n"; */
@@ -133,13 +133,13 @@ namespace FT {
                 {
                     ++missteps;
                     /* cout << "missteps: " << missteps << "\n"; */
-                    params.msg("",3);           // update learning rate
+                    logger.log("",3);           // update learning rate
                 }
                 if (missteps == patience || std::isnan(min_loss) || std::isinf(min_loss)
                         || min_loss <= NEAR_ZERO)       // early stopping trigger
                     break;
                 else
-                    params.msg("min loss: " + std::to_string(min_loss), 3);
+                    logger.log("min loss: " + std::to_string(min_loss), 3);
 
                 float alpha = float(x)/float(iters);
 
@@ -154,10 +154,10 @@ namespace FT {
                      print_weights(ind.program);
                 }
             }
-            params.msg("",3);
-            params.msg("=========================",3);
-            params.msg("done=====================",3);
-            params.msg("=========================",3);
+            logger.log("",3);
+            logger.log("=========================",3);
+            logger.log("done=====================",3);
+            logger.log("=========================",3);
             ind.program.set_weights(best_weights);
         }
         

@@ -15,6 +15,7 @@ void __attribute__ ((destructor))  dtor()
 {
     exit_shogun();
     FT::Rnd::destroy();
+    FT::Logger::destroy();
 }
 
 using namespace FT;
@@ -411,9 +412,9 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     {
         string dimension;
         dimension = str_dim.substr(0, str_dim.length() - 1);
-        params.msg("STR DIM IS "+ dimension, 2);
-        params.msg("Cols are " + std::to_string(X.rows()), 2);
-        params.msg("Setting dimensionality as " + 
+        logger.log("STR DIM IS "+ dimension, 2);
+        logger.log("Cols are " + std::to_string(X.rows()), 2);
+        logger.log("Setting dimensionality as " + 
                    std::to_string((int)(ceil(stod(dimension)*X.rows()))), 2);
         set_max_dim(ceil(stod(dimension)*X.rows()));
     }
@@ -451,7 +452,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     params.set_terminals(d.o->X.rows(), d.o->Z);        
 
     // initial model on raw input
-    params.msg("Setting up data", 2);
+    logger.log("Setting up data", 2);
     float t0 =  timer.Elapsed().count();
     
     //data for batch training
@@ -473,29 +474,29 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
         params.set_sample_weights(d.t->y); 
     
     // initial model
-    params.msg("Fitting initial model", 2);
+    logger.log("Fitting initial model", 2);
     t0 =  timer.Elapsed().count();
     initial_model(d);  
-    params.msg(std::to_string(timer.Elapsed().count() - t0) + " seconds",2);
+    logger.log(std::to_string(timer.Elapsed().count() - t0) + " seconds",2);
     // initialize population 
-    params.msg("Initializing population", 2);
+    logger.log("Initializing population", 2);
    
     bool random = false;
     if (!p_sel->get_type().compare("random"))
         random = true;
 
     p_pop->init(best_ind,params,random);
-    params.msg("Initial population:\n"+p_pop->print_eqns(),3);
+    logger.log("Initial population:\n"+p_pop->print_eqns(),3);
 
     // resize F to be twice the pop-size x number of samples
     F.resize(d.t->X.cols(),int(2*params.pop_size));
    
     // evaluate initial population
-    params.msg("Evaluating initial population",2);
+    logger.log("Evaluating initial population",2);
     p_eval->fitness(p_pop->individuals,*d.t,F,params);
     
-    params.msg("Initial population done",2);
-    params.msg(std::to_string(timer.Elapsed().count()) + " seconds",2);
+    logger.log("Initial population done",2);
+    logger.log(std::to_string(timer.Elapsed().count()) + " seconds",2);
     
     vector<size_t> survivors;
     
@@ -534,13 +535,13 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     }
     // =====================
     if ( params.max_stall != 0 && stall_count >= params.max_stall)
-        params.msg("learning stalled",2);
+        logger.log("learning stalled",2);
     else if ( g >= params.gens) 
-        params.msg("generation limit reached",2);
+        logger.log("generation limit reached",2);
     else
-        params.msg("max time reached",2);
-    params.msg("best training representation: " + best_ind.get_eqn(),2);
-    params.msg("train score: " + std::to_string(best_score), 2);
+        logger.log("max time reached",2);
+    logger.log("best training representation: " + best_ind.get_eqn(),2);
+    logger.log("train score: " + std::to_string(best_score), 2);
     // evaluate population on validation set
     if (params.split < 1.0)
     {
@@ -555,12 +556,12 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     else
         best_score_v = best_score;
    
-    params.msg("best validation representation: " + best_ind.get_eqn(),2);
-    params.msg("validation score: " + std::to_string(best_score_v), 2);
-    params.msg("fitting final model to all training data...",3);
+    logger.log("best validation representation: " + best_ind.get_eqn(),2);
+    logger.log("validation score: " + std::to_string(best_score_v), 2);
+    logger.log("fitting final model to all training data...",3);
 
     final_model(d);   // fit final model to best features
-    params.msg("\nTotal time taken is " + std::to_string(timer.Elapsed().count()) + "\n", 1);
+    logger.log("\nTotal time taken is " + std::to_string(timer.Elapsed().count()) + "\n", 1);
     
     if (log.is_open())
         log.close();
@@ -576,26 +577,26 @@ void Feat::run_generation(unsigned int g,
     params.set_current_gen(g);
 
     // select parents
-    params.msg("selection..", 3);
+    logger.log("selection..", 3);
     vector<size_t> parents = p_sel->select(*p_pop, F, params);
-    params.msg("parents:\n"+p_pop->print_eqns(), 3);          
+    logger.log("parents:\n"+p_pop->print_eqns(), 3);          
     
     // variation to produce offspring
-    params.msg("variation...", 3);
+    logger.log("variation...", 3);
     p_variation->vary(*p_pop, parents, params,*d.t);
-    params.msg("offspring:\n" + p_pop->print_eqns(true), 3);
+    logger.log("offspring:\n" + p_pop->print_eqns(true), 3);
 
     // evaluate offspring
-    params.msg("evaluating offspring...", 3);
+    logger.log("evaluating offspring...", 3);
     p_eval->fitness(p_pop->individuals, *d.t, F, params, true && !params.use_batch);
     // select survivors from combined pool of parents and offspring
-    params.msg("survival...", 3);
+    logger.log("survival...", 3);
     survivors = p_surv->survive(*p_pop, F, params);
    
     // reduce population to survivors
-    params.msg("shrinking pop to survivors...",3);
+    logger.log("shrinking pop to survivors...",3);
     p_pop->update(survivors);
-    params.msg("survivors:\n" + p_pop->print_eqns(), 3);
+    logger.log("survivors:\n" + p_pop->print_eqns(), 3);
     
     update_best(d);
 
@@ -618,7 +619,7 @@ void Feat::run_generation(unsigned int g,
     if (params.backprop)
     {
         params.bp.learning_rate = (1-1/(1+float(params.gens)))*params.bp.learning_rate;
-        params.msg("learning rate: " + std::to_string(params.bp.learning_rate),3);
+        logger.log("learning rate: " + std::to_string(params.bp.learning_rate),3);
     }
 
 }
@@ -650,7 +651,7 @@ void Feat::update_stall_count(unsigned& stall_count, MatrixXf& F, const DataRef&
         ++stall_count;
     }
 
-    params.msg("stall count: " + std::to_string(stall_count), 2);
+    logger.log("stall count: " + std::to_string(stall_count), 2);
 }
 void Feat::fit(float * X, int rowsX, int colsX, float * Y, int lenY)
 {
@@ -686,7 +687,7 @@ void Feat::final_model(DataRef& d)
     /* params.set_sample_weights(y);   // need to set new sample weights for y, */ 
                                     // which is probably from a validation set
     float score = p_eval->score(d.o->y,yhat,tmp,params.class_weights);
-    params.msg("final_model score: " + std::to_string(score),2);
+    logger.log("final_model score: " + std::to_string(score),2);
 }
 
 void Feat::initial_model(DataRef &d)
@@ -749,8 +750,8 @@ void Feat::initial_model(DataRef &d)
     
     best_ind.fitness = best_score;
     
-    params.msg("initial training score: " +std::to_string(best_score),2);
-    params.msg("initial validation score: " +std::to_string(best_score_v),2);
+    logger.log("initial training score: " +std::to_string(best_score),2);
+    logger.log("initial validation score: " +std::to_string(best_score_v),2);
 }
 
 MatrixXf Feat::transform(MatrixXf& X,
@@ -855,7 +856,7 @@ ArrayXXf Feat::predict_proba_with_z(float * X, int rowsX,int colsX,
 
 void Feat::update_best(const DataRef& d, bool validation)
 {
-    params.msg("updating best..",2);
+    logger.log("updating best..",2);
 
     float bs;
     bs = validation ? best_score_v : best_score ; 
