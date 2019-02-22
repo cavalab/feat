@@ -320,7 +320,7 @@ namespace FT{
             
             size_t end = r.random_choice(roots,child.p); 
             size_t start = child.program.subtree(end);  
-            if (params.verbosity >=3)
+            if (logger.get_log_level() >=3)
             { 
                 std::string s="";
                 for (unsigned i = start; i<=end; ++i) s+= child.program[i]->name + " ";
@@ -411,7 +411,7 @@ namespace FT{
             // make child program by splicing mom and dad
             splice_programs(child.program, mom.program, i1, j1, dad.program, i2, j2 );
                          
-            if (params.verbosity >= 3)
+            if (logger.get_log_level() >= 3)
                 print_cross(mom,i1,j1,dad,i2,j2,child);     
 
             assert(child.program.is_valid_program(params.num_features, params.longitudinalMap));
@@ -492,13 +492,13 @@ namespace FT{
             j2 = dlocs.at(best_corr_idx);
             i2 = dad.program.subtree(j2); 
             
-            if (params.verbosity >= 3)
+            if (logger.get_log_level() >= 3)
                 print_cross(mom,i1,j1,dad,i2,j2,child,false);     
            
             // make child program by splicing mom and dad
             splice_programs(child.program, mom.program, i1, j1, dad.program, i2, j2 );
             
-            if (params.verbosity >= 3)
+            if (logger.get_log_level() >= 3)
                 print_cross(mom,i1,j1,dad,i2,j2,child,true);     
                  
             
@@ -643,13 +643,13 @@ namespace FT{
             }
                     
             /* cout << "child program size: " << child.program.size() << "\n"; */
-            /* if (params.verbosity >= 3) */
+            /* if (logger.get_log_level() >= 3) */
             /*     print_cross(mom,i1,j1,dad,i2,j2,child,false); */     
            
             /* // make child program by splicing mom and dad */
             /* splice_programs(child.program, mom.program, i1, j1, dad.program, i2, j2 ); */
             
-            /* if (params.verbosity >= 3) */
+            /* if (logger.get_log_level() >= 3) */
             /*     print_cross(mom,i1,j1,dad,i2,j2,child,true); */     
 
             /* cout << "asserting validity\n"; */
