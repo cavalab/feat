@@ -16,8 +16,8 @@ namespace FT {
         ////////////////////////////////////////////////////////////////////////////////// Declarations
         
         /*!
-         * @class Rnd
-         * @brief Defines a multi-core random number generator and its operators.
+         * @class Logger
+         * @brief Defines a multi level static logger for feat.
          */
 
         class Logger
