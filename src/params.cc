@@ -38,7 +38,7 @@ namespace FT{
             stagewise_xo(stg_xo),
             softmax_norm(sftmx)
         {
-            logger.set_log_level(verbosity);
+            set_verbosity(verbosity);
             if (fs.empty())
                 fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
                       "logit,tanh,gauss,relu,"
