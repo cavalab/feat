@@ -45,17 +45,17 @@ TEST(Parameters, paramsTests)
 	ASSERT_EQ(ft.params.verbosity, 3);
 	
 	string str1 = "Hello\n";
-	string str2 = ft.params.msg("Hello", 0);
+	string str2 = logger.log("Hello", 0);
 	ASSERT_STREQ(str1.c_str(), str2.c_str());
 	
-	str2 = ft.params.msg("Hello", 2);
+	str2 = logger.log("Hello", 2);
 	ASSERT_STREQ(str1.c_str(), str2.c_str());
 	
-	str2 = ft.params.msg("Hello", 3);
+	str2 = logger.log("Hello", 3);
 	ASSERT_STREQ(str1.c_str(), str2.c_str());
 	
 	ft.params.set_verbosity(2);
 	ASSERT_EQ(ft.params.verbosity, 2);
-	ASSERT_STREQ("", ft.params.msg("Hello", 3).c_str());
+	ASSERT_STREQ("", logger.log("Hello", 3).c_str());
 }
 

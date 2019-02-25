@@ -54,7 +54,7 @@ namespace FT {
                 if (!anychanges)    // then there are no weighted nodes, so break
                     break;
                 // evaluate perturbed program 
-                params.msg("Generating output for " + tmp.get_eqn(), 3);
+                logger.log("Generating output for " + tmp.get_eqn(), 3);
 
                 bool pass = true;
 

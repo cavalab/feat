@@ -14,6 +14,7 @@ license: GNU/GPL v3
 // internal includes
 #include "init.h"
 #include "util/rnd.h"
+#include "util/logger.h"
 #include "util/utils.h"
 #include "util/io.h"
 #include "params.h"
