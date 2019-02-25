@@ -118,10 +118,10 @@ class TestBackProp
             int missteps = 0;
 
             this->epk = n;  // starting learning rate
-            /* params.msg("running backprop on " + ind.get_eqn(), 2); */
-//            params.msg("=========================",3);
-//            params.msg("Iteration,Train Loss,Val Loss,Weights",3);
-//            params.msg("=========================",3);
+            /* logger.log("running backprop on " + ind.get_eqn(), 2); */
+//            logger.log("=========================",3);
+//            logger.log("Iteration,Train Loss,Val Loss,Weights",3);
+//            logger.log("=========================",3);
             for (int x = 0; x < this->iters; x++)
             {
 //                cout << "\n\nIteration " << x << "\n";
@@ -151,18 +151,18 @@ class TestBackProp
                 
                 if (x==0 || current_val_loss < min_loss)
                 {
-//                    params.msg("current value loss: " + std::to_string(current_val_loss), 3);
+//                    logger.log("current value loss: " + std::to_string(current_val_loss), 3);
                     min_loss = current_val_loss;
                     best_weights = ind.program.get_weights();
-//                    params.msg("new min loss: " + std::to_string(min_loss), 3);
+//                    logger.log("new min loss: " + std::to_string(min_loss), 3);
                 }
                 else
                 {
                     ++missteps;
 //                    cout << "missteps: " << missteps << "\n";
-//                    params.msg("current value loss: " + std::to_string(current_val_loss), 3);
-//                    params.msg("new min loss: " + std::to_string(min_loss), 3);
-//                    params.msg("",3);           // update learning rate
+//                    logger.log("current value loss: " + std::to_string(current_val_loss), 3);
+//                    logger.log("new min loss: " + std::to_string(min_loss), 3);
+//                    logger.log("",3);           // update learning rate
                 }
                 
                 /* float alpha = float(x)/float(iters); */
@@ -176,10 +176,10 @@ class TestBackProp
 //                     engine->print_weights(ind.program);
 //                }
             }
-            params.msg("",3);
-            params.msg("=========================",3);
-            params.msg("done=====================",3);
-            params.msg("=========================",3);
+            logger.log("",3);
+            logger.log("=========================",3);
+            logger.log("done=====================",3);
+            logger.log("=========================",3);
             ind.program.set_weights(best_weights);
         }
         

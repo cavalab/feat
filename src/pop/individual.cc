@@ -147,10 +147,10 @@ namespace FT{
         shared_ptr<CLabels> Individual::fit(const Data& d, const Parameters& params, bool& pass)
         {
             // calculate program output matrix Phi
-            params.msg("Generating output for " + get_eqn(), 3);
+            logger.log("Generating output for " + get_eqn(), 3);
             Phi = out(d, params);       
             // calculate ML model from Phi
-            params.msg("ML training on " + get_eqn(), 3);
+            logger.log("ML training on " + get_eqn(), 3);
             ml = std::make_shared<ML>(params);
             
             shared_ptr<CLabels> yh = ml->fit(Phi,d.y,params,pass,dtypes);
@@ -171,7 +171,7 @@ namespace FT{
         shared_ptr<CLabels> Individual::predict(const Data& d, const Parameters& params)
         {
             // calculate program output matrix Phi
-            params.msg("Generating output for " + get_eqn(), 3);
+            logger.log("Generating output for " + get_eqn(), 3);
             // toggle validation
             MatrixXf Phi_pred = out(d, params, true);           // TODO: guarantee this is not changing nodes
 
@@ -183,7 +183,7 @@ namespace FT{
             /*     Phi.row(drop_idx) = VectorXf::Zero(Phi.cols()); */
             /* } */
             // calculate ML model from Phi
-            params.msg("ML predicting on " + get_eqn(), 3);
+            logger.log("ML predicting on " + get_eqn(), 3);
             // assumes ML is already trained
             shared_ptr<CLabels> yhat = ml->predict(Phi_pred);
             return yhat;
@@ -192,7 +192,7 @@ namespace FT{
         VectorXf Individual::predict_drop(const Data& d, const Parameters& params, int drop_idx)
         {
             // calculate program output matrix Phi
-            params.msg("Generating output for " + get_eqn(), 3);
+            logger.log("Generating output for " + get_eqn(), 3);
             // toggle validation
             MatrixXf PhiDrop = Phi;           // TODO: guarantee this is not changing nodes
              
@@ -208,7 +208,7 @@ namespace FT{
                 PhiDrop.row(drop_idx).setZero();
             }
             // calculate ML model from Phi
-            /* params.msg("ML predicting on " + get_eqn(), 3); */
+            /* logger.log("ML predicting on " + get_eqn(), 3); */
             // assumes ML is already trained
             VectorXf yh = ml->predict_vector(PhiDrop);
             return yh;
@@ -232,8 +232,8 @@ namespace FT{
              
             State state;
             
-            params.msg("evaluating program " + get_eqn(),3);
-            params.msg("program length: " + std::to_string(program.size()),3);
+            logger.log("evaluating program " + get_eqn(),3);
+            logger.log("program length: " + std::to_string(program.size()),3);
             // evaluate each node in program
             for (const auto& n : program)
             {
@@ -248,7 +248,7 @@ namespace FT{
             }
             
             // convert state_f to Phi
-            params.msg("converting State to Phi",3);
+            logger.log("converting State to Phi",3);
             int cols;
             
             if (state.f.size()==0)
@@ -315,8 +315,8 @@ namespace FT{
              */
 
             State state;
-            params.msg("evaluating program " + get_eqn(),3);
-            params.msg("program length: " + std::to_string(program.size()),3);
+            logger.log("evaluating program " + get_eqn(),3);
+            logger.log("program length: " + std::to_string(program.size()),3);
             // to minimize copying overhead, set the state size to the maximum it will reach for the
             // program 
             std::map<char, size_t> state_size = get_max_state_size();
@@ -366,7 +366,7 @@ namespace FT{
             /*     std::cout << "\n\n"; */
             /* } */
             // convert state_f to Phi
-            params.msg("converting State to Phi",3);
+            logger.log("converting State to Phi",3);
             int cols;
             
             if (state.f.size()==0)
@@ -436,8 +436,8 @@ namespace FT{
              */
 
             State state;
-            params.msg("evaluating program " + program_str(),3);
-            /* params.msg("program length: " + std::to_string(program.size()),3); */
+            logger.log("evaluating program " + program_str(),3);
+            /* logger.log("program length: " + std::to_string(program.size()),3); */
 
             vector<size_t> roots = program.roots();
             /* cout << "roots: " ; */
@@ -487,7 +487,7 @@ namespace FT{
             }
             
             // convert state_f to Phi
-            params.msg("converting State to Phi",3);
+            logger.log("converting State to Phi",3);
             int cols;
             if (state.f.size()==0)
             {
@@ -553,8 +553,8 @@ namespace FT{
              */
 
             State state;
-            /* params.msg("evaluating program " + get_eqn(),3); */
-            /* params.msg("program length: " + std::to_string(program.size()),3); */
+            /* logger.log("evaluating program " + get_eqn(),3); */
+            /* logger.log("program length: " + std::to_string(program.size()),3); */
             
             std::map<char, size_t> state_size = get_max_state_size();
             // set the device based on the thread number
@@ -607,7 +607,7 @@ namespace FT{
             state.copy_to_host();
             
             // convert state_f to Phi
-            params.msg("converting State to Phi",3);
+            logger.log("converting State to Phi",3);
             int cols;
             
             if (state.f.size()==0)

@@ -59,7 +59,7 @@ namespace FT{
                 if (params.backprop)
                 {
                     AutoBackProp backprop(params.scorer, params.bp.iters, params.bp.learning_rate);
-                    params.msg("Running backprop on " + ind.get_eqn(), 3);
+                    logger.log("Running backprop on " + ind.get_eqn(), 3);
                     backprop.run(ind, d, params);
                 }         
 
@@ -67,7 +67,7 @@ namespace FT{
 
                 shared_ptr<CLabels> yhat = validation? ind.predict(d,params) : ind.fit(d,params,pass); 
                 // assign F and aggregate fitness
-                params.msg("Assigning fitness to " + ind.get_eqn(), 3);
+                logger.log("Assigning fitness to " + ind.get_eqn(), 3);
 
                 if (!pass)
                 {
@@ -134,7 +134,7 @@ namespace FT{
                 
             F.col(ind.loc) = loss;  
             
-            params.msg("ind " + std::to_string(ind.loc) + " fitness: " + std::to_string(ind.fitness),3);
+            logger.log("ind " + std::to_string(ind.loc) + " fitness: " + std::to_string(ind.fitness),3);
         }
     }
 

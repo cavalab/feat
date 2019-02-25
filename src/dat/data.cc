@@ -5,6 +5,7 @@ license: GNU/GPL v3
 
 #include "data.h"
 #include "../util/rnd.h"
+#include "../util/logger.h"
 
 //#include "node/node.h"
 //external includes
@@ -187,10 +188,7 @@ namespace FT{
         
         void DataRef::split_stratified(float split)
         {
-            cout << "Stratify split called with initial data size as " << o->X.cols() << endl;
-//            cout << o->X.rows() << "\t" << o->X.cols() << "\t" << o->y.size()<< endl;
-//            
-//            cout << "Split is " << split << endl;
+            logger.log("Stratify split called with initial data size as " + o->X.cols(), 3);
                             
             std::map<float, vector<int>> label_indices;
                 
@@ -216,11 +214,10 @@ namespace FT{
                 for(; x < it->second.size(); x++)
                     v_indices.push_back(it->second[x]);
                 
-                cout << "Label is " << it->first << "\t";
-                cout << "Total size = "<<it->second.size() << "\t";             
-                cout << "training_size = " << t_size << "\t";
-                cout << "verification size = " << it->second.size() - t_size << endl << endl;
-//                cout << "v_size = " << v_indices.size() << endl << endl;
+                logger.log("Label is " + to_string(it->first), 3, "\t");
+                logger.log("Total size = " + it->second.size(), 3, "\t");
+                logger.log("training_size = " + t_size, 3, "\t");
+                logger.log("verification size = " + (it->second.size() - t_size), 3, "\t");
                 
             }
             

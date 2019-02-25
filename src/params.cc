@@ -65,23 +65,9 @@ namespace FT{
     {
         if (!ml.compare("LinearRidgeRegression") && classification)
         {
-            msg("Setting ML type to LR",3);
+            logger.log("Setting ML type to LR",3);
             ml = "LR";            
         }
-    }
-    
-    /// print message with verbosity control. 
-    string Parameters::msg(string m, int v, string sep) const
-    {
-        /* prints messages based on verbosity level. */
-	string msg = "";
-	
-        if (verbosity >= v)
-        {
-            std::cout << m << sep;
-            msg += m+sep;
-        }
-        return msg;
     }
   
     /// sets current generation
@@ -110,7 +96,7 @@ namespace FT{
         }
         else
             scorer = sc;
-        msg("scorer set to " + scorer,3);
+        logger.log("scorer set to " + scorer,3);
     }
     
     /// sets weights for terminals. 
@@ -155,7 +141,7 @@ namespace FT{
             weights += std::to_string(tw)+" ";
         weights += "\n";
         
-        msg(weights, 3);
+        logger.log(weights, 3);
     }
     
     void Parameters::updateSize()
@@ -176,18 +162,6 @@ namespace FT{
     	this->max_dim = max_dim;
     	updateSize();
     }
-    
-    void Parameters::set_verbosity(int verbosity)
-    {
-        if(verbosity <=3 && verbosity >=0)
-            this->verbosity = verbosity;
-        else
-        {
-            HANDLE_ERROR_NO_THROW("'" + std::to_string(verbosity) + "' is not a valid verbosity. Setting to default 2\n");
-            HANDLE_ERROR_NO_THROW("Valid Values :\n\t0 - none\n\t1 - progress\n\t2 - minimal\n\t3 - all");
-            this->verbosity = 2;
-        }
-    } 
 
     void Parameters::set_otype(char ot){ otype = ot; set_otypes();}
     
@@ -217,12 +191,12 @@ namespace FT{
                 // if terminals are all boolean, remove floating point functions
                 if (ttypes.size()==1 && ttypes[0]=='b')
                 {
-                    msg("otypes is size 1 and otypes[0]==b\nerasing functions...\n",2);
+                    logger.log("otypes is size 1 and otypes[0]==b\nerasing functions...\n",2);
                     size_t n = functions.size();
                     for (vector<int>::size_type i =n-1; 
                          i != (std::vector<int>::size_type) -1; i--){
                         if (functions.at(i)->arity['f'] >0){
-                            msg("erasing function " + functions.at(i)->name + "\n", 2);
+                            logger.log("erasing function " + functions.at(i)->name + "\n", 2);
                             functions.erase(functions.begin()+i);
                         }
                     }
@@ -243,7 +217,7 @@ namespace FT{
                     for (vector<int>::size_type i =n-1; 
                          i != (std::vector<int>::size_type) -1; i--){
                         if (functions.at(i)->arity['c'] >0){
-                            msg("erasing function " + functions.at(i)->name + "\n", 2);
+                            logger.log("erasing function " + functions.at(i)->name + "\n", 2);
                             functions.erase(functions.begin()+i);
                         }
                     }
@@ -493,11 +467,13 @@ namespace FT{
 
             fs.erase(0, pos + delim.length());
         } 
-        if (verbosity > 2){
-            std::cout << "functions set to [";
-            for (const auto& f: functions) std::cout << f->name << ", "; 
-            std::cout << "]\n";
-        }
+        
+        string log_msg = "functions set to [";
+        for (const auto& f: functions) log_msg += f->name + ", "; 
+        log_msg += "]\n";
+        
+        logger.log(log_msg, 2);
+        
         // reset output types
         set_otypes();
     }
@@ -552,6 +528,12 @@ namespace FT{
             objectives.push_back(token);
             obj.erase(0, pos + delim.length());
         }
+    }
+    
+    void Parameters::set_verbosity(int verbosity)
+    {
+        this->verbosity = verbosity;
+        logger.set_log_level(verbosity);
     }
 
     void Parameters::set_classes(VectorXf& y)

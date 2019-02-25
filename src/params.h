@@ -7,7 +7,7 @@ license: GNU/GPL v3
 // internal includes
 #include "pop/nodewrapper.h"
 #include "pop/nodevector.h"
-
+#include "util/logger.h"
 #include "util/utils.h"
 
 namespace FT{
@@ -98,9 +98,6 @@ namespace FT{
          *  for classification, check clases and find number.
          */
         void init();
-        
-        /// print message with verbosity control. 
-        string msg(string m, int v, string sep="\n") const;
       
         /// sets current generation
         void set_current_gen(int g);
