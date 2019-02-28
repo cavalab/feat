@@ -432,7 +432,19 @@ namespace FT
         float bal_zero_one_loss_label(const VectorXf& y, const shared_ptr<CLabels>& labels, 
                                        VectorXf& loss, const vector<float>& class_weights)
         {
-            SGVector<double> _tmp = dynamic_pointer_cast<sh::CMulticlassLabels>(labels)->get_labels();
+        
+            SGVector<double> _tmp;
+            
+            auto ptrmulticast = dynamic_pointer_cast<sh::CMulticlassLabels>(labels);
+            
+            if(ptrmulticast == NULL)
+            {
+                auto ptrbinary = dynamic_pointer_cast<sh::CBinaryLabels>(labels);
+                _tmp = ptrbinary->get_labels();
+            }
+            else
+                _tmp = ptrmulticast->get_labels();
+                
             SGVector<float> tmp(_tmp.begin(), _tmp.end());
             Map<VectorXf> yhat(tmp.data(),tmp.size());
 
