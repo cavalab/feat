@@ -121,7 +121,7 @@ namespace FT{
         // normalize weights to one
         for (unsigned i = 0; i < aw.size(); ++i)
         { 
-            aw[i] = aw[i]/sum;
+            aw[i] = aw[i]/sum;  // awesome!
         }
         int x = 0;
         // assign transformed weights as terminal weights
@@ -131,7 +131,7 @@ namespace FT{
                 term_weights.push_back(u);
             else
             {
-                term_weights.push_back(u + feedback*(aw[x]-u));
+                term_weights.push_back((1-feedback)*u + feedback*aw[x]);
                 x++;
             }
         }
@@ -225,7 +225,6 @@ namespace FT{
                 break;
             }
         }
-
     }
     
     std::unique_ptr<Node> Parameters::createNode(string str,
@@ -478,11 +477,96 @@ namespace FT{
         set_otypes();
     }
 
+    void Parameters::set_op_weights()
+    {
+        /*!
+         * sets operator weights proportionately to the number of variables of each type that they
+         * operate on in the input data. 
+         * depends on terminals already beeing set.
+         */
+        
+        // 
+        // first, count up the instances of each type of terminal. 
+        // 
+        int b_count = 0;
+        int c_count = 0;
+        int f_count = 0;
+        int z_count = 0;
+        int total_terms = 0;
+
+        for (const auto& term : terminals)
+        {
+            switch (term->otype)
+            {
+                case 'b':
+                    ++b_count; 
+                    break;
+                case 'c':
+                    ++c_count; 
+                    break;
+                case 'f':
+                    ++f_count; 
+                    break;
+                case 'z':
+                    ++z_count; 
+                    break;
+            }
+            ++total_terms;
+        }
+        cout << "b_count: " << b_count << "\n";
+        cout << "c_count: " << c_count << "\n";
+        cout << "f_count: " << f_count << "\n";
+        cout << "z_count: " << z_count << "\n";
+        cout << "total_count: " << total_terms << "\n";
+        // 
+        // next, calculate the operator weights.
+        // an operators weight is defined as 
+        //      1/total_args * sum ([arg_type]_count/total_terminals) 
+        // summed over each arg the operator takes
+        //
+        op_weights.clear();
+        int i = 0;
+        for (const auto& op : functions)
+        {
+            op_weights.push_back(0.0);
+            int total_args = 0;
+            for (auto& kv : op->arity) 
+            {
+                cout << "operator: " << op->name << "\n";
+                cout << "kv.first: " << kv.first << ", kv.second: " << kv.second << "\n";
+                switch (kv.first) // kv.first is the arity type (character)
+                {
+                    case 'b':
+                        for (unsigned j = 0; j < kv.second; ++j)
+                            op_weights.at(i) += float(b_count)/float(total_terms); 
+                        break;
+                    case 'c':
+                        for (unsigned j = 0; j < kv.second; ++j)
+                            op_weights.at(i) += float(c_count)/float(total_terms); 
+                        break;
+                    case 'f':
+                        for (unsigned j = 0; j < kv.second; ++j)
+                            op_weights.at(i) += float(f_count)/float(total_terms); 
+                        break;
+                    case 'z':
+                        for (unsigned j = 0; j < kv.second; ++j)
+                            op_weights.at(i) += float(z_count)/float(total_terms); 
+                        break;
+                }
+                total_args += kv.second;
+            }
+            op_weights.at(i) /= float(total_args);
+            cout << "=> weight: " << op_weights.at(i) << "\n";
+            ++i;
+        }
+
+    }
     void Parameters::set_terminals(int nf,
                                    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
     {
         /*!
-         * based on number of features.
+         * defines terminals using nf (number of features) as well as Z data directly
+         * sets operator types and op_weights as well
          */
         terminals.clear();
         num_features = nf; 
@@ -510,6 +594,7 @@ namespace FT{
         set_ttypes();
         
         set_otypes(true);
+        set_op_weights();
     }
 
     void Parameters::set_objectives(string obj)

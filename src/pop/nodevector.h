@@ -56,11 +56,15 @@ namespace FT{
        
             void make_tree(const NodeVector& functions, 
                            const NodeVector& terminals, int max_d,  
-                           const vector<float>& term_weights, char otype, const vector<char>& term_types);
+                           const vector<float>& term_weights, 
+                           const vector<float>& op_weights, 
+                           char otype, const vector<char>& term_types);
 
             void make_program(const NodeVector& functions, 
                               const NodeVector& terminals, int max_d, 
-                              const vector<float>& term_weights, int dim, char otype, 
+                              const vector<float>& term_weights, 
+                              const vector<float>& op_weights, 
+                              int dim, char otype, 
                               vector<string> longitudinalMap, const vector<char>& term_types);
             
         }; //NodeVector
