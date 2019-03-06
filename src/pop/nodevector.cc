@@ -215,6 +215,7 @@ namespace FT{
         void NodeVector::make_tree(const NodeVector& functions, 
                                    const NodeVector& terminals, int max_d,  
                                    const vector<float>& term_weights,
+                                   const vector<float>& op_weights,
                                    char otype, const vector<char>& term_types)
         {  
                     
@@ -272,6 +273,7 @@ namespace FT{
                 // let fi be indices of functions whose output type matches otype and, if max_d==1,
                 // with no boolean inputs (assuming all input data is floating point) 
                 vector<size_t> fi;
+                vector<size_t> fw;  // function weights
                 bool fterms = in(term_types, 'f');   // are there floating terminals?
                 bool bterms = in(term_types, 'b');   // are there boolean terminals?
                 bool cterms = in(term_types, 'c');   // are there categorical terminals?
@@ -286,18 +288,21 @@ namespace FT{
                         (max_d>1 || functions[i]->arity['z']==0 || zterms))
                     {
                         fi.push_back(i);
+                        fw.push_back(op_weights.at(i));
                     }
                 
                 if (fi.size()==0){
 
                     if(otype == 'z')
                     {
-                        make_tree(functions, terminals, 0, term_weights, 'z', term_types);
+                        make_tree(functions, terminals, 0, term_weights, op_weights, 'z', 
+                                  term_types);
                         return;
                     }
                     else if (otype == 'c')
                     {
-                        make_tree(functions, terminals, 0, term_weights, 'c', term_types);
+                        make_tree(functions, terminals, 0, term_weights, op_weights, 'c', 
+                                  term_types);
                         return;
                     }
                     else{            
@@ -323,20 +328,24 @@ namespace FT{
                 /* for (const auto& fis : fi) */
                 /*     cout << functions[fis]->name << "," ; */
                 /* cout << "\n"; */
-                push_back(functions[r.random_choice(fi)]->rnd_clone());
+                push_back(functions[r.random_choice(fi,fw)]->rnd_clone());
                 
                 /* std::cout << "back(): " << back()->name << "\n"; */ 
                 std::unique_ptr<Node> chosen(back()->clone());
                 /* std::cout << "chosen: " << chosen->name << "\n"; */ 
                 // recurse to fulfill the arity of the chosen function
                 for (size_t i = 0; i < chosen->arity['f']; ++i)
-                    make_tree(functions, terminals, max_d-1, term_weights, 'f', term_types);
+                    make_tree(functions, terminals, max_d-1, term_weights, op_weights, 'f', 
+                              term_types);
                 for (size_t i = 0; i < chosen->arity['b']; ++i)
-                    make_tree(functions, terminals, max_d-1, term_weights, 'b', term_types);
+                    make_tree(functions, terminals, max_d-1, term_weights, op_weights, 'b', 
+                              term_types);
                 for (size_t i = 0; i < chosen->arity['c']; ++i)
-                    make_tree(functions, terminals, max_d-1, term_weights, 'c', term_types);
+                    make_tree(functions, terminals, max_d-1, term_weights, op_weights, 'c', 
+                              term_types);
                 for (size_t i = 0; i < chosen->arity['z']; ++i)
-                    make_tree(functions, terminals, max_d-1, term_weights, 'z', term_types);
+                    make_tree(functions, terminals, max_d-1, term_weights, op_weights, 'z', 
+                              term_types);
             }
             
             /* std::cout << "finished program: ["; */
@@ -345,11 +354,13 @@ namespace FT{
 
         void NodeVector::make_program(const NodeVector& functions, 
                                       const NodeVector& terminals, int max_d, 
-                                      const vector<float>& term_weights, int dim, char otype, 
+                                      const vector<float>& term_weights, 
+                                      const vector<float>& op_weights, 
+                                      int dim, char otype, 
                                       vector<string> longitudinalMap, const vector<char>& term_types)
         {
             for (unsigned i = 0; i<dim; ++i)    // build trees
-                make_tree(functions, terminals, max_d, term_weights, otype, term_types);
+                make_tree(functions, terminals, max_d, term_weights, op_weights, otype, term_types);
             
             // reverse program so that it is post-fix notation
             std::reverse(begin(), end());
