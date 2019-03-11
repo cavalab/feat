@@ -71,9 +71,15 @@ namespace FT{
                     depth =  r.rnd_int(1, params.max_depth);
                 // make a program for each individual
                 char ot = r.random_choice(params.otypes);
-                individuals[i].program.make_program(params.functions, params.terminals, depth,
-                             params.term_weights,params.op_weights, dim, ot, 
-                             params.longitudinalMap, params.ttypes);
+                individuals[i].program.make_program(params.functions, 
+                                                    params.terminals, 
+                                                    depth,
+                                                    params.term_weights,
+                                                    params.op_weights, 
+                                                    dim, 
+                                                    ot, 
+                                                    params.longitudinalMap, 
+                                                    params.ttypes);
                 
                 /* std::cout << individuals[i].program_str() + " -> "; */
                 /* std::cout << individuals[i].get_eqn() + "\n"; */

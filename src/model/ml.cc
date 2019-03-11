@@ -24,9 +24,10 @@ namespace FT{
             ml_hash["RandomForest"] = RF;
             ml_hash["CART"] = CART;
             ml_hash["LR"] = LR;
+            ml_hash["RF"] = RF;
 
             ml_str  = params.ml;
-            ml_type = ml_hash[params.ml];
+            this->ml_type = ml_hash[params.ml];
             
             this->prob_type = PT_REGRESSION;
             max_train_time=30; 
@@ -305,21 +306,28 @@ namespace FT{
             // *** Train the model ***  
             p_est->train(features);
 
-            logger.log("done.",3);
+            logger.log("done!",3);
            
             //get output
             SGVector<double> y_pred; 
-            
+            bool tmp =  this->prob_type==PT_BINARY; 
+            bool tmp2 = this->ml_type == RF; 
+            /* cout << "this->prob_type==PT_BINARY: " << tmp << "\n"; */
+            /* cout << "this->ml_type == RF: " << tmp2 << "\n"; */
+            /* cout << "this->ml_type: " << this->ml_type  << "\n"; */
             if (this->prob_type==PT_BINARY && 
                  (ml_type == LR || ml_type == SVM || ml_type == CART || ml_type == RF)     // binary classification
                 )
             {
                 bool proba = params.scorer.compare("log")==0;
 
+                /* cout << "apply binary\n"; */
                 labels = shared_ptr<CLabels>(p_est->apply_binary(features));
+                /* cout << "apply binary done\n"; */
 
                 if (proba)
                 {
+                    /* cout << "set probs\n"; */
                     if (ml_type == CART)
                     {
                         dynamic_pointer_cast<sh::CMyCARTree>(p_est)->
@@ -335,6 +343,7 @@ namespace FT{
                         dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->
                             set_probabilities(labels.get(), features);
                     }
+                    /* cout << "set probs done\n"; */
                 }
                 y_pred = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_labels();
 			    /* cout << "y_pred: "; */
@@ -347,6 +356,7 @@ namespace FT{
             }
             else if (params.classification)                         // multiclass classification
             {
+                /* cout << "applying multiclass\n"; */
                 labels = shared_ptr<CLabels>(p_est->apply_multiclass(features));
                 y_pred = dynamic_pointer_cast<sh::CMulticlassLabels>(labels)->get_labels();
             }
@@ -366,7 +376,7 @@ namespace FT{
 
             if (isinf(yhat.array()).any() || isnan(yhat.array()).any() || yhat.size()==0)
                 pass = false;
-            
+            /* cout << "exiting ml::fit\n"; */ 
             return labels;
         }
 

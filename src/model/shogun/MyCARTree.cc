@@ -121,7 +121,9 @@ CBinaryLabels* CMyCARTree::apply_binary(CFeatures* data)
 
     REQUIRE(current, "Tree machine not yet trained.\n");
     CLabels* ret=apply_from_current_node(dynamic_cast<CDenseFeatures<float64_t>*>(data), current, true);
-    SGVector<double> tmp = dynamic_cast<CMulticlassLabels*>(ret)->get_labels(); 
+
+    SGVector<double> tmp = dynamic_cast<CDenseLabels*>(ret)->get_labels(); 
+    /* std::cout << "cast to CBinaryLabels()\n"; */ 
     CBinaryLabels* retbc = new CBinaryLabels(tmp,0.5);
     /* cout << "retbc: " << retbc << "\n"; */
     /* auto tmpb = retbc->get_labels(); */

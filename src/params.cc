@@ -104,43 +104,53 @@ namespace FT{
     {           
         /* cout << "weights: "; for (auto tmp : w) cout << tmp << " " ; cout << "\n"; */ 
         string weights;
-        float u = 1.0/float(w.size());
+        float u = 1.0/float(terminals.size());
         term_weights.clear();
-
-        // take abs value of weights
-        vector<float> aw = w;
-        float sum = 0;
-        for (unsigned i = 0; i < aw.size(); ++i)
-        { 
-            aw[i] = fabs(aw[i]); 
-            sum += aw[i];
-        }
-        // softmax transform values
-        /* vector<float> sw = softmax(aw); */
-        /* cout << "sw: "; for (auto tmp : sw) cout << tmp << " " ; cout << "\n"; */ 
-        // normalize weights to one
-        for (unsigned i = 0; i < aw.size(); ++i)
-        { 
-            aw[i] = aw[i]/sum;  // awesome!
-        }
-        int x = 0;
-        // assign transformed weights as terminal weights
-        for (unsigned i = 0; i < terminals.size(); ++i)
+        if (w.empty())  // set all weights uniformly
         {
-            if(terminals[i]->otype == 'z')
+            for (unsigned i = 0; i < terminals.size(); ++i)
                 term_weights.push_back(u);
-            else
-            {
-                term_weights.push_back((1-feedback)*u + feedback*aw[x]);
-                x++;
-            }
         }
-           
+        else
+        {
+            // take abs value of weights
+            vector<float> aw = w;
+            float weighted_proportion = float(w.size())/float(terminals.size());
+            float sum = 0;
+            for (unsigned i = 0; i < aw.size(); ++i)
+            { 
+                aw[i] = fabs(aw[i]); 
+                sum += aw[i];
+            }
+            // normalize weights to one
+            for (unsigned i = 0; i < aw.size(); ++i)
+            { 
+                aw[i] = aw[i]/sum*weighted_proportion;  // awesome!
+            }
+            int x = 0;
+            // assign transformed weights as terminal weights
+            for (unsigned i = 0; i < terminals.size(); ++i)
+            {
+                if(terminals[i]->otype == 'z')
+                    term_weights.push_back(u);
+                else
+                {
+                    term_weights.push_back((1-feedback)*u + feedback*aw[x]);
+                    ++x;
+                }
+            }
+               
+        }
         weights = "term weights: ";
         for (auto tw : term_weights)
             weights += std::to_string(tw)+" ";
         weights += "\n";
-        
+        cout << "terminal weights: " ; 
+        for (unsigned i = 0; i < terminals.size(); ++i)
+        {
+            cout << "(" << terminals.at(i)->name << "," << term_weights.at(i) << "), " ; 
+        }
+        cout << "\n";
         logger.log(weights, 3);
     }
     
@@ -513,11 +523,6 @@ namespace FT{
             }
             ++total_terms;
         }
-        cout << "b_count: " << b_count << "\n";
-        cout << "c_count: " << c_count << "\n";
-        cout << "f_count: " << f_count << "\n";
-        cout << "z_count: " << z_count << "\n";
-        cout << "total_count: " << total_terms << "\n";
         // 
         // next, calculate the operator weights.
         // an operators weight is defined as 
@@ -532,8 +537,6 @@ namespace FT{
             int total_args = 0;
             for (auto& kv : op->arity) 
             {
-                cout << "operator: " << op->name << "\n";
-                cout << "kv.first: " << kv.first << ", kv.second: " << kv.second << "\n";
                 switch (kv.first) // kv.first is the arity type (character)
                 {
                     case 'b':
@@ -556,9 +559,12 @@ namespace FT{
                 total_args += kv.second;
             }
             op_weights.at(i) /= float(total_args);
-            cout << "=> weight: " << op_weights.at(i) << "\n";
             ++i;
         }
+        cout << "op_weights: " ;
+        for (auto ow : op_weights)
+            cout << ow << ", " ; 
+        cout << "\n";
 
     }
     void Parameters::set_terminals(int nf,

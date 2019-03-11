@@ -320,20 +320,6 @@ std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>> Feat::get_Z(string
     std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z;
     vector<int> ids(idx,idx+idx_size);
     load_partial_longitudinal(s,Z,',',ids);
-    /* for (auto& z : Z){ */
-    /*     reorder_longitudinal(z.second.first, ids); */
-    /*     reorder_longitudinal(z.second.second, ids); */
-    /* } */
-    /* cout << "Z:\n"; */
-    /* for (auto& z : Z) */
-    /* { */
-    /*     cout << z.first << "\n"; */
-    /*     for (unsigned i = 0; i < z.second.first.size(); ++i) */
-    /*     { */
-    /*         cout << "value: " << z.second.first.at(i).matrix().transpose() << "\n"; */
-    /*         cout << "time: " << z.second.second.at(i).matrix().transpose() << "\n"; */
-    /*     } */
-    /* } */
         
     return Z;
 }
@@ -558,13 +544,14 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
    
     logger.log("best validation representation: " + best_ind.get_eqn(),2);
     logger.log("validation score: " + std::to_string(best_score_v), 2);
-    logger.log("fitting final model to all training data...",3);
+    logger.log("fitting final model to all training data...",2);
 
     final_model(d);   // fit final model to best features
     logger.log("\nTotal time taken is " + std::to_string(timer.Elapsed().count()) + "\n", 1);
     
     if (log.is_open())
         log.close();
+    cout << "exiting\n";
 }
 
 void Feat::run_generation(unsigned int g,
@@ -722,16 +709,46 @@ void Feat::initial_model(DataRef &d)
             j=i;
         best_ind.program.push_back(params.terminals.at(j)->clone());
     }
+    // if there is longitudinal data, initialize the model with median values applied to those
+    // variables.
+    int n_long_feats = std::min(params.max_dim - n_feats, unsigned(d.t->Z.size()));
+    int n_x = d.t->X.rows();
+    cout << "n_long_feats: " << n_long_feats << "\n";
+    vector<size_t> zvar_idx(d.t->Z.size());
+    std::iota(zvar_idx.begin(),zvar_idx.end(),0);
     
+    for (unsigned i =0; i<n_long_feats; ++i)
+    {
+        if (n_long_feats < d.t->Z.size())
+        {
+            vector<size_t> choice_idxs(d.t->Z.size()-i);
+            std::iota(choice_idxs.begin(),choice_idxs.end(),0);
+            /* cout << "choice_idxs: "; */
+            /* for (auto c : choice_idxs) cout << c << ","; cout << "\n"; */
+            size_t idx = r.random_choice(choice_idxs);
+            /* cout << "idx: " << idx << "\n"; */
+            j = zvar_idx.at(idx);
+            /* cout << "j: " << j << "\n"; */
+            zvar_idx.erase(zvar_idx.begin() + idx);
+        }
+        else 
+            j=i;
+        best_ind.program.push_back(params.terminals.at(n_x + j)->clone());
+        best_ind.program.push_back(std::unique_ptr<Node>(new NodeMedian()));
+    }
+    //
+    cout << "initial model: " << best_ind.get_eqn();
+    //
     bool pass = true;
     shared_ptr<CLabels> yhat = best_ind.fit(*d.t,params,pass);
     
     // set terminal weights based on model
     vector<float> w;
-    if (n_feats == d.t->X.rows())
+    if (n_feats + n_long_feats == d.t->X.rows() + d.t->Z.size())
         w = best_ind.ml->get_weights();
-    else
-        w = vector<float>(d.t->X.rows(),1.0);
+    /* else */
+    /*     w = vector<float>(d.t->X.rows()+d.t->Z.size(), */
+    /*                       1.0/float(params.terminals.size())); */
         
     
     params.set_term_weights(w);

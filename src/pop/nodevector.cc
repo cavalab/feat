@@ -248,8 +248,8 @@ namespace FT{
                         
                 }
                 /* cout << "valid terminals: "; */
-                /* for (const auto& i : ti) */ 
-                /*     cout << terminals[i]->name << "(" << terminals[i]->otype << ", " */ 
+                /* for (unsigned i = 0; i < ti.size(); ++i) */ 
+                /*     cout << terminals[ti[i]]->name << "(" << terminals[ti[i]]->otype << ", " */ 
                 /*          << tw[i] << "), "; */ 
                 /* cout << "\n"; */
                 
@@ -273,7 +273,7 @@ namespace FT{
                 // let fi be indices of functions whose output type matches otype and, if max_d==1,
                 // with no boolean inputs (assuming all input data is floating point) 
                 vector<size_t> fi;
-                vector<size_t> fw;  // function weights
+                vector<float> fw;  // function weights
                 bool fterms = in(term_types, 'f');   // are there floating terminals?
                 bool bterms = in(term_types, 'b');   // are there boolean terminals?
                 bool cterms = in(term_types, 'c');   // are there categorical terminals?
@@ -322,17 +322,21 @@ namespace FT{
                 assert(fi.size() > 0 && "The operator set specified results in incomplete programs.");
                 
                 // append a random choice from fs            
-                /* auto t = functions[r.random_choice(fi)]->rnd_clone(); */
-                //std::cout << t->name << " ";
-                /* cout << "choices: \n"; */
-                /* for (const auto& fis : fi) */
-                /*     cout << functions[fis]->name << "," ; */
+                /* cout << "function choices: \n"; */
+                /* for (unsigned fis =0; fis < fi.size(); ++fis) */
+                /*     cout << "(" << functions[fi[fis]]->name << "," << fw[fis] << ") ,"; */
                 /* cout << "\n"; */
+                
                 push_back(functions[r.random_choice(fi,fw)]->rnd_clone());
                 
                 /* std::cout << "back(): " << back()->name << "\n"; */ 
                 std::unique_ptr<Node> chosen(back()->clone());
                 /* std::cout << "chosen: " << chosen->name << "\n"; */ 
+                /* std::cout << "continue?" ; */
+                /* int cont = 0; */
+                /* std::cin >>  cont ; */ 
+                /* if (cont != 1) */
+                /*     HANDLE_ERROR_THROW("exiting"); */
                 // recurse to fulfill the arity of the chosen function
                 for (size_t i = 0; i < chosen->arity['f']; ++i)
                     make_tree(functions, terminals, max_d-1, term_weights, op_weights, 'f', 

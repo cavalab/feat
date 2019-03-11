@@ -25,6 +25,7 @@ license: GNU/GPL v3
 #include "model/ml.h"
 #include "pop/op/node.h"
 #include "pop/archive.h" 
+#include "pop/op/longitudinal/n_median.h"
 
 #ifdef USE_CUDA
     #include "pop/cuda-op/cuda_utils.h" 
