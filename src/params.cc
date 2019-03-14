@@ -623,8 +623,8 @@ namespace FT{
     
     void Parameters::set_verbosity(int verbosity)
     {
-        this->verbosity = verbosity;
         logger.set_log_level(verbosity);
+        this->verbosity = verbosity;
     }
 
     void Parameters::set_classes(VectorXf& y)
