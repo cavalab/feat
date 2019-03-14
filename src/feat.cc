@@ -50,6 +50,8 @@ Feat::Feat(int pop_size, int gens, string ml,
     
     if (GPU)
         initialize_cuda();
+    // set Feat's Normalizer to only normalize floats
+    N.scale_all = false;
 }
 
 /// set size of population 
@@ -223,8 +225,6 @@ string Feat::get_model()
 {   
     vector<string> features = best_ind.get_features();
     vector<float> weights = best_ind.ml->get_weights();
-    
-    cout << "Weights are \n";
     
     for(int x = 0; x < weights.size(); x++)
         cout << weights[x] << "\t";

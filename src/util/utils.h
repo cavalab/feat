@@ -142,10 +142,12 @@ namespace FT{
         /// normalizes a matrix to unit variance, 0 mean centered.
         struct Normalizer
         {
+            Normalizer(bool sa=true): scale_all(sa) {};
             vector<float> scale;
             vector<float> offset;
             vector<char> dtypes;
-
+            bool scale_all;
+            
             /// fit the scale and offset of data. 
             void fit(MatrixXf& X, const vector<char>& dt);
             
