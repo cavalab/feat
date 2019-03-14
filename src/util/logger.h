@@ -28,7 +28,7 @@ namespace FT {
                 
                 static void destroy();
 
-                void set_log_level(int verbosity);
+                void set_log_level(int& verbosity);
                 
                 int get_log_level();
                 
