@@ -224,7 +224,7 @@ namespace FT{
             }
               
         }
-        
+      
         /// normalize matrix.
         void Normalizer::normalize(MatrixXf& X)
         {  
@@ -236,7 +236,8 @@ namespace FT{
                     X.row(i) = VectorXf::Zero(X.row(i).size());
                     continue;
                 }
-                if (dtypes.at(i)=='f')   // skip binary and categorical rows
+                // scale, potentially skipping binary and categorical rows
+                if (this->scale_all || dtypes.at(i)=='f')                   
                 {
                     X.row(i) = X.row(i).array() - offset.at(i);
                     if (scale.at(i) > NEAR_ZERO)
