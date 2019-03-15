@@ -65,7 +65,7 @@ namespace FT{
     {
         if (!ml.compare("LinearRidgeRegression") && classification)
         {
-            logger.log("Setting ML type to LR",3);
+            logger.log("Setting ML type to LR",2);
             ml = "LR";            
         }
     }
@@ -96,7 +96,7 @@ namespace FT{
         }
         else
             scorer = sc;
-        logger.log("scorer set to " + scorer,3);
+        logger.log("scorer set to " + scorer,2);
     }
     
     /// sets weights for terminals. 
@@ -142,16 +142,13 @@ namespace FT{
                
         }
         weights = "term weights: ";
-        for (auto tw : term_weights)
-            weights += std::to_string(tw)+" ";
-        weights += "\n";
-        cout << "terminal weights: " ; 
         for (unsigned i = 0; i < terminals.size(); ++i)
         {
-            cout << "(" << terminals.at(i)->name << "," << term_weights.at(i) << "), " ; 
+            weights += ("(" + terminals.at(i)->name + + "(" + terminals.at(i)->otype + ")," 
+                        + std::to_string(term_weights.at(i)) + "), ") ; 
         }
-        cout << "\n";
-        logger.log(weights, 3);
+        weights += "\n";
+        logger.log(weights, 2);
     }
     
     void Parameters::updateSize()
@@ -199,17 +196,17 @@ namespace FT{
             default: 
             {
                 // if terminals are all boolean, remove floating point functions
-                if (ttypes.size()==1 && ttypes[0]=='b')
+                if (ttypes.size()==1 && ttypes.at(0)=='b')
                 {
                     logger.log("otypes is size 1 and otypes[0]==b\nerasing functions...\n",2);
-                    size_t n = functions.size();
-                    for (vector<int>::size_type i =n-1; 
-                         i != (std::vector<int>::size_type) -1; i--){
-                        if (functions.at(i)->arity['f'] >0){
-                            logger.log("erasing function " + functions.at(i)->name + "\n", 2);
-                            functions.erase(functions.begin()+i);
-                        }
-                    }
+                    /* size_t n = functions.size(); */
+                    /* for (vector<int>::size_type i =n-1; */ 
+                    /*      i != (std::vector<int>::size_type) -1; i--){ */
+                    /*     if (functions.at(i)->arity['f'] >0){ */
+                    /*         logger.log("erasing function " + functions.at(i)->name + "\n", 2); */
+                    /*         functions.erase(functions.begin()+i); */
+                    /*     } */
+                    /* } */
                     
                     otype = 'b';
                     otypes.push_back('b');
@@ -221,17 +218,17 @@ namespace FT{
                 }
                 
                 //erasing categorical nodes if no categorical stack exists  
-                if (terminals_set && !in(ttypes, 'c'))
-                {
-                    size_t n = functions.size();
-                    for (vector<int>::size_type i =n-1; 
-                         i != (std::vector<int>::size_type) -1; i--){
-                        if (functions.at(i)->arity['c'] >0){
-                            logger.log("erasing function " + functions.at(i)->name + "\n", 2);
-                            functions.erase(functions.begin()+i);
-                        }
-                    }
-                }         
+                /* if (terminals_set && !in(ttypes, 'c')) */
+                /* { */
+                /*     size_t n = functions.size(); */
+                /*     for (vector<int>::size_type i =n-1; */ 
+                /*          i != (std::vector<int>::size_type) -1; i--){ */
+                /*         if (functions.at(i)->arity['c'] >0){ */
+                /*             logger.log("erasing function " + functions.at(i)->name + "\n", 2); */
+                /*             functions.erase(functions.begin()+i); */
+                /*         } */
+                /*     } */
+                /* } */         
                 break;
             }
         }
@@ -481,7 +478,7 @@ namespace FT{
         for (const auto& f: functions) log_msg += f->name + ", "; 
         log_msg += "]\n";
         
-        logger.log(log_msg, 2);
+        logger.log(log_msg, 3);
         
         // reset output types
         set_otypes();
@@ -561,10 +558,11 @@ namespace FT{
             op_weights.at(i) /= float(total_args);
             ++i;
         }
-        cout << "op_weights: " ;
-        for (auto ow : op_weights)
-            cout << ow << ", " ; 
-        cout << "\n";
+        string ow = "op_weights: ";
+        for (unsigned i = 0; i< functions.size(); ++i)
+            ow += "(" + functions.at(i)->name + ", " + std::to_string(op_weights.at(i)) + "), "; 
+        ow += "\n";
+        logger.log(ow,2);
 
     }
     void Parameters::set_terminals(int nf,

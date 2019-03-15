@@ -218,8 +218,10 @@ namespace FT{
             dtypes = dt; 
             for (unsigned int i=0; i<X.rows(); ++i)
             {
+                // mean center
                 VectorXf tmp = X.row(i).array()-X.row(i).mean();
-                scale.push_back(tmp.norm());
+                // scale by the standard deviation
+                scale.push_back(std::sqrt((tmp.array()).square().sum()/(tmp.size()-1)));
                 offset.push_back(X.row(i).mean());
             }
               

@@ -183,9 +183,17 @@ namespace FT{
             /*     Phi.row(drop_idx) = VectorXf::Zero(Phi.cols()); */
             /* } */
             // calculate ML model from Phi
-            logger.log("ML predicting on " + get_eqn(), 3);
+            logger.log("ML predicting on " + get_eqn(), 2);
+            string e = "[(median(z_718-7)>max(z_2093-3))]";
+            bool print = false;
+            if (e.compare(get_eqn()) == 0)
+            {
+                cout << e << " output : \n";
+                cout << Phi_pred << "\n";
+                print = true;
+            }
             // assumes ML is already trained
-            shared_ptr<CLabels> yhat = ml->predict(Phi_pred);
+            shared_ptr<CLabels> yhat = ml->predict(Phi_pred,print);
             return yhat;
         }
 
