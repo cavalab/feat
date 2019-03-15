@@ -100,9 +100,9 @@ namespace FT{
             	    p_est = make_shared<sh::CMyLibLinear>(sh::L2R_LR);
                     // setting parameters to match sklearn defaults
                     dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_compute_bias(true);
-                    dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_epsilon(0.0001);
+                    /* dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_epsilon(0.0001); */
                     /* dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_C(1.0,1.0); */
-                    dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_max_iterations(1000);
+                    dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_max_iterations(10000);
                     //cout << "set ml type to CMyLibLinear\n";
                 }
                 else    // multiclass  
@@ -388,20 +388,34 @@ namespace FT{
             return labels_to_vector(labels);     
         }
 
-        shared_ptr<CLabels> ML::predict(MatrixXf& X)
+        shared_ptr<CLabels> ML::predict(MatrixXf& X, bool print)
         {
-
+            shared_ptr<CLabels> labels;
+            // make sure the model fit() method passed
+            if (get_weights().empty())
+            {
+                cout << "weight empty; returning zeros\n";
+                CRegressionLabels dlabels(X.cols());
+                for (unsigned i = 0; i < X.cols() ; ++i)
+                    dlabels.set_value(0,i);
+                cout << "setting labels\n";
+                labels =shared_ptr<CLabels>(&dlabels);
+                cout << "returning\n";
+                return labels;
+            }
+            
             if (normalize)
                 N.normalize(X);
-                
+            
             MatrixXd _X = X.template cast<double>();
             auto features = some<CDenseFeatures<float64_t>>(SGMatrix<float64_t>(_X));
             
-            shared_ptr<CLabels> labels;
            
             if (this->prob_type==PT_BINARY && 
-                    (ml_type == SVM || ml_type == LR || ml_type == CART || ml_type == RF)){
+                    (ml_type == SVM || ml_type == LR || ml_type == CART || ml_type == RF))
+            {
                 labels = std::shared_ptr<CLabels>(p_est->apply_binary(features));
+
                 if (ml_type == CART)
                     dynamic_pointer_cast<sh::CMyCARTree>(p_est)->set_probabilities(labels.get(), 
                                                                                    features);

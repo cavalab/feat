@@ -94,7 +94,7 @@ namespace FT{
                              const vector<char>& dtypes=vector<char>());
 
                 // predict using a trained ML model, returning a label object. 
-                shared_ptr<CLabels> predict(MatrixXf& X);
+                shared_ptr<CLabels> predict(MatrixXf& X, bool print=false);
                 
                 // predict using a trained ML model, returning a vector of predictions. 
                 VectorXf predict_vector(MatrixXf& X);

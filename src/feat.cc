@@ -226,19 +226,16 @@ string Feat::get_model()
     vector<string> features = best_ind.get_features();
     vector<float> weights = best_ind.ml->get_weights();
     
-    for(int x = 0; x < weights.size(); x++)
-        cout << weights[x] << "\t";
-    cout << endl;
     vector<float> aweights(weights.size());
     for (int i =0; i<aweights.size(); ++i) 
         aweights[i] = fabs(weights[i]);
     vector<size_t> order = argsort(aweights);
     string output;
-    output += "Feature\tWeight\n";
+    output += "Feature\t\tWeight\n";
     for (unsigned i = order.size(); i --> 0;)
     {
         output += features.at(order[i]);
-        output += "\t";
+        output += "\t\t";
         output += std::to_string(weights.at(order[i]));
         output += "\n";
     }
@@ -551,7 +548,6 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     
     if (log.is_open())
         log.close();
-    cout << "exiting\n";
 }
 
 void Feat::run_generation(unsigned int g,
@@ -737,7 +733,7 @@ void Feat::initial_model(DataRef &d)
         best_ind.program.push_back(std::unique_ptr<Node>(new NodeMedian()));
     }
     //
-    cout << "initial model: " << best_ind.get_eqn();
+    cout << "initial model: " << best_ind.get_eqn() << "\n";
     //
     bool pass = true;
     shared_ptr<CLabels> yhat = best_ind.fit(*d.t,params,pass);
