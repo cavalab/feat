@@ -172,7 +172,8 @@ namespace FT{
             
         }
         
-        float slope(const ArrayXf& y, const ArrayXf& x)
+        float slope(const ArrayXf& x, const ArrayXf& y)
+            // y: rise dimension, x: run dimension. slope = rise/run
         {
             return covariance(x, y)/variance(x);
         }

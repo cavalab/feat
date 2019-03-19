@@ -533,6 +533,11 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
         F_v.resize(d.v->X.cols(),int(2*params.pop_size)); 
         
         p_eval->fitness(final_pop, *d.v, F_v, params, false, true);
+        // print validation scores
+        for (const auto& ind : final_pop)
+        {
+            cout << ind.eqn << "; score: " << ind.fitness_v << "\n";
+        }
 
         update_best(d,true);                  // get the best validation model
     }
@@ -732,12 +737,20 @@ void Feat::initial_model(DataRef &d)
         best_ind.program.push_back(params.terminals.at(n_x + j)->clone());
         best_ind.program.push_back(std::unique_ptr<Node>(new NodeMedian()));
     }
+    /* best_ind.program.push_back(std::unique_ptr<Node>(new NodeLongitudinal("bmi"))); */
+    /* best_ind.program.push_back(std::unique_ptr<Node>(new NodeSlope())); */
     //
     cout << "initial model: " << best_ind.get_eqn() << "\n";
     //
     bool pass = true;
     shared_ptr<CLabels> yhat = best_ind.fit(*d.t,params,pass);
-    
+    SGVector<double> _Tmp = dynamic_pointer_cast<sh::CBinaryLabels>(yhat)->get_labels();
+    SGVector<float> Tmp(_Tmp.begin(), _Tmp.end());
+    Map<VectorXf> yhatV(Tmp.data(),Tmp.size());
+    cout << "yhat: " << yhatV.transpose() << "\n";
+    cout << "y: " << d.t->y.transpose() << "\n";
+    ArrayXf diff = yhatV.array() - d.t->y.array() ; 
+    cout << "diff: " << diff.transpose() << "\n"; 
     // set terminal weights based on model
     vector<float> w;
     if (n_feats + n_long_feats == d.t->X.rows() + d.t->Z.size())

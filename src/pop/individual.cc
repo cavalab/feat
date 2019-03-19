@@ -148,7 +148,7 @@ namespace FT{
         {
             // calculate program output matrix Phi
             logger.log("Generating output for " + get_eqn(), 3);
-            Phi = out(d, params);       
+            Phi = out(d, params);      
             // calculate ML model from Phi
             logger.log("ML training on " + get_eqn(), 3);
             ml = std::make_shared<ML>(params);
@@ -184,16 +184,8 @@ namespace FT{
             /* } */
             // calculate ML model from Phi
             logger.log("ML predicting on " + get_eqn(), 2);
-            string e = "[(median(z_718-7)>max(z_2093-3))]";
-            bool print = false;
-            if (e.compare(get_eqn()) == 0)
-            {
-                cout << e << " output : \n";
-                cout << Phi_pred << "\n";
-                print = true;
-            }
             // assumes ML is already trained
-            shared_ptr<CLabels> yhat = ml->predict(Phi_pred,print);
+            shared_ptr<CLabels> yhat = ml->predict(Phi_pred);
             return yhat;
         }
 

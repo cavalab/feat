@@ -25,7 +25,14 @@ namespace FT{
                 ArrayXf tmp(state.z.top().first.size());
                 
                 for(int x = 0; x < state.z.top().first.size(); x++)                    
-                    tmp(x) = slope(limited(state.z.top().first[x]), limited(state.z.top().second[x]));
+                {
+                    /* cout << "x: " << x << "\n"; */
+                    /* cout << "value: " << state.z.top().first[x].transpose() << "\n"; */
+                    /* cout << "date: " << state.z.top().second[x].transpose() << "\n"; */
+                    tmp(x) = slope(limited(state.z.top().second[x]), 
+                                   limited(state.z.top().first[x]));
+                    /* cout << "slope: " << tmp(x) << "\n"; */
+                }
                     
                 state.z.pop();
 
