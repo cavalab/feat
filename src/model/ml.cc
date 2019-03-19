@@ -320,7 +320,6 @@ namespace FT{
                 )
             {
                 bool proba = params.scorer.compare("log")==0;
-
                 /* cout << "apply binary\n"; */
                 labels = shared_ptr<CLabels>(p_est->apply_binary(features));
                 /* cout << "apply binary done\n"; */
@@ -373,6 +372,10 @@ namespace FT{
             Map<VectorXd> yhat(y_pred.data(),y_pred.size());
            
             /* std::cout << "yhat: " << yhat.transpose() << "\n"; */ 
+            /* VectorXf yhat0 = (yhat.cast<int>().array() == -1).select(0,yhat).cast<float>(); */
+            /* std::cout << "yhat0: " << yhat0.transpose() << "\n"; */ 
+            /* ArrayXf diff = y.array() - yhat0.array(); */
+            /* std::cout << "y - yhat0: " << diff.transpose() << "\n"; */ 
 
             if (isinf(yhat.array()).any() || isnan(yhat.array()).any() || yhat.size()==0)
                 pass = false;
