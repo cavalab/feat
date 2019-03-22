@@ -744,13 +744,13 @@ void Feat::initial_model(DataRef &d)
     //
     bool pass = true;
     shared_ptr<CLabels> yhat = best_ind.fit(*d.t,params,pass);
-    SGVector<double> _Tmp = dynamic_pointer_cast<sh::CBinaryLabels>(yhat)->get_labels();
-    SGVector<float> Tmp(_Tmp.begin(), _Tmp.end());
-    Map<VectorXf> yhatV(Tmp.data(),Tmp.size());
-    cout << "yhat: " << yhatV.transpose() << "\n";
-    cout << "y: " << d.t->y.transpose() << "\n";
-    ArrayXf diff = yhatV.array() - d.t->y.array() ; 
-    cout << "diff: " << diff.transpose() << "\n"; 
+    /* SGVector<double> _Tmp = dynamic_pointer_cast<sh::CBinaryLabels>(yhat)->get_labels(); */
+    /* SGVector<float> Tmp(_Tmp.begin(), _Tmp.end()); */
+    /* Map<VectorXf> yhatV(Tmp.data(),Tmp.size()); */
+    /* cout << "yhat: " << yhatV.transpose() << "\n"; */
+    /* cout << "y: " << d.t->y.transpose() << "\n"; */
+    /* ArrayXf diff = yhatV.array() - d.t->y.array() ; */ 
+    /* cout << "diff: " << diff.transpose() << "\n"; */ 
     // set terminal weights based on model
     vector<float> w;
     if (n_feats + n_long_feats == d.t->X.rows() + d.t->Z.size())

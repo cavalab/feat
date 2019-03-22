@@ -100,7 +100,7 @@ namespace FT{
             	    p_est = make_shared<sh::CMyLibLinear>(sh::L2R_LR);
                     // setting parameters to match sklearn defaults
                     dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_compute_bias(true);
-                    /* dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_epsilon(0.0001); */
+                    dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_epsilon(0.0001);
                     /* dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_C(1.0,1.0); */
                     dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_max_iterations(10000);
                     //cout << "set ml type to CMyLibLinear\n";
@@ -398,15 +398,51 @@ namespace FT{
             if (get_weights().empty())
             {
                 cout << "weight empty; returning zeros\n";
-                CRegressionLabels dlabels(X.cols());
-                for (unsigned i = 0; i < X.cols() ; ++i)
-                    dlabels.set_value(0,i);
-                cout << "setting labels\n";
-                labels =shared_ptr<CLabels>(&dlabels);
-                cout << "returning\n";
-                return labels;
+                if (this->prob_type==PT_BINARY) 
+                {
+                    CBinaryLabels dlabels(X.cols());
+                    for (unsigned i = 0; i < X.cols() ; ++i)
+                    {
+                        dlabels.set_value(0,i);
+                        dlabels.set_label(0,i);
+                    }
+                    cout << "setting labels\n";
+                    labels =shared_ptr<CLabels>(&dlabels);
+                    cout << "returning\n";
+                    return labels;
+                }
+                else if (this->prob_type == PT_MULTICLASS)
+                {
+                    CMulticlassLabels dlabels(X.cols());
+                    for (unsigned i = 0; i < X.cols() ; ++i)
+                    {
+                        dlabels.set_value(0,i);
+                        dlabels.set_label(0,i);
+                    }
+                    cout << "setting labels\n";
+                    labels =shared_ptr<CLabels>(&dlabels);
+                    cout << "returning\n";
+                    return labels;
+                }
+                else
+                {
+                    CRegressionLabels dlabels(X.cols());
+                    for (unsigned i = 0; i < X.cols() ; ++i)
+                    {
+                        dlabels.set_value(0,i);
+                        dlabels.set_label(0,i);
+                    }
+                    cout << "setting labels\n";
+                    labels =shared_ptr<CLabels>(&dlabels);
+                    cout << "returning\n";
+                    return labels;
+                }
             }
-            
+            /* cout << "weights: \n"; */
+            /* for (const auto& w : get_weights()) */
+            /*     cout << w << ", " ; */
+            /* cout << "\n"; */
+            /* cout << "normalize\n"; */ 
             if (normalize)
                 N.normalize(X);
             
@@ -417,8 +453,10 @@ namespace FT{
             if (this->prob_type==PT_BINARY && 
                     (ml_type == SVM || ml_type == LR || ml_type == CART || ml_type == RF))
             {
+                /* cout << "apply binary\n"; */ 
                 labels = std::shared_ptr<CLabels>(p_est->apply_binary(features));
 
+                /* cout << "set probability\n"; */ 
                 if (ml_type == CART)
                     dynamic_pointer_cast<sh::CMyCARTree>(p_est)->set_probabilities(labels.get(), 
                                                                                    features);

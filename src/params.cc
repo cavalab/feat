@@ -558,12 +558,80 @@ namespace FT{
             op_weights.at(i) /= float(total_args);
             ++i;
         }
+        // Now, we need to account for the output types of the operators that have non-zero 
+        // weights, in addition to the terminals. 
+        // So we now upweight the terminals according to the output types of the terminals that have
+        // non-zero weights. 
+        
+        int total_ops_terms = total_terms;
+        b_count = 0; 
+        c_count = 0;
+        f_count = 0;
+        z_count = 0;
+        for (unsigned i = 0; i < functions.size(); ++i)
+        {
+            if (op_weights.at(i) > 0) 
+            {
+                switch (functions.at(i)->otype)
+                {
+                    case 'b':
+                        ++b_count; 
+                        break;
+                    case 'c':
+                        ++c_count; 
+                        break;
+                    case 'f':
+                        ++f_count; 
+                        break;
+                    case 'z':
+                        ++z_count; 
+                        break;
+                }
+            }
+            ++total_ops_terms;
+        }
+        cout << "b_count: " << b_count << "\n"
+             << "f_count: " << f_count << "\n"
+             << "c_count: " << c_count << "\n"
+             << "z_count: " << z_count << "\n"
+             << "total_ops_terms: " << total_ops_terms << "\n";
+
+        i = 0; // op_weights counter
+        for (const auto& op : functions)
+        {
+            int total_args = 0;
+            for (auto& kv : op->arity) 
+            {
+                switch (kv.first) // kv.first is the arity type (character)
+                {
+                    case 'b':
+                        for (unsigned j = 0; j < kv.second; ++j)
+                            op_weights.at(i) += float(b_count)/float(total_ops_terms); 
+                        break;
+                    case 'c':
+                        for (unsigned j = 0; j < kv.second; ++j)
+                            op_weights.at(i) += float(c_count)/float(total_ops_terms); 
+                        break;
+                    case 'f':
+                        for (unsigned j = 0; j < kv.second; ++j)
+                            op_weights.at(i) += float(f_count)/float(total_ops_terms); 
+                        break;
+                    case 'z':
+                        for (unsigned j = 0; j < kv.second; ++j)
+                            op_weights.at(i) += float(z_count)/float(total_ops_terms); 
+                        break;
+                }
+                total_args += kv.second;
+            }
+            op_weights.at(i) /= float(total_args);
+            ++i;
+        }
+
         string ow = "op_weights: ";
         for (unsigned i = 0; i< functions.size(); ++i)
             ow += "(" + functions.at(i)->name + ", " + std::to_string(op_weights.at(i)) + "), "; 
         ow += "\n";
         logger.log(ow,2);
-
     }
     void Parameters::set_terminals(int nf,
                                    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
