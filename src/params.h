@@ -33,7 +33,8 @@ namespace FT{
         char otype;                                 ///< user parameter for output type setup
         int verbosity;                  			///< amount of printing. 0: none, 1: minimal, 
                                                     // 2: all
-        vector<float> term_weights;    			///< probability weighting of terminals
+        vector<float> term_weights;    			    ///< probability weighting of terminals
+        vector<float> op_weights;    			    ///< probability weighting of functions
         NodeVector functions;                       ///< function nodes available in programs
         NodeVector terminals;                       ///< terminal nodes available in programs
         vector<std::string> longitudinalMap;        ///<vector storing longitudinal data keys
@@ -107,6 +108,9 @@ namespace FT{
         
         /// sets weights for terminals. 
         void set_term_weights(const vector<float>& w);
+        
+        /// sets weights for operators. 
+        void set_op_weights();
         
         /// return unique pointer to a node based on the string passed
         std::unique_ptr<Node> createNode(std::string str, float d_val = 0, bool b_val = false, 

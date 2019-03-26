@@ -65,7 +65,7 @@ namespace FT{
     {
         if (!ml.compare("LinearRidgeRegression") && classification)
         {
-            logger.log("Setting ML type to LR",3);
+            logger.log("Setting ML type to LR",2);
             ml = "LR";            
         }
     }
@@ -96,7 +96,7 @@ namespace FT{
         }
         else
             scorer = sc;
-        logger.log("scorer set to " + scorer,3);
+        logger.log("scorer set to " + scorer,2);
     }
     
     /// sets weights for terminals. 
@@ -104,44 +104,51 @@ namespace FT{
     {           
         /* cout << "weights: "; for (auto tmp : w) cout << tmp << " " ; cout << "\n"; */ 
         string weights;
-        float u = 1.0/float(w.size());
+        float u = 1.0/float(terminals.size());
         term_weights.clear();
-
-        // take abs value of weights
-        vector<float> aw = w;
-        float sum = 0;
-        for (unsigned i = 0; i < aw.size(); ++i)
-        { 
-            aw[i] = fabs(aw[i]); 
-            sum += aw[i];
+        if (w.empty())  // set all weights uniformly
+        {
+            for (unsigned i = 0; i < terminals.size(); ++i)
+                term_weights.push_back(u);
         }
-        // softmax transform values
-        /* vector<float> sw = softmax(aw); */
-        /* cout << "sw: "; for (auto tmp : sw) cout << tmp << " " ; cout << "\n"; */ 
-        // normalize weights to one
-        for (unsigned i = 0; i < aw.size(); ++i)
-        { 
-            aw[i] = aw[i]/sum;
+        else
+        {
+            // take abs value of weights
+            vector<float> aw = w;
+            float weighted_proportion = float(w.size())/float(terminals.size());
+            float sum = 0;
+            for (unsigned i = 0; i < aw.size(); ++i)
+            { 
+                aw[i] = fabs(aw[i]); 
+                sum += aw[i];
+            }
+            // normalize weights to one
+            for (unsigned i = 0; i < aw.size(); ++i)
+            { 
+                aw[i] = aw[i]/sum*weighted_proportion;  // awesome!
+            }
+            int x = 0;
+            // assign transformed weights as terminal weights
+            for (unsigned i = 0; i < terminals.size(); ++i)
+            {
+                if(terminals[i]->otype == 'z')
+                    term_weights.push_back(u);
+                else
+                {
+                    term_weights.push_back((1-feedback)*u + feedback*aw[x]);
+                    ++x;
+                }
+            }
+               
         }
-        int x = 0;
-        // assign transformed weights as terminal weights
+        weights = "term weights: ";
         for (unsigned i = 0; i < terminals.size(); ++i)
         {
-            if(terminals[i]->otype == 'z')
-                term_weights.push_back(u);
-            else
-            {
-                term_weights.push_back(u + feedback*(aw[x]-u));
-                x++;
-            }
+            weights += ("(" + terminals.at(i)->name + + "(" + terminals.at(i)->otype + ")," 
+                        + std::to_string(term_weights.at(i)) + "), ") ; 
         }
-           
-        weights = "term weights: ";
-        for (auto tw : term_weights)
-            weights += std::to_string(tw)+" ";
         weights += "\n";
-        
-        logger.log(weights, 3);
+        logger.log(weights, 2);
     }
     
     void Parameters::updateSize()
@@ -189,17 +196,17 @@ namespace FT{
             default: 
             {
                 // if terminals are all boolean, remove floating point functions
-                if (ttypes.size()==1 && ttypes[0]=='b')
+                if (ttypes.size()==1 && ttypes.at(0)=='b')
                 {
                     logger.log("otypes is size 1 and otypes[0]==b\nerasing functions...\n",2);
-                    size_t n = functions.size();
-                    for (vector<int>::size_type i =n-1; 
-                         i != (std::vector<int>::size_type) -1; i--){
-                        if (functions.at(i)->arity['f'] >0){
-                            logger.log("erasing function " + functions.at(i)->name + "\n", 2);
-                            functions.erase(functions.begin()+i);
-                        }
-                    }
+                    /* size_t n = functions.size(); */
+                    /* for (vector<int>::size_type i =n-1; */ 
+                    /*      i != (std::vector<int>::size_type) -1; i--){ */
+                    /*     if (functions.at(i)->arity['f'] >0){ */
+                    /*         logger.log("erasing function " + functions.at(i)->name + "\n", 2); */
+                    /*         functions.erase(functions.begin()+i); */
+                    /*     } */
+                    /* } */
                     
                     otype = 'b';
                     otypes.push_back('b');
@@ -211,21 +218,20 @@ namespace FT{
                 }
                 
                 //erasing categorical nodes if no categorical stack exists  
-                if (terminals_set && !in(ttypes, 'c'))
-                {
-                    size_t n = functions.size();
-                    for (vector<int>::size_type i =n-1; 
-                         i != (std::vector<int>::size_type) -1; i--){
-                        if (functions.at(i)->arity['c'] >0){
-                            logger.log("erasing function " + functions.at(i)->name + "\n", 2);
-                            functions.erase(functions.begin()+i);
-                        }
-                    }
-                }         
+                /* if (terminals_set && !in(ttypes, 'c')) */
+                /* { */
+                /*     size_t n = functions.size(); */
+                /*     for (vector<int>::size_type i =n-1; */ 
+                /*          i != (std::vector<int>::size_type) -1; i--){ */
+                /*         if (functions.at(i)->arity['c'] >0){ */
+                /*             logger.log("erasing function " + functions.at(i)->name + "\n", 2); */
+                /*             functions.erase(functions.begin()+i); */
+                /*         } */
+                /*     } */
+                /* } */         
                 break;
             }
         }
-
     }
     
     std::unique_ptr<Node> Parameters::createNode(string str,
@@ -472,17 +478,167 @@ namespace FT{
         for (const auto& f: functions) log_msg += f->name + ", "; 
         log_msg += "]\n";
         
-        logger.log(log_msg, 2);
+        logger.log(log_msg, 3);
         
         // reset output types
         set_otypes();
     }
 
+    void Parameters::set_op_weights()
+    {
+        /*!
+         * sets operator weights proportionately to the number of variables of each type that they
+         * operate on in the input data. 
+         * depends on terminals already beeing set.
+         */
+        
+        // 
+        // first, count up the instances of each type of terminal. 
+        // 
+        int b_count = 0;
+        int c_count = 0;
+        int f_count = 0;
+        int z_count = 0;
+        int total_terms = 0;
+
+        for (const auto& term : terminals)
+        {
+            switch (term->otype)
+            {
+                case 'b':
+                    ++b_count; 
+                    break;
+                case 'c':
+                    ++c_count; 
+                    break;
+                case 'f':
+                    ++f_count; 
+                    break;
+                case 'z':
+                    ++z_count; 
+                    break;
+            }
+            ++total_terms;
+        }
+        // 
+        // next, calculate the operator weights.
+        // an operators weight is defined as 
+        //      1/total_args * sum ([arg_type]_count/total_terminals) 
+        // summed over each arg the operator takes
+        //
+        op_weights.clear();
+        int i = 0;
+        for (const auto& op : functions)
+        {
+            op_weights.push_back(0.0);
+            int total_args = 0;
+            for (auto& kv : op->arity) 
+            {
+                switch (kv.first) // kv.first is the arity type (character)
+                {
+                    case 'b':
+                        for (unsigned j = 0; j < kv.second; ++j)
+                            op_weights.at(i) += float(b_count)/float(total_terms); 
+                        break;
+                    case 'c':
+                        for (unsigned j = 0; j < kv.second; ++j)
+                            op_weights.at(i) += float(c_count)/float(total_terms); 
+                        break;
+                    case 'f':
+                        for (unsigned j = 0; j < kv.second; ++j)
+                            op_weights.at(i) += float(f_count)/float(total_terms); 
+                        break;
+                    case 'z':
+                        for (unsigned j = 0; j < kv.second; ++j)
+                            op_weights.at(i) += float(z_count)/float(total_terms); 
+                        break;
+                }
+                total_args += kv.second;
+            }
+            op_weights.at(i) /= float(total_args);
+            ++i;
+        }
+        // Now, we need to account for the output types of the operators that have non-zero 
+        // weights, in addition to the terminals. 
+        // So we now upweight the terminals according to the output types of the terminals that have
+        // non-zero weights. 
+        
+        int total_ops_terms = total_terms;
+        b_count = 0; 
+        c_count = 0;
+        f_count = 0;
+        z_count = 0;
+        for (unsigned i = 0; i < functions.size(); ++i)
+        {
+            if (op_weights.at(i) > 0) 
+            {
+                switch (functions.at(i)->otype)
+                {
+                    case 'b':
+                        ++b_count; 
+                        break;
+                    case 'c':
+                        ++c_count; 
+                        break;
+                    case 'f':
+                        ++f_count; 
+                        break;
+                    case 'z':
+                        ++z_count; 
+                        break;
+                }
+            }
+            ++total_ops_terms;
+        }
+        cout << "b_count: " << b_count << "\n"
+             << "f_count: " << f_count << "\n"
+             << "c_count: " << c_count << "\n"
+             << "z_count: " << z_count << "\n"
+             << "total_ops_terms: " << total_ops_terms << "\n";
+
+        i = 0; // op_weights counter
+        for (const auto& op : functions)
+        {
+            int total_args = 0;
+            for (auto& kv : op->arity) 
+            {
+                switch (kv.first) // kv.first is the arity type (character)
+                {
+                    case 'b':
+                        for (unsigned j = 0; j < kv.second; ++j)
+                            op_weights.at(i) += float(b_count)/float(total_ops_terms); 
+                        break;
+                    case 'c':
+                        for (unsigned j = 0; j < kv.second; ++j)
+                            op_weights.at(i) += float(c_count)/float(total_ops_terms); 
+                        break;
+                    case 'f':
+                        for (unsigned j = 0; j < kv.second; ++j)
+                            op_weights.at(i) += float(f_count)/float(total_ops_terms); 
+                        break;
+                    case 'z':
+                        for (unsigned j = 0; j < kv.second; ++j)
+                            op_weights.at(i) += float(z_count)/float(total_ops_terms); 
+                        break;
+                }
+                total_args += kv.second;
+            }
+            op_weights.at(i) /= float(total_args);
+            ++i;
+        }
+
+        string ow = "op_weights: ";
+        for (unsigned i = 0; i< functions.size(); ++i)
+            ow += "(" + functions.at(i)->name + ", " + std::to_string(op_weights.at(i)) + "), "; 
+        ow += "\n";
+        logger.log(ow,2);
+    }
     void Parameters::set_terminals(int nf,
                                    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
     {
         /*!
-         * based on number of features.
+         * defines terminals using nf (number of features) as well as Z data directly
+         * sets operator types and op_weights as well
          */
         terminals.clear();
         num_features = nf; 
@@ -510,6 +666,7 @@ namespace FT{
         set_ttypes();
         
         set_otypes(true);
+        set_op_weights();
     }
 
     void Parameters::set_objectives(string obj)
@@ -532,8 +689,8 @@ namespace FT{
     
     void Parameters::set_verbosity(int verbosity)
     {
-        this->verbosity = verbosity;
         logger.set_log_level(verbosity);
+        this->verbosity = verbosity;
     }
 
     void Parameters::set_classes(VectorXf& y)

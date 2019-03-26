@@ -259,17 +259,17 @@ namespace FT{
                         // push back new arguments for the rest of the function
                         for (unsigned j = 0; j< fa; ++j)
                             insertion.make_tree(params.functions,params.terminals,0,
-                                      params.term_weights,'f',params.ttypes);
+                                      params.term_weights,params.op_weights,'f',params.ttypes);
                         if (child.program[i]->otype=='f')    // add the child now if float
                             insertion.push_back(child.program[i]->clone());
                         for (unsigned j = 0; j< ca; ++j)
                             insertion.make_tree(params.functions,params.terminals,0,
-                                      params.term_weights,'c',params.ttypes);
+                                      params.term_weights,params.op_weights,'c',params.ttypes);
                         if (child.program[i]->otype=='c')    // add the child now if categorical
                             insertion.push_back(child.program[i]->clone());
                         for (unsigned j = 0; j< ba; ++j)
                             insertion.make_tree(params.functions,params.terminals,0,
-                                      params.term_weights,'b',params.ttypes);
+                                      params.term_weights,params.op_weights,'b',params.ttypes);
                         if (child.program[i]->otype=='b') // add the child now if bool
                             insertion.push_back(child.program[i]->clone());
                         // post-fix notation
@@ -298,7 +298,7 @@ namespace FT{
             {            
                 NodeVector insertion; // new dimension
                 insertion.make_program(params.functions, params.terminals, 1,  
-                             params.term_weights,1,r.random_choice(params.otypes),
+                             params.term_weights,params.op_weights,1,r.random_choice(params.otypes),
                              params.longitudinalMap, params.ttypes);
                 /* child.program.insert(child.program.end(),insertion.begin(),insertion.end()); */
                 for (const auto& ip : insertion) 
