@@ -534,11 +534,13 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
         
         p_eval->fitness(final_pop, *d.v, F_v, params, false, true);
         // print validation scores
-        for (const auto& ind : final_pop)
+        if (params.verbosity > 2)
         {
-            cout << ind.eqn << "; score: " << ind.fitness_v << "\n";
+            string scores = "";
+            for (const auto& ind : final_pop)
+                scores += ind.eqn + "; score: " + std::to_string(ind.fitness_v) + "\n";
+            logger.log(scores,3);
         }
-
         update_best(d,true);                  // get the best validation model
     }
     else
