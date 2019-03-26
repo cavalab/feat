@@ -183,7 +183,7 @@ namespace FT{
             /*     Phi.row(drop_idx) = VectorXf::Zero(Phi.cols()); */
             /* } */
             // calculate ML model from Phi
-            logger.log("ML predicting on " + get_eqn(), 2);
+            logger.log("ML predicting on " + get_eqn(), 3);
             // assumes ML is already trained
             shared_ptr<CLabels> yhat = ml->predict(Phi_pred);
             return yhat;
