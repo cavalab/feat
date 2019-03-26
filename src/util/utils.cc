@@ -172,7 +172,8 @@ namespace FT{
             
         }
         
-        float slope(const ArrayXf& y, const ArrayXf& x)
+        float slope(const ArrayXf& x, const ArrayXf& y)
+            // y: rise dimension, x: run dimension. slope = rise/run
         {
             return covariance(x, y)/variance(x);
         }
@@ -218,13 +219,15 @@ namespace FT{
             dtypes = dt; 
             for (unsigned int i=0; i<X.rows(); ++i)
             {
+                // mean center
                 VectorXf tmp = X.row(i).array()-X.row(i).mean();
-                scale.push_back(tmp.norm());
+                // scale by the standard deviation
+                scale.push_back(std::sqrt((tmp.array()).square().sum()/(tmp.size()-1)));
                 offset.push_back(X.row(i).mean());
             }
               
         }
-        
+      
         /// normalize matrix.
         void Normalizer::normalize(MatrixXf& X)
         {  
@@ -236,7 +239,8 @@ namespace FT{
                     X.row(i) = VectorXf::Zero(X.row(i).size());
                     continue;
                 }
-                if (dtypes.at(i)=='f')   // skip binary and categorical rows
+                // scale, potentially skipping binary and categorical rows
+                if (this->scale_all || dtypes.at(i)=='f')                   
                 {
                     X.row(i) = X.row(i).array() - offset.at(i);
                     if (scale.at(i) > NEAR_ZERO)

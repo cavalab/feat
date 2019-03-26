@@ -148,7 +148,7 @@ namespace FT{
         {
             // calculate program output matrix Phi
             logger.log("Generating output for " + get_eqn(), 3);
-            Phi = out(d, params);       
+            Phi = out(d, params);      
             // calculate ML model from Phi
             logger.log("ML training on " + get_eqn(), 3);
             ml = std::make_shared<ML>(params);
@@ -183,7 +183,7 @@ namespace FT{
             /*     Phi.row(drop_idx) = VectorXf::Zero(Phi.cols()); */
             /* } */
             // calculate ML model from Phi
-            logger.log("ML predicting on " + get_eqn(), 3);
+            logger.log("ML predicting on " + get_eqn(), 2);
             // assumes ML is already trained
             shared_ptr<CLabels> yhat = ml->predict(Phi_pred);
             return yhat;

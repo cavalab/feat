@@ -166,22 +166,38 @@ namespace FT{
             Eigen::PermutationMatrix<Dynamic,Dynamic> perm(o->X.cols());
             perm.setIdentity();
             r.shuffle(perm.indices().data(), perm.indices().data()+perm.indices().size());
+            /* cout << "X before shuffle: \n"; */
+            /* cout << o->X.transpose() << "\n"; */
             o->X = o->X * perm;       // shuffles columns of X
+
+            /* cout << "X after shuffle: \n"; */
+            /* cout << o->X.transpose() << "\n"; */
             o->y = (o->y.transpose() * perm).transpose() ;       // shuffle y too
             
             if(o->Z.size() > 0)
             {
                 std::vector<int> zidx(o->y.size());
-                std::iota(zidx.begin(), zidx.end(), 0);
-                VectorXi zw = Map<VectorXi>(zidx.data(), zidx.size());
-                // shuffle z indices 
-                zw = (zw.transpose()*perm).transpose();       
-                // assign shuffled zw to zidx
-                zidx.assign(zw.data(), zw.data() + zw.size());
+                // zidx maps the perm_indices values to their indices, i.e. the inverse transform
+                for (unsigned i = 0; i < perm.indices().size(); ++i)
+                    zidx.at(perm.indices()(i)) = i;
+                /* cout << "zidx :\n"; */
+                /* for (const auto& zi : zidx) */
+                /*     cout << zi << "," ; */
+                /* cout << "\n"; */
                 for(auto &val : o->Z)
 				{
+                    /* cout << "unshuffled " << val.first << ": \n"; */
+                    /* for (unsigned i = 0; i < val.second.first.size(); ++i) */
+                    /* { */
+                        /* cout << val.second.first.at(i).transpose() << "\n"; */
+                    /* } */
                     reorder_longitudinal(val.second.first, zidx);
                     reorder_longitudinal(val.second.second, zidx);
+                    /* cout << "shuffled " << val.first << ": \n"; */
+                    /* for (unsigned i = 0; i < val.second.first.size(); ++i) */
+                    /* { */
+                    /*     cout << val.second.first.at(i).transpose() << "\n"; */
+                    /* } */
 				}
             }
         }
@@ -330,53 +346,11 @@ namespace FT{
             }
         }
         
-        /* void DataRef::reorder_longitudinal(vector<ArrayXf> &vec1, vector<ArrayXf> &vec2, */
-        /*                          vector<long> const &order) */
-        /* { */   
-        
-        /*     for( int s = 1, d; s < order.size(); ++ s ) */
-        /*     { */
-        /*         cout << "s: " << s << "\n"; */
-        /*         for ( d = order[s]; d < s; d = order[d] ); */
-                
-        /*         cout << "d: " << s << "\n"; */
-        /*         if ( d == s ) */
-        /*         { */
-        /*             while ( d = order[d], d != s ) */
-        /*             { */
-        /*                 swap(vec1[s], vec1[d]); */
-        /*                 swap(vec2[s], vec2[d]); */
-        /*             } */
-        /*         } */
-        /*     } */
-        /* } */
-        
-        void DataRef::reorder_longitudinal(vector<ArrayXf> &vec1, const vector<int>& order)
-        {  
-			vector<int> index = order; 
-			// Fix all elements one by one 
-			for (int i=0; i<index.size(); i++) 
-			{ 
-				// While index[i] and vec1[i] are not fixed 
-				while (index.at(i) != i) 
-				{ 
-					// Store values of the target (or correct)  
-					// position before placing vec1[i] there 
-					int  oldTargetI  = index.at(index.at(i)); 
-					auto oldTargetE  = vec1.at(index.at(i)); 
-		  
-					// Place vec1[i] at its target (or correct) 
-					// position. Also copy corrected index for 
-					// new position 
-					vec1.at(index.at(i)) = vec1.at(i); 
-					index.at(index.at(i)) = index.at(i); 
-		  
-					// Copy old target values to vec1[i] and 
-					// index[i] 
-					index.at(i) = oldTargetI; 
-					vec1.at(i)   = oldTargetE; 
-				} 
-			}   
-        }    
+		void DataRef::reorder_longitudinal(vector<ArrayXf> &v, vector<int> const &order )  {   
+			for ( int s = 1, d; s < order.size(); ++ s ) {
+				for ( d = order[s]; d < s; d = order[d] ) ;
+				if ( d == s ) while ( d = order[d], d != s ) swap( v[s], v[d] );
+			}
+		}
     }
 }
