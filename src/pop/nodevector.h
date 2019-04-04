@@ -8,7 +8,7 @@ license: GNU/GPL v3
 #include "op/node.h"
 #include "op/n_Dx.h"
 
-#include "error.h"
+#include "../util/error.h"
 namespace FT{
     
     namespace Pop{
