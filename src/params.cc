@@ -13,7 +13,7 @@ namespace FT{
                char ot, int verbosity, string fs, float cr, float root_xor, unsigned int max_depth, 
                unsigned int max_dim, bool constant, string obj, bool sh, float sp, 
                float fb, string sc, string fn, bool bckprp, int iters, float lr,
-               int bs, bool hclimb, int maxt, bool useb, bool res_xo, bool stg_xo, bool sftmx):    
+               int bs, bool hclimb, int maxt, bool useb, bool res_xo, bool stg_xo, bool sftmx, bool nrm):    
             pop_size(pop_size),
             gens(gens),
             ml(ml),
@@ -36,7 +36,8 @@ namespace FT{
             use_batch(useb),
             residual_xo(res_xo),
             stagewise_xo(stg_xo),
-            softmax_norm(sftmx)
+            softmax_norm(sftmx),
+            normalize(nrm)
         {
             set_verbosity(verbosity);
             if (fs.empty())

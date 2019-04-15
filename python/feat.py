@@ -27,7 +27,8 @@ class Feat(BaseEstimator):
                 erc = False,  obj ="fitness,complexity", shuffle=True,  split=0.75,  fb=0.5,
                 scorer ='',feature_names="", backprop=False, iters=10, lr=0.1, batch_size=100, 
                 n_threads=0, hillclimb=False, logfile="Feat.log", max_time=-1, use_batch=False, 
-                residual_xo=False, stagewise_xo=False, softmax_norm=False, print_pop=0):
+                residual_xo=False, stagewise_xo=False, softmax_norm=False,
+                print_pop=0, normalize=True):
         self.pop_size = pop_size
         self.gens = gens
         self.ml = ml.encode() if( isinstance(ml,str) )  else ml
@@ -70,6 +71,7 @@ class Feat(BaseEstimator):
         self.stagewise_xo = stagewise_xo
         self.softmax_norm = softmax_norm
         self.print_pop = print_pop
+        self.normalize = normalize
         # if self.verbosity>0:
         #print('self.__dict__: ' , self.__dict__)
         self._pyfeat=None
@@ -101,7 +103,8 @@ class Feat(BaseEstimator):
                 self.residual_xo,
                 self.stagewise_xo,
                 self.softmax_norm,
-                self.print_pop)
+                self.print_pop,
+                self.normalize)
    
     def fit(self,X,y,zfile=None,zids=None):
         """Fit a model."""    

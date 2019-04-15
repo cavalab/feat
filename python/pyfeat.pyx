@@ -25,7 +25,8 @@ cdef extern from "feat.h" namespace "FT":
                float split, float fb, string scorer, 
                string feature_names, bool backprop, int iters, float lr, int bs,
                int n_threads, bool hillclimb, string logfile, int max_time, bool use_batch,
-               bool residual_xo, bool stagewise_xo, bool softmax_norm, int print_pop) except + 
+               bool residual_xo, bool stagewise_xo, bool softmax_norm, 
+               int print_pop, bool normalize) except + 
 
         void fit(float * X, int rowsX, int colsX, float*  y , int lenY)
         VectorXd predict(float * X, int rowsX,int colsX)
@@ -71,7 +72,8 @@ cdef class PyFeat:
                   bool erc , string obj, bool shuffle, float split, float fb,
                   string scorer, string feature_names, bool backprop, int iters, float lr, int bs,
                   int n_threads, bool hillclimb, string logfile, int max_time, bool use_batch,
-                  bool residual_xo, bool stagewise_xo, bool softmax_norm, int print_pop):
+                  bool residual_xo, bool stagewise_xo, bool softmax_norm, int
+                  print_pop, bool normalize):
         
         cdef char otype_char
         if ( len(otype) == 0):
@@ -82,7 +84,7 @@ cdef class PyFeat:
                        root_xo_rate, otype_char, functions, max_depth, max_dim, random_state, erc, 
                        obj, shuffle, split, fb, scorer, feature_names, backprop, iters, lr, bs, 
                        n_threads, hillclimb, logfile, max_time, use_batch, residual_xo, 
-                       stagewise_xo, softmax_norm, print_pop)
+                       stagewise_xo, softmax_norm, print_pop, normalize)
 
     def fit(self,np.ndarray X,np.ndarray y):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
