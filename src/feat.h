@@ -83,7 +83,7 @@ namespace FT{
                    bool backprop=false,int iters=10, float lr=0.1, int bs=100, int n_threads=0,
                    bool hillclimb=false, string logfile="", int max_time=-1, 
                    bool use_batch = false, bool residual_xo = false, bool stagewise_xo = false,
-                   bool softmax_norm=false, int print_pop=0);
+                   bool softmax_norm=false, int print_pop=0, bool normalize=true);
             
             /// set size of population 
             void set_pop_size(int pop_size);

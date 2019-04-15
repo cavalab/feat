@@ -29,12 +29,12 @@ Feat::Feat(int pop_size, int gens, string ml,
        float split, float fb, string scorer, string feature_names,
        bool backprop,int iters, float lr, int bs, int n_threads,
        bool hillclimb, string logfile, int max_time, bool use_batch, bool residual_xo,
-       bool stagewise_xo, bool softmax_norm, int print_pop):
+       bool stagewise_xo, bool softmax_norm, int print_pop, bool normalize):
           // construct subclasses
           params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
                  functions, cross_rate, root_xo_rate, max_depth, max_dim, erc, obj, shuffle, split, 
                  fb, scorer, feature_names, backprop, iters, lr, bs, hillclimb, max_time, 
-                 use_batch, residual_xo, stagewise_xo, softmax_norm), 
+                 use_batch, residual_xo, stagewise_xo, softmax_norm, normalize), 
           p_sel( make_shared<Selection>(sel) ),
           p_surv( make_shared<Selection>(surv, true) ),
           p_variation( make_shared<Variation>(cross_rate) ),
@@ -50,7 +50,7 @@ Feat::Feat(int pop_size, int gens, string ml,
     
     if (GPU)
         initialize_cuda();
-    // set Feat's Normalizer to only normalize floats
+    // set Feat's Normalizer to only normalize floats by default
     N.scale_all = false;
 }
 
@@ -414,7 +414,8 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     if (params.dtypes.size()==0)    // set feature types if not set
         set_dtypes(find_dtypes(X));
    
-    N.fit_normalize(X,params.dtypes);                   // normalize data
+    if (params.normalize)
+        N.fit_normalize(X,params.dtypes);                   // normalize data
     /* p_ml = make_shared<ML>(params); // intialize ML */
     p_pop = make_shared<Population>(params.pop_size);
     p_eval = make_shared<Evaluation>(params.scorer);
@@ -790,7 +791,8 @@ MatrixXf Feat::transform(MatrixXf& X,
      * Transforms input data according to ind or best ind, if ind is undefined.
      */
     
-    N.normalize(X);       
+    if (params.normalize)
+        N.normalize(X);       
     
     VectorXf y = VectorXf();
     
