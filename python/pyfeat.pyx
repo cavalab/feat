@@ -35,7 +35,7 @@ cdef extern from "feat.h" namespace "FT":
         VectorXd fit_predict(float * X, int rowsX,int colsX, float*  y , int lenY)
         MatrixXd fit_transform(float * X, int rowsX,int colsX, float*  y , int lenY)
         string get_representation()
-        string get_eqns()
+        string get_eqns(bool front)
         string get_model()
 
         void fit_with_z(float * X,int rowsX,int colsX, float * Y,int lenY, string s, 
@@ -189,8 +189,8 @@ cdef class PyFeat:
     def get_representation(self):
         return self.ft.get_representation().decode()
 
-    def get_archive(self):
-        return self.ft.get_eqns().decode()
+    def get_archive(self,justfront):
+        return self.ft.get_eqns(justfront).decode()
 
     def get_model(self):
         return self.ft.get_model().decode()

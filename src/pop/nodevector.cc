@@ -278,8 +278,8 @@ namespace FT{
                 bool bterms = in(term_types, 'b');   // are there boolean terminals?
                 bool cterms = in(term_types, 'c');   // are there categorical terminals?
                 bool zterms = in(term_types, 'z');   // are there boolean terminals?
-                /* std::cout << "bterms: " << bterms << ",cterms: " << cterms 
-                 * << ",zterms: " << zterms << "\n"; */
+                //std::cout << "bterms: " << bterms << ",cterms: " << cterms 
+                //  << ",zterms: " << zterms << "\n"; 
                 for (size_t i = 0; i<functions.size(); ++i)
                     if (functions[i]->otype==otype &&
                         (max_d>1 || functions[i]->arity['f']==0 || fterms) &&
@@ -306,16 +306,19 @@ namespace FT{
                         return;
                     }
                     else{            
-                        std::cout << "---\n";
-                        std::cout << "f1.size()=0. current program: ";
-                        for (const auto& p : *(this)) std::cout << p->name << " ";
-                        std::cout << "\n";
-                        std::cout << "otype: " << otype << "\n";
-                        std::cout << "max_d: " << max_d << "\n";
-                        std::cout << "functions: ";
-                        for (const auto& f: functions) std::cout << f->name << " ";
-                        std::cout << "\n";
-                        std::cout << "---\n";
+                        //std::cout << "---\n";
+                        //std::cout << "f1.size()=0. current program: ";
+                        //for (const auto& p : *(this)) std::cout << p->name << " ";
+                        //std::cout << "\n";
+                        //std::cout << "otype: " << otype << "\n";
+                        //std::cout << "max_d: " << max_d << "\n";
+                        //std::cout << "functions: ";
+                        //for (const auto& f: functions) std::cout << f->name << " ";
+                        //std::cout << "\n";
+                        //std::cout << "---\n";
+                        make_tree(functions, terminals, max_d+1, term_weights, 
+                                op_weights, otype, term_types);
+                        return;
                     }
                 }
                 
