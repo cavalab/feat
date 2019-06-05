@@ -591,11 +591,11 @@ namespace FT{
             }
             ++total_ops_terms;
         }
-        cout << "b_count: " << b_count << "\n"
-             << "f_count: " << f_count << "\n"
-             << "c_count: " << c_count << "\n"
-             << "z_count: " << z_count << "\n"
-             << "total_ops_terms: " << total_ops_terms << "\n";
+        /* cout << "b_count: " << b_count << "\n" */
+        /*      << "f_count: " << f_count << "\n" */
+        /*      << "c_count: " << c_count << "\n" */
+        /*      << "z_count: " << z_count << "\n" */
+        /*      << "total_ops_terms: " << total_ops_terms << "\n"; */
 
         i = 0; // op_weights counter
         for (const auto& op : functions)
@@ -628,10 +628,10 @@ namespace FT{
             ++i;
         }
 
-        string ow = "op_weights: ";
-        for (unsigned i = 0; i< functions.size(); ++i)
-            ow += "(" + functions.at(i)->name + ", " + std::to_string(op_weights.at(i)) + "), "; 
-        ow += "\n";
+        /* string ow = "op_weights: "; */
+        /* for (unsigned i = 0; i< functions.size(); ++i) */
+        /*     ow += "(" + functions.at(i)->name + ", " + std::to_string(op_weights.at(i)) + "), "; */ 
+        /* ow += "\n"; */
         logger.log(ow,2);
     }
     void Parameters::set_terminals(int nf,

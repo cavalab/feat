@@ -53,9 +53,9 @@ void compareStates(State output, State expected, char otype)
     {
         int index = output.size<float>()-1;
         
-        cout << "Output is\n" << output.get<float>()[index] << endl;
-        cout << "Expected is\n" << expected.get<float>()[index] << endl;
-        cout << "Difference is\n" << abs(output.get<float>()[index] - expected.get<float>()[index]) << endl;
+        /* cout << "Output is\n" << output.get<float>()[index] << endl; */
+        /* cout << "Expected is\n" << expected.get<float>()[index] << endl; */
+        /* cout << "Difference is\n" << abs(output.get<float>()[index] - expected.get<float>()[index]) << endl; */
         
         ASSERT_TRUE((abs(output.get<float>()[index] - expected.get<float>()[index]) < NEAR_ZERO).all());
         ASSERT_FALSE((isinf(output.get<float>()[index])).any());
@@ -69,8 +69,8 @@ void compareStates(State output, State expected, char otype)
         ArrayXb exp = expected.get<float>()[index].template cast<bool>();
         ArrayXb out = output.get<bool>()[index];
         
-        cout << "Output is\n" << out << endl;
-        cout << "Expected is\n" << exp << endl;
+        /* cout << "Output is\n" << out << endl; */
+        /* cout << "Expected is\n" << exp << endl; */
         //cout << "Difference is\n" << abs(output.get<float>()[index] - expected.get<float>()[index]) << endl;
        
         ASSERT_TRUE((abs(out - exp) < NEAR_ZERO).all());
@@ -82,9 +82,9 @@ void compareStates(State output, State expected, char otype)
     
     if(otype == 'f')
     {
-        cout << "Output is\n" << output.f << endl;
-        cout << "Expected is\n" << expected.f << endl;
-        cout << "Difference is\n" << abs(output.f - expected.f) << endl;
+        /* cout << "Output is\n" << output.f << endl; */
+        /* cout << "Expected is\n" << expected.f << endl; */
+        /* cout << "Difference is\n" << abs(output.f - expected.f) << endl; */
         
         ASSERT_TRUE((abs(output.f - expected.f) < NEAR_ZERO).all());
         ASSERT_FALSE((isinf(output.f)).any());
@@ -93,8 +93,8 @@ void compareStates(State output, State expected, char otype)
     
     if(otype == 'b')
     {        
-        cout << "Output is\n" << output.b << endl;
-        cout << "Expected is\n" << expected.f << endl;
+        /* cout << "Output is\n" << output.b << endl; */
+        /* cout << "Expected is\n" << expected.f << endl; */
         
         Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> exp = expected.f.template cast<bool>();
         
