@@ -36,7 +36,6 @@ namespace FT{
             float fitness_v;             				///< aggregate validation fitness score
             float CN;
             size_t loc;                 				///< index of individual in semantic matrix F
-            string eqn;                 				///< symbolic representation of program
             vector<float> w;            				///< weights from ML training on program output
             vector<float> p;                           ///< probability of variation of subprograms
             unsigned int dim;           				///< dimensionality of individual
@@ -141,6 +140,8 @@ namespace FT{
             
             typedef Array<bool, Dynamic, Dynamic, RowMajor> ArrayXXb;
             typedef Array<float, Dynamic, Dynamic, RowMajor> ArrayXXf;
+        private:
+            string eqn;                 				///< symbolic representation of program
         };
     }
 }

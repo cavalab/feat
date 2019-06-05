@@ -148,7 +148,7 @@ namespace FT{
         {
             // calculate program output matrix Phi
             logger.log("Generating output for " + get_eqn(), 3);
-            Phi = out(d, params);      
+            Phi = out(d, params, false);      
             // calculate ML model from Phi
             logger.log("ML training on " + get_eqn(), 3);
             ml = std::make_shared<ML>(params);
@@ -670,29 +670,34 @@ namespace FT{
         // return symbolic representation of program 
         string Individual::get_eqn()
         {
-            if (eqn.empty())               // calculate eqn if it doesn't exist yet 
+            /* if (eqn.empty())               // calculate eqn if it doesn't exist yet */ 
+            /* { */
+                /* cout << "starting eqn: " << this->eqn << "\n"; */
+            #pragma omp critical 
             {
+                this->eqn="";
                 State state;
 
                 for (const auto& n : program){
-                	if(state.check_s(n->arity))
-                    	n->eval_eqn(state);
+                    if(state.check_s(n->arity))
+                        n->eval_eqn(state);
                     else
                         HANDLE_ERROR_THROW("get_eqn() error: node " + n->name + " in " 
                                            + program_str() + " is invalid\n");
                 }
                 // tie state outputs together to return representation
                 for (auto s : state.fs) 
-                    eqn += "[" + s + "]";
+                    this->eqn += "[" + s + "]";
                 for (auto s : state.bs) 
-                    eqn += "[" + s + "]";
+                    this->eqn += "[" + s + "]";
                 for (auto s : state.cs)
-                    eqn += "[" + s + "]";              
+                    this->eqn += "[" + s + "]";              
                 for (auto s : state.zs) 
-                    eqn += "[" + s + "]";
-            }
+                    this->eqn += "[" + s + "]";
             
-            return eqn;
+            }
+            //}
+            return this->eqn;
         }
         
         // return vectorized symbolic representation of program 

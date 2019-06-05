@@ -190,9 +190,9 @@ class Feat(BaseEstimator):
         """Returns a string with the final representation"""
         return self._pyfeat.get_representation()
 
-    def get_archive(self):
+    def get_archive(self,justfront=True):
         """Returns all the final representation equations in the archive"""
-        return self._pyfeat.get_archive()
+        return self._pyfeat.get_archive(justfront)
 
     def get_coefs(self):
         """Returns the coefficients assocated with each feature in the representation"""
