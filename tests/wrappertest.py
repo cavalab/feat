@@ -16,7 +16,7 @@ class TestFeatWrapper(unittest.TestCase):
 
     def setUp(self):
         self.v = verbosity
-        self.clf = Feat(verbosity=3)
+        self.clf = Feat(verbosity=3, n_threads=1)
         diabetes = load_diabetes()
         self.X = diabetes.data
         self.y = diabetes.target
