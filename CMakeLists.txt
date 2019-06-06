@@ -98,6 +98,8 @@ if (CORE_USE_CUDA)
 endif()
 #############################################
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-ignored-attributes")
+
 # gather list of source files
 if (CORE_USE_CUDA)   
     file(GLOB_RECURSE cuda_files "*.cu")
