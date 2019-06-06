@@ -632,7 +632,7 @@ namespace FT{
         /* for (unsigned i = 0; i< functions.size(); ++i) */
         /*     ow += "(" + functions.at(i)->name + ", " + std::to_string(op_weights.at(i)) + "), "; */ 
         /* ow += "\n"; */
-        logger.log(ow,2);
+        /* logger.log(ow,2); */
     }
     void Parameters::set_terminals(int nf,
                                    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
