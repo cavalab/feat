@@ -1,4 +1,4 @@
-
+ # -*- coding: utf-8 -*-
 """
 Copyright 2016 William La Cava
 license: GNU/GPLv3
@@ -16,7 +16,7 @@ class TestFeatWrapper(unittest.TestCase):
 
     def setUp(self):
         self.v = verbosity
-        self.clf = Feat(verbosity=self.v)
+        self.clf = Feat(verbosity=3)
         diabetes = load_diabetes()
         self.X = diabetes.data
         self.y = diabetes.target
