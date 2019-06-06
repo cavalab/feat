@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 """
 Copyright 2016 William La Cava
 license: GNU/GPLv3
@@ -115,7 +115,8 @@ class TestFeatWrapper(unittest.TestCase):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="",add_help=False)
    
-    parser.add_argument('-v', action='store', dest='VERBOSE',default=0,type=int, help='0 for no Verbose. 1 for Verbosity')
+    parser.add_argument('-v', action='store', dest='VERBOSE',default=0,type=int, 
+            help='0 for no Verbose. 1 for Verbosity')
 
     args = parser.parse_args()
     verbosity = args.VERBOSE
