@@ -149,7 +149,7 @@ namespace FT{
                         + std::to_string(term_weights.at(i)) + "), ") ; 
         }
         weights += "\n";
-        logger.log(weights, 2);
+        logger.log(weights, 3);
     }
     
     void Parameters::updateSize()
