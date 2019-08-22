@@ -24,10 +24,13 @@ namespace FT{
                     void set_threshold(ArrayXf& x, VectorXf& y, bool classification);
 
                     /// returns the gain of a split 
-                    float gain(const VectorXf& lsplit, const VectorXf& rsplit, bool classification=false);
+                    float gain(const VectorXf& lsplit, const VectorXf& rsplit, 
+                            bool classification=false, 
+                            vector<float> unique_classes = vector<float>());
                     
                     /// gini impurity of classes in classes
-                    float gini_impurity_index(const VectorXf& classes);
+                    float gini_impurity_index(const VectorXf& classes,
+                             vector<float> uc);
                     
                     /// Evaluates the node and updates the state states. 
                     void evaluate(const Data& data, State& state);            
