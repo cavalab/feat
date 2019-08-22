@@ -149,7 +149,8 @@ int main(int argc, char** argv){
     if(input.cmdOptionExists("-dim"))
     {
         string tmp = input.getCmdOption("-dim");
-        if (!tmp.substr(tmp.length()-1).compare("x") || !tmp.substr(tmp.length()-1).compare("X"))
+        if (!tmp.substr(tmp.length()-1).compare("x") || 
+                !tmp.substr(tmp.length()-1).compare("X"))
             feat.set_max_dim(tmp);
         else
             feat.set_max_dim(stoi(tmp));

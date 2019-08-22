@@ -100,7 +100,10 @@ namespace FT{
                 // splitting between that value and the next. 
                 // set threshold according to the biggest reduction. 
                 vector<float> s;
-                for (unsigned i = 0; i < x.size(); ++i) s.push_back(x(i)); //(x.data(),x.size());
+                for (unsigned i = 0; i < x.size(); ++i) 
+                    s.push_back(x(i)); //(x.data(),x.size());
+
+                vector<float> unique_classes = unique(y);
                 vector<int> idx(s.size());
                 std::iota(idx.begin(),idx.end(), 0);
                 Map<ArrayXi> midx(idx.data(),idx.size());
@@ -109,6 +112,10 @@ namespace FT{
                 float best_score = 0;
                 /* cout << "s: " ; */ 
                 /* for (auto ss : s) cout << ss << " " ; cout << "\n"; */
+                /* cout << "x: " << x << "\n"; */
+                /* cout << "y: " << y << "\n"; */
+                /* cout << "threshold,score\n"; */
+
                 for (unsigned i =0; i<s.size()-1; ++i)
                 {
 
@@ -144,27 +151,31 @@ namespace FT{
                     Map<VectorXf> map_d2(d2.data(), d2.size());  
                     /* cout << "d1: " << map_d1.transpose() << "\n"; */
                     /* cout << "d2: " << map_d2.transpose() << "\n"; */
-                    score = gain(map_d1, map_d2, classification);
+                    score = gain(map_d1, map_d2, classification, unique_classes);
                     /* cout << "score: " << score << "\n"; */
                     if (score < best_score || i == 0)
                     {
                         best_score = score;
                         threshold = val;
                     }
+                    /* cout << val << "," << score << "\n"; */
                 }
 
-                /* cout << "final threshold set to " << threshold << "\n"; */
+                /* cout << "final threshold set to " << threshold << " with score " */ 
+                /*      << best_score << "\n"; */
             }
            
             template <class T>
             float NodeSplit<T>::gain(const VectorXf& lsplit, const VectorXf& rsplit, 
-                    bool classification)
+                    bool classification, vector<float> unique_classes)
             {
                 float lscore, rscore, score;
                 if (classification)
                 {
-                    lscore = gini_impurity_index(lsplit);
-                    rscore = gini_impurity_index(rsplit);
+                    lscore = gini_impurity_index(lsplit, unique_classes);
+                    rscore = gini_impurity_index(rsplit, unique_classes);
+                    /* cout << "lscore: " << lscore << "\n"; */
+                    /* cout << "rscore: " << rscore << "\n"; */
                     score = (lscore*float(lsplit.size()) + rscore*float(rsplit.size()))
                                 /(float(lsplit.size()) + float(rsplit.size()));
                 }
@@ -179,13 +190,15 @@ namespace FT{
             }
 
             template <class T>
-            float NodeSplit<T>::gini_impurity_index(const VectorXf& classes)
+            float NodeSplit<T>::gini_impurity_index(const VectorXf& classes, 
+                    vector<float> uc)
             {
-                vector<float> uc = unique(classes);
                 VectorXf class_weights(uc.size());
                 for (auto c : uc){
-                    class_weights(c) = float((classes.cast<int>().array() == int(c)).count())
-                                                /classes.size(); 
+                    class_weights(c) = 0;
+                    class_weights(c) = float(
+                            (classes.cast<int>().array() == int(c)).count())/classes.size();
+                    /* cout << "class_weights for " << c << ": " << class_weights(c) << "\n"; */
                 }
                 /* float total_weight=class_weights.sum(); */
                 float gini = 1 - class_weights.dot(class_weights);
