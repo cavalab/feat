@@ -103,7 +103,7 @@ namespace FT{
     /// sets weights for terminals. 
     void Parameters::set_term_weights(const vector<float>& w)
     {           
-        /* cout << "weights: "; for (auto tmp : w) cout << tmp << " " ; cout << "\n"; */ 
+        cout << "weights: "; for (auto tmp : w) cout << tmp << " " ; cout << "\n"; 
         string weights;
         float u = 1.0/float(terminals.size());
         term_weights.clear();
@@ -145,8 +145,9 @@ namespace FT{
         weights = "term weights: ";
         for (unsigned i = 0; i < terminals.size(); ++i)
         {
-            weights += ("(" + terminals.at(i)->name + + "(" + terminals.at(i)->otype + ")," 
-                        + std::to_string(term_weights.at(i)) + "), ") ; 
+            weights += ("(" + terminals.at(i)->name + + "(" + 
+                    terminals.at(i)->otype + ")," +
+                    std::to_string(term_weights.at(i)) + "), ") ; 
         }
         weights += "\n";
         logger.log(weights, 3);
