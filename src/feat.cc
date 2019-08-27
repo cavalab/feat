@@ -681,7 +681,7 @@ void Feat::final_model(DataRef& d)
     logger.log("final_model score: " + std::to_string(score),2);
 }
 
-vector<float> Feat::univariate_initial_model(DataRef &d, int n_feats, int n_long_feats)
+vector<float> Feat::univariate_initial_model(DataRef &d, int n_feats) 
 {
     /*!
      * If there are more data variables than the max feature size can allow, we 
@@ -691,24 +691,38 @@ vector<float> Feat::univariate_initial_model(DataRef &d, int n_feats, int n_long
      * 2) fit univariate models to all features in median(Z) and store the 
      * coefficients
      * 3) set terminal weights according to the univariate scores
-     * 4) construct a program of dimensionality n_feats + n_long_feats using 
+     * 4) construct a program of dimensionality n_feats using 
      * the largest magnitude coefficients
      */
-    vector<float> univariate_weights(d.t->X.size() + d.t->Z.size(),0.0);
+    vector<float> univariate_weights(d.t->X.rows() + d.t->Z.size(),0.0);
+    int N = d.t->X.cols();
 
-    for (unsigned i =0; i<univariate_weights.size(); ++i)
+    VectorXf predictor(N);    
+
+    cout << "univariate_initial_model\n" 
+         << "N: " << N << "\n"
+         << "n_feats: " << n_feats << "\n"
+         << "\n";
+
+    for (unsigned i =0; i<d.t->X.rows(); ++i)
     {
-        VectorXf predictor(d.t->X.rows());    
-        if (i < d.t->X.size())
-            predictor = d.t->X.row(i)
-        else
-        {
-            for (int j = 0; j < d.t->X.cols(); ++j)
-                predictor(j) = median(d.t->Z(i-d.t->X.rows(),j);
-        }
+        predictor = d.t->X.row(i);
         float b =  (covariance(predictor,d.t->y) / 
                     variance(predictor));
+        univariate_weights.at(i) = fabs(b);
     }
+    int j = d.t->X.rows();
+    for (const auto& val: d.t->Z)
+    {
+        for (int k = 0; k<N; ++k)
+            predictor(k) = median(val.second.second.at(k));
+
+        float b =  (covariance(predictor,d.t->y) / 
+                    variance(predictor));
+        univariate_weights.at(j) = fabs(b);
+        ++j;
+    }
+    return univariate_weights;
 
 }
 void Feat::initial_model(DataRef &d)
@@ -720,95 +734,69 @@ void Feat::initial_model(DataRef &d)
     best_ind = Individual();
     best_ind.set_id(0);
     int j; 
-    int n_feats = std::min(params.max_dim, unsigned(d.t->X.rows()));
-    int n_long_feats = std::min(params.max_dim - n_feats, 
-            unsigned(d.t->Z.size()));
     int n_x = d.t->X.rows();
-    bool univarite_initialization = false;
+    int n_z = d.t->Z.size();
+    int n_feats = std::min(params.max_dim, unsigned(n_x+ n_z));
+    /* int n_long_feats = std::min(params.max_dim - n_feats, */ 
+    /*         unsigned(d.t->Z.size())); */
+    bool univariate_initialization = false;
 
-    if (n_feats < d.t->X.rows() || n_long_feats < d.t->Z.size())
+    if (n_feats < (n_x + n_z))
     {
         // if the data has more features than params.max_dim, fit a univariate 
         // linear model to each feature in order to set initial weights
-        univariate_weights = univariate_initial_model(d, n_feats, 
-                n_long_feats);
+        univariate_initialization = true;
+        vector<float> univariate_weights = univariate_initial_model(d, 
+                n_feats);
+        
+        vector<size_t> feature_order = argsort(univariate_weights, false);
+        feature_order.erase(feature_order.begin()+n_feats,
+                            feature_order.end());
+
+        for (const auto& f : feature_order)
+        {
+            if (f < n_x)
+                best_ind.program.push_back(params.terminals.at(f)->clone());
+            else
+            {
+                best_ind.program.push_back(params.terminals.at(f)->clone());
+                best_ind.program.push_back(
+                        std::unique_ptr<Node>(new NodeMedian()));
+            }
+
+        }
+        params.set_term_weights(univariate_weights);
     }
-    vector<size_t> var_idx(d.t->X.rows());
-    std::iota(var_idx.begin(),var_idx.end(),0);
-    
-    for (unsigned i =0; i<n_feats; ++i)
+    else
     {
-        /* if (n_feats < d.t->X.rows()) */
-        /* { */
-        /*     vector<size_t> choice_idxs(d.t->X.rows()-i); */
-        /*     std::iota(choice_idxs.begin(),choice_idxs.end(),0); */
-        /*     /1* cout << "choice_idxs: "; *1/ */
-        /*     /1* for (auto c : choice_idxs) cout << c << ","; cout << "\n"; *1/ */
-        /*     size_t idx = r.random_choice(choice_idxs); */
-        /*     /1* cout << "idx: " << idx << "\n"; *1/ */
-        /*     j = var_idx.at(idx); */
-        /*     /1* cout << "j: " << j << "\n"; *1/ */
-        /*     var_idx.erase(var_idx.begin() + idx); */
-        /* } */
-        /* else */ 
-        j=i;
-        best_ind.program.push_back(params.terminals.at(j)->clone());
+        for (unsigned i =0; i<n_x; ++i)
+        {
+            best_ind.program.push_back(params.terminals.at(i)->clone());
+        }
+        // if there is longitudinal data, initialize the model with median 
+        // values applied to those variables.
+        for (unsigned i =0; i<n_z; ++i)
+        {
+            best_ind.program.push_back(params.terminals.at(n_x + i)->clone());
+            best_ind.program.push_back(
+                    std::unique_ptr<Node>(new NodeMedian()));
+        }
     }
-    // if there is longitudinal data, initialize the model with median values applied to those
-    // variables.
-    vector<size_t> zvar_idx(d.t->Z.size());
-    std::iota(zvar_idx.begin(),zvar_idx.end(),0);
-    
-    for (unsigned i =0; i<n_long_feats; ++i)
-    {
-        /* if (n_long_feats < d.t->Z.size()) */
-        /* { */
-        /*     vector<size_t> choice_idxs(d.t->Z.size()-i); */
-        /*     std::iota(choice_idxs.begin(),choice_idxs.end(),0); */
-        /*     /1* cout << "choice_idxs: "; *1/ */
-        /*     /1* for (auto c : choice_idxs) cout << c << ","; cout << "\n"; *1/ */
-        /*     size_t idx = r.random_choice(choice_idxs); */
-        /*     /1* cout << "idx: " << idx << "\n"; *1/ */
-        /*     j = zvar_idx.at(idx); */
-        /*     /1* cout << "j: " << j << "\n"; *1/ */
-        /*     zvar_idx.erase(zvar_idx.begin() + idx); */
-        /* } */
-        /* else */ 
-        j=i;
-        best_ind.program.push_back(params.terminals.at(n_x + j)->clone());
-        best_ind.program.push_back(std::unique_ptr<Node>(new NodeMedian()));
-    }
-    /* best_ind.program.push_back(std::unique_ptr<Node>(new NodeLongitudinal("bmi"))); */
-    /* best_ind.program.push_back(std::unique_ptr<Node>(new NodeSlope())); */
-    //
     cout << "initial model: " << best_ind.get_eqn() << "\n";
-    //
+    // fit model
     bool pass = true;
     shared_ptr<CLabels> yhat = best_ind.fit(*d.t,params,pass);
-    /* SGVector<double> _Tmp = dynamic_pointer_cast<sh::CBinaryLabels>(yhat)->get_labels(); */
-    /* SGVector<float> Tmp(_Tmp.begin(), _Tmp.end()); */
-    /* Map<VectorXf> yhatV(Tmp.data(),Tmp.size()); */
-    /* cout << "yhat: " << yhatV.transpose() << "\n"; */
-    /* cout << "y: " << d.t->y.transpose() << "\n"; */
-    /* ArrayXf diff = yhatV.array() - d.t->y.array() ; */ 
-    /* cout << "diff: " << diff.transpose() << "\n"; */ 
-    // set terminal weights based on model
-    vector<float> w;
-    if (n_feats + n_long_feats == d.t->X.rows() + d.t->Z.size())
-        w = best_ind.ml->get_weights();
-    /* else */
-    /*     w = vector<float>(d.t->X.rows()+d.t->Z.size(), */
-    /*                       1.0/float(params.terminals.size())); */
 
-    if (univarite_initialization)
-        params.set_term_weights(univariate_weights);
-    else
+    // set terminal weights based on model
+    if (!univariate_initialization)
+    {
+        vector<float> w = best_ind.ml->get_weights();
         params.set_term_weights(w);
+    }
    
     VectorXf tmp;
     best_score = p_eval->score(d.t->y, yhat, tmp, params.class_weights);
     
-
     if (params.split < 1.0)
     {
         shared_ptr<CLabels> yhat_v = best_ind.predict(*d.v, params);
