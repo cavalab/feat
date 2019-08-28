@@ -90,7 +90,8 @@ namespace FT {
                 /* cout << "just finished forward_pass\n"; */
                 // Evaluate ML model on Phi
                 bool pass = true;
-                auto ml = std::make_shared<ML>(params, true);
+                auto ml = std::make_shared<ML>(params.ml, true, 
+                        params.classification, params.n_classes);
 
                 /* cout << "ml fit\n"; */
                 shared_ptr<CLabels> yhat = ml->fit(Phi,db.y,params,pass,ind.dtypes);
