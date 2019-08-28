@@ -151,7 +151,8 @@ namespace FT{
             Phi = out(d, params, false);      
             // calculate ML model from Phi
             logger.log("ML training on " + get_eqn(), 3);
-            ml = std::make_shared<ML>(params);
+            ml = std::make_shared<ML>(params.ml, true, params.classification,
+                    params.n_classes);
             
             shared_ptr<CLabels> yh = ml->fit(Phi,d.y,params,pass,dtypes);
 

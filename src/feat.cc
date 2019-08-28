@@ -697,7 +697,13 @@ vector<float> Feat::univariate_initial_model(DataRef &d, int n_feats)
     vector<float> univariate_weights(d.t->X.rows() + d.t->Z.size(),0.0);
     int N = d.t->X.cols();
 
-    VectorXf predictor(N);    
+    MatrixXf predictor(1,N);    
+    string ml_type = this->params.classification? 
+        "LR" : "LinearRidgeRegression";
+    
+    ML ml = ML(ml_type,true,params.classification,params.n_classes);
+
+    bool pass = true;
 
     cout << "univariate_initial_model\n" 
          << "N: " << N << "\n"
@@ -706,10 +712,16 @@ vector<float> Feat::univariate_initial_model(DataRef &d, int n_feats)
 
     for (unsigned i =0; i<d.t->X.rows(); ++i)
     {
-        predictor = d.t->X.row(i);
-        float b =  (covariance(predictor,d.t->y) / 
-                    variance(predictor));
-        univariate_weights.at(i) = fabs(b);
+        predictor.row(0) = d.t->X.row(i);
+        /* float b =  (covariance(predictor,d.t->y) / */ 
+        /*             variance(predictor)); */
+        pass = true;
+        shared_ptr<CLabels> yhat = ml.fit(predictor, d.t->y, this->params, 
+                pass);
+        if (pass)
+            univariate_weights.at(i) = ml.get_weights().at(0);
+        else
+            univariate_weights.at(i) = 0;
     }
     int j = d.t->X.rows();
     for (const auto& val: d.t->Z)
@@ -717,9 +729,18 @@ vector<float> Feat::univariate_initial_model(DataRef &d, int n_feats)
         for (int k = 0; k<N; ++k)
             predictor(k) = median(val.second.second.at(k));
 
-        float b =  (covariance(predictor,d.t->y) / 
-                    variance(predictor));
-        univariate_weights.at(j) = fabs(b);
+        /* float b =  (covariance(predictor,d.t->y) / */ 
+        /*             variance(predictor)); */
+        /* univariate_weights.at(j) = fabs(b); */
+
+        pass = true;
+        shared_ptr<CLabels> yhat = ml.fit(predictor, d.t->y, this->params, 
+                pass);
+        if (pass)
+            univariate_weights.at(j) = ml.get_weights().at(0);
+        else
+            univariate_weights.at(j) = 0;
+
         ++j;
     }
     return univariate_weights;

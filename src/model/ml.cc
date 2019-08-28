@@ -13,7 +13,7 @@ namespace FT{
 
         
 
-        ML::ML(const Parameters& params, bool norm)
+        ML::ML(string ml, bool norm, bool classification, int n_classes)
         {
             /*!
              * use string to specify a desired ML algorithm from shogun.
@@ -26,15 +26,15 @@ namespace FT{
             ml_hash["LR"] = LR;
             ml_hash["RF"] = RF;
 
-            ml_str  = params.ml;
-            this->ml_type = ml_hash[params.ml];
+            ml_str  = ml;
+            this->ml_type = ml_hash[ml];
             
             this->prob_type = PT_REGRESSION;
             max_train_time=30; 
             normalize = norm;
-            if (params.classification)
+            if (classification)
             { 
-                if (params.n_classes==2)
+                if (n_classes==2)
                     this->prob_type = PT_BINARY;
                 else
                     this->prob_type = PT_MULTICLASS;               
