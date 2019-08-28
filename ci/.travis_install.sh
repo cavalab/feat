@@ -19,24 +19,24 @@ mkdocs --version
 echo "installing eigen..."
 #wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"
 wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.bz2"
-tar xvjf 3.3.4.tar.bz2 
-mkdir eigen-3.3.4 
+tar xvjf 3.3.4.tar.bz2
+mkdir eigen-3.3.4
 mv eigen-eigen*/* eigen-3.3.4
 
 export EIGEN3_INCLUDE_DIR="$(pwd)/eigen-3.3.4/"
 echo "EIGEN3_INCLUDE_DIR set to $EIGEN3_INCLUDE_DIR"
 #_______________________________________________
-  
+
 echo "installing shogun via conda..."
-wget http://repo.continuum.io/miniconda/Miniconda-3.9.1-Linux-x86_64.sh \
-        -O miniconda.sh
-chmod +x miniconda.sh && ./miniconda.sh -b
-export PATH=/home/travis/miniconda/bin:$PATH
+wget https://repo.continuum.io/miniconda/Miniconda3-4.7.11-Linux-x86_64.sh -O miniconda.sh
+bash miniconda.sh -b -p $HOME/miniconda
+export PATH="$HOME/miniconda/bin:$PATH"
+
 
 conda update --yes conda
 conda install --yes -c conda-forge shogun-cpp
 
-# the new version of json-c seems to be missing a fn shogun is linked to; 
+# the new version of json-c seems to be missing a fn shogun is linked to;
 # force install of older version
 conda install --yes json-c=0.12.1-0
 
@@ -72,7 +72,7 @@ cd $old_path; pwd
 
 echo "installing feat..."
 mkdir build;
-cd build; pwd 
+cd build; pwd
 
 cmake -DTEST=ON -DEIGEN_DIR=ON -DSHOGUN_DIR=ON ..
 
@@ -97,4 +97,3 @@ python setup.py install
 
 echo "copying wrapper test to the python folder"
 sudo cp ../tests/wrappertest.py ./ #Copy the file to python folder
-
