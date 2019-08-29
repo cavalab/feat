@@ -76,7 +76,7 @@ namespace FT{
             	
                 /* ML(const Parameters& params, bool norm=true); */
                 ML(string ml="LinearRidgeRegression", bool norm=true, 
-                        bool classification = true, int n_classes = 2);
+                        bool classification = false, int n_classes = 2);
 
                 void init();
             
