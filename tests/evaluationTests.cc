@@ -263,7 +263,7 @@ TEST(Evaluation, out_ml)
     
     ft.params.dtypes = find_dtypes(X);
     /* shared_ptr<Evaluation> p_eval = make_shared<Evaluation>(params.scorer); */
-    shared_ptr<ML> p_ml = make_shared<ML>(ft.params);
+    shared_ptr<ML> p_ml = make_shared<ML>();
              
     bool pass = true;
     VectorXf yhat = p_ml->fit_vector(X, y, ft.params, pass);

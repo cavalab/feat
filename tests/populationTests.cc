@@ -34,7 +34,7 @@ TEST(Population, PopulationTests)
     for (const auto& d : feat.params.dtypes)
         cout << d << ",";
     cout << "\n";
-    feat.p_ml = make_shared<ML>(feat.params); // intialize ML
+    feat.p_ml = make_shared<ML>(); // intialize ML
     feat.p_pop = make_shared<Population>(feat.params.pop_size);  
     //std::cout << "feat.params.scorer: " << feat.params.scorer << "\n";
     feat.p_eval = make_shared<Evaluation>("mse");

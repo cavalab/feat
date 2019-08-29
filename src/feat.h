@@ -360,11 +360,9 @@ namespace FT{
             MatrixXf fit_transform(float * X, int rows_x, int cols_x, float * Y, int len_y);
                   
             /// scoring function 
-            float score(MatrixXf& X,
-                         const VectorXf& y,
-                         std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z = 
-                               std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > >());
-            
+            float score(MatrixXf& X, const VectorXf& y,
+                     std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z =
+                    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > >()); 
             /// prints population obj scores each generation 
             void print_population();
             
@@ -400,43 +398,50 @@ namespace FT{
             
         private:
             // Parameters
-            Parameters params;    					///< hyperparameters of Feat 
+            Parameters params;  ///< hyperparameters of Feat 
 
-            MatrixXf F;                 			///< matrix of fitness values for population
-            MatrixXf F_v;                           ///< matrix of validation scores
-            Timer timer;                            ///< start time of training
-            // subclasses for main steps of the evolutionary computation routine
+            MatrixXf F;        ///< matrix of fitness values for population
+            MatrixXf F_v;      ///< matrix of validation scores
+            Timer timer;       ///< start time of training
+            // subclasses for main steps of the evolutionary routine
             shared_ptr<Population> p_pop;       	///< population of programs
             shared_ptr<Selection> p_sel;        	///< selection algorithm
             shared_ptr<Evaluation> p_eval;      	///< evaluation code
             shared_ptr<Variation> p_variation;  	///< variation operators
             shared_ptr<Selection> p_surv;       	///< survival algorithm
-            shared_ptr<ML> p_ml;                	///< pointer to machine learning class
-            Archive arch;                           ///< pareto front archive
-            bool use_arch;                          ///< internal control over use of archive
+            shared_ptr<ML> p_ml;    ///< pointer to machine learning class
+            Archive arch;          ///< pareto front archive
+            bool use_arch;         ///< internal control over use of archive
             string survival;                        ///< stores survival mode
             Normalizer N;                           ///< scales training data.
             string scorer;                          ///< scoring function name.
             // performance tracking
             float best_score;                      ///< current best score
             float best_score_v;                    ///< best validation score
-            float best_med_score;                  ///< best median population score
-            float med_loss_v;                      ///< current val loss of median individual
-            string str_dim;                         ///< dimensionality as multiple of number of columns 
-            void update_best(const DataRef& d, bool val=false);       ///< updates best score   
+            float best_med_score;  ///< best median population score
+            float med_loss_v;      ///< current val loss of median individual
+            string str_dim; ///< dimensionality as multiple of number of cols 
+
+            /// updates best score
+            void update_best(const DataRef& d, bool val=false);    
             
+            /// calculate and print stats
             void calculate_stats();
             void print_stats(std::ofstream& log,
-                             float fraction);      ///< prints stats
+                             float fraction);      
             Individual best_ind;                    ///< best individual
             string logfile;                         ///< log filename
-            int print_pop;                         ///< controls whether pop is printed each gen
+            int print_pop;  ///< controls whether pop is printed each gen
+
+            // gets weights via univariate initial models
+            vector<float> univariate_initial_model(DataRef &d, int n_feats);
             /// method to fit inital ml model            
             void initial_model(DataRef &d);
             /// fits final model to best transformation
             void final_model(DataRef& d);
             /// updates stall count for early stopping
-            void update_stall_count(unsigned& stall_count, MatrixXf& F, const DataRef& d);
+            void update_stall_count(unsigned& stall_count, MatrixXf& F, 
+                    const DataRef& d);
             
             Log_Stats stats;
     };

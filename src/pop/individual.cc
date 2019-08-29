@@ -112,7 +112,11 @@ namespace FT{
                 
             vector<size_t> rts = program.roots();
             size_t j = 0;
-            float size = rts[0];
+            float size = rts[0]+1;
+            /* cout << "roots: "; */
+            /* for (auto root : rts) cout << root << ", "; */
+            /* cout << "\n"; */
+            /* cout << "size: " << size << "\n"; */
             
             while ( j < rts.size())
             {
@@ -151,7 +155,8 @@ namespace FT{
             Phi = out(d, params, false);      
             // calculate ML model from Phi
             logger.log("ML training on " + get_eqn(), 3);
-            ml = std::make_shared<ML>(params);
+            ml = std::make_shared<ML>(params.ml, true, params.classification,
+                    params.n_classes);
             
             shared_ptr<CLabels> yh = ml->fit(Phi,d.y,params,pass,dtypes);
 
@@ -670,20 +675,19 @@ namespace FT{
         // return symbolic representation of program 
         string Individual::get_eqn()
         {
-            /* if (eqn.empty())               // calculate eqn if it doesn't exist yet */ 
-            /* { */
-                /* cout << "starting eqn: " << this->eqn << "\n"; */
             #pragma omp critical 
             {
                 this->eqn="";
                 State state;
 
-                for (const auto& n : program){
+                for (const auto& n : program)
+                {
                     if(state.check_s(n->arity))
                         n->eval_eqn(state);
                     else
-                        HANDLE_ERROR_THROW("get_eqn() error: node " + n->name + " in " 
-                                           + program_str() + " is invalid\n");
+                        HANDLE_ERROR_THROW("get_eqn() error: node " + 
+                                n->name + " in " + program_str() + 
+                                " is invalid\n");
                 }
                 // tie state outputs together to return representation
                 for (auto s : state.fs) 

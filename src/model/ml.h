@@ -74,8 +74,10 @@ namespace FT{
         {
             public:
             	
-                ML(const Parameters& params, bool norm=true);
-                
+                /* ML(const Parameters& params, bool norm=true); */
+                ML(string ml="LinearRidgeRegression", bool norm=true, 
+                        bool classification = false, int n_classes = 2);
+
                 void init();
             
                 ~ML();
@@ -86,8 +88,9 @@ namespace FT{
                 vector<float> get_weights();
                 
                 // train ml model on X and return label object. 
-                shared_ptr<CLabels> fit(MatrixXf& X, VectorXf& y, const Parameters& params, bool& pass,
-                             const vector<char>& dtypes=vector<char>());
+                shared_ptr<CLabels> fit(MatrixXf& X, VectorXf& y, 
+                        const Parameters& params, bool& pass,
+                        const vector<char>& dtypes=vector<char>());
 
                 // train ml model on X and return estimation y. 
                 VectorXf fit_vector(MatrixXf& X, VectorXf& y, const Parameters& params, bool& pass,
