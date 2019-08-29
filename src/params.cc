@@ -105,9 +105,6 @@ void Parameters::set_scorer(string sc)
 /// sets weights for terminals. 
 void Parameters::set_term_weights(const vector<float>& w)
 {           
-    cout << "in set_term_weights. weights: "; 
-    for (auto tmp : w) cout << tmp << " " ; cout << "\n"; 
-    string weights;
     float u = 1.0/float(terminals.size());
     term_weights.clear();
     if (w.empty())  // set all weights uniformly
@@ -149,7 +146,7 @@ void Parameters::set_term_weights(const vector<float>& w)
         }
            
     }
-    weights = "term weights: ";
+    string weights = "term weights: ";
     for (unsigned i = 0; i < terminals.size(); ++i)
     {
         weights += ("(" + terminals.at(i)->name + + "(" + 
