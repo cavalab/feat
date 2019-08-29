@@ -16,19 +16,19 @@ Check out the [documentation](https://lacava.github.io/feat) for installation an
 
 ## Cite
 
-La Cava, W., Singh, T. R., Taggart, J., Suri, S., & Moore, J. H. (2018). Learning concise representations for regression by evolving networks of trees. [arxiv:1807.0091](https://arxiv.org/abs/1807.00981)
+La Cava, W., Singh, T. R., Taggart, J., Suri, S., & Moore, J. H.. Learning concise representations for regression by evolving networks of trees. ICLR 2019. [arxiv:1807.0091](https://arxiv.org/abs/1807.00981)
 
 Bibtex: 
  
-
-	@article{la_cava_learning_2018,
-		title = {Learning concise representations for regression by evolving networks of trees},
-		url = {https://arxiv.org/abs/1807.00981},
-		language = {en},
-		author = {La Cava, William and Singh, Tilak Raj and Taggart, James and Suri, Srinivas and Moore, Jason H.},
-		month = jul,
-		year = {2018}
-	}
+    @inproceedings{la_cava_learning_2019,
+        series = {{ICLR}},
+        title = {Learning concise representations for regression by evolving networks of trees},
+        url = {https://arxiv.org/abs/1807.00981},
+        language = {en},
+        booktitle = {International {Conference} on {Learning} {Representations}},
+        author = {La Cava, William and Singh, Tilak Raj and Taggart, James and Suri, Srinivas and Moore, Jason H.},
+        year = {2019},
+    }
 
 ## Acknowledgments
 

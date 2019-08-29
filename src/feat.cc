@@ -681,6 +681,71 @@ void Feat::final_model(DataRef& d)
     logger.log("final_model score: " + std::to_string(score),2);
 }
 
+vector<float> Feat::univariate_initial_model(DataRef &d, int n_feats) 
+{
+    /*!
+     * If there are more data variables than the max feature size can allow, we 
+     * can't initialize a model in the population without some sort of feature 
+     * selection. To select features we do the following:
+     * 1) fit univariate models to all features in X and store the coefficients
+     * 2) fit univariate models to all features in median(Z) and store the 
+     * coefficients
+     * 3) set terminal weights according to the univariate scores
+     * 4) construct a program of dimensionality n_feats using 
+     * the largest magnitude coefficients
+     */
+    vector<float> univariate_weights(d.t->X.rows() + d.t->Z.size(),0.0);
+    int N = d.t->X.cols();
+
+    MatrixXf predictor(1,N);    
+    string ml_type = this->params.classification? 
+        "LR" : "LinearRidgeRegression";
+    
+    ML ml = ML(ml_type,true,params.classification,params.n_classes);
+
+    bool pass = true;
+
+    cout << "univariate_initial_model\n" 
+         << "N: " << N << "\n"
+         << "n_feats: " << n_feats << "\n"
+         << "\n";
+
+    for (unsigned i =0; i<d.t->X.rows(); ++i)
+    {
+        predictor.row(0) = d.t->X.row(i);
+        /* float b =  (covariance(predictor,d.t->y) / */ 
+        /*             variance(predictor)); */
+        pass = true;
+        shared_ptr<CLabels> yhat = ml.fit(predictor, d.t->y, this->params, 
+                pass);
+        if (pass)
+            univariate_weights.at(i) = ml.get_weights().at(0);
+        else
+            univariate_weights.at(i) = 0;
+    }
+    int j = d.t->X.rows();
+    for (const auto& val: d.t->Z)
+    {
+        for (int k = 0; k<N; ++k)
+            predictor(k) = median(val.second.second.at(k));
+
+        /* float b =  (covariance(predictor,d.t->y) / */ 
+        /*             variance(predictor)); */
+        /* univariate_weights.at(j) = fabs(b); */
+
+        pass = true;
+        shared_ptr<CLabels> yhat = ml.fit(predictor, d.t->y, this->params, 
+                pass);
+        if (pass)
+            univariate_weights.at(j) = ml.get_weights().at(0);
+        else
+            univariate_weights.at(j) = 0;
+
+        ++j;
+    }
+    return univariate_weights;
+
+}
 void Feat::initial_model(DataRef &d)
 {
     /*!
@@ -690,85 +755,69 @@ void Feat::initial_model(DataRef &d)
     best_ind = Individual();
     best_ind.set_id(0);
     int j; 
-    int n_feats = std::min(params.max_dim, unsigned(d.t->X.rows()));
-    
-    vector<size_t> var_idx(d.t->X.rows());
-    std::iota(var_idx.begin(),var_idx.end(),0);
-    
-    for (unsigned i =0; i<n_feats; ++i)
-    {
-        if (n_feats < d.t->X.rows())
-        {
-            vector<size_t> choice_idxs(d.t->X.rows()-i);
-            std::iota(choice_idxs.begin(),choice_idxs.end(),0);
-            /* cout << "choice_idxs: "; */
-            /* for (auto c : choice_idxs) cout << c << ","; cout << "\n"; */
-            size_t idx = r.random_choice(choice_idxs);
-            /* cout << "idx: " << idx << "\n"; */
-            j = var_idx.at(idx);
-            /* cout << "j: " << j << "\n"; */
-            var_idx.erase(var_idx.begin() + idx);
-        }
-        else 
-            j=i;
-        best_ind.program.push_back(params.terminals.at(j)->clone());
-    }
-    // if there is longitudinal data, initialize the model with median values applied to those
-    // variables.
-    int n_long_feats = std::min(params.max_dim - n_feats, unsigned(d.t->Z.size()));
     int n_x = d.t->X.rows();
-    cout << "n_long_feats: " << n_long_feats << "\n";
-    vector<size_t> zvar_idx(d.t->Z.size());
-    std::iota(zvar_idx.begin(),zvar_idx.end(),0);
-    
-    for (unsigned i =0; i<n_long_feats; ++i)
+    int n_z = d.t->Z.size();
+    int n_feats = std::min(params.max_dim, unsigned(n_x+ n_z));
+    /* int n_long_feats = std::min(params.max_dim - n_feats, */ 
+    /*         unsigned(d.t->Z.size())); */
+    bool univariate_initialization = false;
+
+    if (n_feats < (n_x + n_z))
     {
-        if (n_long_feats < d.t->Z.size())
+        // if the data has more features than params.max_dim, fit a univariate 
+        // linear model to each feature in order to set initial weights
+        univariate_initialization = true;
+        vector<float> univariate_weights = univariate_initial_model(d, 
+                n_feats);
+        
+        vector<size_t> feature_order = argsort(univariate_weights, false);
+        feature_order.erase(feature_order.begin()+n_feats,
+                            feature_order.end());
+
+        for (const auto& f : feature_order)
         {
-            vector<size_t> choice_idxs(d.t->Z.size()-i);
-            std::iota(choice_idxs.begin(),choice_idxs.end(),0);
-            /* cout << "choice_idxs: "; */
-            /* for (auto c : choice_idxs) cout << c << ","; cout << "\n"; */
-            size_t idx = r.random_choice(choice_idxs);
-            /* cout << "idx: " << idx << "\n"; */
-            j = zvar_idx.at(idx);
-            /* cout << "j: " << j << "\n"; */
-            zvar_idx.erase(zvar_idx.begin() + idx);
+            if (f < n_x)
+                best_ind.program.push_back(params.terminals.at(f)->clone());
+            else
+            {
+                best_ind.program.push_back(params.terminals.at(f)->clone());
+                best_ind.program.push_back(
+                        std::unique_ptr<Node>(new NodeMedian()));
+            }
+
         }
-        else 
-            j=i;
-        best_ind.program.push_back(params.terminals.at(n_x + j)->clone());
-        best_ind.program.push_back(std::unique_ptr<Node>(new NodeMedian()));
+        params.set_term_weights(univariate_weights);
     }
-    /* best_ind.program.push_back(std::unique_ptr<Node>(new NodeLongitudinal("bmi"))); */
-    /* best_ind.program.push_back(std::unique_ptr<Node>(new NodeSlope())); */
-    //
+    else
+    {
+        for (unsigned i =0; i<n_x; ++i)
+        {
+            best_ind.program.push_back(params.terminals.at(i)->clone());
+        }
+        // if there is longitudinal data, initialize the model with median 
+        // values applied to those variables.
+        for (unsigned i =0; i<n_z; ++i)
+        {
+            best_ind.program.push_back(params.terminals.at(n_x + i)->clone());
+            best_ind.program.push_back(
+                    std::unique_ptr<Node>(new NodeMedian()));
+        }
+    }
     cout << "initial model: " << best_ind.get_eqn() << "\n";
-    //
+    // fit model
     bool pass = true;
     shared_ptr<CLabels> yhat = best_ind.fit(*d.t,params,pass);
-    /* SGVector<double> _Tmp = dynamic_pointer_cast<sh::CBinaryLabels>(yhat)->get_labels(); */
-    /* SGVector<float> Tmp(_Tmp.begin(), _Tmp.end()); */
-    /* Map<VectorXf> yhatV(Tmp.data(),Tmp.size()); */
-    /* cout << "yhat: " << yhatV.transpose() << "\n"; */
-    /* cout << "y: " << d.t->y.transpose() << "\n"; */
-    /* ArrayXf diff = yhatV.array() - d.t->y.array() ; */ 
-    /* cout << "diff: " << diff.transpose() << "\n"; */ 
+
     // set terminal weights based on model
-    vector<float> w;
-    if (n_feats + n_long_feats == d.t->X.rows() + d.t->Z.size())
-        w = best_ind.ml->get_weights();
-    /* else */
-    /*     w = vector<float>(d.t->X.rows()+d.t->Z.size(), */
-    /*                       1.0/float(params.terminals.size())); */
-        
-    
-    params.set_term_weights(w);
+    if (!univariate_initialization)
+    {
+        vector<float> w = best_ind.ml->get_weights();
+        params.set_term_weights(w);
+    }
    
     VectorXf tmp;
     best_score = p_eval->score(d.t->y, yhat, tmp, params.class_weights);
     
-
     if (params.split < 1.0)
     {
         shared_ptr<CLabels> yhat_v = best_ind.predict(*d.v, params);
@@ -891,7 +940,8 @@ void Feat::update_best(const DataRef& d, bool validation)
     float bs;
     bs = validation ? best_score_v : best_score ; 
     float f; 
-    vector<Individual>& pop = use_arch && validation ? arch.archive : p_pop->individuals; 
+    vector<Individual>& pop = (use_arch && validation ? 
+                               arch.archive : p_pop->individuals); 
 
     for (const auto i: pop)
     {
@@ -994,7 +1044,7 @@ void Feat::print_stats(std::ofstream& log, float fraction)
     std::cout << "Representation Pareto Front--------------------------------------\n";
     std::cout << "Rank\tComplexity\tLoss\tRepresentation\n";
     std::cout << std::scientific;
-    // printing 10 individuals from the pareto front
+    // printing max 40 individuals from the pareto front
     unsigned n = 1;
     if (use_arch)
     {
