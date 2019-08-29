@@ -10,7 +10,7 @@ import argparse
 import sys
 import pandas as pd
 import numpy as np
-verbosity = 3
+verbosity = 2
 
 class TestFeatWrapper(unittest.TestCase):
 
