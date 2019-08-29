@@ -10,13 +10,13 @@ import argparse
 import sys
 import pandas as pd
 import numpy as np
-verbosity = 0
+verbosity = 3
 
 class TestFeatWrapper(unittest.TestCase):
 
     def setUp(self):
         self.v = verbosity
-        self.clf = Feat(verbosity=2, n_threads=0)
+        self.clf = Feat(verbosity=verbosity, n_threads=1)
         diabetes = load_diabetes()
         self.X = diabetes.data
         self.y = diabetes.target
