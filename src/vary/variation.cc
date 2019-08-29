@@ -5,7 +5,8 @@ license: GNU/GPL v3
 
 #include "variation.h"
 
-namespace FT::Vary{
+namespace FT{
+    namespace Vary{
 /// constructor
 Variation::Variation(float cr): cross_rate(cr) {}
            
@@ -755,5 +756,5 @@ void Variation::print_cross(Individual& mom, size_t i1, size_t j1,
         std::cout << "\n";
     }
 }
-}
 
+}}
