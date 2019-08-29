@@ -940,7 +940,8 @@ void Feat::update_best(const DataRef& d, bool validation)
     float bs;
     bs = validation ? best_score_v : best_score ; 
     float f; 
-    vector<Individual>& pop = use_arch && validation ? arch.archive : p_pop->individuals; 
+    vector<Individual>& pop = (use_arch && validation ? 
+                               arch.archive : p_pop->individuals); 
 
     for (const auto i: pop)
     {
@@ -1043,7 +1044,7 @@ void Feat::print_stats(std::ofstream& log, float fraction)
     std::cout << "Representation Pareto Front--------------------------------------\n";
     std::cout << "Rank\tComplexity\tLoss\tRepresentation\n";
     std::cout << std::scientific;
-    // printing 10 individuals from the pareto front
+    // printing max 40 individuals from the pareto front
     unsigned n = 1;
     if (use_arch)
     {

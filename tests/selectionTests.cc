@@ -41,7 +41,7 @@ TEST(Selection, SelectionOperator)
 
     feat.set_dtypes(find_dtypes(X));
             
-    feat.p_ml = make_shared<ML>(feat.params); // intialize ML
+    feat.p_ml = make_shared<ML>(); // intialize ML
     feat.p_pop = make_shared<Population>(feat.params.pop_size);    
     feat.p_eval = make_shared<Evaluation>(feat.params.scorer);
 
