@@ -9,7 +9,8 @@ namespace FT{
 
     namespace Pop{ 
            
-        Individual::Individual(){c = 0; dim = 0; eqn=""; parent_id.clear(); parent_id.push_back(-1);}
+        Individual::Individual(){c = 0; dim = 0; eqn=""; parent_id.clear(); 
+            parent_id.push_back(-1);}
 
         /// set rank
         void Individual::set_rank(unsigned r){rank=r;}
@@ -95,7 +96,8 @@ namespace FT{
             /* std::cout << "softmax(p)\n"; */
             if (softmax_norm)
                 p = softmax(p);
-            // do partial uniform, partial weighted probability, using feedback ratio
+            // do partial uniform, partial weighted probability, using feedback 
+            // ratio
             for (unsigned i=0; i<p.size(); ++i)
                 p[i] = (1-fb)*u + fb*p[i];
             /* cout << "exiting set_p\n"; */
@@ -106,8 +108,10 @@ namespace FT{
         float Individual::get_p(const size_t i, bool normalize) const
         {
             /*! @param i index in program 
-             *  @param normalize (true): normalizes the probability by the size of the subprogram. 
-             *   Useful when the total probability over the program nodes should sum to 1.
+             *  @param normalize (true): normalizes the probability by the size
+             *  of the subprogram. 
+             *   Useful when the total probability over the program nodes 
+             *   should sum to 1.
              * @return weight associated with node */
                 
             vector<size_t> rts = program.roots();
@@ -137,10 +141,12 @@ namespace FT{
             return normalize ? p.at(j)/size : p.at(j) ;    
         }
         
-        vector<float> Individual::get_p(const vector<size_t>& locs, bool normalize) const
+        vector<float> Individual::get_p(const vector<size_t>& locs, 
+                bool normalize) const
         {
             /*! @param locs: program indices to return probabilities for. 
-             *  @param normalize (false): normalize probabilities by size of subprogram
+             *  @param normalize (false): normalize probabilities by size of 
+             *  subprogram
              *  @returns float vector of probabilities
              */
             vector<float> ps;
@@ -148,7 +154,8 @@ namespace FT{
             return ps;
         }
         
-        shared_ptr<CLabels> Individual::fit(const Data& d, const Parameters& params, bool& pass)
+        shared_ptr<CLabels> Individual::fit(const Data& d, 
+                const Parameters& params, bool& pass)
         {
             // calculate program output matrix Phi
             logger.log("Generating output for " + get_eqn(), 3);
@@ -178,7 +185,8 @@ namespace FT{
             // calculate program output matrix Phi
             logger.log("Generating output for " + get_eqn(), 3);
             // toggle validation
-            MatrixXf Phi_pred = out(d, params, true);           // TODO: guarantee this is not changing nodes
+            MatrixXf Phi_pred = out(d, params, true);           
+            // TODO: guarantee this is not changing nodes
 
             if (Phi_pred.size()==0)
                 HANDLE_ERROR_THROW("Phi_pred must be generated before predict() is called\n");
