@@ -77,13 +77,15 @@ namespace FT{
                    bool classification = false, int verbosity = 2, int max_stall = 0,
                    string sel ="lexicase", string surv="nsga2", float cross_rate = 0.5,
                    float root_xo_rate = 0.5, char otype='a', string functions = "", 
-                   unsigned int max_depth = 3, unsigned int max_dim = 10, int random_state=0, 
+                   unsigned int max_depth = 3, unsigned int max_dim = 10, 
+                   int random_state=0, 
                    bool erc = false, string obj="fitness,complexity", bool shuffle=true, 
                    float split=0.75, float fb=0.5, string scorer="", string feature_names="",
                    bool backprop=false,int iters=10, float lr=0.1, int bs=100, int n_threads=0,
                    bool hillclimb=false, string logfile="", int max_time=-1, 
                    bool use_batch = false, bool residual_xo = false, bool stagewise_xo = false,
-                   bool softmax_norm=false, int print_pop=0, bool normalize=true);
+                   bool softmax_norm=false, int print_pop=0, 
+                   bool normalize=true, bool val_from_arch=true);
             
             /// set size of population 
             void set_pop_size(int pop_size);
@@ -432,6 +434,7 @@ namespace FT{
             Individual best_ind;                    ///< best individual
             string logfile;                         ///< log filename
             int print_pop;  ///< controls whether pop is printed each gen
+            bool val_from_arch; ///< model selection only uses Pareto front
 
             // gets weights via univariate initial models
             vector<float> univariate_initial_model(DataRef &d, int n_feats);
