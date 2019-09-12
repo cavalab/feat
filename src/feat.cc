@@ -29,7 +29,8 @@ Feat::Feat(int pop_size, int gens, string ml,
        float split, float fb, string scorer, string feature_names,
        bool backprop,int iters, float lr, int bs, int n_threads,
        bool hillclimb, string logfile, int max_time, bool use_batch, bool residual_xo,
-       bool stagewise_xo, bool softmax_norm, int print_pop, bool normalize):
+       bool stagewise_xo, bool softmax_norm, int print_pop, bool normalize,
+       bool val_from_arch):
           // construct subclasses
           params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
                  functions, cross_rate, root_xo_rate, max_depth, max_dim, erc, obj, shuffle, split, 
@@ -38,7 +39,8 @@ Feat::Feat(int pop_size, int gens, string ml,
           p_sel( make_shared<Selection>(sel) ),
           p_surv( make_shared<Selection>(surv, true) ),
           p_variation( make_shared<Variation>(cross_rate) ),
-          print_pop(print_pop)
+          print_pop(print_pop),
+          val_from_arch(val_from_arch)
 {
     r.set_seed(random_state);
     str_dim = "";
@@ -529,7 +531,8 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     // evaluate population on validation set
     if (params.split < 1.0)
     {
-        vector<Individual>& final_pop = use_arch ? arch.archive : p_pop->individuals; 
+        vector<Individual>& final_pop = use_arch ? 
+            arch.archive : p_pop->individuals; 
         
         F_v.resize(d.v->X.cols(),int(2*params.pop_size)); 
         
@@ -539,7 +542,8 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
         {
             string scores = "";
             for (auto& ind : final_pop)
-                scores += ind.get_eqn() + "; score: " + std::to_string(ind.fitness_v) + "\n";
+                scores += (ind.get_eqn() + "; score: " + 
+                    std::to_string(ind.fitness_v) + "\n");
             logger.log(scores,3);
         }
         update_best(d,true);                  // get the best validation model
@@ -945,12 +949,15 @@ void Feat::update_best(const DataRef& d, bool validation)
 
     for (const auto i: pop)
     {
-        f = validation ? i.fitness_v : i.fitness ;
-        if (f < bs)
+        if (!val_from_arch || (val_from_arch && i.rank == 1))
         {
-            bs = f;
-            best_ind = i; // should this be i.clone(best_ind); ?
-            /* i.clone(best_ind); */
+            f = validation ? i.fitness_v : i.fitness ;
+            if (f < bs)
+            {
+                bs = f;
+                best_ind = i; // should this be i.clone(best_ind); ?
+                /* i.clone(best_ind); */
+            }
         }
     }
 
