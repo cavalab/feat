@@ -41,6 +41,7 @@ license: GNU/GPL v3
 
 //learn
 #include "op/learn/n_split.h"
+#include "op/learn/n_fuzzy_split.h"
 
 //logic nodes
 #include "op/logic/n_and.h"

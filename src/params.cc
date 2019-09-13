@@ -45,7 +45,7 @@ Parameters::Parameters(int pop_size, int gens, string ml, bool classification,
         if (fs.empty())
             fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
                   "logit,tanh,gauss,relu,"
-                  "split,split_c,"
+                  "split,split_c,fuzzy_split,fuzzy_split_c,"
                   "b2f,c2f,and,or,not,xor,=,<,<=,>,>=,if,ite";
             
         set_functions(fs);
@@ -332,11 +332,17 @@ std::unique_ptr<Node> Parameters::createNode(string str,
     else if (str.compare("<=") == 0)
         return std::unique_ptr<Node>(new NodeLEQ());
 
-        else if (str.compare("split") == 0)
-            return std::unique_ptr<Node>(new NodeSplit<float>());
+    else if (str.compare("split") == 0)
+        return std::unique_ptr<Node>(new NodeSplit<float>());
+    
+    else if (str.compare("fuzzy_split") == 0)
+        return std::unique_ptr<Node>(new NodeFuzzySplit<float>());
         
-        else if (str.compare("split_c") == 0)
-            return std::unique_ptr<Node>(new NodeSplit<int>());
+    else if (str.compare("split_c") == 0)
+        return std::unique_ptr<Node>(new NodeSplit<int>());
+    
+    else if (str.compare("fuzzy_split_c") == 0)
+        return std::unique_ptr<Node>(new NodeFuzzySplit<int>());
     
     else if (str.compare("if") == 0)
         return std::unique_ptr<Node>(new NodeIf());   	    		

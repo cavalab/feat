@@ -47,7 +47,8 @@ namespace FT {
                 float operator()();
 
 			    template <class RandomAccessIterator>
-			    void shuffle (RandomAccessIterator first, RandomAccessIterator last)
+			    void shuffle (RandomAccessIterator first, 
+                        RandomAccessIterator last)
 			    {
 	                for (auto i=(last-first)-1; i>0; --i) 
                     {
@@ -59,7 +60,8 @@ namespace FT {
                 template<typename Iter>                                    
                 Iter select_randomly(Iter start, Iter end)
                 {
-                    std::uniform_int_distribution<> dis(0, distance(start, end) - 1);
+                    std::uniform_int_distribution<> dis(0, 
+                            distance(start, end) - 1);
                     advance(start, dis(rg[omp_get_thread_num()]));
                     return start;
                 }
@@ -70,7 +72,8 @@ namespace FT {
                    /*!
                     * return a random element of a vector.
                     */          
-                    assert(v.size()>0 && " attemping to return random choice from empty vector");
+                    assert(v.size()>0 && 
+                       " attemping to return random choice from empty vector");
                     return *select_randomly(v.begin(),v.end());
                 }
      
@@ -86,7 +89,8 @@ namespace FT {
                     {   
                         cout<<"random_choice() w.size() = 0 Calling random_choice(v)\n";
                         
-                        cout << "W size is " << w.size() << "v size is " << v.size() << "\n"; 
+                        cout << "W size is " << w.size() << "v size is " 
+                            << v.size() << "\n"; 
                         return random_choice(v);
                     }
                     if(w.size() != v.size())
