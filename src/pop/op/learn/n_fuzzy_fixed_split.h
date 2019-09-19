@@ -22,7 +22,8 @@ namespace FT{
             		NodeFuzzyFixedSplit();
             		
                     /// Uses a heuristic to set a splitting threshold.
-                    void set_threshold(ArrayXf& x, VectorXf& y, bool classification);
+                    void set_threshold(ArrayXf& x, VectorXf& y, 
+                            bool classification);
 
                     /// returns the gain of a split 
                     float gain(const VectorXf& lsplit, const VectorXf& rsplit, 
