@@ -12,7 +12,7 @@ namespace FT{
 	        template <>
 	        NodeFuzzySplit<float>::NodeFuzzySplit()
 	        {
-	            name = "split";
+	            name = "fuzzy_split";
 	            arity['f'] = 1;
 	            otype = 'b';
                 complexity = 2;
@@ -23,7 +23,7 @@ namespace FT{
 	        template <>
 	        NodeFuzzySplit<int>::NodeFuzzySplit()
 	        {
-	            name = "split_c";
+	            name = "fuzzy_split_c";
 	            arity['c'] = 1;
 	            otype = 'b';
                 complexity = 2;
