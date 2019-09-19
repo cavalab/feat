@@ -116,9 +116,16 @@ namespace FT{
                 std::iota(idx.begin(),idx.end(), 0);
                 Map<ArrayXi> midx(idx.data(),idx.size());
                 s = unique(s);
+                if (s.size() == 1)
+                {
+                    // if there is only one value, just set the threshold to 
+                    // that
+                    threshold = s.at(0);
+                    return;
+                }
                 float score = 0;
                 float best_score = 0;
-                vector<float> scores; // holds all scores for sampling
+                vector<float> neg_scores; // holds all scores for sampling
                 vector<float> thresholds; // holds all scores for sampling
                 /* cout << "s: " ; */ 
                 /* for (auto ss : s) cout << ss << " " ; cout << "\n"; */
@@ -142,9 +149,6 @@ namespace FT{
                         val = s.at(i);
                         split_idx = (x == val).select(midx,-midx-1);
                     }
-
-                    /* cout << "split threshold: " << val << "\n"; */
-
                     // split data
                     vector<float> d1, d2; 
                     for (unsigned j=0; j< split_idx.size(); ++j)
@@ -164,16 +168,23 @@ namespace FT{
                     score = gain(map_d1, map_d2, classification, 
                             unique_classes);
 
-                    scores.push_back(score);
+                    neg_scores.push_back(-score);
                     thresholds.push_back(val);
                     /* cout << "score: " << score << "\n"; */
                     /* cout << val << "," << score << "\n"; */
+                    if (score < best_score || i == 0)
+                    {
+                        best_score = score;
+                    }
                 }
                 // choose a random threshold weighted by the scores
-                threshold  = r.random_choice(thresholds, scores); 
-
+                threshold  = r.random_choice(thresholds, neg_scores); 
+                int index = distance(thresholds.begin(), 
+                        find(thresholds.begin(), thresholds.end(),
+                                threshold));
+                /* cout << "index: " << index << "\n"; */
                 /* cout << "final threshold set to " << threshold */ 
-                /*     << " with score " << best_score << "\n"; */ 
+                /*     << " with score " << -neg_scores.at(index)<< "\n"; */ 
             }
            
             template <class T>
