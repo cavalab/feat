@@ -442,6 +442,8 @@ namespace FT{
             void initial_model(DataRef &d);
             /// fits final model to best transformation
             void final_model(DataRef& d);
+            /// simplifies final model to best transformation
+            void simplify_model(DataRef& d);
             /// updates stall count for early stopping
             void update_stall_count(unsigned& stall_count, MatrixXf& F, 
                     const DataRef& d);

@@ -555,7 +555,12 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     logger.log("validation score: " + std::to_string(best_score_v), 2);
     logger.log("fitting final model to all training data...",2);
 
-    final_model(d);   // fit final model to best features
+    // fit final model to best features
+    final_model(d);   
+
+    // simplify the final model
+    simplify_model(d);
+
     logger.log("\nTotal time taken is " + std::to_string(timer.Elapsed().count()) + "\n", 1);
     
     if (log.is_open())
@@ -685,6 +690,75 @@ void Feat::final_model(DataRef& d)
     logger.log("final_model score: " + std::to_string(score),2);
 }
 
+void Feat::simplify_model(DataRef& d)
+{
+    /* Simplifies the final model using some expert rules and stochastic hill 
+     * climbing. 
+     * Expert rules:
+     *  - NOT(NOT(x)) simplifies to x
+     * Stochastic hill climbing:
+     * for some number iterations, apply delete mutation to the equation. 
+     * if the output of the model doesn't change, keep the mutations.
+     */
+
+    // check for specific patterns
+    Individual tmp_ind = this->best_ind;
+    
+    vector<size_t> roots = tmp_ind.program.roots();
+    vector<size_t> idx_to_remove;
+    for (int r = 0; r < roots.size(); ++r)
+    {
+        size_t start = tmp_ind.program.subtree(r);
+        int first_occurence = -2;
+
+        for (int i = start ; i <= r; ++i)
+        {
+            if (tmp_ind.program.at(i)->name.compare("not")==0)
+            {
+                if (first_occurence = i-1)
+                {
+                    idx_to_remove.push_back(first_occurence);
+                    idx_to_remove.push_back(i);
+                    // reset first_occurence so we don't pick up triple nots
+                    first_occurence = -2;
+                }
+                else
+                {
+                    first_occurence = i; 
+                }
+            }
+        }
+        // remove indices in reverse order so they don't change
+        std::reverse(idx_to_remove.begin(), idx_to_remove.end());
+        for (auto idx: idx_to_remove)
+        {
+            cout << "removing " << tmp_ind.program.at(idx)->name 
+                << " at " << idx << "\n";
+            tmp_ind.program.erase(tmp_ind.program.begin()+idx);
+        }
+    }
+    
+    this->best_ind = tmp_ind;
+    int iterations = 100;
+    cout << "doing deletion mutations...\n";
+    for (int i = 0; i < iterations; ++i)
+    {
+        cout << ".";
+        Individual tmp_ind = this->best_ind;
+        this->p_variation->delete_mutate(tmp_ind, params);
+        bool pass = true;
+        shared_ptr<CLabels> yhat = tmp_ind.fit(*d.o, params, pass);
+        if (this->best_ind.yhat == tmp_ind.yhat)
+        {
+            cout << "\ndelete mutation success: went from "
+                << best_ind.size() << " to " << tmp_ind.size() << "\n";
+            best_ind = tmp_ind;
+        }
+
+    }
+    cout << "\n";
+    
+}
 vector<float> Feat::univariate_initial_model(DataRef &d, int n_feats) 
 {
     /*!
