@@ -345,6 +345,67 @@ void Variation::delete_mutate(Individual& child, const Parameters& params)
     logger.log("\t\tresult of delete mutation: " + child.program_str(), 3);
 }
 
+void Variation::correlation_delete_mutate(Individual& child, 
+        const Parameters& params, const Data& d)
+{
+    /*! deletion mutation. works by pruning a dimension. 
+     * the dimension that is pruned matches these criteria:
+     * 1) it is in the pair of features most highly correlated. 
+     * 2) it is less correlated with the dependent variable than its pair.
+     * @param child: individual to be mutated
+     * @param params: parameters  
+     * @param d: data
+     * @return mutated child
+     * */
+    logger.log("\tdeletion mutation",3);
+    logger.log("\t\tprogram: " + child.program_str(),3);
+    
+
+    MatrixXf Phi = child.Phi;
+    // mean center features
+    for (int i = 0; i < Phi.rows(); ++i)
+    {
+        Phi.row(i) = Phi.row(i).array() - Phi.row(i).mean();
+    }
+    // calculate highest pairwise correlation and store feature indices
+    float highest_corr = 0;
+    int f1, f2;
+    for (int i = 0; i < Phi.rows()-1; ++i)
+    {
+        for (int j = i+1; j < Phi.rows(); ++j)
+        {
+           float corr = pearson_correlation(Phi.row(i).array(),
+                        Phi.row(j).array());
+           if (corr > highest_corr)
+           {
+               highest_corr = corr;
+               f1 = i;
+               f2 = j;
+           }
+        }
+    }
+    // pick the feature, f1 or f2, that is less correlated with y
+    float corr_f1 = pearson_correlation(d.y.array()-d.y.mean(),
+                                        Phi.row(f1).array()); 
+    float corr_f2 = pearson_correlation(d.y.array()-d.y.mean(),
+                                        Phi.row(f2).array()); 
+    int choice = corr_f1 <= corr_f2 ? f1 : f2; 
+    // pick the subtree starting at roots(choice) and delete it
+    vector<size_t> roots = child.program.roots();
+    size_t end = roots.at(choice); 
+    size_t start = child.program.subtree(end);  
+    if (logger.get_log_level() >=3)
+    { 
+        std::string s="";
+        for (unsigned i = start; i<=end; ++i) s+= child.program[i]->name + " ";
+        logger.log("\t\tdeleting " + std::to_string(start) + " to " + 
+                std::to_string(end) + ": " + s, 3);
+    }    
+    child.program.erase(child.program.begin()+start,
+            child.program.begin()+end+1);
+    logger.log("\t\tresult of corr delete mutation: " + child.program_str(), 3);
+}
+
 bool Variation::cross(Individual& mom, Individual& dad, Individual& child, 
                       const Parameters& params, const Data& d)
 {
