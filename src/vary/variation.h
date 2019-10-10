@@ -49,9 +49,10 @@ namespace FT{
                 ~Variation();
 
                 /// method to handle variation of population
-                void vary(Population& pop, const vector<size_t>& parents, const Parameters& params,
-                          const Data& d);
+                void vary(Population& pop, const vector<size_t>& parents, 
+                        const Parameters& params, const Data& d);
                 
+                void delete_mutate(Individual& child, const Parameters& params);
             private:
             
                 /// crossover
@@ -59,26 +60,28 @@ namespace FT{
                            const Parameters& params, const Data& d);
                 
                 /// residual crossover
-                bool residual_cross(Individual& mom, Individual& dad, Individual& child,
-                                    const Parameters& params, const Data& d);
+                bool residual_cross(Individual& mom, Individual& dad, 
+                        Individual& child, const Parameters& params, 
+                        const Data& d);
 
                 /// stagewise crossover 
-                bool stagewise_cross(Individual& mom, Individual& dad, Individual& child,
-                                     const Parameters& params, const Data& d);
+                bool stagewise_cross(Individual& mom, Individual& dad, 
+                        Individual& child, const Parameters& params, 
+                        const Data& d);
 
                 /// mutation
-                bool mutate(Individual& mom, Individual& child, const Parameters& params);
+                bool mutate(Individual& mom, Individual& child, 
+                        const Parameters& params);
                 void point_mutate(Individual& child, const Parameters& params);
                 void insert_mutate(Individual& child, const Parameters& params);
-                void delete_mutate(Individual& child, const Parameters& params);
      
                 /// splice two programs together
                 void splice_programs(NodeVector& vnew, 
                                      const NodeVector& v1, size_t i1, size_t j1, 
                                      const NodeVector& v2, size_t i2, size_t j2);
                 /// debugging printout of crossover operation.
-                void print_cross(Individual&,size_t,size_t,Individual&, size_t, size_t, Individual&,
-                                 bool after=true);       
+                void print_cross(Individual&,size_t,size_t,Individual&, size_t, 
+                        size_t, Individual&, bool after=true);       
                 
                 float cross_rate;     ///< fraction of crossover in total variation
         };
