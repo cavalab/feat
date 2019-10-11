@@ -150,7 +150,11 @@ namespace FT{
              *  @returns float vector of probabilities
              */
             vector<float> ps;
-            for (const auto& el : locs) ps.push_back(get_p(el,normalize));
+            for (const auto& el : locs) 
+            {
+                /* cout << "getting p for " << el << "\n"; */
+                ps.push_back(get_p(el,normalize));
+            }
             return ps;
         }
         

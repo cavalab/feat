@@ -21,14 +21,17 @@ class Feat(BaseEstimator):
     method."""
     def __init__(self, pop_size=100,  gens=100,  ml = "LinearRidgeRegression", 
                 classification=False,  verbosity=0,  max_stall=0,
-                sel ="lexicase",  surv ="nsga2",  cross_rate=0.5, root_xo_rate=0.5,
-                otype ='a',  functions ="", 
+                sel ="lexicase",  surv ="nsga2",  cross_rate=0.5, 
+                root_xo_rate=0.5, otype ='a',  functions ="", 
                 max_depth=3,   max_dim=10,  random_state=0, 
-                erc = False,  obj ="fitness,complexity", shuffle=True,  split=0.75,  fb=0.5,
-                scorer ='',feature_names="", backprop=False, iters=10, lr=0.1, batch_size=100, 
-                n_threads=0, hillclimb=False, logfile="Feat.log", max_time=-1, use_batch=False, 
-                residual_xo=False, stagewise_xo=False, softmax_norm=False,
-                print_pop=0, normalize=True, val_from_arch=True):
+                erc = False,  obj ="fitness,complexity", shuffle=True,  
+                split=0.75,  fb=0.5, scorer ='',feature_names="", 
+                backprop=False, iters=10, lr=0.1, batch_size=100, 
+                n_threads=0, hillclimb=False, logfile="Feat.log", max_time=-1, 
+                use_batch=False, 
+                residual_xo=False, stagewise_xo=False, stagewise_xo_tol=False, 
+                softmax_norm=False, print_pop=0, normalize=True, 
+                val_from_arch=True, corr_delete_mutate=False):
         self.pop_size = pop_size
         self.gens = gens
         self.ml = ml.encode() if( isinstance(ml,str) )  else ml
@@ -69,10 +72,12 @@ class Feat(BaseEstimator):
         self.use_batch = use_batch
         self.residual_xo = residual_xo
         self.stagewise_xo = stagewise_xo
+        self.stagewise_xo_tol = stagewise_xo_tol
         self.softmax_norm = softmax_norm
         self.print_pop = print_pop
         self.normalize = normalize
         self.val_from_arch = val_from_arch
+        self.corr_delete_mutate = corr_delete_mutate
         # if self.verbosity>0:
         #print('self.__dict__: ' , self.__dict__)
         self._pyfeat=None
@@ -103,10 +108,12 @@ class Feat(BaseEstimator):
                 self.use_batch,
                 self.residual_xo,
                 self.stagewise_xo,
+                self.stagewise_xo_tol,
                 self.softmax_norm,
                 self.print_pop,
                 self.normalize,
-                self.val_from_arch)
+                self.val_from_arch,
+                self.corr_delete_mutate)
    
     def fit(self,X,y,zfile=None,zids=None):
         """Fit a model."""    

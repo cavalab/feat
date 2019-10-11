@@ -16,7 +16,8 @@ namespace FT{
 
     /**
      * @namespace FT::Vary
-     * @brief namespace containing various variation methods for cross and mutation in Feat
+     * @brief namespace containing various variation methods for cross and 
+     * mutation in Feat
      */
     namespace Vary{
 
@@ -24,7 +25,7 @@ namespace FT{
         //struct Parameters;
         //struct Population;
         //Rnd r;
-        ////////////////////////////////////////////////////////////////////////////////// Declarations
+        ////////////////////////////////////////////////////////// Declarations
         /*!
          * @class Variation
          */ 
@@ -49,8 +50,8 @@ namespace FT{
                 ~Variation();
 
                 /// method to handle variation of population
-                void vary(Population& pop, const vector<size_t>& parents, const Parameters& params,
-                          const Data& d);
+                void vary(Population& pop, const vector<size_t>& parents, 
+                        const Parameters& params, const Data& d);
                 
             private:
             
@@ -67,12 +68,13 @@ namespace FT{
                                      const Parameters& params, const Data& d);
 
                 /// mutation
-                bool mutate(Individual& mom, Individual& child, const Parameters& params);
+                bool mutate(Individual& mom, Individual& child, 
+                        const Parameters& params, const Data& d);
                 void point_mutate(Individual& child, const Parameters& params);
                 void insert_mutate(Individual& child, const Parameters& params);
                 void delete_mutate(Individual& child, const Parameters& params);
-                void correlation_delete_mutate(Individual& child, 
-                        const Parameters& params, const Data& d);
+                bool correlation_delete_mutate(Individual& child, 
+                        MatrixXf Phi, const Parameters& params, const Data& d);
      
                 /// splice two programs together
                 void splice_programs(NodeVector& vnew, 

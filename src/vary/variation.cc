@@ -88,7 +88,7 @@ void Variation::vary(Population& pop, const vector<size_t>& parents,
                 logger.log("mutating " + mom.get_eqn() + "(" + 
                         mom.program_str() + ")", 3);
                 // create child
-                pass = mutate(mom,child,params);
+                pass = mutate(mom,child,params,d);
                 
                 logger.log("mutating " + mom.get_eqn() + " produced " + 
                         child.get_eqn() + ", pass: " + std::to_string(pass),3);
@@ -113,7 +113,7 @@ void Variation::vary(Population& pop, const vector<size_t>& parents,
 }
 
 bool Variation::mutate(Individual& mom, Individual& child, 
-        const Parameters& params)
+        const Parameters& params, const Data& d)
 {
     /*!
      * chooses uniformly between point, insert and delete mutation 
@@ -127,10 +127,17 @@ bool Variation::mutate(Individual& mom, Individual& child,
 
     // make child a copy of mom
     mom.clone(child, false);  
-    
+    bool pass = true; 
     float rf = r();
     if (rf < 1.0/3.0 && child.get_dim() > 1){
-        delete_mutate(child,params); 
+        if (params.corr_delete_mutate)
+        {
+            pass = correlation_delete_mutate(child,mom.Phi,params,d); 
+        }
+        else
+        {
+            delete_mutate(child,params); 
+        }
         assert(child.program.is_valid_program(params.num_features, 
                     params.longitudinalMap));
     }
@@ -148,7 +155,7 @@ bool Variation::mutate(Individual& mom, Individual& child,
     }
 
     // check child depth and dimensionality
-    return child.size()>0 && child.size() <= params.max_size 
+    return pass && child.size()>0 && child.size() <= params.max_size 
             && child.get_dim() <= params.max_dim;
 }
 
@@ -249,11 +256,15 @@ void Variation::insert_mutate(Individual& child,
                         // make sure there are satisfactory types in n
                         // terminals to fill fns' args
                         if (child.program[i]->otype=='b')
+                        {
                             if (in(params.dtypes,'b') || f->arity['b']==1)
                                 fns.push_back(f->rnd_clone());
+                        }
                         else if (child.program[i]->otype=='f')
+                        {
                             if (f->arity['b']==0 || in(params.dtypes,'b') )
                                 fns.push_back(f->rnd_clone());              
+                        }
                     }
                 }
 
@@ -345,37 +356,40 @@ void Variation::delete_mutate(Individual& child, const Parameters& params)
     logger.log("\t\tresult of delete mutation: " + child.program_str(), 3);
 }
 
-void Variation::correlation_delete_mutate(Individual& child, 
-        const Parameters& params, const Data& d)
+bool Variation::correlation_delete_mutate(Individual& child, 
+        MatrixXf Phi, const Parameters& params, const Data& d)
 {
     /*! deletion mutation. works by pruning a dimension. 
      * the dimension that is pruned matches these criteria:
      * 1) it is in the pair of features most highly correlated. 
      * 2) it is less correlated with the dependent variable than its pair.
      * @param child: individual to be mutated
+     * @param Phi: the behavior of the parent
      * @param params: parameters  
      * @param d: data
      * @return mutated child
      * */
     logger.log("\tdeletion mutation",3);
     logger.log("\t\tprogram: " + child.program_str(),3);
-    
 
-    MatrixXf Phi = child.Phi;
     // mean center features
     for (int i = 0; i < Phi.rows(); ++i)
     {
         Phi.row(i) = Phi.row(i).array() - Phi.row(i).mean();
     }
+    cout << "Phi: " << Phi.rows() << "x" << Phi.cols() << "\n";
     // calculate highest pairwise correlation and store feature indices
     float highest_corr = 0;
-    int f1, f2;
+    int f1=0, f2 = 0;
     for (int i = 0; i < Phi.rows()-1; ++i)
     {
         for (int j = i+1; j < Phi.rows(); ++j)
         {
            float corr = pearson_correlation(Phi.row(i).array(),
                         Phi.row(j).array());
+
+           cout << "correlation (" << i << "," << j << "): " << corr << "\n";
+
            if (corr > highest_corr)
            {
                highest_corr = corr;
@@ -384,12 +398,21 @@ void Variation::correlation_delete_mutate(Individual& child,
            }
         }
     }
+    cout << "chosen pair: " << f1 << ", " << f2 << endl;
+    if (f1 == 0 && f2 == 0)
+    {
+        cout << "error: couldn't get proper correlations. aborting\n";
+        return false;
+    }
     // pick the feature, f1 or f2, that is less correlated with y
     float corr_f1 = pearson_correlation(d.y.array()-d.y.mean(),
                                         Phi.row(f1).array()); 
     float corr_f2 = pearson_correlation(d.y.array()-d.y.mean(),
                                         Phi.row(f2).array()); 
+    cout << "corr (" << f1 << ", y): " << corr_f1 << endl;
+    cout << "corr (" << f2 << ", y): " << corr_f2 << endl;
     int choice = corr_f1 <= corr_f2 ? f1 : f2; 
+    cout << "chose " << choice << endl;
     // pick the subtree starting at roots(choice) and delete it
     vector<size_t> roots = child.program.roots();
     size_t end = roots.at(choice); 
@@ -404,6 +427,7 @@ void Variation::correlation_delete_mutate(Individual& child,
     child.program.erase(child.program.begin()+start,
             child.program.begin()+end+1);
     logger.log("\t\tresult of corr delete mutation: " + child.program_str(), 3);
+    return true;
 }
 
 bool Variation::cross(Individual& mom, Individual& dad, Individual& child, 
@@ -470,13 +494,14 @@ bool Variation::cross(Individual& mom, Individual& dad, Individual& child,
                        std::to_string(mlocs.size())+"), p size: "+
                        std::to_string(mom.p.size()),3);
             // weighted probability choice    
-            j1 = r.random_choice(mlocs,mom.get_p(mlocs));           }
+            j1 = r.random_choice(mlocs,mom.get_p(mlocs));           
+        }
     }
-    /* cout << "mom subtree\t" << mom.program_str() << "\n"; */
+    cout << "mom subtree\t" << mom.program_str() << "\n";
     // get subtree              
     i1 = mom.program.subtree(j1);
                         
-    /* cout << "dad subtree\n" << dad.program_str() << "\n"; */
+    cout << "dad subtree\n" << dad.program_str() << "\n";
     // get dad subtree
     j2 = r.random_choice(dlocs);
     i2 = dad.program.subtree(j2); 
@@ -620,8 +645,7 @@ bool Variation::stagewise_cross(Individual& mom, Individual& dad,
     logger.log("\tstagewise xo",3);
     // normalize the residual 
     VectorXf R = d.y.array() - d.y.mean();
-    /* cout << "R: " << R.transpose() << "\n"; */
-    /* cout << "R mean: " << R.mean() << "\n"; */
+    cout << "R: " << R.norm() << "\n";
     if (mom.Phi.cols() != dad.Phi.cols())
     {
         cout << "!!WARNING!! mom.Phi.cols() = " << mom.Phi.cols() 
@@ -634,9 +658,9 @@ bool Variation::stagewise_cross(Individual& mom, Individual& dad,
     MatrixXf PhiA(mom.Phi.rows()+dad.Phi.rows(), mom.Phi.cols()); 
     PhiA << mom.Phi, 
             dad.Phi; 
-    /*cout << "mom Phi: " << mom.Phi.rows() << "x" << mom.Phi.cols() << "\n";*/
-    /*cout << "dad Phi: " << dad.Phi.rows() << "x" << dad.Phi.cols() << "\n";*/
-    /*cout << "PhiA: " << PhiA.rows() << "x" << PhiA.cols() << "\n"; */
+    cout << "mom Phi: " << mom.Phi.rows() << "x" << mom.Phi.cols() << "\n";
+    cout << "dad Phi: " << dad.Phi.rows() << "x" << dad.Phi.cols() << "\n";
+    cout << "PhiA: " << PhiA.rows() << "x" << PhiA.cols() << "\n"; 
     // normalize Phi
     for (int i = 0; i < PhiA.rows(); ++i)
     {
@@ -646,7 +670,13 @@ bool Variation::stagewise_cross(Individual& mom, Individual& dad,
     vector<int> sel_idx;
     float best_corr_idx;
     unsigned nsel = 0;
-    while (nsel < mom.Phi.rows())
+    float deltaR = 1; // keep track of changes to the residual
+    // only keep going when residual is reduced by at least tol
+    float tol = 0.01;     
+    cout << "R norm\t\tdeltaR\n";
+
+    bool condition = true;
+    while (condition)
     {
         float best_corr = -1;
         float corr;
@@ -674,13 +704,35 @@ bool Variation::stagewise_cross(Individual& mom, Individual& dad,
                         variance(PhiA.row(best_corr_idx)));
             /* cout << "b: " << b << "\n"; */
             /* cout << "b*phi: " << b*PhiA.row(best_corr_idx) << "\n"; */
+            deltaR = R.norm();
             R = R - b*PhiA.row(best_corr_idx).transpose();
+            deltaR = (deltaR - R.norm()) / deltaR; 
             /* cout << "R: " << R.transpose() << "\n"; */
-            /* cout << "R norm: " << R.norm() << "\n"; */
+            cout << R.norm() << "\t\t" << deltaR << "\n";
             // select best correlation index
-            sel_idx.push_back(best_corr_idx);
+            if (!params.stagewise_xo_tol || deltaR >= tol)
+            {
+                sel_idx.push_back(best_corr_idx);
+            }
         }
         ++nsel;
+        if (deltaR < tol)
+        {
+            cout << "!!!!!!!!!!!!!!!\n!!!!!!!!!!!!!!!!!\n!!!!!!!!!!!!!!"
+                << "\nHAH! I caught you, fiend!\n"
+                << deltaR << " < " << tol << "\n";
+
+        }
+        if (params.stagewise_xo_tol)
+        {
+            condition = (deltaR > tol 
+                    && nsel <= (mom.Phi.rows() + dad.Phi.rows()));
+        }
+        else
+        {
+            condition = nsel < mom.Phi.rows() ;
+        }
+        cout << "condition: " << condition << "\n";
     }
     /* cout << "sel_idx: "; */
     /* for (auto s: sel_idx) cout << s << ","; cout << "\n"; */
@@ -818,4 +870,5 @@ void Variation::print_cross(Individual& mom, size_t i1, size_t j1,
     }
 }
 
-}}
+}
+}
