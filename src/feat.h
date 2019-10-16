@@ -87,7 +87,7 @@ namespace FT{
                    bool stagewise_xo = false, bool stagewise_tol = true,
                    bool softmax_norm=false, int print_pop=0, 
                    bool normalize=true, bool val_from_arch=true,
-                   bool corr_delete_mutate=true);
+                   bool corr_delete_mutate=false);
             
             /// set size of population 
             void set_pop_size(int pop_size);
