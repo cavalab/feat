@@ -51,7 +51,6 @@ namespace FT{
             for (const auto& p : parents)
                 parent_id.push_back(p.id);
         }
-         
            
         /// get probabilities of variation
         vector<float> Individual::get_p() const { return p; }     
@@ -116,11 +115,11 @@ namespace FT{
                 
             vector<size_t> rts = program.roots();
             size_t j = 0;
-            float size = rts[0]+1;
-            /* cout << "roots: "; */
-            /* for (auto root : rts) cout << root << ", "; */
-            /* cout << "\n"; */
-            /* cout << "size: " << size << "\n"; */
+            float size = rts.at(0)+1;
+            cout << "roots: ";
+            for (auto root : rts) cout << root << ", ";
+            cout << "\n";
+            cout << "size: " << size << "\n";
             
             while ( j < rts.size())
             {
@@ -128,7 +127,11 @@ namespace FT{
                     size = rts.at(j) - rts.at(j-1);
                 
                 if (i <= rts.at(j))
+                {
+                    float tmp = normalize ? p.at(j)/size : p.at(j) ;
+                    cout << "returning " << tmp << endl; 
                     return normalize ? p.at(j)/size : p.at(j) ;    
+                }
                 else
                     ++j;
             }
@@ -138,7 +141,9 @@ namespace FT{
                 return 0.0;
             }
             // normalize weight by size of subtree
-            return normalize ? p.at(j)/size : p.at(j) ;    
+            float tmp = normalize ? p.at(j)/size : p.at(j) ;
+            cout << "returning " << tmp << endl; 
+            return tmp; 
         }
         
         vector<float> Individual::get_p(const vector<size_t>& locs, 

@@ -129,7 +129,8 @@ bool Variation::mutate(Individual& mom, Individual& child,
     mom.clone(child, false);  
     bool pass = true; 
     float rf = r();
-    if (rf < 1.0/3.0 && child.get_dim() > 1){
+    if (rf < 1.0/3.0 && child.get_dim() > 1)
+    {
         if (params.corr_delete_mutate)
         {
             pass = correlation_delete_mutate(child,mom.Phi,params,d); 
@@ -377,7 +378,7 @@ bool Variation::correlation_delete_mutate(Individual& child,
     {
         Phi.row(i) = Phi.row(i).array() - Phi.row(i).mean();
     }
-    cout << "Phi: " << Phi.rows() << "x" << Phi.cols() << "\n";
+    /* cout << "Phi: " << Phi.rows() << "x" << Phi.cols() << "\n"; */
     // calculate highest pairwise correlation and store feature indices
     float highest_corr = 0;
     int f1=0, f2 = 0;
@@ -388,7 +389,7 @@ bool Variation::correlation_delete_mutate(Individual& child,
            float corr = pearson_correlation(Phi.row(i).array(),
                         Phi.row(j).array());
 
-           cout << "correlation (" << i << "," << j << "): " << corr << "\n";
+           /* cout << "correlation (" << i << "," << j << "): " << corr << "\n"; */
 
            if (corr > highest_corr)
            {
@@ -398,7 +399,7 @@ bool Variation::correlation_delete_mutate(Individual& child,
            }
         }
     }
-    cout << "chosen pair: " << f1 << ", " << f2 << endl;
+    /* cout << "chosen pair: " << f1 << ", " << f2 << endl; */
     if (f1 == 0 && f2 == 0)
     {
         cout << "error: couldn't get proper correlations. aborting\n";
@@ -409,10 +410,10 @@ bool Variation::correlation_delete_mutate(Individual& child,
                                         Phi.row(f1).array()); 
     float corr_f2 = pearson_correlation(d.y.array()-d.y.mean(),
                                         Phi.row(f2).array()); 
-    cout << "corr (" << f1 << ", y): " << corr_f1 << endl;
-    cout << "corr (" << f2 << ", y): " << corr_f2 << endl;
+    /* cout << "corr (" << f1 << ", y): " << corr_f1 << endl; */
+    /* cout << "corr (" << f2 << ", y): " << corr_f2 << endl; */
     int choice = corr_f1 <= corr_f2 ? f1 : f2; 
-    cout << "chose " << choice << endl;
+    /* cout << "chose " << choice << endl; */
     // pick the subtree starting at roots(choice) and delete it
     vector<size_t> roots = child.program.roots();
     size_t end = roots.at(choice); 
@@ -426,7 +427,17 @@ bool Variation::correlation_delete_mutate(Individual& child,
     }    
     child.program.erase(child.program.begin()+start,
             child.program.begin()+end+1);
+
     logger.log("\t\tresult of corr delete mutation: " + child.program_str(), 3);
+
+    if (!child.program.is_valid_program(params.num_features, 
+                params.longitudinalMap))
+    {
+        cout << "Error in correlation_delete_mutate: child is not a valid "
+             << "program.\n";
+        cout << child.program_str() << endl;
+        cout << child.get_eqn() << endl;
+    }
     return true;
 }
 
@@ -464,7 +475,8 @@ bool Variation::cross(Individual& mom, Individual& dad, Individual& child,
             if (in(d_otypes,mom.program[i]->otype)) 
                 mlocs.push_back(i);  
         // mom and dad have no overlapping types, can't cross
-        if (mlocs.size()==0)                {
+        if (mlocs.size()==0)                
+        {
             logger.log("WARNING: no overlapping types between " + 
                     mom.program_str() + "," + dad.program_str() + "\n", 3);
             return 0;               
@@ -497,15 +509,18 @@ bool Variation::cross(Individual& mom, Individual& dad, Individual& child,
             j1 = r.random_choice(mlocs,mom.get_p(mlocs));           
         }
     }
-    cout << "mom subtree\t" << mom.program_str() << "\n";
+    cout << "mom subtree\t" << mom.program_str() << " starting at " 
+        << j1 << "\n";
     // get subtree              
     i1 = mom.program.subtree(j1);
-                        
-    cout << "dad subtree\n" << dad.program_str() << "\n";
+    cout << "mom i1: " << i1 << endl;                    
+    /* cout << "dad subtree\n" << dad.program_str() << "\n"; */
+    cout << "dad subtree\n";
     // get dad subtree
     j2 = r.random_choice(dlocs);
     i2 = dad.program.subtree(j2); 
            
+    cout << "splice programs\n";
     // make child program by splicing mom and dad
     splice_programs(child.program, mom.program, i1, j1, dad.program, i2, j2 );
                  
@@ -645,7 +660,7 @@ bool Variation::stagewise_cross(Individual& mom, Individual& dad,
     logger.log("\tstagewise xo",3);
     // normalize the residual 
     VectorXf R = d.y.array() - d.y.mean();
-    cout << "R: " << R.norm() << "\n";
+    /* cout << "R: " << R.norm() << "\n"; */
     if (mom.Phi.cols() != dad.Phi.cols())
     {
         cout << "!!WARNING!! mom.Phi.cols() = " << mom.Phi.cols() 
@@ -658,9 +673,9 @@ bool Variation::stagewise_cross(Individual& mom, Individual& dad,
     MatrixXf PhiA(mom.Phi.rows()+dad.Phi.rows(), mom.Phi.cols()); 
     PhiA << mom.Phi, 
             dad.Phi; 
-    cout << "mom Phi: " << mom.Phi.rows() << "x" << mom.Phi.cols() << "\n";
-    cout << "dad Phi: " << dad.Phi.rows() << "x" << dad.Phi.cols() << "\n";
-    cout << "PhiA: " << PhiA.rows() << "x" << PhiA.cols() << "\n"; 
+    /* cout << "mom Phi: " << mom.Phi.rows() << "x" << mom.Phi.cols() << "\n"; */
+    /* cout << "dad Phi: " << dad.Phi.rows() << "x" << dad.Phi.cols() << "\n"; */
+    /* cout << "PhiA: " << PhiA.rows() << "x" << PhiA.cols() << "\n"; */ 
     // normalize Phi
     for (int i = 0; i < PhiA.rows(); ++i)
     {
@@ -673,7 +688,7 @@ bool Variation::stagewise_cross(Individual& mom, Individual& dad,
     float deltaR = 1; // keep track of changes to the residual
     // only keep going when residual is reduced by at least tol
     float tol = 0.01;     
-    cout << "R norm\t\tdeltaR\n";
+    /* cout << "R norm\t\tdeltaR\n"; */
 
     bool condition = true;
     while (condition)
@@ -708,7 +723,7 @@ bool Variation::stagewise_cross(Individual& mom, Individual& dad,
             R = R - b*PhiA.row(best_corr_idx).transpose();
             deltaR = (deltaR - R.norm()) / deltaR; 
             /* cout << "R: " << R.transpose() << "\n"; */
-            cout << R.norm() << "\t\t" << deltaR << "\n";
+            /* cout << R.norm() << "\t\t" << deltaR << "\n"; */
             // select best correlation index
             if (!params.stagewise_xo_tol || deltaR >= tol)
             {
