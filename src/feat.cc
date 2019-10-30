@@ -31,7 +31,7 @@ Feat::Feat(int pop_size, int gens, string ml,
        bool hillclimb, string logfile, int max_time, bool use_batch, bool residual_xo,
        bool stagewise_xo, bool stagewise_xo_tol,
        bool softmax_norm, int print_pop, bool normalize,
-       bool val_from_arch, bool corr_delete_mutate):
+       bool val_from_arch, bool corr_delete_mutate, bool simplify):
           // construct subclasses
           params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
                  functions, cross_rate, root_xo_rate, max_depth, max_dim, erc, 
@@ -43,7 +43,8 @@ Feat::Feat(int pop_size, int gens, string ml,
           p_surv( make_shared<Selection>(surv, true) ),
           p_variation( make_shared<Variation>(cross_rate) ),
           print_pop(print_pop),
-          val_from_arch(val_from_arch)
+          val_from_arch(val_from_arch),
+          simplify(simplify)
 {
     r.set_seed(random_state);
     str_dim = "";
@@ -146,6 +147,8 @@ void Feat::set_feature_names(vector<string>& s){params.feature_names = s;}
 
 /// set constant optimization options
 void Feat::set_backprop(bool bp){params.backprop=bp;}
+
+void Feat::set_simplify(bool s){this->simplify=s;}
 
 void Feat::set_hillclimb(bool hc){params.hillclimb=hc;}
 
@@ -562,7 +565,8 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     final_model(d);   
 
     // simplify the final model
-    simplify_model(d);
+    if (simplify)
+        simplify_model(d);
 
     logger.log("\nTotal time taken is " + std::to_string(timer.Elapsed().count()) + "\n", 1);
     
@@ -740,23 +744,32 @@ void Feat::simplify_model(DataRef& d)
             tmp_ind.program.erase(tmp_ind.program.begin()+idx);
         }
     }
+    if (tmp_ind.size() < this->best_ind.size())
+        this->best_ind = tmp_ind;
 
     // prune dimensions
-    this->best_ind = tmp_ind;
+    set_verbosity(3);
     int iterations = this->best_ind.get_dim();
     cout << "doing dimension deletion mutations...\n";
     int starting_size = this->best_ind.size();
+    float tolerance = 0.001;
     for (int i = 0; i < iterations; ++i)
     {
         /* cout << "."; */
         Individual tmp_ind = this->best_ind;
-        this->p_variation->delete_dimension_mutate(tmp_ind, params);
+        bool pass = p_variation->correlation_delete_mutate(tmp_ind, 
+                best_ind.Phi, params, *d.o);
+        if (!pass)
+            cout << "correlation_delete_mutate did not pass\n";
         if (best_ind.size() == tmp_ind.size())
+        {
+            cout << "mode size unchanged\n";
             continue;
-        bool pass = true;
+        }
         shared_ptr<CLabels> yhat = tmp_ind.fit(*d.o, params, pass);
 
-        if (this->best_ind.yhat == tmp_ind.yhat)
+        if ((this->best_ind.yhat - tmp_ind.yhat).norm()/best_ind.yhat.norm() 
+                <= tolerance)
         {
             logger.log("\ndelete dimension mutation success: went from "
                 + to_string(best_ind.size()) + " to " 
@@ -769,17 +782,20 @@ void Feat::simplify_model(DataRef& d)
                  + to_string(100*(this->best_ind.yhat
                         -tmp_ind.yhat).norm()/(this->best_ind.yhat.norm()))
                  + " %", 3);
+            // if this mutation fails, it will continue to fail since it 
+            // is deterministic. so, break in this case.
+            break;
         }
 
     }
     int end_size = this->best_ind.size();
     logger.log("\n=========\nreduced best model size by " 
-            + to_string(end_size - starting_size)
+            + to_string(starting_size - end_size)
             + " nodes", 2);
 
     // prune subtrees
     this->best_ind = tmp_ind;
-    iterations = 1000;
+    iterations = 100;
     cout << "doing deletion mutations...\n";
     starting_size = this->best_ind.size();
     for (int i = 0; i < iterations; ++i)
@@ -792,7 +808,8 @@ void Feat::simplify_model(DataRef& d)
         bool pass = true;
         shared_ptr<CLabels> yhat = tmp_ind.fit(*d.o, params, pass);
 
-        if (this->best_ind.yhat == tmp_ind.yhat)
+        if ((this->best_ind.yhat - tmp_ind.yhat).norm()/best_ind.yhat.norm() 
+                <= tolerance)
         {
             logger.log("\ndelete mutation success: went from "
                 + to_string(best_ind.size()) + " to " 
@@ -810,7 +827,7 @@ void Feat::simplify_model(DataRef& d)
     }
     end_size = this->best_ind.size();
     logger.log("\n=========\nreduced best model size by " 
-            + to_string(end_size - starting_size)
+            + to_string( starting_size - end_size )
             + " nodes", 2);
     
 }

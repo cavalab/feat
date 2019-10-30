@@ -116,6 +116,7 @@ int main(int argc, char** argv){
         cout << "--residual_xo\tSet flag for residual crossover\n";
         cout << "--stagewise_xo\tSet flag for stagewise crossover\n";
         cout << "--softmax\tSet flag to use softmax normalization of feedback\n";
+        cout << "--simplify\tPost-run simplification\n";
         cout << "-print_pop\tPrint the population objective scores. 0: never, 1: at end, "
                 "2: each generation. (0)\n";
         cout << "-h\tDisplay this help message and exit.\n";
@@ -212,6 +213,8 @@ int main(int argc, char** argv){
         feat.set_stagewise_xo();
     if(input.cmdOptionExists("--softmax"))
         feat.set_softmax_norm();
+    if(input.cmdOptionExists("--simplify"))
+        feat.set_simplify(true);
     if(input.cmdOptionExists("-print_pop"))
         feat.set_print_pop(std::stoi(input.getCmdOption("-print_pop")));
 

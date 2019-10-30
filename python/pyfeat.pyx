@@ -27,7 +27,8 @@ cdef extern from "feat.h" namespace "FT":
                int n_threads, bool hillclimb, string logfile, int max_time, bool use_batch,
                bool residual_xo, bool stagewise_xo, bool stagewise_xo_tol, 
                bool softmax_norm, int print_pop, bool normalize, 
-               bool val_from_arch, bool corr_delete_mutate) except + 
+               bool val_from_arch, bool corr_delete_mutate, 
+               bool simplfy) except + 
 
         void fit(float * X, int rowsX, int colsX, float*  y , int lenY)
         VectorXd predict(float * X, int rowsX,int colsX)
@@ -75,7 +76,8 @@ cdef class PyFeat:
             float lr, int bs, int n_threads, bool hillclimb, string logfile, 
             int max_time, bool use_batch, bool residual_xo, bool stagewise_xo, 
             bool stagewise_xo_tol, bool softmax_norm, int print_pop, 
-            bool normalize, bool val_from_arch, bool corr_delete_mutate):
+            bool normalize, bool val_from_arch, bool corr_delete_mutate, 
+            bool simplify):
         
         cdef char otype_char
         if ( len(otype) == 0):
@@ -87,7 +89,7 @@ cdef class PyFeat:
                        obj, shuffle, split, fb, scorer, feature_names, backprop, iters, lr, bs, 
                        n_threads, hillclimb, logfile, max_time, use_batch, residual_xo, 
                        stagewise_xo, stagewise_xo_tol, softmax_norm, print_pop, 
-                       normalize, val_from_arch, corr_delete_mutate)
+                       normalize, val_from_arch, corr_delete_mutate, simplify)
 
     def fit(self,np.ndarray X,np.ndarray y):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x

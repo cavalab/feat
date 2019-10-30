@@ -31,7 +31,7 @@ class Feat(BaseEstimator):
                 use_batch=False, 
                 residual_xo=False, stagewise_xo=False, stagewise_xo_tol=False, 
                 softmax_norm=False, print_pop=0, normalize=True, 
-                val_from_arch=True, corr_delete_mutate=False):
+                val_from_arch=True, corr_delete_mutate=False, simplify=False):
         self.pop_size = pop_size
         self.gens = gens
         self.ml = ml.encode() if( isinstance(ml,str) )  else ml
@@ -78,6 +78,7 @@ class Feat(BaseEstimator):
         self.normalize = normalize
         self.val_from_arch = val_from_arch
         self.corr_delete_mutate = corr_delete_mutate
+        self.simplify = simplify
         # if self.verbosity>0:
         #print('self.__dict__: ' , self.__dict__)
         self._pyfeat=None
@@ -113,7 +114,8 @@ class Feat(BaseEstimator):
                 self.print_pop,
                 self.normalize,
                 self.val_from_arch,
-                self.corr_delete_mutate)
+                self.corr_delete_mutate,
+                self.simplify)
    
     def fit(self,X,y,zfile=None,zids=None):
         """Fit a model."""    
