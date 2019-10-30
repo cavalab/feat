@@ -103,12 +103,12 @@ namespace FT{
            size_t tmp = i;
            assert(i>=0 && "attempting to grab subtree with index < 0");
                   
-           cout << "getting subtree(" << i << "," << otype << ") for " 
-               << this->at(i)->name << endl;
+           /* cout << "getting subtree(" << i << "," << otype << ") for " */ 
+           /*     << this->at(i)->name << endl; */
            // return this index if it is a terminal
            if (this->at(i)->total_arity()==0)                   
            {
-               cout << "returning " << i << endl;
+               /* cout << "returning " << i << endl; */
                return i;
            }
            
@@ -118,7 +118,8 @@ namespace FT{
                             // where the nodes to recurse are.  
            {
                while (i>0 && this->at(i)->otype != otype) --i;    
-               assert(this->at(i)->otype == otype && "invalid subtree arguments");
+               assert(this->at(i)->otype == otype && 
+                       "invalid subtree arguments");
            }
           
            // recurse for floating arguments
@@ -140,7 +141,7 @@ namespace FT{
            for (unsigned int j = 0; j<arity['z']; ++j)
                i4 = subtree(--i4,'z');
 
-           cout << "returning min(" << i << "," << i4 << ")\n"; 
+           /* cout << "returning min(" << i << "," << i4 << ")\n"; */ 
 
            return std::min(i,i4);
         }

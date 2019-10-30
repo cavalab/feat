@@ -481,7 +481,8 @@ bool Variation::correlation_delete_mutate(Individual& child,
            }
         }
     }
-    /* cout << "chosen pair: " << f1 << ", " << f2 << endl; */
+    logger.log("chosen pair: " + to_string(f1) +  ", " + to_string(f2)
+            + "; corr = " + to_string(highest_corr), 3);
     if (f1 == 0 && f2 == 0)
     {
         cout << "error: couldn't get proper correlations. aborting\n";
@@ -492,8 +493,8 @@ bool Variation::correlation_delete_mutate(Individual& child,
                                         Phi.row(f1).array()); 
     float corr_f2 = pearson_correlation(d.y.array()-d.y.mean(),
                                         Phi.row(f2).array()); 
-    /* cout << "corr (" << f1 << ", y): " << corr_f1 << endl; */
-    /* cout << "corr (" << f2 << ", y): " << corr_f2 << endl; */
+    logger.log( "corr (" + to_string(f1) + ", y): " + to_string(corr_f1), 3);
+    logger.log( "corr (" + to_string(f2) + ", y): " + to_string(corr_f2), 3);
     int choice = corr_f1 <= corr_f2 ? f1 : f2; 
     /* cout << "chose " << choice << endl; */
     // pick the subtree starting at roots(choice) and delete it
@@ -591,18 +592,18 @@ bool Variation::cross(Individual& mom, Individual& dad, Individual& child,
             j1 = r.random_choice(mlocs,mom.get_p(mlocs));           
         }
     }
-    cout << "mom subtree\t" << mom.program_str() << " starting at " 
-        << j1 << "\n";
+    /* cout << "mom subtree\t" << mom.program_str() << " starting at " */ 
+    /*     << j1 << "\n"; */
     // get subtree              
     i1 = mom.program.subtree(j1);
-    cout << "mom i1: " << i1 << endl;                    
+    /* cout << "mom i1: " << i1 << endl; */                    
     /* cout << "dad subtree\n" << dad.program_str() << "\n"; */
-    cout << "dad subtree\n";
+    /* cout << "dad subtree\n"; */
     // get dad subtree
     j2 = r.random_choice(dlocs);
     i2 = dad.program.subtree(j2); 
            
-    cout << "splice programs\n";
+    /* cout << "splice programs\n"; */
     // make child program by splicing mom and dad
     splice_programs(child.program, mom.program, i1, j1, dad.program, i2, j2 );
                  
@@ -813,13 +814,13 @@ bool Variation::stagewise_cross(Individual& mom, Individual& dad,
             }
         }
         ++nsel;
-        if (deltaR < tol)
-        {
-            cout << "!!!!!!!!!!!!!!!\n!!!!!!!!!!!!!!!!!\n!!!!!!!!!!!!!!"
-                << "\nHAH! I caught you, fiend!\n"
-                << deltaR << " < " << tol << "\n";
+        /* if (deltaR < tol) */
+        /* { */
+        /*     cout << "!!!!!!!!!!!!!!!\n!!!!!!!!!!!!!!!!!\n!!!!!!!!!!!!!!" */
+        /*         << "\nHAH! I caught you, fiend!\n" */
+        /*         << deltaR << " < " << tol << "\n"; */
 
-        }
+        /* } */
         if (params.stagewise_xo_tol)
         {
             condition = (deltaR > tol 
@@ -829,7 +830,7 @@ bool Variation::stagewise_cross(Individual& mom, Individual& dad,
         {
             condition = nsel < mom.Phi.rows() ;
         }
-        cout << "condition: " << condition << "\n";
+        /* cout << "condition: " << condition << "\n"; */
     }
     /* cout << "sel_idx: "; */
     /* for (auto s: sel_idx) cout << s << ","; cout << "\n"; */

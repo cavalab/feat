@@ -116,10 +116,10 @@ namespace FT{
             vector<size_t> rts = program.roots();
             size_t j = 0;
             float size = rts.at(0)+1;
-            cout << "roots: ";
-            for (auto root : rts) cout << root << ", ";
-            cout << "\n";
-            cout << "size: " << size << "\n";
+            /* cout << "roots: "; */
+            /* for (auto root : rts) cout << root << ", "; */
+            /* cout << "\n"; */
+            /* cout << "size: " << size << "\n"; */
             
             while ( j < rts.size())
             {
@@ -129,7 +129,7 @@ namespace FT{
                 if (i <= rts.at(j))
                 {
                     float tmp = normalize ? p.at(j)/size : p.at(j) ;
-                    cout << "returning " << tmp << endl; 
+                    /* cout << "returning " << tmp << endl; */ 
                     return normalize ? p.at(j)/size : p.at(j) ;    
                 }
                 else
@@ -142,7 +142,7 @@ namespace FT{
             }
             // normalize weight by size of subtree
             float tmp = normalize ? p.at(j)/size : p.at(j) ;
-            cout << "returning " << tmp << endl; 
+            /* cout << "returning " << tmp << endl; */ 
             return tmp; 
         }
         

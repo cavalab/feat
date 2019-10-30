@@ -57,6 +57,8 @@ namespace FT{
                         const Parameters& params);
                 void delete_dimension_mutate(Individual& child, 
                         const Parameters& params);
+                bool correlation_delete_mutate(Individual& child, 
+                        MatrixXf Phi, const Parameters& params, const Data& d);
             private:
             
                 /// crossover
@@ -78,9 +80,6 @@ namespace FT{
                         const Parameters& params, const Data& d);
                 void point_mutate(Individual& child, const Parameters& params);
                 void insert_mutate(Individual& child, const Parameters& params);
-                void delete_mutate(Individual& child, const Parameters& params);
-                bool correlation_delete_mutate(Individual& child, 
-                        MatrixXf Phi, const Parameters& params, const Data& d);
      
                 /// splice two programs together
                 void splice_programs(NodeVector& vnew, 
