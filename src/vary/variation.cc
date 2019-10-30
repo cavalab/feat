@@ -130,7 +130,11 @@ bool Variation::mutate(Individual& mom, Individual& child,
     
     float rf = r();
     if (rf < 1.0/3.0 && child.get_dim() > 1){
-        delete_mutate(child,params); 
+        if (r() < 0.5)
+            delete_mutate(child,params); 
+        else 
+            delete_dimension_mutate(child, params);
+
         assert(child.program.is_valid_program(params.num_features, 
                     params.longitudinalMap));
     }
@@ -320,7 +324,86 @@ void Variation::insert_mutate(Individual& child,
     }
 }
 
-void Variation::delete_mutate(Individual& child, const Parameters& params)
+void Variation::delete_mutate(Individual& child, 
+        const Parameters& params)
+{
+    /*! deletion mutation. works by pruning a dimension. 
+     * @param child: individual to be mutated
+     * @param params: parameters  
+     * @return mutated child
+     * */
+    logger.log("\tdeletion mutation",3);
+    logger.log("\t\tprogram: " + child.program_str(),3);
+    // loop thru child's program
+    for (unsigned i = 0; i< child.program.size(); ++i)
+    {
+        // mutate with weighted probability
+        if (child.program.subtree(i) != i && r() < child.get_p(i))                      
+        {
+            // get subtree indices of program to delete
+            size_t end = i; 
+            size_t start = child.program.subtree(end);  
+            string portion="";
+            for (int j=start; j<=end; ++j)
+            {
+                portion += child.program.at(j)->name + " ";
+            }
+            logger.log("\t\tdelete mutating [ " + 
+                    portion + " ] from program " +
+                    child.program_str(), 3);
+
+            NodeVector terms;  // potential fns 
+            
+            // find terminals with matching output types to i
+            for (const auto& t: params.terminals)
+            { 
+                // find terms with matching output types that take 
+                // this node type as arg
+                if ( t->otype==child.program[i]->otype )
+                { 
+                    terms.push_back(t->rnd_clone());              
+                }
+            }
+
+            if (terms.size()==0)  // if no insertion terminals match, skip
+            {
+                logger.log("\t\tnevermind, couldn't find a matching terminal",
+                        3);
+                continue;
+            }
+
+            // choose a function to insert                    
+            std::unique_ptr<Node> insertion = random_node(terms);
+            
+            string s; 
+            logger.log("\t\tinsertion: " + insertion->name + "\n", 3);
+
+            // delete portion of program
+            if (logger.get_log_level() >=3)
+            { 
+                std::string s="";
+                for (unsigned i = start; i<=end; ++i) 
+                {
+                    s+= child.program[i]->name + " ";
+                }
+                logger.log("\t\tdeleting " + std::to_string(start) + " to " + 
+                        std::to_string(end) + ": " + s, 3);
+            }    
+            child.program.erase(child.program.begin()+start,
+                    child.program.begin()+end+1);
+
+            // insert the terminal that was chosen 
+            child.program.insert(child.program.begin()+start, 
+                    insertion->clone());
+            logger.log("\t\tresult of delete mutation: " + child.program_str(), 3);
+            continue;
+        }
+        /* std::cout << "i: " << i << "\n"; */ 
+    }
+}
+
+void Variation::delete_dimension_mutate(Individual& child, 
+        const Parameters& params)
 {
     /*! deletion mutation. works by pruning a dimension. 
      * @param child: individual to be mutated
