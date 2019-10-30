@@ -773,11 +773,12 @@ void Feat::simplify_model(DataRef& d)
     logger.log("\n=========\nreduced best model size by " 
             + to_string(end_size - starting_size)
             + " nodes", 2);
+
     // prune subtrees
     this->best_ind = tmp_ind;
-    int iterations = 1000;
+    iterations = 1000;
     cout << "doing deletion mutations...\n";
-    int starting_size = this->best_ind.size();
+    starting_size = this->best_ind.size();
     for (int i = 0; i < iterations; ++i)
     {
         /* cout << "."; */
@@ -804,7 +805,7 @@ void Feat::simplify_model(DataRef& d)
         }
 
     }
-    int end_size = this->best_ind.size();
+    end_size = this->best_ind.size();
     logger.log("\n=========\nreduced best model size by " 
             + to_string(end_size - starting_size)
             + " nodes", 2);
