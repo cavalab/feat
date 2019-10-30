@@ -52,7 +52,10 @@ namespace FT{
                 void vary(Population& pop, const vector<size_t>& parents, 
                         const Parameters& params, const Data& d);
                 
-                void delete_mutate(Individual& child, const Parameters& params);
+                void delete_mutate(Individual& child, 
+                        const Parameters& params);
+                void delete_dimension_mutate(Individual& child, 
+                        const Parameters& params);
             private:
             
                 /// crossover

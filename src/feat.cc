@@ -737,26 +737,77 @@ void Feat::simplify_model(DataRef& d)
             tmp_ind.program.erase(tmp_ind.program.begin()+idx);
         }
     }
-    
+
+    // prune dimensions
     this->best_ind = tmp_ind;
-    int iterations = 100;
-    cout << "doing deletion mutations...\n";
+    int iterations = this->best_ind.get_dim();
+    cout << "doing dimension deletion mutations...\n";
+    int starting_size = this->best_ind.size();
     for (int i = 0; i < iterations; ++i)
     {
-        cout << ".";
+        /* cout << "."; */
         Individual tmp_ind = this->best_ind;
-        this->p_variation->delete_mutate(tmp_ind, params);
+        this->p_variation->delete_dimension_mutate(tmp_ind, params);
+        if (best_ind.size() == tmp_ind.size())
+            continue;
         bool pass = true;
         shared_ptr<CLabels> yhat = tmp_ind.fit(*d.o, params, pass);
+
         if (this->best_ind.yhat == tmp_ind.yhat)
         {
-            cout << "\ndelete mutation success: went from "
-                << best_ind.size() << " to " << tmp_ind.size() << "\n";
+            logger.log("\ndelete dimension mutation success: went from "
+                + to_string(best_ind.size()) + " to " 
+                + to_string(tmp_ind.size()), 3); 
             best_ind = tmp_ind;
+        }
+        else
+        {
+            logger.log("\ndelete dimension mutation failure: output changed by " 
+                 + to_string(100*(this->best_ind.yhat
+                        -tmp_ind.yhat).norm()/(this->best_ind.yhat.norm()))
+                 + " %", 3);
         }
 
     }
-    cout << "\n";
+    int end_size = this->best_ind.size();
+    logger.log("\n=========\nreduced best model size by " 
+            + to_string(end_size - starting_size)
+            + " nodes", 2);
+    // prune subtrees
+    this->best_ind = tmp_ind;
+    int iterations = 1000;
+    cout << "doing deletion mutations...\n";
+    int starting_size = this->best_ind.size();
+    for (int i = 0; i < iterations; ++i)
+    {
+        /* cout << "."; */
+        Individual tmp_ind = this->best_ind;
+        this->p_variation->delete_mutate(tmp_ind, params);
+        if (best_ind.size() == tmp_ind.size())
+            continue;
+        bool pass = true;
+        shared_ptr<CLabels> yhat = tmp_ind.fit(*d.o, params, pass);
+
+        if (this->best_ind.yhat == tmp_ind.yhat)
+        {
+            logger.log("\ndelete mutation success: went from "
+                + to_string(best_ind.size()) + " to " 
+                + to_string(tmp_ind.size()), 3); 
+            best_ind = tmp_ind;
+        }
+        else
+        {
+            logger.log("\ndelete mutation failure: output changed by " 
+                 + to_string(100*(this->best_ind.yhat
+                        -tmp_ind.yhat).norm()/(this->best_ind.yhat.norm()))
+                 + " %", 3);
+        }
+
+    }
+    int end_size = this->best_ind.size();
+    logger.log("\n=========\nreduced best model size by " 
+            + to_string(end_size - starting_size)
+            + " nodes", 2);
     
 }
 vector<float> Feat::univariate_initial_model(DataRef &d, int n_feats) 
