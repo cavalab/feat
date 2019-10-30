@@ -16,7 +16,8 @@ namespace FT{
 
     /**
      * @namespace FT::Vary
-     * @brief namespace containing various variation methods for cross and mutation in Feat
+     * @brief namespace containing various variation methods for cross and 
+     * mutation in Feat
      */
     namespace Vary{
 
@@ -24,7 +25,7 @@ namespace FT{
         //struct Parameters;
         //struct Population;
         //Rnd r;
-        ////////////////////////////////////////////////////////////////////////////////// Declarations
+        ////////////////////////////////////////////////////////// Declarations
         /*!
          * @class Variation
          */ 
@@ -74,9 +75,12 @@ namespace FT{
 
                 /// mutation
                 bool mutate(Individual& mom, Individual& child, 
-                        const Parameters& params);
+                        const Parameters& params, const Data& d);
                 void point_mutate(Individual& child, const Parameters& params);
                 void insert_mutate(Individual& child, const Parameters& params);
+                void delete_mutate(Individual& child, const Parameters& params);
+                bool correlation_delete_mutate(Individual& child, 
+                        MatrixXf Phi, const Parameters& params, const Data& d);
      
                 /// splice two programs together
                 void splice_programs(NodeVector& vnew, 

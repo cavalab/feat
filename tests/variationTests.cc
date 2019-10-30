@@ -88,7 +88,7 @@ TEST(Variation, MutationTests)
 		
 		int mom = r.random_choice(parents);
 		int pass = feat.p_variation->mutate(feat.p_pop->individuals[mom],
-                child,feat.params);
+                child,feat.params,dt);
 		
 		if (pass)                   // congrats! you produced a viable child.
 		{

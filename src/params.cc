@@ -15,7 +15,7 @@ Parameters::Parameters(int pop_size, int gens, string ml, bool classification,
         unsigned int max_dim, bool constant, string obj, bool sh, float sp, 
         float fb, string sc, string fn, bool bckprp, int iters, float lr,
         int bs, bool hclimb, int maxt, bool useb, bool res_xo, bool stg_xo, 
-        bool sftmx, bool nrm):    
+        bool stg_xo_tol, bool sftmx, bool nrm, bool corr_mut):    
         pop_size(pop_size),
         gens(gens),
         ml(ml),
@@ -38,6 +38,8 @@ Parameters::Parameters(int pop_size, int gens, string ml, bool classification,
         use_batch(useb),
         residual_xo(res_xo),
         stagewise_xo(stg_xo),
+        stagewise_xo_tol(stg_xo),
+        corr_delete_mutate(corr_mut),
         softmax_norm(sftmx),
         normalize(nrm)
     {
