@@ -68,8 +68,10 @@ void Variation::vary(Population& pop, const vector<size_t>& parents,
                 Individual& dad = pop.individuals.at(r.random_choice(parents));
                 /* int dad = r.random_choice(parents); */
                 // create child
-                logger.log("\n===\ncrossing " + mom.get_eqn() + "\nwith\n " + 
+                logger.log("\n===\ncrossing\n" + mom.get_eqn() + "\nwith\n " + 
                            dad.get_eqn() , 3);
+                logger.log("programs:\n" + mom.program_str() + "\nwith\n " + 
+                           dad.program_str() , 3);
                
                 // perform crossover
                 pass = cross(mom, dad, child, params, d);
