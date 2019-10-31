@@ -169,6 +169,8 @@ namespace FT{
             void set_backprop(bool bp);
             
             void set_simplify(bool s);
+
+            void set_corr_delete_mutate(bool s);
             
             void set_hillclimb(bool hc);
             

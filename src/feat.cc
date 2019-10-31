@@ -150,6 +150,8 @@ void Feat::set_backprop(bool bp){params.backprop=bp;}
 
 void Feat::set_simplify(bool s){this->simplify=s;}
 
+void Feat::set_corr_delete_mutate(bool s){this->params.corr_delete_mutate=s;}
+
 void Feat::set_hillclimb(bool hc){params.hillclimb=hc;}
 
 void Feat::set_iters(int iters){params.bp.iters = iters; params.hc.iters=iters;}
