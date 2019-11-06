@@ -614,13 +614,13 @@ void Feat::run_generation(unsigned int g,
     
     update_best(d);
 
+    calculate_stats(d);
+
     if (params.max_stall > 0)
-        update_stall_count(stall_count, F, d);
+        update_stall_count(stall_count);
 
     if (use_arch) 
         arch.update(*p_pop,params);
-
-    calculate_stats();
     
     if(params.verbosity>1)
         print_stats(log, fraction);    
@@ -638,23 +638,11 @@ void Feat::run_generation(unsigned int g,
 
 }
 
-void Feat::update_stall_count(unsigned& stall_count, MatrixXf& F, const DataRef& d)
+void Feat::update_stall_count(unsigned& stall_count)
 {
     /* double med_score = median(F.colwise().mean().array());  // median loss */
-    vector<float> fitnesses;
-    for (unsigned i = 0; i < p_pop->individuals.size(); ++i)
-        fitnesses.push_back(p_pop->individuals.at(i).fitness);
-    int idx = argmiddle(fitnesses);
-    /* cout << "fitnesses: \n"; */
-    /* for (const auto& f : fitnesses) cout << f << ", "; cout << "\n"; */
-    /* cout << "idx: " << idx << "\n"; */
-    Individual& med_ind = p_pop->individuals.at(idx);
-    /* cout << "med_ind: " << med_ind.get_eqn() << "\n"; */
-    VectorXf tmp;
-    shared_ptr<CLabels> yhat_v = med_ind.predict(*d.v, params);
-    med_loss_v = p_eval->score(d.v->y, yhat_v, tmp, params.class_weights); 
 
-    if (params.current_gen == 0 || med_loss_v < best_med_score)
+    if (params.current_gen == 0 || this->med_loss_v < this->best_med_score)
     {
         /* cout << "updating best_med_score to " << med_loss_v << "\n"; */
         best_med_score = med_loss_v;
@@ -1108,7 +1096,7 @@ void Feat::update_best(const DataRef& d, bool validation)
     logger.log("updating best..",2);
 
     float bs;
-    bs = validation ? best_score_v : best_score ; 
+    bs = validation ? this->best_score_v : this->best_score ; 
     float f; 
     vector<Individual>& pop = (use_arch && validation ? 
                                arch.archive : p_pop->individuals); 
@@ -1121,24 +1109,25 @@ void Feat::update_best(const DataRef& d, bool validation)
             if (f < bs)
             {
                 bs = f;
-                best_ind = i; // should this be i.clone(best_ind); ?
+                this->best_ind = i; // should this be i.clone(best_ind); ?
                 /* i.clone(best_ind); */
             }
         }
     }
 
     if (validation) 
-        best_score_v = bs; 
+        this->best_score_v = bs; 
     else
     {
-        best_score = bs;
+        this->best_score = bs;
 
         if (params.split < 1.0)
         {
             VectorXf tmp;
-            shared_ptr<CLabels> yhat_v = best_ind.predict(*d.v, params);
-            best_score_v = p_eval->score(d.v->y, yhat_v, tmp, params.class_weights); 
-            best_ind.fitness_v = best_score_v;
+            shared_ptr<CLabels> yhat_v = this->best_ind.predict(*d.v, params);
+            this->best_score_v = p_eval->score(d.v->y, yhat_v, tmp, 
+                    params.class_weights); 
+            this->best_ind.fitness_v = this->best_score_v;
         }
     }
 }
@@ -1151,37 +1140,77 @@ float Feat::score(MatrixXf& X, const VectorXf& y,
     return p_eval->score(y,labels,loss,params.class_weights);
 }
 
-void Feat::calculate_stats()
+void Feat::calculate_stats(const DataRef& d)
 {
 
-    float med_score = median(F.colwise().mean().array());  // median loss
+    // median loss
+    float med_score = median(F.colwise().mean().array());  
     
     ArrayXf Sizes(p_pop->size());
     
     unsigned i = 0;
     
-    for (const auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;}
-    unsigned med_size = median(Sizes);                        // median program size
+    for (const auto& p : p_pop->individuals)
+    { 
+        Sizes(i) = p.size(); 
+        ++i;
+    }
+    // median program size
+    unsigned med_size = median(Sizes);                        
     
+    // complexity
     ArrayXf Complexities(p_pop->size()); 
-    i = 0; for (auto& p : p_pop->individuals){ Complexities(i) = p.complexity(); ++i;}
+    i = 0; 
+    for (auto& p : p_pop->individuals)
+    { 
+        Complexities(i) = p.complexity(); 
+        ++i;
+    }
+
+    // number of parameters
     ArrayXf Nparams(p_pop->size()); 
-    i = 0; for (auto& p : p_pop->individuals){ Nparams(i) = p.get_n_params(); ++i;}
+    i = 0; 
+    for (auto& p : p_pop->individuals)
+    { 
+        Nparams(i) = p.get_n_params(); 
+        ++i;
+    }
+
+    // dimensions
     ArrayXf Dims(p_pop->size()); 
-    i = 0; for (auto& p : p_pop->individuals){ Dims(i) = p.get_dim(); ++i;}
+    i = 0; 
+    for (auto& p : p_pop->individuals)
+    { 
+        Dims(i) = p.get_dim(); 
+        ++i;
+    }
     
-    /* unsigned med_size = median(Sizes);                        // median program size */
-    unsigned med_complexity = median(Complexities);           // median 
-    unsigned med_num_params = median(Nparams);                // median program size
-    unsigned med_dim = median(Dims);                          // median program size
+    /* unsigned med_size = median(Sizes); */ 
+    unsigned med_complexity = median(Complexities);            
+    unsigned med_num_params = median(Nparams);                
+    unsigned med_dim = median(Dims);                          
     
-    
+    /////////////////////////////////////////////
+    // calculate the loss of the median individual
+    vector<float> fitnesses;
+    for (unsigned i = 0; i < p_pop->individuals.size(); ++i)
+        fitnesses.push_back(p_pop->individuals.at(i).fitness);
+    int idx = argmiddle(fitnesses);
+
+    Individual& med_ind = p_pop->individuals.at(idx);
+    VectorXf tmp;
+    shared_ptr<CLabels> yhat_v = med_ind.predict(*d.v, params);
+    this->med_loss_v = p_eval->score(d.v->y, yhat_v, tmp, 
+            params.class_weights); 
+    /////////////////////////////////////////////
+   
+    // update stats
     stats.update(params.current_gen,
                  timer.Elapsed().count(),
-                 best_score,
-                 best_score_v,
+                 this->best_score,
+                 this->best_score_v,
                  med_score,
-                 med_loss_v,
+                 this->med_loss_v,
                  med_size,
                  med_complexity,
                  med_num_params,
@@ -1294,7 +1323,7 @@ void Feat::print_stats(std::ofstream& log, float fraction)
             << best_score          << sep
             << best_score_v        << sep
             << stats.med_score.back()  << sep
-            << med_loss_v          << sep
+            << stats.med_loss_v.back() << sep
             << stats.med_size.back()   << sep
             << stats.med_complexity.back() << sep
             << stats.med_num_params.back() << sep
