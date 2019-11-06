@@ -277,38 +277,47 @@ void Variation::insert_mutate(Individual& child,
                 if (fns.size()==0)  // if no insertion functions match, skip
                     continue;
 
+                // grab chosen node's subtree
+                int end = i;
+                int start = child.program.subtree(end); 
+
                 // choose a function to insert                    
                 insertion.push_back(random_node(fns));
-                
-                unsigned fa = insertion.back()->arity['f']; // float arity
-                unsigned ca = insertion.back()->arity['c']; //categorical arity
-                unsigned ba = insertion.back()->arity['b']; // bool arity
+                // now we need to manually construct a subtree with this 
+                // insertion node, with the child program stiched in as an 
+                // argument.
+                map<char, unsigned> insert_arity; 
+                insert_arity['f'] = insertion.back()->arity['f']; 
+                insert_arity['b'] = insertion.back()->arity['b']; 
+                insert_arity['c'] = insertion.back()->arity['c']; 
+                insert_arity['z'] = insertion.back()->arity['z']; 
+
                 // decrement function arity by one for child node 
-                if (child.program[i]->otype=='f') --fa;
-                else if (child.program[i]->otype=='c') --ca;
-                else --ba; 
+                --insert_arity[child.program[i]->otype];
                 
-                // push back new arguments for the rest of the function
-                for (unsigned j = 0; j< fa; ++j)
-                    insertion.make_tree(params.functions,params.terminals,0,
-                              params.term_weights,params.op_weights,'f',
-                              params.ttypes);
-                // add the child now if float
-                if (child.program[i]->otype=='f')                        
-                    insertion.push_back(child.program[i]->clone());
-                for (unsigned j = 0; j< ca; ++j)
-                    insertion.make_tree(params.functions,params.terminals,0,
-                              params.term_weights,params.op_weights,'c',
-                              params.ttypes);
-                // add the child now if categorical
-                if (child.program[i]->otype=='c')                        
-                    insertion.push_back(child.program[i]->clone());
-                for (unsigned j = 0; j< ba; ++j)
-                    insertion.make_tree(params.functions,params.terminals,0,
-                              params.term_weights,params.op_weights,'b',
-                              params.ttypes);
-                if (child.program[i]->otype=='b') // add the child now if bool
-                    insertion.push_back(child.program[i]->clone());
+                vector<char> types = {'f','b','c','z'};
+                for (auto type : types)
+                {
+                    // push back new arguments for the rest of the function
+                    for (unsigned j = 0; j< insert_arity[type]; ++j)
+                    {
+                        insertion.make_tree(params.functions,params.terminals,
+                                0, params.term_weights,params.op_weights,
+                                type, params.ttypes);
+                    }
+                    // add the child now if type matches
+                    if (child.program[i]->otype==type)                        
+                    {
+                        /* cout << "adding " << type << " child program: [" ; */ 
+                        for (int k = end; k != start-1; --k)
+                        {
+                            /* cout << child.program[k]->name ; */
+                            /* cout << " (k=" << k << ")\t"; */
+                            insertion.push_back(child.program[k]->clone());
+                        }
+                        /* cout << "]\n"; */
+                    }
+                }
                 // post-fix notation
                 std::reverse(insertion.begin(),insertion.end());
                
@@ -317,13 +326,14 @@ void Variation::insert_mutate(Individual& child,
                 logger.log("\t\tinsertion: " + s + "\n", 3);
                 NodeVector new_program; 
                 splice_programs(new_program, 
-                                child.program, i, i, 
+                                child.program, start, end, 
                                 insertion, size_t(0), insertion.size()-1);
                 child.program=new_program;
                 i += insertion.size()-1;
             }
             /* std::cout << "i: " << i << "\n"; */ 
         }
+        /* cout << child.get_eqn() << "\n"; */
     }
     else    // add a dimension
     {            
@@ -487,7 +497,8 @@ bool Variation::correlation_delete_mutate(Individual& child,
             + "; corr = " + to_string(highest_corr), 3);
     if (f1 == 0 && f2 == 0)
     {
-        cout << "error: couldn't get proper correlations. aborting\n";
+        HANDLE_ERROR_NO_THROW("ERROR: couldn't get proper "
+                "correlations. aborting correlation_delete_mutate\n");
         return false;
     }
     // pick the feature, f1 or f2, that is less correlated with y

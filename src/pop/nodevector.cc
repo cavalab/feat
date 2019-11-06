@@ -356,17 +356,25 @@ namespace FT{
                 /*     HANDLE_ERROR_THROW("exiting"); */
                 // recurse to fulfill the arity of the chosen function
                 for (size_t i = 0; i < chosen->arity['f']; ++i)
-                    make_tree(functions, terminals, max_d-1, term_weights, op_weights, 'f', 
-                              term_types);
+                {
+                    make_tree(functions, terminals, max_d-1, term_weights, 
+                            op_weights, 'f', term_types);
+                }
                 for (size_t i = 0; i < chosen->arity['b']; ++i)
-                    make_tree(functions, terminals, max_d-1, term_weights, op_weights, 'b', 
-                              term_types);
+                {
+                    make_tree(functions, terminals, max_d-1, term_weights, 
+                            op_weights, 'b', term_types);
+                }
                 for (size_t i = 0; i < chosen->arity['c']; ++i)
-                    make_tree(functions, terminals, max_d-1, term_weights, op_weights, 'c', 
-                              term_types);
+                {
+                    make_tree(functions, terminals, max_d-1, term_weights, 
+                            op_weights, 'c', term_types);
+                }
                 for (size_t i = 0; i < chosen->arity['z']; ++i)
-                    make_tree(functions, terminals, max_d-1, term_weights, op_weights, 'z', 
-                              term_types);
+                {
+                    make_tree(functions, terminals, max_d-1, term_weights, 
+                            op_weights, 'z', term_types);
+                }
             }
             
             /* std::cout << "finished program: ["; */

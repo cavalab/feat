@@ -395,7 +395,10 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
             params.use_batch = false;
         }
         else
-            cout << "using batch with batch_size= " << params.bp.batch_size << "\n";
+        {
+            cout << "using batch with batch_size= " 
+                 << params.bp.batch_size << "\n";
+        }
     }
     std::ofstream log;                      ///< log file stream
     if (!logfile.empty())
@@ -570,7 +573,8 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     if (simplify)
         simplify_model(d);
 
-    logger.log("\nTotal time taken is " + std::to_string(timer.Elapsed().count()) + "\n", 1);
+    logger.log("\nTotal time taken is " 
+            + std::to_string(timer.Elapsed().count()) + "\n", 1);
     
     if (log.is_open())
         log.close();
@@ -597,7 +601,8 @@ void Feat::run_generation(unsigned int g,
 
     // evaluate offspring
     logger.log("evaluating offspring...", 3);
-    p_eval->fitness(p_pop->individuals, *d.t, F, params, true && !params.use_batch);
+    p_eval->fitness(p_pop->individuals, *d.t, F, params, 
+            true && !params.use_batch);
     // select survivors from combined pool of parents and offspring
     logger.log("survival...", 3);
     survivors = p_surv->survive(*p_pop, F, params);
@@ -710,11 +715,17 @@ void Feat::simplify_model(DataRef& d)
      * if the output of the model doesn't change, keep the mutations.
      */
 
+    //////////////////////////////
     // check for specific patterns
+    //////////////////////////////
+    //
     Individual tmp_ind = this->best_ind;
-    
+    int starting_size = this->best_ind.size();
     vector<size_t> roots = tmp_ind.program.roots();
     vector<size_t> idx_to_remove;
+
+    logger.log("doing pattern pruning...",2);
+
     for (int r = 0; r < roots.size(); ++r)
     {
         size_t start = tmp_ind.program.subtree(r);
@@ -746,14 +757,20 @@ void Feat::simplify_model(DataRef& d)
             tmp_ind.program.erase(tmp_ind.program.begin()+idx);
         }
     }
+    int end_size = this->best_ind.size();
+    logger.log("\n=========\ndimension pruning reduced best model size by " 
+            + to_string(starting_size - end_size)
+            + " nodes\n=========\n", 1);
     if (tmp_ind.size() < this->best_ind.size())
         this->best_ind = tmp_ind;
 
+    ///////////////////
     // prune dimensions
-    set_verbosity(3);
+    ///////////////////
+    /* set_verbosity(3); */
     int iterations = this->best_ind.get_dim();
-    cout << "doing dimension deletion mutations...\n";
-    int starting_size = this->best_ind.size();
+    logger.log("doing dimension deletion mutations...",2);
+    starting_size = this->best_ind.size();
     float tolerance = 0.001;
     for (int i = 0; i < iterations; ++i)
     {
@@ -790,15 +807,16 @@ void Feat::simplify_model(DataRef& d)
         }
 
     }
-    int end_size = this->best_ind.size();
-    logger.log("\n=========\nreduced best model size by " 
+    end_size = this->best_ind.size();
+    logger.log("\n=========\ndimension pruning reduced best model size by " 
             + to_string(starting_size - end_size)
-            + " nodes", 2);
+            + " nodes\n=========\n", 2);
 
+    /////////////////
     // prune subtrees
-    this->best_ind = tmp_ind;
+    /////////////////
     iterations = 100;
-    cout << "doing deletion mutations...\n";
+    logger.log("doing subtree deletion mutations...", 2);
     starting_size = this->best_ind.size();
     for (int i = 0; i < iterations; ++i)
     {
@@ -828,11 +846,11 @@ void Feat::simplify_model(DataRef& d)
 
     }
     end_size = this->best_ind.size();
-    logger.log("\n=========\nreduced best model size by " 
+    logger.log("\n=========\nsubtree deletion reduced best model size by " 
             + to_string( starting_size - end_size )
             + " nodes", 2);
-    
 }
+
 vector<float> Feat::univariate_initial_model(DataRef &d, int n_feats) 
 {
     /*!
