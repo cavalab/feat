@@ -434,7 +434,7 @@ namespace FT{
             void update_best(const DataRef& d, bool val=false);    
             
             /// calculate and print stats
-            void calculate_stats();
+            void calculate_stats(const DataRef& d);
             void print_stats(std::ofstream& log,
                              float fraction);      
             Individual best_ind;                    ///< best individual
@@ -452,8 +452,7 @@ namespace FT{
             /// simplifies final model to best transformation
             void simplify_model(DataRef& d);
             /// updates stall count for early stopping
-            void update_stall_count(unsigned& stall_count, MatrixXf& F, 
-                    const DataRef& d);
+            void update_stall_count(unsigned& stall_count);
             
             Log_Stats stats;
     };
