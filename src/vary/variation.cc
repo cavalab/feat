@@ -129,7 +129,6 @@ bool Variation::mutate(Individual& mom, Individual& child,
 
     // make child a copy of mom
     mom.clone(child, false);  
-    bool pass = true; 
     float rf = r();
     if (rf < 1.0/3.0 && child.get_dim() > 1)
     {
@@ -140,7 +139,10 @@ bool Variation::mutate(Individual& mom, Individual& child,
         else 
         {
             if (params.corr_delete_mutate)
-                pass = correlation_delete_mutate(child,mom.Phi,params,d); 
+            {
+                bool perfect_correlation = correlation_delete_mutate(
+                        child,mom.Phi,params,d); 
+            }
             else
                 delete_dimension_mutate(child, params);
         }
@@ -161,7 +163,7 @@ bool Variation::mutate(Individual& mom, Individual& child,
     }
 
     // check child depth and dimensionality
-    return pass && child.size()>0 && child.size() <= params.max_size 
+    return child.size()>0 && child.size() <= params.max_size 
             && child.get_dim() <= params.max_dim;
 }
 
@@ -534,7 +536,7 @@ bool Variation::correlation_delete_mutate(Individual& child,
         cout << child.program_str() << endl;
         cout << child.get_eqn() << endl;
     }
-    return true;
+    return highest_corr == 1.0;
 }
 
 bool Variation::cross(Individual& mom, Individual& dad, Individual& child, 

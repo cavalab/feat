@@ -261,5 +261,22 @@ TEST(Feat, simplification)
     feat.simplify_model(d, test_ind2);
 
     ASSERT_EQ(test_ind2.program.size(), 5);
+
+    // test repeat feature: [(x0<t)][(x0<t)]
+    Individual test_ind3; 
+	test_ind3.program.push_back(
+            std::unique_ptr<Node>( new NodeVariable<float>(0)));
+	test_ind3.program.push_back(
+            std::unique_ptr<Node>( new NodeSplit<float>()));
+	test_ind3.program.push_back(
+            std::unique_ptr<Node>( new NodeVariable<float>(0)));
+	test_ind3.program.push_back(
+            std::unique_ptr<Node>( new NodeSplit<float>()));
+
+    pass = true;
+    test_ind3.fit(*d.o, feat.params, pass);
+    feat.simplify_model(d, test_ind3);
+
+    ASSERT_EQ(test_ind3.program.size(), 2);
 }
 
