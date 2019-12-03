@@ -845,13 +845,8 @@ bool Variation::stagewise_cross(Individual& mom, Individual& dad,
         }
         /* cout << "condition: " << condition << "\n"; */
     }
-    /* cout << "sel_idx: "; */
-    /* for (auto s: sel_idx) cout << s << ","; cout << "\n"; */
-    // take stored indices and find corresponding program positions for them
-    //
-    /* std::sort(sel_idx.begin(), sel_idx.end()); */
-    // TODO: compose a child from each feature referenced in sel_idx. 
-    // 
+
+    // compose a child from each feature referenced in sel_idx. 
     vector<size_t> mlocs, dlocs; // mom and dad locations for consideration
     
     mlocs = mom.program.roots();

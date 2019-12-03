@@ -450,7 +450,7 @@ namespace FT{
             /// fits final model to best transformation
             void final_model(DataRef& d);
             /// simplifies final model to best transformation
-            void simplify_model(DataRef& d);
+            void simplify_model(DataRef& d, Individual&);
             /// updates stall count for early stopping
             void update_stall_count(unsigned& stall_count);
             

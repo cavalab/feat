@@ -697,14 +697,17 @@ namespace FT{
                 this->eqn="";
                 State state;
 
+                int i = 0;
                 for (const auto& n : program)
                 {
                     if(state.check_s(n->arity))
                         n->eval_eqn(state);
                     else
-                        HANDLE_ERROR_THROW("get_eqn() error: node " + 
-                                n->name + " in " + program_str() + 
-                                " is invalid\n");
+                        HANDLE_ERROR_THROW("get_eqn() error: node " 
+                                + n->name + " at location " + to_string(i) 
+                                + " in [ " + program_str() 
+                                + " ] is invalid\n");
+                    ++i;
                 }
                 // tie state outputs together to return representation
                 for (auto s : state.fs) 

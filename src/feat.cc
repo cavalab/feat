@@ -571,7 +571,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
 
     // simplify the final model
     if (simplify)
-        simplify_model(d);
+        simplify_model(d, this->best_ind);
 
     logger.log("\nTotal time taken is " 
             + std::to_string(timer.Elapsed().count()) + "\n", 1);
@@ -692,7 +692,7 @@ void Feat::final_model(DataRef& d)
     logger.log("final_model score: " + std::to_string(score),2);
 }
 
-void Feat::simplify_model(DataRef& d)
+void Feat::simplify_model(DataRef& d, Individual& ind)
 {
     /* Simplifies the final model using some expert rules and stochastic hill 
      * climbing. 
@@ -707,24 +707,30 @@ void Feat::simplify_model(DataRef& d)
     // check for specific patterns
     //////////////////////////////
     //
-    Individual tmp_ind = this->best_ind;
-    int starting_size = this->best_ind.size();
+    Individual tmp_ind = ind;
+    int starting_size = ind.size();
     vector<size_t> roots = tmp_ind.program.roots();
     vector<size_t> idx_to_remove;
 
     logger.log("doing pattern pruning...",2);
 
-    for (int r = 0; r < roots.size(); ++r)
+    for (auto r : roots)
     {
+        /* cout << "r: " << r << "\n"; */
         size_t start = tmp_ind.program.subtree(r);
         int first_occurence = -2;
 
+        /* cout << "start: " << start << "\n"; */
         for (int i = start ; i <= r; ++i)
         {
+            /* cout << "i: " << i << ", first_occurence: " << first_occurence */ 
+            /*     << "\n"; */
             if (tmp_ind.program.at(i)->name.compare("not")==0)
             {
-                if (first_occurence = i-1)
+                if (first_occurence == i-1) // indicates two NOTs in a row
                 {
+                    /* cout << "pushing back " << first_occurence */ 
+                    /*     << " and " << i << " to idx_to_remove\n"; */
                     idx_to_remove.push_back(first_occurence);
                     idx_to_remove.push_back(i);
                     // reset first_occurence so we don't pick up triple nots
@@ -736,58 +742,58 @@ void Feat::simplify_model(DataRef& d)
                 }
             }
         }
-        // remove indices in reverse order so they don't change
-        std::reverse(idx_to_remove.begin(), idx_to_remove.end());
-        for (auto idx: idx_to_remove)
-        {
-            cout << "removing " << tmp_ind.program.at(idx)->name 
-                << " at " << idx << "\n";
-            tmp_ind.program.erase(tmp_ind.program.begin()+idx);
-        }
     }
-    int end_size = this->best_ind.size();
-    logger.log("\n=========\ndimension pruning reduced best model size by " 
+    // remove indices in reverse order so they don't change
+    std::reverse(idx_to_remove.begin(), idx_to_remove.end());
+    for (auto idx: idx_to_remove)
+    {
+        /* cout << "removing " << tmp_ind.program.at(idx)->name */ 
+        /*     << " at " << idx << "\n"; */
+        tmp_ind.program.erase(tmp_ind.program.begin()+idx);
+    }
+    int end_size = tmp_ind.size();
+    logger.log("\n=========\npattern pruning reduced best model size by " 
             + to_string(starting_size - end_size)
             + " nodes\n=========\n", 1);
-    if (tmp_ind.size() < this->best_ind.size())
-        this->best_ind = tmp_ind;
+    if (tmp_ind.size() < ind.size())
+        ind = tmp_ind;
 
     ///////////////////
     // prune dimensions
     ///////////////////
     /* set_verbosity(3); */
-    int iterations = this->best_ind.get_dim();
+    int iterations = ind.get_dim();
     logger.log("doing dimension deletion mutations...",2);
-    starting_size = this->best_ind.size();
+    starting_size = ind.size();
     float tolerance = 0.001;
     for (int i = 0; i < iterations; ++i)
     {
         /* cout << "."; */
-        Individual tmp_ind = this->best_ind;
+        Individual tmp_ind = ind;
         bool pass = p_variation->correlation_delete_mutate(tmp_ind, 
-                best_ind.Phi, params, *d.o);
+                ind.Phi, params, *d.o);
         if (!pass)
             cout << "correlation_delete_mutate did not pass\n";
-        if (best_ind.size() == tmp_ind.size())
+        if (ind.size() == tmp_ind.size())
         {
             cout << "mode size unchanged\n";
             continue;
         }
         shared_ptr<CLabels> yhat = tmp_ind.fit(*d.o, params, pass);
 
-        if ((this->best_ind.yhat - tmp_ind.yhat).norm()/best_ind.yhat.norm() 
+        if ((ind.yhat - tmp_ind.yhat).norm()/ind.yhat.norm() 
                 <= tolerance)
         {
             logger.log("\ndelete dimension mutation success: went from "
-                + to_string(best_ind.size()) + " to " 
+                + to_string(ind.size()) + " to " 
                 + to_string(tmp_ind.size()), 3); 
-            best_ind = tmp_ind;
+            ind = tmp_ind;
         }
         else
         {
             logger.log("\ndelete dimension mutation failure: output changed by " 
-                 + to_string(100*(this->best_ind.yhat
-                        -tmp_ind.yhat).norm()/(this->best_ind.yhat.norm()))
+                 + to_string(100*(ind.yhat
+                        -tmp_ind.yhat).norm()/(ind.yhat.norm()))
                  + " %", 3);
             // if this mutation fails, it will continue to fail since it 
             // is deterministic. so, break in this case.
@@ -795,7 +801,7 @@ void Feat::simplify_model(DataRef& d)
         }
 
     }
-    end_size = this->best_ind.size();
+    end_size = ind.size();
     logger.log("\n=========\ndimension pruning reduced best model size by " 
             + to_string(starting_size - end_size)
             + " nodes\n=========\n", 2);
@@ -805,35 +811,35 @@ void Feat::simplify_model(DataRef& d)
     /////////////////
     iterations = 100;
     logger.log("doing subtree deletion mutations...", 2);
-    starting_size = this->best_ind.size();
+    starting_size = ind.size();
     for (int i = 0; i < iterations; ++i)
     {
         /* cout << "."; */
-        Individual tmp_ind = this->best_ind;
+        Individual tmp_ind = ind;
         this->p_variation->delete_mutate(tmp_ind, params);
-        if (best_ind.size() == tmp_ind.size())
+        if (ind.size() == tmp_ind.size())
             continue;
         bool pass = true;
         shared_ptr<CLabels> yhat = tmp_ind.fit(*d.o, params, pass);
 
-        if ((this->best_ind.yhat - tmp_ind.yhat).norm()/best_ind.yhat.norm() 
+        if ((ind.yhat - tmp_ind.yhat).norm()/ind.yhat.norm() 
                 <= tolerance)
         {
             logger.log("\ndelete mutation success: went from "
-                + to_string(best_ind.size()) + " to " 
+                + to_string(ind.size()) + " to " 
                 + to_string(tmp_ind.size()), 3); 
-            best_ind = tmp_ind;
+            ind = tmp_ind;
         }
         else
         {
             logger.log("\ndelete mutation failure: output changed by " 
-                 + to_string(100*(this->best_ind.yhat
-                        -tmp_ind.yhat).norm()/(this->best_ind.yhat.norm()))
+                 + to_string(100*(ind.yhat
+                        -tmp_ind.yhat).norm()/(ind.yhat.norm()))
                  + " %", 3);
         }
 
     }
-    end_size = this->best_ind.size();
+    end_size = ind.size();
     logger.log("\n=========\nsubtree deletion reduced best model size by " 
             + to_string( starting_size - end_size )
             + " nodes", 2);
