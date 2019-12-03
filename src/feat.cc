@@ -763,26 +763,27 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
     ///////////////////
     /* set_verbosity(3); */
     int iterations = ind.get_dim();
-    logger.log("doing dimension deletion mutations...",2);
+    logger.log("doing correlation deletion mutations...",2);
     starting_size = ind.size();
     float tolerance = 0.001;
     for (int i = 0; i < iterations; ++i)
     {
         /* cout << "."; */
         Individual tmp_ind = ind;
-        bool pass = p_variation->correlation_delete_mutate(tmp_ind, 
-                ind.Phi, params, *d.o);
-        if (!pass)
-            cout << "correlation_delete_mutate did not pass\n";
+        bool perfect_correlation = p_variation->correlation_delete_mutate(
+                tmp_ind, ind.Phi, params, *d.o);
+
         if (ind.size() == tmp_ind.size())
         {
             cout << "mode size unchanged\n";
             continue;
         }
+        bool pass = true;
         shared_ptr<CLabels> yhat = tmp_ind.fit(*d.o, params, pass);
 
-        if ((ind.yhat - tmp_ind.yhat).norm()/ind.yhat.norm() 
-                <= tolerance)
+        if (((ind.yhat - tmp_ind.yhat).norm()/ind.yhat.norm() 
+                <= tolerance ) 
+                or perfect_correlation)
         {
             logger.log("\ndelete dimension mutation success: went from "
                 + to_string(ind.size()) + " to " 
@@ -802,7 +803,7 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
 
     }
     end_size = ind.size();
-    logger.log("\n=========\ndimension pruning reduced best model size by " 
+    logger.log("\n=========\ncorrelation pruning reduced best model size by " 
             + to_string(starting_size - end_size)
             + " nodes\n=========\n", 2);
 
