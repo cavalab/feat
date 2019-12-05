@@ -324,7 +324,7 @@ ArrayXf Feat::get_coefs()
 std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>> Feat::get_Z(string s, 
         int * idx, int idx_size)
 {
-    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z;
+    LongData Z;
     vector<int> ids(idx,idx+idx_size);
     load_partial_longitudinal(s,Z,',',ids);
         
@@ -343,7 +343,7 @@ ArrayXXf Feat::predict_proba(float * X, int rows_x, int cols_x)
 /// convenience function calls fit then predict.            
 VectorXf Feat::fit_predict(MatrixXf& X,
                      VectorXf& y,
-                     std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
+                     LongData Z)
                      { fit(X, y, Z); return predict(X, Z); } 
                      
 VectorXf Feat::fit_predict(float * X, int rows_x, int cols_x, float * Y, int len_y)
@@ -357,11 +357,11 @@ VectorXf Feat::fit_predict(float * X, int rows_x, int cols_x, float * Y, int len
 /// convenience function calls fit then transform. 
 MatrixXf Feat::fit_transform(MatrixXf& X,
                        VectorXf& y,
-                       std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
+                       LongData Z)
                        { fit(X, y, Z); return transform(X, Z); }                                         
 
 void Feat::fit(MatrixXf& X, VectorXf& y,
-               std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
+               LongData Z)
 {
 
     /*! 
@@ -455,7 +455,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     //data for batch training
     MatrixXf Xb;
     VectorXf yb;
-    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Zb;
+    LongData Zb;
     Data db(Xb, yb, Zb, params.classification);
     
     Data *tmp_train;
@@ -998,7 +998,7 @@ void Feat::initial_model(DataRef &d)
 }
 
 MatrixXf Feat::transform(MatrixXf& X,
-                         std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z,
+                         LongData Z,
                          Individual *ind)
 {
     /*!
@@ -1048,14 +1048,14 @@ MatrixXf Feat::fit_transform(float * X, int rows_x, int cols_x, float * Y, int l
 }
 
 VectorXf Feat::predict(MatrixXf& X,
-                       std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
+                       LongData Z)
 {        
     MatrixXf Phi = transform(X, Z);
     return best_ind.ml->predict_vector(Phi);        
 }
 
 shared_ptr<CLabels> Feat::predict_labels(MatrixXf& X,
-                       std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
+                       LongData Z)
 {        
     MatrixXf Phi = transform(X, Z);
     return best_ind.ml->predict(Phi);        
@@ -1080,7 +1080,7 @@ VectorXf Feat::predict_with_z(float * X, int rowsX,int colsX,
 }
 
 ArrayXXf Feat::predict_proba(MatrixXf& X,
-                         std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
+                         LongData Z)
 {
     MatrixXf Phi = transform(X, Z);
     return best_ind.ml->predict_proba(Phi);        
@@ -1139,8 +1139,7 @@ void Feat::update_best(const DataRef& d, bool validation)
     }
 }
 
-float Feat::score(MatrixXf& X, const VectorXf& y,
-                   std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
+float Feat::score(MatrixXf& X, const VectorXf& y, LongData Z)
 {
     shared_ptr<CLabels> labels = predict_labels(X, Z);
     VectorXf loss; 
