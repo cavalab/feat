@@ -20,6 +20,7 @@ using Eigen::Dynamic;
 using Eigen::Map;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
 using namespace std;
+typedef std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>> LongData;
 // internal includes
 //#include "params.h"
 #include "../util/utils.h"
@@ -45,12 +46,12 @@ namespace FT
      
                 MatrixXf& X;
                 VectorXf& y;
-                std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>>& Z;
+                LongData& Z;
                 bool classification;
                 bool validation; 
 
-                Data(MatrixXf& X, VectorXf& y, std::map<string, std::pair<vector<ArrayXf>, 
-                        vector<ArrayXf>>>& Z, bool c = false);
+                Data(MatrixXf& X, VectorXf& y, LongData& Z, bool c = false, 
+                        vector<bool> protect = vector<bool>());
 
                 void set_validation(bool v=true);
                 
@@ -73,10 +74,11 @@ namespace FT
                 MatrixXf X_v;
                 VectorXf y_t;
                 VectorXf y_v;
-                std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z_t;
-                std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z_v;
+                LongData Z_t;
+                LongData Z_v;
                 
                 bool classification;
+                vector<bool> protect;   // protected subgroups
 
             public:
                 Data *o = NULL;     //< pointer to original data
@@ -88,23 +90,22 @@ namespace FT
                 ~DataRef();
                 
         
-                DataRef(MatrixXf& X, VectorXf& y, 
-                                 std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > >& Z, 
-                                 bool c=false);
+                DataRef(MatrixXf& X, VectorXf& y, LongData& Z, bool c=false,
+                        vector<bool> protect = vector<bool>());
                         
                 void setOriginalData(MatrixXf& X, VectorXf& y, 
-                        std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>>& Z, bool c=false);
+                        LongData& Z, bool c=false);
                 
                 void setOriginalData(Data *d);
                 
                 void setTrainingData(MatrixXf& X_t, VectorXf& y_t, 
-                                   std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>>& Z_t,
+                                   LongData& Z_t,
                                    bool c = false);
                 
                 void setTrainingData(Data *d, bool toDelete = false);
                 
                 void setValidationData(MatrixXf& X_v, VectorXf& y_v, 
-                                   std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>>& Z_v,
+                                   LongData& Z_v,
                                    bool c = false);
                 
                 void setValidationData(Data *d);
@@ -119,13 +120,14 @@ namespace FT
                 void train_test_split(bool shuffle, float split);
 
                 void split_longitudinal(
-                            std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > &Z,
-                            std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > &Z_t,
-                            std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > &Z_v,
+                            LongData&Z,
+                            LongData&Z_t,
+                            LongData&Z_v,
                             float split);
                             
                 /// reordering utility for shuffling longitudinal data.
-                void reorder_longitudinal(vector<ArrayXf> &vec1, const vector<int>& order); 
+                void reorder_longitudinal(vector<ArrayXf> &vec1, 
+                        const vector<int>& order); 
 
         };
     }
