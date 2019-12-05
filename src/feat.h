@@ -39,6 +39,7 @@ license: GNU/GPL v3
 using Eigen::MatrixXf;
 using Eigen::VectorXf;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
+typedef std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>> LongData;
 using std::vector;
 using std::string;
 using std::unique_ptr;
@@ -285,17 +286,14 @@ namespace FT{
             int get_n_nodes();
 
             /// get longitudinal data from file s
-            std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>> get_Z(string s, 
+            LongData get_Z(string s, 
                     int * idx, int idx_size);
 
             /// destructor             
             ~Feat();
                         
             /// train a model.             
-            void fit(MatrixXf& X,
-                     VectorXf& y,
-                     std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z = 
-                            std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > >());
+            void fit(MatrixXf& X, VectorXf& y, LongData Z = LongData());
                             
             void run_generation(unsigned int g,
                             vector<size_t> survivors,
@@ -312,19 +310,15 @@ namespace FT{
                             int * idx, int idx_size);
            
             /// predict on unseen data.             
-            VectorXf predict(MatrixXf& X,
-                             std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z = 
-                                std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > >());  
+            VectorXf predict(MatrixXf& X, LongData Z = LongData());  
             
             /// predict on unseen data. return CLabels.
             shared_ptr<CLabels> predict_labels(MatrixXf& X,
-                             std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z = 
-                              std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > >());  
+                             LongData Z = LongData());  
 
             /// predict probabilities of each class.
             ArrayXXf predict_proba(MatrixXf& X,
-                             std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z = 
-                              std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > >());  
+                             LongData Z = LongData());  
             
             ArrayXXf predict_proba(float * X, int rows_x, int cols_x);
 	
@@ -341,8 +335,7 @@ namespace FT{
             
             /// transform an input matrix using a program.                          
             MatrixXf transform(MatrixXf& X,
-                               std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z = 
-                                 std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > >(),
+                               LongData Z = LongData(),
                                Individual *ind = 0);
             
             MatrixXf transform(float * X,  int rows_x, int cols_x);
@@ -354,23 +347,20 @@ namespace FT{
             /// convenience function calls fit then predict.            
             VectorXf fit_predict(MatrixXf& X,
                                  VectorXf& y,
-                                 std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z = 
-                                 std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > >());
+                                 LongData Z = LongData());
                                  
             VectorXf fit_predict(float * X, int rows_x, int cols_x, float * Y, int len_y);
             
             /// convenience function calls fit then transform. 
             MatrixXf fit_transform(MatrixXf& X,
                                    VectorXf& y,
-                                   std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z = 
-                                   std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > >());
+                                   LongData Z = LongData());
                                    
             MatrixXf fit_transform(float * X, int rows_x, int cols_x, float * Y, int len_y);
                   
             /// scoring function 
             float score(MatrixXf& X, const VectorXf& y,
-                     std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z =
-                    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > >()); 
+                     LongData Z = LongData()); 
             /// prints population obj scores each generation 
             void print_population();
             
