@@ -243,12 +243,14 @@ namespace FT{
         
         #ifndef USE_CUDA
         // calculate program output matrix
-        MatrixXf Individual::out(const Data& d, const Parameters& params, bool predict)
+        MatrixXf Individual::out(const Data& d, const Parameters& params, 
+                bool predict)
         {
             /*!
              * @param d: Data structure
              * @param params: Feat parameters
-             * @param predict: if true, this guarantees nodes like split do not get trained
+             * @param predict: if true, this guarantees nodes like split do not 
+             *  get trained
              * @return Phi: n_features x n_samples transformation
              */
              
@@ -259,16 +261,24 @@ namespace FT{
             // evaluate each node in program
             for (const auto& n : program)
             {
-                if (n->isNodeTrain()) // learning nodes are set for fit or predict mode
+                // learning nodes are set for fit or predict mode
+                if (n->isNodeTrain())                     
                     dynamic_cast<NodeTrain*>(n.get())->train = !predict;
             	if(state.check(n->arity))
 	                n->evaluate(d, state);
                 else
-                    HANDLE_ERROR_THROW("out() error: node " + n->name + " in " + program_str() + 
-                                       " failed arity check\n");
+                    HANDLE_ERROR_THROW("out() error: node " + n->name + " in " 
+                            + program_str() + " failed arity check\n");
                 
             }
-            
+            // we want to preserve the order of the outputs in the program 
+            // in the order of the outputs in Phi. 
+            // get root output types
+            vector<char> root_types;
+            for (auto r : program.roots())
+            {
+                root_types.push_back(program.at(r)->otype);
+            }
             // convert state_f to Phi
             logger.log("converting State to Phi",3);
             int cols;
@@ -290,42 +300,51 @@ namespace FT{
                 cols = state.f.top().size();
             }
                    
-            int rows_f = state.f.size();
-            int rows_c = state.c.size();
-            int rows_b = state.b.size();
             
             dtypes.clear();        
-            Matrix<float,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
-            
-            // add state_f to Phi
-            for (unsigned int i=0; i<rows_f; ++i)
-            {    
-                 ArrayXf Row = ArrayXf::Map(state.f.at(i).data(),cols);
-                 clean(Row); // remove nans, set infs to max and min
-                 Phi.row(i) = Row;
-                 dtypes.push_back('f'); 
-            }
-            
-            // add state_c to Phi
-            for (unsigned int i=0; i<rows_c; ++i)
-            {    
-                 ArrayXf Row = ArrayXi::Map(state.c.at(i).data(),cols).cast<float>();
-                 clean(Row); // remove nans, set infs to max and min
-                 Phi.row(i+rows_f) = Row;
-                 dtypes.push_back('c');
-            }       
-            
-            // convert state_b to Phi       
-            for (unsigned int i=0; i<rows_b; ++i)
+            Matrix<float,Dynamic,Dynamic,RowMajor> Phi (
+                    state.f.size() + state.c.size() + state.b.size(),  
+                    cols);
+            ArrayXf Row; 
+            int rows_f = 0;
+            int rows_c = 0;
+            int rows_b = 0;
+
+            for (int i = 0; i < root_types.size(); ++i)
             {
-                Phi.row(i+rows_f+rows_c) = ArrayXb::Map(state.b.at(i).data(),cols).cast<float>();
-                dtypes.push_back('b');
+                switch (root_types.at(i))
+                {
+                    case 'f':
+                    // add state_f to Phi
+                        Row = ArrayXf::Map(state.f.at(rows_f).data(),cols);
+                        clean(Row); // remove nans, set infs to max and min
+                        Phi.row(i) = Row;
+                        ++rows_f;
+                        break;
+                    case 'c':
+                    // convert state_c to Phi       
+                        Row = ArrayXi::Map(
+                                state.c.at(rows_c).data(),cols).cast<float>();
+                        clean(Row); // remove nans, set infs to max and min
+                        Phi.row(i) = Row;
+                        ++rows_c;
+                        break;
+                    case 'b':
+                    // add state_b to Phi
+                        Phi.row(i) = ArrayXb::Map(
+                                state.b.at(rows_b).data(),cols).cast<float>();
+                        ++rows_b;
+                        break;
+                    default:
+                        HANDLE_ERROR_THROW("Unknown root type");
+                }
             }
             
             return Phi;
         }
         #else
-        MatrixXf Individual::out(const Data& d, const Parameters& params, bool predict)
+        MatrixXf Individual::out(const Data& d, const Parameters& params, 
+                bool predict)
         {
         
             /*!
@@ -710,14 +729,43 @@ namespace FT{
                     ++i;
                 }
                 // tie state outputs together to return representation
-                for (auto s : state.fs) 
-                    this->eqn += "[" + s + "]";
-                for (auto s : state.bs) 
-                    this->eqn += "[" + s + "]";
-                for (auto s : state.cs)
-                    this->eqn += "[" + s + "]";              
-                for (auto s : state.zs) 
-                    this->eqn += "[" + s + "]";
+                // order by root types
+                vector<char> root_types;
+                for (auto r : program.roots())
+                {
+                    root_types.push_back(program.at(r)->otype);
+                }
+                int rows_f = 0;
+                int rows_c = 0;
+                int rows_b = 0;
+                for (int i = 0; i < root_types.size(); ++i)
+                {
+                    switch (root_types.at(i))
+                    {
+                        case 'f':
+                            this->eqn += "[" + state.fs.at(rows_f) + "]";
+                            ++rows_f;
+                            break;
+                        case 'c':
+                            this->eqn += "[" + state.cs.at(rows_b) + "]";
+                            ++rows_c;
+                            break;
+                        case 'b':
+                            this->eqn += "[" + state.bs.at(rows_b) + "]";
+                            ++rows_b;
+                            break;
+                        default:
+                            HANDLE_ERROR_THROW("Unknown root type");
+                    }
+                }
+                /* for (auto s : state.fs) */ 
+                /*     this->eqn += "[" + s + "]"; */
+                /* for (auto s : state.bs) */ 
+                /*     this->eqn += "[" + s + "]"; */
+                /* for (auto s : state.cs) */
+                /*     this->eqn += "[" + s + "]"; */              
+                /* for (auto s : state.zs) */ 
+                /*     this->eqn += "[" + s + "]"; */
             
             }
             //}
