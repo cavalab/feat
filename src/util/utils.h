@@ -185,6 +185,13 @@ namespace FT{
             return unique(wv);
         }
         
+        /// returns unique elements in Eigen Matrix 
+        template <typename T>
+        vector<T> unique(Matrix<T, Dynamic, -1> w)
+        {
+            vector<T> wv( w.data(), w.data()+w.rows()*w.cols());
+            return unique(wv);
+        }
         ///template function to convert objects to string for logging
         template <typename T>
         string to_string(const T& value)
