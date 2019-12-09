@@ -13,7 +13,8 @@ namespace FT{
         
         SimAnneal::~SimAnneal(){}
            
-        vector<size_t> SimAnneal::select(Population& pop, const MatrixXf& F, const Parameters& params)
+        vector<size_t> SimAnneal::select(Population& pop, const MatrixXf& F, 
+                const Parameters& params, const Data& d)
         {
             /* Selects parents for making offspring.  
              *
@@ -32,7 +33,8 @@ namespace FT{
             return all_idx;
         }
 
-        vector<size_t> SimAnneal::survive(Population& pop, const MatrixXf& F, const Parameters& params)
+        vector<size_t> SimAnneal::survive(Population& pop, const MatrixXf& F, 
+                const Parameters& params, const Data& d)
         {
             /* Selects the offspring for survival using simulated annealing.
              *

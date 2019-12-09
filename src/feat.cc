@@ -28,16 +28,16 @@ Feat::Feat(int pop_size, int gens, string ml,
        bool erc, string obj, bool shuffle, 
        float split, float fb, string scorer, string feature_names,
        bool backprop,int iters, float lr, int bs, int n_threads,
-       bool hillclimb, string logfile, int max_time, bool use_batch, bool residual_xo,
-       bool stagewise_xo, bool stagewise_xo_tol,
+       bool hillclimb, string logfile, int max_time, bool use_batch, 
+       bool residual_xo, bool stagewise_xo, bool stagewise_xo_tol,
        bool softmax_norm, int print_pop, bool normalize,
        bool val_from_arch, bool corr_delete_mutate, bool simplify):
           // construct subclasses
-          params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
-                 functions, cross_rate, root_xo_rate, max_depth, max_dim, erc, 
-                 obj, shuffle, split, fb, scorer, feature_names, backprop, 
-                 iters, lr, bs, hillclimb, max_time, use_batch, residual_xo, 
-                 stagewise_xo, stagewise_xo_tol, softmax_norm, 
+          params(pop_size, gens, ml, classification, max_stall, otype, 
+                 verbosity, functions, cross_rate, root_xo_rate, max_depth, 
+                 max_dim, erc, obj, shuffle, split, fb, scorer, feature_names, 
+                 backprop, iters, lr, bs, hillclimb, max_time, use_batch, 
+                 residual_xo, stagewise_xo, stagewise_xo_tol, softmax_norm, 
                  normalize, corr_delete_mutate), 
           p_sel( make_shared<Selection>(sel) ),
           p_surv( make_shared<Selection>(surv, true) ),
@@ -324,7 +324,7 @@ ArrayXf Feat::get_coefs()
 std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>> Feat::get_Z(string s, 
         int * idx, int idx_size)
 {
-    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z;
+    LongData Z;
     vector<int> ids(idx,idx+idx_size);
     load_partial_longitudinal(s,Z,',',ids);
         
@@ -343,7 +343,7 @@ ArrayXXf Feat::predict_proba(float * X, int rows_x, int cols_x)
 /// convenience function calls fit then predict.            
 VectorXf Feat::fit_predict(MatrixXf& X,
                      VectorXf& y,
-                     std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
+                     LongData Z)
                      { fit(X, y, Z); return predict(X, Z); } 
                      
 VectorXf Feat::fit_predict(float * X, int rows_x, int cols_x, float * Y, int len_y)
@@ -357,11 +357,11 @@ VectorXf Feat::fit_predict(float * X, int rows_x, int cols_x, float * Y, int len
 /// convenience function calls fit then transform. 
 MatrixXf Feat::fit_transform(MatrixXf& X,
                        VectorXf& y,
-                       std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
+                       LongData Z)
                        { fit(X, y, Z); return transform(X, Z); }                                         
 
 void Feat::fit(MatrixXf& X, VectorXf& y,
-               std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
+               LongData Z)
 {
 
     /*! 
@@ -455,7 +455,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     //data for batch training
     MatrixXf Xb;
     VectorXf yb;
-    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Zb;
+    LongData Zb;
     Data db(Xb, yb, Zb, params.classification);
     
     Data *tmp_train;
@@ -591,7 +591,7 @@ void Feat::run_generation(unsigned int g,
 
     // select parents
     logger.log("selection..", 3);
-    vector<size_t> parents = p_sel->select(*p_pop, F, params);
+    vector<size_t> parents = p_sel->select(*p_pop, F, params, *d.t);
     logger.log("parents:\n"+p_pop->print_eqns(), 3);          
     
     // variation to produce offspring
@@ -605,7 +605,7 @@ void Feat::run_generation(unsigned int g,
             true && !params.use_batch);
     // select survivors from combined pool of parents and offspring
     logger.log("survival...", 3);
-    survivors = p_surv->survive(*p_pop, F, params);
+    survivors = p_surv->survive(*p_pop, F, params, *d.t);
    
     // reduce population to survivors
     logger.log("shrinking pop to survivors...",3);
@@ -632,8 +632,10 @@ void Feat::run_generation(unsigned int g,
 
     if (params.backprop)
     {
-        params.bp.learning_rate = (1-1/(1+float(params.gens)))*params.bp.learning_rate;
-        logger.log("learning rate: " + std::to_string(params.bp.learning_rate),3);
+        params.bp.learning_rate = (
+                (1-1/(1+float(params.gens)))*params.bp.learning_rate);
+        logger.log("learning rate: " 
+                + std::to_string(params.bp.learning_rate),3);
     }
 
 }
@@ -998,7 +1000,7 @@ void Feat::initial_model(DataRef &d)
 }
 
 MatrixXf Feat::transform(MatrixXf& X,
-                         std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z,
+                         LongData Z,
                          Individual *ind)
 {
     /*!
@@ -1048,14 +1050,14 @@ MatrixXf Feat::fit_transform(float * X, int rows_x, int cols_x, float * Y, int l
 }
 
 VectorXf Feat::predict(MatrixXf& X,
-                       std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
+                       LongData Z)
 {        
     MatrixXf Phi = transform(X, Z);
     return best_ind.ml->predict_vector(Phi);        
 }
 
 shared_ptr<CLabels> Feat::predict_labels(MatrixXf& X,
-                       std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
+                       LongData Z)
 {        
     MatrixXf Phi = transform(X, Z);
     return best_ind.ml->predict(Phi);        
@@ -1080,7 +1082,7 @@ VectorXf Feat::predict_with_z(float * X, int rowsX,int colsX,
 }
 
 ArrayXXf Feat::predict_proba(MatrixXf& X,
-                         std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
+                         LongData Z)
 {
     MatrixXf Phi = transform(X, Z);
     return best_ind.ml->predict_proba(Phi);        
@@ -1139,8 +1141,7 @@ void Feat::update_best(const DataRef& d, bool validation)
     }
 }
 
-float Feat::score(MatrixXf& X, const VectorXf& y,
-                   std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
+float Feat::score(MatrixXf& X, const VectorXf& y, LongData Z)
 {
     shared_ptr<CLabels> labels = predict_labels(X, Z);
     VectorXf loss; 

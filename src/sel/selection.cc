@@ -26,7 +26,8 @@ namespace FT{
             else if (!type.compare("simanneal"))    // offspring survival
                 pselector = std::make_shared<SimAnneal>(survival);
             else
-                HANDLE_ERROR_NO_THROW("Undefined Selection Operator " + type + "\n");
+                HANDLE_ERROR_NO_THROW("Undefined Selection Operator " 
+                        + type + "\n");
                 
         }
 
@@ -36,14 +37,17 @@ namespace FT{
         string Selection::get_type(){ return pselector->name; }
         
         /// perform selection 
-        vector<size_t> Selection::select(Population& pop, const MatrixXf& F, const Parameters& params)
+        vector<size_t> Selection::select(Population& pop, const MatrixXf& F, 
+                const Parameters& params, const Data& d)
         {       
-            return pselector->select(pop, F, params);
+            return pselector->select(pop, F, params, d);
         }
+
         /// perform survival
-        vector<size_t> Selection::survive(Population& pop, const MatrixXf& F,  const Parameters& params)
+        vector<size_t> Selection::survive(Population& pop, 
+                const MatrixXf& F,  const Parameters& params, const Data& d)
         {       
-            return pselector->survive(pop, F, params);
+            return pselector->survive(pop, F, params, d);
         }
     }
     

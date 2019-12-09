@@ -14,18 +14,21 @@ namespace FT{
         
         Lexicase::~Lexicase(){}
         
-        vector<size_t> Lexicase::select(Population& pop, const MatrixXf& F, const Parameters& params)
+        vector<size_t> Lexicase::select(Population& pop, const MatrixXf& F, 
+                const Parameters& params, const Data& d)
         {
-            /*! Selection according to lexicase selection for classification and epsilon-lexicase
-             * selection for regression. 
+            /*! Selection according to lexicase selection for 
+             * binary outcomes and epsilon-lexicase selection for continuous. 
              * @param pop: population
              * @param F: n_samples X popsize matrix of model outputs. 
              * @param params: parameters.
              *
-             * @return selected: vector of indices corresponding to pop that are selected.
+             * @return selected: vector of indices corresponding to pop that 
+             * are selected.
              *
-             * In selection mode, parents are selected among the first half of columns of F since
-             * it is assumed that we are selecting for offspring to fill the remaining columns. 
+             * In selection mode, parents are selected among the first half 
+             * of columns of F since it is assumed that we are selecting for 
+             * offspring to fill the remaining columns. 
              */            
 
             unsigned int N = F.rows(); //< number of samples
@@ -58,7 +61,8 @@ namespace FT{
                 vector<size_t> cases; // cases (samples)
                 if (params.classification && !params.class_weights.empty()) 
                 {
-                    // for classification problems, weight case selection by class weights
+                    // for classification problems, weight case selection 
+                    // by class weights
                     vector<size_t> choices(N);
                     std::iota(choices.begin(), choices.end(),0);
                     vector<float> sample_weights = params.sample_weights;
@@ -66,7 +70,8 @@ namespace FT{
                     {
                         vector<size_t> choice_idxs(N-i);
                         std::iota(choice_idxs.begin(),choice_idxs.end(),0);
-                        size_t idx = r.random_choice(choice_idxs,sample_weights);
+                        size_t idx = r.random_choice(choice_idxs,
+                                sample_weights);
                         cases.push_back(choices.at(idx));
                         choices.erase(choices.begin() + idx);
                         sample_weights.erase(sample_weights.begin() + idx);
@@ -87,8 +92,9 @@ namespace FT{
                 while(pass){    // main loop
 
                   winner.resize(0);   // winners                  
-                  float minfit = std::numeric_limits<float>::max();   // minimum error on case
-                  
+                  // minimum error on case
+                  float minfit = std::numeric_limits<float>::max();                     
+
                   // get minimum
                   for (size_t j = 0; j<pool.size(); ++j)
                       if (F(cases[h],pool[j]) < minfit) 
@@ -100,7 +106,8 @@ namespace FT{
                         winner.push_back(pool[j]);                 
                  
                   ++h; // next case
-                  pass = (winner.size()>1 && h<cases.size()); // only keep going if needed
+                  // only keep going if needed
+                  pass = (winner.size()>1 && h<cases.size()); 
                   
                   if(winner.size() == 0)
                   {
@@ -134,22 +141,27 @@ namespace FT{
                     }
                 }
                 if (!match)
-                    HANDLE_ERROR_THROW("no loc matching " + std::to_string(f) + " in pop");
+                    HANDLE_ERROR_THROW("no loc matching " + std::to_string(f) 
+                            + " in pop");
                 match = false;
             }
             if (selected.size() != F_locs.size()){
                 std::cout << "pop.locs: ";
-                for (auto i: pop.individuals) std::cout << i.loc << " "; std::cout << "\n";
+                for (auto i: pop.individuals) 
+                    std::cout << i.loc << " "; std::cout << "\n";
                 std::cout << "selected: " ;
-                for (auto s: selected) std::cout << s << " "; std::cout << "\n";
+                for (auto s: selected) 
+                    std::cout << s << " "; std::cout << "\n";
                 std::cout<< "F_locs: ";
-                for (auto f: F_locs) std::cout << f << " "; std::cout << "\n";
+                for (auto f: F_locs) 
+                    std::cout << f << " "; std::cout << "\n";
             }
             assert(selected.size() == F_locs.size());
             return selected;
         }
 
-        vector<size_t> Lexicase::survive(Population& pop, const MatrixXf& F, const Parameters& params)
+        vector<size_t> Lexicase::survive(Population& pop, 
+                const MatrixXf& F, const Parameters& params, const Data& d)
         {
             /* Lexicase survival */
         }

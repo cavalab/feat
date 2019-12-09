@@ -15,7 +15,8 @@ namespace FT{
         
         Random::~Random(){}
            
-        vector<size_t> Random::select(Population& pop, const MatrixXf& F, const Parameters& params)
+        vector<size_t> Random::select(Population& pop, const MatrixXf& F, 
+                const Parameters& params, const Data& d)
         {
             /* Selects parents for making offspring.  
              *
@@ -44,7 +45,8 @@ namespace FT{
             return selected;
         }
 
-        vector<size_t> Random::survive(Population& pop, const MatrixXf& F, const Parameters& params)
+        vector<size_t> Random::survive(Population& pop, const MatrixXf& F, 
+                const Parameters& params, const Data& d)
         {
             /* Selects the offspring for survival. 
              *
