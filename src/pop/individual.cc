@@ -306,38 +306,38 @@ namespace FT{
                     state.f.size() + state.c.size() + state.b.size(),  
                     cols);
             ArrayXf Row; 
-            int rows_f = 0;
-            int rows_c = 0;
-            int rows_b = 0;
+            std::map<char,int> rows;
+            rows['f']=0;
+            rows['c']=0;
+            rows['b']=0;
 
             for (int i = 0; i < root_types.size(); ++i)
             {
-                switch (root_types.at(i))
+                char rt = root_types.at(i);
+
+                switch (rt)
                 {
                     case 'f':
                     // add state_f to Phi
-                        Row = ArrayXf::Map(state.f.at(rows_f).data(),cols);
-                        clean(Row); // remove nans, set infs to max and min
-                        Phi.row(i) = Row;
-                        ++rows_f;
+                        Row = ArrayXf::Map(state.f.at(rows[rt]).data(),cols);
                         break;
                     case 'c':
                     // convert state_c to Phi       
                         Row = ArrayXi::Map(
-                                state.c.at(rows_c).data(),cols).cast<float>();
-                        clean(Row); // remove nans, set infs to max and min
-                        Phi.row(i) = Row;
-                        ++rows_c;
+                            state.c.at(rows[rt]).data(),cols).cast<float>();
                         break;
                     case 'b':
                     // add state_b to Phi
-                        Phi.row(i) = ArrayXb::Map(
-                                state.b.at(rows_b).data(),cols).cast<float>();
-                        ++rows_b;
+                        Row = ArrayXb::Map(
+                            state.b.at(rows[rt]).data(),cols).cast<float>();
                         break;
                     default:
                         HANDLE_ERROR_THROW("Unknown root type");
                 }
+
+                clean(Row); // remove nans, set infs to max and min
+                Phi.row(i) = Row;
+                ++rows[rt];
             }
             
             return Phi;
@@ -735,40 +735,35 @@ namespace FT{
                 {
                     root_types.push_back(program.at(r)->otype);
                 }
-                int rows_f = 0;
-                int rows_c = 0;
-                int rows_b = 0;
+                std::map<char,int> rows;
+                rows['f']=0;
+                rows['c']=0;
+                rows['b']=0;
                 for (int i = 0; i < root_types.size(); ++i)
                 {
-                    switch (root_types.at(i))
+                    char rt = root_types.at(i);
+                    switch (rt)
                     {
                         case 'f':
-                            this->eqn += "[" + state.fs.at(rows_f) + "]";
-                            ++rows_f;
+                            this->eqn += "[" + state.fs.at(rows[rt]) + "]";
                             break;
                         case 'c':
-                            this->eqn += "[" + state.cs.at(rows_b) + "]";
-                            ++rows_c;
+                            this->eqn += "[" + state.cs.at(rows[rt]) + "]";
                             break;
                         case 'b':
-                            this->eqn += "[" + state.bs.at(rows_b) + "]";
-                            ++rows_b;
+                            this->eqn += "[" + state.bs.at(rows[rt]) + "]";
                             break;
                         default:
                             HANDLE_ERROR_THROW("Unknown root type");
                     }
+                    ++rows[rt];
                 }
-                /* for (auto s : state.fs) */ 
-                /*     this->eqn += "[" + s + "]"; */
-                /* for (auto s : state.bs) */ 
-                /*     this->eqn += "[" + s + "]"; */
-                /* for (auto s : state.cs) */
-                /*     this->eqn += "[" + s + "]"; */              
-                /* for (auto s : state.zs) */ 
-                /*     this->eqn += "[" + s + "]"; */
-            
             }
             //}
+            /* cout << "\nin get_eqn\n" */
+            /*     << "program: " << program_str() << "\n" */
+            /*     << "eqn: " << this->eqn << "\n"; */
+
             return this->eqn;
         }
         
