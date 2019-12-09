@@ -773,13 +773,17 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
         bool perfect_correlation = p_variation->correlation_delete_mutate(
                 tmp_ind, ind.Phi, params, *d.o);
 
+        cout << "checking size..\n";
         if (ind.size() == tmp_ind.size())
         {
-            cout << "mode size unchanged\n";
+            cout << "model size unchanged\n";
             continue;
         }
         bool pass = true;
+        cout << "tmp_ind fit...\n"; 
         shared_ptr<CLabels> yhat = tmp_ind.fit(*d.o, params, pass);
+        cout << "tmp_ind fit success...\n"; 
+
 
         if (((ind.yhat - tmp_ind.yhat).norm()/ind.yhat.norm() 
                 <= tolerance ) 
