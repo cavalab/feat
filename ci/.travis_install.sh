@@ -33,7 +33,7 @@ bash miniconda.sh -b -p $HOME/miniconda
 export PATH="$HOME/miniconda/bin:$PATH"
 
 
-conda update --yes conda
+# conda update --yes conda
 conda install --yes -c conda-forge shogun-cpp
 
 # the new version of json-c seems to be missing a fn shogun is linked to;
