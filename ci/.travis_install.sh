@@ -69,11 +69,12 @@ which python
 
 echo "python version:"
 python3 --version 
-# echo "installing pip"
-# sudo apt install python3-pip
+
+echo "installing pip"
+sudo apt install python3-pip
 
 echo "installing mkdocs"
-python3 -m pip install --user mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
+pip3 install --user mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
 
 echo "mkdocs version"
 mkdocs --version
@@ -81,10 +82,10 @@ echo "cython path is..."
 which cython
 
 echo "upgrading pip..."
-python3 -m pip install --user --upgrade pip
+pip3 install --user --upgrade pip
 
 echo "installing eigency"
-python3 -m pip install --user eigency 
+pip3 install --user eigency 
 
 ###################
 # feat installation
