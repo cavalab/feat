@@ -7,12 +7,12 @@ cmake --version
 echo "sudo cmake version:"
 sudo cmake --version
 echo "python version:"
-python --version 
+python3 --version 
 # echo "installing pip"
 # sudo apt install python3-pip
 
 echo "installing mkdocs"
-python -m pip install --user mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
+python3 -m pip install --user mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
 
 echo "mkdocs version"
 mkdocs --version
@@ -84,17 +84,17 @@ echo "running feat.."
 ./build/feat docs/examples/data/d_enc.csv -rs 42 -g 2 -p 5
 
 echo "python path is..."
-which python
+which python3
 
 echo "cython path is..."
 which cython
 
 # echo "upgrading pip..."
-# python -m pip install --upgrade pip
+# python3 -m pip install --upgrade pip
 
 echo "installing wrapper"
 cd ./python
-python setup.py install
+python3 setup.py install
 
 echo "copying wrapper test to the python folder"
 sudo cp ../tests/wrappertest.py ./ #Copy the file to python folder
