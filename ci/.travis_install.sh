@@ -11,7 +11,7 @@ echo "installing pip"
 sudo apt install python3-pip
 
 echo "installing mkdocs"
-sudo pip3 install mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
+pip3 install --user mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
 
 echo "mkdocs version"
 mkdocs --version
