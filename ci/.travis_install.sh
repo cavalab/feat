@@ -7,6 +7,15 @@ cmake --version
 echo "sudo cmake version:"
 sudo cmake --version
 
+echo "installing pip"
+sudo apt install python3-pip
+
+echo "installing mkdocs"
+sudo pip3 install mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
+
+echo "mkdocs version"
+mkdocs --version
+
 echo "installing eigen..."
 #wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"
 wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.bz2"
@@ -22,6 +31,7 @@ echo "installing shogun via conda..."
 wget http://repo.continuum.io/miniconda/Miniconda3-4.7.10-Linux-x86_64.sh -O miniconda.sh
 bash miniconda.sh -b -p $HOME/miniconda
 export PATH="$HOME/miniconda/bin:$PATH"
+
 
 # conda update --yes conda
 conda install --yes -c conda-forge shogun-cpp
@@ -61,48 +71,28 @@ echo "back to $old_path.."
 cd $old_path; pwd
 
 
-echo "python3 path is..."
-which python3
 echo "python path is..."
 which python
 
-echo "python version:"
-python3 --version 
-
-echo "installing pip"
-sudo apt install python3-pip
-
-echo "installing mkdocs"
-pip3 install --user mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
-
-echo "mkdocs version"
-mkdocs --version
 echo "cython path is..."
 which cython
 
 echo "upgrading pip..."
-pip3 install --user --upgrade pip
-
-pip3 install --user numpy 
-
-echo "installing eigency"
-pip3 install --user eigency 
+pip install --upgrade pip
 
 ###################
 # feat installation
 ###################
-
 echo "installing feat..."
 mkdir build;
 cd build; pwd
-
 cmake -DTEST=ON -DEIGEN_DIR=ON -DSHOGUN_DIR=ON ..
 cd ..
 make -C build VERBOSE=1
 
 echo "installing wrapper"
 cd ./python
-python3 setup.py install
+python setup.py install
 
 echo "copying wrapper test to the python folder"
 sudo cp ../tests/wrappertest.py ./ #Copy the file to python folder
