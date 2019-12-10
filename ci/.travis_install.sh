@@ -84,6 +84,8 @@ which cython
 echo "upgrading pip..."
 pip3 install --user --upgrade pip
 
+pip3 install --user numpy 
+
 echo "installing eigency"
 pip3 install --user eigency 
 
