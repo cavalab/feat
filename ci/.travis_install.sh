@@ -23,8 +23,7 @@ wget http://repo.continuum.io/miniconda/Miniconda3-4.7.10-Linux-x86_64.sh -O min
 bash miniconda.sh -b -p $HOME/miniconda
 export PATH="$HOME/miniconda/bin:$PATH"
 
-
-conda update --yes conda
+# conda update --yes conda
 conda install --yes -c conda-forge shogun-cpp
 
 # the new version of json-c seems to be missing a fn shogun is linked to;
