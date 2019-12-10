@@ -61,25 +61,21 @@ sudo cp *.a /usr/lib
 echo "back to $old_path.."
 cd $old_path; pwd
 
-echo "installing feat..."
-mkdir build;
-cd build; pwd
 
-cmake -DTEST=ON -DEIGEN_DIR=ON -DSHOGUN_DIR=ON ..
-
-cd ..
-make -C build VERBOSE=1
-
-echo "python path is..."
+echo "python3 path is..."
 which python3
+echo "python3.6 path is..."
+which python3.6
+echo "python path is..."
+which python
 
 echo "python version:"
-python3 --version 
-echo "installing pip"
-sudo apt install python3-pip
+python3.6 --version 
+# echo "installing pip"
+# sudo apt install python3-pip
 
 echo "installing mkdocs"
-pip install --user mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
+python3.6 -m pip install --user mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
 
 echo "mkdocs version"
 mkdocs --version
@@ -87,14 +83,26 @@ echo "cython path is..."
 which cython
 
 echo "upgrading pip..."
-pip install --user --upgrade pip
+python3.6 -m pip install --user --upgrade pip
 
 echo "installing eigency"
-pip install --user eigency 
+python3.6 -m pip install --user eigency 
+
+###################
+# feat installation
+###################
+
+echo "installing feat..."
+mkdir build;
+cd build; pwd
+
+cmake -DTEST=ON -DEIGEN_DIR=ON -DSHOGUN_DIR=ON ..
+cd ..
+make -C build VERBOSE=1
 
 echo "installing wrapper"
 cd ./python
-python3 setup.py install
+python3.6 setup.py install
 
 echo "copying wrapper test to the python folder"
 sudo cp ../tests/wrappertest.py ./ #Copy the file to python folder
