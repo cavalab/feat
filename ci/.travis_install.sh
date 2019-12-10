@@ -6,16 +6,6 @@ echo "cmake version:"
 cmake --version
 echo "sudo cmake version:"
 sudo cmake --version
-echo "python version:"
-python3 --version 
-# echo "installing pip"
-# sudo apt install python3-pip
-
-echo "installing mkdocs"
-python3 -m pip install --user mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
-
-echo "mkdocs version"
-mkdocs --version
 
 echo "installing eigen..."
 #wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"
@@ -79,18 +69,28 @@ cmake -DTEST=ON -DEIGEN_DIR=ON -DSHOGUN_DIR=ON ..
 
 cd ..
 make -C build VERBOSE=1
-echo "running feat.."
-
-./build/feat docs/examples/data/d_enc.csv -rs 42 -g 2 -p 5
 
 echo "python path is..."
 which python3
 
+echo "python version:"
+python3 --version 
+echo "installing pip"
+sudo apt install python3-pip
+
+echo "installing mkdocs"
+pip install --user mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
+
+echo "mkdocs version"
+mkdocs --version
 echo "cython path is..."
 which cython
 
-# echo "upgrading pip..."
-# python3 -m pip install --upgrade pip
+echo "upgrading pip..."
+pip install --user --upgrade pip
+
+echo "installing eigency"
+pip install --user eigency 
 
 echo "installing wrapper"
 cd ./python
@@ -98,3 +98,6 @@ python3 setup.py install
 
 echo "copying wrapper test to the python folder"
 sudo cp ../tests/wrappertest.py ./ #Copy the file to python folder
+
+echo "running feat.."
+./build/feat docs/examples/data/d_enc.csv -rs 42 -g 2 -p 5
