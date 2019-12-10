@@ -6,12 +6,13 @@ echo "cmake version:"
 cmake --version
 echo "sudo cmake version:"
 sudo cmake --version
-
-echo "installing pip"
-sudo apt install python3-pip
+echo "python version:"
+python --version 
+# echo "installing pip"
+# sudo apt install python3-pip
 
 echo "installing mkdocs"
-pip3 install --user mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
+python -m pip install --user mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
 
 echo "mkdocs version"
 mkdocs --version
@@ -88,8 +89,8 @@ which python
 echo "cython path is..."
 which cython
 
-echo "upgrading pip..."
-pip install --upgrade pip
+# echo "upgrading pip..."
+# python -m pip install --upgrade pip
 
 echo "installing wrapper"
 cd ./python
