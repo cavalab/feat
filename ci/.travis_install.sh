@@ -64,18 +64,16 @@ cd $old_path; pwd
 
 echo "python3 path is..."
 which python3
-echo "python3.6 path is..."
-which python3.6
 echo "python path is..."
 which python
 
 echo "python version:"
-python3.6 --version 
+python3 --version 
 # echo "installing pip"
 # sudo apt install python3-pip
 
 echo "installing mkdocs"
-python3.6 -m pip install --user mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
+python3 -m pip install --user mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
 
 echo "mkdocs version"
 mkdocs --version
@@ -83,10 +81,10 @@ echo "cython path is..."
 which cython
 
 echo "upgrading pip..."
-python3.6 -m pip install --user --upgrade pip
+python3 -m pip install --user --upgrade pip
 
 echo "installing eigency"
-python3.6 -m pip install --user eigency 
+python3 -m pip install --user eigency 
 
 ###################
 # feat installation
@@ -102,7 +100,7 @@ make -C build VERBOSE=1
 
 echo "installing wrapper"
 cd ./python
-python3.6 setup.py install
+python3 setup.py install
 
 echo "copying wrapper test to the python folder"
 sudo cp ../tests/wrappertest.py ./ #Copy the file to python folder
