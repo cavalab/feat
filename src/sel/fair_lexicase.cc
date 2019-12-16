@@ -3,18 +3,22 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 
-#include "lexicase.h"
+#include "fair_lexicase.h"
 
 namespace FT{
 
 
     namespace Sel{
 
-        Lexicase::Lexicase(bool surv){ name = "lexicase"; survival = surv; }
+        FairLexicase::FairLexicase(bool surv)
+        { 
+            name = "lexicase"; 
+            survival = surv; 
+        }
         
-        Lexicase::~Lexicase(){}
+        FairLexicase::~FairLexicase(){}
         
-        vector<size_t> Lexicase::select(Population& pop, const MatrixXf& F, 
+        vector<size_t> FairLexicase::select(Population& pop, const MatrixXf& F, 
                 const Parameters& params, const Data& d)
         {
             /*! Selection according to lexicase selection for 
@@ -34,17 +38,17 @@ namespace FT{
             unsigned int N = F.rows(); //< number of samples
             unsigned int P = F.cols()/2; //< number of individuals
             
-            // define epsilon
-            ArrayXf epsilon = ArrayXf::Zero(N);
+            /* // define epsilon */
+            /* ArrayXf epsilon = ArrayXf::Zero(N); */
           
-            // if output is continuous, use epsilon lexicase            
-            if (!params.classification || params.scorer.compare("log")==0 
-                    || params.scorer.compare("multi_log")==0)
-            {
-                // for columns of F, calculate epsilon
-                for (int i = 0; i<epsilon.size(); ++i)
-                    epsilon(i) = mad(F.row(i));
-            }
+            /* // if output is continuous, use epsilon lexicase */            
+            /* if (!params.classification || params.scorer.compare("log")==0 */ 
+            /*         || params.scorer.compare("multi_log")==0) */
+            /* { */
+            /*     // for columns of F, calculate epsilon */
+            /*     for (int i = 0; i<epsilon.size(); ++i) */
+            /*         epsilon(i) = mad(F.row(i)); */
+            /* } */
 
             // individual locations in F
             vector<size_t> starting_pool;
@@ -95,51 +99,71 @@ namespace FT{
                 while(pass){    // main loop
 
                     // **Fairness Subgroups**
-                    // Here, a "case" is a collection of samples sharing an 
-                    // intersection of levels of protected groups. 
+                    // Here, a "case" is the mean fitness over a  collection of
+                    // samples sharing an intersection of levels of
+                    // protected groups. 
                     vector<int> case_samples;
-                    vector<int> groups; // indices of protected groups in X
-                    for (auto pl : d.protect_levels)
-                    {
-                        groups.push_back(pl.first);
-                    }
                     int i = 0;
-                    while (case_samples.size() != 1 
-                            && i < d.protect_levels.size())
+                    vector<int> groups = d.protected_groups;
+                    ArrayXb x_idx = ArrayXi::Ones(d.X.cols()).cast<bool>();
+                    bool condition = true; 
+                    while (condition)
                     {
                         // choose a random group
-                        int g = r.random_choice(groups); 
+                        vector<size_t> choice_idxs(groups.size());
+                        std::iota(choice_idxs.begin(),choice_idxs.end(),0);
+                        size_t idx = r.random_choice(choice_idxs);
+                        int g = groups.at(idx); 
                         // remove g from groups
-                        //
+                        groups.erase(groups.begin() + idx);
                         // choose a random level
-                        float level = r.random_choice(d.protect_levels[g]);
-                        // subset X based on group level
-
+                        vector<float> levels = unique(VectorXf(d.X.row(g)));
+                        float level = r.random_choice(levels);
+                        // subset training samples based on group level
+                        x_idx = (d.X.row(g).array() == level).select(
+                                x_idx, false);
+                        // keep going as long as there are more groups and 
+                        // more than one sample
+                        condition = x_idx.sum() > 1 && groups.size() > 0;
                     }
+                    // get fitness of everyone in the pool
+                    ArrayXf fitness(pool.size());
+                    for (size_t j = 0; j<pool.size(); ++j)
+                    {
+                        fitness(j) = x_idx.select(F.col(pool[j]), 0).sum();
+                    }
+                    // get epsilon for the fitnesses
+                    float epsilon = mad(fitness);
+                    //
                     winner.resize(0);   // winners                  
                     // minimum error on case
                     float minfit = std::numeric_limits<float>::max();                     
 
                     // get minimum
                     for (size_t j = 0; j<pool.size(); ++j)
-                    if (F(cases[h],pool[j]) < minfit) 
-                      minfit = F(cases[h],pool[j]);
+                    {
+                        if (fitness(j) < minfit) 
+                          minfit = fitness(j);
+                    }
 
                     // select best
                     for (size_t j = 0; j<pool.size(); ++j)
-                    if (F(cases[h],pool[j]) <= minfit+epsilon[cases[h]])
-                    winner.push_back(pool[j]);                 
+                    {
+                        if (fitness(j) <= minfit+epsilon)
+                            winner.push_back(pool[j]);                 
+                    }
 
                     ++h; // next case
                     // only keep going if needed
-                    pass = (winner.size()>1 && h<cases.size()); 
+                    pass = (winner.size()>1 
+                            && h<d.group_intersections); 
 
                     if(winner.size() == 0)
                     {
-                    if(h >= cases.size())
-                    winner.push_back(r.random_choice(pool));
-                    else
-                    pass = true;
+                        if(h >= cases.size())
+                            winner.push_back(r.random_choice(pool));
+                        else
+                            pass = true;
                     }
                     else
                     pool = winner;    // reduce pool to remaining individuals
@@ -185,10 +209,10 @@ namespace FT{
             return selected;
         }
 
-        vector<size_t> Lexicase::survive(Population& pop, 
+        vector<size_t> FairLexicase::survive(Population& pop, 
                 const MatrixXf& F, const Parameters& params, const Data& d)
         {
-            /* Lexicase survival */
+            /* FairLexicase survival */
         }
         
     }

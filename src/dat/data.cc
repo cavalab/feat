@@ -21,6 +21,7 @@ namespace FT{
             X(X), y(y), Z(Z), classification(c) , protect(protect)
         {
             validation=false;
+            group_intersections=0;
             // store levels of protected attributes in X
             if (!protect.empty())
             {
@@ -28,7 +29,9 @@ namespace FT{
                 {
                     if (protect.at(i))
                     {
-                        this->protect_levels[i] = unique(VectorXf(X.row(i)));
+                        protect_levels[i] = unique(VectorXf(X.row(i)));
+                        protected_groups.push_back(i);
+                        group_intersections += protect_levels[i].size();
                     }
                 }
             }
