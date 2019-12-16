@@ -58,6 +58,8 @@ namespace FT
                 void get_batch(Data &db, int batch_size) const;
                 // protect_levels stores the levels of protected factors in X.
                 map<int,vector<float>> protect_levels;   
+                vector<int> protected_groups;
+                int group_intersections;
         };
         
         /* !

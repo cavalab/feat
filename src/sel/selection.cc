@@ -17,6 +17,8 @@ namespace FT{
 
             if (!type.compare("lexicase"))
                 pselector = std::make_shared<Lexicase>(survival); 
+            else if (!type.compare("fair_lexicase"))
+                pselector = std::make_shared<FairLexicase>(survival);
             else if (!type.compare("nsga2"))
                 pselector = std::make_shared<NSGA2>(survival);
             else if (!type.compare("offspring"))    // offspring survival
