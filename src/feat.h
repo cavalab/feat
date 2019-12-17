@@ -91,7 +91,8 @@ namespace FT{
                  bool residual_xo = false, bool stagewise_xo = false, 
                  bool stagewise_tol = true, bool softmax_norm=false, 
                  int print_pop=0, bool normalize=true, bool val_from_arch=true,
-                 bool corr_delete_mutate=false, bool simplify=false);
+                 bool corr_delete_mutate=false, bool simplify=false,
+                 string protected_groups="");
             
             /// set size of population 
             void set_pop_size(int pop_size);
@@ -203,6 +204,9 @@ namespace FT{
             void set_softmax_norm(bool sftmx=true){params.softmax_norm=sftmx;};
 
             void set_print_pop(int pp){ print_pop=pp; };
+
+            ///set protected groups for fairness
+            void set_protected_groups(string pg);
             /*                                                      
              * getting functions
              */

@@ -31,7 +31,8 @@ Feat::Feat(int pop_size, int gens, string ml,
        bool hillclimb, string logfile, int max_time, bool use_batch, 
        bool residual_xo, bool stagewise_xo, bool stagewise_xo_tol,
        bool softmax_norm, int print_pop, bool normalize,
-       bool val_from_arch, bool corr_delete_mutate, bool simplify):
+       bool val_from_arch, bool corr_delete_mutate, bool simplify,
+       string protected_groups):
           // construct subclasses
           params(pop_size, gens, ml, classification, max_stall, otype, 
                  verbosity, functions, cross_rate, root_xo_rate, max_depth, 
@@ -167,6 +168,10 @@ void Feat::set_max_time(int time){ params.max_time = time; }
 
 void Feat::set_use_batch(){ params.use_batch = true; }
 
+void Feat::set_protected_groups(string pg)
+{
+    params.set_protected_groups(pg);
+}
 /*                                                      
  * getting functions
  */
@@ -390,8 +395,8 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     if (params.use_batch)
     {
         if (params.bp.batch_size >= X.cols()){
-            cout << "turning off batch because X has fewer than " << params.bp.batch_size 
-                 << " samples\n";
+            cout << "turning off batch because X has fewer than " 
+                << params.bp.batch_size << " samples\n";
             params.use_batch = false;
         }
         else
@@ -441,7 +446,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     
     // split data into training and test sets
     //Data data(X, y, Z, params.classification);
-    DataRef d(X, y, Z, params.classification);
+    DataRef d(X, y, Z, params.classification, params.protected_groups);
     //DataRef d;
     //d.setOriginalData(&data);
     d.train_test_split(params.shuffle, params.split);
@@ -456,7 +461,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     MatrixXf Xb;
     VectorXf yb;
     LongData Zb;
-    Data db(Xb, yb, Zb, params.classification);
+    Data db(Xb, yb, Zb, params.classification, params.protected_groups);
     
     Data *tmp_train;
     

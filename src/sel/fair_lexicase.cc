@@ -62,37 +62,18 @@ namespace FT{
             #pragma omp parallel for 
             for (unsigned int i = 0; i<P; ++i)  // selection loop
             {
-                vector<size_t> cases; // cases (samples)
-                // choose 
-
-                /* // for classification problems, weight case selection */ 
-                /* // by class weights */
-                /* if (params.classification && !params.class_weights.empty()) */ 
-                /* { */
-                /*     vector<size_t> choices(N); */
-                /*     std::iota(choices.begin(), choices.end(),0); */
-                /*     vector<float> sample_weights = params.sample_weights; */
-                /*     for (unsigned i = 0; i<N; ++i) */
-                /*     { */
-                /*         vector<size_t> choice_idxs(N-i); */
-                /*         std::iota(choice_idxs.begin(),choice_idxs.end(),0); */
-                /*         size_t idx = r.random_choice(choice_idxs, */
-                /*                 sample_weights); */
-                /*         cases.push_back(choices.at(idx)); */
-                /*         choices.erase(choices.begin() + idx); */
-                /*         sample_weights.erase(sample_weights.begin() + idx); */
-                /*     } */
-                /* } */
-                /* // otherwise, choose cases randomly */
-                /* else */
-                /* { */   
-                /*     cases.resize(N); */ 
-                /*     std::iota(cases.begin(),cases.end(),0); */
-                /*     r.shuffle(cases.begin(),cases.end());   // shuffle cases */
-                /* } */
                 vector<size_t> pool = starting_pool;    // initial pool   
                 vector<size_t> winner;                  // winners
         
+
+                vector<size_t> cases; // cases (group intersections)
+                if (!d.cases.empty())
+                {
+                    cases.resize(d.cases.size()); 
+                    std::iota(cases.begin(),cases.end(),0);
+                    r.shuffle(cases.begin(),cases.end());   // shuffle cases
+                }
+
                 bool pass = true;     // checks pool size and number of cases
                 unsigned int h = 0;   // case count
 
@@ -102,35 +83,42 @@ namespace FT{
                     // Here, a "case" is the mean fitness over a  collection of
                     // samples sharing an intersection of levels of
                     // protected groups. 
-                    vector<int> case_samples;
-                    int i = 0;
-                    vector<int> groups = d.protected_groups;
-                    ArrayXb x_idx = ArrayXi::Ones(d.X.cols()).cast<bool>();
-                    bool condition = true; 
-                    while (condition)
+                    
+                    // if the cases haven't been enumerated, 
+                    // we sample group intersections.
+                    ArrayXb x_idx; 
+                    if (d.cases.empty())                        
                     {
-                        // choose a random group
-                        vector<size_t> choice_idxs(groups.size());
-                        std::iota(choice_idxs.begin(),choice_idxs.end(),0);
-                        size_t idx = r.random_choice(choice_idxs);
-                        int g = groups.at(idx); 
-                        // remove g from groups
-                        groups.erase(groups.begin() + idx);
-                        // choose a random level
-                        vector<float> levels = unique(VectorXf(d.X.row(g)));
-                        float level = r.random_choice(levels);
-                        // subset training samples based on group level
-                        x_idx = (d.X.row(g).array() == level).select(
-                                x_idx, false);
-                        // keep going as long as there are more groups and 
-                        // more than one sample
-                        condition = x_idx.sum() > 1 && groups.size() > 0;
+                        vector<int> groups = d.protected_groups;
+                        x_idx = ArrayXi::Ones(d.X.cols()).cast<bool>();
+                        bool condition = true; 
+                        while (condition)
+                        {
+                            // choose a random group
+                            vector<size_t> choice_idxs(groups.size());
+                            std::iota(choice_idxs.begin(),choice_idxs.end(),0);
+                            size_t idx = r.random_choice(choice_idxs);
+                            int g = groups.at(idx); 
+                            // remove g from groups
+                            groups.erase(groups.begin() + idx);
+                            // choose a random level
+                            vector<float> lvls = unique(VectorXf(d.X.row(g)));
+                            float level = r.random_choice(lvls);
+                            // subset training samples based on group level
+                            x_idx = (d.X.row(g).array() == level).select(
+                                    x_idx, false);
+                            // keep going as long as there are more groups and 
+                            // more than one sample
+                            condition = x_idx.sum() > 1 && groups.size() > 0;
+                        }
                     }
+                    const ArrayXb& case_idx = (d.cases.empty() ? 
+                                        x_idx : d.cases.at(h));
                     // get fitness of everyone in the pool
                     ArrayXf fitness(pool.size());
                     for (size_t j = 0; j<pool.size(); ++j)
                     {
-                        fitness(j) = x_idx.select(F.col(pool[j]), 0).sum();
+                        fitness(j) = case_idx.select(F.col(pool[j]), 0).sum();
                     }
                     // get epsilon for the fitnesses
                     float epsilon = mad(fitness);
@@ -156,20 +144,22 @@ namespace FT{
                     ++h; // next case
                     // only keep going if needed
                     pass = (winner.size()>1 
-                            && h<d.group_intersections); 
+                           && h<d.group_intersections); 
 
                     if(winner.size() == 0)
                     {
-                        if(h >= cases.size())
+                        if(h >= d.group_intersections)
                             winner.push_back(r.random_choice(pool));
                         else
                             pass = true;
                     }
                     else
-                    pool = winner;    // reduce pool to remaining individuals
+                    {
+                        // reduce pool to remaining individuals
+                        pool = winner;    
+                    }
               
                 }       
-			
 			
                 assert(winner.size()>0);
                 //if more than one winner, pick randomly

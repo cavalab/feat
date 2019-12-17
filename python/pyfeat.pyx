@@ -23,25 +23,28 @@ cdef extern from "feat.h" namespace "FT":
                unsigned int max_depth, unsigned int max_dim, int random_state, 
                bool erc, string obj,bool shuffle, 
                float split, float fb, string scorer, 
-               string feature_names, bool backprop, int iters, float lr, int bs,
-               int n_threads, bool hillclimb, string logfile, int max_time, bool use_batch,
-               bool residual_xo, bool stagewise_xo, bool stagewise_xo_tol, 
-               bool softmax_norm, int print_pop, bool normalize, 
-               bool val_from_arch, bool corr_delete_mutate, 
-               bool simplfy) except + 
+               string feature_names, bool backprop, int iters, float lr, 
+               int bs, int n_threads, bool hillclimb, string logfile, 
+               int max_time, bool use_batch, bool residual_xo, 
+               bool stagewise_xo, bool stagewise_xo_tol, bool softmax_norm, 
+               int print_pop, bool normalize, bool val_from_arch, 
+               bool corr_delete_mutate, bool simplify, string protected_groups
+               ) except + 
 
         void fit(float * X, int rowsX, int colsX, float*  y , int lenY)
-        VectorXd predict(float * X, int rowsX,int colsX)
-        ArrayXXd predict_proba(float * X, int rowsX,int colsX)
-        MatrixXd transform(float * X, int rowsX,int colsX)
-        VectorXd fit_predict(float * X, int rowsX,int colsX, float*  y , int lenY)
-        MatrixXd fit_transform(float * X, int rowsX,int colsX, float*  y , int lenY)
+        VectorXd predict(float * X, int rowsX, int colsX)
+        ArrayXXd predict_proba(float * X, int rowsX, int colsX)
+        MatrixXd transform(float * X, int rowsX, int colsX)
+        VectorXd fit_predict(float * X, int rowsX, int colsX, float * y, 
+                int lenY)
+        MatrixXd fit_transform(float * X, int rowsX, int colsX, float * y, 
+                int lenY)
         string get_representation()
         string get_eqns(bool front)
         string get_model()
 
-        void fit_with_z(float * X,int rowsX,int colsX, float * Y,int lenY, string s, 
-                            int * train_idx, int train_size)
+        void fit_with_z(float * X,int rowsX,int colsX, float * Y,int lenY, 
+                string s, int * train_idx, int train_size)
         VectorXd predict_with_z(float * X,int rowsX,int colsX, string s, 
                             int * idx, int idx_size)
         MatrixXd transform_with_z(float * X,int rowsX,int colsX, string s, 
@@ -68,28 +71,30 @@ cdef extern from "feat.h" namespace "FT":
 cdef class PyFeat:
     cdef Feat ft  # hold a c++ instance which we're wrapping
     def __cinit__(self,int pop_size, int gens, string ml, bool classification, 
-            int verbosity, int max_stall,string sel, string surv, float cross_rate, 
-            float root_xo_rate, string otype, string functions, 
-            unsigned int max_depth, unsigned int max_dim, int random_state, 
-            bool erc , string obj, bool shuffle, float split, float fb,
-            string scorer, string feature_names, bool backprop, int iters, 
-            float lr, int bs, int n_threads, bool hillclimb, string logfile, 
-            int max_time, bool use_batch, bool residual_xo, bool stagewise_xo, 
-            bool stagewise_xo_tol, bool softmax_norm, int print_pop, 
-            bool normalize, bool val_from_arch, bool corr_delete_mutate, 
-            bool simplify):
+            int verbosity, int max_stall,string sel, string surv, 
+            float cross_rate, float root_xo_rate, string otype, 
+            string functions, unsigned int max_depth, unsigned int max_dim, 
+            int random_state, bool erc , string obj, bool shuffle, float split, 
+            float fb, string scorer, string feature_names, bool backprop, 
+            int iters, float lr, int bs, int n_threads, bool hillclimb, 
+            string logfile, int max_time, bool use_batch, bool residual_xo, 
+            bool stagewise_xo, bool stagewise_xo_tol, bool softmax_norm, 
+            int print_pop, bool normalize, bool val_from_arch, 
+            bool corr_delete_mutate, bool simplify, string protected_groups):
         
         cdef char otype_char
         if ( len(otype) == 0):
             otype_char = 'a' #Defaut Value
         else:
             otype_char = ord(otype)
-        self.ft = Feat(pop_size,gens,ml,classification,verbosity,max_stall,sel,surv, cross_rate, 
-                       root_xo_rate, otype_char, functions, max_depth, max_dim, random_state, erc, 
-                       obj, shuffle, split, fb, scorer, feature_names, backprop, iters, lr, bs, 
-                       n_threads, hillclimb, logfile, max_time, use_batch, residual_xo, 
-                       stagewise_xo, stagewise_xo_tol, softmax_norm, print_pop, 
-                       normalize, val_from_arch, corr_delete_mutate, simplify)
+        self.ft = Feat(pop_size,gens,ml,classification,verbosity,max_stall,sel,
+                surv, cross_rate, root_xo_rate, otype_char, functions, 
+                max_depth, max_dim, random_state, erc, obj, shuffle, split, fb,
+                scorer, feature_names, backprop, iters, lr, bs, n_threads, 
+                hillclimb, logfile, max_time, use_batch, residual_xo, 
+                stagewise_xo, stagewise_xo_tol, softmax_norm, print_pop, 
+                normalize, val_from_arch, corr_delete_mutate, simplify,
+                protected_groups)
 
     def fit(self,np.ndarray X,np.ndarray y):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
@@ -101,7 +106,8 @@ cdef class PyFeat:
 
         self.ft.fit(&arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y))
 
-    def fit_with_z(self,np.ndarray X,np.ndarray y, string zfile, np.ndarray zids):
+    def fit_with_z(self,np.ndarray X,np.ndarray y, string zfile, 
+            np.ndarray zids):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
         cdef np.ndarray[np.float32_t, ndim=1, mode="fortran"] arr_y
         cdef np.ndarray[int, ndim=1, mode="fortran"] arr_z_id
@@ -111,8 +117,8 @@ cdef class PyFeat:
         arr_y = np.asfortranarray(y, dtype=np.float32)
         arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
 
-        self.ft.fit_with_z(&arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y),
-                           zfile, &arr_z_id[0], len(arr_z_id))
+        self.ft.fit_with_z(&arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],
+                len(arr_y), zfile, &arr_z_id[0], len(arr_z_id))
                            
     def transform_with_z(self,np.ndarray X, string zfile, np.ndarray zids):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
@@ -120,7 +126,8 @@ cdef class PyFeat:
         X = X.transpose()
         arr_x = np.asfortranarray(X, dtype=np.float32)
         arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
-        res = ndarray(self.ft.transform_with_z(&arr_x[0,0],X.shape[0],X.shape[1], zfile, &arr_z_id[0], len(arr_z_id)))
+        res = ndarray(self.ft.transform_with_z(&arr_x[0,0],X.shape[0],
+            X.shape[1], zfile, &arr_z_id[0], len(arr_z_id)))
         return res.transpose()
 
 
@@ -140,7 +147,7 @@ cdef class PyFeat:
         arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
         
         res = ndarray(self.ft.predict_with_z(&arr_x[0,0],X.shape[0],X.shape[1],
-                                             zfile, &arr_z_id[0], len(arr_z_id)))
+                                         zfile, &arr_z_id[0], len(arr_z_id)))
         return res.flatten()
 
     def predict_proba(self,np.ndarray X):
@@ -158,8 +165,8 @@ cdef class PyFeat:
         arr_x = np.asfortranarray(X, dtype=np.float32)
         arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
         
-        res = ndarray(self.ft.predict_proba_with_z(&arr_x[0,0],X.shape[0],X.shape[1],
-                                             zfile, &arr_z_id[0], len(arr_z_id)))
+        res = ndarray(self.ft.predict_proba_with_z(&arr_x[0,0],
+            X.shape[0],X.shape[1], zfile, &arr_z_id[0], len(arr_z_id)))
         return res.flatten()
 
     def transform(self,np.ndarray X):
@@ -178,7 +185,8 @@ cdef class PyFeat:
         arr_x = np.asfortranarray(X, dtype=np.float32)
         arr_y = np.asfortranarray(y, dtype=np.float32)
         
-        return ndarray(self.ft.fit_predict( &arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y) ))
+        return ndarray(self.ft.fit_predict( &arr_x[0,0],X.shape[0],
+            X.shape[1],&arr_y[0],len(arr_y) ))
 
     def fit_transform(self,np.ndarray X,np.ndarray y):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
@@ -188,7 +196,8 @@ cdef class PyFeat:
         arr_x = np.asfortranarray(X, dtype=np.float32)
         arr_y = np.asfortranarray(y, dtype=np.float32)
         
-        X = ndarray(self.ft.fit_transform( &arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y) ))
+        X = ndarray(self.ft.fit_transform( &arr_x[0,0],X.shape[0],X.shape[1],
+            &arr_y[0],len(arr_y) ))
         return X.transpose()
     
     def get_representation(self):
