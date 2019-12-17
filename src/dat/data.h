@@ -60,6 +60,8 @@ namespace FT
                 map<int,vector<float>> protect_levels;   
                 vector<int> protected_groups;
                 int group_intersections;
+                vector<ArrayXb> cases;  // used to pre-process cases if there 
+                                        // aren't that many group intersections
         };
         
         /* !

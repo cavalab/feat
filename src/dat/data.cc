@@ -34,6 +34,23 @@ namespace FT{
                         group_intersections += protect_levels[i].size();
                     }
                 }
+                // if there aren't that many group interactions, we might as 
+                // well enumerate them to save time during execution.
+                if (group_intersections < 1000)
+                {
+                    for (auto pl : protect_levels)
+                    {
+                        int group = pl.first;
+                        for (auto level : pl.second)
+                        {
+                            ArrayXb x = ArrayXi::Ones(X.cols()).cast<bool>();
+                            x = (X.row(group).array() == level).select(
+                                x, false);
+                            cases.push_back(x);
+                        }
+                            
+                    }
+                }
             }
         }
         

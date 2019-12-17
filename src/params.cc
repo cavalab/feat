@@ -445,6 +445,24 @@ std::unique_ptr<Node> Parameters::createNode(string str,
     
 }
 
+void Parameters::set_protected_groups(string pg)
+{
+    if (pg.empty())
+        protected_groups.clear();
+    else
+    {
+        pg += ',';      // add delimiter to end
+        string delim=",";
+        size_t pos = 0;
+        string token;
+        while ((pos = pg.find(delim)) != string::npos) 
+        {
+            token = pg.substr(0, pos);
+            protected_groups.push_back(token != "0");
+            pg.erase(0, pos + delim.length());
+        }
+    }
+}
 void Parameters::set_feature_names(string fn)
 {
     if (fn.empty())
