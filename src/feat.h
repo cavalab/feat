@@ -85,14 +85,13 @@ namespace FT{
                  bool erc = false, string obj="fitness,complexity", 
                  bool shuffle=true, float split=0.75, float fb=0.5, 
                  string scorer="", string feature_names="",
-                 bool backprop=false,int iters=10, float lr=0.1, int bs=100, 
-                 int n_threads=0, bool hillclimb=false, string logfile="", 
-                 int max_time=-1, bool use_batch = false, 
-                 bool residual_xo = false, bool stagewise_xo = false, 
-                 bool stagewise_tol = true, bool softmax_norm=false, 
-                 int print_pop=0, bool normalize=true, bool val_from_arch=true,
-                 bool corr_delete_mutate=false, bool simplify=false,
-                 string protected_groups="");
+                 bool backprop=false,int iters=10, float lr=0.1, 
+                 int batch_size=0, int n_threads=0, bool hillclimb=false, 
+                 string logfile="", int max_time=-1, bool residual_xo = false, 
+                 bool stagewise_xo = false, bool stagewise_tol = true, 
+                 bool softmax_norm=false, int print_pop=0, bool normalize=true, 
+                 bool val_from_arch=true, bool corr_delete_mutate=false, 
+                 bool simplify=false, string protected_groups="");
             
             /// set size of population 
             void set_pop_size(int pop_size);

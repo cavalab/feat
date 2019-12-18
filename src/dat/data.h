@@ -53,6 +53,7 @@ namespace FT
                         vector<bool> protect = vector<bool>());
 
                 void set_validation(bool v=true);
+                void set_protected_groups();
                 
                 /// select random subset of data for training weights.
                 void get_batch(Data &db, int batch_size) const;

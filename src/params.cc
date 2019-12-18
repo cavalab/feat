@@ -14,7 +14,7 @@ Parameters::Parameters(int pop_size, int gens, string ml, bool classification,
         float root_xor, unsigned int max_depth, 
         unsigned int max_dim, bool constant, string obj, bool sh, float sp, 
         float fb, string sc, string fn, bool bckprp, int iters, float lr,
-        int bs, bool hclimb, int maxt, bool useb, bool res_xo, bool stg_xo, 
+        int bs, bool hclimb, int maxt, bool res_xo, bool stg_xo, 
         bool stg_xo_tol, bool sftmx, bool nrm, bool corr_mut):    
         pop_size(pop_size),
         gens(gens),
@@ -35,7 +35,6 @@ Parameters::Parameters(int pop_size, int gens, string ml, bool classification,
         hillclimb(hclimb),
         hc(iters, lr),
         max_time(maxt),
-        use_batch(useb),
         residual_xo(res_xo),
         stagewise_xo(stg_xo),
         stagewise_xo_tol(stg_xo),
@@ -57,6 +56,7 @@ Parameters::Parameters(int pop_size, int gens, string ml, bool classification,
         set_otypes();
         n_classes = 2;
         set_scorer(sc);
+        use_batch = bs>0;
     }
 
 Parameters::~Parameters(){}
@@ -461,6 +461,10 @@ void Parameters::set_protected_groups(string pg)
             protected_groups.push_back(token != "0");
             pg.erase(0, pos + delim.length());
         }
+        cout << "protected_groups: "; 
+        for (auto pg : protected_groups)
+            cout << pg << ",";
+        cout << "\n";
     }
 }
 void Parameters::set_feature_names(string fn)

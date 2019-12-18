@@ -88,12 +88,13 @@ namespace FT{
         
         HC hc;                                      ///< stochastic hill climbing parameters       
         
-        Parameters(int pop_size, int gens, string ml, bool classification, int max_stall, 
-                   char ot, int verbosity, string fs, float cr, float root_xor, 
-                   unsigned int max_depth, unsigned int max_dim, bool constant, string obj, 
-                   bool sh, float sp, float fb, string sc, string fn, bool bckprp, 
-                   int iters, float lr, int bs, bool hclimb, int maxt, bool useb, bool res_xo, 
-                   bool stg_xo, bool stg_xo_tol, bool sftmx, bool nrm, bool corr_mut);
+        Parameters(int pop_size, int gens, string ml, bool classification, 
+                int max_stall, char ot, int verbosity, string fs, float cr, 
+                float root_xor, unsigned int max_depth, unsigned int max_dim, 
+                bool constant, string obj, bool sh, float sp, float fb, 
+                string sc, string fn, bool bckprp, int iters, float lr, int bs, 
+                bool hclimb, int maxt, bool res_xo, bool stg_xo, 
+                bool stg_xo_tol, bool sftmx, bool nrm, bool corr_mut);
         
         ~Parameters();
         
