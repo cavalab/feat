@@ -24,11 +24,11 @@ cdef extern from "feat.h" namespace "FT":
                bool erc, string obj,bool shuffle, 
                float split, float fb, string scorer, 
                string feature_names, bool backprop, int iters, float lr, 
-               int bs, int n_threads, bool hillclimb, string logfile, 
-               int max_time, bool use_batch, bool residual_xo, 
-               bool stagewise_xo, bool stagewise_xo_tol, bool softmax_norm, 
-               int print_pop, bool normalize, bool val_from_arch, 
-               bool corr_delete_mutate, bool simplify, string protected_groups
+               int batch_size, int n_threads, bool hillclimb, string logfile, 
+               int max_time, bool residual_xo, bool stagewise_xo, 
+               bool stagewise_xo_tol, bool softmax_norm, int print_pop, 
+               bool normalize, bool val_from_arch, bool corr_delete_mutate, 
+               bool simplify, string protected_groups
                ) except + 
 
         void fit(float * X, int rowsX, int colsX, float*  y , int lenY)
@@ -76,8 +76,8 @@ cdef class PyFeat:
             string functions, unsigned int max_depth, unsigned int max_dim, 
             int random_state, bool erc , string obj, bool shuffle, float split, 
             float fb, string scorer, string feature_names, bool backprop, 
-            int iters, float lr, int bs, int n_threads, bool hillclimb, 
-            string logfile, int max_time, bool use_batch, bool residual_xo, 
+            int iters, float lr, int batch_size, int n_threads, bool hillclimb, 
+            string logfile, int max_time, bool residual_xo, 
             bool stagewise_xo, bool stagewise_xo_tol, bool softmax_norm, 
             int print_pop, bool normalize, bool val_from_arch, 
             bool corr_delete_mutate, bool simplify, string protected_groups):
@@ -90,8 +90,8 @@ cdef class PyFeat:
         self.ft = Feat(pop_size,gens,ml,classification,verbosity,max_stall,sel,
                 surv, cross_rate, root_xo_rate, otype_char, functions, 
                 max_depth, max_dim, random_state, erc, obj, shuffle, split, fb,
-                scorer, feature_names, backprop, iters, lr, bs, n_threads, 
-                hillclimb, logfile, max_time, use_batch, residual_xo, 
+                scorer, feature_names, backprop, iters, lr, batch_size, 
+                n_threads, hillclimb, logfile, max_time, residual_xo, 
                 stagewise_xo, stagewise_xo_tol, softmax_norm, print_pop, 
                 normalize, val_from_arch, corr_delete_mutate, simplify,
                 protected_groups)

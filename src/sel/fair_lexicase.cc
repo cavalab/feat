@@ -66,13 +66,27 @@ namespace FT{
                 vector<size_t> winner;                  // winners
         
 
-                vector<size_t> cases; // cases (group intersections)
+                vector<size_t> shuff_idx; // used to shuffle cases
+                map<int,vector<float>> protect_levels;
+                vector<float> used_levels;
                 if (!d.cases.empty())
                 {
-                    cases.resize(d.cases.size()); 
-                    std::iota(cases.begin(),cases.end(),0);
-                    r.shuffle(cases.begin(),cases.end());   // shuffle cases
+                    cout << "d.cases is not empty; using...\n";
+                    shuff_idx.resize(d.cases.size()); 
+                    std::iota(shuff_idx.begin(),shuff_idx.end(),0);
+                    // shuffle cases
+                    r.shuffle(shuff_idx.begin(),shuff_idx.end());   
                 }
+                else
+                {
+                    // store a local copy of protect levels to prevent repeats
+                    if (d.protect_levels.size() == 0)
+                    {
+                        cout << "d.protect_levels empty";
+                    }
+                    protect_levels = d.protect_levels;
+                }
+
 
                 bool pass = true;     // checks pool size and number of cases
                 unsigned int h = 0;   // case count
@@ -89,31 +103,56 @@ namespace FT{
                     ArrayXb x_idx; 
                     if (d.cases.empty())                        
                     {
-                        vector<int> groups = d.protected_groups;
-                        x_idx = ArrayXi::Ones(d.X.cols()).cast<bool>();
-                        bool condition = true; 
-                        while (condition)
+                        cout << "d.cases is empty, so sampling group " 
+                            << "intersections\n";
+                        cout << "current protect_levels:\n";
+                        for (auto pl : protect_levels)
                         {
-                            // choose a random group
-                            vector<size_t> choice_idxs(groups.size());
-                            std::iota(choice_idxs.begin(),choice_idxs.end(),0);
-                            size_t idx = r.random_choice(choice_idxs);
-                            int g = groups.at(idx); 
-                            // remove g from groups
-                            groups.erase(groups.begin() + idx);
-                            // choose a random level
-                            vector<float> lvls = unique(VectorXf(d.X.row(g)));
-                            float level = r.random_choice(lvls);
-                            // subset training samples based on group level
-                            x_idx = (d.X.row(g).array() == level).select(
-                                    x_idx, false);
-                            // keep going as long as there are more groups and 
-                            // more than one sample
-                            condition = x_idx.sum() > 1 && groups.size() > 0;
+                            cout << "\tfeature " << pl.first << ":"
+                                << pl.second.size() << " values; ";    
                         }
+                        cout << "\n";
+                        vector<int> groups;
+                        // push back current groups (keys)
+                        for (auto pl : protect_levels)
+                        {
+                            groups.push_back(pl.first);
+                        }
+                        x_idx = ArrayXb::Constant(d.X.cols(),true);
+                        cout << "x_idx sum: " << x_idx.count() << "\n";
+                        // choose a random group
+                        vector<size_t> choice_idxs(groups.size());
+                        std::iota(choice_idxs.begin(),choice_idxs.end(),0);
+                        size_t idx = r.random_choice(choice_idxs);
+                        int g = groups.at(idx); 
+                        cout << "chosen group: " << g << "\n";
+                        // choose a random level
+                        vector<float> lvls = unique(VectorXf(d.X.row(g)));
+                        // remove levels not in protect_levels[g]
+                        for (int i = lvls.size()-1; i --> 0; )
+                        {
+                            // ^ that's a backwards loop alright!
+                            if (!in(protect_levels.at(g),lvls.at(i)))
+                                lvls.erase(lvls.begin() + i);
+                        }
+                        float level = r.random_choice(lvls);
+                        cout << "chosen level: " << level << "\n";
+                        // remove chosen level from protect_levels
+                        for (int i = 0; i < protect_levels.at(g).size(); ++i)
+                        {
+                            if (protect_levels[g].at(i) == level)
+                            {
+                                protect_levels[g].erase(
+                                        protect_levels[g].begin() + i);
+                                break;
+                            }
+                        }
+
+                        x_idx = (d.X.row(g).array() == level);
+                        cout << "x_idx count: " << x_idx.count() << "\n";
                     }
                     const ArrayXb& case_idx = (d.cases.empty() ? 
-                                        x_idx : d.cases.at(h));
+                                        x_idx : d.cases.at(shuff_idx[h]));
                     // get fitness of everyone in the pool
                     ArrayXf fitness(pool.size());
                     for (size_t j = 0; j<pool.size(); ++j)
@@ -141,10 +180,12 @@ namespace FT{
                             winner.push_back(pool[j]);                 
                     }
 
+                    /* cout << "h: " << h << endl; */
+                    /* cout << "winner size: " << winner.size() << "\n"; */
                     ++h; // next case
                     // only keep going if needed
                     pass = (winner.size()>1 
-                           && h<d.group_intersections); 
+                           && h<shuff_idx.size()); 
 
                     if(winner.size() == 0)
                     {

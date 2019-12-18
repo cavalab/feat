@@ -27,9 +27,9 @@ Feat::Feat(int pop_size, int gens, string ml,
        unsigned int max_depth, unsigned int max_dim, int random_state, 
        bool erc, string obj, bool shuffle, 
        float split, float fb, string scorer, string feature_names,
-       bool backprop,int iters, float lr, int bs, int n_threads,
-       bool hillclimb, string logfile, int max_time, bool use_batch, 
-       bool residual_xo, bool stagewise_xo, bool stagewise_xo_tol,
+       bool backprop,int iters, float lr, int batch_size, int n_threads,
+       bool hillclimb, string logfile, int max_time,  bool residual_xo, 
+       bool stagewise_xo, bool stagewise_xo_tol,
        bool softmax_norm, int print_pop, bool normalize,
        bool val_from_arch, bool corr_delete_mutate, bool simplify,
        string protected_groups):
@@ -37,7 +37,7 @@ Feat::Feat(int pop_size, int gens, string ml,
           params(pop_size, gens, ml, classification, max_stall, otype, 
                  verbosity, functions, cross_rate, root_xo_rate, max_depth, 
                  max_dim, erc, obj, shuffle, split, fb, scorer, feature_names, 
-                 backprop, iters, lr, bs, hillclimb, max_time, use_batch, 
+                 backprop, iters, lr, batch_size, hillclimb, max_time,  
                  residual_xo, stagewise_xo, stagewise_xo_tol, softmax_norm, 
                  normalize, corr_delete_mutate), 
           p_sel( make_shared<Selection>(sel) ),
@@ -59,6 +59,7 @@ Feat::Feat(int pop_size, int gens, string ml,
         initialize_cuda();
     // set Feat's Normalizer to only normalize floats by default
     N.scale_all = false;
+    params.set_protected_groups(protected_groups);
 }
 
 /// set size of population 
@@ -159,7 +160,11 @@ void Feat::set_iters(int iters){params.bp.iters = iters; params.hc.iters=iters;}
 
 void Feat::set_lr(float lr){params.bp.learning_rate = lr;}
 
-void Feat::set_batch_size(int bs){params.bp.batch_size = bs;}
+void Feat::set_batch_size(int bs)
+{
+    params.bp.batch_size = bs; 
+    params.use_batch = bs>0;
+}
  
 ///set number of threads
 void Feat::set_n_threads(unsigned t){ omp_set_num_threads(t); }
@@ -392,17 +397,19 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     // start the clock
     timer.Reset();
 
+    params.use_batch = params.bp.batch_size>0;
     if (params.use_batch)
     {
-        if (params.bp.batch_size >= X.cols()){
-            cout << "turning off batch because X has fewer than " 
-                << params.bp.batch_size << " samples\n";
+        if (params.bp.batch_size >= X.cols())
+        {
+            logger.log("turning off batch because X has fewer than " 
+                    + to_string(params.bp.batch_size) + " samples", 1);
             params.use_batch = false;
         }
         else
         {
-            cout << "using batch with batch_size= " 
-                 << params.bp.batch_size << "\n";
+            logger.log("using batch with batch_size= " 
+                    + to_string(params.bp.batch_size), 2);
         }
     }
     std::ofstream log;                      ///< log file stream
@@ -421,7 +428,6 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     }
     
     params.init();       
-  
 
     if (params.classification)  // setup classification endpoint
     {
@@ -446,9 +452,11 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     
     // split data into training and test sets
     //Data data(X, y, Z, params.classification);
+    cout << "DataRef d\n";
     DataRef d(X, y, Z, params.classification, params.protected_groups);
     //DataRef d;
     //d.setOriginalData(&data);
+    cout << "d.train_test_split\n";
     d.train_test_split(params.shuffle, params.split);
     // define terminals based on size of X
     params.set_terminals(d.o->X.rows(), d.o->Z);        
@@ -461,14 +469,19 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     MatrixXf Xb;
     VectorXf yb;
     LongData Zb;
+    cout << "Data db\n";
     Data db(Xb, yb, Zb, params.classification, params.protected_groups);
     
+    cout << "Data *tmp_train\n";
     Data *tmp_train;
     
     if(params.use_batch)
     {
+        cout << "tmp_train = d.t\n";
         tmp_train = d.t;
+        cout << "d.t->get_batch(db) \n";
         d.t->get_batch(db, params.bp.batch_size);
+        cout << "d.setTrainingData(&db)\n";
         d.setTrainingData(&db);
     }
     
@@ -512,12 +525,17 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     float fraction = 0;
     // continue until max gens is reached or max_time is up (if it is set)
     
-    while((params.max_time == -1 || params.max_time > timer.Elapsed().count()) // time limit
-           && g<params.gens                                                    // generation limit
-           && (params.max_stall == 0 || stall_count < params.max_stall) )      // stall limit
+    while(
+        // time limit
+        (params.max_time == -1 || params.max_time > timer.Elapsed().count())
+        // generation limit
+        && g<params.gens                                                    
+        // stall limit
+        && (params.max_stall == 0 || stall_count < params.max_stall) 
+        )      
     {
         fraction = params.max_time == -1 ? ((g+1)*1.0)/params.gens : 
-                                           timer.Elapsed().count()/params.max_time;
+                                       timer.Elapsed().count()/params.max_time;
         if(params.use_batch)
         {
             d.t->get_batch(db, params.bp.batch_size);
@@ -531,7 +549,10 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
             run_generation(g, survivors, dbr, log, fraction, stall_count);
         }
         else
+        {
+            cout << "batch off\n";
             run_generation(g, survivors, d, log, fraction, stall_count);
+        }
         
         g++;
     }
@@ -592,6 +613,10 @@ void Feat::run_generation(unsigned int g,
                       float fraction,
                       unsigned& stall_count)
 {
+    cout << "in run_generation. calling set_protected_groups\n";
+    d.t->set_protected_groups();
+    cout << "d.t cases size: " << d.t->cases.size() << endl;
+
     params.set_current_gen(g);
 
     // select parents

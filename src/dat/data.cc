@@ -22,9 +22,18 @@ namespace FT{
         {
             validation=false;
             group_intersections=0;
+            if (X.size() != 0)
+                set_protected_groups();
+        }
+        
+        void Data::set_protected_groups()
+        {
+            this->cases.resize(0);
+            group_intersections=0;
             // store levels of protected attributes in X
             if (!protect.empty())
             {
+                logger.log("storing protected attributes...",2);
                 for (int i = 0; i < protect.size(); ++i)
                 {
                     if (protect.at(i))
@@ -34,26 +43,37 @@ namespace FT{
                         group_intersections += protect_levels[i].size();
                     }
                 }
+                for (auto pl : protect_levels)
+                {
+                    int group = pl.first;
+                    cout << "\tfeature " << group << ":"
+                        << pl.second.size() << " values; ";
+                }
+                cout << endl;
                 // if there aren't that many group interactions, we might as 
                 // well enumerate them to save time during execution.
-                if (group_intersections < 1000)
+                if (group_intersections < 100)
                 {
+                    cout << "storing group intersections...\n";
                     for (auto pl : protect_levels)
                     {
                         int group = pl.first;
                         for (auto level : pl.second)
                         {
-                            ArrayXb x = ArrayXi::Ones(X.cols()).cast<bool>();
-                            x = (X.row(group).array() == level).select(
-                                x, false);
-                            cases.push_back(x);
+                            ArrayXb x = (X.row(group).array() == level);
+                            this->cases.push_back(x);
+                            /* cout << "new case with : " << x.count() */ 
+                            /*     << "samples\n"; */
                         }
                             
                     }
+                    cout << "stored " << this->cases.size() << " cases\n";
                 }
+                else
+                    cout << "there are " << group_intersections 
+                        << " group intersections, so not storing\n";
             }
         }
-        
         void Data::set_validation(bool v){validation=v;}
         
         void Data::get_batch(Data &db, int batch_size) const
@@ -82,6 +102,7 @@ namespace FT{
                     db.Z[val.first].second.at(i) = Z.at(val.first).second.at(idx.at(i));
                }
             }
+            db.set_protected_groups();
         }
         
         DataRef::DataRef()
@@ -133,13 +154,13 @@ namespace FT{
         void DataRef::setOriginalData(MatrixXf& X, VectorXf& y, LongData& Z,
                                       bool c, vector<bool> protect)
         {
-            o = new Data(X, y, Z, c);
+            o = new Data(X, y, Z, c, protect);
             oCreated = true;
             
-            t = new Data(X_t, y_t, Z_t, c);
+            t = new Data(X_t, y_t, Z_t, c, protect);
             tCreated = true;
             
-            v = new Data(X_v, y_v, Z_v, c);
+            v = new Data(X_v, y_v, Z_v, c, protect);
             vCreated = true;
             
             classification = c;
@@ -150,10 +171,10 @@ namespace FT{
             o = d;
             oCreated = false;
             
-            t = new Data(X_t, y_t, Z_t, d->classification);
+            t = new Data(X_t, y_t, Z_t, d->classification, d->protect);
             tCreated = true;
             
-            v = new Data(X_v, y_v, Z_v, d->classification);
+            v = new Data(X_v, y_v, Z_v, d->classification, d->protect);
             vCreated = true;
             
             classification = d->classification;
@@ -352,6 +373,9 @@ namespace FT{
                 if(o->Z.size() > 0)
                     split_longitudinal(o->Z, t->Z, v->Z, split);
             }
+            cout << "setting protected groups in train_test_split\n"; 
+            t->set_protected_groups();
+            v->set_protected_groups();
 
         }  
         
