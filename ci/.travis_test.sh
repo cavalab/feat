@@ -4,6 +4,6 @@ echo "==========\nc++ tests\n=========="
 
 echo "==========\npython tests\n=========="
 # python tests
-/home/travis/miniconda/bin/python python/wrappertest.py -v 1
+/home/travis/miniconda/bin/python3 python/wrappertest.py -v 1
 
 

@@ -62,6 +62,8 @@ namespace FT{
         bool use_batch;                             ///< whether to use mini batch for training
         bool residual_xo;                           ///< use residual crossover  
         bool stagewise_xo;                          ///< use stagewise crossover  
+        bool stagewise_xo_tol;                      ///< use stagewise crossover  
+        bool corr_delete_mutate;                    ///< use correlation delete mutation   
         float root_xo_rate;                         ///<  crossover  
         bool softmax_norm;                          ///< use softmax norm on probabilities
         bool normalize;                             ///< whether to normalize the input data
@@ -90,7 +92,7 @@ namespace FT{
                    unsigned int max_depth, unsigned int max_dim, bool constant, string obj, 
                    bool sh, float sp, float fb, string sc, string fn, bool bckprp, 
                    int iters, float lr, int bs, bool hclimb, int maxt, bool useb, bool res_xo, 
-                   bool stg_xo, bool sftmx, bool nrm);
+                   bool stg_xo, bool stg_xo_tol, bool sftmx, bool nrm, bool corr_mut);
         
         ~Parameters();
         
