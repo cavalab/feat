@@ -930,9 +930,6 @@ void Variation::splice_programs( NodeVector& vnew,
      *
      * @return  vnew: new vector 
      */
-    /* std::cout << "in splice_programs\n"; */
-    /* std::cout << "i1: " << i1 << ", j1: " << j1  << ", i2: " << i2 
-     * << ", j2:" << j2 << "\n"; */
     // size difference between subtrees  
     // beginning of v1
     for (unsigned i = 0; i < i1 ; ++i)                  
