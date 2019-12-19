@@ -198,3 +198,89 @@ TEST(Feat, fit_transform)
     ASSERT_TRUE(res.rows() <= feat.params.max_dim);
 }
 
+TEST(Feat, simplification)
+{
+    Feat feat(100, 100, "LinearRidgeRegression", false, 1);
+    feat.set_random_state(666);
+    feat.set_verbosity(2);
+
+    MatrixXf X(7,2); 
+    X << 0,1,  
+         0.47942554,0.87758256,  
+         0.84147098,  0.54030231,
+         0.99749499,  0.0707372,
+         0.90929743, -0.41614684,
+         0.59847214, -0.80114362,
+         0.14112001,-0.9899925;
+
+    X.transposeInPlace();
+    
+    VectorXf y(7); 
+    // y = 2*x1 + 3.x2
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
+             -1.20648656, -2.68773747;
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z;
+    DataRef d(X, y, Z, false);
+
+    // test NOT(NOT(NOT(x<t)))
+    cout << "\n\n test NOT(NOT(NOT(x<t)))\n";
+    Individual test_ind; 
+	test_ind.program.push_back(
+            std::unique_ptr<Node>( new NodeVariable<float>(0)));
+	test_ind.program.push_back(
+            std::unique_ptr<Node>( new NodeSplit<float>()));
+	test_ind.program.push_back(std::unique_ptr<Node>( new NodeNot()));
+	test_ind.program.push_back(std::unique_ptr<Node>( new NodeNot()));
+	test_ind.program.push_back(std::unique_ptr<Node>(new NodeNot()));
+
+    bool pass = true;
+    test_ind.fit(*d.o, feat.params, pass);
+    feat.simplify_model(d, test_ind);
+
+    ASSERT_EQ(test_ind.program.size(), 3);
+    
+    // test [NOT(NOT(NOT(x1<t)))][NOT(NOT(NOT(NOT(x0<t))))]
+    cout << "\n\ntest [NOT(NOT(NOT(x1<t)))][NOT(NOT(NOT(NOT(x0<t))))] " << endl;
+    feat.set_verbosity(3);
+
+    Individual test_ind2; 
+	test_ind2.program.push_back(
+            std::unique_ptr<Node>( new NodeVariable<float>(0)));
+	test_ind2.program.push_back(
+            std::unique_ptr<Node>( new NodeSplit<float>()));
+	test_ind2.program.push_back(std::unique_ptr<Node>( new NodeNot()));
+	test_ind2.program.push_back(std::unique_ptr<Node>( new NodeNot()));
+	test_ind2.program.push_back(std::unique_ptr<Node>(new NodeNot()));
+	test_ind2.program.push_back(
+            std::unique_ptr<Node>( new NodeVariable<float>(1)));
+	test_ind2.program.push_back(
+            std::unique_ptr<Node>( new NodeSplit<float>()));
+	test_ind2.program.push_back(std::unique_ptr<Node>( new NodeNot()));
+	test_ind2.program.push_back(std::unique_ptr<Node>( new NodeNot()));
+	test_ind2.program.push_back(std::unique_ptr<Node>( new NodeNot()));
+	test_ind2.program.push_back(std::unique_ptr<Node>( new NodeNot()));
+
+    pass = true;
+    test_ind2.fit(*d.o, feat.params, pass);
+    feat.simplify_model(d, test_ind2);
+
+    ASSERT_EQ(test_ind2.program.size(), 5);
+
+    cout << "\n\ntest repeat feature: [(x0<t)][(x0<t)]" << endl;
+    Individual test_ind3; 
+	test_ind3.program.push_back(
+            std::unique_ptr<Node>( new NodeVariable<float>(0)));
+	test_ind3.program.push_back(
+            std::unique_ptr<Node>( new NodeSplit<float>()));
+	test_ind3.program.push_back(
+            std::unique_ptr<Node>( new NodeVariable<float>(0)));
+	test_ind3.program.push_back(
+            std::unique_ptr<Node>( new NodeSplit<float>()));
+
+    pass = true;
+    test_ind3.fit(*d.o, feat.params, pass);
+    feat.simplify_model(d, test_ind3);
+
+    ASSERT_EQ(test_ind3.program.size(), 2);
+}
+

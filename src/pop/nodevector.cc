@@ -96,14 +96,21 @@ namespace FT{
             
             *		last index in subtree, <= i
             
-            * note that this function assumes a subtree's arguments to be contiguous in the program.
+            * note that this function assumes a subtree's arguments to be 
+            * contiguous in the program.
             */
            
            size_t tmp = i;
            assert(i>=0 && "attempting to grab subtree with index < 0");
                   
-           if (this->at(i)->total_arity()==0)    // return this index if it is a terminal
+           /* cout << "getting subtree(" << i << "," << otype << ") for " */ 
+           /*     << this->at(i)->name << endl; */
+           // return this index if it is a terminal
+           if (this->at(i)->total_arity()==0)                   
+           {
+               /* cout << "returning " << i << endl; */
                return i;
+           }
            
            std::map<char, unsigned int> arity = this->at(i)->arity;
 
@@ -111,24 +118,31 @@ namespace FT{
                             // where the nodes to recurse are.  
            {
                while (i>0 && this->at(i)->otype != otype) --i;    
-               assert(this->at(i)->otype == otype && "invalid subtree arguments");
+               assert(this->at(i)->otype == otype && 
+                       "invalid subtree arguments");
            }
-                  
+          
+           // recurse for floating arguments
            for (unsigned int j = 0; j<arity['f']; ++j)  
-               i = subtree(--i,'f');                   // recurse for floating arguments      
-           
-           size_t i2 = i;                              // index for second recursion
+               i = subtree(--i,'f');                         
+
+           // recurse for boolean
+           size_t i2 = i;                              
            for (unsigned int j = 0; j<arity['b']; ++j)
                i2 = subtree(--i2,'b');
-           
-           size_t i3 = i2;                 // recurse for longitudinal arguments
-           for (unsigned int j = 0; j<arity['z']; ++j)
-               i3 = subtree(--i3,'z');
-           
-           size_t i4 = i3;                 // recurse for categorical arguments
+
+           // recurse for categorical arguments
+           size_t i3 = i2;                 
            for (unsigned int j = 0; j<arity['c']; ++j)
-               i4 = subtree(--i4,'c'); 
-           
+               i3 = subtree(--i3,'c'); 
+
+           // recurse for longitudinal arguments
+           size_t i4 = i3;                 
+           for (unsigned int j = 0; j<arity['z']; ++j)
+               i4 = subtree(--i4,'z');
+
+           /* cout << "returning min(" << i << "," << i4 << ")\n"; */ 
+
            return std::min(i,i4);
         }
         
@@ -342,17 +356,25 @@ namespace FT{
                 /*     HANDLE_ERROR_THROW("exiting"); */
                 // recurse to fulfill the arity of the chosen function
                 for (size_t i = 0; i < chosen->arity['f']; ++i)
-                    make_tree(functions, terminals, max_d-1, term_weights, op_weights, 'f', 
-                              term_types);
+                {
+                    make_tree(functions, terminals, max_d-1, term_weights, 
+                            op_weights, 'f', term_types);
+                }
                 for (size_t i = 0; i < chosen->arity['b']; ++i)
-                    make_tree(functions, terminals, max_d-1, term_weights, op_weights, 'b', 
-                              term_types);
+                {
+                    make_tree(functions, terminals, max_d-1, term_weights, 
+                            op_weights, 'b', term_types);
+                }
                 for (size_t i = 0; i < chosen->arity['c']; ++i)
-                    make_tree(functions, terminals, max_d-1, term_weights, op_weights, 'c', 
-                              term_types);
+                {
+                    make_tree(functions, terminals, max_d-1, term_weights, 
+                            op_weights, 'c', term_types);
+                }
                 for (size_t i = 0; i < chosen->arity['z']; ++i)
-                    make_tree(functions, terminals, max_d-1, term_weights, op_weights, 'z', 
-                              term_types);
+                {
+                    make_tree(functions, terminals, max_d-1, term_weights, 
+                            op_weights, 'z', term_types);
+                }
             }
             
             /* std::cout << "finished program: ["; */

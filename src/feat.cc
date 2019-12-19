@@ -29,18 +29,22 @@ Feat::Feat(int pop_size, int gens, string ml,
        float split, float fb, string scorer, string feature_names,
        bool backprop,int iters, float lr, int bs, int n_threads,
        bool hillclimb, string logfile, int max_time, bool use_batch, bool residual_xo,
-       bool stagewise_xo, bool softmax_norm, int print_pop, bool normalize,
-       bool val_from_arch):
+       bool stagewise_xo, bool stagewise_xo_tol,
+       bool softmax_norm, int print_pop, bool normalize,
+       bool val_from_arch, bool corr_delete_mutate, bool simplify):
           // construct subclasses
           params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
-                 functions, cross_rate, root_xo_rate, max_depth, max_dim, erc, obj, shuffle, split, 
-                 fb, scorer, feature_names, backprop, iters, lr, bs, hillclimb, max_time, 
-                 use_batch, residual_xo, stagewise_xo, softmax_norm, normalize), 
+                 functions, cross_rate, root_xo_rate, max_depth, max_dim, erc, 
+                 obj, shuffle, split, fb, scorer, feature_names, backprop, 
+                 iters, lr, bs, hillclimb, max_time, use_batch, residual_xo, 
+                 stagewise_xo, stagewise_xo_tol, softmax_norm, 
+                 normalize, corr_delete_mutate), 
           p_sel( make_shared<Selection>(sel) ),
           p_surv( make_shared<Selection>(surv, true) ),
           p_variation( make_shared<Variation>(cross_rate) ),
           print_pop(print_pop),
-          val_from_arch(val_from_arch)
+          val_from_arch(val_from_arch),
+          simplify(simplify)
 {
     r.set_seed(random_state);
     str_dim = "";
@@ -143,6 +147,10 @@ void Feat::set_feature_names(vector<string>& s){params.feature_names = s;}
 
 /// set constant optimization options
 void Feat::set_backprop(bool bp){params.backprop=bp;}
+
+void Feat::set_simplify(bool s){this->simplify=s;}
+
+void Feat::set_corr_delete_mutate(bool s){this->params.corr_delete_mutate=s;}
 
 void Feat::set_hillclimb(bool hc){params.hillclimb=hc;}
 
@@ -316,7 +324,7 @@ ArrayXf Feat::get_coefs()
 std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>> Feat::get_Z(string s, 
         int * idx, int idx_size)
 {
-    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z;
+    LongData Z;
     vector<int> ids(idx,idx+idx_size);
     load_partial_longitudinal(s,Z,',',ids);
         
@@ -335,7 +343,7 @@ ArrayXXf Feat::predict_proba(float * X, int rows_x, int cols_x)
 /// convenience function calls fit then predict.            
 VectorXf Feat::fit_predict(MatrixXf& X,
                      VectorXf& y,
-                     std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
+                     LongData Z)
                      { fit(X, y, Z); return predict(X, Z); } 
                      
 VectorXf Feat::fit_predict(float * X, int rows_x, int cols_x, float * Y, int len_y)
@@ -349,11 +357,11 @@ VectorXf Feat::fit_predict(float * X, int rows_x, int cols_x, float * Y, int len
 /// convenience function calls fit then transform. 
 MatrixXf Feat::fit_transform(MatrixXf& X,
                        VectorXf& y,
-                       std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
+                       LongData Z)
                        { fit(X, y, Z); return transform(X, Z); }                                         
 
 void Feat::fit(MatrixXf& X, VectorXf& y,
-               std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
+               LongData Z)
 {
 
     /*! 
@@ -387,7 +395,10 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
             params.use_batch = false;
         }
         else
-            cout << "using batch with batch_size= " << params.bp.batch_size << "\n";
+        {
+            cout << "using batch with batch_size= " 
+                 << params.bp.batch_size << "\n";
+        }
     }
     std::ofstream log;                      ///< log file stream
     if (!logfile.empty())
@@ -444,7 +455,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     //data for batch training
     MatrixXf Xb;
     VectorXf yb;
-    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Zb;
+    LongData Zb;
     Data db(Xb, yb, Zb, params.classification);
     
     Data *tmp_train;
@@ -555,8 +566,15 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     logger.log("validation score: " + std::to_string(best_score_v), 2);
     logger.log("fitting final model to all training data...",2);
 
-    final_model(d);   // fit final model to best features
-    logger.log("\nTotal time taken is " + std::to_string(timer.Elapsed().count()) + "\n", 1);
+    // fit final model to best features
+    final_model(d);   
+
+    // simplify the final model
+    if (simplify)
+        simplify_model(d, this->best_ind);
+
+    logger.log("\nTotal time taken is " 
+            + std::to_string(timer.Elapsed().count()) + "\n", 1);
     
     if (log.is_open())
         log.close();
@@ -583,7 +601,8 @@ void Feat::run_generation(unsigned int g,
 
     // evaluate offspring
     logger.log("evaluating offspring...", 3);
-    p_eval->fitness(p_pop->individuals, *d.t, F, params, true && !params.use_batch);
+    p_eval->fitness(p_pop->individuals, *d.t, F, params, 
+            true && !params.use_batch);
     // select survivors from combined pool of parents and offspring
     logger.log("survival...", 3);
     survivors = p_surv->survive(*p_pop, F, params);
@@ -595,13 +614,13 @@ void Feat::run_generation(unsigned int g,
     
     update_best(d);
 
+    calculate_stats(d);
+
     if (params.max_stall > 0)
-        update_stall_count(stall_count, F, d);
+        update_stall_count(stall_count);
 
     if (use_arch) 
         arch.update(*p_pop,params);
-
-    calculate_stats();
     
     if(params.verbosity>1)
         print_stats(log, fraction);    
@@ -619,23 +638,11 @@ void Feat::run_generation(unsigned int g,
 
 }
 
-void Feat::update_stall_count(unsigned& stall_count, MatrixXf& F, const DataRef& d)
+void Feat::update_stall_count(unsigned& stall_count)
 {
     /* double med_score = median(F.colwise().mean().array());  // median loss */
-    vector<float> fitnesses;
-    for (unsigned i = 0; i < p_pop->individuals.size(); ++i)
-        fitnesses.push_back(p_pop->individuals.at(i).fitness);
-    int idx = argmiddle(fitnesses);
-    /* cout << "fitnesses: \n"; */
-    /* for (const auto& f : fitnesses) cout << f << ", "; cout << "\n"; */
-    /* cout << "idx: " << idx << "\n"; */
-    Individual& med_ind = p_pop->individuals.at(idx);
-    /* cout << "med_ind: " << med_ind.get_eqn() << "\n"; */
-    VectorXf tmp;
-    shared_ptr<CLabels> yhat_v = med_ind.predict(*d.v, params);
-    med_loss_v = p_eval->score(d.v->y, yhat_v, tmp, params.class_weights); 
 
-    if (params.current_gen == 0 || med_loss_v < best_med_score)
+    if (params.current_gen == 0 || this->med_loss_v < this->best_med_score)
     {
         /* cout << "updating best_med_score to " << med_loss_v << "\n"; */
         best_med_score = med_loss_v;
@@ -683,6 +690,164 @@ void Feat::final_model(DataRef& d)
                                     // which is probably from a validation set
     float score = p_eval->score(d.o->y,yhat,tmp,params.class_weights);
     logger.log("final_model score: " + std::to_string(score),2);
+}
+
+void Feat::simplify_model(DataRef& d, Individual& ind)
+{
+    /* Simplifies the final model using some expert rules and stochastic hill 
+     * climbing. 
+     * Expert rules:
+     *  - NOT(NOT(x)) simplifies to x
+     * Stochastic hill climbing:
+     * for some number iterations, apply delete mutation to the equation. 
+     * if the output of the model doesn't change, keep the mutations.
+     */
+
+    //////////////////////////////
+    // check for specific patterns
+    //////////////////////////////
+    //
+    Individual tmp_ind = ind;
+    int starting_size = ind.size();
+    vector<size_t> roots = tmp_ind.program.roots();
+    vector<size_t> idx_to_remove;
+
+    logger.log("\n=========\ndoing pattern pruning...",2);
+
+    for (auto r : roots)
+    {
+        /* cout << "r: " << r << "\n"; */
+        size_t start = tmp_ind.program.subtree(r);
+        int first_occurence = -2;
+
+        /* cout << "start: " << start << "\n"; */
+        for (int i = start ; i <= r; ++i)
+        {
+            /* cout << "i: " << i << ", first_occurence: " << first_occurence */ 
+            /*     << "\n"; */
+            if (tmp_ind.program.at(i)->name.compare("not")==0)
+            {
+                if (first_occurence == i-1) // indicates two NOTs in a row
+                {
+                    /* cout << "pushing back " << first_occurence */ 
+                    /*     << " and " << i << " to idx_to_remove\n"; */
+                    idx_to_remove.push_back(first_occurence);
+                    idx_to_remove.push_back(i);
+                    // reset first_occurence so we don't pick up triple nots
+                    first_occurence = -2;
+                }
+                else
+                {
+                    first_occurence = i; 
+                }
+            }
+        }
+    }
+    // remove indices in reverse order so they don't change
+    std::reverse(idx_to_remove.begin(), idx_to_remove.end());
+    for (auto idx: idx_to_remove)
+    {
+        /* cout << "removing " << tmp_ind.program.at(idx)->name */ 
+        /*     << " at " << idx << "\n"; */
+        tmp_ind.program.erase(tmp_ind.program.begin()+idx);
+    }
+    int end_size = tmp_ind.size();
+    logger.log("pattern pruning reduced best model size by " 
+            + to_string(starting_size - end_size)
+            + " nodes\n=========\n", 1);
+    if (tmp_ind.size() < ind.size())
+        ind = tmp_ind;
+
+    ///////////////////
+    // prune dimensions
+    ///////////////////
+    /* set_verbosity(3); */
+    int iterations = ind.get_dim();
+    logger.log("\n=========\ndoing correlation deletion mutations...",2);
+    starting_size = ind.size();
+    float tolerance = 0.001;
+    for (int i = 0; i < iterations; ++i)
+    {
+        /* cout << "."; */
+        Individual tmp_ind = ind;
+        bool perfect_correlation = p_variation->correlation_delete_mutate(
+                tmp_ind, ind.Phi, params, *d.o);
+
+        cout << "checking size..\n";
+        if (ind.size() == tmp_ind.size())
+        {
+            cout << "model size unchanged\n";
+            continue;
+        }
+        bool pass = true;
+        cout << "tmp_ind fit...\n"; 
+        shared_ptr<CLabels> yhat = tmp_ind.fit(*d.o, params, pass);
+        cout << "tmp_ind fit success...\n"; 
+
+
+        if (((ind.yhat - tmp_ind.yhat).norm()/ind.yhat.norm() 
+                <= tolerance ) 
+                or perfect_correlation)
+        {
+            logger.log("\ndelete dimension mutation success: went from "
+                + to_string(ind.size()) + " to " 
+                + to_string(tmp_ind.size()), 3); 
+            ind = tmp_ind;
+        }
+        else
+        {
+            logger.log("\ndelete dimension mutation failure: output changed by " 
+                 + to_string(100*(ind.yhat
+                        -tmp_ind.yhat).norm()/(ind.yhat.norm()))
+                 + " %", 3);
+            // if this mutation fails, it will continue to fail since it 
+            // is deterministic. so, break in this case.
+            break;
+        }
+
+    }
+    end_size = ind.size();
+    logger.log("correlation pruning reduced best model size by " 
+            + to_string(starting_size - end_size)
+            + " nodes\n=========\n", 2);
+
+    /////////////////
+    // prune subtrees
+    /////////////////
+    iterations = 100;
+    logger.log("\n=========\ndoing subtree deletion mutations...", 2);
+    starting_size = ind.size();
+    for (int i = 0; i < iterations; ++i)
+    {
+        /* cout << "."; */
+        Individual tmp_ind = ind;
+        this->p_variation->delete_mutate(tmp_ind, params);
+        if (ind.size() == tmp_ind.size())
+            continue;
+        bool pass = true;
+        shared_ptr<CLabels> yhat = tmp_ind.fit(*d.o, params, pass);
+
+        if ((ind.yhat - tmp_ind.yhat).norm()/ind.yhat.norm() 
+                <= tolerance)
+        {
+            logger.log("\ndelete mutation success: went from "
+                + to_string(ind.size()) + " to " 
+                + to_string(tmp_ind.size()), 3); 
+            ind = tmp_ind;
+        }
+        else
+        {
+            logger.log("\ndelete mutation failure: output changed by " 
+                 + to_string(100*(ind.yhat
+                        -tmp_ind.yhat).norm()/(ind.yhat.norm()))
+                 + " %", 3);
+        }
+
+    }
+    end_size = ind.size();
+    logger.log("subtree deletion reduced best model size by " 
+            + to_string( starting_size - end_size )
+            + " nodes", 2);
 }
 
 vector<float> Feat::univariate_initial_model(DataRef &d, int n_feats) 
@@ -837,7 +1002,7 @@ void Feat::initial_model(DataRef &d)
 }
 
 MatrixXf Feat::transform(MatrixXf& X,
-                         std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z,
+                         LongData Z,
                          Individual *ind)
 {
     /*!
@@ -887,14 +1052,14 @@ MatrixXf Feat::fit_transform(float * X, int rows_x, int cols_x, float * Y, int l
 }
 
 VectorXf Feat::predict(MatrixXf& X,
-                       std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
+                       LongData Z)
 {        
     MatrixXf Phi = transform(X, Z);
     return best_ind.ml->predict_vector(Phi);        
 }
 
 shared_ptr<CLabels> Feat::predict_labels(MatrixXf& X,
-                       std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
+                       LongData Z)
 {        
     MatrixXf Phi = transform(X, Z);
     return best_ind.ml->predict(Phi);        
@@ -919,7 +1084,7 @@ VectorXf Feat::predict_with_z(float * X, int rowsX,int colsX,
 }
 
 ArrayXXf Feat::predict_proba(MatrixXf& X,
-                         std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
+                         LongData Z)
 {
     MatrixXf Phi = transform(X, Z);
     return best_ind.ml->predict_proba(Phi);        
@@ -942,7 +1107,7 @@ void Feat::update_best(const DataRef& d, bool validation)
     logger.log("updating best..",2);
 
     float bs;
-    bs = validation ? best_score_v : best_score ; 
+    bs = validation ? this->best_score_v : this->best_score ; 
     float f; 
     vector<Individual>& pop = (use_arch && validation ? 
                                arch.archive : p_pop->individuals); 
@@ -955,67 +1120,107 @@ void Feat::update_best(const DataRef& d, bool validation)
             if (f < bs)
             {
                 bs = f;
-                best_ind = i; // should this be i.clone(best_ind); ?
+                this->best_ind = i; // should this be i.clone(best_ind); ?
                 /* i.clone(best_ind); */
             }
         }
     }
 
     if (validation) 
-        best_score_v = bs; 
+        this->best_score_v = bs; 
     else
     {
-        best_score = bs;
+        this->best_score = bs;
 
         if (params.split < 1.0)
         {
             VectorXf tmp;
-            shared_ptr<CLabels> yhat_v = best_ind.predict(*d.v, params);
-            best_score_v = p_eval->score(d.v->y, yhat_v, tmp, params.class_weights); 
-            best_ind.fitness_v = best_score_v;
+            shared_ptr<CLabels> yhat_v = this->best_ind.predict(*d.v, params);
+            this->best_score_v = p_eval->score(d.v->y, yhat_v, tmp, 
+                    params.class_weights); 
+            this->best_ind.fitness_v = this->best_score_v;
         }
     }
 }
 
-float Feat::score(MatrixXf& X, const VectorXf& y,
-                   std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
+float Feat::score(MatrixXf& X, const VectorXf& y, LongData Z)
 {
     shared_ptr<CLabels> labels = predict_labels(X, Z);
     VectorXf loss; 
     return p_eval->score(y,labels,loss,params.class_weights);
 }
 
-void Feat::calculate_stats()
+void Feat::calculate_stats(const DataRef& d)
 {
 
-    float med_score = median(F.colwise().mean().array());  // median loss
+    // median loss
+    float med_score = median(F.colwise().mean().array());  
     
     ArrayXf Sizes(p_pop->size());
     
     unsigned i = 0;
     
-    for (const auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;}
-    unsigned med_size = median(Sizes);                        // median program size
+    for (const auto& p : p_pop->individuals)
+    { 
+        Sizes(i) = p.size(); 
+        ++i;
+    }
+    // median program size
+    unsigned med_size = median(Sizes);                        
     
+    // complexity
     ArrayXf Complexities(p_pop->size()); 
-    i = 0; for (auto& p : p_pop->individuals){ Complexities(i) = p.complexity(); ++i;}
+    i = 0; 
+    for (auto& p : p_pop->individuals)
+    { 
+        Complexities(i) = p.complexity(); 
+        ++i;
+    }
+
+    // number of parameters
     ArrayXf Nparams(p_pop->size()); 
-    i = 0; for (auto& p : p_pop->individuals){ Nparams(i) = p.get_n_params(); ++i;}
+    i = 0; 
+    for (auto& p : p_pop->individuals)
+    { 
+        Nparams(i) = p.get_n_params(); 
+        ++i;
+    }
+
+    // dimensions
     ArrayXf Dims(p_pop->size()); 
-    i = 0; for (auto& p : p_pop->individuals){ Dims(i) = p.get_dim(); ++i;}
+    i = 0; 
+    for (auto& p : p_pop->individuals)
+    { 
+        Dims(i) = p.get_dim(); 
+        ++i;
+    }
     
-    /* unsigned med_size = median(Sizes);                        // median program size */
-    unsigned med_complexity = median(Complexities);           // median 
-    unsigned med_num_params = median(Nparams);                // median program size
-    unsigned med_dim = median(Dims);                          // median program size
+    /* unsigned med_size = median(Sizes); */ 
+    unsigned med_complexity = median(Complexities);            
+    unsigned med_num_params = median(Nparams);                
+    unsigned med_dim = median(Dims);                          
     
-    
+    /////////////////////////////////////////////
+    // calculate the loss of the median individual
+    vector<float> fitnesses;
+    for (unsigned i = 0; i < p_pop->individuals.size(); ++i)
+        fitnesses.push_back(p_pop->individuals.at(i).fitness);
+    int idx = argmiddle(fitnesses);
+
+    Individual& med_ind = p_pop->individuals.at(idx);
+    VectorXf tmp;
+    shared_ptr<CLabels> yhat_v = med_ind.predict(*d.v, params);
+    this->med_loss_v = p_eval->score(d.v->y, yhat_v, tmp, 
+            params.class_weights); 
+    /////////////////////////////////////////////
+   
+    // update stats
     stats.update(params.current_gen,
                  timer.Elapsed().count(),
-                 best_score,
-                 best_score_v,
+                 this->best_score,
+                 this->best_score_v,
                  med_score,
-                 med_loss_v,
+                 this->med_loss_v,
                  med_size,
                  med_complexity,
                  med_num_params,
@@ -1128,7 +1333,7 @@ void Feat::print_stats(std::ofstream& log, float fraction)
             << best_score          << sep
             << best_score_v        << sep
             << stats.med_score.back()  << sep
-            << med_loss_v          << sep
+            << stats.med_loss_v.back() << sep
             << stats.med_size.back()   << sep
             << stats.med_complexity.back() << sep
             << stats.med_num_params.back() << sep

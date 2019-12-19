@@ -21,14 +21,17 @@ class Feat(BaseEstimator):
     method."""
     def __init__(self, pop_size=100,  gens=100,  ml = "LinearRidgeRegression", 
                 classification=False,  verbosity=0,  max_stall=0,
-                sel ="lexicase",  surv ="nsga2",  cross_rate=0.5, root_xo_rate=0.5,
-                otype ='a',  functions ="", 
+                sel ="lexicase",  surv ="nsga2",  cross_rate=0.5, 
+                root_xo_rate=0.5, otype ='a',  functions ="", 
                 max_depth=3,   max_dim=10,  random_state=0, 
-                erc = False,  obj ="fitness,complexity", shuffle=True,  split=0.75,  fb=0.5,
-                scorer ='',feature_names="", backprop=False, iters=10, lr=0.1, batch_size=100, 
-                n_threads=0, hillclimb=False, logfile="Feat.log", max_time=-1, use_batch=False, 
-                residual_xo=False, stagewise_xo=False, softmax_norm=False,
-                print_pop=0, normalize=True, val_from_arch=True):
+                erc = False,  obj ="fitness,complexity", shuffle=True,  
+                split=0.75,  fb=0.5, scorer ='',feature_names="", 
+                backprop=False, iters=10, lr=0.1, batch_size=100, 
+                n_threads=0, hillclimb=False, logfile="Feat.log", max_time=-1, 
+                use_batch=False, residual_xo=False, stagewise_xo=False, 
+                stagewise_xo_tol=False, softmax_norm=False, print_pop=0, 
+                normalize=True, val_from_arch=True, corr_delete_mutate=False, 
+                simplify=False):
         self.pop_size = pop_size
         self.gens = gens
         self.ml = ml.encode() if( isinstance(ml,str) )  else ml
@@ -41,7 +44,8 @@ class Feat(BaseEstimator):
         self.cross_rate = cross_rate
         self.root_xo_rate = root_xo_rate
         self.otype = otype.encode() if( isinstance(otype,str) )  else otype
-        self.functions = functions.encode() if( isinstance(functions,str) )  else functions
+        self.functions = (functions.encode() if( isinstance(functions,str) )  
+                else functions)
         self.max_depth = max_depth
         self.max_dim = max_dim
         self.random_state = int(random_state)
@@ -51,8 +55,8 @@ class Feat(BaseEstimator):
         self.split = split
         self.fb = fb
         self.scorer = scorer.encode() if( isinstance(scorer,str) )  else scorer
-        self.feature_names = (feature_names.encode() if isinstance(feature_names,str) 
-                                                     else feature_names )
+        self.feature_names = (feature_names.encode() 
+                if isinstance(feature_names,str) else feature_names )
         self.backprop = bool(backprop)
         self.iters = int(iters)
         self.lr = float(lr)
@@ -69,10 +73,13 @@ class Feat(BaseEstimator):
         self.use_batch = use_batch
         self.residual_xo = residual_xo
         self.stagewise_xo = stagewise_xo
+        self.stagewise_xo_tol = stagewise_xo_tol
         self.softmax_norm = softmax_norm
         self.print_pop = print_pop
         self.normalize = normalize
         self.val_from_arch = val_from_arch
+        self.corr_delete_mutate = corr_delete_mutate
+        self.simplify = simplify
         # if self.verbosity>0:
         #print('self.__dict__: ' , self.__dict__)
         self._pyfeat=None
@@ -103,10 +110,13 @@ class Feat(BaseEstimator):
                 self.use_batch,
                 self.residual_xo,
                 self.stagewise_xo,
+                self.stagewise_xo_tol,
                 self.softmax_norm,
                 self.print_pop,
                 self.normalize,
-                self.val_from_arch)
+                self.val_from_arch,
+                self.corr_delete_mutate,
+                self.simplify)
    
     def fit(self,X,y,zfile=None,zids=None):
         """Fit a model."""    
@@ -173,7 +183,8 @@ class Feat(BaseEstimator):
         return result
 
     def score(self,X,y,zfile=None,zids=None):
-        """Returns a score for the predictions of Feat on X versus true labels y""" 
+        """Returns a score for the predictions of Feat on X versus true 
+        labels y""" 
         if zfile:
             zfile = zfile.encode() if isinstance(zfile,str) else zfile
             yhat = self._pyfeat.predict_with_z(X,zfile,zids).flatten()
@@ -185,7 +196,8 @@ class Feat(BaseEstimator):
             return mse(y,yhat)
 
     def get_model(self):
-        """Returns a string with the set of equations and weights in the final representation"""
+        """Returns a string with the set of equations and weights in the final 
+        representation"""
         return self._pyfeat.get_model()
 
     def get_representation(self):
@@ -197,7 +209,8 @@ class Feat(BaseEstimator):
         return self._pyfeat.get_archive(justfront)
 
     def get_coefs(self):
-        """Returns the coefficients assocated with each feature in the representation"""
+        """Returns the coefficients assocated with each feature in the 
+        representation"""
         return self._pyfeat.get_coefs()
 
     def get_dim(self):

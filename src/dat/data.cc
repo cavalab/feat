@@ -16,8 +16,8 @@ namespace FT{
     
     namespace Dat{
 
-        Data::Data(MatrixXf& X, VectorXf& y, std::map<string, std::pair<vector<ArrayXf>, 
-                        vector<ArrayXf>>>& Z, bool c): X(X), y(y), Z(Z), classification(c) 
+        Data::Data(MatrixXf& X, VectorXf& y, LongData& Z, bool c): 
+            X(X), y(y), Z(Z), classification(c) 
         {
             validation=false;
         }
@@ -60,7 +60,7 @@ namespace FT{
         }
      
         DataRef::DataRef(MatrixXf& X, VectorXf& y, 
-                         std::map<string,std::pair<vector<ArrayXf>, vector<ArrayXf>>>& Z, bool c)
+                         LongData& Z, bool c)
         {
             o = new Data(X, y, Z, c);
             oCreated = true;
@@ -98,8 +98,7 @@ namespace FT{
             }
         }
         
-        void DataRef::setOriginalData(MatrixXf& X, VectorXf& y, 
-                                      std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>>& Z,
+        void DataRef::setOriginalData(MatrixXf& X, VectorXf& y, LongData& Z,
                                       bool c)
         {
             o = new Data(X, y, Z, c);
@@ -129,7 +128,7 @@ namespace FT{
         }
         
         void DataRef::setTrainingData(MatrixXf& X_t, VectorXf& y_t, 
-                                    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>>& Z_t,
+                                    LongData& Z_t,
                                     bool c)
         {
             t = new Data(X_t, y_t, Z_t, c);
@@ -148,8 +147,7 @@ namespace FT{
         }
         
         void DataRef::setValidationData(MatrixXf& X_v, VectorXf& y_v, 
-                                    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>>& Z_v,
-                                    bool c)
+                                    LongData& Z_v, bool c)
         {
             v = new Data(X_v, y_v, Z_v, c);
             vCreated = true;
@@ -177,7 +175,8 @@ namespace FT{
             if(o->Z.size() > 0)
             {
                 std::vector<int> zidx(o->y.size());
-                // zidx maps the perm_indices values to their indices, i.e. the inverse transform
+                // zidx maps the perm_indices values to their indices, 
+                // i.e. the inverse transform
                 for (unsigned i = 0; i < perm.indices().size(); ++i)
                     zidx.at(perm.indices()(i)) = i;
                 /* cout << "zidx :\n"; */
@@ -204,7 +203,8 @@ namespace FT{
         
         void DataRef::split_stratified(float split)
         {
-            logger.log("Stratify split called with initial data size as " + o->X.cols(), 3);
+            logger.log("Stratify split called with initial data size as " 
+                    + to_string(o->X.cols()), 3);
                             
             std::map<float, vector<int>> label_indices;
                 
@@ -314,11 +314,8 @@ namespace FT{
 
         }  
         
-        void DataRef::split_longitudinal(
-                                std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > &Z,
-                                std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > &Z_t,
-                                std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > &Z_v,
-                                float split)
+        void DataRef::split_longitudinal( LongData &Z, LongData &Z_t, 
+                LongData &Z_v, float split)
         {
         
             int size;
@@ -334,22 +331,26 @@ namespace FT{
             for ( const auto &val: Z )
             {
                 vector<ArrayXf> _Z_t_v, _Z_t_t, _Z_v_v, _Z_v_t;
-                _Z_t_v.assign(Z[val.first].first.begin(), Z[val.first].first.begin()+testSize);
-                _Z_t_t.assign(Z[val.first].second.begin(), Z[val.first].second.begin()+testSize);
+                _Z_t_v.assign(Z[val.first].first.begin(), 
+                        Z[val.first].first.begin()+testSize);
+                _Z_t_t.assign(Z[val.first].second.begin(), 
+                        Z[val.first].second.begin()+testSize);
                 _Z_v_v.assign(Z[val.first].first.begin()+testSize, 
-                              Z[val.first].first.begin()+testSize+validateSize);
+                          Z[val.first].first.begin()+testSize+validateSize);
                 _Z_v_t.assign(Z[val.first].second.begin()+testSize, 
-                              Z[val.first].second.begin()+testSize+validateSize);
+                          Z[val.first].second.begin()+testSize+validateSize);
                 
                 Z_t[val.first] = make_pair(_Z_t_v, _Z_t_t);
                 Z_v[val.first] = make_pair(_Z_v_v, _Z_v_t);
             }
         }
         
-		void DataRef::reorder_longitudinal(vector<ArrayXf> &v, vector<int> const &order )  {   
+		void DataRef::reorder_longitudinal(vector<ArrayXf> &v, 
+                vector<int> const &order )  
+        {   
 			for ( int s = 1, d; s < order.size(); ++ s ) {
 				for ( d = order[s]; d < s; d = order[d] ) ;
-				if ( d == s ) while ( d = order[d], d != s ) swap( v[s], v[d] );
+				if (d == s) while ( d = order[d], d != s ) swap( v[s], v[d]);
 			}
 		}
     }
