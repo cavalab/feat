@@ -19,6 +19,7 @@ namespace FT{
             score_hash["bal_zero_one"] = &bal_zero_one_loss_label;
             score_hash["log"] =  &log_loss_label; 
             score_hash["multi_log"] =  &multi_log_loss_label; 
+            score_hash["fpr"] =  &false_positive_loss_label; 
         
             score = score_hash[scorer];
         }
@@ -58,7 +59,8 @@ namespace FT{
 
                 if (params.backprop)
                 {
-                    AutoBackProp backprop(params.scorer, params.bp.iters, params.bp.learning_rate);
+                    AutoBackProp backprop(params.scorer, 
+                            params.bp.iters, params.bp.learning_rate);
                     logger.log("Running backprop on " + ind.get_eqn(), 3);
                     backprop.run(ind, d, params);
                 }         
