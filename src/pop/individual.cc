@@ -832,6 +832,8 @@ namespace FT{
                     obj.push_back(mean_square_corrcoef(Phi));
                 else if (n.compare("fairness")==0)
                     obj.push_back(fairness);
+                else
+                    HANDLE_ERROR_THROW(n+" is not a known objective");
 
 
             }
