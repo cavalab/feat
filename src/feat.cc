@@ -1285,7 +1285,7 @@ void Feat::print_stats(std::ofstream& log, float fraction)
     std::cout << "Rank\t"; //Complexity\tLoss\tRepresentation\n";
     for (const auto& o : params.objectives)
         std::cout << o << "\t";
-    cout << "\n";
+    cout << "Representation\n";
 
     std::cout << std::scientific;
     // printing max 40 individuals from the pareto front
@@ -1331,10 +1331,12 @@ void Feat::print_stats(std::ofstream& log, float fraction)
                 lim_model.push_back(model.at(j));
             if (lim_model.size()==60) 
                 lim_model += "...";
-            std::cout << p_pop->individuals[f[j]].rank              << "\t" 
-                      <<  p_pop->individuals[f[j]].complexity()     << "\t" 
-                      << (*p_pop)[f[j]].fitness                     << "\t"
-                      << "\t" << lim_model << "\n";  
+            std::cout << p_pop->individuals[f[j]].rank              << "\t" ;
+            for (const auto& o : p_pop->individuals[f[j]].obj)
+                std::cout << o << "\t";
+                      /* <<  p_pop->individuals[f[j]].complexity()     << "\t" */ 
+                      /* << (*p_pop)[f[j]].fitness                     << "\t" */
+            cout << "\t" << lim_model << "\n";  
         }
     }
    
