@@ -448,9 +448,11 @@ namespace FT
                 const VectorXf& yhat, VectorXf& loss, 
                    const vector<float>& class_weights)
         {
+            ArrayXb ybool = y.cast<bool>();
+            /* ArrayXb noty = !ybool; */ 
             loss = (yhat.cast<bool>().select(
-                        !y.cast<bool>(), 0)).cast<float>();
-            return loss.sum(multi_log_loss_label)/float((y.size() - y.cast<bool>().count()));
+                        !ybool, false)).cast<float>();
+            return loss.sum()/float((y.size() - ybool.count()));
         }
         /// false positive rate
         float false_positive_loss_label(const VectorXf& y, 

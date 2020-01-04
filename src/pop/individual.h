@@ -34,6 +34,8 @@ namespace FT{
             shared_ptr<ML> ml; ///< ML model, trained on Phi
             float fitness;     ///< aggregate fitness score
             float fitness_v;   ///< aggregate validation fitness score
+            float fairness;     ///< aggregate fairness score
+            float fairness_v;   ///< aggregate validation fairness score
             float CN;
             size_t loc;        ///< index of individual in semantic matrix F
             vector<float> w;   ///< weights from ML training on program output

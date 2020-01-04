@@ -121,6 +121,12 @@ namespace FT
         /*     Map<ArrayXf> cl(class_loss.data(),class_loss.size()); */        
         /*     return cl.mean(); */
         /* } */
+        float false_positive_loss(const VectorXf& y, 
+                const VectorXf& yhat, VectorXf& loss, 
+                   const vector<float>& class_weights);
+        float false_positive_loss_label(const VectorXf& y, 
+                const shared_ptr<CLabels>& labels, VectorXf& loss, 
+                const vector<float>& class_weights);
     } // metrics
 } // FT
 
