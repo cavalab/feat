@@ -23,6 +23,7 @@ license: GNU/GPL v3
 using Eigen::MatrixXf;
 using Eigen::VectorXf;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
+typedef Eigen::Matrix<bool,Eigen::Dynamic,1> VectorXb;
 typedef Eigen::Matrix<long,Eigen::Dynamic,1> VectorXl;
 using std::vector;
 using std::string;

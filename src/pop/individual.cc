@@ -189,7 +189,8 @@ namespace FT{
             return yh;
         }
 
-        shared_ptr<CLabels> Individual::predict(const Data& d, const Parameters& params)
+        shared_ptr<CLabels> Individual::predict(const Data& d, 
+                const Parameters& params)
         {
             // calculate program output matrix Phi
             logger.log("Generating output for " + get_eqn(), 3);
@@ -829,6 +830,9 @@ namespace FT{
                 }
                 else if (n.compare("corr")==0)    // covariance structure of Phi
                     obj.push_back(mean_square_corrcoef(Phi));
+                else if (n.compare("fairness")==0)
+                    obj.push_back(fairness);
+
 
             }
         

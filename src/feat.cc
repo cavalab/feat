@@ -1282,7 +1282,11 @@ void Feat::print_stats(std::ofstream& log, float fraction)
               <<  best_score << "\t" << stats.med_score.back() << "\t" ;
     std::cout << std::fixed  << stats.med_size.back() << " (" << max_size << ") \t\t" << timer << "\n";
     std::cout << "Representation Pareto Front--------------------------------------\n";
-    std::cout << "Rank\tComplexity\tLoss\tRepresentation\n";
+    std::cout << "Rank\t"; //Complexity\tLoss\tRepresentation\n";
+    for (const auto& o : params.objectives)
+        std::cout << o << "\t";
+    cout << "\n";
+
     std::cout << std::scientific;
     // printing max 40 individuals from the pareto front
     unsigned n = 1;
@@ -1301,10 +1305,12 @@ void Feat::print_stats(std::ofstream& log, float fraction)
             if (lim_model.size()==60) 
                 lim_model += "...";
             
-            std::cout <<  arch.archive[i].rank          << "\t" 
-                      <<  arch.archive[i].complexity()  << "\t" 
-                      <<  arch.archive[i].fitness       << "\t" 
-                      <<  lim_model << "\n";  
+            std::cout <<  arch.archive[i].rank          << "\t" ;
+            for (const auto& o : arch.archive[i].obj)
+                std::cout << o << "\t";
+                  /* <<  arch.archive[i].complexity()  << "\t" */ 
+                  /* <<  arch.archive[i].fitness       << "\t" */ 
+            cout <<  lim_model << "\n";  
         }
     }
     else

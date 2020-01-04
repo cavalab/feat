@@ -29,7 +29,7 @@ except ImportError:
 finally:
     globals()['eigency'] = importlib.import_module('eigency')
 
-package_version = '0.0'
+package_version = '0.1'
 import os
 env_params = os.environ.keys() 
 if 'EIGEN3_INCLUDE_DIR' in env_params:
@@ -50,25 +50,25 @@ cwd = '/'.join(os.getcwd().split('/')[:-1])
 feat_lib = cwd + '/build/'
 
 setup(
-    name="feat",
+    name="FeatFair",
     author='William La Cava',
     author_email='williamlacava@gmail.com',
     url = 'https://lacava.github.io/feat',
     download_url='https://github.com/lacava/feat/releases/tag/'+package_version,
     license='GNU/GPLv3',
-    description='A Feature Engineering Automation Tool',
+    description='A Feature Engineering Automation Tool for Fairness',
     zip_safe=True,
     install_requires=['Numpy>=1.8.2','SciPy>=0.13.3','scikit-learn','Cython','pandas'],
-    py_modules=['feat','metrics'],
-    ext_modules = cythonize([Extension(name='pyfeat',
-       sources =  ["pyfeat.pyx"],    # our cython source
+    py_modules=['FeatFair','metrics'],
+    ext_modules = cythonize([Extension(name='pyfeatfair',
+       sources =  ["pyfeatfair.pyx"],    # our cython source
        include_dirs = ['../build/','../src/',eigen_dir,shogun_include_dir]
                       +eigency.get_includes(include_eigen=False),
        extra_compile_args = ['-std=c++1y','-fopenmp','-Wno-sign-compare',
                              '-Wno-reorder'],
        library_dirs = [shogun_lib,feat_lib],
        runtime_library_dirs = [feat_lib],
-       extra_link_args = ['-lshogun','-lfeat_lib'],      
+       extra_link_args = ['-lshogun','-lfeat_fair_lib'],      
        language='c++'
        )],
        language="c++")
