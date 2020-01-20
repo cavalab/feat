@@ -550,7 +550,6 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
         }
         else
         {
-            cout << "batch off\n";
             run_generation(g, survivors, d, log, fraction, stall_count);
         }
         
@@ -613,9 +612,7 @@ void Feat::run_generation(unsigned int g,
                       float fraction,
                       unsigned& stall_count)
 {
-    cout << "in run_generation. calling set_protected_groups\n";
     d.t->set_protected_groups();
-    cout << "d.t cases size: " << d.t->cases.size() << endl;
 
     params.set_current_gen(g);
 

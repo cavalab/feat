@@ -71,7 +71,7 @@ namespace FT{
                 vector<float> used_levels;
                 if (!d.cases.empty())
                 {
-                    cout << "d.cases is not empty; using...\n";
+                    /* cout << "d.cases is not empty; using...\n"; */
                     shuff_idx.resize(d.cases.size()); 
                     std::iota(shuff_idx.begin(),shuff_idx.end(),0);
                     // shuffle cases
@@ -82,7 +82,7 @@ namespace FT{
                     // store a local copy of protect levels to prevent repeats
                     if (d.protect_levels.size() == 0)
                     {
-                        cout << "d.protect_levels empty";
+                        /* cout << "d.protect_levels empty"; */
                     }
                     protect_levels = d.protect_levels;
                 }
@@ -103,15 +103,15 @@ namespace FT{
                     ArrayXb x_idx; 
                     if (d.cases.empty())                        
                     {
-                        cout << "d.cases is empty, so sampling group " 
-                            << "intersections\n";
-                        cout << "current protect_levels:\n";
-                        for (auto pl : protect_levels)
-                        {
-                            cout << "\tfeature " << pl.first << ":"
-                                << pl.second.size() << " values; ";    
-                        }
-                        cout << "\n";
+                        /* cout << "d.cases is empty, so sampling group " */ 
+                        /*     << "intersections\n"; */
+                        /* cout << "current protect_levels:\n"; */
+                        /* for (auto pl : protect_levels) */
+                        /* { */
+                        /*     cout << "\tfeature " << pl.first << ":" */
+                        /*         << pl.second.size() << " values; "; */    
+                        /* } */
+                        /* cout << "\n"; */
                         vector<int> groups;
                         // push back current groups (keys)
                         for (auto pl : protect_levels)
@@ -119,13 +119,13 @@ namespace FT{
                             groups.push_back(pl.first);
                         }
                         x_idx = ArrayXb::Constant(d.X.cols(),true);
-                        cout << "x_idx sum: " << x_idx.count() << "\n";
+                        /* cout << "x_idx sum: " << x_idx.count() << "\n"; */
                         // choose a random group
                         vector<size_t> choice_idxs(groups.size());
                         std::iota(choice_idxs.begin(),choice_idxs.end(),0);
                         size_t idx = r.random_choice(choice_idxs);
                         int g = groups.at(idx); 
-                        cout << "chosen group: " << g << "\n";
+                        /* cout << "chosen group: " << g << "\n"; */
                         // choose a random level
                         vector<float> lvls = unique(VectorXf(d.X.row(g)));
                         // remove levels not in protect_levels[g]
@@ -136,7 +136,7 @@ namespace FT{
                                 lvls.erase(lvls.begin() + i);
                         }
                         float level = r.random_choice(lvls);
-                        cout << "chosen level: " << level << "\n";
+                        /* cout << "chosen level: " << level << "\n"; */
                         // remove chosen level from protect_levels
                         for (int i = 0; i < protect_levels.at(g).size(); ++i)
                         {
@@ -149,7 +149,7 @@ namespace FT{
                         }
 
                         x_idx = (d.X.row(g).array() == level);
-                        cout << "x_idx count: " << x_idx.count() << "\n";
+                        /* cout << "x_idx count: " << x_idx.count() << "\n"; */
                     }
                     const ArrayXb& case_idx = (d.cases.empty() ? 
                                         x_idx : d.cases.at(shuff_idx[h]));

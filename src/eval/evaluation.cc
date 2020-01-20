@@ -152,14 +152,14 @@ namespace FT{
         }
 
         float Evaluation::subgroup_fairness(VectorXf& loss, const Data& d, 
-                float base_score)
+                float base_score, bool use_alpha)
         {
-            // averages the deviation of the loss function from average over
-            // k
+            // averages the deviation of the loss function from average loss 
+            // over k
             float avg_score = 0;
             float count = 0;
 
-            ArrayXb x_idx = ArrayXb::Constant(d.X.cols(),true);
+            ArrayXb x_idx; 
 
             for (const auto& pl : d.protect_levels)
             {
@@ -167,15 +167,22 @@ namespace FT{
                 {
                     x_idx = (d.X.row(pl.first).array() == lvl);
                     float len_g = x_idx.count();
-                    float alpha = len_g/d.X.rows();
+                    float alpha = 1;
+                    if (use_alpha)
+                        alpha = len_g/d.X.cols();
+                    /* cout << "alpha = " << len_g << "/" 
+                     * << d.X.cols() << endl; */
                     float Beta = fabs(base_score - 
                                     x_idx.select(loss,0).sum()/len_g);
+                    /* cout << "Beta = |" << base_score << " - " */ 
+                    /*     << x_idx.select(loss,0).sum() << "/" */ 
+                    /*     << len_g << "|" << endl; */
                     avg_score += alpha * Beta;
                     ++count;
                 }
 
             }
-            return avg_score / count; 
+            return avg_score/count; 
 
         }
     }

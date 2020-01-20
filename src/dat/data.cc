@@ -46,15 +46,14 @@ namespace FT{
                 for (auto pl : protect_levels)
                 {
                     int group = pl.first;
-                    cout << "\tfeature " << group << ":"
-                        << pl.second.size() << " values; ";
+                    logger.log("\tfeature " + to_string( group) + ":"
+                        + to_string(pl.second.size()) + " values; ",3);
                 }
-                cout << endl;
                 // if there aren't that many group interactions, we might as 
                 // well enumerate them to save time during execution.
                 if (group_intersections < 100)
                 {
-                    cout << "storing group intersections...\n";
+                    logger.log("storing group intersections...",3);
                     for (auto pl : protect_levels)
                     {
                         int group = pl.first;
@@ -67,11 +66,12 @@ namespace FT{
                         }
                             
                     }
-                    cout << "stored " << this->cases.size() << " cases\n";
+                    logger.log("stored " + to_string(this->cases.size()) 
+                            +" cases",3);
                 }
-                else
-                    cout << "there are " << group_intersections 
-                        << " group intersections, so not storing\n";
+                /* else */
+                /*     cout << "there are " << group_intersections */ 
+                /*         << " group intersections, so not storing\n"; */
             }
         }
         void Data::set_validation(bool v){validation=v;}
@@ -80,6 +80,10 @@ namespace FT{
         {
 
             batch_size =  std::min(batch_size,int(y.size()));
+            if (batch_size < 1)
+                HANDLE_ERROR_NO_THROW("WARNING: batch_size is set to " 
+                        + to_string(batch_size) + " when getting batch");
+
             vector<size_t> idx(y.size());
             std::iota(idx.begin(), idx.end(), 0);
     //        r.shuffle(idx.begin(), idx.end());

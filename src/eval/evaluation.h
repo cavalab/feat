@@ -53,7 +53,7 @@ namespace FT{
                              bool validation = false);
                  
                 float subgroup_fairness(VectorXf& loss, const Data& d, 
-                        float base_score);
+                        float base_score, bool use_alpha=false);
 
                 /// assign fitness to an individual and to F.  
                 void assign_fit(Individual& ind, MatrixXf& F, 
