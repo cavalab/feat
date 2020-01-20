@@ -115,8 +115,10 @@ namespace FT {
                     /*      << roots.at(s) << " to " */ 
                     /*     << ind.program.subtree(roots.at(s)) << "\n"; */
                     
-                    backprop(stack_trace.at(i), ind.program, ind.program.subtree(roots.at(s)), 
-                            roots.at(s), Beta.at(s)/ml->N.scale.at(s), yhat, db, params.class_weights);
+                    backprop(stack_trace.at(i), ind.program, 
+                            ind.program.subtree(roots.at(s)), 
+                            roots.at(s), Beta.at(s)/ml->N.scale.at(s), 
+                            yhat, db, params.class_weights);
                 }
 
                 // check validation fitness for early stopping
