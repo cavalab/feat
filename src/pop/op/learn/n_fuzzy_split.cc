@@ -177,14 +177,23 @@ namespace FT{
                         best_score = score;
                     }
                 }
-                // choose a random threshold weighted by the scores
-                threshold  = r.random_choice(thresholds, neg_scores); 
-                int index = distance(thresholds.begin(), 
-                        find(thresholds.begin(), thresholds.end(),
-                                threshold));
-                /* cout << "index: " << index << "\n"; */
-                /* cout << "final threshold set to " << threshold */ 
-                /*     << " with score " << -neg_scores.at(index)<< "\n"; */ 
+                if (thresholds.empty())
+                {
+                    /* cout << "threshold set to zero\n"; */
+                    threshold = 0; 
+                    return; 
+                }
+                else
+                {
+                    // choose a random threshold weighted by the scores
+                    threshold  = r.random_choice(thresholds, neg_scores); 
+                    int index = distance(thresholds.begin(), 
+                            find(thresholds.begin(), thresholds.end(),
+                                    threshold));
+                    /* cout << "index: " << index << "\n"; */
+                    /* cout << "final threshold set to " << threshold */ 
+                    /*     << " with score " << -neg_scores.at(index)<< "\n"; */ 
+                }
             }
            
             template <class T>

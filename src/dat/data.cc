@@ -211,7 +211,14 @@ namespace FT{
             //getting indices for all labels
             for(int x = 0; x < o->y.size(); x++)
                 label_indices[o->y[x]].push_back(x);
-                    
+                   
+            /* for (const auto& li : label_indices){ */
+            /*     cout << "label " << li.first << ":\t"; */
+            /*     for (const auto& val : li.second){ */
+            /*         cout << val << ", "; */
+            /*     } */ 
+            /*     cout << endl; */
+            /* } */
             std::map<float, vector<int>>::iterator it = label_indices.begin();
             
             vector<int> t_indices;
@@ -276,7 +283,6 @@ namespace FT{
                 }
             }
 
-            
         }
      
         void DataRef::train_test_split(bool shuffle, float split)

@@ -386,7 +386,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
 
     // start the clock
     timer.Reset();
-
+    cout << "FEAT::fit() HAS BEEN CALLED!\n";
     if (params.use_batch)
     {
         if (params.bp.batch_size >= X.cols()){
@@ -573,7 +573,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     if (simplify)
         simplify_model(d, this->best_ind);
 
-    logger.log("\nTotal time taken is " 
+    logger.log("\n===\nRun Completed. Total time taken is " 
             + std::to_string(timer.Elapsed().count()) + "\n", 1);
     
     if (log.is_open())

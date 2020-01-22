@@ -177,7 +177,10 @@ namespace FT{
             shared_ptr<CLabels> yh = ml->fit(Phi,d.y,params,pass,dtypes);
 
             if (pass)
+            {
+                logger.log("Setting individual's weights...", 3);
                 set_p(ml->get_weights(),params.feedback,params.softmax_norm);
+            }
             else
             {   // set weights to zero
                 vector<float> w(Phi.rows(), 0);                     
