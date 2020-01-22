@@ -65,7 +65,8 @@ namespace FT{
 
                 bool pass = true;
 
-                shared_ptr<CLabels> yhat = validation? ind.predict(d,params) : ind.fit(d,params,pass); 
+                shared_ptr<CLabels> yhat = validation? 
+                    ind.predict(d,params) : ind.fit(d,params,pass); 
                 // assign F and aggregate fitness
                 logger.log("Assigning fitness to " + ind.get_eqn(), 3);
 
