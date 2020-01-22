@@ -366,8 +366,8 @@ namespace FT{
             State state;
             logger.log("evaluating program " + get_eqn(),3);
             logger.log("program length: " + std::to_string(program.size()),3);
-            // to minimize copying overhead, set the state size to the maximum it will reach for the
-            // program 
+            // to minimize copying overhead, set the state size to the maximum 
+            // it will reach for the program 
             std::map<char, size_t> state_size = get_max_state_size();
             // set the device based on the thread number
             Op::choose_gpu();        
@@ -414,7 +414,7 @@ namespace FT{
             /*         std::cout << state.b(i,j) << ","; */
             /*     std::cout << "\n\n"; */
             /* } */
-            // convert state_f to Phi
+            // convert state to Phi
             logger.log("converting State to Phi",3);
             int cols;
             
@@ -486,12 +486,8 @@ namespace FT{
 
             State state;
             logger.log("evaluating program " + program_str(),3);
-            /* logger.log("program length: " + std::to_string(program.size()),3); */
 
             vector<size_t> roots = program.roots();
-            /* cout << "roots: " ; */
-            /* for (auto rt : roots) cout << rt << ", "; */
-            /* cout << "\n"; */
             size_t root = 0;
             bool trace=false;
             size_t trace_idx=-1;
@@ -507,14 +503,15 @@ namespace FT{
             // evaluate each node in program
             for (unsigned i = 0; i<program.size(); ++i)
             {
-                /* cout << "i = " << i << ", root = " << roots.at(root) << "\n"; */
+                /* cout << "i = " << i << ", root = " 
+                 * << roots.at(root) << "\n"; */
                 if (i > roots.at(root))
                 {
                     trace=false;
                     if (root + 1 < roots.size())
                     {
                         ++root; // move to next root
-                        // if new root is a Dx node, start storing its subprogram
+                        // if new root is a Dx node, start storing its args
                         if (program.at(roots.at(root))->isNodeDx())
                         {
                             trace=true;
@@ -533,7 +530,9 @@ namespace FT{
                     program.at(i)->visits = 0;
 	            }
                 else
-                    HANDLE_ERROR_THROW("out() error: node " + program.at(i)->name + " in " + program_str() + " is invalid\n");
+                    HANDLE_ERROR_THROW("out() error: node " 
+                            + program.at(i)->name + " in " + program_str() 
+                            + " is invalid\n");
             }
             
             return state_to_phi(state);
@@ -554,13 +553,13 @@ namespace FT{
 
             State state;
             /* logger.log("evaluating program " + get_eqn(),3); */
-            /* logger.log("program length: " + std::to_string(program.size()),3); */
             
             std::map<char, size_t> state_size = get_max_state_size();
             // set the device based on the thread number
             choose_gpu();
             // allocate memory for the state on the device
-            /* std::cout << "X size: " << X.rows() << "x" << X.cols() << "\n"; */ 
+            /* std::cout << "X size: " << X.rows() << "x" 
+             * << X.cols() << "\n"; */ 
             state.allocate(state_size,d.X.cols());
 
             vector<size_t> roots = program.roots();
@@ -591,17 +590,22 @@ namespace FT{
                 if(state.check(program.at(i)->arity))
             	{
                     if (trace)
-                        state_trace.at(trace_idx).copy_to_trace(state, program.at(i)->arity);
+                        state_trace.at(trace_idx).copy_to_trace(state, 
+                                program.at(i)->arity);
                     
                     program.at(i)->evaluate(d, state);
-                    state.update_idx(program.at(i)->otype, program.at(i)->arity); 
-                    //cout << "\nstack.idx[otype]: " << state.idx[program.at(i)->otype];
+                    state.update_idx(program.at(i)->otype, 
+                            program.at(i)->arity); 
+                    //cout << "\nstack.idx[otype]: " 
+                    //<< state.idx[program.at(i)->otype];
                     program.at(i)->visits = 0;
                     //cout << "Evaluated node " << program.at(i)->name << endl;
                     
                 }
                 else
-                    HANDLE_ERROR_THROW("out_trace() error: node " + program.at(i)->name + " in " + program_str() + " is invalid\n");
+                    HANDLE_ERROR_THROW("out_trace() error: node " 
+                            + program.at(i)->name + " in " + program_str() 
+                            + " is invalid\n");
             }
             
             state.copy_to_host();
@@ -631,18 +635,23 @@ namespace FT{
             
             dtypes.clear();        
             
-            Matrix<float,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
+            Matrix<float,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, 
+                    cols);
 
-            ArrayXXf PhiF = ArrayXXf::Map(state.f.data(),state.f.rows(),state.f.cols());
-            ArrayXXi PhiC = ArrayXXi::Map(state.c.data(),state.c.rows(),state.c.cols());
-            ArrayXXb PhiB = ArrayXXb::Map(state.b.data(),state.b.rows(),state.b.cols());
+            ArrayXXf PhiF = ArrayXXf::Map(state.f.data(),state.f.rows(),
+                    state.f.cols());
+            ArrayXXi PhiC = ArrayXXi::Map(state.c.data(),state.c.rows(),
+                    state.c.cols());
+            ArrayXXb PhiB = ArrayXXb::Map(state.b.data(),state.b.rows(),
+                    state.b.cols());
             
             // combine State into Phi 
             Phi <<  PhiF.cast<float>(),
                     PhiC.cast<float>(),
                     PhiB.cast<float>();
             
-            /* std::cout << "Phi:" << Phi.rows() << "x" << Phi.cols() << "\n"; */
+            /* std::cout << "Phi:" << Phi.rows() << "x" 
+             * << Phi.cols() << "\n"; */
 
             for (unsigned int i=0; i<rows_f; ++i)
             {    
@@ -659,7 +668,8 @@ namespace FT{
             // convert state_b to Phi       
             for (unsigned int i=0; i<rows_b; ++i)
             {
-                /* Phi.row(i+rows_f) = ArrayXb::Map(state.b.at(i).data(),cols).cast<float>(); */
+                /* Phi.row(i+rows_f) = ArrayXb::Map(state.b.at(i).data(),
+                 * cols).cast<float>(); */
                 dtypes.push_back('b');
             }
                    
@@ -736,8 +746,8 @@ namespace FT{
                 if(state.check_s(n->arity))
                     n->eval_eqn(state);
                 else
-                    HANDLE_ERROR_THROW("get_eqn() error: node " + n->name + " in " 
-                                       + program_str() + " is invalid\n");
+                    HANDLE_ERROR_THROW("get_eqn() error: node " + n->name 
+                            + " in " + program_str() + " is invalid\n");
             }
             // tie state outputs together to return representation
             for (auto s : state.fs) 
@@ -756,11 +766,13 @@ namespace FT{
             /*!
              * Output:
              
-             *	 	@return the dimensionality, i.e. number of outputs, of a program.
-             *   	the dimensionality is equal to the number of times the program arities are fully
+             *	 	@return the dimensionality, i.e. number of outputs, 
+             *	 	of a program. the dimensionality is equal to the number of 
+             *	 	times the program arities are fully
              *   	satisfied. 
              */
-            if (dim == 0)        // only calculate if dim hasn't been assigned
+            // only calculate if dim hasn't been assigned
+            if (dim == 0)        
             {           
                 unsigned int ca=0;     // current arity
                 
@@ -784,7 +796,8 @@ namespace FT{
              *
              * Output:
              *
-             *      1: this individual dominates b; -1: b dominates this; 0: neither dominates
+             *      1: this individual dominates b; -1: b dominates this; 
+             *      0: neither dominates
              */
 
             int flag1 = 0, // to check if this has a smaller objective
@@ -798,10 +811,12 @@ namespace FT{
             }
 
             if (flag1==1 && flag2==0)   
-                // there is at least one smaller objective for this and none for b
+                // there is at least one smaller objective for this and none 
+                // for b
                 return 1;               
             else if (flag1==0 && flag2==1) 
-                // there is at least one smaller objective for b and none for this
+                // there is at least one smaller objective for b and none 
+                // for this
                 return -1;
             else             
                 // no smaller objective or both have one smaller
@@ -824,12 +839,14 @@ namespace FT{
                     obj.push_back(complexity());
                 else if (n.compare("size")==0)
                     obj.push_back(program.size());
-                else if (n.compare("CN")==0)    // condition number of Phi
+                // condition number of Phi
+                else if (n.compare("CN")==0)    
                 {
                     CN = condition_number(Phi.transpose());
                     obj.push_back(CN);
                 }
-                else if (n.compare("corr")==0)    // covariance structure of Phi
+                // covariance structure of Phi
+                else if (n.compare("corr")==0)    
                     obj.push_back(mean_square_corrcoef(Phi));
 
             }
@@ -858,7 +875,8 @@ namespace FT{
                 //    for (const auto& t : s.second)
                 //        complex_eqn += "+" + t;
 
-                //std::cout << "eqn: " + eqn + ", complexity: " + complex_eqn +"=" +std::to_string(c) + "\n";
+                //std::cout << "eqn: " + eqn + ", complexity: " 
+                //+ complex_eqn +"=" +std::to_string(c) + "\n";
             }
             return c;
         }
