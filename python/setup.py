@@ -54,9 +54,11 @@ if 'SHOGUN_LIB' in env_params:
 # get path to feat shared library for linking
 cwd = '/'.join(os.getcwd().split('/')[:-1])
 feat_lib = cwd + '/build/'
+print('package version:',package_version)
 
 setup(
     name="feat",
+    version=package_version,
     author='William La Cava',
     author_email='williamlacava@gmail.com',
     url = 'https://lacava.github.io/feat',

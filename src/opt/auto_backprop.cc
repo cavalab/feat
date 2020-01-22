@@ -155,11 +155,12 @@ namespace FT {
                      print_weights(ind.program);
                 }
             }
+            logger.log("Setting program weights to best_weights",3);
+            ind.program.set_weights(best_weights);
             logger.log("",3);
             logger.log("=========================",3);
             logger.log("done=====================",3);
             logger.log("=========================",3);
-            ind.program.set_weights(best_weights);
         }
         
         // forward pass

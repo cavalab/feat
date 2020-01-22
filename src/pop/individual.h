@@ -58,6 +58,9 @@ namespace FT{
             /// calculate program output while maintaining stack trace
             MatrixXf out_trace(const Data& d,
                          const Parameters& params, vector<Trace>& stack_trace);
+       
+            /// converts program states to output matrices
+            MatrixXf state_to_phi(State& state);
 
             /// fits an ML model to the data after transformation
             shared_ptr<CLabels> fit(const Data& d, const Parameters& params, bool& pass);

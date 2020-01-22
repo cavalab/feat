@@ -150,6 +150,16 @@ namespace FT{
         {
             if (weights.size()==0) return;
             int count = 0;
+            /* int dx_node_count = 0; */
+            /* for (unsigned i = 0; i< this->size(); ++i) */
+            /* { */
+            /*     if (this->at(i)->isNodeDx()) */
+            /*     { */
+            /*         ++dx_node_count; */
+            /*     } */
+            /* } */
+            /* if (weights.size() != dx_node_count) */
+            /* {} */
             for (unsigned i = 0; i< this->size(); ++i)
             {
                 if (this->at(i)->isNodeDx())
