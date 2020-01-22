@@ -243,7 +243,80 @@ namespace FT{
         {
             return ml->labels_to_vector(this->predict(d,params));
         }
-        
+       
+        MatrixXf Individual::state_to_phi(State& state)
+        {
+            // we want to preserve the order of the outputs in the program 
+            // in the order of the outputs in Phi. 
+            // get root output types
+            this->dtypes.clear();
+            for (auto r : program.roots())
+            {
+                this->dtypes.push_back(program.at(r)->otype);
+            }
+            // convert state_f to Phi
+            logger.log("converting State to Phi",3);
+            int cols;
+            
+            if (state.f.size()==0)
+            {
+                if (state.c.size() == 0)
+                {
+                    if (state.b.size() == 0)
+                        HANDLE_ERROR_THROW("Error: no outputs in State");
+                    
+                    cols = state.b.top().size();
+                }
+                else{
+                    cols = state.c.top().size();
+                }
+            }
+            else{
+                cols = state.f.top().size();
+            }
+                   
+            // define Phi matrix 
+            Matrix<float,Dynamic,Dynamic,RowMajor> Phi (
+                    state.f.size() + state.c.size() + state.b.size(),  
+                    cols);
+            ArrayXf Row; 
+            std::map<char,int> rows;
+            rows['f']=0;
+            rows['c']=0;
+            rows['b']=0;
+
+            // add rows (features) to Phi with appropriate type casting
+            for (int i = 0; i < this->dtypes.size(); ++i)
+            {
+                char rt = this->dtypes.at(i);
+
+                switch (rt)
+                {
+                    case 'f':
+                    // add state_f to Phi
+                        Row = ArrayXf::Map(state.f.at(rows[rt]).data(),cols);
+                        break;
+                    case 'c':
+                    // convert state_c to Phi       
+                        Row = ArrayXi::Map(
+                            state.c.at(rows[rt]).data(),cols).cast<float>();
+                        break;
+                    case 'b':
+                    // add state_b to Phi
+                        Row = ArrayXb::Map(
+                            state.b.at(rows[rt]).data(),cols).cast<float>();
+                        break;
+                    default:
+                        HANDLE_ERROR_THROW("Unknown root type");
+                }
+                // remove nans, set infs to max and min
+                clean(Row); 
+                Phi.row(i) = Row;
+                ++rows[rt];
+            }
+            return Phi;
+        }
+
         #ifndef USE_CUDA
         // calculate program output matrix
         MatrixXf Individual::out(const Data& d, const Parameters& params, 
@@ -274,76 +347,8 @@ namespace FT{
                             + program_str() + " failed arity check\n");
                 
             }
-            // we want to preserve the order of the outputs in the program 
-            // in the order of the outputs in Phi. 
-            // get root output types
-            vector<char> root_types;
-            for (auto r : program.roots())
-            {
-                root_types.push_back(program.at(r)->otype);
-            }
-            // convert state_f to Phi
-            logger.log("converting State to Phi",3);
-            int cols;
             
-            if (state.f.size()==0)
-            {
-                if (state.c.size() == 0)
-                {
-                    if (state.b.size() == 0)
-                        HANDLE_ERROR_THROW("Error: no outputs in State");
-                    
-                    cols = state.b.top().size();
-                }
-                else{
-                    cols = state.c.top().size();
-                }
-            }
-            else{
-                cols = state.f.top().size();
-            }
-                   
-            
-            dtypes.clear();        
-            Matrix<float,Dynamic,Dynamic,RowMajor> Phi (
-                    state.f.size() + state.c.size() + state.b.size(),  
-                    cols);
-            ArrayXf Row; 
-            std::map<char,int> rows;
-            rows['f']=0;
-            rows['c']=0;
-            rows['b']=0;
-
-            for (int i = 0; i < root_types.size(); ++i)
-            {
-                char rt = root_types.at(i);
-
-                switch (rt)
-                {
-                    case 'f':
-                    // add state_f to Phi
-                        Row = ArrayXf::Map(state.f.at(rows[rt]).data(),cols);
-                        break;
-                    case 'c':
-                    // convert state_c to Phi       
-                        Row = ArrayXi::Map(
-                            state.c.at(rows[rt]).data(),cols).cast<float>();
-                        break;
-                    case 'b':
-                    // add state_b to Phi
-                        Row = ArrayXb::Map(
-                            state.b.at(rows[rt]).data(),cols).cast<float>();
-                        break;
-                    default:
-                        HANDLE_ERROR_THROW("Unknown root type");
-                }
-
-                clean(Row); // remove nans, set infs to max and min
-                Phi.row(i) = Row;
-                ++rows[rt];
-            }
-            
-            return Phi;
+            return state_to_phi(state);
         }
         #else
         MatrixXf Individual::out(const Data& d, const Parameters& params, 
@@ -521,7 +526,8 @@ namespace FT{
                 if(state.check(program.at(i)->arity))
             	{
                     if (trace)
-                        state_trace.at(trace_idx).copy_to_trace(state, program.at(i)->arity);
+                        state_trace.at(trace_idx).copy_to_trace(state, 
+                                program.at(i)->arity);
 
 	                program.at(i)->evaluate(d, state);
                     program.at(i)->visits = 0;
@@ -530,58 +536,8 @@ namespace FT{
                     HANDLE_ERROR_THROW("out() error: node " + program.at(i)->name + " in " + program_str() + " is invalid\n");
             }
             
-            // convert state_f to Phi
-            logger.log("converting State to Phi",3);
-            int cols;
-            if (state.f.size()==0)
-            {
-                if (state.c.size() == 0)
-                {
-                    if (state.b.size() == 0)
-                        HANDLE_ERROR_THROW("Error: no outputs in State");
-                    
-                    cols = state.b.top().size();
-                }
-                else
-                    cols = state.c.top().size();
-            }
-            else
-                cols = state.f.top().size();
-                   
-            int rows_f = state.f.size();
-            int rows_c = state.c.size();
-            int rows_b = state.b.size();
-            
-            dtypes.clear();        
-            Matrix<float,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
-            
-            // add state_f to Phi
-            for (unsigned int i=0; i<rows_f; ++i)
-            {    
-                 ArrayXf Row = ArrayXf::Map(state.f.at(i).data(),cols);
-                 clean(Row); // remove nans, set infs to max and min
-                 Phi.row(i) = Row;
-                 dtypes.push_back('f'); 
-            }
-            
-            // add state_c to Phi
-            for (unsigned int i=0; i<rows_c; ++i)
-            {    
-                 ArrayXf Row = ArrayXi::Map(state.c.at(i).data(),cols).cast<float>();
-                 clean(Row); // remove nans, set infs to max and min
-                 Phi.row(i+rows_f) = Row;
-                 dtypes.push_back('c'); 
-            }       
-            
-            // convert state_b to Phi       
-            for (unsigned int i=0; i<rows_b; ++i)
-            {
-                Phi.row(i+rows_f+rows_c) = ArrayXb::Map(state.b.at(i).data(),cols).cast<float>();
-                dtypes.push_back('b');
-            }
+            return state_to_phi(state);
 
-            //Phi.transposeInPlace();
-            return Phi;
         }
         #else
         // calculate program output matrix
@@ -733,18 +689,18 @@ namespace FT{
                 }
                 // tie state outputs together to return representation
                 // order by root types
-                vector<char> root_types;
+                this->dtypes.clear();
                 for (auto r : program.roots())
                 {
-                    root_types.push_back(program.at(r)->otype);
+                    this->dtypes.push_back(program.at(r)->otype);
                 }
                 std::map<char,int> rows;
                 rows['f']=0;
                 rows['c']=0;
                 rows['b']=0;
-                for (int i = 0; i < root_types.size(); ++i)
+                for (int i = 0; i < this->dtypes.size(); ++i)
                 {
-                    char rt = root_types.at(i);
+                    char rt = this->dtypes.at(i);
                     switch (rt)
                     {
                         case 'f':
