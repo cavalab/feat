@@ -95,13 +95,19 @@ namespace FT {
 
                 /* cout << "ml fit\n"; */
                 shared_ptr<CLabels> yhat = ml->fit(Phi,db.y,params,pass,ind.dtypes);
-                vector<float> Beta = ml->get_weights();
-                /* cout << "cost func\n"; */
-                current_loss = this->cost_func(db.y,yhat, params.class_weights).mean();
                 
                 
                 if (!pass || stack_trace.size() ==0 )
+                {
+                    if (!pass)
+                        logger.log("autobp: ML fit failed, breaking...",2);
                     break;
+                }
+
+                vector<float> Beta = ml->get_weights();
+                /* cout << "cost func\n"; */
+                current_loss = this->cost_func(db.y,yhat, 
+                        params.class_weights).mean();
 
                 // Evaluate backward pass
                 size_t s = 0;
@@ -155,7 +161,7 @@ namespace FT {
                      print_weights(ind.program);
                 }
             }
-            logger.log("Setting program weights to best_weights",3);
+            logger.log("Setting program weights to best_weights",2);
             ind.program.set_weights(best_weights);
             logger.log("",3);
             logger.log("=========================",3);

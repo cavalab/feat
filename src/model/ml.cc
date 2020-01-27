@@ -316,8 +316,9 @@ namespace FT{
             /* cout << "this->ml_type == RF: " << tmp2 << "\n"; */
             /* cout << "this->ml_type: " << this->ml_type  << "\n"; */
             if (this->prob_type==PT_BINARY && 
-                 (ml_type == LR || ml_type == SVM || ml_type == CART || ml_type == RF)     // binary classification
-                )
+                 (ml_type == LR || ml_type == SVM 
+                  || ml_type == CART || ml_type == RF)     
+                )// binary classification
             {
                 bool proba = params.scorer.compare("log")==0;
                 /* cout << "apply binary\n"; */
@@ -379,7 +380,8 @@ namespace FT{
 
             if (isinf(yhat.array()).any() || isnan(yhat.array()).any() || yhat.size()==0)
                 pass = false;
-            /* cout << "exiting ml::fit\n"; */ 
+
+            logger.log("exiting ml::fit",3); 
             return labels;
         }
 

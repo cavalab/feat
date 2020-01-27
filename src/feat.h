@@ -62,9 +62,10 @@ namespace FT{
      * @class Feat
      * @brief main class for the Feat learner.
      *   
-     * @details Feat optimizes feature represenations for a given machine learning algorithm. It 
-     *			does so by using evolutionary computation to optimize a population of programs. 
-     *			Each program represents a set of feature transformations. 
+     * @details Feat optimizes feature represenations for a given machine 
+     * learning algorithm. It does so by using evolutionary computation to 
+     * optimize a population of programs. Each program represents a set of 
+     * feature transformations. 
      */
     class Feat 
     {
@@ -74,21 +75,24 @@ namespace FT{
             
             /// member initializer list constructor
               
-            Feat(int pop_size=100, int gens = 100, string ml = "LinearRidgeRegression", 
-                   bool classification = false, int verbosity = 2, int max_stall = 0,
-                   string sel ="lexicase", string surv="nsga2", float cross_rate = 0.5,
-                   float root_xo_rate = 0.5, char otype='a', string functions = "", 
-                   unsigned int max_depth = 3, unsigned int max_dim = 10, 
-                   int random_state=0, 
-                   bool erc = false, string obj="fitness,complexity", bool shuffle=true, 
-                   float split=0.75, float fb=0.5, string scorer="", string feature_names="",
-                   bool backprop=false,int iters=10, float lr=0.1, int bs=100, int n_threads=0,
-                   bool hillclimb=false, string logfile="", int max_time=-1, 
-                   bool use_batch = false, bool residual_xo = false, 
-                   bool stagewise_xo = false, bool stagewise_tol = true,
-                   bool softmax_norm=false, int print_pop=0, 
-                   bool normalize=true, bool val_from_arch=true,
-                   bool corr_delete_mutate=false,bool simplify=false);
+            Feat(int pop_size=100, int gens = 100, 
+                 string ml = "LinearRidgeRegression", 
+                 bool classification = false, int verbosity = 2, 
+                 int max_stall = 0, string sel ="lexicase", 
+                 string surv="nsga2", float cross_rate = 0.5,
+                 float root_xo_rate = 0.5, char otype='a', 
+                 string functions = "", unsigned int max_depth = 3, 
+                 unsigned int max_dim = 10, int random_state=0, 
+                 bool erc = false, string obj="fitness,complexity", 
+                 bool shuffle=true, float split=0.75, float fb=0.5, 
+                 string scorer="", string feature_names="",
+                 bool backprop=false,int iters=10, float lr=0.1, int bs=100, 
+                 int n_threads=0, bool hillclimb=false, string logfile="", 
+                 int max_time=-1, bool use_batch = false, 
+                 bool residual_xo = false, bool stagewise_xo = false, 
+                 bool stagewise_tol = true, bool softmax_norm=false, 
+                 int print_pop=0, bool normalize=true, bool val_from_arch=true,
+                 bool corr_delete_mutate=false,bool simplify=false);
             
             /// set size of population 
             void set_pop_size(int pop_size);
@@ -194,7 +198,10 @@ namespace FT{
             void set_residual_xo(bool res_xo=true){params.residual_xo=res_xo;};
             
             /// use stagewise crossover
-            void set_stagewise_xo(bool sem_xo=true){params.stagewise_xo=sem_xo;};
+            void set_stagewise_xo(bool sem_xo=true)
+            {
+                params.stagewise_xo=sem_xo;
+            };
             
             /// use softmax
             void set_softmax_norm(bool sftmx=true){params.softmax_norm=sftmx;};
@@ -253,7 +260,8 @@ namespace FT{
             float get_split();
             
             ///add custom node into feat
-            /* void add_function(unique_ptr<Node> N){ params.functions.push_back(N->clone()); } */
+            /* void add_function(unique_ptr<Node> N)
+             * { params.functions.push_back(N->clone()); } */
             
             ///return data types for input parameters
             vector<char> get_dtypes();
@@ -306,8 +314,8 @@ namespace FT{
             void fit(float * X,int rowsX,int colsX, float * Y,int lenY);
 
             /// train a model, first loading longitudinal samples (Z) from file.
-            void fit_with_z(float * X, int rowsX, int colsX, float * Y, int lenY, string s, 
-                            int * idx, int idx_size);
+            void fit_with_z(float * X, int rowsX, int colsX, 
+                    float * Y, int lenY, string s, int * idx, int idx_size);
            
             /// predict on unseen data.             
             VectorXf predict(MatrixXf& X, LongData Z = LongData());  
