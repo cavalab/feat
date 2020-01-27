@@ -74,7 +74,16 @@ void Variation::vary(Population& pop, const vector<size_t>& parents,
                            dad.program_str() , 3);
                
                 // perform crossover
-                pass = cross(mom, dad, child, params, d);
+                #pragma omp critical
+                {
+                    try{
+                    pass = cross(mom, dad, child, params, d);
+                    }
+                    catch (std::bad_alloc& ba)
+                    {
+                        std::cerr << "bad_alloc caught: " << ba.what() << "\n";
+                    }
+                }
                 
                 logger.log("crossing " + mom.get_eqn() + "\nwith\n " + 
                        dad.get_eqn() + "\nproduced " + child.get_eqn() + 
@@ -90,8 +99,10 @@ void Variation::vary(Population& pop, const vector<size_t>& parents,
                 logger.log("mutating " + mom.get_eqn() + "(" + 
                         mom.program_str() + ")", 3);
                 // create child
-                pass = mutate(mom,child,params,d);
-                
+                #pragma omp critical
+                {
+                    pass = mutate(mom,child,params,d);
+                } 
                 logger.log("mutating " + mom.get_eqn() + " produced " + 
                         child.get_eqn() + ", pass: " + std::to_string(pass),3);
                 child.set_parents({mom});
@@ -103,10 +114,10 @@ void Variation::vary(Population& pop, const vector<size_t>& parents,
                 logger.log("assigning " + child.program_str() + 
                         " to pop.individuals[" + std::to_string(i) + 
                         "] with pop.open_loc[" + std::to_string(i-start) + 
-                    "]=" + std::to_string(pop.open_loc[i-start]),3);
+                    "]=" + std::to_string(pop.open_loc.at(i-start)),3);
 
-                pop.individuals[i] = child;
-                pop.individuals[i].loc = pop.open_loc[i-start];                   
+                pop.individuals.at(i) = child;
+                pop.individuals.at(i).loc = pop.open_loc[i-start];                   
             }
         }    
    }
@@ -144,7 +155,9 @@ bool Variation::mutate(Individual& mom, Individual& child,
                         child,mom.Phi,params,d); 
             }
             else
+            {
                 delete_dimension_mutate(child, params);
+            }
         }
         assert(child.program.is_valid_program(params.num_features, 
                     params.longitudinalMap));
@@ -246,7 +259,7 @@ void Variation::insert_mutate(Individual& child,
             if (r() < child.get_p(i))                      
             {
                 logger.log("\t\tinsert mutating node " + 
-                        child.program[i]->name + " with probability " +
+                        child.program.at(i)->name + " with probability " +
                         std::to_string(child.get_p(i)) + "/" + 
                         std::to_string(n), 3);
                 NodeVector insertion;  // inserted segment
@@ -258,17 +271,17 @@ void Variation::insert_mutate(Individual& child,
                 { 
                     // find fns with matching output types that take 
                     // this node type as arg
-                    if (f->arity[child.program[i]->otype] > 0 && 
-                            f->otype==child.program[i]->otype )
+                    if (f->arity[child.program.at(i)->otype] > 0 && 
+                            f->otype==child.program.at(i)->otype )
                     { 
                         // make sure there are satisfactory types in n
                         // terminals to fill fns' args
-                        if (child.program[i]->otype=='b')
+                        if (child.program.at(i)->otype=='b')
                         {
                             if (in(params.dtypes,'b') || f->arity['b']==1)
                                 fns.push_back(f->rnd_clone());
                         }
-                        else if (child.program[i]->otype=='f')
+                        else if (child.program.at(i)->otype=='f')
                         {
                             if (f->arity['b']==0 || in(params.dtypes,'b') )
                                 fns.push_back(f->rnd_clone());              
@@ -295,7 +308,7 @@ void Variation::insert_mutate(Individual& child,
                 insert_arity['z'] = insertion.back()->arity['z']; 
 
                 // decrement function arity by one for child node 
-                --insert_arity[child.program[i]->otype];
+                --insert_arity[child.program.at(i)->otype];
                 
                 vector<char> types = {'f','b','c','z'};
                 for (auto type : types)
@@ -308,14 +321,14 @@ void Variation::insert_mutate(Individual& child,
                                 type, params.ttypes);
                     }
                     // add the child now if type matches
-                    if (child.program[i]->otype==type)                        
+                    if (child.program.at(i)->otype==type)                        
                     {
                         /* cout << "adding " << type << " child program: [" ; */ 
                         for (int k = end; k != start-1; --k)
                         {
-                            /* cout << child.program[k]->name ; */
+                            /* cout << child.program.at(k)->name ; */
                             /* cout << " (k=" << k << ")\t"; */
-                            insertion.push_back(child.program[k]->clone());
+                            insertion.push_back(child.program.at(k)->clone());
                         }
                         /* cout << "]\n"; */
                     }
@@ -357,7 +370,7 @@ void Variation::delete_mutate(Individual& child,
      * @param params: parameters  
      * @return mutated child
      * */
-    logger.log("\tdeletion mutation",3);
+    logger.log("\tdeletion mutation",2);
     logger.log("\t\tprogram: " + child.program_str(),3);
     // loop thru child's program
     for (unsigned i = 0; i< child.program.size(); ++i)
@@ -384,7 +397,7 @@ void Variation::delete_mutate(Individual& child,
             { 
                 // find terms with matching output types that take 
                 // this node type as arg
-                if ( t->otype==child.program[i]->otype )
+                if ( t->otype==child.program.at(i)->otype )
                 { 
                     terms.push_back(t->rnd_clone());              
                 }
@@ -409,7 +422,7 @@ void Variation::delete_mutate(Individual& child,
                 std::string s="";
                 for (unsigned i = start; i<=end; ++i) 
                 {
-                    s+= child.program[i]->name + " ";
+                    s+= child.program.at(i)->name + " ";
                 }
                 logger.log("\t\tdeleting " + std::to_string(start) + " to " + 
                         std::to_string(end) + ": " + s, 3);
@@ -435,18 +448,21 @@ void Variation::delete_dimension_mutate(Individual& child,
      * @param params: parameters  
      * @return mutated child
      * */
-    logger.log("\tdeletion mutation",3);
+    logger.log("\tdelete_dimension_mutate",2);
     logger.log("\t\tprogram: " + child.program_str(),3);
     vector<size_t> roots = child.program.roots();
     
     size_t end = r.random_choice(roots,child.p); 
     size_t start = child.program.subtree(end);  
-    if (logger.get_log_level() >=3)
+    if (logger.get_log_level() >= 2)
     { 
         std::string s="";
-        for (unsigned i = start; i<=end; ++i) s+= child.program[i]->name + " ";
+        for (unsigned i = start; i<=end; ++i) 
+        {
+            s+= child.program.at(i)->name + " ";
+        }
         logger.log("\t\tdeleting " + std::to_string(start) + " to " + 
-                std::to_string(end) + ": " + s, 3);
+                std::to_string(end) + ": " + s, 2);
     }    
     child.program.erase(child.program.begin()+start,
             child.program.begin()+end+1);
@@ -466,9 +482,8 @@ bool Variation::correlation_delete_mutate(Individual& child,
      * @param d: data
      * @return mutated child
      * */
-    logger.log("\tdeletion mutation",3);
-    logger.log("\t\tprogram: " + child.program_str(),3);
-
+    logger.log("\tcorrelation_delete_mutate",2);
+    logger.log("\t\tprogram: " + child.program_str(),3); 
     // mean center features
     for (int i = 0; i < Phi.rows(); ++i)
     {
@@ -519,7 +534,7 @@ bool Variation::correlation_delete_mutate(Individual& child,
     if (logger.get_log_level() >=3)
     { 
         std::string s="";
-        for (unsigned i = start; i<=end; ++i) s+= child.program[i]->name + " ";
+        for (unsigned i = start; i<=end; ++i) s+= child.program.at(i)->name + " ";
         logger.log("\t\tdeleting " + std::to_string(start) + " to " + 
                 std::to_string(end) + ": " + s, 3);
     }    
@@ -561,7 +576,7 @@ bool Variation::cross(Individual& mom, Individual& dad, Individual& child,
     
     if (subtree) 
     {
-        logger.log("\tsubtree xo",3);
+        logger.log("\tsubtree xo",2);
         // limit xo choices to matching output types in the programs. 
         vector<char> d_otypes;
         for (const auto& p : dad.program)
@@ -570,7 +585,7 @@ bool Variation::cross(Individual& mom, Individual& dad, Individual& child,
         
         // get valid subtree locations
         for (size_t i =0; i<mom.size(); ++i) 
-            if (in(d_otypes,mom.program[i]->otype)) 
+            if (in(d_otypes,mom.program.at(i)->otype)) 
                 mlocs.push_back(i);  
         // mom and dad have no overlapping types, can't cross
         if (mlocs.size()==0)                
@@ -585,7 +600,7 @@ bool Variation::cross(Individual& mom, Individual& dad, Individual& child,
         // from mom
         for (size_t i =0; i<dad.size(); ++i) 
         {
-            if (dad.program[i]->otype == mom.program[j1]->otype) 
+            if (dad.program.at(i)->otype == mom.program[j1]->otype) 
                 dlocs.push_back(i);
         }
     } 
@@ -597,7 +612,7 @@ bool Variation::cross(Individual& mom, Individual& dad, Individual& child,
             return stagewise_cross(mom, dad, child, params, d);
         else
         {
-            logger.log("\troot xo",3);
+            logger.log("\troot xo",2);
             mlocs = mom.program.roots();
             dlocs = dad.program.roots();
             logger.log("\t\trandom choice mlocs (size "+
@@ -648,11 +663,11 @@ bool Variation::residual_cross(Individual& mom, Individual& dad,
      * @return  child: mom with dad subtree graft
      */
                
+    logger.log("\tresidual xo",2);
     vector<size_t> mlocs, dlocs; // mom and dad locations for consideration
     // i1-j1: mom portion, i2-j2: dad portion
     size_t i1, j1, j1_idx, i2, j2;       
     
-    logger.log("\tresidual xo",3);
     mlocs = mom.program.roots();
     vector<int> mlocs_indices(mlocs.size());
     std::iota(mlocs_indices.begin(),mlocs_indices.end(),0);
@@ -755,7 +770,7 @@ bool Variation::stagewise_cross(Individual& mom, Individual& dad,
      *     - update $\mathbf{r} = r - b\phi^*$ 
      * $\phi_c$ = all $\phi^*$ that were chosen 
      */
-    logger.log("\tstagewise xo",3);
+    logger.log("\tstagewise xo",2);
     // normalize the residual 
     VectorXf R = d.y.array() - d.y.mean();
     /* cout << "R: " << R.norm() << "\n"; */
@@ -930,16 +945,32 @@ void Variation::splice_programs( NodeVector& vnew,
      *
      * @return  vnew: new vector 
      */
+    logger.log("splice_programs",2);
+    if (i1 >= v1.size())
+        cout << "i1 ( " << i1 << ") >= v1 size (" << v1.size() << ")\n";
+    if (i2 >= v2.size())
+        cout << "i2 ( " << i2 << ") >= v2 size (" << v2.size() << ")\n";
+    if (j1+1 < 0)
+        cout << "j1+1 < 0 (j1 = " << j1 << endl;
+    if (j2+1 < 0)
+        cout << "j2+1 < 0 (j2 = " << j2 << endl;
     // size difference between subtrees  
     // beginning of v1
-    for (unsigned i = 0; i < i1 ; ++i)                  
-        vnew.push_back(v1.at(i)->clone());
-    // spliced in v2 portion
-    for (unsigned i = i2; i <= j2 ; ++i)                         
-        vnew.push_back(v2.at(i)->clone());
-    // end of v1
-    for (unsigned i = j1+1; i < v1.size() ; ++i)                
-        vnew.push_back(v1.at(i)->clone());
+    try
+    {
+        for (unsigned i = 0; i < i1 ; ++i)                  
+            vnew.push_back(v1.at(i)->clone());
+        // spliced in v2 portion
+        for (unsigned i = i2; i <= j2 ; ++i)                         
+            vnew.push_back(v2.at(i)->clone());
+        // end of v1
+        for (unsigned i = j1+1; i < v1.size() ; ++i)                
+            vnew.push_back(v1.at(i)->clone());
+    }
+    catch (std::bad_alloc& ba)
+    {
+        std::cerr << "bad_alloc caught: " << ba.what() << "\n";
+    }
 }
 
 void Variation::print_cross(Individual& mom, size_t i1, size_t j1, 
@@ -949,7 +980,7 @@ void Variation::print_cross(Individual& mom, size_t i1, size_t j1,
     for (int i =0; i<mom.program.size(); ++i){
        if (i== i1) 
            std::cout << "[";
-       std::cout << mom.program[i]->name << " ";
+       std::cout << mom.program.at(i)->name << " ";
        if (i==j1)
            std::cout <<"]";
     }
@@ -958,7 +989,7 @@ void Variation::print_cross(Individual& mom, size_t i1, size_t j1,
     for (int i =0; i<dad.program.size(); ++i){
         if (i== i2) 
             std::cout << "[";
-        std::cout << dad.program[i]->name << " ";
+        std::cout << dad.program.at(i)->name << " ";
         if (i==j2)
             std::cout <<"]";
     }
@@ -968,7 +999,7 @@ void Variation::print_cross(Individual& mom, size_t i1, size_t j1,
         std::cout << "child after cross: ";
         for (unsigned i = 0; i< child.program.size(); ++i){
             if (i==i1) std::cout << "[";
-            std::cout << child.program[i]->name << " ";
+            std::cout << child.program.at(i)->name << " ";
             if (i==i1+j2-i2) std::cout << "]";
         }
         std::cout << "\n";
