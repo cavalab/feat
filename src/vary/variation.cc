@@ -63,7 +63,7 @@ void Variation::vary(Population& pop, const vector<size_t>& parents,
 
             if ( r() < cross_rate)      // crossover
             {
-                // get random mom and dad 
+                // get random mom and dad, make copies 
                 Individual& mom = pop.individuals.at(r.random_choice(parents));
                 Individual& dad = pop.individuals.at(r.random_choice(parents));
                 /* int dad = r.random_choice(parents); */
@@ -77,7 +77,7 @@ void Variation::vary(Population& pop, const vector<size_t>& parents,
                 #pragma omp critical
                 {
                     try{
-                    pass = cross(mom, dad, child, params, d);
+                        pass = cross(mom, dad, child, params, d);
                     }
                     catch (std::bad_alloc& ba)
                     {
@@ -117,7 +117,7 @@ void Variation::vary(Population& pop, const vector<size_t>& parents,
                     "]=" + std::to_string(pop.open_loc.at(i-start)),3);
 
                 pop.individuals.at(i) = child;
-                pop.individuals.at(i).loc = pop.open_loc[i-start];                   
+                pop.individuals.at(i).loc = pop.open_loc.at(i-start);                   
             }
         }    
    }
@@ -125,7 +125,7 @@ void Variation::vary(Population& pop, const vector<size_t>& parents,
    pop.update_open_loc();
 }
 
-bool Variation::mutate(Individual& mom, Individual& child, 
+bool Variation::mutate(const Individual& mom, Individual& child, 
         const Parameters& params, const Data& d)
 {
     /*!
@@ -206,10 +206,10 @@ void Variation::point_mutate(Individual& child, const Parameters& params)
                 for (const auto& f: params.functions)
                 {
                     if (f->otype == p->otype &&
-                        f->arity['f']==p->arity['f'] && 
-                        f->arity['b']==p->arity['b'] &&
-                        f->arity['c']==p->arity['c'] &&
-                        f->arity['z']==p->arity['z'])
+                        f->arity.at('f')==p->arity.at('f') && 
+                        f->arity.at('b')==p->arity.at('b') &&
+                        f->arity.at('c')==p->arity.at('c') &&
+                        f->arity.at('z')==p->arity.at('z'))
                         replacements.push_back(f->rnd_clone());
                 }
             }
@@ -271,19 +271,19 @@ void Variation::insert_mutate(Individual& child,
                 { 
                     // find fns with matching output types that take 
                     // this node type as arg
-                    if (f->arity[child.program.at(i)->otype] > 0 && 
+                    if (f->arity.at(child.program.at(i)->otype) > 0 && 
                             f->otype==child.program.at(i)->otype )
                     { 
                         // make sure there are satisfactory types in n
                         // terminals to fill fns' args
                         if (child.program.at(i)->otype=='b')
                         {
-                            if (in(params.dtypes,'b') || f->arity['b']==1)
+                            if (in(params.dtypes,'b') || f->arity.at('b')==1)
                                 fns.push_back(f->rnd_clone());
                         }
                         else if (child.program.at(i)->otype=='f')
                         {
-                            if (f->arity['b']==0 || in(params.dtypes,'b') )
+                            if (f->arity.at('b')==0 || in(params.dtypes,'b') )
                                 fns.push_back(f->rnd_clone());              
                         }
                     }
@@ -302,19 +302,19 @@ void Variation::insert_mutate(Individual& child,
                 // insertion node, with the child program stiched in as an 
                 // argument.
                 map<char, unsigned> insert_arity; 
-                insert_arity['f'] = insertion.back()->arity['f']; 
-                insert_arity['b'] = insertion.back()->arity['b']; 
-                insert_arity['c'] = insertion.back()->arity['c']; 
-                insert_arity['z'] = insertion.back()->arity['z']; 
+                insert_arity['f'] = insertion.back()->arity.at('f'); 
+                insert_arity['b'] = insertion.back()->arity.at('b'); 
+                insert_arity['c'] = insertion.back()->arity.at('c'); 
+                insert_arity['z'] = insertion.back()->arity.at('z'); 
 
                 // decrement function arity by one for child node 
-                --insert_arity[child.program.at(i)->otype];
+                --insert_arity.at(child.program.at(i)->otype);
                 
                 vector<char> types = {'f','b','c','z'};
                 for (auto type : types)
                 {
                     // push back new arguments for the rest of the function
-                    for (unsigned j = 0; j< insert_arity[type]; ++j)
+                    for (unsigned j = 0; j< insert_arity.at(type); ++j)
                     {
                         insertion.make_tree(params.functions,params.terminals,
                                 0, params.term_weights,params.op_weights,
@@ -370,7 +370,7 @@ void Variation::delete_mutate(Individual& child,
      * @param params: parameters  
      * @return mutated child
      * */
-    logger.log("\tdeletion mutation",2);
+    logger.log("\tdeletion mutation",3);
     logger.log("\t\tprogram: " + child.program_str(),3);
     // loop thru child's program
     for (unsigned i = 0; i< child.program.size(); ++i)
@@ -448,13 +448,13 @@ void Variation::delete_dimension_mutate(Individual& child,
      * @param params: parameters  
      * @return mutated child
      * */
-    logger.log("\tdelete_dimension_mutate",2);
+    logger.log("\tdelete_dimension_mutate",3);
     logger.log("\t\tprogram: " + child.program_str(),3);
     vector<size_t> roots = child.program.roots();
     
     size_t end = r.random_choice(roots,child.p); 
     size_t start = child.program.subtree(end);  
-    if (logger.get_log_level() >= 2)
+    if (logger.get_log_level() >= 3)
     { 
         std::string s="";
         for (unsigned i = start; i<=end; ++i) 
@@ -462,7 +462,7 @@ void Variation::delete_dimension_mutate(Individual& child,
             s+= child.program.at(i)->name + " ";
         }
         logger.log("\t\tdeleting " + std::to_string(start) + " to " + 
-                std::to_string(end) + ": " + s, 2);
+                std::to_string(end) + ": " + s, 3);
     }    
     child.program.erase(child.program.begin()+start,
             child.program.begin()+end+1);
@@ -482,7 +482,7 @@ bool Variation::correlation_delete_mutate(Individual& child,
      * @param d: data
      * @return mutated child
      * */
-    logger.log("\tcorrelation_delete_mutate",2);
+    logger.log("\tcorrelation_delete_mutate",3);
     logger.log("\t\tprogram: " + child.program_str(),3); 
     // mean center features
     for (int i = 0; i < Phi.rows(); ++i)
@@ -554,8 +554,8 @@ bool Variation::correlation_delete_mutate(Individual& child,
     return highest_corr == 1.0;
 }
 
-bool Variation::cross(Individual& mom, Individual& dad, Individual& child, 
-                      const Parameters& params, const Data& d)
+bool Variation::cross(const Individual& mom, const Individual& dad, 
+        Individual& child, const Parameters& params, const Data& d)
 {
     /*!
      * crossover by either subtree crossover or swapping of dimensions. 
@@ -576,7 +576,7 @@ bool Variation::cross(Individual& mom, Individual& dad, Individual& child,
     
     if (subtree) 
     {
-        logger.log("\tsubtree xo",2);
+        logger.log("\tsubtree xo",3);
         // limit xo choices to matching output types in the programs. 
         vector<char> d_otypes;
         for (const auto& p : dad.program)
@@ -600,7 +600,7 @@ bool Variation::cross(Individual& mom, Individual& dad, Individual& child,
         // from mom
         for (size_t i =0; i<dad.size(); ++i) 
         {
-            if (dad.program.at(i)->otype == mom.program[j1]->otype) 
+            if (dad.program.at(i)->otype == mom.program.at(j1)->otype) 
                 dlocs.push_back(i);
         }
     } 
@@ -612,7 +612,7 @@ bool Variation::cross(Individual& mom, Individual& dad, Individual& child,
             return stagewise_cross(mom, dad, child, params, d);
         else
         {
-            logger.log("\troot xo",2);
+            logger.log("\troot xo",3);
             mlocs = mom.program.roots();
             dlocs = dad.program.roots();
             logger.log("\t\trandom choice mlocs (size "+
@@ -648,7 +648,7 @@ bool Variation::cross(Individual& mom, Individual& dad, Individual& child,
 }
 
 /// residual crossover
-bool Variation::residual_cross(Individual& mom, Individual& dad, 
+bool Variation::residual_cross(const Individual& mom, const Individual& dad, 
         Individual& child, const Parameters& params, const Data& d)
 {
     /*!
@@ -663,7 +663,7 @@ bool Variation::residual_cross(Individual& mom, Individual& dad,
      * @return  child: mom with dad subtree graft
      */
                
-    logger.log("\tresidual xo",2);
+    logger.log("\tresidual xo",3);
     vector<size_t> mlocs, dlocs; // mom and dad locations for consideration
     // i1-j1: mom portion, i2-j2: dad portion
     size_t i1, j1, j1_idx, i2, j2;       
@@ -746,7 +746,7 @@ bool Variation::residual_cross(Individual& mom, Individual& dad,
 }
 
 /// stagewise crossover
-bool Variation::stagewise_cross(Individual& mom, Individual& dad, 
+bool Variation::stagewise_cross(const Individual& mom, const Individual& dad, 
         Individual& child, const Parameters& params, const Data& d)
 {
     /*!
@@ -770,7 +770,7 @@ bool Variation::stagewise_cross(Individual& mom, Individual& dad,
      *     - update $\mathbf{r} = r - b\phi^*$ 
      * $\phi_c$ = all $\phi^*$ that were chosen 
      */
-    logger.log("\tstagewise xo",2);
+    logger.log("\tstagewise xo",3);
     // normalize the residual 
     VectorXf R = d.y.array() - d.y.mean();
     /* cout << "R: " << R.norm() << "\n"; */
@@ -945,7 +945,7 @@ void Variation::splice_programs( NodeVector& vnew,
      *
      * @return  vnew: new vector 
      */
-    logger.log("splice_programs",2);
+    logger.log("splice_programs",3);
     if (i1 >= v1.size())
         cout << "i1 ( " << i1 << ") >= v1 size (" << v1.size() << ")\n";
     if (i2 >= v2.size())
@@ -973,8 +973,8 @@ void Variation::splice_programs( NodeVector& vnew,
     }
 }
 
-void Variation::print_cross(Individual& mom, size_t i1, size_t j1, 
-        Individual& dad, size_t i2, size_t j2, Individual& child, bool after)
+void Variation::print_cross(const Individual& mom, size_t i1, size_t j1, 
+        const Individual& dad, size_t i2, size_t j2, Individual& child, bool after)
 {
     std::cout << "\t\tattempting the following crossover:\n\t\t";
     for (int i =0; i<mom.program.size(); ++i){

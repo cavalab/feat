@@ -33,7 +33,7 @@ namespace FT{
             // select F/2 to F individuals
             std::iota(selected.begin(),selected.end(),P);
             
-            if (selected[selected.size()-1] > pop.size())
+            if (selected.at(selected.size()-1) > pop.size())
                 HANDLE_ERROR_THROW("error: selected includes " +
                                     to_string(selected.at(selected.size()-1)) +
                                     ", pop size is " + to_string(pop.size()) + "\n");

@@ -130,7 +130,7 @@ namespace FT
             /*     ArrayXb w(y.size()); */
             /*     for (int i = 0; i < class_weights.size(); ++i) */
             /*     { */
-            /*         w = (y.cast<int>() == i).select(class_weights[i], w); */
+            /*         w = (y.cast<int>() == i).select(class_weights.at(i), w); */
             /*     } */
             /*     cout << "w: " << w.transpose(); */ 
             /*     return loss.array() * w; */
@@ -399,8 +399,8 @@ namespace FT
             
             for (unsigned i=0; i< c.size(); ++i)
             {
-                P.at(i) = (y.array().cast<int>() == c[i]).count();  // total positives for this class
-                N.at(i) = (y.array().cast<int>() != c[i]).count();  // total negatives for this class
+                P.at(i) = (y.array().cast<int>() == c.at(i)).count();  // total positives for this class
+                N.at(i) = (y.array().cast<int>() != c.at(i)).count();  // total negatives for this class
             }
             
 
@@ -417,9 +417,9 @@ namespace FT
 
             // class-wise accuracy = 1/2 ( true positive rate + true negative rate)
             for (unsigned i=0; i< c.size(); ++i){
-                class_accuracies(i) = (TP[i]/P[i] + TN[i]/N[i])/2; 
-                //std::cout << "TP(" << i << "): " << TP[i] << ", P[" << i << "]: " << P[i] << "\n";
-                //std::cout << "TN(" << i << "): " << TN[i] << ", N[" << i << "]: " << N[i] << "\n";
+                class_accuracies(i) = (TP.at(i)/P.at(i) + TN.at(i)/N.at(i))/2; 
+                //std::cout << "TP(" << i << "): " << TP.at(i) << ", P[" << i << "]: " << P.at(i) << "\n";
+                //std::cout << "TN(" << i << "): " << TN.at(i) << ", N[" << i << "]: " << N.at(i) << "\n";
                 //std::cout << "class accuracy(" << i << "): " << class_accuracies(i) << "\n";
             }
            
@@ -486,8 +486,8 @@ namespace FT
 
         /*     for (unsigned i = 0; i < c.size(); ++i) */
         /*     { */
-        /*         int n = (y.cast<int>().array() == c[i]).count(); */
-        /*         class_loss[i] = (y.cast<int>().array() == c[i]).select(loss.array(),0).sum()/n; */
+        /*         int n = (y.cast<int>().array() == c.at(i)).count(); */
+        /*         class_loss.at(i) = (y.cast<int>().array() == c.at(i)).select(loss.array(),0).sum()/n; */
             
         /*     } */
         /*     // return balanced class losses */ 

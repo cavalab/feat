@@ -52,6 +52,15 @@ namespace FT{
            
             Individual();
 
+            /// copy assignment
+            /* Individual(const Individual& other); */
+            
+            /* Individual(Individual && other); */
+            
+            /* Individual& operator=(Individual const& other); */
+            
+            /* Individual& operator=(Individual && other); */
+
             /// calculate program output matrix Phi
             MatrixXf out(const Data& d, const Parameters& params, bool predict=false);
 
@@ -115,7 +124,8 @@ namespace FT{
             unsigned int get_complexity() const;
           
             /// clone this individual 
-            void clone(Individual& cpy, bool sameid=true);
+            void clone(Individual& cpy, bool sameid=true) const;
+            Individual clone();
             
             void set_id(unsigned i);
 

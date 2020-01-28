@@ -35,8 +35,8 @@ namespace FT{
             db.y.resize(batch_size);
             for (const auto& val: Z )
             {
-                db.Z[val.first].first.resize(batch_size);
-                db.Z[val.first].second.resize(batch_size);
+                db.Z.at(val.first).first.resize(batch_size);
+                db.Z.at(val.first).second.resize(batch_size);
             }
             for (unsigned i = 0; i<batch_size; ++i)
             {
@@ -46,8 +46,8 @@ namespace FT{
 
                for (const auto& val: Z )
                {
-                    db.Z[val.first].first.at(i) = Z.at(val.first).first.at(idx.at(i));
-                    db.Z[val.first].second.at(i) = Z.at(val.first).second.at(idx.at(i));
+                    db.Z.at(val.first).first.at(i) = Z.at(val.first).first.at(idx.at(i));
+                    db.Z.at(val.first).second.at(i) = Z.at(val.first).second.at(idx.at(i));
                }
             }
         }
@@ -210,7 +210,7 @@ namespace FT{
                 
             //getting indices for all labels
             for(int x = 0; x < o->y.size(); x++)
-                label_indices[o->y[x]].push_back(x);
+                label_indices[o->y(x)].push_back(x);
                    
             /* for (const auto& li : label_indices){ */
             /*     cout << "label " << li.first << ":\t"; */
@@ -232,10 +232,10 @@ namespace FT{
                 t_size = ceil(it->second.size()*split);
                 
                 for(x = 0; x < t_size; x++)
-                    t_indices.push_back(it->second[x]);
+                    t_indices.push_back(it->second.at(x));
                     
                 for(; x < it->second.size(); x++)
-                    v_indices.push_back(it->second[x]);
+                    v_indices.push_back(it->second.at(x));
                 
                 logger.log("Label is " + to_string(it->first), 3, "\t");
                 logger.log("Total size = " + it->second.size(), 3, "\t");
@@ -253,15 +253,15 @@ namespace FT{
             
             for(int x = 0; x < t_indices.size(); x++)
             {
-                t->X.col(x) = o->X.col(t_indices[x]);
-                t->y[x] = o->y[t_indices[x]];
+                t->X.col(x) = o->X.col(t_indices.at(x));
+                t->y(x) = o->y(t_indices.at(x));
                 
                 if(o->Z.size() > 0)
                 {
                     for(auto const &val : o->Z)
                     {
-                        t->Z[val.first].first.push_back(val.second.first[t_indices[x]]);
-                        t->Z[val.first].second.push_back(val.second.second[t_indices[x]]);
+                        t->Z[val.first].first.push_back(val.second.first.at(t_indices.at(x)));
+                        t->Z[val.first].second.push_back(val.second.second.at(t_indices.at(x)));
                     }
                 }
             }
@@ -270,15 +270,15 @@ namespace FT{
             
             for(int x = 0; x < v_indices.size(); x++)
             {
-                v->X.col(x) = o->X.col(v_indices[x]);
-                v->y[x] = o->y[v_indices[x]];
+                v->X.col(x) = o->X.col(v_indices.at(x));
+                v->y(x) = o->y(v_indices.at(x));
                 
                 if(o->Z.size() > 0)
                 {
                     for(auto const &val : o->Z)
                     {
-                        v->Z[val.first].first.push_back(val.second.first[t_indices[x]]);
-                        v->Z[val.first].second.push_back(val.second.second[t_indices[x]]);
+                        v->Z[val.first].first.push_back(val.second.first.at(t_indices.at(x)));
+                        v->Z[val.first].second.push_back(val.second.second.at(t_indices.at(x)));
                     }
                 }
             }
@@ -327,7 +327,7 @@ namespace FT{
             int size;
             for ( const auto val: Z )
             {
-                size = Z[val.first].first.size();
+                size = Z.at(val.first).first.size();
                 break;
             }
             
@@ -355,8 +355,8 @@ namespace FT{
                 vector<int> const &order )  
         {   
 			for ( int s = 1, d; s < order.size(); ++ s ) {
-				for ( d = order[s]; d < s; d = order[d] ) ;
-				if (d == s) while ( d = order[d], d != s ) swap( v[s], v[d]);
+				for ( d = order.at(s); d < s; d = order.at(d) ) ;
+				if (d == s) while ( d = order.at(d), d != s ) swap( v.at(s), v.at(d));
 			}
 		}
     }
