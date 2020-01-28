@@ -74,8 +74,8 @@ void Variation::vary(Population& pop, const vector<size_t>& parents,
                            dad.program_str() , 3);
                
                 // perform crossover
-                /* #pragma omp critical */
-                /* { */
+                #pragma omp critical
+                {
                     try{
                         pass = cross(mom, dad, child, params, d);
                     }
@@ -83,7 +83,7 @@ void Variation::vary(Population& pop, const vector<size_t>& parents,
                     {
                         std::cerr << "bad_alloc caught: " << ba.what() << "\n";
                     }
-                /* } */
+                }
                 
                 logger.log("crossing " + mom.get_eqn() + "\nwith\n " + 
                        dad.get_eqn() + "\nproduced " + child.get_eqn() + 
@@ -99,10 +99,10 @@ void Variation::vary(Population& pop, const vector<size_t>& parents,
                 logger.log("mutating " + mom.get_eqn() + "(" + 
                         mom.program_str() + ")", 3);
                 // create child
-                /* #pragma omp critical */
-                /* { */
+                #pragma omp critical
+                {
                     pass = mutate(mom,child,params,d);
-                /* } */ 
+                } 
                 logger.log("mutating " + mom.get_eqn() + " produced " + 
                         child.get_eqn() + ", pass: " + std::to_string(pass),3);
                 child.set_parents({mom});
