@@ -82,7 +82,7 @@ namespace FT{
             VectorXf predict_vector(const Data& d, const Parameters& params);
             VectorXf predict_drop(const Data& d, const Parameters& params, int drop_idx);
             /// return symbolic representation of program
-            string get_eqn();
+            string get_eqn() const;
 
             /// return vectorized representation of program
             vector<string> get_features();
@@ -153,8 +153,6 @@ namespace FT{
             
             typedef Array<bool, Dynamic, Dynamic, RowMajor> ArrayXXb;
             typedef Array<float, Dynamic, Dynamic, RowMajor> ArrayXXf;
-        private:
-            string eqn;                 				///< symbolic representation of program
         };
     }
 }
