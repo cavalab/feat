@@ -23,8 +23,8 @@ namespace FT {
             d_score_hash["log"] =  &Eval::d_log_loss; 
             d_score_hash["multi_log"] =  &Eval::d_multi_log_loss;
             
-            this->d_cost_func = d_score_hash[scorer]; 
-            this->cost_func = score_hash[scorer]; 
+            this->d_cost_func = d_score_hash.at(scorer); 
+            this->cost_func = score_hash.at(scorer); 
             
             /* this->X = X; */
 		    /* this->labels = labels; */
@@ -41,7 +41,7 @@ namespace FT {
 		        if (p->isNodeDx()) {
                     
 			        NodeDx* dNode = dynamic_cast<NodeDx*>(p.get());
-			        for (int i = 0; i < dNode->arity['f']; i++) {
+			        for (int i = 0; i < dNode->arity.at('f'); i++) {
 				        cout << "," << dNode->W.at(i);
 			        }
                     dNode = nullptr;
@@ -113,7 +113,7 @@ namespace FT {
                 size_t s = 0;
                 for (int i = 0; i < stack_trace.size(); ++i)
                 {
-                    while (!ind.program.at(roots[s])->isNodeDx()) ++s;
+                    while (!ind.program.at(roots.at(s))->isNodeDx()) ++s;
                     /* cout << "running backprop on " << ind.program_str() << " from " */
                     /*      << roots.at(s) << " to " */ 
                     /*     << ind.program.subtree(roots.at(s)) << "\n"; */
@@ -247,11 +247,11 @@ namespace FT {
                 /* cout << "derivatives size: " << derivatives.size() << "\n"; */ 
                 vector<ArrayXf> n_derivatives;
 
-                if (node->isNodeDx() && node->visits == 0 && node->arity['f'] > 0) {
+                if (node->isNodeDx() && node->visits == 0 && node->arity.at('f') > 0) {
                     NodeDx* dNode = dynamic_cast<NodeDx*>(node); // Could probably put this up one and have the if condition check if null
                     /* cout << "evaluating derivative\n"; */
                     // Calculate all the derivatives and store them, then update all the weights and throw away the node
-                    for (int i = 0; i < node->arity['f']; i++) {
+                    for (int i = 0; i < node->arity.at('f'); i++) {
                         dNode->derivative(n_derivatives, stack, i);
                     }
                     /* cout << "updating derivatives\n"; */
@@ -259,13 +259,13 @@ namespace FT {
                     // dNode->print_weight();
                     /* cout << "popping input arguments\n"; */
                     // Get rid of the input arguments for the node
-                    for (int i = 0; i < dNode->arity['f']; i++) {
+                    for (int i = 0; i < dNode->arity.at('f'); i++) {
                         pop<ArrayXf>(&stack.f);
                     }
-                    for (int i = 0; i < dNode->arity['b']; i++) {
+                    for (int i = 0; i < dNode->arity.at('b'); i++) {
                         pop<ArrayXb>(&stack.b);
                     }
-                    for (int i = 0; i < dNode->arity['c']; i++) {
+                    for (int i = 0; i < dNode->arity.at('c'); i++) {
                         pop<ArrayXi>(&stack.c);
                     }
                     if (!n_derivatives.empty()) {
@@ -278,7 +278,7 @@ namespace FT {
                 /*     cout << "not NodeDx or visits reached or no floating arity\n"; */
                 /* cout << "next branch\n"; */
                 // Choosing how to move through tree
-                if (node->arity['f'] == 0 || !node->isNodeDx()) {
+                if (node->arity.at('f') == 0 || !node->isNodeDx()) {
             
                     // Clean up gradients and find the parent node
                     /* cout << "popping derivatives\n"; */
@@ -289,7 +289,7 @@ namespace FT {
                 else 
                 {
                     node->visits += 1;
-                    if (node->visits > node->arity['f']) 
+                    if (node->visits > node->arity.at('f')) 
                     {
                         next_branch(executing, bp_program, derivatives);
                     }
@@ -298,7 +298,7 @@ namespace FT {
 
             // point bp_program to null
             for (unsigned i = 0; i < bp_program.size(); ++i)
-                bp_program[i] = nullptr;
+                bp_program.at(i) = nullptr;
 
             /* cout << "Backprop terminated\n"; */
             //print_weights(program);

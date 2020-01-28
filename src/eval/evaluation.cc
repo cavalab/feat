@@ -20,7 +20,7 @@ namespace FT{
             score_hash["log"] =  &log_loss_label; 
             score_hash["multi_log"] =  &multi_log_loss_label; 
         
-            score = score_hash[scorer];
+            score = score_hash.at(scorer);
         }
 
         Evaluation::~Evaluation(){}
@@ -58,7 +58,8 @@ namespace FT{
 
                 if (params.backprop)
                 {
-                    AutoBackProp backprop(params.scorer, params.bp.iters, params.bp.learning_rate);
+                    AutoBackProp backprop(params.scorer, params.bp.iters, 
+                            params.bp.learning_rate);
                     logger.log("Running backprop on " + ind.get_eqn(), 3);
                     backprop.run(ind, d, params);
                 }         

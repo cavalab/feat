@@ -12,6 +12,42 @@ namespace FT{
         Individual::Individual(){c = 0; dim = 0; eqn=""; parent_id.clear(); 
             parent_id.push_back(-1);}
 
+        /* Individual::Individual(Individual && other) = default; */
+
+        /* Individual& Individual::operator=(Individual && other) = default; */
+
+        /* Individual::Individual(const Individual& other) */
+        /* { */
+        /*     /1* other.clone(*this, false); *1/ */
+        /*     this->program = other.program; */
+        /*     this->p = other.p; */
+        /* } */
+
+        /* Individual& Individual::operator=(Individual const& other) */
+        /* { */
+        /*     this->program = other.program; */
+        /*     this->p = other.p; */
+        /*     return *this; */
+        /* } */
+
+        Individual Individual::clone()
+        {
+            Individual cpy;
+            cpy.program = program;
+            cpy.p = p;
+            cpy.id = id;
+            /* if (sameid) */
+            /*     cpy.id = id; */
+            return cpy;
+        }
+        /// clone this individual 
+        void Individual::clone(Individual& cpy, bool sameid) const
+        {
+            cpy.program = program;
+            cpy.p = p;
+            if (sameid)
+                cpy.id = id;
+        }
         /// set rank
         void Individual::set_rank(unsigned r){rank=r;}
         /// return size of program
@@ -26,7 +62,7 @@ namespace FT{
             {
                 if (program.at(i)->isNodeDx())
                 {
-                    n_params += program.at(i)->arity['f'];
+                    n_params += program.at(i)->arity.at('f');
                 }
             }
             return n_params;
@@ -34,14 +70,6 @@ namespace FT{
         
         unsigned int Individual::get_complexity() const {return c;};
       
-        /// clone this individual 
-        void Individual::clone(Individual& cpy, bool sameid)
-        {
-            cpy.program = program;
-            cpy.p = p;
-            if (sameid)
-                cpy.id = id;
-        }
         
         void Individual::set_id(unsigned i) { id = i; }
         
@@ -86,9 +114,9 @@ namespace FT{
 
             p.resize(weights.size());
             for (unsigned i=0; i< weights.size(); ++i)
-                p[i] = 1 - fabs(weights[i]/sum);
+                p.at(i) = 1 - fabs(weights.at(i)/sum);
             /* for (unsigned i=0; i<p.size(); ++i) */
-            /*     p[i] = 1-p[i]; */
+            /*     p.at(i) = 1-p.at(i); */
             float u = 1.0/float(p.size());    // uniform probability
             /* std::cout << "p: "; */
             /* for (auto tmp : p) cout << tmp << " " ; cout << "\n"; */
@@ -98,7 +126,7 @@ namespace FT{
             // do partial uniform, partial weighted probability, using feedback 
             // ratio
             for (unsigned i=0; i<p.size(); ++i)
-                p[i] = (1-fb)*u + fb*p[i];
+                p.at(i) = (1-fb)*u + fb*p.at(i);
             /* cout << "exiting set_p\n"; */
             // set weights
             this->w = weights;
@@ -294,17 +322,17 @@ namespace FT{
                 {
                     case 'f':
                     // add state_f to Phi
-                        Row = ArrayXf::Map(state.f.at(rows[rt]).data(),cols);
+                        Row = ArrayXf::Map(state.f.at(rows.at(rt)).data(),cols);
                         break;
                     case 'c':
                     // convert state_c to Phi       
                         Row = ArrayXi::Map(
-                            state.c.at(rows[rt]).data(),cols).cast<float>();
+                            state.c.at(rows.at(rt)).data(),cols).cast<float>();
                         break;
                     case 'b':
                     // add state_b to Phi
                         Row = ArrayXb::Map(
-                            state.b.at(rows[rt]).data(),cols).cast<float>();
+                            state.b.at(rows.at(rt)).data(),cols).cast<float>();
                         break;
                     default:
                         HANDLE_ERROR_THROW("Unknown root type");
@@ -312,7 +340,7 @@ namespace FT{
                 // remove nans, set infs to max and min
                 clean(Row); 
                 Phi.row(i) = Row;
-                ++rows[rt];
+                ++rows.at(rt);
             }
             return Phi;
         }
@@ -393,7 +421,7 @@ namespace FT{
                                  " is invalid\n";
                     std::cout << "float state size: " << state.f.size() << "\n";
                     std::cout << "bool state size: " << state.b.size() << "\n";
-                    std::cout << "op arity: " << n->arity['f'] << "f, " << n->arity['b'] << "b\n";
+                    std::cout << "op arity: " << n->arity.at('f') << "f, " << n->arity.at('b') << "b\n";
                     exit(1);
                 }
             }
@@ -725,7 +753,7 @@ namespace FT{
                         default:
                             HANDLE_ERROR_THROW("Unknown root type");
                     }
-                    ++rows[rt];
+                    ++rows.at(rt);
                 }
             }
             //}
@@ -778,7 +806,7 @@ namespace FT{
                 
                 for (unsigned int i = program.size(); i>0; --i)
                 {
-                    ca += program[i-1]->total_arity();
+                    ca += program.at(i-1)->total_arity();
                     if (ca == 0) ++dim;
                     else --ca;
                 }
@@ -804,9 +832,9 @@ namespace FT{
                 flag2 = 0; // to check if b    has a smaller objective
 
             for (int i=0; i<obj.size(); ++i) {
-                if (obj[i] < b.obj[i]) 
+                if (obj.at(i) < b.obj.at(i)) 
                     flag1 = 1;
-                else if (obj[i] > b.obj[i]) 
+                else if (obj.at(i) > b.obj.at(i)) 
                     flag2 = 1;                       
             }
 
@@ -884,12 +912,13 @@ namespace FT{
         string Individual::program_str() const
         {
             /* @return a string of node names. */
-            string s = "";
+            string s = "[";
             for (const auto& p : program)
             {
                 s+= p->name;
                 s+=" ";
             }
+            s+="]";
             return s;
         }
         
@@ -907,13 +936,13 @@ namespace FT{
 
             for (const auto& n : program)   
             {   	
-                ++stack_size[n->otype];
+                ++stack_size.at(n->otype);
 
-                if ( max_stack_size[n->otype] < stack_size[n->otype])
-                    max_stack_size[n->otype] = stack_size[n->otype];
+                if ( max_stack_size.at(n->otype) < stack_size.at(n->otype))
+                    max_stack_size.at(n->otype) = stack_size.at(n->otype);
 
                 for (const auto& a : n->arity)
-                    stack_size[a.first] -= a.second;       
+                    stack_size.at(a.first) -= a.second;       
             }	
             return max_stack_size;
         }

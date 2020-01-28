@@ -123,22 +123,22 @@ namespace FT{
            }
           
            // recurse for floating arguments
-           for (unsigned int j = 0; j<arity['f']; ++j)  
+           for (unsigned int j = 0; j<arity.at('f'); ++j)  
                i = subtree(--i,'f');                         
 
            // recurse for boolean
            size_t i2 = i;                              
-           for (unsigned int j = 0; j<arity['b']; ++j)
+           for (unsigned int j = 0; j<arity.at('b'); ++j)
                i2 = subtree(--i2,'b');
 
            // recurse for categorical arguments
            size_t i3 = i2;                 
-           for (unsigned int j = 0; j<arity['c']; ++j)
+           for (unsigned int j = 0; j<arity.at('c'); ++j)
                i3 = subtree(--i3,'c'); 
 
            // recurse for longitudinal arguments
            size_t i4 = i3;                 
-           for (unsigned int j = 0; j<arity['z']; ++j)
+           for (unsigned int j = 0; j<arity.at('z'); ++j)
                i4 = subtree(--i4,'z');
 
            /* cout << "returning min(" << i << "," << i4 << ")\n"; */ 
@@ -175,7 +175,7 @@ namespace FT{
                                         "] and W\n";
                                         
                         error += "weights[" + to_string(count) + 
-                                 "].size() (" + to_string(weights[count].size()) +
+                                 "].size() (" + to_string(weights.at(count).size()) +
                                  ") != W.size() ("+ to_string(nd->W.size()) + "\n";
                                  
                         HANDLE_ERROR_THROW(error);
@@ -264,22 +264,22 @@ namespace FT{
                 
                 for (size_t i = 0; i<terminals.size(); ++i)
                 {
-                    if (terminals[i]->otype == otype) // grab terminals matching output type
+                    if (terminals.at(i)->otype == otype) // grab terminals matching output type
                     {
                         ti.push_back(i);
-                        tw.push_back(term_weights[i]);                    
+                        tw.push_back(term_weights.at(i));                    
                     }
                         
                 }
                 /* cout << "valid terminals: "; */
                 /* for (unsigned i = 0; i < ti.size(); ++i) */ 
-                /*     cout << terminals[ti[i]]->name << "(" << terminals[ti[i]]->otype << ", " */ 
-                /*          << tw[i] << "), "; */ 
+                /*     cout << terminals.at(ti.at(i))->name << "(" << terminals.at(ti.at(i))->otype << ", " */ 
+                /*          << tw.at(i) << "), "; */ 
                 /* cout << "\n"; */
                 
                 if(ti.size() > 0 && tw.size() > 0)
                 {
-                    auto t = terminals[r.random_choice(ti,tw)]->clone();
+                    auto t = terminals.at(r.random_choice(ti,tw))->clone();
                     /* std::cout << "chose " << t->name << " "; */
                     push_back(t->rnd_clone());
                 }
@@ -305,11 +305,11 @@ namespace FT{
                 //std::cout << "bterms: " << bterms << ",cterms: " << cterms 
                 //  << ",zterms: " << zterms << "\n"; 
                 for (size_t i = 0; i<functions.size(); ++i)
-                    if (functions[i]->otype==otype &&
-                        (max_d>1 || functions[i]->arity['f']==0 || fterms) &&
-                        (max_d>1 || functions[i]->arity['b']==0 || bterms) &&
-                        (max_d>1 || functions[i]->arity['c']==0 || cterms) &&
-                        (max_d>1 || functions[i]->arity['z']==0 || zterms))
+                    if (functions.at(i)->otype==otype &&
+                        (max_d>1 || functions.at(i)->arity.at('f')==0 || fterms) &&
+                        (max_d>1 || functions.at(i)->arity.at('b')==0 || bterms) &&
+                        (max_d>1 || functions.at(i)->arity.at('c')==0 || cterms) &&
+                        (max_d>1 || functions.at(i)->arity.at('z')==0 || zterms))
                     {
                         fi.push_back(i);
                         fw.push_back(op_weights.at(i));
@@ -354,7 +354,7 @@ namespace FT{
                 /*     cout << "(" << functions[fi[fis]]->name << "," << fw[fis] << ") ,"; */
                 /* cout << "\n"; */
                 
-                push_back(functions[r.random_choice(fi,fw)]->rnd_clone());
+                push_back(functions.at(r.random_choice(fi,fw))->rnd_clone());
                 
                 /* std::cout << "back(): " << back()->name << "\n"; */ 
                 std::unique_ptr<Node> chosen(back()->clone());
@@ -365,22 +365,22 @@ namespace FT{
                 /* if (cont != 1) */
                 /*     HANDLE_ERROR_THROW("exiting"); */
                 // recurse to fulfill the arity of the chosen function
-                for (size_t i = 0; i < chosen->arity['f']; ++i)
+                for (size_t i = 0; i < chosen->arity.at('f'); ++i)
                 {
                     make_tree(functions, terminals, max_d-1, term_weights, 
                             op_weights, 'f', term_types);
                 }
-                for (size_t i = 0; i < chosen->arity['b']; ++i)
+                for (size_t i = 0; i < chosen->arity.at('b'); ++i)
                 {
                     make_tree(functions, terminals, max_d-1, term_weights, 
                             op_weights, 'b', term_types);
                 }
-                for (size_t i = 0; i < chosen->arity['c']; ++i)
+                for (size_t i = 0; i < chosen->arity.at('c'); ++i)
                 {
                     make_tree(functions, terminals, max_d-1, term_weights, 
                             op_weights, 'c', term_types);
                 }
-                for (size_t i = 0; i < chosen->arity['z']; ++i)
+                for (size_t i = 0; i < chosen->arity.at('z'); ++i)
                 {
                     make_tree(functions, terminals, max_d-1, term_weights, 
                             op_weights, 'z', term_types);

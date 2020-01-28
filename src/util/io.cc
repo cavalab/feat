@@ -153,10 +153,10 @@ namespace FT{
                 std::getline(lineStream, cols.at(2), sep);
                 std::getline(lineStream, cols.at(3), sep);
                
-                sampleNo = cols.at(head_to_col["id"]);
-                time = cols.at(head_to_col["date"]);
-                value = cols.at(head_to_col["value"]);
-                type = cols.at(head_to_col["name"]);
+                sampleNo = cols.at(head_to_col.at("id"));
+                time = cols.at(head_to_col.at("date"));
+                value = cols.at(head_to_col.at("value"));
+                type = cols.at(head_to_col.at("name"));
 
                 type = trim(type);
                 
@@ -169,17 +169,17 @@ namespace FT{
             }
             
             int numVars = dataMap.size();
-            int numSamples = dataMap[firstKey].size();
+            int numSamples = dataMap.at(firstKey).size();
             int x;
             
             for ( const auto &val: dataMap )
             {
                 for(x = 0; x < numSamples; ++x)
                 {
-                    ArrayXf arr1 = Map<ArrayXf>(dataMap[val.first].at(x).first.data(), 
-                                                dataMap[val.first].at(x).first.size());
-                    ArrayXf arr2 = Map<ArrayXf>(dataMap[val.first].at(x).second.data(), 
-                                                dataMap[val.first].at(x).second.size());
+                    ArrayXf arr1 = Map<ArrayXf>(dataMap.at(val.first).at(x).first.data(), 
+                                                dataMap.at(val.first).at(x).first.size());
+                    ArrayXf arr2 = Map<ArrayXf>(dataMap.at(val.first).at(x).second.data(), 
+                                                dataMap.at(val.first).at(x).second.size());
                     Z[val.first].first.push_back(arr1);
                     Z[val.first].second.push_back(arr2);
 
@@ -237,7 +237,7 @@ namespace FT{
                     }
                 } 
                 idLoc[id].push_back(i);
-                locID[i] = id;
+                locID.at(i) = id;
                 ++i;
             }
             /* cout << "idSet size: " << idSet.size() << "\n"; */
@@ -290,10 +290,10 @@ namespace FT{
                 
                 cols.at(3) = trim(cols.at(3));
 
-                sampleNo = cols.at(head_to_col["id"]);
-                time = cols.at(head_to_col["date"]);
-                value = cols.at(head_to_col["value"]);
-                name = cols.at(head_to_col["name"]);
+                sampleNo = cols.at(head_to_col.at("id"));
+                time = cols.at(head_to_col.at("date"));
+                value = cols.at(head_to_col.at("value"));
+                name = cols.at(head_to_col.at("name"));
 
                 /* name = trim(name); */
                 /* time = trim(time); */
@@ -339,7 +339,7 @@ namespace FT{
                     if (val.second.find(x) == val.second.end())
                     {
                         HANDLE_ERROR_THROW(std::to_string(x) + " not found (patient id = " 
-                                           + std::to_string(locID[x]) + ") in " + 
+                                           + std::to_string(locID.at(x)) + ") in " + 
                                            val.first);
                         pass = false;
                     }
@@ -358,10 +358,10 @@ namespace FT{
                 for(int x = 0; x < numSamples; ++x)
                 {
                     /* cout << x << ","; */
-                    ArrayXf arr1 = Map<ArrayXf>(dataMap[val.first].at(x).first.data(), 
-                                                dataMap[val.first].at(x).first.size());
-                    ArrayXf arr2 = Map<ArrayXf>(dataMap[val.first].at(x).second.data(), 
-                                                dataMap[val.first].at(x).second.size());
+                    ArrayXf arr1 = Map<ArrayXf>(dataMap.at(val.first).at(x).first.data(), 
+                                                dataMap.at(val.first).at(x).first.size());
+                    ArrayXf arr2 = Map<ArrayXf>(dataMap.at(val.first).at(x).second.data(), 
+                                                dataMap.at(val.first).at(x).second.size());
                     Z[val.first].first.push_back(arr1);
                     Z[val.first].second.push_back(arr2);
                 }
