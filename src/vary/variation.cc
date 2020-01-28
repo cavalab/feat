@@ -68,27 +68,19 @@ void Variation::vary(Population& pop, const vector<size_t>& parents,
                 Individual& dad = pop.individuals.at(r.random_choice(parents));
                 /* int dad = r.random_choice(parents); */
                 // create child
+               
+                // perform crossover
                 logger.log("\n===\ncrossing\n" + mom.get_eqn() + "\nwith\n " + 
                            dad.get_eqn() , 3);
                 logger.log("programs:\n" + mom.program_str() + "\nwith\n " + 
                            dad.program_str() , 3);
-               
-                // perform crossover
-                #pragma omp critical
-                {
-                    try{
-                        pass = cross(mom, dad, child, params, d);
-                    }
-                    catch (std::bad_alloc& ba)
-                    {
-                        std::cerr << "bad_alloc caught: " << ba.what() << "\n";
-                    }
-                }
+                
+                pass = cross(mom, dad, child, params, d);
                 
                 logger.log("crossing " + mom.get_eqn() + "\nwith\n " + 
-                       dad.get_eqn() + "\nproduced " + child.get_eqn() + 
-                       ", pass: " + std::to_string(pass) + "\n===\n",3);    
-
+                   dad.get_eqn() + "\nproduced " + child.get_eqn() + 
+                   ", pass: " + std::to_string(pass) + "\n===\n",3);    
+                
                 child.set_parents({mom, dad});
             }
             else                        // mutation
@@ -96,15 +88,15 @@ void Variation::vary(Population& pop, const vector<size_t>& parents,
                 // get random mom
                 Individual& mom = pop.individuals.at(r.random_choice(parents));
                 /* int mom = r.random_choice(parents); */                
-                logger.log("mutating " + mom.get_eqn() + "(" + 
-                        mom.program_str() + ")", 3);
                 // create child
-                #pragma omp critical
-                {
-                    pass = mutate(mom,child,params,d);
-                } 
-                logger.log("mutating " + mom.get_eqn() + " produced " + 
+                /* #pragma omp critical */
+                /* { */
+               logger.log("mutating " + mom.get_eqn() + "(" + 
+                        mom.program_str() + ")", 3);
+               pass = mutate(mom,child,params,d);
+               logger.log("mutating " + mom.get_eqn() + " produced " + 
                         child.get_eqn() + ", pass: " + std::to_string(pass),3);
+                /* } */ 
                 child.set_parents({mom});
             }
             if (pass)

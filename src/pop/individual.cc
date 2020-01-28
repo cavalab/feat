@@ -9,7 +9,7 @@ namespace FT{
 
     namespace Pop{ 
            
-        Individual::Individual(){c = 0; dim = 0; eqn=""; parent_id.clear(); 
+        Individual::Individual(){c = 0; dim = 0; parent_id.clear(); 
             parent_id.push_back(-1);}
 
         /* Individual::Individual(Individual && other) = default; */
@@ -706,62 +706,55 @@ namespace FT{
         #endif
         
         // return symbolic representation of program 
-        string Individual::get_eqn()
+        string Individual::get_eqn() const
         {
-            #pragma omp critical 
+            string eqn="";
+            State state;
+
+            int i = 0;
+            for (const auto& n : program)
             {
-                this->eqn="";
-                State state;
-
-                int i = 0;
-                for (const auto& n : program)
-                {
-                    if(state.check_s(n->arity))
-                        n->eval_eqn(state);
-                    else
-                        HANDLE_ERROR_THROW("get_eqn() error: node " 
-                                + n->name + " at location " + to_string(i) 
-                                + " in [ " + program_str() 
-                                + " ] is invalid\n");
-                    ++i;
-                }
-                // tie state outputs together to return representation
-                // order by root types
-                this->dtypes.clear();
-                for (auto r : program.roots())
-                {
-                    this->dtypes.push_back(program.at(r)->otype);
-                }
-                std::map<char,int> rows;
-                rows['f']=0;
-                rows['c']=0;
-                rows['b']=0;
-                for (int i = 0; i < this->dtypes.size(); ++i)
-                {
-                    char rt = this->dtypes.at(i);
-                    switch (rt)
-                    {
-                        case 'f':
-                            this->eqn += "[" + state.fs.at(rows[rt]) + "]";
-                            break;
-                        case 'c':
-                            this->eqn += "[" + state.cs.at(rows[rt]) + "]";
-                            break;
-                        case 'b':
-                            this->eqn += "[" + state.bs.at(rows[rt]) + "]";
-                            break;
-                        default:
-                            HANDLE_ERROR_THROW("Unknown root type");
-                    }
-                    ++rows.at(rt);
-                }
+                if(state.check_s(n->arity))
+                    n->eval_eqn(state);
+                else
+                    HANDLE_ERROR_THROW("get_eqn() error: node " 
+                            + n->name + " at location " + to_string(i) 
+                            + " in [ " + program_str() 
+                            + " ] is invalid\n");
+                ++i;
             }
-            //}
-            /* cout << "\nin get_eqn\n" */
-            /*     << "program: " << program_str() << "\n" */
-            /*     << "eqn: " << this->eqn << "\n"; */
+            // tie state outputs together to return representation
+            // order by root types
+            vector<char> dtypes;
+            for (auto r : program.roots())
+            {
+                dtypes.push_back(program.at(r)->otype);
+            }
+            std::map<char,int> rows;
+            rows['f']=0;
+            rows['c']=0;
+            rows['b']=0;
+            for (int i = 0; i < dtypes.size(); ++i)
+            {
+                char rt = dtypes.at(i);
+                switch (rt)
+                {
+                    case 'f':
+                        eqn += "[" + state.fs.at(rows[rt]) + "]";
+                        break;
+                    case 'c':
+                        eqn += "[" + state.cs.at(rows[rt]) + "]";
+                        break;
+                    case 'b':
+                        eqn += "[" + state.bs.at(rows[rt]) + "]";
+                        break;
+                    default:
+                        HANDLE_ERROR_THROW("Unknown root type");
+                }
+                ++rows.at(rt);
+            }
 
-            return this->eqn;
+            return eqn;
         }
         
         // return vectorized symbolic representation of program 

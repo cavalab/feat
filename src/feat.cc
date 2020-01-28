@@ -601,10 +601,8 @@ void Feat::run_generation(unsigned int g,
 
     // evaluate offspring
     logger.log("evaluating offspring...", 2);
-    params.set_verbosity(3);
     p_eval->fitness(p_pop->individuals, *d.t, F, params, 
             true && !params.use_batch);
-    params.set_verbosity(2);
 
     // select survivors from combined pool of parents and offspring
     logger.log("survival...", 2);
