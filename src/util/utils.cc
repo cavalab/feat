@@ -21,6 +21,12 @@ namespace FT{
             x = (isinf(x)).select(MAX_FLT,x);
             x = (isnan(x)).select(0,x);
         };  
+        void clean(VectorXf& x)
+        {
+            ArrayXf y = ArrayXf(x);
+            clean(y);
+            x = VectorXf(y);
+        }
 
         std::string ltrim(std::string str, const std::string& chars)
         {

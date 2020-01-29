@@ -199,15 +199,16 @@ namespace FT{
             Phi = out(d, params, false);      
             // calculate ML model from Phi
             logger.log("ML training on " + get_eqn(), 3);
-            ml = std::make_shared<ML>(params.ml, true, params.classification,
-                    params.n_classes);
+            this->ml = std::make_shared<ML>(params.ml, true, 
+                    params.classification, params.n_classes);
             
-            shared_ptr<CLabels> yh = ml->fit(Phi,d.y,params,pass,dtypes);
+            shared_ptr<CLabels> yh = this->ml->fit(Phi,d.y,params,pass,dtypes);
 
             if (pass)
             {
                 logger.log("Setting individual's weights...", 3);
-                set_p(ml->get_weights(),params.feedback,params.softmax_norm);
+                set_p(this->ml->get_weights(),params.feedback,
+                        params.softmax_norm);
             }
             else
             {   // set weights to zero
@@ -725,18 +726,19 @@ namespace FT{
             }
             // tie state outputs together to return representation
             // order by root types
-            vector<char> dtypes;
+            vector<char> root_types;
             for (auto r : program.roots())
             {
-                dtypes.push_back(program.at(r)->otype);
+                root_types.push_back(program.at(r)->otype);
             }
             std::map<char,int> rows;
             rows['f']=0;
             rows['c']=0;
             rows['b']=0;
-            for (int i = 0; i < dtypes.size(); ++i)
+
+            for (int i = 0; i < root_types.size(); ++i)
             {
-                char rt = dtypes.at(i);
+                char rt = root_types.at(i);
                 switch (rt)
                 {
                     case 'f':
