@@ -49,6 +49,16 @@ namespace FT{
             
             unsigned start =0;
             if (offspring) start = F.cols()/2;
+
+            /* for (unsigned i = start; i<individuals.size(); ++i) */
+            /* { */
+            /*     cout << "ind " << i << " size: " */ 
+            /*         << individuals.at(i).size() << endl; */
+            /*     /1* cout << "ind " << i << " eqn: " *1/ */ 
+            /*     /1*     << individuals.at(i).get_eqn() << endl; *1/ */
+            /*     /1* cout << "ind " << i << " program str: " *1/ */ 
+            /*     /1*     << individuals.at(i).program_str() << endl; *1/ */
+            /* } */
             
             // loop through individuals
             #pragma omp parallel for
@@ -66,16 +76,19 @@ namespace FT{
 
                 bool pass = true;
 
-                shared_ptr<CLabels> yhat = validation? ind.predict(d,params) : ind.fit(d,params,pass); 
+                logger.log("Running ind " + to_string(i) 
+                        + ", location: " + to_string(ind.loc), 3);
+
+                shared_ptr<CLabels> yhat = validation? 
+                    ind.predict(d,params) : ind.fit(d,params,pass); 
                 // assign F and aggregate fitness
-                logger.log("Assigning fitness to " + ind.get_eqn(), 3);
+                logger.log("Assigning fitness to ind " + to_string(i) 
+                        + ", location: " + to_string(ind.loc) 
+                        + ", eqn: " + ind.get_eqn(), 3);
 
                 if (!pass)
                 {
 
-                    /* vector<double> w(ind.Phi.rows(), 0);     // set weights to zero */
-                    /* ind.set_p(w,params.feedback); */
-                    
                     if (validation) 
                         ind.fitness_v = MAX_FLT; 
                     else 
@@ -85,13 +98,13 @@ namespace FT{
                 }
                 else
                 {
-                    // assign weights to individual
-                    /* ind.set_p(ind.ml->get_weights(),params.feedback); */
+                    // assign fitness to individual
                     assign_fit(ind,F,yhat,d.y,params,validation);
 
                     if (params.hillclimb && !validation)
                     {
-                        HillClimb hc(params.scorer, params.hc.iters, params.hc.step);
+                        HillClimb hc(params.scorer, params.hc.iters, 
+                                params.hc.step);
                         bool updated = false;
                         shared_ptr<CLabels> yhat2 = hc.run(ind, d, params,
                                               updated);
@@ -106,8 +119,9 @@ namespace FT{
         }
         
         // assign fitness to program
-        void Evaluation::assign_fit(Individual& ind, MatrixXf& F, const shared_ptr<CLabels>& yhat, 
-                                    const VectorXf& y, const Parameters& params, bool val)
+        void Evaluation::assign_fit(Individual& ind, MatrixXf& F, 
+                const shared_ptr<CLabels>& yhat, const VectorXf& y, 
+                const Parameters& params, bool val)
         {
             /*!
              * assign raw errors to F, and aggregate fitnesses to individuals. 

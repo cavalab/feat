@@ -148,7 +148,8 @@ namespace FT{
             	ml_type == SVM || (ml_type == LR))
             {
                 // for multiclass, return the average weight magnitude over the OVR models
-                if(this->prob_type == PT_MULTICLASS && ( ml_type == LR || ml_type == SVM ) ) 
+                if(this->prob_type == PT_MULTICLASS 
+                        && ( ml_type == LR || ml_type == SVM ) ) 
                 {
                     /* cout << "in get_weights(), multiclass LR\n"; */
                     vector<SGVector<double>> weights;
@@ -173,10 +174,10 @@ namespace FT{
                         /* cout << "weights:\n"; */
                         /* weights.at(i).display_vector(); */
 
-                        for( int j = 0;j<weights[i].size(); ++j) 
+                        for( int j = 0;j<weights.at(i).size(); ++j) 
                         {
-                            w.at(j) += fabs(weights[i][j]);
-                            w.at(j) += weights[i][j];
+                            w.at(j) += fabs(weights.at(i)[j]);
+                            /* w.at(j) += weights.at(i)[j]; */
                         }
                     }
                     /* cout << "normalizing weights\n"; */ 
@@ -191,10 +192,13 @@ namespace FT{
 
 	                return vector<float>(w.begin(), w.end());
                 }
-	            // otherwise, return the true weights 
-                auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_w();
-                
-                w.assign(tmp.data(), tmp.data()+tmp.size());          
+                else
+                {
+                    // otherwise, return the true weights 
+                    auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_w();
+                    
+                    w.assign(tmp.data(), tmp.data()+tmp.size());          
+                }
                 /* for (unsigned i =0; i<w.size(); ++i)    // take absolute value of weights */
                 /*     w.at(i) = fabs(w.at(i)); */
 	        }
@@ -346,6 +350,7 @@ namespace FT{
                     /* cout << "set probs done\n"; */
                 }
                 y_pred = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_labels();
+
 			    /* cout << "y_pred: "; */
 			    /* y_pred.display_vector(); */
 			
@@ -523,7 +528,9 @@ namespace FT{
                 // convert -1 to 0
                 yhat = (yhat.cast<int>().array() == -1).select(0,yhat);
 
-            return yhat.template cast<float>();
+            VectorXf yhatf = yhat.template cast<float>();
+            clean(yhatf);
+            return yhatf;
         }
     }
 }

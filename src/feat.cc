@@ -439,6 +439,12 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     else
         use_arch = true;
     
+    string log_msg = "functions set: [";
+    for (const auto& f: params.functions) log_msg += f->name + ", "; 
+    log_msg += "]\n";
+    logger.log(log_msg, 1);
+    logger.log("scorer: " + params.scorer, 1);
+
     // split data into training and test sets
     //Data data(X, y, Z, params.classification);
     DataRef d(X, y, Z, params.classification);

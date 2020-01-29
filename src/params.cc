@@ -102,7 +102,7 @@ void Parameters::set_scorer(string sc)
     }
     else
         scorer = sc;
-    logger.log("scorer set to " + scorer,2);
+    logger.log("scorer set to " + scorer,3);
 }
 
 /// sets weights for terminals. 
@@ -508,7 +508,7 @@ void Parameters::set_functions(string fs)
     for (const auto& f: functions) log_msg += f->name + ", "; 
     log_msg += "]\n";
     
-    logger.log(log_msg, 2);
+    logger.log(log_msg, 3);
     
     // reset output types
     set_otypes();
