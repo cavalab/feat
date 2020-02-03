@@ -134,6 +134,10 @@ namespace FT{
             float f = score(d.y, yhat, loss, params.class_weights);
             float fairness = subgroup_fairness(loss, d, f);
             
+            if (fairness <0 )
+            {
+                cout << "WTF fairness is " << fairness << "...\n";
+            }
             if (val)
             {
                 ind.fitness_v = f;
@@ -158,6 +162,7 @@ namespace FT{
             // over k
             float avg_score = 0;
             float count = 0;
+            float alpha = 1;
 
             ArrayXb x_idx; 
 
@@ -167,7 +172,6 @@ namespace FT{
                 {
                     x_idx = (d.X.row(pl.first).array() == lvl);
                     float len_g = x_idx.count();
-                    float alpha = 1;
                     if (use_alpha)
                         alpha = len_g/d.X.cols();
                     /* cout << "alpha = " << len_g << "/" 
@@ -177,12 +181,26 @@ namespace FT{
                     /* cout << "Beta = |" << base_score << " - " */ 
                     /*     << x_idx.select(loss,0).sum() << "/" */ 
                     /*     << len_g << "|" << endl; */
+                    if (Beta <0 )
+                    {
+                        cout << "WTF Beta is " << Beta << "...\n";
+                    }
                     avg_score += alpha * Beta;
                     ++count;
                 }
 
             }
-            return avg_score/count; 
+            avg_score /= count;
+            if (avg_score <0 )
+            {
+                cout << "WTF avg_score is " << avg_score << "...\n";
+            }
+            if (std::isinf(avg_score) 
+                    || std::isnan(avg_score)
+                    || avg_score < 0)
+                return MAX_FLT;
+                
+            return avg_score; 
 
         }
     }

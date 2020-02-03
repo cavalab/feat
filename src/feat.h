@@ -213,6 +213,9 @@ namespace FT{
             ///return population size
             int get_pop_size();
             
+            ///return archive size
+            int get_archive_size(){ return this->arch.archive.size(); };
+
             ///return size of max generations
             int get_generations();
             
@@ -318,6 +321,14 @@ namespace FT{
             /// predict on unseen data.             
             VectorXf predict(MatrixXf& X, LongData Z = LongData());  
             
+            /// predict on unseen data from the whole archive             
+            MatrixXf predict_archive(MatrixXf& X, LongData Z = LongData());  
+            MatrixXf predict_archive(float * X, int rowsX,int colsX);
+            ArrayXXf predict_proba_archive(int i, MatrixXf& X, 
+                    LongData Z=LongData());
+
+            ArrayXXf predict_proba_archive(int i, 
+                    float * X, int rows_x, int cols_x);
             /// predict on unseen data. return CLabels.
             shared_ptr<CLabels> predict_labels(MatrixXf& X,
                              LongData Z = LongData());  

@@ -61,6 +61,9 @@ namespace FT{
             MatrixXf out_trace(const Data& d,
                          const Parameters& params, vector<Trace>& stack_trace);
 
+            /// converts program states to output matrices
+            MatrixXf state_to_phi(State& state);
+
             /// fits an ML model to the data after transformation
             shared_ptr<CLabels> fit(const Data& d, const Parameters& params, bool& pass);
             
@@ -68,9 +71,12 @@ namespace FT{
              *  @param drop_idx if specified, the phi output at drop_idx is set to zero, effectively
              *  removing its output from the transformation. used in semantic crossover.
              */
-            shared_ptr<CLabels> predict(const Data& d, const Parameters& params);
+            shared_ptr<CLabels> predict(const Data& d, 
+                    const Parameters& params);
             VectorXf predict_vector(const Data& d, const Parameters& params);
-            VectorXf predict_drop(const Data& d, const Parameters& params, int drop_idx);
+            VectorXf predict_drop(const Data& d, const Parameters& params, 
+                    int drop_idx);
+            ArrayXXf predict_proba(const Data& d, const Parameters& params);
             /// return symbolic representation of program
             string get_eqn();
 
@@ -141,7 +147,7 @@ namespace FT{
             std::map<char,size_t> get_max_state_size();
             
             typedef Array<bool, Dynamic, Dynamic, RowMajor> ArrayXXb;
-            typedef Array<float, Dynamic, Dynamic, RowMajor> ArrayXXf;
+            /* typedef Array<float, Dynamic, Dynamic, RowMajor> ArrayXXf; */
         private:
             string eqn;                 				///< symbolic representation of program
         };
