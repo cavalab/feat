@@ -223,6 +223,7 @@ TEST(Feat, simplification)
     DataRef d(X, y, Z, false);
 
     // test NOT(NOT(NOT(x<t)))
+    cout << "\n\n test NOT(NOT(NOT(x<t)))\n";
     Individual test_ind; 
 	test_ind.program.push_back(
             std::unique_ptr<Node>( new NodeVariable<float>(0)));
@@ -239,6 +240,9 @@ TEST(Feat, simplification)
     ASSERT_EQ(test_ind.program.size(), 3);
     
     // test [NOT(NOT(NOT(x1<t)))][NOT(NOT(NOT(NOT(x0<t))))]
+    cout << "\n\ntest [NOT(NOT(NOT(x1<t)))][NOT(NOT(NOT(NOT(x0<t))))] " << endl;
+    feat.set_verbosity(3);
+
     Individual test_ind2; 
 	test_ind2.program.push_back(
             std::unique_ptr<Node>( new NodeVariable<float>(0)));
@@ -262,7 +266,7 @@ TEST(Feat, simplification)
 
     ASSERT_EQ(test_ind2.program.size(), 5);
 
-    // test repeat feature: [(x0<t)][(x0<t)]
+    cout << "\n\ntest repeat feature: [(x0<t)][(x0<t)]" << endl;
     Individual test_ind3; 
 	test_ind3.program.push_back(
             std::unique_ptr<Node>( new NodeVariable<float>(0)));

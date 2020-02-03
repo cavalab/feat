@@ -29,7 +29,8 @@ namespace FT
                         z.size() >= arity['z']);
         }
         
-        ///< checks if arity of node provided satisfies the node names in various string State
+        ///< checks if arity of node provided satisfies the node names in 
+        // various string State
         bool State::check_s(std::map<char, unsigned int> &arity)
         {
             if(arity.find('z') == arity.end())
@@ -43,7 +44,8 @@ namespace FT
                         zs.size() >= arity['z']);
         }
         
-        void Trace::copy_to_trace(State& state, std::map<char, unsigned int> &arity)
+        void Trace::copy_to_trace(State& state, std::map<char, 
+                unsigned int> &arity)
         {
             for (int i = 0; i < arity['f']; i++) {
                 /* cout << "push back float arg for " << program.at(i)->name << "\n"; */

@@ -803,7 +803,7 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
     vector<size_t> roots = tmp_ind.program.roots();
     vector<size_t> idx_to_remove;
 
-    logger.log("doing pattern pruning...",2);
+    logger.log("\n=========\ndoing pattern pruning...",2);
 
     for (auto r : roots)
     {
@@ -843,7 +843,7 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
         tmp_ind.program.erase(tmp_ind.program.begin()+idx);
     }
     int end_size = tmp_ind.size();
-    logger.log("\n=========\npattern pruning reduced best model size by " 
+    logger.log("pattern pruning reduced best model size by " 
             + to_string(starting_size - end_size)
             + " nodes\n=========\n", 1);
     if (tmp_ind.size() < ind.size())
@@ -854,7 +854,7 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
     ///////////////////
     /* set_verbosity(3); */
     int iterations = ind.get_dim();
-    logger.log("doing correlation deletion mutations...",2);
+    logger.log("\n=========\ndoing correlation deletion mutations...",2);
     starting_size = ind.size();
     float tolerance = 0.001;
     for (int i = 0; i < iterations; ++i)
@@ -864,13 +864,17 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
         bool perfect_correlation = p_variation->correlation_delete_mutate(
                 tmp_ind, ind.Phi, params, *d.o);
 
+        cout << "checking size..\n";
         if (ind.size() == tmp_ind.size())
         {
-            cout << "mode size unchanged\n";
+            cout << "model size unchanged\n";
             continue;
         }
         bool pass = true;
+        cout << "tmp_ind fit...\n"; 
         shared_ptr<CLabels> yhat = tmp_ind.fit(*d.o, params, pass);
+        cout << "tmp_ind fit success...\n"; 
+
 
         if (((ind.yhat - tmp_ind.yhat).norm()/ind.yhat.norm() 
                 <= tolerance ) 
@@ -894,7 +898,7 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
 
     }
     end_size = ind.size();
-    logger.log("\n=========\ncorrelation pruning reduced best model size by " 
+    logger.log("correlation pruning reduced best model size by " 
             + to_string(starting_size - end_size)
             + " nodes\n=========\n", 2);
 
@@ -902,7 +906,7 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
     // prune subtrees
     /////////////////
     iterations = 100;
-    logger.log("doing subtree deletion mutations...", 2);
+    logger.log("\n=========\ndoing subtree deletion mutations...", 2);
     starting_size = ind.size();
     for (int i = 0; i < iterations; ++i)
     {
@@ -932,7 +936,7 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
 
     }
     end_size = ind.size();
-    logger.log("\n=========\nsubtree deletion reduced best model size by " 
+    logger.log("subtree deletion reduced best model size by " 
             + to_string( starting_size - end_size )
             + " nodes", 2);
 }
