@@ -21,7 +21,7 @@ namespace FT{
             score_hash["multi_log"] =  &multi_log_loss_label; 
             score_hash["fpr"] =  &false_positive_loss_label; 
         
-            score = score_hash[scorer];
+            score = score_hash.at(scorer);
         }
 
         Evaluation::~Evaluation(){}
@@ -50,6 +50,16 @@ namespace FT{
             
             unsigned start =0;
             if (offspring) start = F.cols()/2;
+
+            /* for (unsigned i = start; i<individuals.size(); ++i) */
+            /* { */
+            /*     cout << "ind " << i << " size: " */ 
+            /*         << individuals.at(i).size() << endl; */
+            /*     /1* cout << "ind " << i << " eqn: " *1/ */ 
+            /*     /1*     << individuals.at(i).get_eqn() << endl; *1/ */
+            /*     /1* cout << "ind " << i << " program str: " *1/ */ 
+            /*     /1*     << individuals.at(i).program_str() << endl; *1/ */
+            /* } */
             
             // loop through individuals
             #pragma omp parallel for
@@ -59,25 +69,27 @@ namespace FT{
 
                 if (params.backprop)
                 {
-                    AutoBackProp backprop(params.scorer, 
-                            params.bp.iters, params.bp.learning_rate);
+                    AutoBackProp backprop(params.scorer, params.bp.iters, 
+                            params.bp.learning_rate);
                     logger.log("Running backprop on " + ind.get_eqn(), 3);
                     backprop.run(ind, d, params);
                 }         
 
                 bool pass = true;
 
+                logger.log("Running ind " + to_string(i) 
+                        + ", location: " + to_string(ind.loc), 3);
+
                 shared_ptr<CLabels> yhat = validation? 
                     ind.predict(d,params) : ind.fit(d,params,pass); 
                 // assign F and aggregate fitness
-                logger.log("Assigning fitness to " + ind.get_eqn(), 3);
+                logger.log("Assigning fitness to ind " + to_string(i) 
+                        + ", location: " + to_string(ind.loc) 
+                        + ", eqn: " + ind.get_eqn(), 3);
 
                 if (!pass)
                 {
 
-                    /* vector<double> w(ind.Phi.rows(), 0);     // set weights to zero */
-                    /* ind.set_p(w,params.feedback); */
-                    
                     if (validation) 
                         ind.fitness_v = MAX_FLT; 
                     else 

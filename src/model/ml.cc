@@ -27,7 +27,7 @@ namespace FT{
             ml_hash["RF"] = RF;
 
             ml_str  = ml;
-            this->ml_type = ml_hash[ml];
+            this->ml_type = ml_hash.at(ml);
             
             this->prob_type = PT_REGRESSION;
             max_train_time=30; 
@@ -129,7 +129,7 @@ namespace FT{
                 // set attribute types True if boolean, False if continuous/ordinal
                 sh::SGVector<bool> dt(dtypes.size());
                 for (unsigned i = 0; i< dtypes.size(); ++i)
-                    dt[i] = dtypes[i] == 'b';
+                    dt[i] = dtypes.at(i) == 'b';
                 if (ml_type == CART)
                     dynamic_pointer_cast<sh::CMyCARTree>(p_est)->set_feature_types(dt);
                 else if (ml_type == RF)
@@ -148,7 +148,8 @@ namespace FT{
             	ml_type == SVM || (ml_type == LR))
             {
                 // for multiclass, return the average weight magnitude over the OVR models
-                if(this->prob_type == PT_MULTICLASS && ( ml_type == LR || ml_type == SVM ) ) 
+                if(this->prob_type == PT_MULTICLASS 
+                        && ( ml_type == LR || ml_type == SVM ) ) 
                 {
                     /* cout << "in get_weights(), multiclass LR\n"; */
                     vector<SGVector<double>> weights;
@@ -163,7 +164,7 @@ namespace FT{
                         
                     /* for( int j = 0;j<weights.at(0).size(); j++) */ 
                     /*     w.push_back(0); */
-                    w = vector<double>(weights[0].size());
+                    w = vector<double>(weights.at(0).size());
                     /* cout << "weights.size(): " << weights.size() << "\n"; */
                     /* cout << "w size: " << w.size() << "\n"; */
                     /* cout << "getting abs weights\n"; */
@@ -176,27 +177,30 @@ namespace FT{
                         for( int j = 0;j<weights.at(i).size(); ++j) 
                         {
                             w.at(j) += fabs(weights.at(i)[j]);
-                            w.at(j) += weights.at(i)[j];
+                            /* w.at(j) += weights.at(i)[j]; */
                         }
                     }
                     /* cout << "normalizing weights\n"; */ 
                     for( int i = 0; i < w.size() ; i++) 
-                        w[i] = w[i]/weights.size(); 
+                        w.at(i) = w.at(i)/weights.size(); 
                     
                     /* cout << "returning weights\n"; */
                     /* cout << "freeing SGVector weights\n"; */
                     /* weights.clear(); */
                     /* for (unsigned i =0; i<weights.size(); ++i) */
-                    /*     weights[i].unref(); */
+                    /*     weights.at(i).unref(); */
 
 	                return vector<float>(w.begin(), w.end());
                 }
-	            // otherwise, return the true weights 
-                auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_w();
-                
-                w.assign(tmp.data(), tmp.data()+tmp.size());          
+                else
+                {
+                    // otherwise, return the true weights 
+                    auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_w();
+                    
+                    w.assign(tmp.data(), tmp.data()+tmp.size());          
+                }
                 /* for (unsigned i =0; i<w.size(); ++i)    // take absolute value of weights */
-                /*     w[i] = fabs(w[i]); */
+                /*     w.at(i) = fabs(w.at(i)); */
 	        }
             else if (ml_type == CART)           
                 w = dynamic_pointer_cast<sh::CMyCARTree>(p_est)->feature_importances();
@@ -316,8 +320,9 @@ namespace FT{
             /* cout << "this->ml_type == RF: " << tmp2 << "\n"; */
             /* cout << "this->ml_type: " << this->ml_type  << "\n"; */
             if (this->prob_type==PT_BINARY && 
-                 (ml_type == LR || ml_type == SVM || ml_type == CART || ml_type == RF)     // binary classification
-                )
+                 (ml_type == LR || ml_type == SVM 
+                  || ml_type == CART || ml_type == RF)     
+                )// binary classification
             {
                 bool proba = params.scorer.compare("log")==0;
                 /* cout << "apply binary\n"; */
@@ -345,6 +350,7 @@ namespace FT{
                     /* cout << "set probs done\n"; */
                 }
                 y_pred = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_labels();
+
 			    /* cout << "y_pred: "; */
 			    /* y_pred.display_vector(); */
 			
@@ -379,7 +385,8 @@ namespace FT{
 
             if (isinf(yhat.array()).any() || isnan(yhat.array()).any() || yhat.size()==0)
                 pass = false;
-            /* cout << "exiting ml::fit\n"; */ 
+
+            logger.log("exiting ml::fit",3); 
             return labels;
         }
 
@@ -521,7 +528,9 @@ namespace FT{
                 // convert -1 to 0
                 yhat = (yhat.cast<int>().array() == -1).select(0,yhat);
 
-            return yhat.template cast<float>();
+            VectorXf yhatf = yhat.template cast<float>();
+            clean(yhatf);
+            return yhatf;
         }
     }
 }

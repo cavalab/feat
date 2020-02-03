@@ -448,8 +448,8 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
 
     // start the clock
     timer.Reset();
-
     params.use_batch = params.bp.batch_size>0;
+
     if (params.use_batch)
     {
         if (params.bp.batch_size >= X.cols())
@@ -503,6 +503,12 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     else
         use_arch = true;
     
+    string log_msg = "functions set: [";
+    for (const auto& f: params.functions) log_msg += f->name + ", "; 
+    log_msg += "]\n";
+    logger.log(log_msg, 1);
+    logger.log("scorer: " + params.scorer, 1);
+
     // split data into training and test sets
     //Data data(X, y, Z, params.classification);
     cout << "DataRef d\n";
@@ -660,7 +666,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
         arch.update(*p_pop,params);
     }
 
-    logger.log("\nTotal time taken is " 
+    logger.log("\n===\nRun Completed. Total time taken is " 
             + std::to_string(timer.Elapsed().count()) + "\n", 1);
     
     if (log.is_open())
@@ -679,35 +685,39 @@ void Feat::run_generation(unsigned int g,
     params.set_current_gen(g);
 
     // select parents
-    logger.log("selection..", 3);
+    logger.log("selection..", 2);
     vector<size_t> parents = p_sel->select(*p_pop, F, params, *d.t);
     logger.log("parents:\n"+p_pop->print_eqns(), 3);          
     
     // variation to produce offspring
-    logger.log("variation...", 3);
+    logger.log("variation...", 2);
     p_variation->vary(*p_pop, parents, params,*d.t);
     logger.log("offspring:\n" + p_pop->print_eqns(true), 3);
 
     // evaluate offspring
-    logger.log("evaluating offspring...", 3);
+    logger.log("evaluating offspring...", 2);
     p_eval->fitness(p_pop->individuals, *d.t, F, params, 
             true && !params.use_batch);
+
     // select survivors from combined pool of parents and offspring
-    logger.log("survival...", 3);
+    logger.log("survival...", 2);
     survivors = p_surv->survive(*p_pop, F, params, *d.t);
    
     // reduce population to survivors
-    logger.log("shrinking pop to survivors...",3);
+    logger.log("shrinking pop to survivors...",2);
     p_pop->update(survivors);
     logger.log("survivors:\n" + p_pop->print_eqns(), 3);
     
+    logger.log("update best...",2);
     update_best(d);
 
+    logger.log("calculate stats...",2);
     calculate_stats(d);
 
     if (params.max_stall > 0)
         update_stall_count(stall_count);
 
+    logger.log("update archive...",2);
     if (use_arch) 
         arch.update(*p_pop,params);
     
@@ -719,13 +729,15 @@ void Feat::run_generation(unsigned int g,
     if (print_pop > 1 || print_pop > 0 && g == params.gens-1)
         print_population();
 
+    // tighten learning rate for grad descent as evolution progresses
     if (params.backprop)
     {
-        params.bp.learning_rate = (
-                (1-1/(1+float(params.gens)))*params.bp.learning_rate);
+        params.bp.learning_rate = \ 
+            (1-1/(1+float(params.gens)))*params.bp.learning_rate;
         logger.log("learning rate: " 
                 + std::to_string(params.bp.learning_rate),3);
     }
+    logger.log("finished with generation...",2);
 
 }
 
@@ -1292,6 +1304,7 @@ void Feat::calculate_stats(const DataRef& d)
     // median loss
     float med_score = median(F.colwise().mean().array());  
     
+    // median program size
     ArrayXf Sizes(p_pop->size());
     
     unsigned i = 0;
@@ -1301,7 +1314,6 @@ void Feat::calculate_stats(const DataRef& d)
         Sizes(i) = p.size(); 
         ++i;
     }
-    // median program size
     unsigned med_size = median(Sizes);                        
     
     // complexity

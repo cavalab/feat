@@ -11,6 +11,7 @@ license: GNU/GPL v3
 #include <vector>
 
 #include "../init.h"
+#include "error.h"
 
 using namespace std;
 using std::swap;
@@ -47,7 +48,8 @@ namespace FT {
                 float operator()();
 
 			    template <class RandomAccessIterator>
-			    void shuffle (RandomAccessIterator first, RandomAccessIterator last)
+			    void shuffle (RandomAccessIterator first, 
+                        RandomAccessIterator last)
 			    {
 	                for (auto i=(last-first)-1; i>0; --i) 
                     {
@@ -59,7 +61,8 @@ namespace FT {
                 template<typename Iter>                                    
                 Iter select_randomly(Iter start, Iter end)
                 {
-                    std::uniform_int_distribution<> dis(0, distance(start, end) - 1);
+                    std::uniform_int_distribution<> dis(0, 
+                            distance(start, end) - 1);
                     advance(start, dis(rg[omp_get_thread_num()]));
                     return start;
                 }
@@ -70,7 +73,8 @@ namespace FT {
                    /*!
                     * return a random element of a vector.
                     */          
-                    assert(v.size()>0 && " attemping to return random choice from empty vector");
+                    assert(v.size()>0 && 
+                       " attemping to return random choice from empty vector");
                     return *select_randomly(v.begin(),v.end());
                 }
      
@@ -84,10 +88,17 @@ namespace FT {
                      
                     if(w.size() == 0)
                     {   
-                        cout<<"random_choice() w.size() = 0 Calling random_choice(v)\n";
-                        
-                        cout << "W size is " << w.size() << "v size is " << v.size() << "\n"; 
-                        return random_choice(v);
+                        if (v.size() == 0)
+                            HANDLE_ERROR_THROW("random_choice() called with "
+                                    "w.size() = 0 and v.size() = 0");
+                        else
+                        {
+                            HANDLE_ERROR_NO_THROW("w.size() = 0, v.size() = "
+                                    +to_string(v.size())+
+                                    "; Calling random_choice(v)");
+                            
+                            return random_choice(v);
+                        }
                     }
                     if(w.size() != v.size())
                     {   

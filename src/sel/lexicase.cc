@@ -97,13 +97,13 @@ namespace FT{
 
                   // get minimum
                   for (size_t j = 0; j<pool.size(); ++j)
-                      if (F(cases[h],pool[j]) < minfit) 
-                          minfit = F(cases[h],pool[j]);
+                      if (F(cases.at(h),pool.at(j)) < minfit) 
+                          minfit = F(cases.at(h),pool.at(j));
                   
                   // select best
                   for (size_t j = 0; j<pool.size(); ++j)
-                      if (F(cases[h],pool[j]) <= minfit+epsilon[cases[h]])
-                        winner.push_back(pool[j]);                 
+                      if (F(cases.at(h),pool.at(j)) <= minfit+epsilon(cases.at(h)))
+                        winner.push_back(pool.at(j));                 
                  
                   ++h; // next case
                   // only keep going if needed
@@ -124,7 +124,7 @@ namespace FT{
 			
                 assert(winner.size()>0);
                 //if more than one winner, pick randomly
-                F_locs[i] = r.random_choice(winner);   
+                F_locs.at(i) = r.random_choice(winner);   
             }               
 
             // convert F_locs to pop.individuals indices
@@ -134,7 +134,7 @@ namespace FT{
             {
                 for (unsigned i=0; i < pop.size(); ++i)
                 {
-                    if (pop.individuals[i].loc == f)
+                    if (pop.individuals.at(i).loc == f)
                     {
                         selected.push_back(i);
                         match = true;

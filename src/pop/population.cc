@@ -21,8 +21,8 @@ namespace FT{
             std::iota(locs.begin(),locs.end(),0);
             for (unsigned i = 0; i < individuals.size(); ++i)
             {
-                individuals[i].set_id(locs[i]);
-                individuals[i].set_parents(vector<int>(1,-1));
+                individuals.at(i).set_id(locs.at(i));
+                individuals.at(i).set_parents(vector<int>(1,-1));
            }
         }
         
@@ -53,8 +53,8 @@ namespace FT{
             /*!
              *create random programs in the population, seeded by initial model weights 
              */
-            individuals[0] = starting_model;
-            individuals[0].loc = 0;
+            individuals.at(0) = starting_model;
+            individuals.at(0).loc = 0;
 
             #pragma omp parallel for
             for (unsigned i = 1; i< individuals.size(); ++i)
@@ -71,7 +71,7 @@ namespace FT{
                     depth =  r.rnd_int(1, params.max_depth);
                 // make a program for each individual
                 char ot = r.random_choice(params.otypes);
-                individuals[i].program.make_program(params.functions, 
+                individuals.at(i).program.make_program(params.functions, 
                                                     params.terminals, 
                                                     depth,
                                                     params.term_weights,
@@ -81,11 +81,11 @@ namespace FT{
                                                     params.longitudinalMap, 
                                                     params.ttypes);
                 
-                /* std::cout << individuals[i].program_str() + " -> "; */
-                /* std::cout << individuals[i].get_eqn() + "\n"; */
+                /* std::cout << individuals.at(i).program_str() + " -> "; */
+                /* std::cout << individuals.at(i).get_eqn() + "\n"; */
                
                 // set location of individual and increment counter             
-                individuals[i].loc = i;   
+                individuals.at(i).loc = i;   
             }
             // define open locations
             update_open_loc(); 
@@ -160,7 +160,7 @@ namespace FT{
                start = individuals.size()/2;
 
            for (unsigned int i=start; i< individuals.size(); ++i)
-               output += individuals[i].get_eqn() + sep;
+               output += individuals.at(i).get_eqn() + sep;
            
            return output;
        }
@@ -171,7 +171,7 @@ namespace FT{
             vector<size_t> pf;
             for (unsigned int i =0; i<individuals.size(); ++i)
             {
-                if (individuals[i].rank == rank)
+                if (individuals.at(i).rank == rank)
                     pf.push_back(i);
             }
             std::sort(pf.begin(),pf.end(),SortComplexity(*this)); 
