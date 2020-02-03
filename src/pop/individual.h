@@ -54,13 +54,22 @@ namespace FT{
            
             Individual();
 
+            /// copy assignment
+            /* Individual(const Individual& other); */
+            
+            /* Individual(Individual && other); */
+            
+            /* Individual& operator=(Individual const& other); */
+            
+            /* Individual& operator=(Individual && other); */
+
             /// calculate program output matrix Phi
             MatrixXf out(const Data& d, const Parameters& params, bool predict=false);
 
             /// calculate program output while maintaining stack trace
             MatrixXf out_trace(const Data& d,
                          const Parameters& params, vector<Trace>& stack_trace);
-
+       
             /// converts program states to output matrices
             MatrixXf state_to_phi(State& state);
 
@@ -78,7 +87,7 @@ namespace FT{
                     int drop_idx);
             ArrayXXf predict_proba(const Data& d, const Parameters& params);
             /// return symbolic representation of program
-            string get_eqn();
+            string get_eqn() const;
 
             /// return vectorized representation of program
             vector<string> get_features();
@@ -120,7 +129,8 @@ namespace FT{
             unsigned int get_complexity() const;
           
             /// clone this individual 
-            void clone(Individual& cpy, bool sameid=true);
+            void clone(Individual& cpy, bool sameid=true) const;
+            Individual clone();
             
             void set_id(unsigned i);
 
@@ -148,8 +158,6 @@ namespace FT{
             
             typedef Array<bool, Dynamic, Dynamic, RowMajor> ArrayXXb;
             /* typedef Array<float, Dynamic, Dynamic, RowMajor> ArrayXXf; */
-        private:
-            string eqn;                 				///< symbolic representation of program
         };
     }
 }

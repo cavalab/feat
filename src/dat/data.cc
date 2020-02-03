@@ -91,8 +91,8 @@ namespace FT{
             db.y.resize(batch_size);
             for (const auto& val: Z )
             {
-                db.Z[val.first].first.resize(batch_size);
-                db.Z[val.first].second.resize(batch_size);
+                db.Z.at(val.first).first.resize(batch_size);
+                db.Z.at(val.first).second.resize(batch_size);
             }
             for (unsigned i = 0; i<batch_size; ++i)
             {
@@ -102,8 +102,8 @@ namespace FT{
 
                for (const auto& val: Z )
                {
-                    db.Z[val.first].first.at(i) = Z.at(val.first).first.at(idx.at(i));
-                    db.Z[val.first].second.at(i) = Z.at(val.first).second.at(idx.at(i));
+                    db.Z.at(val.first).first.at(i) = Z.at(val.first).first.at(idx.at(i));
+                    db.Z.at(val.first).second.at(i) = Z.at(val.first).second.at(idx.at(i));
                }
             }
             db.set_protected_groups();
@@ -270,8 +270,15 @@ namespace FT{
                 
             //getting indices for all labels
             for(int x = 0; x < o->y.size(); x++)
-                label_indices[o->y[x]].push_back(x);
-                    
+                label_indices[o->y(x)].push_back(x);
+                   
+            /* for (const auto& li : label_indices){ */
+            /*     cout << "label " << li.first << ":\t"; */
+            /*     for (const auto& val : li.second){ */
+            /*         cout << val << ", "; */
+            /*     } */ 
+            /*     cout << endl; */
+            /* } */
             std::map<float, vector<int>>::iterator it = label_indices.begin();
             
             vector<int> t_indices;
@@ -285,10 +292,10 @@ namespace FT{
                 t_size = ceil(it->second.size()*split);
                 
                 for(x = 0; x < t_size; x++)
-                    t_indices.push_back(it->second[x]);
+                    t_indices.push_back(it->second.at(x));
                     
                 for(; x < it->second.size(); x++)
-                    v_indices.push_back(it->second[x]);
+                    v_indices.push_back(it->second.at(x));
                 
                 logger.log("Label is " + to_string(it->first), 3, "\t");
                 logger.log("Total size = " + to_string(it->second.size()), 
@@ -309,7 +316,7 @@ namespace FT{
             for(int x = 0; x < t_indices.size(); x++)
             {
                 t->X.col(x) = o->X.col(t_indices.at(x));
-                t->y[x] = o->y[t_indices[x]];
+                t->y(x) = o->y(t_indices.at(x));
                 
                 if(o->Z.size() > 0)
                 {
@@ -328,7 +335,7 @@ namespace FT{
             for(int x = 0; x < v_indices.size(); x++)
             {
                 v->X.col(x) = o->X.col(v_indices.at(x));
-                v->y(x) = o->y[v_indices.at(x)];
+                v->y(x) = o->y(v_indices.at(x));
                 
                 if(o->Z.size() > 0)
                 {
@@ -342,7 +349,6 @@ namespace FT{
                 }
             }
 
-            
         }
      
         void DataRef::train_test_split(bool shuffle, float split)
@@ -388,7 +394,7 @@ namespace FT{
             int size;
             for ( const auto val: Z )
             {
-                size = Z[val.first].first.size();
+                size = Z.at(val.first).first.size();
                 break;
             }
             

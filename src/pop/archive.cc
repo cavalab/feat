@@ -64,8 +64,7 @@ namespace FT{
            {
                if (t.rank ==1){
                    archive.push_back(t);
-                   //TODO: is this necessary?
-                   archive[archive.size()-1].complexity();
+                   archive.at(archive.size()-1).complexity();
                }
            } 
            cout << "intializing archive with " << archive.size() << " inds\n"; 
@@ -83,21 +82,20 @@ namespace FT{
 
             #pragma omp parallel for
             for (unsigned int i=0; i<tmp.size(); ++i)
-                tmp[i].set_obj(params.objectives);
+                tmp.at(i).set_obj(params.objectives);
 
             for (const auto& p : archive)
                 tmp.push_back(p);
 
             selector.fast_nds(tmp);
             
-            vector<int> pf = selector.front[0];
+            vector<int> pf = selector.front.at(0);
           
             archive.resize(0);  // clear archive
             for (const auto& i : pf)   // refill archive with new pareto front
             {
                 archive.push_back(tmp.at(i));
-                // TODO: check if this next line is necessary
-                archive[archive.size()-1].complexity();
+                archive.at(archive.size()-1).complexity();
             }
             if (this->sort_complexity)
                 std::sort(archive.begin(),archive.end(),&sortComplexity); 

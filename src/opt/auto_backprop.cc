@@ -28,8 +28,8 @@ namespace FT {
             d_score_hash["fpr"] =  &Eval::d_log_loss;
             d_score_hash["zero_one"] = &Eval::d_log_loss;            
 
-            this->d_cost_func = d_score_hash[scorer]; 
-            this->cost_func = score_hash[scorer]; 
+            this->d_cost_func = d_score_hash.at(scorer); 
+            this->cost_func = score_hash.at(scorer); 
             
             /* this->X = X; */
 		    /* this->labels = labels; */
@@ -46,7 +46,7 @@ namespace FT {
 		        if (p->isNodeDx()) {
                     
 			        NodeDx* dNode = dynamic_cast<NodeDx*>(p.get());
-			        for (int i = 0; i < dNode->arity['f']; i++) {
+			        for (int i = 0; i < dNode->arity.at('f'); i++) {
 				        cout << "," << dNode->W.at(i);
 			        }
                     dNode = nullptr;
@@ -64,21 +64,15 @@ namespace FT {
             float min_loss;
             float current_loss, current_val_loss;
             vector<vector<float>> best_weights;
-            // split up the data so we have a validation set
-            DataRef BP_data(d.X, d.y, d.Z, d.classification);
-            BP_data.train_test_split(true, 0.8);
-            // set up batch data
+            // batch data
             MatrixXf Xb, Xb_v;
             VectorXf yb, yb_v;
             std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Zb, Zb_v;
             /* cout << "y: " << d.y.transpose() << "\n"; */ 
-            Data batch_data(Xb, yb, Zb, params.classification);
-            /* Data db_val(Xb_v, yb_v, Zb_v, params.classification); */
-            /* db_val.set_validation();    // make this a validation set */
-            // if batch size is 0, set batch to 20% of training data
-            int batch_size = params.bp.batch_size > 0? 
-                params.bp.batch_size : .2*BP_data.t->y.size(); 
-            /* d.get_batch(db_val, );     // draw a batch for the validation data */
+            Data db(Xb, yb, Zb, params.classification);
+            Data db_val(Xb_v, yb_v, Zb_v, params.classification);
+            db_val.set_validation();    // make this a validation set
+            d.get_batch(db_val, params.bp.batch_size);     // draw a batch for the validation data
             
             int patience = 3;   // number of iterations to allow validation fitness to not improve
             int missteps = 0;
@@ -92,14 +86,12 @@ namespace FT {
             {
                 /* cout << "get batch\n"; */
                 // get batch data for training
-                BP_data.t->get_batch(batch_data, batch_size); 
-                /* cout << "batch_data.y: " 
-                 * << batch_data.y.transpose() << "\n"; */ 
+                d.get_batch(db, params.bp.batch_size); 
+                /* cout << "db.y: " << db.y.transpose() << "\n"; */ 
                 // Evaluate forward pass
                 MatrixXf Phi; 
                 /* cout << "forward pass\n"; */
-                vector<Trace> stack_trace = forward_prop(ind, batch_data, 
-                        Phi, params);
+                vector<Trace> stack_trace = forward_prop(ind, db, Phi, params);
                 /* cout << "just finished forward_pass\n"; */
                 // Evaluate ML model on Phi
                 bool pass = true;
@@ -107,44 +99,42 @@ namespace FT {
                         params.classification, params.n_classes);
 
                 /* cout << "ml fit\n"; */
-                shared_ptr<CLabels> yhat = ml->fit(Phi,
-                        batch_data.y,params,pass,ind.dtypes);
+                shared_ptr<CLabels> yhat = ml->fit(Phi,db.y,params,pass,ind.dtypes);
                 
                 
                 if (!pass || stack_trace.size() ==0 )
+                {
+                    if (!pass)
+                        logger.log("autobp: ML fit failed, breaking...",2);
                     break;
+                }
 
                 vector<float> Beta = ml->get_weights();
                 /* cout << "cost func\n"; */
-                current_loss = this->cost_func(batch_data.y, yhat, 
+                current_loss = this->cost_func(db.y,yhat, 
                         params.class_weights).mean();
 
                 // Evaluate backward pass
                 size_t s = 0;
                 for (int i = 0; i < stack_trace.size(); ++i)
                 {
-                    while (!ind.program.at(roots[s])->isNodeDx()) ++s;
-                    /* cout << "running backprop on " 
-                     * << ind.program_str() << " from " */
+                    while (!ind.program.at(roots.at(s))->isNodeDx()) ++s;
+                    /* cout << "running backprop on " << ind.program_str() << " from " */
                     /*      << roots.at(s) << " to " */ 
                     /*     << ind.program.subtree(roots.at(s)) << "\n"; */
                     
-                    backprop(stack_trace.at(i), ind.program, 
-                            ind.program.subtree(roots.at(s)), 
-                            roots.at(s), Beta.at(s)/ml->N.scale.at(s), 
-                            yhat, batch_data, params.class_weights);
+                    backprop(stack_trace.at(i), ind.program, ind.program.subtree(roots.at(s)), 
+                            roots.at(s), Beta.at(s)/ml->N.scale.at(s), yhat, db, params.class_weights);
                 }
 
                 // check validation fitness for early stopping
-                MatrixXf Phival = ind.out((*BP_data.v),params);
+                MatrixXf Phival = ind.out(db_val,params);
                 /* cout << "checking validation fitness\n"; */
-                /* cout << "Phival: " << Phival.rows() 
-                 * << " x " << Phival.cols() << "\n"; */
+                /* cout << "Phival: " << Phival.rows() << " x " << Phival.cols() << "\n"; */
                 /* cout << "y_val\n"; */
                 shared_ptr<CLabels> y_val = ml->predict(Phival);
                 /* cout << "val_loss\n"; */
-                current_val_loss = this->cost_func(BP_data.v->y, y_val, 
-                        params.class_weights).mean();
+                current_val_loss = this->cost_func(db_val.y, y_val, params.class_weights).mean();
                 /* cout << "check for min loss\n"; */ 
                 if (x==0 || current_val_loss < min_loss)
                 {
@@ -157,11 +147,8 @@ namespace FT {
                     /* cout << "missteps: " << missteps << "\n"; */
                     logger.log("",3);           // update learning rate
                 }
-                // early stopping trigger
-                if (missteps == patience 
-                        || std::isnan(min_loss) 
-                        || std::isinf(min_loss)
-                        || min_loss <= NEAR_ZERO)       
+                if (missteps == patience || std::isnan(min_loss) || std::isinf(min_loss)
+                        || min_loss <= NEAR_ZERO)       // early stopping trigger
                     break;
                 else
                     logger.log("min loss: " + std::to_string(min_loss), 3);
@@ -179,11 +166,12 @@ namespace FT {
                      print_weights(ind.program);
                 }
             }
+            logger.log("Setting program weights to best_weights",3);
+            ind.program.set_weights(best_weights);
             logger.log("",3);
             logger.log("=========================",3);
             logger.log("done=====================",3);
             logger.log("=========================",3);
-            ind.program.set_weights(best_weights);
         }
         
         // forward pass
@@ -264,11 +252,11 @@ namespace FT {
                 /* cout << "derivatives size: " << derivatives.size() << "\n"; */ 
                 vector<ArrayXf> n_derivatives;
 
-                if (node->isNodeDx() && node->visits == 0 && node->arity['f'] > 0) {
+                if (node->isNodeDx() && node->visits == 0 && node->arity.at('f') > 0) {
                     NodeDx* dNode = dynamic_cast<NodeDx*>(node); // Could probably put this up one and have the if condition check if null
                     /* cout << "evaluating derivative\n"; */
                     // Calculate all the derivatives and store them, then update all the weights and throw away the node
-                    for (int i = 0; i < node->arity['f']; i++) {
+                    for (int i = 0; i < node->arity.at('f'); i++) {
                         dNode->derivative(n_derivatives, stack, i);
                     }
                     /* cout << "updating derivatives\n"; */
@@ -276,13 +264,13 @@ namespace FT {
                     // dNode->print_weight();
                     /* cout << "popping input arguments\n"; */
                     // Get rid of the input arguments for the node
-                    for (int i = 0; i < dNode->arity['f']; i++) {
+                    for (int i = 0; i < dNode->arity.at('f'); i++) {
                         pop<ArrayXf>(&stack.f);
                     }
-                    for (int i = 0; i < dNode->arity['b']; i++) {
+                    for (int i = 0; i < dNode->arity.at('b'); i++) {
                         pop<ArrayXb>(&stack.b);
                     }
-                    for (int i = 0; i < dNode->arity['c']; i++) {
+                    for (int i = 0; i < dNode->arity.at('c'); i++) {
                         pop<ArrayXi>(&stack.c);
                     }
                     if (!n_derivatives.empty()) {
@@ -295,7 +283,7 @@ namespace FT {
                 /*     cout << "not NodeDx or visits reached or no floating arity\n"; */
                 /* cout << "next branch\n"; */
                 // Choosing how to move through tree
-                if (node->arity['f'] == 0 || !node->isNodeDx()) {
+                if (node->arity.at('f') == 0 || !node->isNodeDx()) {
             
                     // Clean up gradients and find the parent node
                     /* cout << "popping derivatives\n"; */
@@ -306,7 +294,7 @@ namespace FT {
                 else 
                 {
                     node->visits += 1;
-                    if (node->visits > node->arity['f']) 
+                    if (node->visits > node->arity.at('f')) 
                     {
                         next_branch(executing, bp_program, derivatives);
                     }
@@ -315,7 +303,7 @@ namespace FT {
 
             // point bp_program to null
             for (unsigned i = 0; i < bp_program.size(); ++i)
-                bp_program[i] = nullptr;
+                bp_program.at(i) = nullptr;
 
             /* cout << "Backprop terminated\n"; */
             //print_weights(program);

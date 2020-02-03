@@ -72,9 +72,12 @@ namespace FT{
                  *  
                  *  \f$ C(n) = c_n * (\sum_{a=1}^k C(a)) \f$
                  *
-                 *  The complexity of a program is the complexity of its root/head node. 
+                 *  The complexity of a program is the complexity of 
+                 *  its root/head node. 
                  */              
-                string c_args="1";                         // sum complexity of the arguments 
+                // sum complexity of the arguments 
+
+                string c_args="1";                                         
                 if (total_arity() ==0)
                     cstate[otype].push_back(c_args);
                 else{
@@ -82,20 +85,24 @@ namespace FT{
                     {
                         for (unsigned int i = 0; i< a.second; ++i)
                         {
-                            c_args = "(" + c_args + "+" + cstate[a.first].back() + ")";
+                            c_args = "(" + c_args + "+" 
+                                + cstate[a.first].back() + ")";
                             cstate[a.first].pop_back();
 
                         }
                     }
-                    cstate[otype].push_back(std::to_string(complexity) + "*" + c_args);
+                    cstate[otype].push_back(std::to_string(complexity) 
+                            + "*" + c_args);
                 }
             }
 
             /// makes a unique copy of this node
-            std::unique_ptr<Node> Node::clone() const { return std::unique_ptr<Node>(clone_impl()); }
+            std::unique_ptr<Node> Node::clone() const 
+            { return std::unique_ptr<Node>(clone_impl()); }
 
             /// makes a randomized unique copy ofnode
-            std::unique_ptr<Node> Node::rnd_clone() const {return std::unique_ptr<Node>(rnd_clone_impl());}
+            std::unique_ptr<Node> Node::rnd_clone() const 
+            {return std::unique_ptr<Node>(rnd_clone_impl());}
         }
     }
 }

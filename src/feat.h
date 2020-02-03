@@ -62,9 +62,10 @@ namespace FT{
      * @class Feat
      * @brief main class for the Feat learner.
      *   
-     * @details Feat optimizes feature represenations for a given machine learning algorithm. It 
-     *			does so by using evolutionary computation to optimize a population of programs. 
-     *			Each program represents a set of feature transformations. 
+     * @details Feat optimizes feature represenations for a given machine 
+     * learning algorithm. It does so by using evolutionary computation to 
+     * optimize a population of programs. Each program represents a set of 
+     * feature transformations. 
      */
     class Feat 
     {
@@ -197,7 +198,10 @@ namespace FT{
             void set_residual_xo(bool res_xo=true){params.residual_xo=res_xo;};
             
             /// use stagewise crossover
-            void set_stagewise_xo(bool sem_xo=true){params.stagewise_xo=sem_xo;};
+            void set_stagewise_xo(bool sem_xo=true)
+            {
+                params.stagewise_xo=sem_xo;
+            };
             
             /// use softmax
             void set_softmax_norm(bool sftmx=true){params.softmax_norm=sftmx;};
@@ -262,7 +266,8 @@ namespace FT{
             float get_split();
             
             ///add custom node into feat
-            /* void add_function(unique_ptr<Node> N){ params.functions.push_back(N->clone()); } */
+            /* void add_function(unique_ptr<Node> N)
+             * { params.functions.push_back(N->clone()); } */
             
             ///return data types for input parameters
             vector<char> get_dtypes();
@@ -315,8 +320,8 @@ namespace FT{
             void fit(float * X,int rowsX,int colsX, float * Y,int lenY);
 
             /// train a model, first loading longitudinal samples (Z) from file.
-            void fit_with_z(float * X, int rowsX, int colsX, float * Y, int lenY, string s, 
-                            int * idx, int idx_size);
+            void fit_with_z(float * X, int rowsX, int colsX, 
+                    float * Y, int lenY, string s, int * idx, int idx_size);
            
             /// predict on unseen data.             
             VectorXf predict(MatrixXf& X, LongData Z = LongData());  

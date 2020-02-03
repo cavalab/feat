@@ -9,9 +9,45 @@ namespace FT{
 
     namespace Pop{ 
            
-        Individual::Individual(){c = 0; dim = 0; eqn=""; parent_id.clear(); 
+        Individual::Individual(){c = 0; dim = 0; parent_id.clear(); 
             parent_id.push_back(-1);}
 
+        /* Individual::Individual(Individual && other) = default; */
+
+        /* Individual& Individual::operator=(Individual && other) = default; */
+
+        /* Individual::Individual(const Individual& other) */
+        /* { */
+        /*     /1* other.clone(*this, false); *1/ */
+        /*     this->program = other.program; */
+        /*     this->p = other.p; */
+        /* } */
+
+        /* Individual& Individual::operator=(Individual const& other) */
+        /* { */
+        /*     this->program = other.program; */
+        /*     this->p = other.p; */
+        /*     return *this; */
+        /* } */
+
+        Individual Individual::clone()
+        {
+            Individual cpy;
+            cpy.program = program;
+            cpy.p = p;
+            cpy.id = id;
+            /* if (sameid) */
+            /*     cpy.id = id; */
+            return cpy;
+        }
+        /// clone this individual 
+        void Individual::clone(Individual& cpy, bool sameid) const
+        {
+            cpy.program = program;
+            cpy.p = p;
+            if (sameid)
+                cpy.id = id;
+        }
         /// set rank
         void Individual::set_rank(unsigned r){rank=r;}
         /// return size of program
@@ -26,7 +62,7 @@ namespace FT{
             {
                 if (program.at(i)->isNodeDx())
                 {
-                    n_params += program.at(i)->arity['f'];
+                    n_params += program.at(i)->arity.at('f');
                 }
             }
             return n_params;
@@ -34,14 +70,6 @@ namespace FT{
         
         unsigned int Individual::get_complexity() const {return c;};
       
-        /// clone this individual 
-        void Individual::clone(Individual& cpy, bool sameid)
-        {
-            cpy.program = program;
-            cpy.p = p;
-            if (sameid)
-                cpy.id = id;
-        }
         
         void Individual::set_id(unsigned i) { id = i; }
         
@@ -86,9 +114,9 @@ namespace FT{
 
             p.resize(weights.size());
             for (unsigned i=0; i< weights.size(); ++i)
-                p[i] = 1 - fabs(weights[i]/sum);
+                p.at(i) = 1 - fabs(weights.at(i)/sum);
             /* for (unsigned i=0; i<p.size(); ++i) */
-            /*     p[i] = 1-p[i]; */
+            /*     p.at(i) = 1-p.at(i); */
             float u = 1.0/float(p.size());    // uniform probability
             /* std::cout << "p: "; */
             /* for (auto tmp : p) cout << tmp << " " ; cout << "\n"; */
@@ -98,7 +126,7 @@ namespace FT{
             // do partial uniform, partial weighted probability, using feedback 
             // ratio
             for (unsigned i=0; i<p.size(); ++i)
-                p[i] = (1-fb)*u + fb*p[i];
+                p.at(i) = (1-fb)*u + fb*p.at(i);
             /* cout << "exiting set_p\n"; */
             // set weights
             this->w = weights;
@@ -171,13 +199,17 @@ namespace FT{
             Phi = out(d, params, false);      
             // calculate ML model from Phi
             logger.log("ML training on " + get_eqn(), 3);
-            ml = std::make_shared<ML>(params.ml, true, params.classification,
-                    params.n_classes);
+            this->ml = std::make_shared<ML>(params.ml, true, 
+                    params.classification, params.n_classes);
             
-            shared_ptr<CLabels> yh = ml->fit(Phi,d.y,params,pass,dtypes);
+            shared_ptr<CLabels> yh = this->ml->fit(Phi,d.y,params,pass,dtypes);
 
             if (pass)
-                set_p(ml->get_weights(),params.feedback,params.softmax_norm);
+            {
+                logger.log("Setting individual's weights...", 3);
+                set_p(this->ml->get_weights(),params.feedback,
+                        params.softmax_norm);
+            }
             else
             {   // set weights to zero
                 vector<float> w(Phi.rows(), 0);                     
@@ -260,7 +292,7 @@ namespace FT{
         {
             return ml->labels_to_vector(this->predict(d,params));
         }
-        
+
         MatrixXf Individual::state_to_phi(State& state)
         {
             // we want to preserve the order of the outputs in the program 
@@ -311,17 +343,17 @@ namespace FT{
                 {
                     case 'f':
                     // add state_f to Phi
-                        Row = ArrayXf::Map(state.f.at(rows[rt]).data(),cols);
+                        Row = ArrayXf::Map(state.f.at(rows.at(rt)).data(),cols);
                         break;
                     case 'c':
                     // convert state_c to Phi       
                         Row = ArrayXi::Map(
-                            state.c.at(rows[rt]).data(),cols).cast<float>();
+                            state.c.at(rows.at(rt)).data(),cols).cast<float>();
                         break;
                     case 'b':
                     // add state_b to Phi
                         Row = ArrayXb::Map(
-                            state.b.at(rows[rt]).data(),cols).cast<float>();
+                            state.b.at(rows.at(rt)).data(),cols).cast<float>();
                         break;
                     default:
                         HANDLE_ERROR_THROW("Unknown root type");
@@ -329,10 +361,11 @@ namespace FT{
                 // remove nans, set infs to max and min
                 clean(Row); 
                 Phi.row(i) = Row;
-                ++rows[rt];
+                ++rows.at(rt);
             }
             return Phi;
         }
+
         #ifndef USE_CUDA
         // calculate program output matrix
         MatrixXf Individual::out(const Data& d, const Parameters& params, 
@@ -382,8 +415,8 @@ namespace FT{
             State state;
             logger.log("evaluating program " + get_eqn(),3);
             logger.log("program length: " + std::to_string(program.size()),3);
-            // to minimize copying overhead, set the state size to the maximum it will reach for the
-            // program 
+            // to minimize copying overhead, set the state size to the maximum 
+            // it will reach for the program 
             std::map<char, size_t> state_size = get_max_state_size();
             // set the device based on the thread number
             Op::choose_gpu();        
@@ -409,7 +442,7 @@ namespace FT{
                                  " is invalid\n";
                     std::cout << "float state size: " << state.f.size() << "\n";
                     std::cout << "bool state size: " << state.b.size() << "\n";
-                    std::cout << "op arity: " << n->arity['f'] << "f, " << n->arity['b'] << "b\n";
+                    std::cout << "op arity: " << n->arity.at('f') << "f, " << n->arity.at('b') << "b\n";
                     exit(1);
                 }
             }
@@ -430,7 +463,7 @@ namespace FT{
             /*         std::cout << state.b(i,j) << ","; */
             /*     std::cout << "\n\n"; */
             /* } */
-            // convert state_f to Phi
+            // convert state to Phi
             logger.log("converting State to Phi",3);
             int cols;
             
@@ -571,13 +604,13 @@ namespace FT{
 
             State state;
             /* logger.log("evaluating program " + get_eqn(),3); */
-            /* logger.log("program length: " + std::to_string(program.size()),3); */
             
             std::map<char, size_t> state_size = get_max_state_size();
             // set the device based on the thread number
             choose_gpu();
             // allocate memory for the state on the device
-            /* std::cout << "X size: " << X.rows() << "x" << X.cols() << "\n"; */ 
+            /* std::cout << "X size: " << X.rows() << "x" 
+             * << X.cols() << "\n"; */ 
             state.allocate(state_size,d.X.cols());
 
             vector<size_t> roots = program.roots();
@@ -608,17 +641,22 @@ namespace FT{
                 if(state.check(program.at(i)->arity))
             	{
                     if (trace)
-                        state_trace.at(trace_idx).copy_to_trace(state, program.at(i)->arity);
+                        state_trace.at(trace_idx).copy_to_trace(state, 
+                                program.at(i)->arity);
                     
                     program.at(i)->evaluate(d, state);
-                    state.update_idx(program.at(i)->otype, program.at(i)->arity); 
-                    //cout << "\nstack.idx[otype]: " << state.idx[program.at(i)->otype];
+                    state.update_idx(program.at(i)->otype, 
+                            program.at(i)->arity); 
+                    //cout << "\nstack.idx[otype]: " 
+                    //<< state.idx[program.at(i)->otype];
                     program.at(i)->visits = 0;
                     //cout << "Evaluated node " << program.at(i)->name << endl;
                     
                 }
                 else
-                    HANDLE_ERROR_THROW("out_trace() error: node " + program.at(i)->name + " in " + program_str() + " is invalid\n");
+                    HANDLE_ERROR_THROW("out_trace() error: node " 
+                            + program.at(i)->name + " in " + program_str() 
+                            + " is invalid\n");
             }
             
             state.copy_to_host();
@@ -648,18 +686,23 @@ namespace FT{
             
             dtypes.clear();        
             
-            Matrix<float,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, cols);
+            Matrix<float,Dynamic,Dynamic,RowMajor> Phi (rows_f+rows_c+rows_b, 
+                    cols);
 
-            ArrayXXf PhiF = ArrayXXf::Map(state.f.data(),state.f.rows(),state.f.cols());
-            ArrayXXi PhiC = ArrayXXi::Map(state.c.data(),state.c.rows(),state.c.cols());
-            ArrayXXb PhiB = ArrayXXb::Map(state.b.data(),state.b.rows(),state.b.cols());
+            ArrayXXf PhiF = ArrayXXf::Map(state.f.data(),state.f.rows(),
+                    state.f.cols());
+            ArrayXXi PhiC = ArrayXXi::Map(state.c.data(),state.c.rows(),
+                    state.c.cols());
+            ArrayXXb PhiB = ArrayXXb::Map(state.b.data(),state.b.rows(),
+                    state.b.cols());
             
             // combine State into Phi 
             Phi <<  PhiF.cast<float>(),
                     PhiC.cast<float>(),
                     PhiB.cast<float>();
             
-            /* std::cout << "Phi:" << Phi.rows() << "x" << Phi.cols() << "\n"; */
+            /* std::cout << "Phi:" << Phi.rows() << "x" 
+             * << Phi.cols() << "\n"; */
 
             for (unsigned int i=0; i<rows_f; ++i)
             {    
@@ -676,7 +719,8 @@ namespace FT{
             // convert state_b to Phi       
             for (unsigned int i=0; i<rows_b; ++i)
             {
-                /* Phi.row(i+rows_f) = ArrayXb::Map(state.b.at(i).data(),cols).cast<float>(); */
+                /* Phi.row(i+rows_f) = ArrayXb::Map(state.b.at(i).data(),
+                 * cols).cast<float>(); */
                 dtypes.push_back('b');
             }
                    
@@ -685,59 +729,56 @@ namespace FT{
         #endif
         
         // return symbolic representation of program 
-        string Individual::get_eqn()
+        string Individual::get_eqn() const
         {
-            #pragma omp critical 
+            string eqn="";
+            State state;
+
+            int i = 0;
+            for (const auto& n : program)
             {
-                this->eqn="";
-                State state;
+                if(state.check_s(n->arity))
+                    n->eval_eqn(state);
+                else
+                    HANDLE_ERROR_THROW("get_eqn() error: node " 
+                            + n->name + " at location " + to_string(i) 
+                            + " in [ " + program_str() 
+                            + " ] is invalid\n");
+                ++i;
+            }
+            // tie state outputs together to return representation
+            // order by root types
+            vector<char> root_types;
+            for (auto r : program.roots())
+            {
+                root_types.push_back(program.at(r)->otype);
+            }
+            std::map<char,int> rows;
+            rows['f']=0;
+            rows['c']=0;
+            rows['b']=0;
 
-                int i = 0;
-                for (const auto& n : program)
+            for (int i = 0; i < root_types.size(); ++i)
+            {
+                char rt = root_types.at(i);
+                switch (rt)
                 {
-                    if(state.check_s(n->arity))
-                        n->eval_eqn(state);
-                    else
-                        HANDLE_ERROR_THROW("get_eqn() error: node " 
-                                + n->name + " at location " + to_string(i) 
-                                + " in [ " + program_str() 
-                                + " ] is invalid\n");
-                    ++i;
+                    case 'f':
+                        eqn += "[" + state.fs.at(rows[rt]) + "]";
+                        break;
+                    case 'c':
+                        eqn += "[" + state.cs.at(rows[rt]) + "]";
+                        break;
+                    case 'b':
+                        eqn += "[" + state.bs.at(rows[rt]) + "]";
+                        break;
+                    default:
+                        HANDLE_ERROR_THROW("Unknown root type");
                 }
-                // tie state outputs together to return representation
-                // order by root types
-                vector<char> root_types;
-                for (auto r : program.roots())
-                {
-                    root_types.push_back(program.at(r)->otype);
-                }
-                std::map<char,int> rows;
-                rows['f']=0;
-                rows['c']=0;
-                rows['b']=0;
-
-                for (int i = 0; i < root_types.size(); ++i)
-                {
-                    char rt = root_types.at(i);
-                    switch (rt)
-                    {
-                        case 'f':
-                            this->eqn += "[" + state.fs.at(rows[rt]) + "]";
-                            break;
-                        case 'c':
-                            this->eqn += "[" + state.cs.at(rows[rt]) + "]";
-                            break;
-                        case 'b':
-                            this->eqn += "[" + state.bs.at(rows[rt]) + "]";
-                            break;
-                        default:
-                            HANDLE_ERROR_THROW("Unknown root type");
-                    }
-                    ++rows.at(rt);
-                }
+                ++rows.at(rt);
             }
 
-            return this->eqn;
+            return eqn;
         }
 
         
@@ -751,8 +792,8 @@ namespace FT{
                 if(state.check_s(n->arity))
                     n->eval_eqn(state);
                 else
-                    HANDLE_ERROR_THROW("get_eqn() error: node " + n->name + " in " 
-                                       + program_str() + " is invalid\n");
+                    HANDLE_ERROR_THROW("get_eqn() error: node " + n->name 
+                            + " in " + program_str() + " is invalid\n");
             }
             // tie state outputs together to return representation
             for (auto s : state.fs) 
@@ -771,17 +812,19 @@ namespace FT{
             /*!
              * Output:
              
-             *	 	@return the dimensionality, i.e. number of outputs, of a program.
-             *   	the dimensionality is equal to the number of times the program arities are fully
+             *	 	@return the dimensionality, i.e. number of outputs, 
+             *	 	of a program. the dimensionality is equal to the number of 
+             *	 	times the program arities are fully
              *   	satisfied. 
              */
-            if (dim == 0)        // only calculate if dim hasn't been assigned
+            // only calculate if dim hasn't been assigned
+            if (dim == 0)        
             {           
                 unsigned int ca=0;     // current arity
                 
                 for (unsigned int i = program.size(); i>0; --i)
                 {
-                    ca += program[i-1]->total_arity();
+                    ca += program.at(i-1)->total_arity();
                     if (ca == 0) ++dim;
                     else --ca;
                 }
@@ -799,24 +842,27 @@ namespace FT{
              *
              * Output:
              *
-             *      1: this individual dominates b; -1: b dominates this; 0: neither dominates
+             *      1: this individual dominates b; -1: b dominates this; 
+             *      0: neither dominates
              */
 
             int flag1 = 0, // to check if this has a smaller objective
                 flag2 = 0; // to check if b    has a smaller objective
 
             for (int i=0; i<obj.size(); ++i) {
-                if (obj[i] < b.obj[i]) 
+                if (obj.at(i) < b.obj.at(i)) 
                     flag1 = 1;
-                else if (obj[i] > b.obj[i]) 
+                else if (obj.at(i) > b.obj.at(i)) 
                     flag2 = 1;                       
             }
 
             if (flag1==1 && flag2==0)   
-                // there is at least one smaller objective for this and none for b
+                // there is at least one smaller objective for this and none 
+                // for b
                 return 1;               
             else if (flag1==0 && flag2==1) 
-                // there is at least one smaller objective for b and none for this
+                // there is at least one smaller objective for b and none 
+                // for this
                 return -1;
             else             
                 // no smaller objective or both have one smaller
@@ -839,12 +885,14 @@ namespace FT{
                     obj.push_back(complexity());
                 else if (n.compare("size")==0)
                     obj.push_back(program.size());
-                else if (n.compare("CN")==0)    // condition number of Phi
+                // condition number of Phi
+                else if (n.compare("CN")==0)    
                 {
                     CN = condition_number(Phi.transpose());
                     obj.push_back(CN);
                 }
-                else if (n.compare("corr")==0)    // covariance structure of Phi
+                // covariance structure of Phi
+                else if (n.compare("corr")==0)    
                     obj.push_back(mean_square_corrcoef(Phi));
                 else if (n.compare("fairness")==0)
                     obj.push_back(fairness);
@@ -876,7 +924,8 @@ namespace FT{
                 //    for (const auto& t : s.second)
                 //        complex_eqn += "+" + t;
 
-                //std::cout << "eqn: " + eqn + ", complexity: " + complex_eqn +"=" +std::to_string(c) + "\n";
+                //std::cout << "eqn: " + eqn + ", complexity: " 
+                //+ complex_eqn +"=" +std::to_string(c) + "\n";
             }
             return c;
         }
@@ -884,12 +933,13 @@ namespace FT{
         string Individual::program_str() const
         {
             /* @return a string of node names. */
-            string s = "";
+            string s = "[";
             for (const auto& p : program)
             {
                 s+= p->name;
                 s+=" ";
             }
+            s+="]";
             return s;
         }
         
@@ -907,13 +957,13 @@ namespace FT{
 
             for (const auto& n : program)   
             {   	
-                ++stack_size[n->otype];
+                ++stack_size.at(n->otype);
 
-                if ( max_stack_size[n->otype] < stack_size[n->otype])
-                    max_stack_size[n->otype] = stack_size[n->otype];
+                if ( max_stack_size.at(n->otype) < stack_size.at(n->otype))
+                    max_stack_size.at(n->otype) = stack_size.at(n->otype);
 
                 for (const auto& a : n->arity)
-                    stack_size[a.first] -= a.second;       
+                    stack_size.at(a.first) -= a.second;       
             }	
             return max_stack_size;
         }

@@ -89,7 +89,7 @@ namespace FT{
             // set objectives
             #pragma omp parallel for
             for (unsigned int i=0; i<pop.size(); ++i)
-                pop.individuals[i].set_obj(params.objectives);
+                pop.individuals.at(i).set_obj(params.objectives);
 
             // fast non-dominated sort
             fast_nds(pop.individuals);
@@ -97,23 +97,23 @@ namespace FT{
             // Push back selected individuals until full
             vector<size_t> selected;
             int i = 0;
-            while ( selected.size() + front[i].size() < params.pop_size)
+            while ( selected.size() + front.at(i).size() < params.pop_size)
             {
-                std::vector<int>& Fi = front[i];        // indices in front i
+                std::vector<int>& Fi = front.at(i);        // indices in front i
                 crowding_distance(pop,i);                   // calculate crowding in Fi
 
                 for (int j = 0; j < Fi.size(); ++j)     // Pt+1 = Pt+1 U Fi
-                    selected.push_back(Fi[j]);
+                    selected.push_back(Fi.at(j));
                 
                 ++i;
             }
 
             crowding_distance(pop,i);   // calculate crowding in final front to include
-            std::sort(front[i].begin(),front[i].end(),sort_n(pop));
+            std::sort(front.at(i).begin(),front.at(i).end(),sort_n(pop));
 
             const int extra = params.pop_size - selected.size();
             for (int j = 0; j < extra; ++j) // Pt+1 = Pt+1 U Fi[1:N-|Pt+1|]
-                selected.push_back(front[i][j]);
+                selected.push_back(front.at(i).at(j));
             
             return selected;
         }
@@ -121,7 +121,7 @@ namespace FT{
         void NSGA2::fast_nds(vector<Individual>& individuals) 
         {
             front.resize(1);
-            front[0].clear();
+            front.at(0).clear();
             //std::vector< std::vector<int> >  F(1);
             #pragma omp parallel for
             for (int i = 0; i < individuals.size(); ++i) {
@@ -129,13 +129,13 @@ namespace FT{
                 std::vector<unsigned int> dom;
                 int dcount = 0;
             
-                Individual& p = individuals[i];
+                Individual& p = individuals.at(i);
                 // p.dcounter  = 0;
                 // p.dominated.clear();
             
                 for (int j = 0; j < individuals.size(); ++j) {
                 
-                    Individual& q = individuals[j];
+                    Individual& q = individuals.at(j);
                 
                     int compare = p.check_dominance(q);
                     if (compare == 1) { // p dominates q
@@ -156,34 +156,34 @@ namespace FT{
                 
                     if (p.dcounter == 0) {
                         p.set_rank(1);
-                        front[0].push_back(i);
+                        front.at(0).push_back(i);
                     }
                 }
             
             }
             
-            // using OpenMP can have different orders in the front[0]
+            // using OpenMP can have different orders in the front.at(0)
             // so let's sort it so that the algorithm is deterministic
             // given a seed
-            std::sort(front[0].begin(), front[0].end());    
+            std::sort(front.at(0).begin(), front.at(0).end());    
 
             int fi = 1;
-            while (front[fi-1].size() > 0) {
+            while (front.at(fi-1).size() > 0) {
 
-                std::vector<int>& fronti = front[fi-1];
+                std::vector<int>& fronti = front.at(fi-1);
                 std::vector<int> Q;
                 for (int i = 0; i < fronti.size(); ++i) {
 
-                    Individual& p = individuals[fronti[i]];
+                    Individual& p = individuals.at(fronti.at(i));
 
                     for (int j = 0; j < p.dominated.size() ; ++j) {
 
-                        Individual& q = individuals[p.dominated[j]];
+                        Individual& q = individuals.at(p.dominated.at(j));
                         q.dcounter -= 1;
 
                         if (q.dcounter == 0) {
                             q.set_rank(fi+1);
-                            Q.push_back(p.dominated[j]);
+                            Q.push_back(p.dominated.at(j));
                         }
                     }
                 }
@@ -196,33 +196,33 @@ namespace FT{
 
         void NSGA2::crowding_distance(Population& pop, int fronti)
         {
-            std::vector<int> F = front[fronti];
+            std::vector<int> F = front.at(fronti);
             if (F.size() == 0 ) return;
 
             const int fsize = F.size();
 
             for (int i = 0; i < fsize; ++i)
-                pop.individuals[F[i]].crowd_dist = 0;
+                pop.individuals.at(F.at(i)).crowd_dist = 0;
        
 
-            const int limit = pop[0].obj.size();
+            const int limit = pop.individuals.at(0).obj.size();
             for (int m = 0; m < limit; ++m) {
 
                 std::sort(F.begin(), F.end(), comparator_obj(pop,m));
 
                 // in the paper dist=INF for the first and last, in the code
                 // this is only done to the first one or to the two first when size=2
-                pop.individuals[F[0]].crowd_dist = std::numeric_limits<float>::max();
+                pop.individuals.at(F.at(0)).crowd_dist = std::numeric_limits<float>::max();
                 if (fsize > 1)
-                    pop.individuals[F[fsize-1]].crowd_dist = std::numeric_limits<float>::max();
+                    pop.individuals.at(F.at(fsize-1)).crowd_dist = std::numeric_limits<float>::max();
             
                 for (int i = 1; i < fsize-1; ++i) 
                 {
-                    if (pop.individuals[F[i]].crowd_dist != std::numeric_limits<float>::max()) 
+                    if (pop.individuals.at(F.at(i)).crowd_dist != std::numeric_limits<float>::max()) 
                     {   // crowd over obj
-                        pop.individuals[F[i]].crowd_dist +=
-                            (pop.individuals[F[i+1]].obj[m] - pop.individuals[F[i-1]].obj[m]) 
-                            / (pop.individuals[F[fsize-1]].obj[m] - pop.individuals[F[0]].obj[m]);
+                        pop.individuals.at(F.at(i)).crowd_dist +=
+                            (pop.individuals.at(F.at(i+1)).obj.at(m) - pop.individuals.at(F.at(i-1)).obj.at(m)) 
+                            / (pop.individuals.at(F.at(fsize-1)).obj.at(m) - pop.individuals.at(F.at(0)).obj.at(m));
                     }
                 }
             }        

@@ -52,33 +52,33 @@ namespace FT {
             }
             else    // seed first rg with seed, then seed rest with random ints from rg[0]. 
             {
-                rg[0].seed(seed);
+                rg.at(0).seed(seed);
                 
                 int imax = std::numeric_limits<int>::max();
                 
                 std::uniform_int_distribution<> dist(0, imax);
 
                 for (size_t i = 1; i < rg.size(); ++i)
-                    rg[i].seed(dist(rg[0]));                     
+                    rg.at(i).seed(dist(rg.at(0)));                     
             }
         }
 
         int Rnd::rnd_int( int lowerLimit, int upperLimit ) 
         {
             std::uniform_int_distribution<> dist( lowerLimit, upperLimit );
-            return dist(rg[omp_get_thread_num()]);
+            return dist(rg.at(omp_get_thread_num()));
         }
 
         float Rnd::rnd_flt(float min, float max)
         {
             std::uniform_real_distribution<float> dist(min, max);
-            return dist(rg[omp_get_thread_num()]);
+            return dist(rg.at(omp_get_thread_num()));
         }
 
         float Rnd::rnd_dbl(float min, float max)
         {
             std::uniform_real_distribution<float> dist(min, max);
-            return dist(rg[omp_get_thread_num()]);
+            return dist(rg.at(omp_get_thread_num()));
         }
         
         float Rnd::operator()(unsigned i) 
@@ -95,7 +95,7 @@ namespace FT {
 	        for (auto i=(last-first)-1; i>0; --i) 
             {
 	            std::uniform_int_distribution<decltype(i)> d(0,i);
-		        swap (first[i], first[d(rg[omp_get_thread_num()])]);
+		        swap (first.at(i), first[d(rg[omp_get_thread_num()])]);
 	        }
 	    }*/           
         
