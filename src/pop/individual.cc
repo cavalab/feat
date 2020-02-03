@@ -367,7 +367,8 @@ namespace FT{
             return state_to_phi(state);
         }
         #else
-        MatrixXf Individual::out(const Data& d, const Parameters& params, bool predict)
+        MatrixXf Individual::out(const Data& d, const Parameters& params, 
+                bool predict)
         {
         
             /*!
@@ -684,7 +685,6 @@ namespace FT{
         #endif
         
         // return symbolic representation of program 
-        
         string Individual::get_eqn()
         {
             #pragma omp critical 
@@ -706,18 +706,19 @@ namespace FT{
                 }
                 // tie state outputs together to return representation
                 // order by root types
-                this->dtypes.clear();
+                vector<char> root_types;
                 for (auto r : program.roots())
                 {
-                    this->dtypes.push_back(program.at(r)->otype);
+                    root_types.push_back(program.at(r)->otype);
                 }
                 std::map<char,int> rows;
                 rows['f']=0;
                 rows['c']=0;
                 rows['b']=0;
-                for (int i = 0; i < this->dtypes.size(); ++i)
+
+                for (int i = 0; i < root_types.size(); ++i)
                 {
-                    char rt = this->dtypes.at(i);
+                    char rt = root_types.at(i);
                     switch (rt)
                     {
                         case 'f':
@@ -732,7 +733,7 @@ namespace FT{
                         default:
                             HANDLE_ERROR_THROW("Unknown root type");
                     }
-                    ++rows[rt];
+                    ++rows.at(rt);
                 }
             }
 

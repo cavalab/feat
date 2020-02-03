@@ -190,6 +190,7 @@ TEST(Variation, CrossoverTests)
 	int i;
 	
 	for(i = 0; i < feat.p_pop->individuals.size(); i++)
-		ASSERT_TRUE(isValidProgram(feat.p_pop->individuals[i].program, feat.params.terminals.size()));
+		ASSERT_TRUE(isValidProgram(feat.p_pop->individuals[i].program, 
+                    feat.params.terminals.size()));
 }
 

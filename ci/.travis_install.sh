@@ -33,7 +33,7 @@ bash miniconda.sh -b -p $HOME/miniconda
 export PATH="$HOME/miniconda/bin:$PATH"
 
 
-conda update --yes conda
+# conda update --yes conda
 conda install --yes -c conda-forge shogun-cpp
 
 # the new version of json-c seems to be missing a fn shogun is linked to;
@@ -70,17 +70,6 @@ sudo cp *.a /usr/lib
 echo "back to $old_path.."
 cd $old_path; pwd
 
-echo "installing feat..."
-mkdir build;
-cd build; pwd
-
-cmake -DTEST=ON -DEIGEN_DIR=ON -DSHOGUN_DIR=ON ..
-
-cd ..
-make -C build VERBOSE=1
-echo "running feat.."
-
-./build/feat docs/examples/data/d_enc.csv -rs 42 -g 2 -p 5
 
 echo "python path is..."
 which python
@@ -91,9 +80,23 @@ which cython
 echo "upgrading pip..."
 pip install --upgrade pip
 
+###################
+# feat installation
+###################
+echo "installing feat..."
+mkdir build;
+cd build; pwd
+cmake -DTEST=ON -DEIGEN_DIR=ON -DSHOGUN_DIR=ON ..
+cd ..
+make -C build VERBOSE=1
+
 echo "installing wrapper"
 cd ./python
 python setup.py install
+cd ..
 
 echo "copying wrapper test to the python folder"
-sudo cp ../tests/wrappertest.py ./ #Copy the file to python folder
+sudo cp tests/wrappertest.py python/ #Copy the file to python folder
+
+echo "running feat.."
+./build/feat docs/examples/data/d_enc.csv -rs 42 -g 2 -p 5
