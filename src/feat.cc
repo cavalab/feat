@@ -60,6 +60,7 @@ Feat::Feat(int pop_size, int gens, string ml,
     // set Feat's Normalizer to only normalize floats by default
     N.scale_all = false;
     params.set_protected_groups(protected_groups);
+    arch.set_objectives(params.objectives);
 }
 
 /// set size of population 
@@ -278,47 +279,93 @@ int Feat::get_n_nodes(){ return best_ind.program.size(); }
 ///return population as string
 string Feat::get_eqns(bool front)
 {
-    string r="complexity\tfitness\tfitness_v\teqn\n";
-    if (front)  // only return individuals on the Pareto front
+    //file header
+    string r="complexity\tfitness\tfitness_v\teqn";
+    vector<int> obj_ignore;
+    for (const auto& o : params.objectives)
     {
-        if (use_arch)
-        {
-            // printing individuals from the archive 
-            unsigned n = 1;
-            
-            for (auto& a : arch.archive)
-            {          
-                r += std::to_string(a.complexity()) + "\t" 
-                    + std::to_string(a.fitness) + "\t" 
-                    + std::to_string(a.fitness_v) + "\t"
-                    + a.get_eqn() + "\n";  
-            }
-        }
-        else
-        {
-            // printing individuals from the pareto front
-            unsigned n = 1;
-            vector<size_t> f = p_pop->sorted_front(n);
-            
-            for (unsigned j = 0; j < f.size(); ++j)
-            {          
-                r += std::to_string(p_pop->individuals[f[j]].complexity()) + "\t" 
-                    + std::to_string((*p_pop)[f[j]].fitness) + "\t" 
-                    + std::to_string((*p_pop)[f[j]].fitness_v) + "\t" 
-                    + p_pop->individuals[f[j]].get_eqn() + "\n";  
-            }
-        }
+        if (!in({"complexity","fitness"},o))
+            r += "\t" + o;
     }
+    r+="\n";
+
+    vector<Individual>& pop_print = use_arch ? 
+        arch.archive : (*p_pop).individuals; 
+    /* if (use_arch) */
+    /* { */
+    /*     // printing individuals from the archive */ 
+    /*     pop_print = arch.archive; */
+    /* } */
+    /* else */
+    /* { */
+    /*     // printing individuals from the pareto front */
+    /*     pop_print = (*p_pop); */
+    /* } */
+    vector<size_t> idx; 
+    if (front && !use_arch)
+        idx = p_pop->sorted_front(1);
     else
     {
-        for (unsigned j = 0; j < params.pop_size; ++j)
-        {          
-            r += std::to_string(p_pop->individuals[j].complexity()) + "\t" 
-                + std::to_string((*p_pop)[j].fitness) + "\t" 
-                + std::to_string((*p_pop)[j].fitness_v) + "\t" 
-                + p_pop->individuals[j].get_eqn() + "\n";  
-        }
+        idx.resize(pop_print.size());
+        iota(idx.begin(),idx.end(),0);
     }
+
+    for (const auto& i : idx)
+    {
+        r += to_string(pop_print.at(i).complexity()) + "\t" 
+            + to_string(pop_print.at(i).fitness) + "\t" 
+            + to_string(pop_print.at(i).fitness_v) + "\t" 
+            + pop_print.at(i).get_eqn() ;  
+        for (int j = 0; j < pop_print.at(i).obj.size(); ++j)
+        {
+            if (!in({"complexity","fitness"},params.objectives.at(j)))
+                r+= "\t" + to_string(pop_print.at(i).obj.at(j));
+        }
+        r += "\n";
+    }
+    /* if (front)  // only return individuals on the Pareto front */
+    /* { */
+    /*     if (use_arch) */
+    /*     { */
+    /*         // printing individuals from the archive */ 
+    /*         pop_print = arch.archive; */
+    /*         /1* unsigned n = 1; *1/ */
+            
+    /*         /1* for (auto& a : arch.archive) *1/ */
+    /*         /1* { *1/ */          
+    /*         /1*     r += std::to_string(a.complexity()) + "\t" *1/ */ 
+    /*         /1*         + std::to_string(a.fitness) + "\t" *1/ */ 
+    /*         /1*         + std::to_string(a.fitness_v) + "\t" *1/ */
+    /*         /1*         + a.get_eqn() + "\n"; *1/ */  
+    /*         /1* } *1/ */
+    /*     } */
+    /*     else */
+    /*     { */
+    /*         // printing individuals from the pareto front */
+    /*         pop_print = (*p_pop); */
+    /*         /1* unsigned n = 1; *1/ */
+    /*         /1* vector<size_t> f = p_pop->sorted_front(n); *1/ */
+            
+    /*         /1* for (unsigned j = 0; j < f.size(); ++j) *1/ */
+    /*         /1* { *1/ */          
+               
+    /*         /1*     r += std::to_string(p_pop->individuals[f[j]].complexity()) + "\t" *1/ */ 
+    /*         /1*         + std::to_string((*p_pop)[f[j]].fitness) + "\t" *1/ */ 
+    /*         /1*         + std::to_string((*p_pop)[f[j]].fitness_v) + "\t" *1/ */ 
+    /*         /1*         + p_pop->individuals[f[j]].get_eqn() + "\n"; *1/ */  
+    /*         /1* } *1/ */
+    /*     } */
+    /* } */
+    /* else */
+    /* { */
+    /*     for (unsigned j = 0; j < params.pop_size; ++j) */
+    /*     { */          
+    /*         r += std::to_string(p_pop->individuals[j].complexity()) + "\t" */ 
+    /*             + std::to_string((*p_pop)[j].fitness) + "\t" */ 
+    /*             + std::to_string((*p_pop)[j].fitness_v) + "\t" */ 
+    /*             + p_pop->individuals[j].get_eqn() + "\n"; */  
+    /*     } */
+    /* } */
     return r;
 }
 
@@ -350,6 +397,11 @@ ArrayXXf Feat::predict_proba(float * X, int rows_x, int cols_x)
     return predict_proba(matX);
 }
 
+ArrayXXf Feat::predict_proba_archive(int i, float * X, int rows_x, int cols_x) 
+{			    
+    MatrixXf matX = Map<MatrixXf>(X,rows_x,cols_x);
+    return predict_proba_archive(i,matX);
+}
 /// convenience function calls fit then predict.            
 VectorXf Feat::fit_predict(MatrixXf& X,
                      VectorXf& y,
@@ -428,6 +480,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     }
     
     params.init();       
+    this->arch.set_objectives(params.objectives);
 
     if (params.classification)  // setup classification endpoint
     {
@@ -596,7 +649,16 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
 
     // simplify the final model
     if (simplify)
+    {
         simplify_model(d, this->best_ind);
+    }
+
+    // if we're not using an archive, let's store the final population in the 
+    // archive
+    if (!use_arch)
+    {
+        arch.update(*p_pop,params);
+    }
 
     logger.log("\nTotal time taken is " 
             + std::to_string(timer.Elapsed().count()) + "\n", 1);
@@ -1083,6 +1145,44 @@ VectorXf Feat::predict(MatrixXf& X,
     return best_ind.ml->predict_vector(Phi);        
 }
 
+MatrixXf Feat::predict_archive(MatrixXf& X,
+                       LongData Z)
+{
+
+    MatrixXf predictions(this->arch.archive.size(),X.cols());
+    VectorXf empty_y;
+    Data tmp_data(X,empty_y,Z);
+
+    for (int i = 0; i < this->arch.archive.size(); ++i)
+    {
+        predictions.row(i) = this->arch.archive.at(i).predict_vector(
+                tmp_data, this->params);
+    }
+    return predictions;
+}
+
+MatrixXf Feat::predict_archive(float * X, int rowsX,int colsX)
+{
+    MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
+    return predict_archive(matX);
+}
+
+ArrayXXf Feat::predict_proba_archive(int i, MatrixXf& X,
+                       LongData Z)
+{
+    ArrayXXf predictions(X.cols(),params.n_classes);
+    VectorXf empty_y;
+    Data tmp_data(X,empty_y,Z);
+
+    if (i >= this->arch.archive.size())
+    {
+        HANDLE_ERROR_THROW("Tried to access archive "
+                + to_string(i) + ", archive size: "
+                + to_string(this->arch.archive.size()));
+    }
+    return this->arch.archive.at(i).predict_proba(tmp_data, this->params);
+    
+}
 shared_ptr<CLabels> Feat::predict_labels(MatrixXf& X,
                        LongData Z)
 {        
@@ -1095,6 +1195,7 @@ VectorXf Feat::predict(float * X, int rowsX,int colsX)
     MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
     return predict(matX);
 }
+
 
 VectorXf Feat::predict_with_z(float * X, int rowsX,int colsX, 
                                 string s, int * idx, int idx_size)
@@ -1151,20 +1252,26 @@ void Feat::update_best(const DataRef& d, bool validation)
         }
     }
 
+    cout << "validation: " << validation << endl;
+
     if (validation) 
         this->best_score_v = bs; 
     else
     {
         this->best_score = bs;
+        cout << "params.split: " << params.split << endl;
 
         if (params.split < 1.0)
         {
+            cout << "params.split=" << params.split << "; getting prediction\n";
             VectorXf tmp;
             shared_ptr<CLabels> yhat_v = this->best_ind.predict(*d.v, params);
             this->best_score_v = p_eval->score(d.v->y, yhat_v, tmp, 
                     params.class_weights); 
             this->best_ind.fitness_v = this->best_score_v;
         }
+        else
+            cout << "not getting prediction\n";
     }
 }
 
@@ -1232,11 +1339,15 @@ void Feat::calculate_stats(const DataRef& d)
         fitnesses.push_back(p_pop->individuals.at(i).fitness);
     int idx = argmiddle(fitnesses);
 
-    Individual& med_ind = p_pop->individuals.at(idx);
-    VectorXf tmp;
-    shared_ptr<CLabels> yhat_v = med_ind.predict(*d.v, params);
-    this->med_loss_v = p_eval->score(d.v->y, yhat_v, tmp, 
-            params.class_weights); 
+    if (params.split < 1.0)
+    {
+        Individual& med_ind = p_pop->individuals.at(idx);
+        VectorXf tmp;
+        shared_ptr<CLabels> yhat_v = med_ind.predict(*d.v, params);
+        this->med_loss_v = p_eval->score(d.v->y, yhat_v, tmp, 
+                params.class_weights); 
+    }
+    
     /////////////////////////////////////////////
    
     // update stats

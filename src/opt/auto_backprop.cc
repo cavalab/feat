@@ -20,12 +20,14 @@ namespace FT {
             score_hash["log"] =  &Eval::log_loss; 
             score_hash["multi_log"] =  &Eval::multi_log_loss;
             score_hash["fpr"] =  &Eval::log_loss;
+            score_hash["zero_one"] = &Eval::log_loss;
 
             d_score_hash["mse"] = &Eval::d_squared_difference;
             d_score_hash["log"] =  &Eval::d_log_loss; 
             d_score_hash["multi_log"] =  &Eval::d_multi_log_loss;
             d_score_hash["fpr"] =  &Eval::d_log_loss;
-            
+            d_score_hash["zero_one"] = &Eval::d_log_loss;            
+
             this->d_cost_func = d_score_hash[scorer]; 
             this->cost_func = score_hash[scorer]; 
             
@@ -62,15 +64,21 @@ namespace FT {
             float min_loss;
             float current_loss, current_val_loss;
             vector<vector<float>> best_weights;
-            // batch data
+            // split up the data so we have a validation set
+            DataRef BP_data(d.X, d.y, d.Z, d.classification);
+            BP_data.train_test_split(true, 0.8);
+            // set up batch data
             MatrixXf Xb, Xb_v;
             VectorXf yb, yb_v;
             std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Zb, Zb_v;
             /* cout << "y: " << d.y.transpose() << "\n"; */ 
-            Data db(Xb, yb, Zb, params.classification);
-            Data db_val(Xb_v, yb_v, Zb_v, params.classification);
-            db_val.set_validation();    // make this a validation set
-            d.get_batch(db_val, params.bp.batch_size);     // draw a batch for the validation data
+            Data batch_data(Xb, yb, Zb, params.classification);
+            /* Data db_val(Xb_v, yb_v, Zb_v, params.classification); */
+            /* db_val.set_validation();    // make this a validation set */
+            // if batch size is 0, set batch to 20% of training data
+            int batch_size = params.bp.batch_size > 0? 
+                params.bp.batch_size : .2*BP_data.t->y.size(); 
+            /* d.get_batch(db_val, );     // draw a batch for the validation data */
             
             int patience = 3;   // number of iterations to allow validation fitness to not improve
             int missteps = 0;
@@ -84,12 +92,14 @@ namespace FT {
             {
                 /* cout << "get batch\n"; */
                 // get batch data for training
-                d.get_batch(db, params.bp.batch_size); 
-                /* cout << "db.y: " << db.y.transpose() << "\n"; */ 
+                BP_data.t->get_batch(batch_data, batch_size); 
+                /* cout << "batch_data.y: " 
+                 * << batch_data.y.transpose() << "\n"; */ 
                 // Evaluate forward pass
                 MatrixXf Phi; 
                 /* cout << "forward pass\n"; */
-                vector<Trace> stack_trace = forward_prop(ind, db, Phi, params);
+                vector<Trace> stack_trace = forward_prop(ind, batch_data, 
+                        Phi, params);
                 /* cout << "just finished forward_pass\n"; */
                 // Evaluate ML model on Phi
                 bool pass = true;
@@ -97,38 +107,44 @@ namespace FT {
                         params.classification, params.n_classes);
 
                 /* cout << "ml fit\n"; */
-                shared_ptr<CLabels> yhat = ml->fit(Phi,db.y,params,pass,ind.dtypes);
-                vector<float> Beta = ml->get_weights();
-                /* cout << "cost func\n"; */
-                current_loss = this->cost_func(db.y,yhat, params.class_weights).mean();
+                shared_ptr<CLabels> yhat = ml->fit(Phi,
+                        batch_data.y,params,pass,ind.dtypes);
                 
                 
                 if (!pass || stack_trace.size() ==0 )
                     break;
+
+                vector<float> Beta = ml->get_weights();
+                /* cout << "cost func\n"; */
+                current_loss = this->cost_func(batch_data.y, yhat, 
+                        params.class_weights).mean();
 
                 // Evaluate backward pass
                 size_t s = 0;
                 for (int i = 0; i < stack_trace.size(); ++i)
                 {
                     while (!ind.program.at(roots[s])->isNodeDx()) ++s;
-                    /* cout << "running backprop on " << ind.program_str() << " from " */
+                    /* cout << "running backprop on " 
+                     * << ind.program_str() << " from " */
                     /*      << roots.at(s) << " to " */ 
                     /*     << ind.program.subtree(roots.at(s)) << "\n"; */
                     
                     backprop(stack_trace.at(i), ind.program, 
                             ind.program.subtree(roots.at(s)), 
                             roots.at(s), Beta.at(s)/ml->N.scale.at(s), 
-                            yhat, db, params.class_weights);
+                            yhat, batch_data, params.class_weights);
                 }
 
                 // check validation fitness for early stopping
-                MatrixXf Phival = ind.out(db_val,params);
+                MatrixXf Phival = ind.out((*BP_data.v),params);
                 /* cout << "checking validation fitness\n"; */
-                /* cout << "Phival: " << Phival.rows() << " x " << Phival.cols() << "\n"; */
+                /* cout << "Phival: " << Phival.rows() 
+                 * << " x " << Phival.cols() << "\n"; */
                 /* cout << "y_val\n"; */
                 shared_ptr<CLabels> y_val = ml->predict(Phival);
                 /* cout << "val_loss\n"; */
-                current_val_loss = this->cost_func(db_val.y, y_val, params.class_weights).mean();
+                current_val_loss = this->cost_func(BP_data.v->y, y_val, 
+                        params.class_weights).mean();
                 /* cout << "check for min loss\n"; */ 
                 if (x==0 || current_val_loss < min_loss)
                 {
@@ -141,8 +157,11 @@ namespace FT {
                     /* cout << "missteps: " << missteps << "\n"; */
                     logger.log("",3);           // update learning rate
                 }
-                if (missteps == patience || std::isnan(min_loss) || std::isinf(min_loss)
-                        || min_loss <= NEAR_ZERO)       // early stopping trigger
+                // early stopping trigger
+                if (missteps == patience 
+                        || std::isnan(min_loss) 
+                        || std::isinf(min_loss)
+                        || min_loss <= NEAR_ZERO)       
                     break;
                 else
                     logger.log("min loss: " + std::to_string(min_loss), 3);

@@ -40,7 +40,7 @@ namespace FT{
                     {
                         protect_levels[i] = unique(VectorXf(X.row(i)));
                         protected_groups.push_back(i);
-                        group_intersections += protect_levels[i].size();
+                        group_intersections += protect_levels.at(i).size();
                     }
                 }
                 for (auto pl : protect_levels)
@@ -308,7 +308,7 @@ namespace FT{
             
             for(int x = 0; x < t_indices.size(); x++)
             {
-                t->X.col(x) = o->X.col(t_indices[x]);
+                t->X.col(x) = o->X.col(t_indices.at(x));
                 t->y[x] = o->y[t_indices[x]];
                 
                 if(o->Z.size() > 0)
@@ -316,9 +316,9 @@ namespace FT{
                     for(auto const &val : o->Z)
                     {
                         t->Z[val.first].first.push_back(
-                                val.second.first[t_indices[x]]);
+                                val.second.first[t_indices.at(x)]);
                         t->Z[val.first].second.push_back(
-                                val.second.second[t_indices[x]]);
+                                val.second.second[t_indices.at(x)]);
                     }
                 }
             }
@@ -327,17 +327,17 @@ namespace FT{
             
             for(int x = 0; x < v_indices.size(); x++)
             {
-                v->X.col(x) = o->X.col(v_indices[x]);
-                v->y[x] = o->y[v_indices[x]];
+                v->X.col(x) = o->X.col(v_indices.at(x));
+                v->y(x) = o->y[v_indices.at(x)];
                 
                 if(o->Z.size() > 0)
                 {
                     for(auto const &val : o->Z)
                     {
                         v->Z[val.first].first.push_back(
-                                val.second.first[t_indices[x]]);
+                                val.second.first[t_indices.at(x)]);
                         v->Z[val.first].second.push_back(
-                                val.second.second[t_indices[x]]);
+                                val.second.second[t_indices.at(x)]);
                     }
                 }
             }
@@ -377,10 +377,8 @@ namespace FT{
                 if(o->Z.size() > 0)
                     split_longitudinal(o->Z, t->Z, v->Z, split);
             }
-            cout << "setting protected groups in train_test_split\n"; 
             t->set_protected_groups();
             v->set_protected_groups();
-
         }  
         
         void DataRef::split_longitudinal( LongData &Z, LongData &Z_t, 
@@ -418,8 +416,10 @@ namespace FT{
                 vector<int> const &order )  
         {   
 			for ( int s = 1, d; s < order.size(); ++ s ) {
-				for ( d = order[s]; d < s; d = order[d] ) ;
-				if (d == s) while ( d = order[d], d != s ) swap( v[s], v[d]);
+				for ( d = order.at(s); d < s; d = order.at(d) ) ;
+				if (d == s) 
+                    while ( d = order.at(d), d != s ) 
+                        swap( v.at(s), v.at(d));
 			}
 		}
     }
