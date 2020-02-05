@@ -498,10 +498,11 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     p_eval = make_shared<Evaluation>(params.scorer);
 
     // create an archive to save Pareto front, unless NSGA-2 is being used for survival 
-    if (!survival.compare("nsga2"))
-        use_arch = false;
-    else
-        use_arch = true;
+    /* if (!survival.compare("nsga2")) */
+    /*     use_arch = false; */
+    /* else */
+    /*     use_arch = true; */
+    use_arch = false;
     
     string log_msg = "functions set: [";
     for (const auto& f: params.functions) log_msg += f->name + ", "; 
@@ -663,7 +664,8 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     // archive
     if (!use_arch)
     {
-        arch.update(*p_pop,params);
+        /* arch.update(*p_pop,params); */
+        arch.archive = p_pop->individuals;
     }
 
     logger.log("\n===\nRun Completed. Total time taken is " 

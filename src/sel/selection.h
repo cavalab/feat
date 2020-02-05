@@ -9,6 +9,7 @@ license: GNU/GPL v3
 #include "selection_operator.h"
 #include "lexicase.h"
 #include "fair_lexicase.h"
+#include "fair_lexicase2.h"
 #include "nsga2.h"
 #include "offspring.h"
 #include "random.h"
