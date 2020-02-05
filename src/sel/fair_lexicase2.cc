@@ -3,22 +3,22 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 
-#include "fair_lexicase.h"
+#include "fair_lexicase2.h"
 
 namespace FT{
 
 
     namespace Sel{
 
-        FairLexicase::FairLexicase(bool surv)
+        FairLexicase2::FairLexicase2(bool surv)
         { 
-            name = "fair_lexicase"; 
+            name = "fair_lexicase2"; 
             survival = surv; 
         }
         
-        FairLexicase::~FairLexicase(){}
+        FairLexicase2::~FairLexicase2(){}
         
-        vector<size_t> FairLexicase::select(Population& pop, const MatrixXf& F, 
+        vector<size_t> FairLexicase2::select(Population& pop, const MatrixXf& F, 
                 const Parameters& params, const Data& d)
         {
             /*! Selection according to lexicase selection for 
@@ -157,7 +157,19 @@ namespace FT{
                     ArrayXf fitness(pool.size());
                     for (size_t j = 0; j<pool.size(); ++j)
                     {
-                        fitness(j) = case_idx.select(F.col(pool[j]), 0).sum();
+                        if (r() < 0.5)
+                        {
+                            // half the time use loss
+                            fitness(j) = case_idx.select(
+                                    F.col(pool[j]), 0).sum();
+                        }
+                        else
+                        {
+                            // half the time, look at fairness
+                            fitness(j) = fabs(F.col(pool[j]).sum() 
+                                              - case_idx.select(
+                                                F.col(pool[j]), 0).sum());
+                        }
                     }
                     // get epsilon for the fitnesses
                     float epsilon = mad(fitness);
@@ -240,10 +252,10 @@ namespace FT{
             return selected;
         }
 
-        vector<size_t> FairLexicase::survive(Population& pop, 
+        vector<size_t> FairLexicase2::survive(Population& pop, 
                 const MatrixXf& F, const Parameters& params, const Data& d)
         {
-            /* FairLexicase survival */
+            /* FairLexicase2 survival */
         }
         
     }
