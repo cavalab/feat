@@ -386,7 +386,14 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
 
     // start the clock
     timer.Reset();
-    cout << "FEAT::fit() HAS BEEN CALLED!\n";
+    string FEAT = (  
+      "/////////////////////////////////////////////////////////////////////\n"
+      "//             Feature Engineering Automation Tool (FEAT)          //\n"
+      "// La Cava et al. 2017                                             //\n"
+      "// License: GPL v3                                                 //\n"
+      "/////////////////////////////////////////////////////////////////////\n"
+    );
+    logger.log(FEAT,1);
     if (params.use_batch)
     {
         if (params.bp.batch_size >= X.cols()){
@@ -986,7 +993,7 @@ void Feat::initial_model(DataRef &d)
                     std::unique_ptr<Node>(new NodeMedian()));
         }
     }
-    cout << "initial model: " << best_ind.get_eqn() << "\n";
+    logger.log("initial model: " + best_ind.get_eqn(), 1);
     // fit model
     bool pass = true;
     shared_ptr<CLabels> yhat = best_ind.fit(*d.t,params,pass);
