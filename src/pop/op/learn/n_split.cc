@@ -170,9 +170,13 @@ namespace FT{
                     /* cout << val << "," << score << "\n"; */
                 }
 
-                /* cout << "final threshold set to " << threshold 
-                 * << " with score " */ 
-                /*      << best_score << "\n"; */
+                threshold = std::isinf(threshold)? 
+                    0 : std::isnan(threshold)? 
+                    0 : threshold;
+
+                 /* cout << "final threshold set to " << threshold */ 
+                 /*      << " with score " */
+                 /*      << best_score << "\n"; */
             }
            
             template <class T>

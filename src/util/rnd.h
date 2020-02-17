@@ -11,6 +11,7 @@ license: GNU/GPL v3
 #include <vector>
 
 #include "../init.h"
+#include "error.h"
 
 using namespace std;
 using std::swap;
@@ -87,11 +88,17 @@ namespace FT {
                      
                     if(w.size() == 0)
                     {   
-                        cout<<"random_choice() w.size() = 0 Calling random_choice(v)\n";
-                        
-                        cout << "W size is " << w.size() << "v size is " 
-                            << v.size() << "\n"; 
-                        return random_choice(v);
+                        if (v.size() == 0)
+                            HANDLE_ERROR_THROW("random_choice() called with "
+                                    "w.size() = 0 and v.size() = 0");
+                        else
+                        {
+                            HANDLE_ERROR_NO_THROW("w.size() = 0, v.size() = "
+                                    +to_string(v.size())+
+                                    "; Calling random_choice(v)");
+                            
+                            return random_choice(v);
+                        }
                     }
                     if(w.size() != v.size())
                     {   

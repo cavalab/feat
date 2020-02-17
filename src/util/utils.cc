@@ -21,6 +21,12 @@ namespace FT{
             x = (isinf(x)).select(MAX_FLT,x);
             x = (isnan(x)).select(0,x);
         };  
+        void clean(VectorXf& x)
+        {
+            ArrayXf y = ArrayXf(x);
+            clean(y);
+            x = VectorXf(y);
+        }
 
         std::string ltrim(std::string str, const std::string& chars)
         {
@@ -96,11 +102,11 @@ namespace FT{
             // if evenly sized, return average of middle two elements
             if (x.size() % 2 == 0) {
                 nth_element(x.begin(),x.begin()+n-1,x.end());
-                return (x[n] + x[n-1]) / 2;
+                return (x.at(n) + x.at(n-1)) / 2;
             }
             // otherwise return middle element
             else
-                return x[n];
+                return x.at(n);
         }
         
         /// returns the (first) index of the element with the middlest value in v

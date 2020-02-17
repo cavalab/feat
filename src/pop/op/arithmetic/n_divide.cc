@@ -34,8 +34,9 @@ namespace FT{
                 ArrayXf x1 = state.pop<float>();
                 ArrayXf x2 = state.pop<float>();
                 // safe division returns x1/x2 if x2 != 0, and MAX_FLT otherwise               
-                state.push<float>( (abs(x2) > NEAR_ZERO ).select((this->W[0] * x1) / (this->W[1] * x2), 
-                                                            1.0) ); 
+                ArrayXf ret = (this->W[0] * x1) / (this->W[1] * x2);
+                clean(ret);
+                state.push<float>(ret); 
             }
             #else
             void NodeDivide::evaluate(const Data& data, State& state)
