@@ -8,6 +8,8 @@ if [ $# > 0 ] ; then
     for var in $@ ; do
         if [ $var == "debug" ] ; then
             make -C debug -j
+        elif [ $var == "profile" ] ; then
+            make -C profile -j
         elif [ $var == "lpc" ] ; then
             module load gcc/5.2.0
             export EIGEN3_INCLUDE_DIR="$HOME/eigen-3.3.4/"

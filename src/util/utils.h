@@ -32,6 +32,7 @@ namespace FT{
      
         /// limits node output to be between MIN_FLT and MAX_FLT
         void clean(ArrayXf& x);
+        void clean(VectorXf& x);
 
         std::string ltrim(std::string str, const std::string& chars = "\t\n\v\f\r ");
          

@@ -62,21 +62,22 @@ namespace FT{
             private:
             
                 /// crossover
-                bool cross(Individual& mom, Individual& dad, Individual& child,
-                           const Parameters& params, const Data& d);
+                bool cross(const Individual& mom, const Individual& dad, 
+                        Individual& child, const Parameters& params, 
+                        const Data& d);
                 
                 /// residual crossover
-                bool residual_cross(Individual& mom, Individual& dad, 
+                bool residual_cross(const Individual& mom, const Individual& dad, 
                         Individual& child, const Parameters& params, 
                         const Data& d);
 
                 /// stagewise crossover 
-                bool stagewise_cross(Individual& mom, Individual& dad, 
+                bool stagewise_cross(const Individual& mom, const Individual& dad, 
                         Individual& child, const Parameters& params, 
                         const Data& d);
 
                 /// mutation
-                bool mutate(Individual& mom, Individual& child, 
+                bool mutate(const Individual& mom, Individual& child, 
                         const Parameters& params, const Data& d);
                 void point_mutate(Individual& child, const Parameters& params);
                 void insert_mutate(Individual& child, const Parameters& params);
@@ -86,8 +87,9 @@ namespace FT{
                                      const NodeVector& v1, size_t i1, size_t j1, 
                                      const NodeVector& v2, size_t i2, size_t j2);
                 /// debugging printout of crossover operation.
-                void print_cross(Individual&,size_t,size_t,Individual&, size_t, 
-                        size_t, Individual&, bool after=true);       
+                void print_cross(const Individual&,size_t,size_t,
+                        const Individual&, size_t, size_t, Individual&, 
+                        bool after=true);       
                 
                 float cross_rate;     ///< fraction of crossover in total variation
         };

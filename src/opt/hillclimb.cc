@@ -16,7 +16,7 @@ namespace FT {
             score_hash["mse"] = &Eval::squared_difference;
             score_hash["log"] =  &Eval::log_loss; 
             score_hash["multi_log"] =  &Eval::multi_log_loss;
-            this->cost_func = score_hash[scorer]; 
+            this->cost_func = score_hash.at(scorer); 
 		    /* this->X = X; */
 		    /* this->labels = labels; */
 		    this->iters = iters;
@@ -46,8 +46,8 @@ namespace FT {
                         vector<float> W0 = pd->W;
                         for (int i = 0; i < pd->W.size(); ++i)
                         {   // perturb W[i] with gaussian noise
-                            pd->W[i] += r.gasdev()*pd->W[i]*this->step; 
-                            /* cout << "changed " << W0[i] << " to " << pd->W[i] << "\n"; */
+                            pd->W.at(i) += r.gasdev()*pd->W.at(i)*this->step; 
+                            /* cout << "changed " << W0.at(i) << " to " << pd->W.at(i) << "\n"; */
                         }
                     }
                 }
