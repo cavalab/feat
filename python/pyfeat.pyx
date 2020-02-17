@@ -65,7 +65,6 @@ cdef extern from "feat.h" namespace "FT":
         vector[unsigned] get_med_num_params();
         vector[unsigned] get_med_dim();
 
-@cython.auto_pickle(True)
 cdef class PyFeat:
     cdef Feat ft  # hold a c++ instance which we're wrapping
     def __cinit__(self,int pop_size, int gens, string ml, bool classification, 
