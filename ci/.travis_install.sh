@@ -28,7 +28,7 @@ echo "EIGEN3_INCLUDE_DIR set to $EIGEN3_INCLUDE_DIR"
 #_______________________________________________
 
 echo "installing shogun via conda..."
-wget http://repo.continuum.io/miniconda/Miniconda3-4.7.10-Linux-x86_64.sh -O miniconda.sh
+wget http://repo.continuum.io/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh -O miniconda.sh
 bash miniconda.sh -b -p $HOME/miniconda
 export PATH="$HOME/miniconda/bin:$PATH"
 
