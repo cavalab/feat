@@ -115,9 +115,12 @@ class TestFeatWrapper(unittest.TestCase):
     #Test ability to pickle feat model
     def test_pickling(self):
         self.debug("Pickle Feat object")
-        pickle.dump(self.clf, 'test_pickle.pkl')
+    
+        with open('test_pickle.pkl','wb') as f:
+            pickle.dump(self.clf, f)
 
-        loaded_clf = pickle.load('test_pickle.pkl')
+        with open('test_pickle.pkl','rb') as f:
+            loaded_clf = pickle.load(f)
 
         assert(loaded_clf.get_params() == self.clf.get_params())
 
