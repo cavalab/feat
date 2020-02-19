@@ -425,7 +425,8 @@ void Variation::delete_mutate(Individual& child,
             // insert the terminal that was chosen 
             child.program.insert(child.program.begin()+start, 
                     insertion->clone());
-            logger.log("\t\tresult of delete mutation: " + child.program_str(), 3);
+            logger.log("\t\tresult of delete mutation: " + 
+                    child.program_str(), 3);
             continue;
         }
         /* std::cout << "i: " << i << "\n"; */ 
@@ -535,7 +536,7 @@ bool Variation::correlation_delete_mutate(Individual& child,
 
     logger.log("\t\tresult of corr delete mutation: " + child.program_str(), 3);
 
-    if (!child.program.is_valid_program(params.num_features, 
+    if (!child.program.is_valid_program(d.X.rows(), 
                 params.longitudinalMap))
     {
         cout << "Error in correlation_delete_mutate: child is not a valid "
@@ -543,6 +544,7 @@ bool Variation::correlation_delete_mutate(Individual& child,
         cout << child.program_str() << endl;
         cout << child.get_eqn() << endl;
     }
+
     return highest_corr == 1.0;
 }
 

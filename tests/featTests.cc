@@ -241,7 +241,7 @@ TEST(Feat, simplification)
     
     // test [NOT(NOT(NOT(x1<t)))][NOT(NOT(NOT(NOT(x0<t))))]
     cout << "\n\ntest [NOT(NOT(NOT(x1<t)))][NOT(NOT(NOT(NOT(x0<t))))] " << endl;
-    feat.set_verbosity(3);
+    feat.set_verbosity(2);
 
     Individual test_ind2; 
 	test_ind2.program.push_back(
