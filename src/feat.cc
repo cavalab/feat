@@ -504,6 +504,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     // evaluate initial population
     logger.log("Evaluating initial population",2);
     p_eval->fitness(p_pop->individuals,*d.t,F,params);
+    p_eval->validation(p_pop->individuals,*d.v,F,params);
     
     logger.log("Initial population done",2);
     logger.log(std::to_string(timer.Elapsed().count()) + " seconds",2);
@@ -560,7 +561,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
         
         F_v.resize(d.v->X.cols(),int(2*params.pop_size)); 
         
-        p_eval->fitness(final_pop, *d.v, F_v, params, false, true);
+        p_eval->validation(final_pop, *d.v, F_v, params, false, true);
         // print validation scores
         if (params.verbosity > 2)
         {
@@ -614,8 +615,8 @@ void Feat::run_generation(unsigned int g,
 
     // evaluate offspring
     logger.log("evaluating offspring...", 2);
-    p_eval->fitness(p_pop->individuals, *d.t, F, params, 
-            true && !params.use_batch);
+    p_eval->fitness(p_pop->individuals, *d.t, F, params);
+    p_eval->validation(p_pop->individuals, *d.v, F, params);
 
     // select survivors from combined pool of parents and offspring
     logger.log("survival...", 2);
@@ -1128,40 +1129,28 @@ void Feat::update_best(const DataRef& d, bool validation)
     logger.log("updating best..",2);
 
     float bs;
-    bs = validation ? this->best_score_v : this->best_score ; 
+    /* bs = validation ? this->best_score_v : this->best_score ; */ 
+    bs = this->best_score_v; 
     float f; 
-    vector<Individual>& pop = (use_arch && validation ? 
+    vector<Individual>& pop = (use_arch ? 
                                arch.archive : p_pop->individuals); 
 
-    for (const auto i: pop)
+    for (const auto ind: pop)
     {
-        if (!val_from_arch || (val_from_arch && i.rank == 1))
+        if (!val_from_arch || (val_from_arch && ind.rank == 1))
         {
-            f = validation ? i.fitness_v : i.fitness ;
+            f = ind.fitness_v;
+
             if (f < bs)
             {
                 bs = f;
-                this->best_ind = i; // should this be i.clone(best_ind); ?
-                /* i.clone(best_ind); */
+                this->best_ind = ind; // should this be ind.clone(best_ind); ?
+                /* ind.clone(best_ind); */
             }
         }
     }
 
-    if (validation) 
-        this->best_score_v = bs; 
-    else
-    {
-        this->best_score = bs;
-
-        if (params.split < 1.0)
-        {
-            VectorXf tmp;
-            shared_ptr<CLabels> yhat_v = this->best_ind.predict(*d.v, params);
-            this->best_score_v = p_eval->score(d.v->y, yhat_v, tmp, 
-                    params.class_weights); 
-            this->best_ind.fitness_v = this->best_score_v;
-        }
-    }
+    this->best_score_v = bs; 
 }
 
 float Feat::score(MatrixXf& X, const VectorXf& y, LongData Z)

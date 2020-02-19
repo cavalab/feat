@@ -44,13 +44,21 @@ namespace FT{
                     
                 void set_score(string scorer);
 
+                /// validation of population.
+                void validation(vector<Individual>& individuals,
+                             const Data& d, 
+                             MatrixXf& F, 
+                             const Parameters& params, 
+                             bool offspring = false
+                             );
+
                 /// fitness of population.
                 void fitness(vector<Individual>& individuals,
                              const Data& d, 
                              MatrixXf& F, 
                              const Parameters& params, 
-                             bool offspring = false,
-                             bool validation = false);
+                             bool offspring = false
+                             );
               
                 /// assign fitness to an individual and to F.  
                 void assign_fit(Individual& ind, MatrixXf& F, const shared_ptr<CLabels>& yhat, 

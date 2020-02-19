@@ -25,13 +25,60 @@ namespace FT{
 
         Evaluation::~Evaluation(){}
                             
+        void Evaluation::validation(vector<Individual>& individuals,
+                                 const Data& d, 
+                                 MatrixXf& F, 
+                                 const Parameters& params, 
+                                 bool offspring
+                )
+        {
+            unsigned start =0;
+            if (offspring) start = F.cols()/2;
+
+            // loop through individuals
+            #pragma omp parallel for
+            for (unsigned i = start; i<individuals.size(); ++i)
+            {
+                Individual& ind = individuals.at(i);
+                
+                // if there is no validation data,
+                // set fitness_v to fitness and return
+                if (d.X.cols() == 0) 
+                {
+                    ind.fitness_v = ind.fitness;
+                    continue;
+                }
+
+                bool pass = true;
+
+                logger.log("Validating ind " + to_string(i) 
+                        + ", location: " + to_string(ind.loc), 3);
+
+                shared_ptr<CLabels> yhat =  ind.predict(d,params);
+                // assign F and aggregate fitness
+                logger.log("Assigning fitness to ind " + to_string(i) 
+                        + ", location: " + to_string(ind.loc) 
+                        + ", eqn: " + ind.get_eqn(), 3);
+
+                if (!pass)
+                {
+
+                    ind.fitness_v = MAX_FLT; 
+                    F.col(ind.loc) = MAX_FLT*VectorXf::Ones(d.y.size());
+                }
+                else
+                {
+                    // assign fitness to individual
+                    assign_fit(ind,F,yhat,d.y,params,true);
+                }
+            }
+        }
         // fitness of population
         void Evaluation::fitness(vector<Individual>& individuals,
                                  const Data& d, 
                                  MatrixXf& F, 
                                  const Parameters& params, 
-                                 bool offspring,
-                                 bool validation)
+                                 bool offspring)
         {
         	/*!
              *      @param individuals: population
@@ -39,7 +86,6 @@ namespace FT{
              *      @param F: matrix of raw fitness values
              *      @param params: algorithm parameters
              *      @param offspring: if true, only evaluate last half of population
-             *      @param validation: if true, call ind.predict instead of ind.fit
              
              * Output 
              
@@ -79,8 +125,7 @@ namespace FT{
                 logger.log("Running ind " + to_string(i) 
                         + ", location: " + to_string(ind.loc), 3);
 
-                shared_ptr<CLabels> yhat = validation? 
-                    ind.predict(d,params) : ind.fit(d,params,pass); 
+                shared_ptr<CLabels> yhat =  ind.fit(d,params,pass); 
                 // assign F and aggregate fitness
                 logger.log("Assigning fitness to ind " + to_string(i) 
                         + ", location: " + to_string(ind.loc) 
@@ -89,19 +134,15 @@ namespace FT{
                 if (!pass)
                 {
 
-                    if (validation) 
-                        ind.fitness_v = MAX_FLT; 
-                    else 
-                        ind.fitness = MAX_FLT;
-
+                    ind.fitness = MAX_FLT;
                     F.col(ind.loc) = MAX_FLT*VectorXf::Ones(d.y.size());
                 }
                 else
                 {
                     // assign fitness to individual
-                    assign_fit(ind,F,yhat,d.y,params,validation);
+                    assign_fit(ind,F,yhat,d.y,params,false);
 
-                    if (params.hillclimb && !validation)
+                    if (params.hillclimb)
                     {
                         HillClimb hc(params.scorer, params.hc.iters, 
                                 params.hc.step);
@@ -149,8 +190,8 @@ namespace FT{
                 
             F.col(ind.loc) = loss;  
             
-            logger.log("ind " + std::to_string(ind.loc) + " fitness: " + std::to_string(ind.fitness),3);
+            logger.log("ind " + std::to_string(ind.loc) + " fitness: " 
+                    + std::to_string(ind.fitness),3);
         }
     }
-
 }
