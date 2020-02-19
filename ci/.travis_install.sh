@@ -1,14 +1,18 @@
+echo "python path is..."
+which python
+python --version
+
 echo "installing cmake"
 # sudo add-apt-repository -y ppa:george-edison55/cmake-3.x
 # sudo apt-get update -y
-sudo apt-get install cmake
+# sudo apt-get install cmake
 echo "cmake version:"
 cmake --version
 echo "sudo cmake version:"
 sudo cmake --version
 
-echo "installing pip"
-sudo apt install python3-pip
+# echo "installing pip"
+# sudo apt install python3-pip
 
 echo "installing mkdocs"
 sudo pip3 install mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
@@ -55,7 +59,7 @@ conda install --yes pandas
 
 #building and installing google tests
 echo "installing google test"
-sudo apt-get install libgtest-dev
+# sudo apt-get install libgtest-dev
 old_path=$(pwd)
 
 echo "building google test.."
