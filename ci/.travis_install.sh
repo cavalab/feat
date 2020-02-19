@@ -73,6 +73,7 @@ cd $old_path; pwd
 
 echo "python path is..."
 which python
+python --version
 
 echo "cython path is..."
 which cython
