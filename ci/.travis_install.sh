@@ -15,6 +15,8 @@ sudo cmake --version
 # sudo apt install python3-pip
 echo "installing setuptools"
 sudo -H pip3 install setuptools
+echo "installing wheel"
+sudo -H pip3 install setuptools
 
 echo "installing mkdocs"
 sudo -H pip3 install mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
