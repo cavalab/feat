@@ -1,4 +1,4 @@
-dist: trusty
+dist: bionic
 sudo: required
 language: cpp
   
@@ -9,16 +9,19 @@ addons:
       packages:
         - doxygen
         - graphviz
+        - libgtest-dev
     
   sources:
         - ubuntu-toolchain-r-test
   packages:
-        - python3.5
+        # - python3.6
         #        - cmake 
         #        - cmake-data
         #        - gcc-5
         #        - g++-5
 
+# before_install:
+#     - sudo apt-get install libgtest-dev
 env:
     global:
     # should be limited to 4 on travis
