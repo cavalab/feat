@@ -10,6 +10,8 @@ addons:
         - doxygen
         - graphviz
         - libgtest-dev
+        - python3-pip
+        - cmake
     
   sources:
         - ubuntu-toolchain-r-test
@@ -22,6 +24,8 @@ addons:
 
 # before_install:
 #     - sudo apt-get install libgtest-dev
+python:
+    - "3.6"
 env:
     global:
     # should be limited to 4 on travis
