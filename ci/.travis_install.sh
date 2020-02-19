@@ -15,7 +15,7 @@ sudo cmake --version
 # sudo apt install python3-pip
 
 echo "installing mkdocs"
-sudo pip3 install mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
+sudo -H pip3 install mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
 
 echo "mkdocs version"
 mkdocs --version
