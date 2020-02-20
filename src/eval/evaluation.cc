@@ -27,13 +27,13 @@ namespace FT{
                             
         void Evaluation::validation(vector<Individual>& individuals,
                                  const Data& d, 
-                                 MatrixXf& F, 
                                  const Parameters& params, 
                                  bool offspring
                 )
         {
             unsigned start =0;
-            if (offspring) start = F.cols()/2;
+            if (offspring) 
+                start = individuals.size()/2;
 
             // loop through individuals
             #pragma omp parallel for
@@ -55,7 +55,7 @@ namespace FT{
                         + ", location: " + to_string(ind.loc), 3);
 
                 shared_ptr<CLabels> yhat =  ind.predict(d,params);
-                // assign F and aggregate fitness
+                // assign aggregate fitness
                 logger.log("Assigning fitness to ind " + to_string(i) 
                         + ", location: " + to_string(ind.loc) 
                         + ", eqn: " + ind.get_eqn(), 3);
@@ -64,12 +64,13 @@ namespace FT{
                 {
 
                     ind.fitness_v = MAX_FLT; 
-                    F.col(ind.loc) = MAX_FLT*VectorXf::Ones(d.y.size());
                 }
                 else
                 {
                     // assign fitness to individual
-                    assign_fit(ind,F,yhat,d.y,params,true);
+                    VectorXf loss;
+                    ind.fitness_v = score(d.y, yhat, loss, 
+                                            params.class_weights);
                 }
             }
         }

@@ -28,16 +28,16 @@ Feat::Feat(int pop_size, int gens, string ml,
        bool erc, string obj, bool shuffle, 
        float split, float fb, string scorer, string feature_names,
        bool backprop,int iters, float lr, int bs, int n_threads,
-       bool hillclimb, string logfile, int max_time, bool use_batch, bool residual_xo,
-       bool stagewise_xo, bool stagewise_xo_tol,
+       bool hillclimb, string logfile, int max_time, bool use_batch, 
+       bool residual_xo, bool stagewise_xo, bool stagewise_xo_tol,
        bool softmax_norm, int print_pop, bool normalize,
        bool val_from_arch, bool corr_delete_mutate, bool simplify):
           // construct subclasses
-          params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
-                 functions, cross_rate, root_xo_rate, max_depth, max_dim, erc, 
-                 obj, shuffle, split, fb, scorer, feature_names, backprop, 
-                 iters, lr, bs, hillclimb, max_time, use_batch, residual_xo, 
-                 stagewise_xo, stagewise_xo_tol, softmax_norm, 
+          params(pop_size, gens, ml, classification, max_stall, otype, 
+                 verbosity, functions, cross_rate, root_xo_rate, max_depth, 
+                 max_dim, erc, obj, shuffle, split, fb, scorer, feature_names, 
+                 backprop, iters, lr, bs, hillclimb, max_time, use_batch, 
+                 residual_xo, stagewise_xo, stagewise_xo_tol, softmax_norm, 
                  normalize, corr_delete_mutate), 
           p_sel( make_shared<Selection>(sel) ),
           p_surv( make_shared<Selection>(surv, true) ),
@@ -70,7 +70,10 @@ void Feat::set_generations(int gens){ params.gens = gens;}
 void Feat::set_ml(string ml){ params.ml = ml; }            
 
 /// set EProblemType for shogun              
-void Feat::set_classification(bool classification){ params.classification = classification;}
+void Feat::set_classification(bool classification)
+{ 
+    params.classification = classification;
+}
      
 /// set level of debug info              
 void Feat::set_verbosity(int verbosity){ params.set_verbosity(verbosity); }
@@ -504,7 +507,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     // evaluate initial population
     logger.log("Evaluating initial population",2);
     p_eval->fitness(p_pop->individuals,*d.t,F,params);
-    p_eval->validation(p_pop->individuals,*d.v,F,params);
+    p_eval->validation(p_pop->individuals,*d.v,params);
     
     logger.log("Initial population done",2);
     logger.log(std::to_string(timer.Elapsed().count()) + " seconds",2);
@@ -521,12 +524,16 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     float fraction = 0;
     // continue until max gens is reached or max_time is up (if it is set)
     
-    while((params.max_time == -1 || params.max_time > timer.Elapsed().count()) // time limit
-           && g<params.gens                                                    // generation limit
-           && (params.max_stall == 0 || stall_count < params.max_stall) )      // stall limit
+    while(// time limit
+          (params.max_time == -1 || params.max_time > timer.Elapsed().count()) 
+          // generation limit
+          && g<params.gens                                                    
+          // stall limit
+          && (params.max_stall == 0 || stall_count < params.max_stall)
+         )
     {
         fraction = params.max_time == -1 ? ((g+1)*1.0)/params.gens : 
-                                           timer.Elapsed().count()/params.max_time;
+                                   timer.Elapsed().count()/params.max_time;
         if(params.use_batch)
         {
             d.t->get_batch(db, params.bp.batch_size);
@@ -554,27 +561,27 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     logger.log("best training representation: " + best_ind.get_eqn(),2);
     logger.log("train score: " + std::to_string(best_score), 2);
     // evaluate population on validation set
-    if (params.split < 1.0)
-    {
-        vector<Individual>& final_pop = use_arch ? 
-            arch.archive : p_pop->individuals; 
+    /* if (params.split < 1.0) */
+    /* { */
+    /*     vector<Individual>& final_pop = use_arch ? */ 
+    /*         arch.archive : p_pop->individuals; */ 
         
-        F_v.resize(d.v->X.cols(),int(2*params.pop_size)); 
+    /*     /1* F_v.resize(d.v->X.cols(),int(2*params.pop_size)); *1/ */ 
         
-        p_eval->validation(final_pop, *d.v, F_v, params, false, true);
-        // print validation scores
-        if (params.verbosity > 2)
-        {
-            string scores = "";
-            for (auto& ind : final_pop)
-                scores += (ind.get_eqn() + "; score: " + 
-                    std::to_string(ind.fitness_v) + "\n");
-            logger.log(scores,3);
-        }
-        update_best(d,true);                  // get the best validation model
-    }
-    else
-        best_score_v = best_score;
+    /*     p_eval->validation(final_pop, *d.v, params, false); */
+    /*     // print validation scores */
+    /*     if (params.verbosity > 2) */
+    /*     { */
+    /*         string scores = ""; */
+    /*         for (auto& ind : final_pop) */
+    /*             scores += (ind.get_eqn() + "; score: " + */ 
+    /*                 std::to_string(ind.fitness_v) + "\n"); */
+    /*         logger.log(scores,3); */
+    /*     } */
+    /*     update_best(d,true);                  // get the best validation model */
+    /* } */
+    /* else */
+    /*     best_score_v = best_score; */
    
     logger.log("best validation representation: " + best_ind.get_eqn(),2);
     logger.log("validation score: " + std::to_string(best_score_v), 2);
@@ -615,8 +622,8 @@ void Feat::run_generation(unsigned int g,
 
     // evaluate offspring
     logger.log("evaluating offspring...", 2);
-    p_eval->fitness(p_pop->individuals, *d.t, F, params);
-    p_eval->validation(p_pop->individuals, *d.v, F, params);
+    p_eval->fitness(p_pop->individuals, *d.t, F, params, true);
+    p_eval->validation(p_pop->individuals, *d.v, params, true);
 
     // select survivors from combined pool of parents and offspring
     logger.log("survival...", 2);
@@ -628,13 +635,13 @@ void Feat::run_generation(unsigned int g,
     logger.log("survivors:\n" + p_pop->print_eqns(), 3);
     
     logger.log("update best...",2);
-    update_best(d);
+    bool updated_best = update_best(d);
 
     logger.log("calculate stats...",2);
     calculate_stats(d);
 
     if (params.max_stall > 0)
-        update_stall_count(stall_count);
+        update_stall_count(stall_count, updated_best);
 
     logger.log("update archive...",2);
     if (use_arch) 
@@ -660,14 +667,10 @@ void Feat::run_generation(unsigned int g,
 
 }
 
-void Feat::update_stall_count(unsigned& stall_count)
+void Feat::update_stall_count(unsigned& stall_count, bool best_updated)
 {
-    /* double med_score = median(F.colwise().mean().array());  // median loss */
-
-    if (params.current_gen == 0 || this->med_loss_v < this->best_med_score)
+    if (params.current_gen == 0 || best_updated )
     {
-        /* cout << "updating best_med_score to " << med_loss_v << "\n"; */
-        best_med_score = med_loss_v;
         stall_count = 0;
     }
     else
@@ -709,7 +712,7 @@ void Feat::final_model(DataRef& d)
     shared_ptr<CLabels> yhat = best_ind.fit(*d.o, params, pass);
     VectorXf tmp;
     /* params.set_sample_weights(y);   // need to set new sample weights for y, */ 
-                                    // which is probably from a validation set
+    // which is probably from a validation set
     float score = p_eval->score(d.o->y,yhat,tmp,params.class_weights);
     logger.log("final_model score: " + std::to_string(score),2);
 }
@@ -1019,6 +1022,7 @@ void Feat::initial_model(DataRef &d)
     
     best_ind.fitness = best_score;
     
+    this->best_complexity = best_ind.get_complexity();
     logger.log("initial training score: " +std::to_string(best_score),2);
     logger.log("initial validation score: " +std::to_string(best_score_v),2);
 }
@@ -1124,7 +1128,7 @@ ArrayXXf Feat::predict_proba_with_z(float * X, int rowsX,int colsX,
 }
 
 
-void Feat::update_best(const DataRef& d, bool validation)
+bool Feat::update_best(const DataRef& d, bool validation)
 {
     logger.log("updating best..",2);
 
@@ -1135,22 +1139,29 @@ void Feat::update_best(const DataRef& d, bool validation)
     vector<Individual>& pop = (use_arch ? 
                                arch.archive : p_pop->individuals); 
 
+    bool updated = false; 
+
     for (const auto ind: pop)
     {
         if (!val_from_arch || (val_from_arch && ind.rank == 1))
         {
             f = ind.fitness_v;
 
-            if (f < bs)
+            if (f < bs 
+                || (f == bs && ind.get_complexity() < this->best_complexity)
+                )
             {
                 bs = f;
                 this->best_ind = ind; // should this be ind.clone(best_ind); ?
                 /* ind.clone(best_ind); */
+                this->best_complexity = ind.get_complexity();
+                updated = true;
             }
         }
     }
-
     this->best_score_v = bs; 
+
+    return updated;
 }
 
 float Feat::score(MatrixXf& X, const VectorXf& y, LongData Z)
@@ -1163,8 +1174,11 @@ float Feat::score(MatrixXf& X, const VectorXf& y, LongData Z)
 void Feat::calculate_stats(const DataRef& d)
 {
 
+    // min loss
+    float min_loss = F.colwise().mean().minCoeff();  
+
     // median loss
-    float med_score = median(F.colwise().mean().array());  
+    float med_loss = median(F.colwise().mean().array());  
     
     // median program size
     ArrayXf Sizes(p_pop->size());
@@ -1210,27 +1224,19 @@ void Feat::calculate_stats(const DataRef& d)
     unsigned med_num_params = median(Nparams);                
     unsigned med_dim = median(Dims);                          
     
-    /////////////////////////////////////////////
-    // calculate the loss of the median individual
-    vector<float> fitnesses;
+    // calculate the median valiation loss 
+    ArrayXf val_fitnesses(p_pop->individuals.size());
     for (unsigned i = 0; i < p_pop->individuals.size(); ++i)
-        fitnesses.push_back(p_pop->individuals.at(i).fitness);
-    int idx = argmiddle(fitnesses);
-
-    Individual& med_ind = p_pop->individuals.at(idx);
-    VectorXf tmp;
-    shared_ptr<CLabels> yhat_v = med_ind.predict(*d.v, params);
-    this->med_loss_v = p_eval->score(d.v->y, yhat_v, tmp, 
-            params.class_weights); 
-    /////////////////////////////////////////////
+        val_fitnesses(i) = p_pop->individuals.at(i).fitness_v;
+    float med_loss_v = median(val_fitnesses); 
    
     // update stats
     stats.update(params.current_gen,
                  timer.Elapsed().count(),
-                 this->best_score,
+                 min_loss,
                  this->best_score_v,
-                 med_score,
-                 this->med_loss_v,
+                 med_loss,
+                 med_loss_v,
                  med_size,
                  med_complexity,
                  med_num_params,
@@ -1240,11 +1246,17 @@ void Feat::calculate_stats(const DataRef& d)
 void Feat::print_stats(std::ofstream& log, float fraction)
 {
     unsigned num_models = std::min(50,p_pop->size());
-    //float med_score = median(F.colwise().mean().array());  // median loss
-    ArrayXf Sizes(p_pop->size()); unsigned i = 0;           // collect program sizes
-    for (const auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;}
+    //float med_loss = median(F.colwise().mean().array());  // median loss
+    // collect program sizes
+    ArrayXf Sizes(p_pop->size()); 
+    unsigned i = 0;               
+    for (const auto& p : p_pop->individuals)
+    { 
+        Sizes(i) = p.size(); ++i;
+    }
     unsigned max_size = Sizes.maxCoeff();
-    string bar, space = "";                                 // progress bar
+    // progress bar
+    string bar, space = "";                                 
     for (unsigned int i = 0; i<50; ++i)
     {
         if (i <= 50*fraction) bar += "/";
@@ -1254,15 +1266,22 @@ void Feat::print_stats(std::ofstream& log, float fraction)
     std::cout << std::scientific;
     
     if(params.max_time == -1)
-        std::cout << "Generation " << params.current_gen+1 << "/" << params.gens 
-                  << " [" + bar + space + "]\n";
+        std::cout << "Generation " << params.current_gen+1 << "/" 
+            << params.gens << " [" + bar + space + "]\n";
     else
-        std::cout << std::fixed << "Time elapsed "<< timer << "/" << params.max_time <<
-                     " seconds (Generation "<< params.current_gen+1 <<") [" + bar + space + "]\n";
+        std::cout << std::fixed << "Time elapsed "<< timer 
+            << "/" << params.max_time 
+            << " seconds (Generation "<< params.current_gen+1 
+            << ") [" + bar + space + "]\n";
         
-    std::cout << "Min Loss\tMedian Loss\tMedian (Max) Size\tTime (s)\n"
-              <<  best_score << "\t" << stats.med_score.back() << "\t" ;
-    std::cout << std::fixed  << stats.med_size.back() << " (" << max_size << ") \t\t" << timer << "\n";
+    std::cout << std::fixed << "Train Loss (Med): " 
+              << stats.best_score.back() << " (" 
+              << stats.med_loss.back() << ")\n"
+              << "Val Loss (Med): " 
+              << best_score_v << " (" << stats.med_loss_v.back() << ")\n"
+              << "Median Size (Max): " 
+              << stats.med_size.back() << " (" << max_size << ")\n"
+              << "Time (s): "   << timer << "\n";
     std::cout << "Representation Pareto Front--------------------------------------\n";
     std::cout << "Rank\tComplexity\tLoss\tRepresentation\n";
     std::cout << std::scientific;
@@ -1316,10 +1335,6 @@ void Feat::print_stats(std::ofstream& log, float fraction)
    
     std::cout <<"\n\n";
     
-    /* float med_score = median(F.colwise().mean().array());  // median loss */
-    /* ArrayXf Sizes(p_pop->size());                           // collect program sizes */
-    /* i = 0; for (auto& p : p_pop->individuals){ Sizes(i) = p.size(); ++i;} */ 
-
     if (!logfile.empty())
     {
         // print stats in tabular format
@@ -1340,9 +1355,9 @@ void Feat::print_stats(std::ofstream& log, float fraction)
 
         log << params.current_gen  << sep
             << timer.Elapsed().count() << sep
-            << best_score          << sep
+            << stats.best_score.back()          << sep
             << best_score_v        << sep
-            << stats.med_score.back()  << sep
+            << stats.med_loss.back()  << sep
             << stats.med_loss_v.back() << sep
             << stats.med_size.back()   << sep
             << stats.med_complexity.back() << sep
@@ -1392,7 +1407,7 @@ vector<float> Feat::get_best_scores(){return stats.best_score;}
 
 vector<float> Feat::get_best_score_vals(){return stats.best_score_v;}
 
-vector<float> Feat::get_med_scores(){return stats.med_score;}
+vector<float> Feat::get_med_scores(){return stats.med_loss;}
 
 vector<float> Feat::get_med_loss_vals(){return stats.med_loss_v;}
 
