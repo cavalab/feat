@@ -360,7 +360,7 @@ namespace FT{
             time.push_back(timer_count);
             best_score.push_back(bst_score);
             best_score_v.push_back(bst_score_v);
-            med_score.push_back(md_score);
+            med_loss.push_back(md_score);
             med_loss_v.push_back(md_loss_v);
             med_size.push_back(md_size);
             med_complexity.push_back(md_complexity);

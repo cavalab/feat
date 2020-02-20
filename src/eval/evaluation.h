@@ -47,7 +47,6 @@ namespace FT{
                 /// validation of population.
                 void validation(vector<Individual>& individuals,
                              const Data& d, 
-                             MatrixXf& F, 
                              const Parameters& params, 
                              bool offspring = false
                              );

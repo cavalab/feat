@@ -213,7 +213,7 @@ namespace FT{
             vector<float> time;
             vector<float> best_score;
             vector<float> best_score_v;
-            vector<float> med_score;
+            vector<float> med_loss;
             vector<float> med_loss_v;
             vector<unsigned> med_size;
             vector<unsigned> med_complexity;

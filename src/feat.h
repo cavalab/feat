@@ -425,11 +425,11 @@ namespace FT{
             float best_score;                      ///< current best score
             float best_score_v;                    ///< best validation score
             float best_med_score;  ///< best median population score
-            float med_loss_v;      ///< current val loss of median individual
+            int best_complexity;  ///< complexity of the best model
             string str_dim; ///< dimensionality as multiple of number of cols 
 
             /// updates best score
-            void update_best(const DataRef& d, bool val=false);    
+            bool update_best(const DataRef& d, bool val=false);    
             
             /// calculate and print stats
             void calculate_stats(const DataRef& d);
@@ -450,7 +450,7 @@ namespace FT{
             /// simplifies final model to best transformation
             void simplify_model(DataRef& d, Individual&);
             /// updates stall count for early stopping
-            void update_stall_count(unsigned& stall_count);
+            void update_stall_count(unsigned& stall_count, bool updated);
             
             Log_Stats stats;
     };
