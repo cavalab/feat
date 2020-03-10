@@ -450,6 +450,15 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     timer.Reset();
     params.use_batch = params.bp.batch_size>0;
 
+    string FEAT = (  
+      "/////////////////////////////////////////////////////////////////////\n"
+      "//           * Feature Engineering Automation Tool *               //\n"
+      "// La Cava et al. 2017                                             //\n"
+      "// License: GPL v3                                                 //\n"
+      "/////////////////////////////////////////////////////////////////////\n"
+    );
+    logger.log(FEAT,1);
+
     if (params.use_batch)
     {
         if (params.bp.batch_size >= X.cols())
@@ -1077,7 +1086,7 @@ void Feat::initial_model(DataRef &d)
                     std::unique_ptr<Node>(new NodeMedian()));
         }
     }
-    cout << "initial model: " << best_ind.get_eqn() << "\n";
+    logger.log("initial model: " + best_ind.get_eqn(), 1);
     // fit model
     bool pass = true;
     shared_ptr<CLabels> yhat = best_ind.fit(*d.t,params,pass);
@@ -1270,26 +1279,20 @@ void Feat::update_best(const DataRef& d, bool validation)
         }
     }
 
-    cout << "validation: " << validation << endl;
-
     if (validation) 
         this->best_score_v = bs; 
     else
     {
         this->best_score = bs;
-        cout << "params.split: " << params.split << endl;
 
         if (params.split < 1.0)
         {
-            cout << "params.split=" << params.split << "; getting prediction\n";
             VectorXf tmp;
             shared_ptr<CLabels> yhat_v = this->best_ind.predict(*d.v, params);
             this->best_score_v = p_eval->score(d.v->y, yhat_v, tmp, 
                     params.class_weights); 
             this->best_ind.fitness_v = this->best_score_v;
         }
-        else
-            cout << "not getting prediction\n";
     }
 }
 

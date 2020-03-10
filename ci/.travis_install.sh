@@ -1,17 +1,25 @@
+echo "python path is..."
+which python
+python --version
+
 echo "installing cmake"
 # sudo add-apt-repository -y ppa:george-edison55/cmake-3.x
 # sudo apt-get update -y
-sudo apt-get install cmake
+# sudo apt-get install cmake
 echo "cmake version:"
 cmake --version
 echo "sudo cmake version:"
 sudo cmake --version
 
-echo "installing pip"
-sudo apt install python3-pip
+# echo "installing pip"
+# sudo apt install python3-pip
+echo "installing setuptools"
+sudo -H pip3 install setuptools
+echo "installing wheel"
+sudo -H pip3 install setuptools
 
 echo "installing mkdocs"
-sudo pip3 install mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
+sudo -H pip3 install mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
 
 echo "mkdocs version"
 mkdocs --version
@@ -28,7 +36,7 @@ echo "EIGEN3_INCLUDE_DIR set to $EIGEN3_INCLUDE_DIR"
 #_______________________________________________
 
 echo "installing shogun via conda..."
-wget http://repo.continuum.io/miniconda/Miniconda3-4.7.10-Linux-x86_64.sh -O miniconda.sh
+wget http://repo.continuum.io/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh -O miniconda.sh
 bash miniconda.sh -b -p $HOME/miniconda
 export PATH="$HOME/miniconda/bin:$PATH"
 
@@ -55,7 +63,7 @@ conda install --yes pandas
 
 #building and installing google tests
 echo "installing google test"
-sudo apt-get install libgtest-dev
+# sudo apt-get install libgtest-dev
 old_path=$(pwd)
 
 echo "building google test.."
@@ -73,6 +81,7 @@ cd $old_path; pwd
 
 echo "python path is..."
 which python
+python --version
 
 echo "cython path is..."
 which cython

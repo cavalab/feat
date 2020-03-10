@@ -113,9 +113,9 @@ list(REMOVE_ITEM sources ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cc)
 # executable
 
 if (CORE_USE_CUDA)
-    cuda_add_library(feat_fair_lib SHARED ${sources} ${cuda_files})
+    cuda_add_library(feat_lib SHARED ${sources} ${cuda_files})
 else()
-    add_library(feat_fair_lib SHARED ${sources})
+    add_library(feat_lib SHARED ${sources})
 endif()
 
 # executables
@@ -126,9 +126,9 @@ add_executable(feat src/main.cc)
 #link libraries for different executables
 
 if (CORE_USE_CUDA)
-    target_link_libraries(feat feat_fair_lib shogun ${CUDA_LIBRARIES})
+    target_link_libraries(feat feat_lib shogun ${CUDA_LIBRARIES})
 else()
-    target_link_libraries(feat feat_fair_lib shogun)
+    target_link_libraries(feat feat_lib shogun)
 endif()
 
 if (TEST)
@@ -138,9 +138,9 @@ if (TEST)
     add_executable(tests ${testsSrc})
     
     if (CORE_USE_CUDA)
-        target_link_libraries(tests feat_fair_lib shogun ${CUDA_LIBRARIES} ${GTEST_LIBRARIES} pthread)
+        target_link_libraries(tests feat_lib shogun ${CUDA_LIBRARIES} ${GTEST_LIBRARIES} pthread)
     else()
-        target_link_libraries(tests feat_fair_lib shogun ${GTEST_LIBRARIES} pthread)
+        target_link_libraries(tests feat_lib shogun ${GTEST_LIBRARIES} pthread)
     endif()
 endif()
 
