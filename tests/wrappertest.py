@@ -10,6 +10,7 @@ import argparse
 import sys
 import pandas as pd
 import numpy as np
+import pickle
 verbosity = 2
 
 class TestFeatWrapper(unittest.TestCase):
@@ -110,6 +111,18 @@ class TestFeatWrapper(unittest.TestCase):
         for key in self.clf.stats:
             print("Length for ", key, "is ", len(self.clf.stats[key]))
             self.assertEqual(len(self.clf.stats[key]), self.clf.gens)
+
+    #Test ability to pickle feat model
+    def test_pickling(self):
+        self.debug("Pickle Feat object")
+    
+        with open('test_pickle.pkl','wb') as f:
+            pickle.dump(self.clf, f)
+
+        with open('test_pickle.pkl','rb') as f:
+            loaded_clf = pickle.load(f)
+
+        assert(loaded_clf.get_params() == self.clf.get_params())
 
 
 if __name__ == '__main__':

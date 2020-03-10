@@ -1,4 +1,4 @@
-dist: trusty
+dist: bionic
 sudo: required
 language: cpp
   
@@ -9,10 +9,15 @@ addons:
       packages:
         - doxygen
         - graphviz
+        - libgtest-dev
+        - python3
+        - python3-pip
+        - cmake
     
   sources:
         - ubuntu-toolchain-r-test
   packages:
+        # - python3.6
         #        - cmake 
         #        - cmake-data
         #        - gcc-5

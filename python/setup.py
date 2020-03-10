@@ -6,7 +6,7 @@ from Cython.Build import cythonize
 import subprocess
 
 # PACKAGE VERSION #####
-package_version = '0.1'
+package_version = '0.2'
 #######################
 
 # the setup file relies on eigency to import its include paths for the
@@ -58,7 +58,7 @@ feat_lib = cwd + '/build/'
 print('package version:',package_version)
 
 setup(
-    name="FeatFair",
+    name="feat",
     version=package_version,
     author='William La Cava',
     author_email='williamlacava@gmail.com',
@@ -66,20 +66,20 @@ setup(
     download_url=('https://github.com/lacava/feat/releases/tag/'
         +package_version),
     license='GNU/GPLv3',
-    description='A Feature Engineering Automation Tool for Fairness',
+    description='A Feature Engineering Automation Tool',
     zip_safe=True,
     install_requires=['Numpy>=1.8.2','SciPy>=0.13.3','scikit-learn','Cython',
         'pandas'],
-    py_modules=['FeatFair','metrics'],
-    ext_modules = cythonize([Extension(name='pyfeatfair',
-        sources =  ["pyfeatfair.pyx"],    # our cython source
+    py_modules=['feat','metrics'],
+    ext_modules = cythonize([Extension(name='pyfeat',
+        sources =  ["pyfeat.pyx"],    # our cython source
         include_dirs = ['../build/','../src/',eigen_dir,shogun_include_dir]
                           +eigency.get_includes(include_eigen=False),
         extra_compile_args = ['-std=c++1y','-fopenmp','-Wno-sign-compare',
                                  '-Wno-reorder'],
         library_dirs = [shogun_lib,feat_lib],
         runtime_library_dirs = [feat_lib],
-        extra_link_args = ['-lshogun','-lfeat_fair_lib'],      
+        extra_link_args = ['-lshogun','-lfeat_lib'],      
         language='c++'
        )],
        language="c++")
