@@ -15,7 +15,6 @@ namespace FT{
              * set type of selection operator.
              */
 
-            cout << "type: " << type << endl;
             if (!type.compare("lexicase"))
                 pselector = std::make_shared<Lexicase>(survival); 
             else if (!type.compare("fair_lexicase"))

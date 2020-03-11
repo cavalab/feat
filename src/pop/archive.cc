@@ -15,8 +15,6 @@ namespace FT{
         {
 
             this->sort_complexity = in(objectives,std::string("complexity"));
-            if (this->sort_complexity)
-                cout << "archive: turning complexity sorting on\n";
         }
 
 

@@ -123,6 +123,8 @@ class TestFeatWrapper(unittest.TestCase):
             loaded_clf = pickle.load(f)
 
         assert(loaded_clf.get_params() == self.clf.get_params())
+        print('trying equals equals')
+        assert(loaded_clf == self.clf)
 
 
 if __name__ == '__main__':
