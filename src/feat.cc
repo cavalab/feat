@@ -521,11 +521,9 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
 
     // split data into training and test sets
     //Data data(X, y, Z, params.classification);
-    cout << "DataRef d\n";
     DataRef d(X, y, Z, params.classification, params.protected_groups);
     //DataRef d;
     //d.setOriginalData(&data);
-    cout << "d.train_test_split\n";
     d.train_test_split(params.shuffle, params.split);
     // define terminals based on size of X
     params.set_terminals(d.o->X.rows(), d.o->Z);        
@@ -538,19 +536,14 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     MatrixXf Xb;
     VectorXf yb;
     LongData Zb;
-    cout << "Data db\n";
     Data db(Xb, yb, Zb, params.classification, params.protected_groups);
     
-    cout << "Data *tmp_train\n";
     Data *tmp_train;
     
     if(params.use_batch)
     {
-        cout << "tmp_train = d.t\n";
         tmp_train = d.t;
-        cout << "d.t->get_batch(db) \n";
         d.t->get_batch(db, params.bp.batch_size);
-        cout << "d.setTrainingData(&db)\n";
         d.setTrainingData(&db);
     }
     
@@ -887,16 +880,13 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
         bool perfect_correlation = p_variation->correlation_delete_mutate(
                 tmp_ind, ind.Phi, params, *d.o);
 
-        cout << "checking size..\n";
         if (ind.size() == tmp_ind.size())
         {
             cout << "model size unchanged\n";
             continue;
         }
         bool pass = true;
-        cout << "tmp_ind fit...\n"; 
         shared_ptr<CLabels> yhat = tmp_ind.fit(*d.o, params, pass);
-        cout << "tmp_ind fit success...\n"; 
 
 
         if (((ind.yhat - tmp_ind.yhat).norm()/ind.yhat.norm() 
@@ -933,7 +923,6 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
     starting_size = ind.size();
     for (int i = 0; i < iterations; ++i)
     {
-        /* cout << "."; */
         Individual tmp_ind = ind;
         this->p_variation->delete_mutate(tmp_ind, params);
         if (ind.size() == tmp_ind.size())
@@ -988,10 +977,9 @@ vector<float> Feat::univariate_initial_model(DataRef &d, int n_feats)
 
     bool pass = true;
 
-    cout << "univariate_initial_model\n" 
-         << "N: " << N << "\n"
-         << "n_feats: " << n_feats << "\n"
-         << "\n";
+    logger.log("univariate_initial_model",2);
+    logger.log("N: " + to_string(N),2); 
+    logger.log("n_feats: " + to_string(n_feats),2);
 
     for (unsigned i =0; i<d.t->X.rows(); ++i)
     {
