@@ -52,7 +52,7 @@ namespace FT{
                              bool offspring = false,
                              bool validation = false);
                  
-                float subgroup_fairness(VectorXf& loss, const Data& d, 
+                float marginal_fairness(VectorXf& loss, const Data& d, 
                         float base_score, bool use_alpha=false);
 
                 /// assign fitness to an individual and to F.  

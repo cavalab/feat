@@ -144,11 +144,11 @@ namespace FT{
             assert(F.cols()>ind.loc);
             VectorXf loss;
             float f = score(d.y, yhat, loss, params.class_weights);
-            float fairness = subgroup_fairness(loss, d, f);
+            float fairness = marginal_fairness(loss, d, f);
             
             if (fairness <0 )
             {
-                cout << "WTF fairness is " << fairness << "...\n";
+                cout << "fairness is " << fairness << "...\n";
             }
             if (val)
             {
@@ -167,7 +167,7 @@ namespace FT{
                     + std::to_string(ind.fitness),3);
         }
 
-        float Evaluation::subgroup_fairness(VectorXf& loss, const Data& d, 
+        float Evaluation::marginal_fairness(VectorXf& loss, const Data& d, 
                 float base_score, bool use_alpha)
         {
             // averages the deviation of the loss function from average loss 
@@ -193,20 +193,12 @@ namespace FT{
                     /* cout << "Beta = |" << base_score << " - " */ 
                     /*     << x_idx.select(loss,0).sum() << "/" */ 
                     /*     << len_g << "|" << endl; */
-                    if (Beta <0 )
-                    {
-                        cout << "WTF Beta is " << Beta << "...\n";
-                    }
                     avg_score += alpha * Beta;
                     ++count;
                 }
 
             }
             avg_score /= count;
-            if (avg_score <0 )
-            {
-                cout << "WTF avg_score is " << avg_score << "...\n";
-            }
             if (std::isinf(avg_score) 
                     || std::isnan(avg_score)
                     || avg_score < 0)
