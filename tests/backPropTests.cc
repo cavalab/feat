@@ -107,24 +107,27 @@ class TestBackProp
             // batch data
             MatrixXf Xb, Xb_v;
             VectorXf yb, yb_v;
-            std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Zb, Zb_v;
+            std::map<string, std::pair<vector<ArrayXf>, 
+                vector<ArrayXf> > > Zb, Zb_v;
             /* cout << "y: " << d.y.transpose() << "\n"; */ 
             Data db(Xb, yb, Zb, params.classification);
             Data db_val(Xb_v, yb_v, Zb_v, params.classification);
             db_val.set_validation();    // make this a validation set
-            d.get_batch(db_val, params.bp.batch_size);     // draw a batch for the validation data
-            
-            int patience = 3;   // number of iterations to allow validation fitness to not improve
+            // draw a batch for the validation data
+            d.get_batch(db_val, params.bp.batch_size);     
+
+            // number of iterations to allow validation fitness to not improve
+            int patience = 3;   
             int missteps = 0;
 
             this->epk = n;  // starting learning rate
-            /* logger.log("running backprop on " + ind.get_eqn(), 2); */
+            /* cout << "running backprop on " << ind.get_eqn() << endl; */
 //            logger.log("=========================",3);
 //            logger.log("Iteration,Train Loss,Val Loss,Weights",3);
 //            logger.log("=========================",3);
             for (int x = 0; x < this->iters; x++)
             {
-//                cout << "\n\nIteration " << x << "\n";
+                /* cout << "\n\nIteration " << x << "\n"; */
                 /* cout << "get batch\n"; */
                 // get batch data for training
                 d.get_batch(db, params.bp.batch_size); 
@@ -132,36 +135,49 @@ class TestBackProp
                 // Evaluate forward pass
                 MatrixXf Phi; 
                 /* cout << "forward pass\n"; */
-                vector<Trace> stack_trace = engine->forward_prop(ind, db, Phi, params);
+                vector<Trace> stack_trace = engine->forward_prop(ind, db, 
+                        Phi, params);
 
                 // Evaluate backward pass
                 size_t s = 0;
                 for (int i = 0; i < stack_trace.size(); ++i)
                 {
                     while (!ind.program.at(roots[s])->isNodeDx()) ++s;
-                    //cout << "running backprop on " << ind.program_str() << " from "
-                    //      << roots.at(s) << " to " 
-                    //     << ind.program.subtree(roots.at(s)) << "\n";
+                    /* cout << "running backprop on " */ 
+                    /*     << ind.program_str() << " from " */
+                    /*     << roots.at(s) << " to " */ 
+                    /*     << ind.program.subtree(roots.at(s)) << "\n"; */
                     
-                    backprop(stack_trace.at(i), ind.program, ind.program.subtree(roots.at(s)), 
-                            roots.at(s), 1.0, Phi.row(0), db, params.class_weights);
+                    backprop(stack_trace.at(i), ind.program, 
+                            ind.program.subtree(roots.at(s)), 
+                            roots.at(s), 1.0, Phi.row(0), db, 
+                            params.class_weights);
                 }
 
-                current_val_loss = squared_difference(db_val.y, Phi.row(0)).mean();
+                /* cout << "squared_difference\n"; */
+
+                MatrixXf Phival = ind.out(db_val,params);
+
+                current_val_loss = squared_difference(db_val.y, 
+                        Phival.row(0)).mean();
                 
                 if (x==0 || current_val_loss < min_loss)
                 {
-//                    logger.log("current value loss: " + std::to_string(current_val_loss), 3);
+//                    logger.log("current value loss: " 
+//                    + std::to_string(current_val_loss), 3);
                     min_loss = current_val_loss;
                     best_weights = ind.program.get_weights();
-//                    logger.log("new min loss: " + std::to_string(min_loss), 3);
+//                    logger.log("new min loss: " 
+//                    + std::to_string(min_loss), 3);
                 }
                 else
                 {
                     ++missteps;
 //                    cout << "missteps: " << missteps << "\n";
-//                    logger.log("current value loss: " + std::to_string(current_val_loss), 3);
-//                    logger.log("new min loss: " + std::to_string(min_loss), 3);
+//                    logger.log("current value loss: " 
+//                    + std::to_string(current_val_loss), 3);
+//                    logger.log("new min loss: " 
+//                    + std::to_string(min_loss), 3);
 //                    logger.log("",3);           // update learning rate
                 }
                 
@@ -170,10 +186,10 @@ class TestBackProp
 //                cout << "Verbosity is " << params.verbosity << "\n";
 //                if (params.verbosity>2)
 //                {
-//                    cout << x << ", " 
-//                     << current_loss << ", " 
-//                     << current_val_loss << ", ";
-//                     engine->print_weights(ind.program);
+                    logger.log( to_string(x) + ", " 
+                     + to_string(current_loss) + ", " 
+                     + to_string(current_val_loss) ,
+                     3);
 //                }
             }
             logger.log("",3);
@@ -309,7 +325,9 @@ NodeVector programGen(std::string txt) {
     return program;
 }
 
-Individual testDummyProgram(NodeVector p0, Data data, int iters, VectorXf& yhat) {
+Individual testDummyProgram(NodeVector p0, Data data, int iters, 
+        VectorXf& yhat) 
+{
 	
 	std::cout << "Testing program: [";
 	
@@ -322,17 +340,21 @@ Individual testDummyProgram(NodeVector p0, Data data, int iters, VectorXf& yhat)
 
 	// Params
 	float learning_rate = 0.25;
-    int bs = 1; 
+    int bs = 100; 
     Individual ind;
     ind.program = p0;
     Feat feat;
+    feat.set_batch_size(bs);
     /* feat.set_verbosity(3); */
     
     feat.set_shuffle(false);
                           
+    /* std::cout << "TestBackProp\n"; */
 	TestBackProp* engine = new TestBackProp(iters, learning_rate, 0.9);	
 
+    /* std::cout << "engine->run\n"; */
     engine->run(ind, data, feat.params); // Update pointer to NodeVector internally
+    /* std::cout << "ind.out()"; */
     MatrixXf Phi = ind.out(data,feat.params); 
     yhat = Phi.row(0); 
 	return ind;
