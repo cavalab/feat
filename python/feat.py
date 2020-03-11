@@ -77,7 +77,6 @@ class Feat(BaseEstimator):
         self.protected_groups = ','.join(
                 [str(int(pg)) for pg in protected_groups]).encode()
         # if self.verbosity>0:
-        #print('self.__dict__: ' , self.__dict__)
         self._pyfeat=None
         self.stats = {}
 
@@ -246,7 +245,6 @@ class Feat(BaseEstimator):
 
     def update_stats(self):
         """updates the statistics of the run"""
-        print('update_stats')
         self.stats["gens"] = self._pyfeat.get_gens()
         self.stats["time"] = self._pyfeat.get_timers()
         self.stats["best_scores"] = self._pyfeat.get_best_scores()
@@ -258,5 +256,4 @@ class Feat(BaseEstimator):
         self.stats["med_num_params"] = self._pyfeat.get_med_num_params()
         self.stats["med_dim"] = self._pyfeat.get_med_dim()
         self.feature_importances_ = self.get_coefs()
-        print('exiting update_stats')
 
