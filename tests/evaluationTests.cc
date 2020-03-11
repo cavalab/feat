@@ -349,7 +349,7 @@ TEST(Evaluation, out_ml)
     ASSERT_TRUE(mean < NEAR_ZERO);
 }
 
-TEST(Evaluation, subgroup_fairness)
+TEST(Evaluation, marginal_fairness)
 {
 
     Evaluation eval("fpr");
@@ -383,8 +383,8 @@ TEST(Evaluation, subgroup_fairness)
     // group 2 total loss: 2/3
     // mean loss: 4/10
     float base_score = loss.mean();
-    float score_with_alpha = eval.subgroup_fairness(loss, d, base_score, true); 
-    float score_no_alpha = eval.subgroup_fairness(loss, d, base_score); 
+    float score_with_alpha = eval.marginal_fairness(loss, d, base_score, true); 
+    float score_no_alpha = eval.marginal_fairness(loss, d, base_score); 
     // fairness with alpha is 
     // 1/10 * 1/2 * (7*|4/10-2/7| + 3*|4/10-2/3|) = 0.08
     // fairness without alpha is 
