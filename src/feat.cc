@@ -27,17 +27,18 @@ Feat::Feat(int pop_size, int gens, string ml,
        unsigned int max_depth, unsigned int max_dim, int random_state, 
        bool erc, string obj, bool shuffle, 
        float split, float fb, string scorer, string feature_names,
-       bool backprop,int iters, float lr, int bs, int n_threads,
-       bool hillclimb, string logfile, int max_time, bool use_batch, bool residual_xo,
+       bool backprop,int iters, float lr, int batch_size, int n_threads,
+       bool hillclimb, string logfile, int max_time,  bool residual_xo, 
        bool stagewise_xo, bool stagewise_xo_tol,
        bool softmax_norm, int print_pop, bool normalize,
-       bool val_from_arch, bool corr_delete_mutate, bool simplify):
+       bool val_from_arch, bool corr_delete_mutate, bool simplify,
+       string protected_groups):
           // construct subclasses
-          params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
-                 functions, cross_rate, root_xo_rate, max_depth, max_dim, erc, 
-                 obj, shuffle, split, fb, scorer, feature_names, backprop, 
-                 iters, lr, bs, hillclimb, max_time, use_batch, residual_xo, 
-                 stagewise_xo, stagewise_xo_tol, softmax_norm, 
+          params(pop_size, gens, ml, classification, max_stall, otype, 
+                 verbosity, functions, cross_rate, root_xo_rate, max_depth, 
+                 max_dim, erc, obj, shuffle, split, fb, scorer, feature_names, 
+                 backprop, iters, lr, batch_size, hillclimb, max_time,  
+                 residual_xo, stagewise_xo, stagewise_xo_tol, softmax_norm, 
                  normalize, corr_delete_mutate), 
           p_sel( make_shared<Selection>(sel) ),
           p_surv( make_shared<Selection>(surv, true) ),
@@ -58,6 +59,8 @@ Feat::Feat(int pop_size, int gens, string ml,
         initialize_cuda();
     // set Feat's Normalizer to only normalize floats by default
     N.scale_all = false;
+    params.set_protected_groups(protected_groups);
+    arch.set_objectives(params.objectives);
 }
 
 /// set size of population 
@@ -158,7 +161,11 @@ void Feat::set_iters(int iters){params.bp.iters = iters; params.hc.iters=iters;}
 
 void Feat::set_lr(float lr){params.bp.learning_rate = lr;}
 
-void Feat::set_batch_size(int bs){params.bp.batch_size = bs;}
+void Feat::set_batch_size(int bs)
+{
+    params.bp.batch_size = bs; 
+    params.use_batch = bs>0;
+}
  
 ///set number of threads
 void Feat::set_n_threads(unsigned t){ omp_set_num_threads(t); }
@@ -167,6 +174,10 @@ void Feat::set_max_time(int time){ params.max_time = time; }
 
 void Feat::set_use_batch(){ params.use_batch = true; }
 
+void Feat::set_protected_groups(string pg)
+{
+    params.set_protected_groups(pg);
+}
 /*                                                      
  * getting functions
  */
@@ -268,47 +279,93 @@ int Feat::get_n_nodes(){ return best_ind.program.size(); }
 ///return population as string
 string Feat::get_eqns(bool front)
 {
-    string r="complexity\tfitness\tfitness_v\teqn\n";
-    if (front)  // only return individuals on the Pareto front
+    //file header
+    string r="complexity\tfitness\tfitness_v\teqn";
+    vector<int> obj_ignore;
+    for (const auto& o : params.objectives)
     {
-        if (use_arch)
-        {
-            // printing individuals from the archive 
-            unsigned n = 1;
-            
-            for (auto& a : arch.archive)
-            {          
-                r += std::to_string(a.complexity()) + "\t" 
-                    + std::to_string(a.fitness) + "\t" 
-                    + std::to_string(a.fitness_v) + "\t"
-                    + a.get_eqn() + "\n";  
-            }
-        }
-        else
-        {
-            // printing individuals from the pareto front
-            unsigned n = 1;
-            vector<size_t> f = p_pop->sorted_front(n);
-            
-            for (unsigned j = 0; j < f.size(); ++j)
-            {          
-                r += std::to_string(p_pop->individuals[f[j]].complexity()) + "\t" 
-                    + std::to_string((*p_pop)[f[j]].fitness) + "\t" 
-                    + std::to_string((*p_pop)[f[j]].fitness_v) + "\t" 
-                    + p_pop->individuals[f[j]].get_eqn() + "\n";  
-            }
-        }
+        if (!in({"complexity","fitness"},o))
+            r += "\t" + o;
     }
+    r+="\n";
+
+    vector<Individual>& pop_print = use_arch ? 
+        arch.archive : (*p_pop).individuals; 
+    /* if (use_arch) */
+    /* { */
+    /*     // printing individuals from the archive */ 
+    /*     pop_print = arch.archive; */
+    /* } */
+    /* else */
+    /* { */
+    /*     // printing individuals from the pareto front */
+    /*     pop_print = (*p_pop); */
+    /* } */
+    vector<size_t> idx; 
+    if (front && !use_arch)
+        idx = p_pop->sorted_front(1);
     else
     {
-        for (unsigned j = 0; j < params.pop_size; ++j)
-        {          
-            r += std::to_string(p_pop->individuals[j].complexity()) + "\t" 
-                + std::to_string((*p_pop)[j].fitness) + "\t" 
-                + std::to_string((*p_pop)[j].fitness_v) + "\t" 
-                + p_pop->individuals[j].get_eqn() + "\n";  
-        }
+        idx.resize(pop_print.size());
+        iota(idx.begin(),idx.end(),0);
     }
+
+    for (const auto& i : idx)
+    {
+        r += to_string(pop_print.at(i).complexity()) + "\t" 
+            + to_string(pop_print.at(i).fitness) + "\t" 
+            + to_string(pop_print.at(i).fitness_v) + "\t" 
+            + pop_print.at(i).get_eqn() ;  
+        for (int j = 0; j < pop_print.at(i).obj.size(); ++j)
+        {
+            if (!in({"complexity","fitness"},params.objectives.at(j)))
+                r+= "\t" + to_string(pop_print.at(i).obj.at(j));
+        }
+        r += "\n";
+    }
+    /* if (front)  // only return individuals on the Pareto front */
+    /* { */
+    /*     if (use_arch) */
+    /*     { */
+    /*         // printing individuals from the archive */ 
+    /*         pop_print = arch.archive; */
+    /*         /1* unsigned n = 1; *1/ */
+            
+    /*         /1* for (auto& a : arch.archive) *1/ */
+    /*         /1* { *1/ */          
+    /*         /1*     r += std::to_string(a.complexity()) + "\t" *1/ */ 
+    /*         /1*         + std::to_string(a.fitness) + "\t" *1/ */ 
+    /*         /1*         + std::to_string(a.fitness_v) + "\t" *1/ */
+    /*         /1*         + a.get_eqn() + "\n"; *1/ */  
+    /*         /1* } *1/ */
+    /*     } */
+    /*     else */
+    /*     { */
+    /*         // printing individuals from the pareto front */
+    /*         pop_print = (*p_pop); */
+    /*         /1* unsigned n = 1; *1/ */
+    /*         /1* vector<size_t> f = p_pop->sorted_front(n); *1/ */
+            
+    /*         /1* for (unsigned j = 0; j < f.size(); ++j) *1/ */
+    /*         /1* { *1/ */          
+               
+    /*         /1*     r += std::to_string(p_pop->individuals[f[j]].complexity()) + "\t" *1/ */ 
+    /*         /1*         + std::to_string((*p_pop)[f[j]].fitness) + "\t" *1/ */ 
+    /*         /1*         + std::to_string((*p_pop)[f[j]].fitness_v) + "\t" *1/ */ 
+    /*         /1*         + p_pop->individuals[f[j]].get_eqn() + "\n"; *1/ */  
+    /*         /1* } *1/ */
+    /*     } */
+    /* } */
+    /* else */
+    /* { */
+    /*     for (unsigned j = 0; j < params.pop_size; ++j) */
+    /*     { */          
+    /*         r += std::to_string(p_pop->individuals[j].complexity()) + "\t" */ 
+    /*             + std::to_string((*p_pop)[j].fitness) + "\t" */ 
+    /*             + std::to_string((*p_pop)[j].fitness_v) + "\t" */ 
+    /*             + p_pop->individuals[j].get_eqn() + "\n"; */  
+    /*     } */
+    /* } */
     return r;
 }
 
@@ -340,6 +397,11 @@ ArrayXXf Feat::predict_proba(float * X, int rows_x, int cols_x)
     return predict_proba(matX);
 }
 
+ArrayXXf Feat::predict_proba_archive(int i, float * X, int rows_x, int cols_x) 
+{			    
+    MatrixXf matX = Map<MatrixXf>(X,rows_x,cols_x);
+    return predict_proba_archive(i,matX);
+}
 /// convenience function calls fit then predict.            
 VectorXf Feat::fit_predict(MatrixXf& X,
                      VectorXf& y,
@@ -386,25 +448,29 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
 
     // start the clock
     timer.Reset();
+    params.use_batch = params.bp.batch_size>0;
+
     string FEAT = (  
       "/////////////////////////////////////////////////////////////////////\n"
-      "//             Feature Engineering Automation Tool (FEAT)          //\n"
+      "//           * Feature Engineering Automation Tool *               //\n"
       "// La Cava et al. 2017                                             //\n"
       "// License: GPL v3                                                 //\n"
       "/////////////////////////////////////////////////////////////////////\n"
     );
     logger.log(FEAT,1);
+
     if (params.use_batch)
     {
-        if (params.bp.batch_size >= X.cols()){
-            cout << "turning off batch because X has fewer than " << params.bp.batch_size 
-                 << " samples\n";
+        if (params.bp.batch_size >= X.cols())
+        {
+            logger.log("turning off batch because X has fewer than " 
+                    + to_string(params.bp.batch_size) + " samples", 1);
             params.use_batch = false;
         }
         else
         {
-            cout << "using batch with batch_size= " 
-                 << params.bp.batch_size << "\n";
+            logger.log("using batch with batch_size= " 
+                    + to_string(params.bp.batch_size), 2);
         }
     }
     std::ofstream log;                      ///< log file stream
@@ -423,7 +489,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     }
     
     params.init();       
-  
+    this->arch.set_objectives(params.objectives);
 
     if (params.classification)  // setup classification endpoint
     {
@@ -441,10 +507,11 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     p_eval = make_shared<Evaluation>(params.scorer);
 
     // create an archive to save Pareto front, unless NSGA-2 is being used for survival 
-    if (!survival.compare("nsga2"))
-        use_arch = false;
-    else
-        use_arch = true;
+    /* if (!survival.compare("nsga2")) */
+    /*     use_arch = false; */
+    /* else */
+    /*     use_arch = true; */
+    use_arch = false;
     
     string log_msg = "functions set: [";
     for (const auto& f: params.functions) log_msg += f->name + ", "; 
@@ -454,7 +521,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
 
     // split data into training and test sets
     //Data data(X, y, Z, params.classification);
-    DataRef d(X, y, Z, params.classification);
+    DataRef d(X, y, Z, params.classification, params.protected_groups);
     //DataRef d;
     //d.setOriginalData(&data);
     d.train_test_split(params.shuffle, params.split);
@@ -469,7 +536,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     MatrixXf Xb;
     VectorXf yb;
     LongData Zb;
-    Data db(Xb, yb, Zb, params.classification);
+    Data db(Xb, yb, Zb, params.classification, params.protected_groups);
     
     Data *tmp_train;
     
@@ -520,12 +587,17 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     float fraction = 0;
     // continue until max gens is reached or max_time is up (if it is set)
     
-    while((params.max_time == -1 || params.max_time > timer.Elapsed().count()) // time limit
-           && g<params.gens                                                    // generation limit
-           && (params.max_stall == 0 || stall_count < params.max_stall) )      // stall limit
+    while(
+        // time limit
+        (params.max_time == -1 || params.max_time > timer.Elapsed().count())
+        // generation limit
+        && g<params.gens                                                    
+        // stall limit
+        && (params.max_stall == 0 || stall_count < params.max_stall) 
+        )      
     {
         fraction = params.max_time == -1 ? ((g+1)*1.0)/params.gens : 
-                                           timer.Elapsed().count()/params.max_time;
+                                       timer.Elapsed().count()/params.max_time;
         if(params.use_batch)
         {
             d.t->get_batch(db, params.bp.batch_size);
@@ -539,7 +611,9 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
             run_generation(g, survivors, dbr, log, fraction, stall_count);
         }
         else
+        {
             run_generation(g, survivors, d, log, fraction, stall_count);
+        }
         
         g++;
     }
@@ -584,7 +658,17 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
 
     // simplify the final model
     if (simplify)
+    {
         simplify_model(d, this->best_ind);
+    }
+
+    // if we're not using an archive, let's store the final population in the 
+    // archive
+    if (!use_arch)
+    {
+        /* arch.update(*p_pop,params); */
+        arch.archive = p_pop->individuals;
+    }
 
     logger.log("\n===\nRun Completed. Total time taken is " 
             + std::to_string(timer.Elapsed().count()) + "\n", 1);
@@ -600,11 +684,13 @@ void Feat::run_generation(unsigned int g,
                       float fraction,
                       unsigned& stall_count)
 {
+    d.t->set_protected_groups();
+
     params.set_current_gen(g);
 
     // select parents
     logger.log("selection..", 2);
-    vector<size_t> parents = p_sel->select(*p_pop, F, params);
+    vector<size_t> parents = p_sel->select(*p_pop, F, params, *d.t);
     logger.log("parents:\n"+p_pop->print_eqns(), 3);          
     
     // variation to produce offspring
@@ -619,7 +705,7 @@ void Feat::run_generation(unsigned int g,
 
     // select survivors from combined pool of parents and offspring
     logger.log("survival...", 2);
-    survivors = p_surv->survive(*p_pop, F, params);
+    survivors = p_surv->survive(*p_pop, F, params, *d.t);
    
     // reduce population to survivors
     logger.log("shrinking pop to survivors...",2);
@@ -794,16 +880,13 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
         bool perfect_correlation = p_variation->correlation_delete_mutate(
                 tmp_ind, ind.Phi, params, *d.o);
 
-        cout << "checking size..\n";
         if (ind.size() == tmp_ind.size())
         {
             cout << "model size unchanged\n";
             continue;
         }
         bool pass = true;
-        cout << "tmp_ind fit...\n"; 
         shared_ptr<CLabels> yhat = tmp_ind.fit(*d.o, params, pass);
-        cout << "tmp_ind fit success...\n"; 
 
 
         if (((ind.yhat - tmp_ind.yhat).norm()/ind.yhat.norm() 
@@ -840,7 +923,6 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
     starting_size = ind.size();
     for (int i = 0; i < iterations; ++i)
     {
-        /* cout << "."; */
         Individual tmp_ind = ind;
         this->p_variation->delete_mutate(tmp_ind, params);
         if (ind.size() == tmp_ind.size())
@@ -895,10 +977,9 @@ vector<float> Feat::univariate_initial_model(DataRef &d, int n_feats)
 
     bool pass = true;
 
-    cout << "univariate_initial_model\n" 
-         << "N: " << N << "\n"
-         << "n_feats: " << n_feats << "\n"
-         << "\n";
+    logger.log("univariate_initial_model",2);
+    logger.log("N: " + to_string(N),2); 
+    logger.log("n_feats: " + to_string(n_feats),2);
 
     for (unsigned i =0; i<d.t->X.rows(); ++i)
     {
@@ -1079,6 +1160,44 @@ VectorXf Feat::predict(MatrixXf& X,
     return best_ind.ml->predict_vector(Phi);        
 }
 
+MatrixXf Feat::predict_archive(MatrixXf& X,
+                       LongData Z)
+{
+
+    MatrixXf predictions(this->arch.archive.size(),X.cols());
+    VectorXf empty_y;
+    Data tmp_data(X,empty_y,Z);
+
+    for (int i = 0; i < this->arch.archive.size(); ++i)
+    {
+        predictions.row(i) = this->arch.archive.at(i).predict_vector(
+                tmp_data, this->params);
+    }
+    return predictions;
+}
+
+MatrixXf Feat::predict_archive(float * X, int rowsX,int colsX)
+{
+    MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
+    return predict_archive(matX);
+}
+
+ArrayXXf Feat::predict_proba_archive(int i, MatrixXf& X,
+                       LongData Z)
+{
+    ArrayXXf predictions(X.cols(),params.n_classes);
+    VectorXf empty_y;
+    Data tmp_data(X,empty_y,Z);
+
+    if (i >= this->arch.archive.size())
+    {
+        HANDLE_ERROR_THROW("Tried to access archive "
+                + to_string(i) + ", archive size: "
+                + to_string(this->arch.archive.size()));
+    }
+    return this->arch.archive.at(i).predict_proba(tmp_data, this->params);
+    
+}
 shared_ptr<CLabels> Feat::predict_labels(MatrixXf& X,
                        LongData Z)
 {        
@@ -1091,6 +1210,7 @@ VectorXf Feat::predict(float * X, int rowsX,int colsX)
     MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
     return predict(matX);
 }
+
 
 VectorXf Feat::predict_with_z(float * X, int rowsX,int colsX, 
                                 string s, int * idx, int idx_size)
@@ -1228,11 +1348,15 @@ void Feat::calculate_stats(const DataRef& d)
         fitnesses.push_back(p_pop->individuals.at(i).fitness);
     int idx = argmiddle(fitnesses);
 
-    Individual& med_ind = p_pop->individuals.at(idx);
-    VectorXf tmp;
-    shared_ptr<CLabels> yhat_v = med_ind.predict(*d.v, params);
-    this->med_loss_v = p_eval->score(d.v->y, yhat_v, tmp, 
-            params.class_weights); 
+    if (params.split < 1.0)
+    {
+        Individual& med_ind = p_pop->individuals.at(idx);
+        VectorXf tmp;
+        shared_ptr<CLabels> yhat_v = med_ind.predict(*d.v, params);
+        this->med_loss_v = p_eval->score(d.v->y, yhat_v, tmp, 
+                params.class_weights); 
+    }
+    
     /////////////////////////////////////////////
    
     // update stats
@@ -1275,7 +1399,11 @@ void Feat::print_stats(std::ofstream& log, float fraction)
               <<  best_score << "\t" << stats.med_score.back() << "\t" ;
     std::cout << std::fixed  << stats.med_size.back() << " (" << max_size << ") \t\t" << timer << "\n";
     std::cout << "Representation Pareto Front--------------------------------------\n";
-    std::cout << "Rank\tComplexity\tLoss\tRepresentation\n";
+    std::cout << "Rank\t"; //Complexity\tLoss\tRepresentation\n";
+    for (const auto& o : params.objectives)
+        std::cout << o << "\t";
+    cout << "Representation\n";
+
     std::cout << std::scientific;
     // printing max 40 individuals from the pareto front
     unsigned n = 1;
@@ -1294,10 +1422,12 @@ void Feat::print_stats(std::ofstream& log, float fraction)
             if (lim_model.size()==60) 
                 lim_model += "...";
             
-            std::cout <<  arch.archive[i].rank          << "\t" 
-                      <<  arch.archive[i].complexity()  << "\t" 
-                      <<  arch.archive[i].fitness       << "\t" 
-                      <<  lim_model << "\n";  
+            std::cout <<  arch.archive[i].rank          << "\t" ;
+            for (const auto& o : arch.archive[i].obj)
+                std::cout << o << "\t";
+                  /* <<  arch.archive[i].complexity()  << "\t" */ 
+                  /* <<  arch.archive[i].fitness       << "\t" */ 
+            cout <<  lim_model << "\n";  
         }
     }
     else
@@ -1318,10 +1448,12 @@ void Feat::print_stats(std::ofstream& log, float fraction)
                 lim_model.push_back(model.at(j));
             if (lim_model.size()==60) 
                 lim_model += "...";
-            std::cout << p_pop->individuals[f[j]].rank              << "\t" 
-                      <<  p_pop->individuals[f[j]].complexity()     << "\t" 
-                      << (*p_pop)[f[j]].fitness                     << "\t"
-                      << "\t" << lim_model << "\n";  
+            std::cout << p_pop->individuals[f[j]].rank              << "\t" ;
+            for (const auto& o : p_pop->individuals[f[j]].obj)
+                std::cout << o << "\t";
+                      /* <<  p_pop->individuals[f[j]].complexity()     << "\t" */ 
+                      /* << (*p_pop)[f[j]].fitness                     << "\t" */
+            cout << "\t" << lim_model << "\n";  
         }
     }
    

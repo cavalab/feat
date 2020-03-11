@@ -3,8 +3,8 @@ copyright 2017 William La Cava
 license: GNU/GPL v3
 */
 
-#ifndef LEXICASE_H
-#define LEXICASE_H
+#ifndef FAIRLEXICASE_H
+#define FAIRLEXICASE_H
 
 #include "selection_operator.h"
 
@@ -14,14 +14,14 @@ namespace FT{
     namespace Sel{
         ////////////////////////////////////////////////////////////////////////////////// Declarations
         /*!
-         * @class Lexicase
-         * @brief Lexicase selection operator.
+         * @class FairLexicase
+         * @brief FairLexicase selection operator.
          */
-        struct Lexicase : SelectionOperator
+        struct FairLexicase : SelectionOperator
         {
-            Lexicase(bool surv);
+            FairLexicase(bool surv);
             
-            ~Lexicase();
+            ~FairLexicase();
 
             /// function returns a set of selected indices from F. 
             vector<size_t> select(Population& pop, const MatrixXf& F, 

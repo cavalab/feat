@@ -8,7 +8,10 @@ license: GNU/GPL v3
 
 #include "selection_operator.h"
 #include "lexicase.h"
+#include "fair_lexicase.h"
+#include "fair_lexicase2.h"
 #include "nsga2.h"
+#include "tournament.h"
 #include "offspring.h"
 #include "random.h"
 #include "simulated_annealing.h"
@@ -20,12 +23,12 @@ namespace FT{
     
     /**
      * @namespace FT::Sel
-     * @brief namespace containing Selection methods for best individuals used in Feat
+     * @brief namespace containing Selection methods for best individuals 
+     * used in Feat
      */
     namespace Sel{ 
-        ////////////////////////////////////////////////////////////////////////////////// Declarations
+        ////////////////////////////////////////////////////////// Declarations
 	
-        
         /*!
          * @class Selection
          * @brief interfaces with selection operators. 
@@ -42,10 +45,12 @@ namespace FT{
             string get_type();
             
             /// perform selection 
-            vector<size_t> select(Population& pop, const MatrixXf& F, const Parameters& params);
+            vector<size_t> select(Population& pop, const MatrixXf& F, 
+                    const Parameters& params, const Data& d);
             
             /// perform survival
-            vector<size_t> survive(Population& pop, const MatrixXf& F,  const Parameters& params);
+            vector<size_t> survive(Population& pop, const MatrixXf& F,  
+                    const Parameters& params, const Data& d);
         };
         
     }

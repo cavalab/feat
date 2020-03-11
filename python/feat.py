@@ -10,7 +10,7 @@ import argparse
 from sklearn.base import BaseEstimator
 import numpy as np
 import pandas as pd
-import pyfeat
+import pyfeat as pyfeat
 from sklearn.metrics import mean_squared_error as mse
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import log_loss
@@ -26,12 +26,12 @@ class Feat(BaseEstimator):
                 max_depth=3,   max_dim=10,  random_state=0, 
                 erc = False,  obj ="fitness,complexity", shuffle=True,  
                 split=0.75,  fb=0.5, scorer ='',feature_names="", 
-                backprop=False, iters=10, lr=0.1, batch_size=100, 
-                n_threads=0, hillclimb=False, logfile="Feat.log", max_time=-1, 
-                use_batch=False, residual_xo=False, stagewise_xo=False, 
+                backprop=False, iters=10, lr=0.1, batch_size=0, 
+                n_threads=0, hillclimb=False, logfile="", max_time=-1, 
+                residual_xo=False, stagewise_xo=False, 
                 stagewise_xo_tol=False, softmax_norm=False, print_pop=0, 
                 normalize=True, val_from_arch=True, corr_delete_mutate=False, 
-                simplify=False):
+                simplify=False,protected_groups=[]):
         self.pop_size = pop_size
         self.gens = gens
         self.ml = ml.encode() if( isinstance(ml,str) )  else ml
@@ -60,17 +60,11 @@ class Feat(BaseEstimator):
         self.backprop = bool(backprop)
         self.iters = int(iters)
         self.lr = float(lr)
-        if batch_size:
-            self.batch_size= int(batch_size)
-        else:
-            print('batch_size is None for some reason')
-            self.batch_size = 100
-
+        self.batch_size= int(batch_size)
         self.n_threads = int(n_threads)
         self.hillclimb= bool(hillclimb) 
         self.logfile = logfile.encode() if isinstance(logfile,str) else logfile
         self.max_time = max_time
-        self.use_batch = use_batch
         self.residual_xo = residual_xo
         self.stagewise_xo = stagewise_xo
         self.stagewise_xo_tol = stagewise_xo_tol
@@ -80,8 +74,9 @@ class Feat(BaseEstimator):
         self.val_from_arch = val_from_arch
         self.corr_delete_mutate = corr_delete_mutate
         self.simplify = simplify
+        self.protected_groups = ','.join(
+                [str(int(pg)) for pg in protected_groups]).encode()
         # if self.verbosity>0:
-        #print('self.__dict__: ' , self.__dict__)
         self._pyfeat=None
         self.stats = {}
 
@@ -107,7 +102,6 @@ class Feat(BaseEstimator):
                 self.hillclimb,
                 self.logfile,
                 self.max_time,
-                self.use_batch,
                 self.residual_xo,
                 self.stagewise_xo,
                 self.stagewise_xo_tol,
@@ -116,7 +110,8 @@ class Feat(BaseEstimator):
                 self.normalize,
                 self.val_from_arch,
                 self.corr_delete_mutate,
-                self.simplify)
+                self.simplify,
+                self.protected_groups)
    
     def fit(self,X,y,zfile=None,zids=None):
         """Fit a model."""    
@@ -146,6 +141,22 @@ class Feat(BaseEstimator):
             return self._pyfeat.predict_with_z(X,zfile,zids)
         else:
             return self._pyfeat.predict(X)
+
+    def predict_archive(self,X,zfile=None,zids=None):
+        """Predict on X."""
+        if zfile:
+            zfile = zfile.encode() if isinstance(zfile,str) else zfile
+            return self._pyfeat.predict_with_z(X,zfile,zids)
+        else:
+            return self._pyfeat.predict_archive(X)
+
+    def predict_proba_archive(self,i,X,zfile=None,zids=None):
+        """Predict on X."""
+        if zfile:
+            zfile = zfile.encode() if isinstance(zfile,str) else zfile
+            return self._pyfeat.predict_with_z(X,zfile,zids)
+        else:
+            return self._pyfeat.predict_proba_archive(i, X)
 
     def predict_proba(self,X,zfile=None,zids=None):
         """Return probabilities of predictions for data X"""
@@ -207,6 +218,9 @@ class Feat(BaseEstimator):
     def get_archive(self,justfront=True):
         """Returns all the final representation equations in the archive"""
         return self._pyfeat.get_archive(justfront)
+
+    def get_archive_size(self):
+        return self._pyfeat.get_archive_size()
 
     def get_coefs(self):
         """Returns the coefficients assocated with each feature in the 
