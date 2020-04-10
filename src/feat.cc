@@ -28,16 +28,16 @@ Feat::Feat(int pop_size, int gens, string ml,
        bool erc, string obj, bool shuffle, 
        float split, float fb, string scorer, string feature_names,
        bool backprop,int iters, float lr, int bs, int n_threads,
-       bool hillclimb, string logfile, int max_time, bool use_batch, bool residual_xo,
-       bool stagewise_xo, bool stagewise_xo_tol,
+       bool hillclimb, string logfile, int max_time, bool use_batch, 
+       bool residual_xo, bool stagewise_xo, bool stagewise_xo_tol,
        bool softmax_norm, int print_pop, bool normalize,
        bool val_from_arch, bool corr_delete_mutate, bool simplify):
           // construct subclasses
-          params(pop_size, gens, ml, classification, max_stall, otype, verbosity, 
-                 functions, cross_rate, root_xo_rate, max_depth, max_dim, erc, 
-                 obj, shuffle, split, fb, scorer, feature_names, backprop, 
-                 iters, lr, bs, hillclimb, max_time, use_batch, residual_xo, 
-                 stagewise_xo, stagewise_xo_tol, softmax_norm, 
+          params(pop_size, gens, ml, classification, max_stall, otype, 
+                 verbosity, functions, cross_rate, root_xo_rate, max_depth, 
+                 max_dim, erc, obj, shuffle, split, fb, scorer, feature_names, 
+                 backprop, iters, lr, bs, hillclimb, max_time, use_batch, 
+                 residual_xo, stagewise_xo, stagewise_xo_tol, softmax_norm, 
                  normalize, corr_delete_mutate), 
           p_sel( make_shared<Selection>(sel) ),
           p_surv( make_shared<Selection>(surv, true) ),
@@ -70,7 +70,10 @@ void Feat::set_generations(int gens){ params.gens = gens;}
 void Feat::set_ml(string ml){ params.ml = ml; }            
 
 /// set EProblemType for shogun              
-void Feat::set_classification(bool classification){ params.classification = classification;}
+void Feat::set_classification(bool classification)
+{
+    params.classification = classification;
+}
      
 /// set level of debug info              
 void Feat::set_verbosity(int verbosity){ params.set_verbosity(verbosity); }
@@ -107,7 +110,10 @@ void Feat::set_otype(char ot){ params.set_otype(ot); }
 void Feat::set_functions(string functions){ params.set_functions(functions); }
             
 /// set max depth of programs              
-void Feat::set_max_depth(unsigned int max_depth){ params.set_max_depth(max_depth); }
+void Feat::set_max_depth(unsigned int max_depth)
+{ 
+    params.set_max_depth(max_depth); 
+}
  
 /// set maximum dimensionality of programs              
 void Feat::set_max_dim(unsigned int max_dim){	params.set_max_dim(max_dim); }
@@ -268,47 +274,117 @@ int Feat::get_n_nodes(){ return best_ind.program.size(); }
 ///return population as string
 string Feat::get_eqns(bool front)
 {
-    string r="complexity\tfitness\tfitness_v\teqn\n";
+    vector<string> fields = {"id", "size", "complexity", "fitness", 
+        "fitness_v", "coefficients", "pareto_rank", "eqn"};
+
+    vector<Individual>* printed_pop = NULL; 
+
+    string r = "";
+    for (auto f: fields)
+        r += f + "\t";
+    r += "\n";
+
+    vector<size_t> idx;
+    bool subset = false;
     if (front)  // only return individuals on the Pareto front
     {
         if (use_arch)
         {
-            // printing individuals from the archive 
-            unsigned n = 1;
-            
-            for (auto& a : arch.archive)
-            {          
-                r += std::to_string(a.complexity()) + "\t" 
-                    + std::to_string(a.fitness) + "\t" 
-                    + std::to_string(a.fitness_v) + "\t"
-                    + a.get_eqn() + "\n";  
-            }
+            printed_pop = &arch.archive;
         }
         else
         {
-            // printing individuals from the pareto front
             unsigned n = 1;
-            vector<size_t> f = p_pop->sorted_front(n);
-            
-            for (unsigned j = 0; j < f.size(); ++j)
-            {          
-                r += std::to_string(p_pop->individuals[f[j]].complexity()) + "\t" 
-                    + std::to_string((*p_pop)[f[j]].fitness) + "\t" 
-                    + std::to_string((*p_pop)[f[j]].fitness_v) + "\t" 
-                    + p_pop->individuals[f[j]].get_eqn() + "\n";  
-            }
+            subset = true;
+            idx = p_pop->sorted_front(n);
+            printed_pop = &p_pop->individuals;
         }
     }
     else
+        printed_pop = &p_pop->individuals;
+
+    if (!subset)
     {
-        for (unsigned j = 0; j < params.pop_size; ++j)
-        {          
-            r += std::to_string(p_pop->individuals[j].complexity()) + "\t" 
-                + std::to_string((*p_pop)[j].fitness) + "\t" 
-                + std::to_string((*p_pop)[j].fitness_v) + "\t" 
-                + p_pop->individuals[j].get_eqn() + "\n";  
-        }
+        idx.resize(printed_pop->size());
+        std::iota(idx.begin(), idx.end(), 0);
     }
+
+
+    for (auto i : idx)
+    {
+        Individual& ind = printed_pop->at(i); 
+
+        for (auto f : fields)
+        {
+            if (f == "id")
+                r += to_string(ind.id);
+            else if (f == "size")
+                r += to_string(ind.size());
+            else if (f == "complexity")
+                r += to_string(ind.complexity());
+            else if (f == "fitness")
+                r += to_string(ind.fitness);
+            else if (f == "fitness_v")
+                r += to_string(ind.fitness_v);
+            else if (f == "coefficients")
+            {
+                auto tmpw = ind.ml->get_weights();
+                for (auto& c: tmpw)
+                    r += to_string(c) + ",";
+            }
+            else if (f == "pareto_rank")
+                r += to_string(ind.rank);
+            else if (f == "eqn")
+                r += ind.get_eqn();
+
+            r += "\t";
+        }
+        r += "\n";
+    }
+    cout << "r: " << r << endl;
+    printed_pop = NULL;
+    delete printed_pop;
+    
+    /* if (front)  // only return individuals on the Pareto front */
+    /* { */
+    /*     if (use_arch) */
+    /*     { */
+    /*         // printing individuals from the archive */ 
+    /*         unsigned n = 1; */
+            
+    /*         for (auto& a : arch.archive) */
+    /*         { */          
+    /*             r += std::to_string(a.complexity()) + "\t" */ 
+    /*                 + std::to_string(a.fitness) + "\t" */ 
+    /*                 + std::to_string(a.fitness_v) + "\t" */
+    /*                 + a.get_eqn() + "\n"; */  
+    /*         } */
+    /*     } */
+    /*     else */
+    /*     { */
+    /*         // printing individuals from the pareto front */
+    /*         unsigned n = 1; */
+    /*         vector<size_t> f = p_pop->sorted_front(n); */
+            
+    /*         for (unsigned j = 0; j < f.size(); ++j) */
+    /*         { */          
+    /*             r += std::to_string(p_pop->individuals[f[j]].complexity()) */ 
+    /*                 + "\t" + std::to_string((*p_pop)[f[j]].fitness) + "\t" */ 
+    /*                 + std::to_string((*p_pop)[f[j]].fitness_v) + "\t" */ 
+    /*                 + p_pop->individuals[f[j]].get_eqn() + "\n"; */  
+    /*         } */
+    /*     } */
+    /* } */
+    /* else */
+    /* { */
+    /*     for (unsigned j = 0; j < params.pop_size; ++j) */
+    /*     { */          
+    /*         r += std::to_string(p_pop->individuals[j].complexity()) + "\t" */ 
+    /*             + std::to_string((*p_pop)[j].fitness) + "\t" */ 
+    /*             + std::to_string((*p_pop)[j].fitness_v) + "\t" */ 
+    /*             + p_pop->individuals[j].get_eqn() + "\n"; */  
+    /*     } */
+    /* } */
     return r;
 }
 
