@@ -187,6 +187,80 @@ TEST(Evaluation, multi_log_loss)
     ASSERT_EQ(((int)(score*100000)),62344);
 }
 
+TEST(Evaluation, fpr)
+{
+    // test false positive rate  
+    VectorXf y(10), loss(10);
+    VectorXf yhat(10);
+
+    // test log loss
+    y << 0, 
+         0,
+         1,
+		 1,
+		 0,
+		 0,
+		 1,
+		 1,
+		 0,
+		 0;
+
+  
+    //cout << "setting yhat\n";
+    // three false positives out of 6 negatives = 0.5 false positive rate
+    yhat << 1, 
+            0,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            1;
+    //cout << "running multi_log_loss\n";
+	vector<float> weights;
+	/* vector<float> weights; */ 
+    /* for (int i = 0; i < y.size(); ++i) */
+        /* weights.push_back(1.0); */
+
+    float score = false_positive_loss(y, yhat, loss, weights);
+
+    ASSERT_EQ(((int)(score*10)),5);
+
+    // 6 false positives out of 6 negatives = 1.0 false positive rate
+    yhat << 1, 
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1;
+    score = false_positive_loss(y, yhat, loss, weights);
+
+    ASSERT_EQ(((int)(score*10)),10);
+
+    // 0 false positives out of 6 negatives = 0.0 false positive rate
+    yhat << 
+        0, 
+        0,
+        0,
+		1,
+		0,
+		0,
+		1,
+		0,
+		0,
+		0;
+
+    score = false_positive_loss(y, yhat, loss, weights);
+
+    ASSERT_EQ(((int)(score*10)),0);
+}
+
 TEST(Evaluation, fitness)
 {
 	Feat ft;
@@ -275,3 +349,48 @@ TEST(Evaluation, out_ml)
     ASSERT_TRUE(mean < NEAR_ZERO);
 }
 
+TEST(Evaluation, marginal_fairness)
+{
+
+    Evaluation eval("fpr");
+    VectorXf loss(10); 
+	MatrixXf X(2,10); 
+    X << 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0,
+           0,   1,   0,   0,   0,   1,   0,   0,   0,   1;
+    /* X << 0.0, */  
+    /*      1.0, */  
+    /*      2.0, */
+    /*      3.0, */
+    /*      4.0, */
+    /*      5.0, */
+    /*      6.0, */
+    /*      7.0, */
+    /*      8.0, */
+    /*      9.0; */
+
+    /* X.transposeInPlace(); */
+    
+    VectorXf y(10); 
+    // y = 2*sin(x0) + 3*cos(x0)
+    /* y << ; */
+             
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > z; 
+    
+    Data d(X, y, z, true, {0,1} );
+
+    loss << 0, 1, 0, 1, 0, 1, 0, 1, 0, 0;
+    // group 1 total loss: 2/7
+    // group 2 total loss: 2/3
+    // mean loss: 4/10
+    float base_score = loss.mean();
+    float score_with_alpha = eval.marginal_fairness(loss, d, base_score, true); 
+    float score_no_alpha = eval.marginal_fairness(loss, d, base_score); 
+    // fairness with alpha is 
+    // 1/10 * 1/2 * (7*|4/10-2/7| + 3*|4/10-2/3|) = 0.08
+    // fairness without alpha is 
+    // 1/2 * (|4/10-2/7| + |4/10-2/3|) = 0.08
+    
+    ASSERT_EQ(((int)(score_with_alpha*100)), 8);
+    ASSERT_EQ(((int)(score_no_alpha*1000000)), 190476);
+
+}
