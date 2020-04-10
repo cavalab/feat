@@ -206,7 +206,31 @@ class Feat(BaseEstimator):
 
     def get_archive(self,justfront=True):
         """Returns all the final representation equations in the archive"""
-        return self._pyfeat.get_archive(justfront)
+        str_arc = self._pyfeat.get_archive(justfront)
+        # store archive data from string
+        archive=[]
+        index = {}
+        for i,s in enumerate(str_arc.split('\n')):
+            if i == 0:
+                for j,key in enumerate(s.split('\t')):
+                    index[j] = key
+            else:
+                ind= {}
+                for k,val in enumerate(s.split('\t')):
+                    if ',' in val:
+                        ind[index[k]] = []
+                        for el in val.split(','):
+                            try:
+                                ind[index[k]].append(float(el))
+                            except:
+                                ind[index[k]].append(el) 
+                        continue
+                    try:
+                        ind[index[k]] = float(val)
+                    except:
+                        ind[index[k]] = val 
+                archive.append(ind)
+        return archive
 
     def get_coefs(self):
         """Returns the coefficients assocated with each feature in the 
