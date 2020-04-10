@@ -19,10 +19,15 @@ namespace FT {
             score_hash["mse"] = &Eval::squared_difference;
             score_hash["log"] =  &Eval::log_loss; 
             score_hash["multi_log"] =  &Eval::multi_log_loss;
+            score_hash["fpr"] =  &Eval::log_loss;
+            score_hash["zero_one"] = &Eval::log_loss;
+
             d_score_hash["mse"] = &Eval::d_squared_difference;
             d_score_hash["log"] =  &Eval::d_log_loss; 
             d_score_hash["multi_log"] =  &Eval::d_multi_log_loss;
-            
+            d_score_hash["fpr"] =  &Eval::d_log_loss;
+            d_score_hash["zero_one"] = &Eval::d_log_loss;            
+
             this->d_cost_func = d_score_hash.at(scorer); 
             this->cost_func = score_hash.at(scorer); 
             

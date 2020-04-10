@@ -6,7 +6,7 @@ from Cython.Build import cythonize
 import subprocess
 
 # PACKAGE VERSION #####
-package_version = '0.1'
+package_version = '0.2'
 #######################
 
 # the setup file relies on eigency to import its include paths for the
@@ -34,7 +34,6 @@ except ImportError:
                           'Automatic install with pip failed.')
 finally:
     globals()['eigency'] = importlib.import_module('eigency')
-
 
 import os
 env_params = os.environ.keys() 
@@ -73,15 +72,15 @@ setup(
         'pandas'],
     py_modules=['feat','metrics'],
     ext_modules = cythonize([Extension(name='pyfeat',
-       sources =  ["pyfeat.pyx"],    # our cython source
-       include_dirs = ['../build/','../src/',eigen_dir,shogun_include_dir]
-                      +eigency.get_includes(include_eigen=False),
-       extra_compile_args = ['-std=c++1y','-fopenmp','-Wno-sign-compare',
-                             '-Wno-reorder'],
-       library_dirs = [shogun_lib,feat_lib],
-       runtime_library_dirs = [feat_lib],
-       extra_link_args = ['-lshogun','-lfeat_lib'],      
-       language='c++'
+        sources =  ["pyfeat.pyx"],    # our cython source
+        include_dirs = ['../build/','../src/',eigen_dir,shogun_include_dir]
+                          +eigency.get_includes(include_eigen=False),
+        extra_compile_args = ['-std=c++1y','-fopenmp','-Wno-sign-compare',
+                                 '-Wno-reorder'],
+        library_dirs = [shogun_lib,feat_lib],
+        runtime_library_dirs = [feat_lib],
+        extra_link_args = ['-lshogun','-lfeat_lib'],      
+        language='c++'
        )],
        language="c++")
     )

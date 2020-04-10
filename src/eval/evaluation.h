@@ -51,10 +51,15 @@ namespace FT{
                              const Parameters& params, 
                              bool offspring = false,
                              bool validation = false);
-              
+                 
+                float marginal_fairness(VectorXf& loss, const Data& d, 
+                        float base_score, bool use_alpha=false);
+
                 /// assign fitness to an individual and to F.  
-                void assign_fit(Individual& ind, MatrixXf& F, const shared_ptr<CLabels>& yhat, 
-                                const VectorXf& y, const Parameters& params,bool val=false);       
+                void assign_fit(Individual& ind, MatrixXf& F, 
+                        const shared_ptr<CLabels>& yhat, 
+                        const Data& d, 
+                        const Parameters& params,bool val=false);       
         };
     }
 }
