@@ -19,7 +19,7 @@ echo "installing wheel"
 sudo -H pip3 install setuptools
 
 echo "installing mkdocs"
-sudo -H pip3 install mkdocs==1.0.4 mkdocs-material pymdown-extensions pygments
+sudo -H pip3 install mkdocs==1.1 mkdocs-material pymdown-extensions pygments
 
 echo "mkdocs version"
 mkdocs --version
