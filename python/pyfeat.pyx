@@ -34,7 +34,7 @@ cdef extern from "feat.h" namespace "FT":
 
         void fit(float * X, int rowsX, int colsX, float*  y , int lenY)
         VectorXd predict(float * X, int rowsX, int colsX)
-        MatrixXd predict_archive(float * X, int rowsX, int colsX)
+        VectorXd predict_archive(int i, float * X, int rowsX, int colsX)
         ArrayXXd predict_proba_archive(int i, float * X, int rowsX, int colsX)
         ArrayXXd predict_proba(float * X, int rowsX, int colsX)
         MatrixXd transform(float * X, int rowsX, int colsX)
@@ -144,12 +144,12 @@ cdef class PyFeat:
         res = ndarray(self.ft.predict(&arr_x[0,0],X.shape[0],X.shape[1]))
         return res.flatten()
 
-    def predict_archive(self,np.ndarray X):
+    def predict_archive(self,int i, np.ndarray X):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
         X = X.transpose()
         arr_x = np.asfortranarray(X, dtype=np.float32)
 
-        res = ndarray(self.ft.predict_archive(&arr_x[0,0],
+        res = ndarray(self.ft.predict_archive(i, &arr_x[0,0],
             X.shape[0],X.shape[1]))
         return res
 
