@@ -367,7 +367,6 @@ string Feat::get_eqns(bool front)
         if (i < idx.size() -1)
             r += "\n";
     }
-    cout << "r: " << r << endl;
     printed_pop = NULL;
     delete printed_pop;
     
@@ -756,7 +755,6 @@ void Feat::update_stall_count(unsigned& stall_count)
 
     if (params.current_gen == 0 || this->med_loss_v < this->best_med_score)
     {
-        /* cout << "updating best_med_score to " << med_loss_v << "\n"; */
         best_med_score = med_loss_v;
         stall_count = 0;
     }
@@ -887,7 +885,6 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
 
         if (ind.size() == tmp_ind.size())
         {
-            cout << "model size unchanged\n";
             continue;
         }
         bool pass = true;
