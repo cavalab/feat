@@ -402,10 +402,10 @@ ArrayXXf Feat::predict_proba(float * X, int rows_x, int cols_x)
     return predict_proba(matX);
 }
 
-ArrayXXf Feat::predict_proba_archive(int i, float * X, int rows_x, int cols_x) 
+ArrayXXf Feat::predict_proba_archive(int id, float * X, int rows_x, int cols_x) 
 {			    
     MatrixXf matX = Map<MatrixXf>(X,rows_x,cols_x);
-    return predict_proba_archive(i,matX);
+    return predict_proba_archive(id,matX);
 }
 /// convenience function calls fit then predict.            
 VectorXf Feat::fit_predict(MatrixXf& X,
@@ -1165,42 +1165,53 @@ VectorXf Feat::predict(MatrixXf& X,
     return best_ind.ml->predict_vector(Phi);        
 }
 
-MatrixXf Feat::predict_archive(MatrixXf& X,
+VectorXf Feat::predict_archive(int id, MatrixXf& X,
                        LongData Z)
 {
-
-    MatrixXf predictions(this->arch.archive.size(),X.cols());
+    /* return predictions; */
+    VectorXf predictions(X.cols(),params.n_classes);
     VectorXf empty_y;
     Data tmp_data(X,empty_y,Z);
 
     for (int i = 0; i < this->arch.archive.size(); ++i)
     {
-        predictions.row(i) = this->arch.archive.at(i).predict_vector(
-                tmp_data, this->params);
+        Individual& ind = this->arch.archive.at(i);
+
+        if (id == ind.id)
+            return ind.predict_vector(tmp_data, this->params);
+
     }
-    return predictions;
+
+    HANDLE_ERROR_THROW("Could not find id = "
+            + to_string(id) + "in archive.");
+    return VectorXf();
 }
 
-MatrixXf Feat::predict_archive(float * X, int rowsX,int colsX)
+VectorXf Feat::predict_archive(int id, float * X, int rowsX,int colsX)
 {
     MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
-    return predict_archive(matX);
+    return predict_archive(id, matX);
 }
 
-ArrayXXf Feat::predict_proba_archive(int i, MatrixXf& X,
+ArrayXXf Feat::predict_proba_archive(int id, MatrixXf& X,
                        LongData Z)
 {
     ArrayXXf predictions(X.cols(),params.n_classes);
     VectorXf empty_y;
     Data tmp_data(X,empty_y,Z);
 
-    if (i >= this->arch.archive.size())
+    for (int i = 0; i < this->arch.archive.size(); ++i)
     {
-        HANDLE_ERROR_THROW("Tried to access archive "
-                + to_string(i) + ", archive size: "
-                + to_string(this->arch.archive.size()));
+        Individual& ind = this->arch.archive.at(i);
+
+        if (id == ind.id)
+            return ind.predict_proba(tmp_data, this->params);
+
     }
-    return this->arch.archive.at(i).predict_proba(tmp_data, this->params);
+
+    HANDLE_ERROR_THROW("Could not find id = "
+            + to_string(id) + "in archive.");
+    return ArrayXXf();
     
 }
 shared_ptr<CLabels> Feat::predict_labels(MatrixXf& X,

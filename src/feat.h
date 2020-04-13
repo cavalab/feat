@@ -327,12 +327,13 @@ namespace FT{
             VectorXf predict(MatrixXf& X, LongData Z = LongData());  
             
             /// predict on unseen data from the whole archive             
-            MatrixXf predict_archive(MatrixXf& X, LongData Z = LongData());  
-            MatrixXf predict_archive(float * X, int rowsX,int colsX);
-            ArrayXXf predict_proba_archive(int i, MatrixXf& X, 
+            VectorXf predict_archive(int id, MatrixXf& X, 
+                    LongData Z = LongData());  
+            VectorXf predict_archive(int id, float * X, int rowsX, int colsX);
+            ArrayXXf predict_proba_archive(int id, MatrixXf& X, 
                     LongData Z=LongData());
 
-            ArrayXXf predict_proba_archive(int i, 
+            ArrayXXf predict_proba_archive(int id, 
                     float * X, int rows_x, int cols_x);
             /// predict on unseen data. return CLabels.
             shared_ptr<CLabels> predict_labels(MatrixXf& X,
