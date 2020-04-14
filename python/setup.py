@@ -6,7 +6,7 @@ from Cython.Build import cythonize
 import subprocess
 
 # PACKAGE VERSION #####
-package_version = '0.2'
+package_version = '0.3'
 #######################
 
 # the setup file relies on eigency to import its include paths for the
