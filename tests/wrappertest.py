@@ -117,6 +117,21 @@ class TestFeatWrapper(unittest.TestCase):
 
         assert(loaded_clf.get_params() == self.clf.get_params())
 
+    def test_archive(self):
+        """test archiving ability"""
+        self.debug("Test archive")
+
+        self.clf.classification = True
+        self.clf.ml = b'LR'
+        self.clf.fit(self.X,np.array(self.y > np.median(self.y),dtype=np.int))
+        archive = self.clf.get_archive()
+        preds = self.clf.predict_archive(self.X)
+        probs = self.clf.predict_proba_archive(self.X)
+
+        for arch, pred, prob in zip(archive, preds, probs):
+            self.assertTrue( arch['id'] == pred['id'] )
+            self.assertTrue( arch['id'] == prob['id'] )
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="",add_help=False)

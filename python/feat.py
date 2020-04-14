@@ -143,20 +143,38 @@ class Feat(BaseEstimator):
             return self._pyfeat.predict(X)
 
     def predict_archive(self,X,zfile=None,zids=None):
-        """Predict on X."""
+        """Returns a list of dictionary predictions for all models."""
         if zfile:
-            zfile = zfile.encode() if isinstance(zfile,str) else zfile
-            return self._pyfeat.predict_with_z(X,zfile,zids)
-        else:
-            return self._pyfeat.predict_archive(X)
+            raise ImplementationError('longitudinal not implemented')
+            return 1
 
-    def predict_proba_archive(self,i,X,zfile=None,zids=None):
-        """Predict on X."""
+        archive = self.get_archive(justfront=False)
+        preds = []
+        for ind in archive:
+            tmp = {}
+            tmp['id'] = ind['id']
+            tmp['y_pred'] = self._pyfeat.predict_archive(ind['id'], X) 
+            preds.append(tmp)
+
+        return preds
+
+    def predict_proba_archive(self,X,zfile=None,zids=None):
+        """Returns a dictionary of prediction probabilities for all models."""
         if zfile:
-            zfile = zfile.encode() if isinstance(zfile,str) else zfile
-            return self._pyfeat.predict_with_z(X,zfile,zids)
-        else:
-            return self._pyfeat.predict_proba_archive(i, X)
+            raise ImplementationError('longitudinal not implemented')
+            # zfile = zfile.encode() if isinstance(zfile,str) else zfile
+            # return self._pyfeat.predict_with_z(X,zfile,zids)
+            return 1
+
+        archive = self.get_archive()
+        probs = []
+        for ind in archive:
+            tmp = {}
+            tmp['id'] = ind['id']
+            tmp['y_proba'] = self._pyfeat.predict_proba_archive(ind['id'], X)
+            probs.append(tmp)
+
+        return probs
 
     def predict_proba(self,X,zfile=None,zids=None):
         """Return probabilities of predictions for data X"""
@@ -215,9 +233,37 @@ class Feat(BaseEstimator):
         """Returns a string with the final representation"""
         return self._pyfeat.get_representation()
 
-    def get_archive(self,justfront=True):
+    def _typify(self, x):
+        """Tries to typecast argument to a numeric type."""
+        try:
+            return float(x)
+        except:
+            try:
+                return int(x)
+            except:
+                return x
+            
+    def get_archive(self,justfront=False):
         """Returns all the final representation equations in the archive"""
-        return self._pyfeat.get_archive(justfront)
+        str_arc = self._pyfeat.get_archive(justfront)
+        # store archive data from string
+        archive=[]
+        index = {}
+        for i,s in enumerate(str_arc.split('\n')):
+            if i == 0:
+                for j,key in enumerate(s.split('\t')):
+                    index[j] = key
+            else:
+                ind= {}
+                for k,val in enumerate(s.split('\t')):
+                    if ',' in val:
+                        ind[index[k]] = []
+                        for el in val.split(','):
+                            ind[index[k]].append(self._typify(el))
+                        continue
+                    ind[index[k]] = self._typify(val)
+                archive.append(ind)
+        return archive
 
     def get_archive_size(self):
         return self._pyfeat.get_archive_size()

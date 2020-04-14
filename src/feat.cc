@@ -73,7 +73,10 @@ void Feat::set_generations(int gens){ params.gens = gens;}
 void Feat::set_ml(string ml){ params.ml = ml; }            
 
 /// set EProblemType for shogun              
-void Feat::set_classification(bool classification){ params.classification = classification;}
+void Feat::set_classification(bool classification)
+{
+    params.classification = classification;
+}
      
 /// set level of debug info              
 void Feat::set_verbosity(int verbosity){ params.set_verbosity(verbosity); }
@@ -110,7 +113,10 @@ void Feat::set_otype(char ot){ params.set_otype(ot); }
 void Feat::set_functions(string functions){ params.set_functions(functions); }
             
 /// set max depth of programs              
-void Feat::set_max_depth(unsigned int max_depth){ params.set_max_depth(max_depth); }
+void Feat::set_max_depth(unsigned int max_depth)
+{ 
+    params.set_max_depth(max_depth); 
+}
  
 /// set maximum dimensionality of programs              
 void Feat::set_max_dim(unsigned int max_dim){	params.set_max_dim(max_dim); }
@@ -279,93 +285,91 @@ int Feat::get_n_nodes(){ return best_ind.program.size(); }
 ///return population as string
 string Feat::get_eqns(bool front)
 {
-    //file header
-    string r="complexity\tfitness\tfitness_v\teqn";
-    vector<int> obj_ignore;
+    vector<string> fields = {"id", "size", "complexity", "fitness", 
+        "fitness_v", "coefficients", "pareto_rank", "eqn"};
+
     for (const auto& o : params.objectives)
     {
-        if (!in({"complexity","fitness"},o))
-            r += "\t" + o;
-    }
-    r+="\n";
-
-    vector<Individual>& pop_print = use_arch ? 
-        arch.archive : (*p_pop).individuals; 
-    /* if (use_arch) */
-    /* { */
-    /*     // printing individuals from the archive */ 
-    /*     pop_print = arch.archive; */
-    /* } */
-    /* else */
-    /* { */
-    /*     // printing individuals from the pareto front */
-    /*     pop_print = (*p_pop); */
-    /* } */
-    vector<size_t> idx; 
-    if (front && !use_arch)
-        idx = p_pop->sorted_front(1);
-    else
-    {
-        idx.resize(pop_print.size());
-        iota(idx.begin(),idx.end(),0);
+        if (!in(fields,o))
+            fields.push_back(o);
     }
 
-    for (const auto& i : idx)
+    vector<Individual>* printed_pop = NULL; 
+
+    string r = "";
+    for (int f = 0; f < fields.size(); ++f)
     {
-        r += to_string(pop_print.at(i).complexity()) + "\t" 
-            + to_string(pop_print.at(i).fitness) + "\t" 
-            + to_string(pop_print.at(i).fitness_v) + "\t" 
-            + pop_print.at(i).get_eqn() ;  
-        for (int j = 0; j < pop_print.at(i).obj.size(); ++j)
+        r += fields.at(f); 
+        if (f < fields.size() -1)
+            r +="\t";
+    }
+    r += "\n";
+
+    vector<size_t> idx;
+    bool subset = false;
+    if (front)  // only return individuals on the Pareto front
+    {
+        if (use_arch)
         {
-            if (!in({"complexity","fitness"},params.objectives.at(j)))
-                r+= "\t" + to_string(pop_print.at(i).obj.at(j));
+            printed_pop = &arch.archive;
         }
-        r += "\n";
+        else
+        {
+            unsigned n = 1;
+            subset = true;
+            idx = p_pop->sorted_front(n);
+            printed_pop = &p_pop->individuals;
+        }
     }
-    /* if (front)  // only return individuals on the Pareto front */
-    /* { */
-    /*     if (use_arch) */
-    /*     { */
-    /*         // printing individuals from the archive */ 
-    /*         pop_print = arch.archive; */
-    /*         /1* unsigned n = 1; *1/ */
-            
-    /*         /1* for (auto& a : arch.archive) *1/ */
-    /*         /1* { *1/ */          
-    /*         /1*     r += std::to_string(a.complexity()) + "\t" *1/ */ 
-    /*         /1*         + std::to_string(a.fitness) + "\t" *1/ */ 
-    /*         /1*         + std::to_string(a.fitness_v) + "\t" *1/ */
-    /*         /1*         + a.get_eqn() + "\n"; *1/ */  
-    /*         /1* } *1/ */
-    /*     } */
-    /*     else */
-    /*     { */
-    /*         // printing individuals from the pareto front */
-    /*         pop_print = (*p_pop); */
-    /*         /1* unsigned n = 1; *1/ */
-    /*         /1* vector<size_t> f = p_pop->sorted_front(n); *1/ */
-            
-    /*         /1* for (unsigned j = 0; j < f.size(); ++j) *1/ */
-    /*         /1* { *1/ */          
-               
-    /*         /1*     r += std::to_string(p_pop->individuals[f[j]].complexity()) + "\t" *1/ */ 
-    /*         /1*         + std::to_string((*p_pop)[f[j]].fitness) + "\t" *1/ */ 
-    /*         /1*         + std::to_string((*p_pop)[f[j]].fitness_v) + "\t" *1/ */ 
-    /*         /1*         + p_pop->individuals[f[j]].get_eqn() + "\n"; *1/ */  
-    /*         /1* } *1/ */
-    /*     } */
-    /* } */
-    /* else */
-    /* { */
-    /*     for (unsigned j = 0; j < params.pop_size; ++j) */
-    /*     { */          
-    /*         r += std::to_string(p_pop->individuals[j].complexity()) + "\t" */ 
-    /*             + std::to_string((*p_pop)[j].fitness) + "\t" */ 
-    /*             + std::to_string((*p_pop)[j].fitness_v) + "\t" */ 
-    /*             + p_pop->individuals[j].get_eqn() + "\n"; */  
-    /*     } */
-    /* } */
+    else
+        printed_pop = &p_pop->individuals;
+
+    if (!subset)
+    {
+        idx.resize(printed_pop->size());
+        std::iota(idx.begin(), idx.end(), 0);
+    }
+
+    for (int i = 0; i < idx.size(); ++i)
+    {
+        Individual& ind = printed_pop->at(idx[i]); 
+
+        for (int f = 0; f < fields.size(); ++f)
+        {
+            if (fields.at(f) == "id")
+                r += to_string(ind.id);
+            else if (fields.at(f) == "size")
+                r += to_string(ind.size());
+            else if (fields.at(f) == "complexity")
+                r += to_string(ind.complexity());
+            else if (fields.at(f) == "fitness")
+                r += to_string(ind.fitness);
+            else if (fields.at(f) == "fitness_v")
+                r += to_string(ind.fitness_v);
+            else if (fields.at(f) == "coefficients")
+            {
+                auto tmpw = ind.ml->get_weights();
+                for (int w = 0; w < tmpw.size(); ++w)
+                {
+                    r += to_string(tmpw.at(w));
+                    if (w != tmpw.size()-1) 
+                        r += ",";
+                }
+            }
+            else if (fields.at(f) == "pareto_rank")
+                r += to_string(ind.rank);
+            else if (fields.at(f) == "eqn")
+                r += ind.get_eqn();
+
+            if (f < fields.size() - 1)
+                r += "\t";
+        }
+        if (i < idx.size() -1)
+            r += "\n";
+    }
+    printed_pop = NULL;
+    delete printed_pop;
+    
     return r;
 }
 
@@ -397,10 +401,10 @@ ArrayXXf Feat::predict_proba(float * X, int rows_x, int cols_x)
     return predict_proba(matX);
 }
 
-ArrayXXf Feat::predict_proba_archive(int i, float * X, int rows_x, int cols_x) 
+ArrayXXf Feat::predict_proba_archive(int id, float * X, int rows_x, int cols_x) 
 {			    
     MatrixXf matX = Map<MatrixXf>(X,rows_x,cols_x);
-    return predict_proba_archive(i,matX);
+    return predict_proba_archive(id,matX);
 }
 /// convenience function calls fit then predict.            
 VectorXf Feat::fit_predict(MatrixXf& X,
@@ -751,7 +755,6 @@ void Feat::update_stall_count(unsigned& stall_count)
 
     if (params.current_gen == 0 || this->med_loss_v < this->best_med_score)
     {
-        /* cout << "updating best_med_score to " << med_loss_v << "\n"; */
         best_med_score = med_loss_v;
         stall_count = 0;
     }
@@ -882,7 +885,6 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
 
         if (ind.size() == tmp_ind.size())
         {
-            cout << "model size unchanged\n";
             continue;
         }
         bool pass = true;
@@ -1160,42 +1162,53 @@ VectorXf Feat::predict(MatrixXf& X,
     return best_ind.ml->predict_vector(Phi);        
 }
 
-MatrixXf Feat::predict_archive(MatrixXf& X,
+VectorXf Feat::predict_archive(int id, MatrixXf& X,
                        LongData Z)
 {
-
-    MatrixXf predictions(this->arch.archive.size(),X.cols());
+    /* return predictions; */
+    VectorXf predictions(X.cols(),params.n_classes);
     VectorXf empty_y;
     Data tmp_data(X,empty_y,Z);
 
     for (int i = 0; i < this->arch.archive.size(); ++i)
     {
-        predictions.row(i) = this->arch.archive.at(i).predict_vector(
-                tmp_data, this->params);
+        Individual& ind = this->arch.archive.at(i);
+
+        if (id == ind.id)
+            return ind.predict_vector(tmp_data, this->params);
+
     }
-    return predictions;
+
+    HANDLE_ERROR_THROW("Could not find id = "
+            + to_string(id) + "in archive.");
+    return VectorXf();
 }
 
-MatrixXf Feat::predict_archive(float * X, int rowsX,int colsX)
+VectorXf Feat::predict_archive(int id, float * X, int rowsX,int colsX)
 {
     MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
-    return predict_archive(matX);
+    return predict_archive(id, matX);
 }
 
-ArrayXXf Feat::predict_proba_archive(int i, MatrixXf& X,
+ArrayXXf Feat::predict_proba_archive(int id, MatrixXf& X,
                        LongData Z)
 {
     ArrayXXf predictions(X.cols(),params.n_classes);
     VectorXf empty_y;
     Data tmp_data(X,empty_y,Z);
 
-    if (i >= this->arch.archive.size())
+    for (int i = 0; i < this->arch.archive.size(); ++i)
     {
-        HANDLE_ERROR_THROW("Tried to access archive "
-                + to_string(i) + ", archive size: "
-                + to_string(this->arch.archive.size()));
+        Individual& ind = this->arch.archive.at(i);
+
+        if (id == ind.id)
+            return ind.predict_proba(tmp_data, this->params);
+
     }
-    return this->arch.archive.at(i).predict_proba(tmp_data, this->params);
+
+    HANDLE_ERROR_THROW("Could not find id = "
+            + to_string(id) + "in archive.");
+    return ArrayXXf();
     
 }
 shared_ptr<CLabels> Feat::predict_labels(MatrixXf& X,
