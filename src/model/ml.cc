@@ -167,8 +167,7 @@ namespace FT{
              */
             vector<double> w;
             
-            if (ml_type == LARS || ml_type == Ridge||
-            	ml_type == SVM || (ml_type == LR) || (ml_type == L1_LR))
+            if (in({LARS, Ridge, SVM, LR, L1_LR}, ml_type))
             {
                 // for multiclass, return the average weight magnitude over the OVR models
                 if(this->prob_type == PT_MULTICLASS 
@@ -344,9 +343,6 @@ namespace FT{
             /* cout << "this->ml_type: " << this->ml_type  << "\n"; */
             if (this->prob_type==PT_BINARY && 
                     in({LR, L1_LR, SVM, CART, RF}, ml_type))
-                 /* (ml_type == LR || ml_type == SVM */ 
-                 /*  || ml_type == CART || ml_type == RF) */     
-                /* )// binary classification */
             {
                 bool proba = params.scorer.compare("log")==0;
                 /* cout << "apply binary\n"; */
