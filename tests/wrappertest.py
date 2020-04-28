@@ -132,6 +132,14 @@ class TestFeatWrapper(unittest.TestCase):
             self.assertTrue( arch['id'] == pred['id'] )
             self.assertTrue( arch['id'] == prob['id'] )
 
+    def test_lr_l1(self):
+        """testing l1 penalized LR"""
+        self.clf.classification = True
+        self.clf.ml = b'L1_LR'
+        self.clf.fit(self.X,np.array(self.y > np.median(self.y),dtype=np.int))
+
+        self.assertEqual(len(self.clf.predict(self.X)), len(self.y))
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="",add_help=False)

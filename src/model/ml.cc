@@ -24,6 +24,8 @@ namespace FT{
             ml_hash["RandomForest"] = RF;
             ml_hash["CART"] = CART;
             ml_hash["LR"] = LR;
+            ml_hash["L2_LR"] = LR;
+            ml_hash["L1_LR"] = L1_LR;
             ml_hash["RF"] = RF;
 
             ml_str  = ml;
@@ -114,6 +116,27 @@ namespace FT{
 	
             
             }
+            else if (ml_type == L1_LR)
+            {
+                assert(this->prob_type!=PT_REGRESSION 
+                        && "LR only works with classification.");
+                if (this->prob_type == PT_BINARY){
+            	    p_est = make_shared<sh::CMyLibLinear>(sh::L2R_LR);
+                    // setting parameters to match sklearn defaults
+                    dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_compute_bias(true);
+                    dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_epsilon(0.0001);
+                    /* dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_C(1.0,1.0); */
+                    dynamic_pointer_cast<sh::CMyLibLinear>(p_est)->set_max_iterations(10000);
+                    //cout << "set ml type to CMyLibLinear\n";
+                }
+                else    // multiclass  
+                {
+                    p_est = make_shared<sh::CMulticlassLogisticRegression>();
+                    dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(p_est)->
+                                                                 set_prob_heuris(sh::OVA_NORM);
+                }
+            
+            }
             else
                 HANDLE_ERROR_NO_THROW("'" + ml_str + "' is not a valid ml choice\n");
             
@@ -145,16 +168,16 @@ namespace FT{
             vector<double> w;
             
             if (ml_type == LARS || ml_type == Ridge||
-            	ml_type == SVM || (ml_type == LR))
+            	ml_type == SVM || (ml_type == LR) || (ml_type == L1_LR))
             {
                 // for multiclass, return the average weight magnitude over the OVR models
                 if(this->prob_type == PT_MULTICLASS 
-                        && ( ml_type == LR || ml_type == SVM ) ) 
+                        && in({LR, L1_LR, SVM}, ml_type) ) 
                 {
                     /* cout << "in get_weights(), multiclass LR\n"; */
                     vector<SGVector<double>> weights;
 
-                    if( ml_type == LR)
+                    if( in({LR, L1_LR}, ml_type))
                         weights = dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(p_est)
                                                                                             ->get_w();
                     else //SVM
@@ -293,9 +316,9 @@ namespace FT{
             
             
              
-            if(this->prob_type==PT_BINARY && 
-                    (ml_type == LR || ml_type == SVM))  // binary classification           	
+            if(this->prob_type==PT_BINARY && in({LR, L1_LR, SVM}, ml_type))             	
             {
+                // binary classification
                 p_est->set_labels(some<CBinaryLabels>(SGVector<float64_t>(_y), 0.5));       	
                 
             }
@@ -320,9 +343,10 @@ namespace FT{
             /* cout << "this->ml_type == RF: " << tmp2 << "\n"; */
             /* cout << "this->ml_type: " << this->ml_type  << "\n"; */
             if (this->prob_type==PT_BINARY && 
-                 (ml_type == LR || ml_type == SVM 
-                  || ml_type == CART || ml_type == RF)     
-                )// binary classification
+                    in({LR, L1_LR, SVM, CART, RF}, ml_type))
+                 /* (ml_type == LR || ml_type == SVM */ 
+                 /*  || ml_type == CART || ml_type == RF) */     
+                /* )// binary classification */
             {
                 bool proba = params.scorer.compare("log")==0;
                 /* cout << "apply binary\n"; */
@@ -449,7 +473,7 @@ namespace FT{
             
            
             if (this->prob_type==PT_BINARY && 
-                    (ml_type == SVM || ml_type == LR || ml_type == CART || ml_type == RF))
+                    in({SVM, LR, L1_LR, CART, RF}, ml_type))
             {
                 /* cout << "apply binary\n"; */ 
                 labels = std::shared_ptr<CLabels>(p_est->apply_binary(features));
@@ -484,8 +508,8 @@ namespace FT{
         {
             shared_ptr<CLabels> labels = shared_ptr<CLabels>(predict(X));
                
-            if (this->prob_type==PT_BINARY && 
-                    (ml_type == SVM || ml_type == LR || ml_type == CART || ml_type == RF))
+            if (this->prob_type==PT_BINARY 
+                    && in({SVM, LR, L1_LR, CART, RF}, ml_type)) 
             {
                 shared_ptr<CBinaryLabels> BLabels = dynamic_pointer_cast<CBinaryLabels>(labels);
                 /* BLabels->scores_to_probabilities(); */
@@ -513,8 +537,8 @@ namespace FT{
         VectorXf ML::labels_to_vector(const shared_ptr<CLabels>& labels)
         {
             SGVector<double> y_pred;
-            if (this->prob_type==PT_BINARY && 
-                    (ml_type == SVM || ml_type == LR || ml_type == CART || ml_type == RF))
+            if (this->prob_type==PT_BINARY 
+                    && in({SVM, LR, L1_LR, CART, RF}, ml_type)) 
                 y_pred = dynamic_pointer_cast<sh::CBinaryLabels>(labels)->get_labels();
             else if (this->prob_type != PT_REGRESSION)
                 y_pred = dynamic_pointer_cast<sh::CMulticlassLabels>(labels)->get_labels();
@@ -523,8 +547,8 @@ namespace FT{
            
             Map<VectorXd> yhat(y_pred.data(),y_pred.size());
             
-            if (this->prob_type==PT_BINARY && 
-                    (ml_type == LR || ml_type == SVM || ml_type == CART || ml_type == RF))
+            if (this->prob_type==PT_BINARY 
+                    && in({SVM, LR, L1_LR, CART, RF}, ml_type)) 
                 // convert -1 to 0
                 yhat = (yhat.cast<int>().array() == -1).select(0,yhat);
 
