@@ -33,6 +33,7 @@ license: GNU/GPL v3
 #include "shogun/MyLibLinear.h"
 #include "shogun/MyRandomForest.h"
 #include "../params.h"
+#include "../util/utils.h"
 
 
 // stuff being used
@@ -64,7 +65,8 @@ namespace FT{
                       RF,     // Random Forest
                       SVM,    // Support Vector Machines
                       CART,   // Classification and Regression Trees
-                      LR      // Logistic Regression
+                      LR,      // l2-penalized Logistic Regression
+                      L1_LR      // L1-penalized Logistic Regression
                      };
         /*!
          * @class ML
