@@ -252,13 +252,14 @@ string Feat::get_model()
 {   
     vector<string> features = best_ind.get_features();
     vector<float> weights = best_ind.ml->get_weights();
-    
+    float offset = best_ind.ml->get_bias(); 
     vector<float> aweights(weights.size());
     for (int i =0; i<aweights.size(); ++i) 
         aweights[i] = fabs(weights[i]);
     vector<size_t> order = argsort(aweights);
     string output;
     output += "Feature\t\tWeight\n";
+    output += "offset\t\t" + to_string(offset) + "\n";
     for (unsigned i = order.size(); i --> 0;)
     {
         output += features.at(order[i]);
