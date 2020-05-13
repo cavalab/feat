@@ -149,41 +149,15 @@ void Parameters::set_term_weights(const vector<float>& w)
         }
            
     }
-    string weights = "terminal,weight,term_weight\n";
-    /* for (unsigned i = 0; i < terminals.size(); ++i) */
-    /* { */
-    /*     weights += ("(" + terminals.at(i)->name + + "(" + */ 
-    /*             terminals.at(i)->otype + ")," + */
-    /*             std::to_string(term_weights.at(i)) + "), ") ; */ 
-    /* } */
-    /* weights += "\n"; */
-    /* logger.log(weights, 2); */
-    std::ofstream out;                      ///< log file stream
-    out.open("initial_weights.csv");
+    string weights = "terminal weights: ";
     for (unsigned i = 0; i < terminals.size(); ++i)
     {
-        weights += (terminals.at(i)->name + ","  
-                    + std::to_string(w.at(i)) + ","
-                    + std::to_string(term_weights.at(i)) + "\n") ; 
+        weights += ("(" + terminals.at(i)->name + + "(" + 
+                terminals.at(i)->otype + ")," +
+                std::to_string(term_weights.at(i)) + "), ") ; 
     }
-    out << weights;
-    out.close();
-
-    std::ofstream sout;                      ///< log file stream
-    sout.open("sorted_initial_weights.csv");
-    /* cout << "sorted weights:\n"; */
-    vector<size_t> idx = argsort(term_weights, false); 
-
-    string sorted_weights = "terminal,weight,term_weight\n";
-    for (auto i : idx)
-    {
-        sorted_weights += (terminals.at(i)->name + ","  
-                    + std::to_string(w.at(i)) + ","
-                    + std::to_string(term_weights.at(i)) + "\n") ; 
-    }
-    sout << sorted_weights ;
-    sout.close();
-    /* logger.log(weights, 2); */
+    weights += "\n";
+    logger.log(weights, 2);
 }
 
 void Parameters::updateSize()
