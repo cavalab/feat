@@ -149,7 +149,7 @@ void Parameters::set_term_weights(const vector<float>& w)
         }
            
     }
-    string weights = "term weights: ";
+    string weights = "terminal weights: ";
     for (unsigned i = 0; i < terminals.size(); ++i)
     {
         weights += ("(" + terminals.at(i)->name + + "(" + 

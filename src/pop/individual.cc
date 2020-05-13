@@ -796,12 +796,44 @@ namespace FT{
                             + " in " + program_str() + " is invalid\n");
             }
             // tie state outputs together to return representation
-            for (auto s : state.fs) 
-                features.push_back(s);
-            for (auto s : state.bs) 
-                features.push_back(s);
-            for (auto s : state.cs)
-                features.push_back(s);
+            // order by root types
+            vector<char> root_types;
+            for (auto r : program.roots())
+            {
+                root_types.push_back(program.at(r)->otype);
+            }
+            std::map<char,int> rows;
+            rows['f']=0;
+            rows['c']=0;
+            rows['b']=0;
+
+            for (int i = 0; i < root_types.size(); ++i)
+            {
+                char rt = root_types.at(i);
+                switch (rt)
+                {
+                    case 'f':
+                        features.push_back(state.fs.at(rows[rt]));
+                        break;
+                    case 'c':
+                        features.push_back(state.cs.at(rows[rt]));
+                        break;
+                    case 'b':
+                        features.push_back(state.bs.at(rows[rt]));
+                        break;
+                    default:
+                        HANDLE_ERROR_THROW("Unknown root type");
+                }
+                ++rows.at(rt);
+            }
+
+            /* // tie state outputs together to return representation */
+            /* for (auto s : state.fs) */ 
+            /*     features.push_back(s); */
+            /* for (auto s : state.bs) */ 
+            /*     features.push_back(s); */
+            /* for (auto s : state.cs) */
+            /*     features.push_back(s); */
 
             return features;
         }
