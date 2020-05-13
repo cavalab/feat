@@ -267,6 +267,19 @@ string Feat::get_model()
         output += std::to_string(weights.at(order[i]));
         output += "\n";
     }
+
+    std::ofstream out;                      ///< log file stream
+    out.open("final_model.csv");
+    string finalweights = "terminal,weight\n";
+    for (unsigned i = 0; i < order.size(); ++i)
+    {
+        finalweights += features.at(order[i]);
+        finalweights += ",";
+        finalweights += std::to_string(weights.at(order[i]));
+        finalweights += "\n";
+    }
+    out << finalweights;
+    out.close();
     return output;
 }
 
@@ -1086,6 +1099,7 @@ void Feat::initial_model(DataRef &d)
     if (!univariate_initialization)
     {
         vector<float> w = best_ind.ml->get_weights();
+
         params.set_term_weights(w);
     }
    
