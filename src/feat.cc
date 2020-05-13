@@ -268,18 +268,18 @@ string Feat::get_model()
         output += "\n";
     }
 
-    std::ofstream out;                      ///< log file stream
-    out.open("final_model.csv");
-    string finalweights = "terminal,weight\n";
-    for (unsigned i = 0; i < order.size(); ++i)
-    {
-        finalweights += features.at(order[i]);
-        finalweights += ",";
-        finalweights += std::to_string(weights.at(order[i]));
-        finalweights += "\n";
-    }
-    out << finalweights;
-    out.close();
+    /* std::ofstream out;                      ///< log file stream */
+    /* out.open("final_model.csv"); */
+    /* string finalweights = "terminal,weight\n"; */
+    /* for (unsigned i = 0; i < order.size(); ++i) */
+    /* { */
+    /*     finalweights += features.at(order[i]); */
+    /*     finalweights += ","; */
+    /*     finalweights += std::to_string(weights.at(order[i])); */
+    /*     finalweights += "\n"; */
+    /* } */
+    /* out << finalweights; */
+    /* out.close(); */
     return output;
 }
 
