@@ -33,6 +33,7 @@ license: GNU/GPL v3
 #include "shogun/MyLibLinear.h"
 #include "shogun/MyRandomForest.h"
 #include "../params.h"
+#include "../eval/scorer.h"
 #include "../util/utils.h"
 
 
@@ -125,7 +126,13 @@ namespace FT{
                                 /// before training
                 ///returns bias for linear machines  
                 float get_bias();
+                ///tune algorithm parameters
+                void tune(const Data& d, const Parameters& params);
+
+            private:
+                vector<char> dtypes; 
         };
+
     }
 }
 

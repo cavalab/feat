@@ -111,8 +111,6 @@ namespace FT{
                             p_est)->set_compute_bias(true);
                     dynamic_pointer_cast<sh::CMyLibLinear>(
                             p_est)->set_epsilon(0.0001);
-                    /* dynamic_pointer_cast<sh::CMyLibLinear>(
-                     * p_est)->set_C(1.0,1.0); */
                     dynamic_pointer_cast<sh::CMyLibLinear>(
                             p_est)->set_max_iterations(10000);
                     //cout << "set ml type to CMyLibLinear\n";
@@ -176,6 +174,7 @@ namespace FT{
                     dynamic_pointer_cast<sh::CMyRandomForest>(
                             p_est)->set_feature_types(dt);
             }
+            this->dtypes = dtypes;
         }
         
         vector<float> ML::get_weights()
@@ -623,6 +622,55 @@ namespace FT{
             else
                 return 0;
 
+        }
+        void ML::tune(const Data& d, const Parameters& params)
+        {
+            DataRef d_cv(d.X, d.y, d.Z, params.classification, 
+                    params.protected_groups);
+            FT::Eval::Scorer S(params.scorer);
+            // for linear models, tune the regularization strength
+            // TODO: add Ridge, Lars
+            if (in({L1_LR, LR}, ml_type) )
+            {
+                vector<float> Cs = {0.001, 0.01, 0.1, 1.0, 10, 100};
+                float n_splits = 10;
+                MatrixXf losses(Cs.size(),int(n_splits));
+                VectorXf dummy;
+
+                for (int i = 0; i < n_splits; ++i)
+                {
+                    d_cv.train_test_split(true, 0.8);
+                    float loss = 0;
+
+                    for (int j = 0; j< Cs.size(); ++j)
+                    {
+                        
+                        dynamic_pointer_cast<sh::CMyLibLinear>(
+                            p_est)->set_C(Cs.at(j),Cs.at(j)); 
+
+                        bool pass = true;
+                        this->fit(d_cv.t->X, d_cv.t->y, 
+                                params, pass, this->dtypes);
+
+                        losses(j,i) = S.score(d_cv.v->y, 
+                                            this->predict(d_cv.v->X), 
+                                            dummy, params.class_weights);
+                    }
+                    /* CCrossValidation(CMachine *machine, */ 
+                    /*         CFeatures *features, */ 
+                    /*         CLabels *labels, */ 
+                    /*         CSplittingStrategy *splitting_strategy, */ 
+                    /*         CEvaluation *evaluation_criterion, */ 
+                    /*         bool autolock=true) */
+
+                }
+                // get mean loss for each C
+                VectorXf mean_loss = losses.rowwise().mean();
+                VectorXf::Index min_index;
+                float min_loss = mean_loss.minCoeff(&min_index);
+                float best_C = Cs.at(min_index);
+                
+            }
         }
     }
 }
