@@ -41,18 +41,25 @@ namespace FT{
                 else
                     this->prob_type = PT_MULTICLASS;               
             }
+            this->C = 1.0;
         }
         
         void ML::init()
         {
             // set up ML based on type
             if (ml_type == LARS)
-                p_est = make_shared<sh::CLeastAngleRegression>();
+            {
+                p_est = make_shared<sh::CLeastAngleRegression>(true);
+                dynamic_pointer_cast<sh::CLeastAngleRegression>(
+                        p_est)->set_max_l1_norm(this->C);
+            }
             else if (ml_type == Ridge)
             {
                 p_est = make_shared<sh::CLinearRidgeRegression>();
                 dynamic_pointer_cast<sh::CLinearRidgeRegression>(
                         p_est)->set_compute_bias(true);
+                dynamic_pointer_cast<sh::CLinearRidgeRegression>(
+                        p_est)->set_tau(this->C);
             }
             else if (ml_type == RF)
             {
@@ -100,12 +107,13 @@ namespace FT{
                 	p_est = make_shared<sh::CLibLinearRegression>(); 
                 
             }
-            else if (ml_type == LR)
+            else if (in({LR, L1_LR}, ml_type))
             {
                 assert(this->prob_type!=PT_REGRESSION 
                         && "LR only works with classification.");
                 if (this->prob_type == PT_BINARY){
-            	    p_est = make_shared<sh::CMyLibLinear>(sh::L2R_LR);
+            	    p_est = make_shared<sh::CMyLibLinear>(
+                            ml_type == LR? sh::L2R_LR : sh::L1R_LR);
                     // setting parameters to match sklearn defaults
                     dynamic_pointer_cast<sh::CMyLibLinear>(
                             p_est)->set_compute_bias(true);
@@ -113,6 +121,8 @@ namespace FT{
                             p_est)->set_epsilon(0.0001);
                     dynamic_pointer_cast<sh::CMyLibLinear>(
                             p_est)->set_max_iterations(10000);
+                    dynamic_pointer_cast<sh::CMyLibLinear>(
+                            p_est)->set_C(this->C,this->C); 
                     //cout << "set ml type to CMyLibLinear\n";
                 }
                 else    // multiclass  
@@ -124,31 +134,33 @@ namespace FT{
 	
             
             }
-            else if (ml_type == L1_LR)
-            {
-                assert(this->prob_type!=PT_REGRESSION 
-                        && "LR only works with classification.");
-                if (this->prob_type == PT_BINARY){
-            	    p_est = make_shared<sh::CMyLibLinear>(sh::L1R_LR);
-                    // setting parameters to match sklearn defaults
-                    dynamic_pointer_cast<sh::CMyLibLinear>(
-                            p_est)->set_compute_bias(false);
-                    dynamic_pointer_cast<sh::CMyLibLinear>(
-                            p_est)->set_epsilon(0.0001);
-                    /* dynamic_pointer_cast<sh::CMyLibLinear>(
-                     * p_est)->set_C(1.0,1.0); */
-                    dynamic_pointer_cast<sh::CMyLibLinear>(
-                            p_est)->set_max_iterations(10000);
-                    //cout << "set ml type to CMyLibLinear\n";
-                }
-                else    // multiclass  
-                {
-                    p_est = make_shared<sh::CMulticlassLogisticRegression>();
-                    dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(
-                            p_est)->set_prob_heuris(sh::OVA_NORM);
-                }
+            /* else if (ml_type == L1_LR) */
+            /* { */
+            /*     assert(this->prob_type!=PT_REGRESSION */ 
+            /*             && "L1_LR only works with classification."); */
+            /*     if (this->prob_type == PT_BINARY){ */
+            /* 	    p_est = make_shared<sh::CMyLibLinear>(sh::L1R_LR); */
+            /*         // setting parameters to match sklearn defaults */
+            /*         dynamic_pointer_cast<sh::CMyLibLinear>( */
+            /*                 p_est)->set_compute_bias(false); */
+            /*         dynamic_pointer_cast<sh::CMyLibLinear>( */
+            /*                 p_est)->set_epsilon(0.0001); */
+            /*         /1* dynamic_pointer_cast<sh::CMyLibLinear>( */
+            /*          * p_est)->set_C(1.0,1.0); *1/ */
+            /*         dynamic_pointer_cast<sh::CMyLibLinear>( */
+            /*                 p_est)->set_max_iterations(10000); */
+            /*         dynamic_pointer_cast<sh::CMyLibLinear>( */
+            /*                 p_est)->set_C(this->C,this->C); */ 
+            /*         //cout << "set ml type to CMyLibLinear\n"; */
+            /*     } */
+            /*     else    // multiclass */  
+            /*     { */
+            /*         p_est = make_shared<sh::CMulticlassLogisticRegression>(); */
+            /*         dynamic_pointer_cast<sh::CMulticlassLogisticRegression>( */
+            /*                 p_est)->set_prob_heuris(sh::OVA_NORM); */
+            /*     } */
             
-            }
+            /* } */
             else
                 HANDLE_ERROR_NO_THROW("'" + ml_str 
                         + "' is not a valid ml choice\n");
@@ -625,50 +637,53 @@ namespace FT{
         }
         void ML::tune(const Data& d, const Parameters& params)
         {
+            cout << "tuning...\n";
             DataRef d_cv(d.X, d.y, d.Z, params.classification, 
                     params.protected_groups);
+            cout << "scorer...\n";
             FT::Eval::Scorer S(params.scorer);
+            cout << "done scorer...\n";
             // for linear models, tune the regularization strength
             // TODO: add Ridge, Lars
-            if (in({L1_LR, LR}, ml_type) )
+            if (in({LARS, Ridge, L1_LR, LR}, this->ml_type) )
             {
-                vector<float> Cs = {0.001, 0.01, 0.1, 1.0, 10, 100};
-                float n_splits = 10;
+                cout << "defining C range...\n";
+                vector<float> Cs = {0.001, 0.01, 0.1, 1.0, 10, 100, 1000};
+                float n_splits = 100;
                 MatrixXf losses(Cs.size(),int(n_splits));
                 VectorXf dummy;
 
                 for (int i = 0; i < n_splits; ++i)
                 {
+                    cout << "shuffling data..\n";
                     d_cv.train_test_split(true, 0.8);
-                    float loss = 0;
+
 
                     for (int j = 0; j< Cs.size(); ++j)
                     {
-                        
-                        dynamic_pointer_cast<sh::CMyLibLinear>(
-                            p_est)->set_C(Cs.at(j),Cs.at(j)); 
-
+                        cout << "setting C to " << Cs.at(j) << endl; 
+                        this->C = Cs.at(j);
+                        cout << "fitting..." << endl; 
                         bool pass = true;
                         this->fit(d_cv.t->X, d_cv.t->y, 
                                 params, pass, this->dtypes);
 
+                        cout << "scoring..." << endl; 
                         losses(j,i) = S.score(d_cv.v->y, 
                                             this->predict(d_cv.v->X), 
                                             dummy, params.class_weights);
                     }
-                    /* CCrossValidation(CMachine *machine, */ 
-                    /*         CFeatures *features, */ 
-                    /*         CLabels *labels, */ 
-                    /*         CSplittingStrategy *splitting_strategy, */ 
-                    /*         CEvaluation *evaluation_criterion, */ 
-                    /*         bool autolock=true) */
-
                 }
+                cout << "losses: (" << losses.size() << "): \n" 
+                    << losses.transpose() << endl;
                 // get mean loss for each C
                 VectorXf mean_loss = losses.rowwise().mean();
+                cout << "mean_loss (" << mean_loss.size() << "): \n" 
+                    << mean_loss.transpose() << endl;
                 VectorXf::Index min_index;
                 float min_loss = mean_loss.minCoeff(&min_index);
                 float best_C = Cs.at(min_index);
+                cout << "best C: " << best_C << endl;
                 
             }
         }

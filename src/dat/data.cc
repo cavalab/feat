@@ -102,8 +102,10 @@ namespace FT{
 
                for (const auto& val: Z )
                {
-                    db.Z.at(val.first).first.at(i) = Z.at(val.first).first.at(idx.at(i));
-                    db.Z.at(val.first).second.at(i) = Z.at(val.first).second.at(idx.at(i));
+                    db.Z.at(val.first).first.at(i) = \
+                                      Z.at(val.first).first.at(idx.at(i));
+                    db.Z.at(val.first).second.at(i) = \
+                                      Z.at(val.first).second.at(idx.at(i));
                }
             }
             db.set_protected_groups();
@@ -374,7 +376,8 @@ namespace FT{
                 y_v.resize(int(o->y.size()*(1-split)));
                 
                 // map training and test sets  
-                t->X = MatrixXf::Map(o->X.data(),t->X.rows(),t->X.cols());
+                t->X = MatrixXf::Map(o->X.data(),t->X.rows(),
+                                     t->X.cols());
                 v->X = MatrixXf::Map(o->X.data()+t->X.rows()*t->X.cols(),
                                            v->X.rows(),v->X.cols());
 
