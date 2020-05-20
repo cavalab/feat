@@ -121,6 +121,12 @@ namespace FT{
         DataRef::DataRef(MatrixXf& X, VectorXf& y, 
                          LongData& Z, bool c, vector<bool> protect)
         {
+            this->init(X, y, Z, c, protect);
+        }
+
+        void DataRef::init(MatrixXf& X, VectorXf& y, 
+                         LongData& Z, bool c, vector<bool> protect)
+        {
             o = new Data(X, y, Z, c, protect);
             oCreated = true;
             
@@ -361,7 +367,6 @@ namespace FT{
              * @param[out] X_t, X_v, y_t, y_v: training and validation matrices
              */
              
-                                     
             if (shuffle)     // generate shuffle index for the split
                 shuffle_data();
                 
