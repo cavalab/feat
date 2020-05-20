@@ -809,8 +809,7 @@ void Feat::final_model(DataRef& d)
     /* MatrixXf Phi = transform(X); */
     /* MatrixXf Phi = best_ind.out(*d.o, params); */        
     
-    best_ind.ml->tune(*d.o, params);
-    shared_ptr<CLabels> yhat = best_ind.fit(*d.o, params, pass);
+    shared_ptr<CLabels> yhat = best_ind.fit_tune(*d.o, params, pass);
     VectorXf tmp;
     /* params.set_sample_weights(y);   // need to set new sample weights for y, */ 
                                     // which is probably from a validation set

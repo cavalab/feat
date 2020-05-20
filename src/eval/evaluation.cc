@@ -22,7 +22,6 @@ namespace FT{
             /* score_hash["fpr"] =  &false_positive_loss_label; */ 
         
             /* score = score_hash.at(scorer); */
-            cout << "eval:: setting scorer S( " << scorer << endl;
             this->S.set_scorer(scorer);
         }
 

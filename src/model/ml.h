@@ -110,6 +110,11 @@ namespace FT{
                
                 /// utility function to convert CLabels types to VectorXd types. 
                 VectorXf labels_to_vector(const shared_ptr<CLabels>& labels);
+                
+                /// returns labels of a fitted model estimating on features
+                shared_ptr<CLabels> get_labels(
+                CDenseFeatures<float64_t>* features, 
+                bool proba, bool& pass);
 
                 /* VectorXd predict(MatrixXd& X); */
                 // set data types (for tree-based methods)            
@@ -117,7 +122,9 @@ namespace FT{
                 ///returns bias for linear machines  
                 float get_bias();
                 ///tune algorithm parameters
-                void tune(const Data& d, const Parameters& params);
+                shared_ptr<CLabels> fit_tune(MatrixXf& X, VectorXf& y, 
+                        const Parameters& params, bool& pass,
+                        const vector<char>& dtypes=vector<char>());
 
                 shared_ptr<sh::CMachine> p_est;     ///< pointer to the ML object
                 ML_TYPE ml_type;                    ///< user specified ML type

@@ -99,7 +99,10 @@ namespace FT
         
                 DataRef(MatrixXf& X, VectorXf& y, LongData& Z, bool c=false,
                         vector<bool> protect = vector<bool>());
-                        
+
+                void init(MatrixXf& X, VectorXf& y, LongData& Z, 
+                        bool c=false, vector<bool> protect = vector<bool>());
+
                 void setOriginalData(MatrixXf& X, VectorXf& y, 
                         LongData& Z, bool c=false,
                         vector<bool> protect = vector<bool>());
