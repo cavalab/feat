@@ -572,7 +572,8 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     logger.log("Fitting initial model", 2);
     t0 =  timer.Elapsed().count();
     initial_model(d);  
-    logger.log(std::to_string(timer.Elapsed().count() - t0) + " seconds",2);
+    logger.log("Initial fitting took " 
+            + std::to_string(timer.Elapsed().count() - t0) + " seconds",2);
     // initialize population 
     logger.log("Initializing population", 2);
    
@@ -808,6 +809,7 @@ void Feat::final_model(DataRef& d)
     /* MatrixXf Phi = transform(X); */
     /* MatrixXf Phi = best_ind.out(*d.o, params); */        
     
+    best_ind.ml->tune(*d.o, params);
     shared_ptr<CLabels> yhat = best_ind.fit(*d.o, params, pass);
     VectorXf tmp;
     /* params.set_sample_weights(y);   // need to set new sample weights for y, */ 
@@ -892,7 +894,6 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
     float tolerance = 0.001;
     for (int i = 0; i < iterations; ++i)
     {
-        /* cout << "."; */
         Individual tmp_ind = ind;
         bool perfect_correlation = p_variation->correlation_delete_mutate(
                 tmp_ind, ind.Phi, params, *d.o);
@@ -1102,15 +1103,12 @@ void Feat::initial_model(DataRef &d)
 
         params.set_term_weights(w);
     }
-   
-    VectorXf tmp;
-    best_score = p_eval->S.score(d.t->y, yhat, tmp, params.class_weights);
+    best_score = p_eval->S.score(d.t->y, yhat, params.class_weights);
     
     if (params.split < 1.0)
     {
         shared_ptr<CLabels> yhat_v = best_ind.predict(*d.v, params);
-        best_score_v = p_eval->S.score(d.v->y, yhat_v, tmp, 
-                params.class_weights); 
+        best_score_v = p_eval->S.score(d.v->y, yhat_v, params.class_weights); 
     }
     else
         best_score_v = best_score;

@@ -12,7 +12,7 @@ namespace FT{
     
     namespace Eval{
     
-        Evaluation::Evaluation(string scorer)
+        Evaluation::Evaluation(string scorer): S(scorer)
         {
             /* score_hash["mse"] = &mse_label; */
             /* score_hash["zero_one"] = &zero_one_loss_label; */
@@ -22,7 +22,8 @@ namespace FT{
             /* score_hash["fpr"] =  &false_positive_loss_label; */ 
         
             /* score = score_hash.at(scorer); */
-            Scorer S(scorer);
+            cout << "eval:: setting scorer S( " << scorer << endl;
+            this->S.set_scorer(scorer);
         }
 
         Evaluation::~Evaluation(){}

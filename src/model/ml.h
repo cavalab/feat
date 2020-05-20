@@ -114,6 +114,10 @@ namespace FT{
                 /* VectorXd predict(MatrixXd& X); */
                 // set data types (for tree-based methods)            
                 void set_dtypes(const vector<char>& dtypes);
+                ///returns bias for linear machines  
+                float get_bias();
+                ///tune algorithm parameters
+                void tune(const Data& d, const Parameters& params);
 
                 shared_ptr<sh::CMachine> p_est;     ///< pointer to the ML object
                 ML_TYPE ml_type;                    ///< user specified ML type
@@ -124,10 +128,7 @@ namespace FT{
                 int max_train_time; ///< max seconds allowed for training
                 bool normalize; ///< control whether ML normalizes its input 
                                 /// before training
-                ///returns bias for linear machines  
-                float get_bias();
-                ///tune algorithm parameters
-                void tune(const Data& d, const Parameters& params);
+                float C;        // regularization parameter
 
             private:
                 vector<char> dtypes; 
