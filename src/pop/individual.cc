@@ -999,6 +999,36 @@ namespace FT{
             }	
             return max_stack_size;
         }
+        shared_ptr<CLabels> Individual::fit_tune(const Data& d, 
+                const Parameters& params, bool& pass)
+        {
+            // calculate program output matrix Phi
+            logger.log("Generating output for " + get_eqn(), 3);
+            Phi = out(d, params, false);      
+            // calculate ML model from Phi
+            logger.log("ML training on " + get_eqn(), 3);
+            this->ml = std::make_shared<ML>(params.ml, true, 
+                    params.classification, params.n_classes);
+            
+            shared_ptr<CLabels> yh = this->ml->fit_tune(Phi, d.y, 
+                    params, pass, dtypes);
+
+            if (pass)
+            {
+                logger.log("Setting individual's weights...", 3);
+                set_p(this->ml->get_weights(),params.feedback,
+                        params.softmax_norm);
+            }
+            else
+            {   // set weights to zero
+                vector<float> w(Phi.rows(), 0);                     
+                set_p(w,params.feedback,params.softmax_norm);
+            }
+            
+            this->yhat = ml->labels_to_vector(yh);
+            
+            return yh;
+        }
 
     }
 

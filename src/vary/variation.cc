@@ -51,7 +51,7 @@ void Variation::vary(Population& pop, const vector<size_t>& parents,
      */
     unsigned start= pop.size();
     pop.resize(2*params.pop_size);
-    /* #pragma omp parallel for */
+    #pragma omp parallel for
     for (unsigned i = start; i<pop.size(); ++i)
     {
         // pass check for children undergoing variation     
