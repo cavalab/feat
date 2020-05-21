@@ -572,7 +572,8 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     logger.log("Fitting initial model", 2);
     t0 =  timer.Elapsed().count();
     initial_model(d);  
-    logger.log(std::to_string(timer.Elapsed().count() - t0) + " seconds",2);
+    logger.log("Initial fitting took " 
+            + std::to_string(timer.Elapsed().count() - t0) + " seconds",2);
     // initialize population 
     logger.log("Initializing population", 2);
    
@@ -808,11 +809,11 @@ void Feat::final_model(DataRef& d)
     /* MatrixXf Phi = transform(X); */
     /* MatrixXf Phi = best_ind.out(*d.o, params); */        
     
-    shared_ptr<CLabels> yhat = best_ind.fit(*d.o, params, pass);
+    shared_ptr<CLabels> yhat = best_ind.fit_tune(*d.o, params, pass);
     VectorXf tmp;
     /* params.set_sample_weights(y);   // need to set new sample weights for y, */ 
                                     // which is probably from a validation set
-    float score = p_eval->score(d.o->y,yhat,tmp,params.class_weights);
+    float score = p_eval->S.score(d.o->y,yhat,tmp,params.class_weights);
     logger.log("final_model score: " + std::to_string(score),2);
 }
 
@@ -892,7 +893,6 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
     float tolerance = 0.001;
     for (int i = 0; i < iterations; ++i)
     {
-        /* cout << "."; */
         Individual tmp_ind = ind;
         bool perfect_correlation = p_variation->correlation_delete_mutate(
                 tmp_ind, ind.Phi, params, *d.o);
@@ -1102,14 +1102,12 @@ void Feat::initial_model(DataRef &d)
 
         params.set_term_weights(w);
     }
-   
-    VectorXf tmp;
-    best_score = p_eval->score(d.t->y, yhat, tmp, params.class_weights);
+    best_score = p_eval->S.score(d.t->y, yhat, params.class_weights);
     
     if (params.split < 1.0)
     {
         shared_ptr<CLabels> yhat_v = best_ind.predict(*d.v, params);
-        best_score_v = p_eval->score(d.v->y, yhat_v, tmp, params.class_weights); 
+        best_score_v = p_eval->S.score(d.v->y, yhat_v, params.class_weights); 
     }
     else
         best_score_v = best_score;
@@ -1305,7 +1303,7 @@ void Feat::update_best(const DataRef& d, bool validation)
         {
             VectorXf tmp;
             shared_ptr<CLabels> yhat_v = this->best_ind.predict(*d.v, params);
-            this->best_score_v = p_eval->score(d.v->y, yhat_v, tmp, 
+            this->best_score_v = p_eval->S.score(d.v->y, yhat_v, tmp, 
                     params.class_weights); 
             this->best_ind.fitness_v = this->best_score_v;
         }
@@ -1316,7 +1314,7 @@ float Feat::score(MatrixXf& X, const VectorXf& y, LongData Z)
 {
     shared_ptr<CLabels> labels = predict_labels(X, Z);
     VectorXf loss; 
-    return p_eval->score(y,labels,loss,params.class_weights);
+    return p_eval->S.score(y,labels,loss,params.class_weights);
 }
 
 void Feat::calculate_stats(const DataRef& d)
@@ -1381,7 +1379,7 @@ void Feat::calculate_stats(const DataRef& d)
         Individual& med_ind = p_pop->individuals.at(idx);
         VectorXf tmp;
         shared_ptr<CLabels> yhat_v = med_ind.predict(*d.v, params);
-        this->med_loss_v = p_eval->score(d.v->y, yhat_v, tmp, 
+        this->med_loss_v = p_eval->S.score(d.v->y, yhat_v, tmp, 
                 params.class_weights); 
     }
     

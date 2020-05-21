@@ -102,8 +102,10 @@ namespace FT{
 
                for (const auto& val: Z )
                {
-                    db.Z.at(val.first).first.at(i) = Z.at(val.first).first.at(idx.at(i));
-                    db.Z.at(val.first).second.at(i) = Z.at(val.first).second.at(idx.at(i));
+                    db.Z.at(val.first).first.at(i) = \
+                                      Z.at(val.first).first.at(idx.at(i));
+                    db.Z.at(val.first).second.at(i) = \
+                                      Z.at(val.first).second.at(idx.at(i));
                }
             }
             db.set_protected_groups();
@@ -117,6 +119,12 @@ namespace FT{
         }
      
         DataRef::DataRef(MatrixXf& X, VectorXf& y, 
+                         LongData& Z, bool c, vector<bool> protect)
+        {
+            this->init(X, y, Z, c, protect);
+        }
+
+        void DataRef::init(MatrixXf& X, VectorXf& y, 
                          LongData& Z, bool c, vector<bool> protect)
         {
             o = new Data(X, y, Z, c, protect);
@@ -359,7 +367,6 @@ namespace FT{
              * @param[out] X_t, X_v, y_t, y_v: training and validation matrices
              */
              
-                                     
             if (shuffle)     // generate shuffle index for the split
                 shuffle_data();
                 
@@ -374,7 +381,8 @@ namespace FT{
                 y_v.resize(int(o->y.size()*(1-split)));
                 
                 // map training and test sets  
-                t->X = MatrixXf::Map(o->X.data(),t->X.rows(),t->X.cols());
+                t->X = MatrixXf::Map(o->X.data(),t->X.rows(),
+                                     t->X.cols());
                 v->X = MatrixXf::Map(o->X.data()+t->X.rows()*t->X.cols(),
                                            v->X.rows(),v->X.cols());
 
