@@ -9,6 +9,7 @@ using namespace shogun;
 
 namespace FT{ namespace Model{
         
+bool C_DEFAULT = 1.0; 
 
 ML::ML(string ml, bool norm, bool classification, int n_classes)
 {
@@ -45,7 +46,7 @@ ML::ML(string ml, bool norm, bool classification, int n_classes)
         else
             this->prob_type = PT_MULTICLASS;               
     }
-    this->C = 1.0;
+    this->C = C_DEFAULT;
 }
 
 void ML::init()
@@ -513,7 +514,8 @@ float ML::get_bias()
 
 }
 shared_ptr<CLabels> ML::fit_tune(MatrixXf& X, VectorXf& y, 
-        const Parameters& params, bool& pass, const vector<char>& dtypes)
+        const Parameters& params, bool& pass, const vector<char>& dtypes, 
+        bool set_default)
 {
     logger.log("tuning C...",2);
     LongData Z;
@@ -531,7 +533,7 @@ shared_ptr<CLabels> ML::fit_tune(MatrixXf& X, VectorXf& y,
             iota(Cs.begin(),Cs.end(),1);
         }
         else
-            Cs = {0.001, 0.01, 0.1, 1.0, 10, 100, 1000};
+            Cs = {0.000001, 0.0001, 0.001, 0.01, 0.1, 1.0, 10, 100, 1000};
 
         float n_splits = 10;
         MatrixXf losses(Cs.size(),int(n_splits));
@@ -567,6 +569,8 @@ shared_ptr<CLabels> ML::fit_tune(MatrixXf& X, VectorXf& y,
         logger.log(cv_report, 2);
         // set best C and fit a final model to all data with it
         this->C = best_C;
+        if (set_default)
+            C_DEFAULT = best_C;
         return this->fit(X, y, params, pass, dtypes);
     }
 }
