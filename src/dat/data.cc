@@ -374,11 +374,14 @@ namespace FT{
                 split_stratified(split);
             else
             {        
+                int train_size = min(int(o->X.cols()*split), 
+                                     int(o->X.cols()-1));
+                int val_size = max(int(o->X.cols()*(1-split)), 1);
                 // resize training and test sets
-                X_t.resize(o->X.rows(),int(o->X.cols()*split));
-                X_v.resize(o->X.rows(),int(o->X.cols()*(1-split)));
-                y_t.resize(int(o->y.size()*split));
-                y_v.resize(int(o->y.size()*(1-split)));
+                X_t.resize(o->X.rows(),train_size);
+                X_v.resize(o->X.rows(),val_size);
+                y_t.resize(train_size);
+                y_v.resize(val_size);
                 
                 // map training and test sets  
                 t->X = MatrixXf::Map(o->X.data(),t->X.rows(),
