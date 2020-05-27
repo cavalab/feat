@@ -1000,7 +1000,7 @@ namespace FT{
             return max_stack_size;
         }
         shared_ptr<CLabels> Individual::fit_tune(const Data& d, 
-                const Parameters& params, bool& pass)
+                const Parameters& params, bool& pass, bool set_default)
         {
             // calculate program output matrix Phi
             logger.log("Generating output for " + get_eqn(), 3);
@@ -1011,7 +1011,7 @@ namespace FT{
                     params.classification, params.n_classes);
             
             shared_ptr<CLabels> yh = this->ml->fit_tune(Phi, d.y, 
-                    params, pass, dtypes);
+                    params, pass, dtypes, set_default);
 
             if (pass)
             {

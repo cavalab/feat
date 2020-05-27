@@ -60,6 +60,7 @@ namespace FT{
      */
     namespace Model{
         
+        extern float C_DEFAULT;
         enum ML_TYPE {
                       LARS,   // Least Angle Regression
                       Ridge,  // Ridge Regression

@@ -1093,15 +1093,24 @@ void Feat::initial_model(DataRef &d)
     logger.log("initial model: " + best_ind.get_eqn(), 1);
     // fit model
     bool pass = true;
-    shared_ptr<CLabels> yhat = best_ind.fit(*d.t,params,pass);
 
-    // set terminal weights based on model
-    if (!univariate_initialization)
+    shared_ptr<CLabels> yhat;
+
+    
+    if (univariate_initialization)
+    { 
+        yhat = best_ind.fit(*d.t,params,pass);
+    }
+    else 
     {
+        // tune default ML parameters 
+        yhat = best_ind.fit_tune(*d.t, params, pass, true);
+        // set terminal weights based on model
         vector<float> w = best_ind.ml->get_weights();
 
         params.set_term_weights(w);
     }
+
     best_score = p_eval->S.score(d.t->y, yhat, params.class_weights);
     
     if (params.split < 1.0)

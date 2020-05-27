@@ -7,9 +7,11 @@ license: GNU/GPL v3
 
 using namespace shogun;
 
-namespace FT{ namespace Model{
-        
-bool C_DEFAULT = 1.0; 
+namespace FT{ 
+namespace Model{
+    
+// global default ML parameters
+float C_DEFAULT = 1.0;  
 
 ML::ML(string ml, bool norm, bool classification, int n_classes)
 {
@@ -262,7 +264,7 @@ shared_ptr<CLabels> ML::fit(MatrixXf& X, VectorXf& y,
     
     // for random forest we need to set the number of features per bag
     init();
-    
+
     if (ml_type == RF)
     {
         int max_feats = std::sqrt(X.rows());
@@ -570,7 +572,10 @@ shared_ptr<CLabels> ML::fit_tune(MatrixXf& X, VectorXf& y,
         // set best C and fit a final model to all data with it
         this->C = best_C;
         if (set_default)
+        {
             C_DEFAULT = best_C;
+            logger.log("changing C_DEFAULT: " + to_string(C_DEFAULT), 2);
+        }
         return this->fit(X, y, params, pass, dtypes);
     }
 }
@@ -637,4 +642,5 @@ shared_ptr<CLabels> ML::get_labels(CDenseFeatures<float64_t>* features,
     return labels;
 }
 
-}}
+} // namespace Model
+} // namespace FT
