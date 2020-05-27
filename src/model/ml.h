@@ -124,7 +124,8 @@ namespace FT{
                 ///tune algorithm parameters
                 shared_ptr<CLabels> fit_tune(MatrixXf& X, VectorXf& y, 
                         const Parameters& params, bool& pass,
-                        const vector<char>& dtypes=vector<char>());
+                        const vector<char>& dtypes=vector<char>(),
+                        bool set_default=false);
 
                 shared_ptr<sh::CMachine> p_est;     ///< pointer to the ML object
                 ML_TYPE ml_type;                    ///< user specified ML type
