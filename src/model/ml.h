@@ -60,7 +60,6 @@ namespace FT{
      */
     namespace Model{
         
-        extern float C_DEFAULT;
         enum ML_TYPE {
                       LARS,   // Least Angle Regression
                       Ridge,  // Ridge Regression
@@ -70,6 +69,7 @@ namespace FT{
                       LR,      // l2-penalized Logistic Regression
                       L1_LR      // L1-penalized Logistic Regression
                      };
+        extern map<ML_TYPE, float> C_DEFAULT;
         /*!
          * @class ML
          * @brief class that specifies the machine learning algorithm to pair with Feat. 

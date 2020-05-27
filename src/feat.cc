@@ -1180,8 +1180,11 @@ MatrixXf Feat::fit_transform(float * X, int rows_x, int cols_x, float * Y, int l
 VectorXf Feat::predict(MatrixXf& X,
                        LongData Z)
 {        
-    MatrixXf Phi = transform(X, Z);
-    return best_ind.ml->predict_vector(Phi);        
+    /* MatrixXf Phi = transform(X, Z); */
+    /* return best_ind.ml->predict_vector(Phi); */        
+    VectorXf dummy;
+    Data d_tmp(X, dummy, Z);
+    return best_ind.predict_vector(d_tmp, this->params);
 }
 
 VectorXf Feat::predict_archive(int id, MatrixXf& X,

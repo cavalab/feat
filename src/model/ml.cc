@@ -11,7 +11,12 @@ namespace FT{
 namespace Model{
     
 // global default ML parameters
-float C_DEFAULT = 1.0;  
+map<ML_TYPE, float> C_DEFAULT = {
+    {LARS, 0},
+    {Ridge, 1e-6},
+    {LR, 1.0},
+    {L1_LR, 1.0}
+};
 
 ML::ML(string ml, bool norm, bool classification, int n_classes)
 {
@@ -20,6 +25,7 @@ ML::ML(string ml, bool norm, bool classification, int n_classes)
      */
     ml_hash["Lasso"] = LARS;         
     ml_hash["LinearRidgeRegression"] = Ridge;
+    ml_hash["Ridge"] = Ridge;
     ml_hash["SVM"] = SVM;
     ml_hash["RandomForest"] = RF;
     ml_hash["CART"] = CART;
@@ -48,7 +54,7 @@ ML::ML(string ml, bool norm, bool classification, int n_classes)
         else
             this->prob_type = PT_MULTICLASS;               
     }
-    this->C = C_DEFAULT;
+    this->C = C_DEFAULT.at(ml_type);
 }
 
 void ML::init()
@@ -432,6 +438,8 @@ shared_ptr<CLabels> ML::predict(MatrixXf& X, bool print)
     MatrixXd _X = X.template cast<double>();
     auto features = some<CDenseFeatures<float64_t>>(
             SGMatrix<float64_t>(_X));
+    /* cout << "features:\n"; */
+    /* features->get_feature_matrix().display_matrix(); */
      
     bool pass = true; 
     return this->get_labels(features, true, pass);
@@ -528,14 +536,19 @@ shared_ptr<CLabels> ML::fit_tune(MatrixXf& X, VectorXf& y,
     if (in({LARS, Ridge, L1_LR, LR}, this->ml_type) )
     {
         vector<float> Cs;
-        if (this->ml_type == LARS)
+        switch (this->ml_type)
         {
-            // in this case C is the max num of non-zero variables
-            Cs.resize(X.rows()-1);
-            iota(Cs.begin(),Cs.end(),1);
+            case LARS:
+                // in this case C is the max num of non-zero variables
+                Cs.resize(X.rows()-1);
+                iota(Cs.begin(),Cs.end(),1);
+                break;
+            case Ridge:
+                Cs = {1e-7, 1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1, 1e2};
+                break;
+            default:
+                Cs = {1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1, 1e1, 1e2, 1e3};
         }
-        else
-            Cs = {0.000001, 0.0001, 0.001, 0.01, 0.1, 1.0, 10, 100, 1000};
 
         float n_splits = 10;
         MatrixXf losses(Cs.size(),int(n_splits));
@@ -544,7 +557,6 @@ shared_ptr<CLabels> ML::fit_tune(MatrixXf& X, VectorXf& y,
         for (int i = 0; i < n_splits; ++i)
         {
             d_cv.train_test_split(true, 0.8);
-
 
             for (int j = 0; j< Cs.size(); ++j)
             {
@@ -573,8 +585,9 @@ shared_ptr<CLabels> ML::fit_tune(MatrixXf& X, VectorXf& y,
         this->C = best_C;
         if (set_default)
         {
-            C_DEFAULT = best_C;
-            logger.log("changing C_DEFAULT: " + to_string(C_DEFAULT), 2);
+            C_DEFAULT.at(this->ml_type) = best_C;
+            logger.log("changing C_DEFAULT: " 
+                    + to_string(C_DEFAULT[ml_type]), 2);
         }
         return this->fit(X, y, params, pass, dtypes);
     }
@@ -585,6 +598,7 @@ shared_ptr<CLabels> ML::get_labels(CDenseFeatures<float64_t>* features,
 {
     shared_ptr<CLabels> labels;
     SGVector<double> y_pred; 
+
 
     if (this->prob_type==PT_BINARY && 
             in({LR, L1_LR, SVM, CART, RF}, ml_type))
