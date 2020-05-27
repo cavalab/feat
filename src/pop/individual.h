@@ -79,7 +79,8 @@ namespace FT{
             
             /// fits and tunes an ML model to the data after transformation
             shared_ptr<CLabels> fit_tune(const Data& d, 
-                    const Parameters& params, bool& pass);
+                    const Parameters& params, bool& pass, 
+                    bool set_default=false);
 
             /// tunes an ML model to the data after transformation
             void tune(const Data& d, const Parameters& params);
