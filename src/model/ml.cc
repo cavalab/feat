@@ -139,7 +139,7 @@ void ML::init()
             dynamic_pointer_cast<sh::CMyLibLinear>(
                     p_est)->set_epsilon(0.0001);
             dynamic_pointer_cast<sh::CMyLibLinear>(
-                    p_est)->set_max_iterations(10000);
+                    p_est)->set_max_iterations(100);
             dynamic_pointer_cast<sh::CMyLibLinear>(
                     p_est)->set_C(this->C,this->C); 
             //cout << "set ml type to CMyLibLinear\n";
