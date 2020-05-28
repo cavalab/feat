@@ -129,13 +129,15 @@ void ML::init()
             {
                 p_est = make_shared<sh::CMyLibLinear>(
                     sh::L2R_LR);
-                dynamic_pointer_cast<sh::CMyLibLinear>(
-                        p_est)->set_compute_bias(true);
             }
             else
+            {
                 p_est = make_shared<sh::CMyLibLinear>(sh::L1R_LR);
+            }
 
             // setting parameters to match sklearn defaults
+            dynamic_pointer_cast<sh::CMyLibLinear>(
+                        p_est)->set_bias_enabled(true);
             dynamic_pointer_cast<sh::CMyLibLinear>(
                     p_est)->set_epsilon(0.0001);
             dynamic_pointer_cast<sh::CMyLibLinear>(
