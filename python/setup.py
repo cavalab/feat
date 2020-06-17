@@ -72,7 +72,7 @@ setup(
     zip_safe=True,
     install_requires=['Numpy>=1.8.2','SciPy>=0.13.3','scikit-learn','Cython',
         'pandas'],
-    py_modules=['feat','metrics'],
+    py_modules=['feat','metrics','versionstr'],
     ext_modules = cythonize([Extension(name='pyfeat',
         sources =  ["pyfeat.pyx"],    # our cython source
         include_dirs = ['../build/','../src/',eigen_dir,shogun_include_dir]

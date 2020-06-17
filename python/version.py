@@ -41,7 +41,7 @@ def get_version(write=False):
     # write version
     if write:
         with open('versionstr.py','w') as wf:
-            wf.write('__version__={}'.format(version))
+            wf.write('__version__="{}"'.format(version))
 
     return version
 
