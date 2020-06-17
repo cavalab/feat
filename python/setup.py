@@ -4,9 +4,11 @@ from setuptools import setup, find_packages
 from setuptools.extension import Extension
 from Cython.Build import cythonize
 import subprocess
+from version import get_version
 
 # PACKAGE VERSION #####
-package_version = '0.3.1'
+# package_version = '0.3.1'
+package_version = get_version()
 #######################
 
 # the setup file relies on eigency to import its include paths for the
