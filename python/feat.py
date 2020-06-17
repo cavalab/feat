@@ -5,8 +5,7 @@ license: GNU/GPLv3
 """
 
 import argparse
-from version import get_version
-__version__ = get_version()
+from versionstr import __version__
 from sklearn.base import BaseEstimator
 import numpy as np
 import pandas as pd
