@@ -122,8 +122,8 @@ class Feat(BaseEstimator):
         #     X = X.values
         # if type(y).__name__ in ['DataFrame','Series']:
         #     y = y.values
-        X, self.feature_names = self._clean(X)
-        y, _ = self._clean(y)
+        X = self._clean(X, set_feature_names=True)
+        y = self._clean(y)
 
         self._init_pyfeat()   
         
@@ -139,7 +139,7 @@ class Feat(BaseEstimator):
 
     def predict(self,X,zfile=None,zids=None):
         """Predict on X."""
-        X, _ = self._clean(X)
+        X = self._clean(X)
         if zfile:
             zfile = zfile.encode() if isinstance(zfile,str) else zfile
             return self._pyfeat.predict_with_z(X,zfile,zids)
@@ -148,7 +148,7 @@ class Feat(BaseEstimator):
 
     def predict_archive(self,X,zfile=None,zids=None):
         """Returns a list of dictionary predictions for all models."""
-        X, _ = self._clean(X)
+        X = self._clean(X)
 
         if zfile:
             raise ImplementationError('longitudinal not implemented')
@@ -166,7 +166,7 @@ class Feat(BaseEstimator):
 
     def predict_proba_archive(self,X,zfile=None,zids=None):
         """Returns a dictionary of prediction probabilities for all models."""
-        X, _ = self._clean(X)
+        X = self._clean(X)
         if zfile:
             raise ImplementationError('longitudinal not implemented')
             # zfile = zfile.encode() if isinstance(zfile,str) else zfile
@@ -185,7 +185,7 @@ class Feat(BaseEstimator):
 
     def predict_proba(self,X,zfile=None,zids=None):
         """Return probabilities of predictions for data X"""
-        X, _ = self._clean(X)
+        X = self._clean(X)
         if zfile:
             zfile = zfile.encode() if isinstance(zfile,str) else zfile
             tmp = self._pyfeat.predict_proba_with_z(X,zfile,zids)
@@ -199,7 +199,7 @@ class Feat(BaseEstimator):
 
     def transform(self,X,zfile=None,zids=None):
         """Return the representation's transformation of X"""
-        X, _ = self._clean(X)
+        X = self._clean(X)
         if zfile:
             zfile = zfile.encode() if isinstance(zfile,str) else zfile
             return self._pyfeat.transform_with_z(X,zfile,zids)
@@ -317,10 +317,17 @@ class Feat(BaseEstimator):
         self.stats["med_dim"] = self._pyfeat.get_med_dim()
         self.feature_importances_ = self.get_coefs()
 
-    def _clean(self, x):
+    def _clean(self, x, set_feature_names=False):
         """Converts dataframe to array, optionally returning feature names"""
-        if type(x).__name__ in ['DataFrame','Series']:
-            x = x.values
-            if len(list(x.columns)) == x.shape[1]:
-                return x, ','.join(X.columns).encode()
-        return x, ''.encode()
+        feature_names = ''.encode()
+        if type(x).__name__ == 'DataFrame':
+            if set_feature_names and len(list(x.columns)) == x.shape[1]:
+                self.feature_names = ','.join(x.columns).encode()
+                return x.values
+            else:
+                return x.values
+        elif type(x).__name__ == 'Series':
+            return x.values
+        else:
+            assert(type(x).__name__ == 'ndarray')
+            return x
