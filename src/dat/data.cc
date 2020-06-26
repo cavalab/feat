@@ -310,7 +310,7 @@ namespace FT{
                         3, "\t");
                 logger.log("training_size = " + to_string(t_size), 3, "\t");
                 logger.log("verification size = " 
-                        + to_string((it->second.size() - t_size)), 3, "\t");
+                        + to_string((it->second.size() - t_size)), 3, "\n");
                 
             }
             

@@ -78,6 +78,7 @@ class Feat(BaseEstimator):
         # if self.verbosity>0:
         self._pyfeat=None
         self.stats = {}
+        self.__version__ = __version__
 
     def _init_pyfeat(self):
         """set up pyfeat glue class object"""
