@@ -55,7 +55,7 @@ namespace shogun
 		    /** set z
 		     * @param z z value
 		     */
-		    inline void set_z(float64_t z);
+		    void set_z(float64_t z);
 		
 		    /** get C
 		     * @return C value
@@ -65,17 +65,17 @@ namespace shogun
 		    /** set epsilon
 		     * @param epsilon epsilon value
 		     */
-		    inline void set_epsilon(float64_t epsilon);
+		    void set_epsilon(float64_t epsilon);
 		
 		    /** get epsilon
 		     * @return epsilon value
 		     */
-		    inline float64_t get_epsilon() const;
+		    float64_t get_epsilon() const;
 
 		    /** set max iter
 		     * @param max_iter max iter value
 		     */
-		    inline void set_max_iter(int32_t max_iter);
+		    void set_max_iter(int32_t max_iter);
 		
 		    /** get max iter
 		     * @return max iter value
