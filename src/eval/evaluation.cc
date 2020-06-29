@@ -71,7 +71,7 @@ namespace FT{
                 {
                     // assign fitness to individual
                     VectorXf loss;
-                    ind.fitness_v = score(d.y, yhat, loss, 
+                    ind.fitness_v = this->S.score(d.y, yhat, loss, 
                                             params.class_weights);
                 }
             }
@@ -248,7 +248,6 @@ namespace FT{
                 
             return avg_score; 
 
->>>>>>> master
         }
     }
 }

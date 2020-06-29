@@ -644,33 +644,9 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
         logger.log("generation limit reached",2);
     else
         logger.log("max time reached",2);
-    logger.log("best training representation: " + best_ind.get_eqn(),2);
-    logger.log("train score: " + std::to_string(best_score), 2);
-    // evaluate population on validation set
-    /* if (params.split < 1.0) */
-    /* { */
-    /*     vector<Individual>& final_pop = use_arch ? */ 
-    /*         arch.archive : p_pop->individuals; */ 
-        
-    /*     /1* F_v.resize(d.v->X.cols(),int(2*params.pop_size)); *1/ */ 
-        
-    /*     p_eval->validation(final_pop, *d.v, params, false); */
-    /*     // print validation scores */
-    /*     if (params.verbosity > 2) */
-    /*     { */
-    /*         string scores = ""; */
-    /*         for (auto& ind : final_pop) */
-    /*             scores += (ind.get_eqn() + "; score: " + */ 
-    /*                 std::to_string(ind.fitness_v) + "\n"); */
-    /*         logger.log(scores,3); */
-    /*     } */
-    /*     update_best(d,true);                  // get the best validation model */
-    /* } */
-    /* else */
-    /*     best_score_v = best_score; */
-   
-    logger.log("best validation representation: " + best_ind.get_eqn(),2);
-    logger.log("validation score: " + std::to_string(best_score_v), 2);
+    logger.log("best representation: " + best_ind.get_eqn(),2);
+    logger.log("train score: " + std::to_string(this->min_loss), 2);
+    logger.log("validation score: " + std::to_string(min_loss_v), 2);
     logger.log("fitting final model to all training data...",2);
 
     // fit final model to best features
@@ -756,7 +732,7 @@ void Feat::run_generation(unsigned int g,
     // tighten learning rate for grad descent as evolution progresses
     if (params.backprop)
     {
-        params.bp.learning_rate = \ 
+        params.bp.learning_rate = \
             (1-1/(1+float(params.gens)))*params.bp.learning_rate;
         logger.log("learning rate: " 
                 + std::to_string(params.bp.learning_rate),3);
@@ -769,7 +745,7 @@ void Feat::update_stall_count(unsigned& stall_count, bool best_updated)
 {
     if (params.current_gen == 0 || best_updated )
     {
-        best_med_score = med_loss_v;
+        /* best_med_score = this->med_loss_v; */
         stall_count = 0;
     }
     else
@@ -1110,21 +1086,21 @@ void Feat::initial_model(DataRef &d)
         params.set_term_weights(w);
     }
 
-    best_score = p_eval->S.score(d.t->y, yhat, params.class_weights);
+    this->min_loss = p_eval->S.score(d.t->y, yhat, params.class_weights);
     
     if (params.split < 1.0)
     {
         shared_ptr<CLabels> yhat_v = best_ind.predict(*d.v, params);
-        best_score_v = p_eval->S.score(d.v->y, yhat_v, params.class_weights); 
+        min_loss_v = p_eval->S.score(d.v->y, yhat_v, params.class_weights); 
     }
     else
-        best_score_v = best_score;
+        min_loss_v = min_loss;
     
-    best_ind.fitness = best_score;
+    best_ind.fitness = min_loss;
     
     this->best_complexity = best_ind.get_complexity();
-    logger.log("initial training score: " +std::to_string(best_score),2);
-    logger.log("initial validation score: " +std::to_string(best_score_v),2);
+    logger.log("initial training score: " +std::to_string(min_loss),2);
+    logger.log("initial validation score: " +std::to_string(min_loss_v),2);
 }
 
 MatrixXf Feat::transform(MatrixXf& X,
@@ -1286,8 +1262,7 @@ bool Feat::update_best(const DataRef& d, bool validation)
     logger.log("updating best..",2);
 
     float bs;
-    /* bs = validation ? this->best_score_v : this->best_score ; */ 
-    bs = this->best_score_v; 
+    bs = this->min_loss_v; 
     float f; 
     vector<Individual>& pop = (use_arch ? 
                                arch.archive : p_pop->individuals); 
@@ -1312,7 +1287,7 @@ bool Feat::update_best(const DataRef& d, bool validation)
             }
         }
     }
-    this->best_score_v = bs; 
+    this->min_loss_v = bs; 
 
     return updated;
 }
@@ -1400,7 +1375,7 @@ void Feat::calculate_stats(const DataRef& d)
     stats.update(params.current_gen,
                  timer.Elapsed().count(),
                  min_loss,
-                 this->best_score_v,
+                 this->min_loss_v,
                  med_loss,
                  med_loss_v,
                  med_size,
@@ -1441,10 +1416,10 @@ void Feat::print_stats(std::ofstream& log, float fraction)
             << ") [" + bar + space + "]\n";
         
     std::cout << std::fixed << "Train Loss (Med): " 
-              << stats.best_score.back() << " (" 
+              << stats.min_loss.back() << " (" 
               << stats.med_loss.back() << ")\n"
               << "Val Loss (Med): " 
-              << best_score_v << " (" << stats.med_loss_v.back() << ")\n"
+              << min_loss_v << " (" << stats.med_loss_v.back() << ")\n"
               << "Median Size (Max): " 
               << stats.med_size.back() << " (" << max_size << ")\n"
               << "Time (s): "   << timer << "\n";
@@ -1529,8 +1504,8 @@ void Feat::print_stats(std::ofstream& log, float fraction)
 
         log << params.current_gen  << sep
             << timer.Elapsed().count() << sep
-            << stats.best_score.back()          << sep
-            << best_score_v        << sep
+            << stats.min_loss.back()          << sep
+            << min_loss_v        << sep
             << stats.med_loss.back()  << sep
             << stats.med_loss_v.back() << sep
             << stats.med_size.back()   << sep
@@ -1577,9 +1552,9 @@ vector<int> Feat::get_gens(){return stats.generation;}
 
 vector<float> Feat::get_timers(){return stats.time;}
 
-vector<float> Feat::get_best_scores(){return stats.best_score;}
+vector<float> Feat::get_min_losses(){return stats.min_loss;}
 
-vector<float> Feat::get_best_score_vals(){return stats.best_score_v;}
+vector<float> Feat::get_min_losses_val(){return stats.min_loss_v;}
 
 vector<float> Feat::get_med_scores(){return stats.med_loss;}
 
