@@ -40,27 +40,35 @@ namespace FT
          */
         class Data
         {
-            //Data(MatrixXf& X, VectorXf& y, std::map<string, 
-            //std::pair<vector<ArrayXf>, vector<ArrayXf>>>& Z): X(X), y(y), Z(Z){}
             public:
      
-                MatrixXf& X;
-                VectorXf& y;
-                LongData& Z;
+                MatrixXf& X; // n_features x n_samples matrix of features 
+                VectorXf& y; // n_samples labels
+                LongData& Z; // longitudinal features
                 bool classification;
                 bool validation; 
+                vector<bool> protect; // protected subgroups of features
 
-                Data(MatrixXf& X, VectorXf& y, LongData& Z, bool c = false);
+                Data(MatrixXf& X, VectorXf& y, LongData& Z, bool c = false, 
+                        vector<bool> protect = vector<bool>());
 
                 void set_validation(bool v=true);
+                void set_protected_groups();
                 
                 /// select random subset of data for training weights.
                 void get_batch(Data &db, int batch_size) const;
+                // protect_levels stores the levels of protected factors in X.
+                map<int,vector<float>> protect_levels;   
+                vector<int> protected_groups;
+                int group_intersections;
+                vector<ArrayXb> cases;  // used to pre-process cases if there 
+                                        // aren't that many group intersections
         };
         
         /* !
          * @class DataRef
-         * @brief Holds training and validation splits of data, with pointers to each.
+         * @brief Holds training and validation splits of data, 
+         * with pointers to each.
          * */
         class DataRef
         {
@@ -77,6 +85,7 @@ namespace FT
                 LongData Z_v;
                 
                 bool classification;
+                /* vector<bool> protect;   // indicator of protected subgroups */
 
             public:
                 Data *o = NULL;     //< pointer to original data
@@ -88,22 +97,29 @@ namespace FT
                 ~DataRef();
                 
         
-                DataRef(MatrixXf& X, VectorXf& y, LongData& Z, bool c=false);
-                        
+                DataRef(MatrixXf& X, VectorXf& y, LongData& Z, bool c=false,
+                        vector<bool> protect = vector<bool>());
+
+                void init(MatrixXf& X, VectorXf& y, LongData& Z, 
+                        bool c=false, vector<bool> protect = vector<bool>());
+
                 void setOriginalData(MatrixXf& X, VectorXf& y, 
-                        LongData& Z, bool c=false);
+                        LongData& Z, bool c=false,
+                        vector<bool> protect = vector<bool>());
                 
                 void setOriginalData(Data *d);
                 
                 void setTrainingData(MatrixXf& X_t, VectorXf& y_t, 
                                    LongData& Z_t,
-                                   bool c = false);
+                                   bool c = false, 
+                                   vector<bool> protect = vector<bool>());
                 
                 void setTrainingData(Data *d, bool toDelete = false);
                 
                 void setValidationData(MatrixXf& X_v, VectorXf& y_v, 
                                    LongData& Z_v,
-                                   bool c = false);
+                                   bool c = false, 
+                                   vector<bool> protect = vector<bool>());
                 
                 void setValidationData(Data *d);
                 
@@ -123,7 +139,8 @@ namespace FT
                             float split);
                             
                 /// reordering utility for shuffling longitudinal data.
-                void reorder_longitudinal(vector<ArrayXf> &vec1, const vector<int>& order); 
+                void reorder_longitudinal(vector<ArrayXf> &vec1, 
+                        const vector<int>& order); 
 
         };
     }

@@ -27,16 +27,17 @@ Feat::Feat(int pop_size, int gens, string ml,
        unsigned int max_depth, unsigned int max_dim, int random_state, 
        bool erc, string obj, bool shuffle, 
        float split, float fb, string scorer, string feature_names,
-       bool backprop,int iters, float lr, int bs, int n_threads,
-       bool hillclimb, string logfile, int max_time, bool use_batch, 
-       bool residual_xo, bool stagewise_xo, bool stagewise_xo_tol,
+       bool backprop,int iters, float lr, int batch_size, int n_threads,
+       bool hillclimb, string logfile, int max_time,  bool residual_xo, 
+       bool stagewise_xo, bool stagewise_xo_tol,
        bool softmax_norm, int print_pop, bool normalize,
-       bool val_from_arch, bool corr_delete_mutate, bool simplify):
+       bool val_from_arch, bool corr_delete_mutate, bool simplify,
+       string protected_groups):
           // construct subclasses
           params(pop_size, gens, ml, classification, max_stall, otype, 
                  verbosity, functions, cross_rate, root_xo_rate, max_depth, 
                  max_dim, erc, obj, shuffle, split, fb, scorer, feature_names, 
-                 backprop, iters, lr, bs, hillclimb, max_time, use_batch, 
+                 backprop, iters, lr, batch_size, hillclimb, max_time,  
                  residual_xo, stagewise_xo, stagewise_xo_tol, softmax_norm, 
                  normalize, corr_delete_mutate), 
           p_sel( make_shared<Selection>(sel) ),
@@ -58,6 +59,8 @@ Feat::Feat(int pop_size, int gens, string ml,
         initialize_cuda();
     // set Feat's Normalizer to only normalize floats by default
     N.scale_all = false;
+    params.set_protected_groups(protected_groups);
+    arch.set_objectives(params.objectives);
 }
 
 /// set size of population 
@@ -71,7 +74,7 @@ void Feat::set_ml(string ml){ params.ml = ml; }
 
 /// set EProblemType for shogun              
 void Feat::set_classification(bool classification)
-{ 
+{
     params.classification = classification;
 }
      
@@ -110,7 +113,10 @@ void Feat::set_otype(char ot){ params.set_otype(ot); }
 void Feat::set_functions(string functions){ params.set_functions(functions); }
             
 /// set max depth of programs              
-void Feat::set_max_depth(unsigned int max_depth){ params.set_max_depth(max_depth); }
+void Feat::set_max_depth(unsigned int max_depth)
+{ 
+    params.set_max_depth(max_depth); 
+}
  
 /// set maximum dimensionality of programs              
 void Feat::set_max_dim(unsigned int max_dim){	params.set_max_dim(max_dim); }
@@ -161,7 +167,11 @@ void Feat::set_iters(int iters){params.bp.iters = iters; params.hc.iters=iters;}
 
 void Feat::set_lr(float lr){params.bp.learning_rate = lr;}
 
-void Feat::set_batch_size(int bs){params.bp.batch_size = bs;}
+void Feat::set_batch_size(int bs)
+{
+    params.bp.batch_size = bs; 
+    params.use_batch = bs>0;
+}
  
 ///set number of threads
 void Feat::set_n_threads(unsigned t){ omp_set_num_threads(t); }
@@ -170,6 +180,10 @@ void Feat::set_max_time(int time){ params.max_time = time; }
 
 void Feat::set_use_batch(){ params.use_batch = true; }
 
+void Feat::set_protected_groups(string pg)
+{
+    params.set_protected_groups(pg);
+}
 /*                                                      
  * getting functions
  */
@@ -238,13 +252,14 @@ string Feat::get_model()
 {   
     vector<string> features = best_ind.get_features();
     vector<float> weights = best_ind.ml->get_weights();
-    
+    float offset = best_ind.ml->get_bias(); 
     vector<float> aweights(weights.size());
     for (int i =0; i<aweights.size(); ++i) 
         aweights[i] = fabs(weights[i]);
     vector<size_t> order = argsort(aweights);
     string output;
     output += "Feature\t\tWeight\n";
+    output += "offset\t\t" + to_string(offset) + "\n";
     for (unsigned i = order.size(); i --> 0;)
     {
         output += features.at(order[i]);
@@ -252,6 +267,19 @@ string Feat::get_model()
         output += std::to_string(weights.at(order[i]));
         output += "\n";
     }
+
+    /* std::ofstream out;                      ///< log file stream */
+    /* out.open("final_model.csv"); */
+    /* string finalweights = "terminal,weight\n"; */
+    /* for (unsigned i = 0; i < order.size(); ++i) */
+    /* { */
+    /*     finalweights += features.at(order[i]); */
+    /*     finalweights += ","; */
+    /*     finalweights += std::to_string(weights.at(order[i])); */
+    /*     finalweights += "\n"; */
+    /* } */
+    /* out << finalweights; */
+    /* out.close(); */
     return output;
 }
 
@@ -271,47 +299,91 @@ int Feat::get_n_nodes(){ return best_ind.program.size(); }
 ///return population as string
 string Feat::get_eqns(bool front)
 {
-    string r="complexity\tfitness\tfitness_v\teqn\n";
+    vector<string> fields = {"id", "size", "complexity", "fitness", 
+        "fitness_v", "coefficients", "pareto_rank", "eqn"};
+
+    for (const auto& o : params.objectives)
+    {
+        if (!in(fields,o))
+            fields.push_back(o);
+    }
+
+    vector<Individual>* printed_pop = NULL; 
+
+    string r = "";
+    for (int f = 0; f < fields.size(); ++f)
+    {
+        r += fields.at(f); 
+        if (f < fields.size() -1)
+            r +="\t";
+    }
+    r += "\n";
+
+    vector<size_t> idx;
+    bool subset = false;
     if (front)  // only return individuals on the Pareto front
     {
         if (use_arch)
         {
-            // printing individuals from the archive 
-            unsigned n = 1;
-            
-            for (auto& a : arch.archive)
-            {          
-                r += std::to_string(a.complexity()) + "\t" 
-                    + std::to_string(a.fitness) + "\t" 
-                    + std::to_string(a.fitness_v) + "\t"
-                    + a.get_eqn() + "\n";  
-            }
+            printed_pop = &arch.archive;
         }
         else
         {
-            // printing individuals from the pareto front
             unsigned n = 1;
-            vector<size_t> f = p_pop->sorted_front(n);
-            
-            for (unsigned j = 0; j < f.size(); ++j)
-            {          
-                r += std::to_string(p_pop->individuals[f[j]].complexity()) + "\t" 
-                    + std::to_string((*p_pop)[f[j]].fitness) + "\t" 
-                    + std::to_string((*p_pop)[f[j]].fitness_v) + "\t" 
-                    + p_pop->individuals[f[j]].get_eqn() + "\n";  
-            }
+            subset = true;
+            idx = p_pop->sorted_front(n);
+            printed_pop = &p_pop->individuals;
         }
     }
     else
+        printed_pop = &p_pop->individuals;
+
+    if (!subset)
     {
-        for (unsigned j = 0; j < params.pop_size; ++j)
-        {          
-            r += std::to_string(p_pop->individuals[j].complexity()) + "\t" 
-                + std::to_string((*p_pop)[j].fitness) + "\t" 
-                + std::to_string((*p_pop)[j].fitness_v) + "\t" 
-                + p_pop->individuals[j].get_eqn() + "\n";  
-        }
+        idx.resize(printed_pop->size());
+        std::iota(idx.begin(), idx.end(), 0);
     }
+
+    for (int i = 0; i < idx.size(); ++i)
+    {
+        Individual& ind = printed_pop->at(idx[i]); 
+
+        for (int f = 0; f < fields.size(); ++f)
+        {
+            if (fields.at(f) == "id")
+                r += to_string(ind.id);
+            else if (fields.at(f) == "size")
+                r += to_string(ind.size());
+            else if (fields.at(f) == "complexity")
+                r += to_string(ind.complexity());
+            else if (fields.at(f) == "fitness")
+                r += to_string(ind.fitness);
+            else if (fields.at(f) == "fitness_v")
+                r += to_string(ind.fitness_v);
+            else if (fields.at(f) == "coefficients")
+            {
+                auto tmpw = ind.ml->get_weights();
+                for (int w = 0; w < tmpw.size(); ++w)
+                {
+                    r += to_string(tmpw.at(w));
+                    if (w != tmpw.size()-1) 
+                        r += ",";
+                }
+            }
+            else if (fields.at(f) == "pareto_rank")
+                r += to_string(ind.rank);
+            else if (fields.at(f) == "eqn")
+                r += ind.get_eqn();
+
+            if (f < fields.size() - 1)
+                r += "\t";
+        }
+        if (i < idx.size() -1)
+            r += "\n";
+    }
+    printed_pop = NULL;
+    delete printed_pop;
+    
     return r;
 }
 
@@ -343,6 +415,11 @@ ArrayXXf Feat::predict_proba(float * X, int rows_x, int cols_x)
     return predict_proba(matX);
 }
 
+ArrayXXf Feat::predict_proba_archive(int id, float * X, int rows_x, int cols_x) 
+{			    
+    MatrixXf matX = Map<MatrixXf>(X,rows_x,cols_x);
+    return predict_proba_archive(id,matX);
+}
 /// convenience function calls fit then predict.            
 VectorXf Feat::fit_predict(MatrixXf& X,
                      VectorXf& y,
@@ -389,25 +466,29 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
 
     // start the clock
     timer.Reset();
+    params.use_batch = params.bp.batch_size>0;
+
     string FEAT = (  
       "/////////////////////////////////////////////////////////////////////\n"
-      "//             Feature Engineering Automation Tool (FEAT)          //\n"
+      "//           * Feature Engineering Automation Tool *               //\n"
       "// La Cava et al. 2017                                             //\n"
       "// License: GPL v3                                                 //\n"
       "/////////////////////////////////////////////////////////////////////\n"
     );
     logger.log(FEAT,1);
+
     if (params.use_batch)
     {
-        if (params.bp.batch_size >= X.cols()){
-            cout << "turning off batch because X has fewer than " << params.bp.batch_size 
-                 << " samples\n";
+        if (params.bp.batch_size >= X.cols())
+        {
+            logger.log("turning off batch because X has fewer than " 
+                    + to_string(params.bp.batch_size) + " samples", 1);
             params.use_batch = false;
         }
         else
         {
-            cout << "using batch with batch_size= " 
-                 << params.bp.batch_size << "\n";
+            logger.log("using batch with batch_size= " 
+                    + to_string(params.bp.batch_size), 2);
         }
     }
     std::ofstream log;                      ///< log file stream
@@ -426,7 +507,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     }
     
     params.init();       
-  
+    this->arch.set_objectives(params.objectives);
 
     if (params.classification)  // setup classification endpoint
     {
@@ -444,10 +525,11 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     p_eval = make_shared<Evaluation>(params.scorer);
 
     // create an archive to save Pareto front, unless NSGA-2 is being used for survival 
-    if (!survival.compare("nsga2"))
-        use_arch = false;
-    else
-        use_arch = true;
+    /* if (!survival.compare("nsga2")) */
+    /*     use_arch = false; */
+    /* else */
+    /*     use_arch = true; */
+    use_arch = false;
     
     string log_msg = "functions set: [";
     for (const auto& f: params.functions) log_msg += f->name + ", "; 
@@ -457,7 +539,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
 
     // split data into training and test sets
     //Data data(X, y, Z, params.classification);
-    DataRef d(X, y, Z, params.classification);
+    DataRef d(X, y, Z, params.classification, params.protected_groups);
     //DataRef d;
     //d.setOriginalData(&data);
     d.train_test_split(params.shuffle, params.split);
@@ -472,7 +554,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     MatrixXf Xb;
     VectorXf yb;
     LongData Zb;
-    Data db(Xb, yb, Zb, params.classification);
+    Data db(Xb, yb, Zb, params.classification, params.protected_groups);
     
     Data *tmp_train;
     
@@ -490,7 +572,8 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     logger.log("Fitting initial model", 2);
     t0 =  timer.Elapsed().count();
     initial_model(d);  
-    logger.log(std::to_string(timer.Elapsed().count() - t0) + " seconds",2);
+    logger.log("Initial fitting took " 
+            + std::to_string(timer.Elapsed().count() - t0) + " seconds",2);
     // initialize population 
     logger.log("Initializing population", 2);
    
@@ -524,16 +607,17 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     float fraction = 0;
     // continue until max gens is reached or max_time is up (if it is set)
     
-    while(// time limit
-          (params.max_time == -1 || params.max_time > timer.Elapsed().count()) 
-          // generation limit
-          && g<params.gens                                                    
-          // stall limit
-          && (params.max_stall == 0 || stall_count < params.max_stall)
-         )
+    while(
+        // time limit
+        (params.max_time == -1 || params.max_time > timer.Elapsed().count())
+        // generation limit
+        && g<params.gens                                                    
+        // stall limit
+        && (params.max_stall == 0 || stall_count < params.max_stall) 
+        )      
     {
         fraction = params.max_time == -1 ? ((g+1)*1.0)/params.gens : 
-                                   timer.Elapsed().count()/params.max_time;
+                                       timer.Elapsed().count()/params.max_time;
         if(params.use_batch)
         {
             d.t->get_batch(db, params.bp.batch_size);
@@ -547,7 +631,9 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
             run_generation(g, survivors, dbr, log, fraction, stall_count);
         }
         else
+        {
             run_generation(g, survivors, d, log, fraction, stall_count);
+        }
         
         g++;
     }
@@ -592,7 +678,17 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
 
     // simplify the final model
     if (simplify)
+    {
         simplify_model(d, this->best_ind);
+    }
+
+    // if we're not using an archive, let's store the final population in the 
+    // archive
+    if (!use_arch)
+    {
+        /* arch.update(*p_pop,params); */
+        arch.archive = p_pop->individuals;
+    }
 
     logger.log("\n===\nRun Completed. Total time taken is " 
             + std::to_string(timer.Elapsed().count()) + "\n", 1);
@@ -608,11 +704,13 @@ void Feat::run_generation(unsigned int g,
                       float fraction,
                       unsigned& stall_count)
 {
+    d.t->set_protected_groups();
+
     params.set_current_gen(g);
 
     // select parents
     logger.log("selection..", 2);
-    vector<size_t> parents = p_sel->select(*p_pop, F, params);
+    vector<size_t> parents = p_sel->select(*p_pop, F, params, *d.t);
     logger.log("parents:\n"+p_pop->print_eqns(), 3);          
     
     // variation to produce offspring
@@ -627,7 +725,7 @@ void Feat::run_generation(unsigned int g,
 
     // select survivors from combined pool of parents and offspring
     logger.log("survival...", 2);
-    survivors = p_surv->survive(*p_pop, F, params);
+    survivors = p_surv->survive(*p_pop, F, params, *d.t);
    
     // reduce population to survivors
     logger.log("shrinking pop to survivors...",2);
@@ -671,6 +769,7 @@ void Feat::update_stall_count(unsigned& stall_count, bool best_updated)
 {
     if (params.current_gen == 0 || best_updated )
     {
+        best_med_score = med_loss_v;
         stall_count = 0;
     }
     else
@@ -709,11 +808,11 @@ void Feat::final_model(DataRef& d)
     /* MatrixXf Phi = transform(X); */
     /* MatrixXf Phi = best_ind.out(*d.o, params); */        
     
-    shared_ptr<CLabels> yhat = best_ind.fit(*d.o, params, pass);
+    shared_ptr<CLabels> yhat = best_ind.fit_tune(*d.o, params, pass);
     VectorXf tmp;
     /* params.set_sample_weights(y);   // need to set new sample weights for y, */ 
-    // which is probably from a validation set
-    float score = p_eval->score(d.o->y,yhat,tmp,params.class_weights);
+                                    // which is probably from a validation set
+    float score = p_eval->S.score(d.o->y,yhat,tmp,params.class_weights);
     logger.log("final_model score: " + std::to_string(score),2);
 }
 
@@ -793,21 +892,16 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
     float tolerance = 0.001;
     for (int i = 0; i < iterations; ++i)
     {
-        /* cout << "."; */
         Individual tmp_ind = ind;
         bool perfect_correlation = p_variation->correlation_delete_mutate(
                 tmp_ind, ind.Phi, params, *d.o);
 
-        cout << "checking size..\n";
         if (ind.size() == tmp_ind.size())
         {
-            cout << "model size unchanged\n";
             continue;
         }
         bool pass = true;
-        cout << "tmp_ind fit...\n"; 
         shared_ptr<CLabels> yhat = tmp_ind.fit(*d.o, params, pass);
-        cout << "tmp_ind fit success...\n"; 
 
 
         if (((ind.yhat - tmp_ind.yhat).norm()/ind.yhat.norm() 
@@ -844,7 +938,6 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
     starting_size = ind.size();
     for (int i = 0; i < iterations; ++i)
     {
-        /* cout << "."; */
         Individual tmp_ind = ind;
         this->p_variation->delete_mutate(tmp_ind, params);
         if (ind.size() == tmp_ind.size())
@@ -899,10 +992,9 @@ vector<float> Feat::univariate_initial_model(DataRef &d, int n_feats)
 
     bool pass = true;
 
-    cout << "univariate_initial_model\n" 
-         << "N: " << N << "\n"
-         << "n_feats: " << n_feats << "\n"
-         << "\n";
+    logger.log("univariate_initial_model",2);
+    logger.log("N: " + to_string(N),2); 
+    logger.log("n_feats: " + to_string(n_feats),2);
 
     for (unsigned i =0; i<d.t->X.rows(); ++i)
     {
@@ -1000,22 +1092,30 @@ void Feat::initial_model(DataRef &d)
     logger.log("initial model: " + best_ind.get_eqn(), 1);
     // fit model
     bool pass = true;
-    shared_ptr<CLabels> yhat = best_ind.fit(*d.t,params,pass);
 
-    // set terminal weights based on model
-    if (!univariate_initialization)
+    shared_ptr<CLabels> yhat;
+
+    
+    if (univariate_initialization)
+    { 
+        yhat = best_ind.fit(*d.t,params,pass);
+    }
+    else 
     {
+        // tune default ML parameters 
+        yhat = best_ind.fit_tune(*d.t, params, pass, true);
+        // set terminal weights based on model
         vector<float> w = best_ind.ml->get_weights();
+
         params.set_term_weights(w);
     }
-   
-    VectorXf tmp;
-    best_score = p_eval->score(d.t->y, yhat, tmp, params.class_weights);
+
+    best_score = p_eval->S.score(d.t->y, yhat, params.class_weights);
     
     if (params.split < 1.0)
     {
         shared_ptr<CLabels> yhat_v = best_ind.predict(*d.v, params);
-        best_score_v = p_eval->score(d.v->y, yhat_v, tmp, params.class_weights); 
+        best_score_v = p_eval->S.score(d.v->y, yhat_v, params.class_weights); 
     }
     else
         best_score_v = best_score;
@@ -1080,10 +1180,62 @@ MatrixXf Feat::fit_transform(float * X, int rows_x, int cols_x, float * Y, int l
 VectorXf Feat::predict(MatrixXf& X,
                        LongData Z)
 {        
-    MatrixXf Phi = transform(X, Z);
-    return best_ind.ml->predict_vector(Phi);        
+    /* MatrixXf Phi = transform(X, Z); */
+    /* return best_ind.ml->predict_vector(Phi); */        
+    VectorXf dummy;
+    Data d_tmp(X, dummy, Z);
+    return best_ind.predict_vector(d_tmp, this->params);
 }
 
+VectorXf Feat::predict_archive(int id, MatrixXf& X,
+                       LongData Z)
+{
+    /* return predictions; */
+    VectorXf predictions(X.cols(),params.n_classes);
+    VectorXf empty_y;
+    Data tmp_data(X,empty_y,Z);
+
+    for (int i = 0; i < this->arch.archive.size(); ++i)
+    {
+        Individual& ind = this->arch.archive.at(i);
+
+        if (id == ind.id)
+            return ind.predict_vector(tmp_data, this->params);
+
+    }
+
+    HANDLE_ERROR_THROW("Could not find id = "
+            + to_string(id) + "in archive.");
+    return VectorXf();
+}
+
+VectorXf Feat::predict_archive(int id, float * X, int rowsX,int colsX)
+{
+    MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
+    return predict_archive(id, matX);
+}
+
+ArrayXXf Feat::predict_proba_archive(int id, MatrixXf& X,
+                       LongData Z)
+{
+    ArrayXXf predictions(X.cols(),params.n_classes);
+    VectorXf empty_y;
+    Data tmp_data(X,empty_y,Z);
+
+    for (int i = 0; i < this->arch.archive.size(); ++i)
+    {
+        Individual& ind = this->arch.archive.at(i);
+
+        if (id == ind.id)
+            return ind.predict_proba(tmp_data, this->params);
+
+    }
+
+    HANDLE_ERROR_THROW("Could not find id = "
+            + to_string(id) + "in archive.");
+    return ArrayXXf();
+    
+}
 shared_ptr<CLabels> Feat::predict_labels(MatrixXf& X,
                        LongData Z)
 {        
@@ -1096,6 +1248,7 @@ VectorXf Feat::predict(float * X, int rowsX,int colsX)
     MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
     return predict(matX);
 }
+
 
 VectorXf Feat::predict_with_z(float * X, int rowsX,int colsX, 
                                 string s, int * idx, int idx_size)
@@ -1168,7 +1321,7 @@ float Feat::score(MatrixXf& X, const VectorXf& y, LongData Z)
 {
     shared_ptr<CLabels> labels = predict_labels(X, Z);
     VectorXf loss; 
-    return p_eval->score(y,labels,loss,params.class_weights);
+    return p_eval->S.score(y,labels,loss,params.class_weights);
 }
 
 void Feat::calculate_stats(const DataRef& d)
@@ -1229,6 +1382,19 @@ void Feat::calculate_stats(const DataRef& d)
     for (unsigned i = 0; i < p_pop->individuals.size(); ++i)
         val_fitnesses(i) = p_pop->individuals.at(i).fitness_v;
     float med_loss_v = median(val_fitnesses); 
+        /* fitnesses.push_back(p_pop->individuals.at(i).fitness); */
+    /* int idx = argmiddle(fitnesses); */
+
+    /* if (params.split < 1.0) */
+    /* { */
+        /* Individual& med_ind = p_pop->individuals.at(idx); */
+        /* VectorXf tmp; */
+        /* shared_ptr<CLabels> yhat_v = med_ind.predict(*d.v, params); */
+        /* this->med_loss_v = p_eval->S.score(d.v->y, yhat_v, tmp, */ 
+        /*         params.class_weights); */ 
+    /* } */
+    
+    /* ///////////////////////////////////////////// */
    
     // update stats
     stats.update(params.current_gen,
@@ -1283,7 +1449,11 @@ void Feat::print_stats(std::ofstream& log, float fraction)
               << stats.med_size.back() << " (" << max_size << ")\n"
               << "Time (s): "   << timer << "\n";
     std::cout << "Representation Pareto Front--------------------------------------\n";
-    std::cout << "Rank\tComplexity\tLoss\tRepresentation\n";
+    std::cout << "Rank\t"; //Complexity\tLoss\tRepresentation\n";
+    for (const auto& o : params.objectives)
+        std::cout << o << "\t";
+    cout << "Representation\n";
+
     std::cout << std::scientific;
     // printing max 40 individuals from the pareto front
     unsigned n = 1;
@@ -1302,10 +1472,12 @@ void Feat::print_stats(std::ofstream& log, float fraction)
             if (lim_model.size()==60) 
                 lim_model += "...";
             
-            std::cout <<  arch.archive[i].rank          << "\t" 
-                      <<  arch.archive[i].complexity()  << "\t" 
-                      <<  arch.archive[i].fitness       << "\t" 
-                      <<  lim_model << "\n";  
+            std::cout <<  arch.archive[i].rank          << "\t" ;
+            for (const auto& o : arch.archive[i].obj)
+                std::cout << o << "\t";
+                  /* <<  arch.archive[i].complexity()  << "\t" */ 
+                  /* <<  arch.archive[i].fitness       << "\t" */ 
+            cout <<  lim_model << "\n";  
         }
     }
     else
@@ -1326,10 +1498,12 @@ void Feat::print_stats(std::ofstream& log, float fraction)
                 lim_model.push_back(model.at(j));
             if (lim_model.size()==60) 
                 lim_model += "...";
-            std::cout << p_pop->individuals[f[j]].rank              << "\t" 
-                      <<  p_pop->individuals[f[j]].complexity()     << "\t" 
-                      << (*p_pop)[f[j]].fitness                     << "\t"
-                      << "\t" << lim_model << "\n";  
+            std::cout << p_pop->individuals[f[j]].rank              << "\t" ;
+            for (const auto& o : p_pop->individuals[f[j]].obj)
+                std::cout << o << "\t";
+                      /* <<  p_pop->individuals[f[j]].complexity()     << "\t" */ 
+                      /* << (*p_pop)[f[j]].fitness                     << "\t" */
+            cout << "\t" << lim_model << "\n";  
         }
     }
    

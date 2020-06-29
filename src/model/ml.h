@@ -33,6 +33,8 @@ license: GNU/GPL v3
 #include "shogun/MyLibLinear.h"
 #include "shogun/MyRandomForest.h"
 #include "../params.h"
+#include "../eval/scorer.h"
+#include "../util/utils.h"
 
 
 // stuff being used
@@ -64,8 +66,10 @@ namespace FT{
                       RF,     // Random Forest
                       SVM,    // Support Vector Machines
                       CART,   // Classification and Regression Trees
-                      LR      // Logistic Regression
+                      LR,      // l2-penalized Logistic Regression
+                      L1_LR      // L1-penalized Logistic Regression
                      };
+        extern map<ML_TYPE, float> C_DEFAULT;
         /*!
          * @class ML
          * @brief class that specifies the machine learning algorithm to pair with Feat. 
@@ -107,32 +111,38 @@ namespace FT{
                
                 /// utility function to convert CLabels types to VectorXd types. 
                 VectorXf labels_to_vector(const shared_ptr<CLabels>& labels);
+                
+                /// returns labels of a fitted model estimating on features
+                shared_ptr<CLabels> get_labels(
+                CDenseFeatures<float64_t>* features, 
+                bool proba, bool& pass);
 
                 /* VectorXd predict(MatrixXd& X); */
                 // set data types (for tree-based methods)            
                 void set_dtypes(const vector<char>& dtypes);
+                ///returns bias for linear machines  
+                float get_bias();
+                ///tune algorithm parameters
+                shared_ptr<CLabels> fit_tune(MatrixXf& X, VectorXf& y, 
+                        const Parameters& params, bool& pass,
+                        const vector<char>& dtypes=vector<char>(),
+                        bool set_default=false);
 
                 shared_ptr<sh::CMachine> p_est;     ///< pointer to the ML object
                 ML_TYPE ml_type;                    ///< user specified ML type
-                string ml_str;                   ///< user specified ML type (string)
-                sh::EProblemType prob_type;         ///< type of learning problem; binary, multiclass 
+                string ml_str; ///< user specified ML type (string)
+                sh::EProblemType prob_type; ///< type of learning problem; binary, multiclass 
                                                     ///  or regression 
                 Normalizer N;                       ///< normalization
-                int max_train_time;                 ///< max seconds allowed for training
-                bool normalize;                     ///< control whether ML normalizes its input before 
-                                                    ///  training
-                /* double get_bias(int i) */
-                /* {   // get bias at feature i. only works with linear machines */
-                /*     auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_bias(); */
-                /*     if (i < tmp.size()) */
-                /*         return tmp[i]; */
-                /*     else */
-                /*     { */
-                /*         std::cerr << "ERROR: invalid location access in get_bias()\n"; */
-                /*         throw; */
-                /*     } */
-                /* } */
+                int max_train_time; ///< max seconds allowed for training
+                bool normalize; ///< control whether ML normalizes its input 
+                                /// before training
+                float C;        // regularization parameter
+
+            private:
+                vector<char> dtypes; 
         };
+
     }
 }
 

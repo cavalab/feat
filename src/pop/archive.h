@@ -25,16 +25,24 @@ namespace FT{
     
         struct Archive  
         {
-            vector<Individual> archive;         ///< individual programs in the archive
+            vector<Individual> archive; ///< individual programs in the archive
+            bool sort_complexity;    ///< whether to sort archive by complexity
 
-            NSGA2 selector;                     ///< nsga2 selection operator used for getting the front
+            NSGA2 selector; ///< nsga2 selection operator for getting the front
 
             Archive();
-
+            void set_objectives(vector<string> objectives);
             /// Sort population in increasing complexity.
-            static bool sortComplexity(const Individual& lhs, const Individual& rhs);
-
-            static bool sameFitComplexity(const Individual& lhs, const Individual& rhs);
+            static bool sortComplexity(const Individual& lhs, 
+                    const Individual& rhs);
+            /// Sort population by first objective.
+            static bool sortObj1(const Individual& lhs, 
+                    const Individual& rhs);
+            /// check for repeats
+            static bool sameFitComplexity(const Individual& lhs, 
+                    const Individual& rhs);
+            static bool sameObjectives(const Individual& lhs, 
+                    const Individual& rhs);
 
             void init(Population& pop);
 

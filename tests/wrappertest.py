@@ -17,7 +17,7 @@ class TestFeatWrapper(unittest.TestCase):
 
     def setUp(self):
         self.v = verbosity
-        self.clf = Feat(verbosity=verbosity, n_threads=1)
+        self.clf = Feat(verbosity=verbosity, n_threads=1, gens=5)
         diabetes = load_diabetes()
         self.X = diabetes.data
         self.y = diabetes.target
@@ -85,7 +85,6 @@ class TestFeatWrapper(unittest.TestCase):
         self.debug("In wrappertest.py...Calling test_coefs")
         self.clf.fit(self.X,self.y)
         coefs = self.clf.get_coefs()
-        print('coefs:',coefs)
         self.assertTrue( len(coefs)>0 )
 
     def test_dataframe(self):
@@ -93,13 +92,9 @@ class TestFeatWrapper(unittest.TestCase):
         dfX = pd.DataFrame(data=self.X,columns=['fishy'+str(i) 
                                         for i in np.arange(self.X.shape[1])],
                                         index=None)
-        # print(dfX.head())
-        # print('dfX.columns:',dfX.columns)
         dfy = pd.DataFrame(data={'label':self.y})
 
         self.clf.fit(dfX,dfy['label'])
-        # print('clf feature_names:',self.clf.feature_names)
-        # print('dfX.columns:',','.join(dfX.columns).encode())
         assert(self.clf.feature_names == ','.join(dfX.columns).encode())
 
     #Test: Assert the length of labels returned from predict
@@ -107,9 +102,7 @@ class TestFeatWrapper(unittest.TestCase):
         self.debug("Fit the Data")
         self.clf.fit(self.X,self.y)
 
-        print("Num generations is ", self.clf.gens)
         for key in self.clf.stats:
-            print("Length for ", key, "is ", len(self.clf.stats[key]))
             self.assertEqual(len(self.clf.stats[key]), self.clf.gens)
 
     #Test ability to pickle feat model
@@ -123,6 +116,29 @@ class TestFeatWrapper(unittest.TestCase):
             loaded_clf = pickle.load(f)
 
         assert(loaded_clf.get_params() == self.clf.get_params())
+
+    def test_archive(self):
+        """test archiving ability"""
+        self.debug("Test archive")
+
+        self.clf.classification = True
+        self.clf.ml = b'LR'
+        self.clf.fit(self.X,np.array(self.y > np.median(self.y),dtype=np.int))
+        archive = self.clf.get_archive()
+        preds = self.clf.predict_archive(self.X)
+        probs = self.clf.predict_proba_archive(self.X)
+
+        for arch, pred, prob in zip(archive, preds, probs):
+            self.assertTrue( arch['id'] == pred['id'] )
+            self.assertTrue( arch['id'] == prob['id'] )
+
+    def test_lr_l1(self):
+        """testing l1 penalized LR"""
+        self.clf.classification = True
+        self.clf.ml = b'L1_LR'
+        self.clf.fit(self.X,np.array(self.y > np.median(self.y),dtype=np.int))
+
+        self.assertEqual(len(self.clf.predict(self.X)), len(self.y))
 
 
 if __name__ == '__main__':

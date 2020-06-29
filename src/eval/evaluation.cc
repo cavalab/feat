@@ -12,15 +12,17 @@ namespace FT{
     
     namespace Eval{
     
-        Evaluation::Evaluation(string scorer)
+        Evaluation::Evaluation(string scorer): S(scorer)
         {
-            score_hash["mse"] = &mse_label;
-            score_hash["zero_one"] = &zero_one_loss_label;
-            score_hash["bal_zero_one"] = &bal_zero_one_loss_label;
-            score_hash["log"] =  &log_loss_label; 
-            score_hash["multi_log"] =  &multi_log_loss_label; 
+            /* score_hash["mse"] = &mse_label; */
+            /* score_hash["zero_one"] = &zero_one_loss_label; */
+            /* score_hash["bal_zero_one"] = &bal_zero_one_loss_label; */
+            /* score_hash["log"] =  &log_loss_label; */ 
+            /* score_hash["multi_log"] =  &multi_log_loss_label; */ 
+            /* score_hash["fpr"] =  &false_positive_loss_label; */ 
         
-            score = score_hash.at(scorer);
+            /* score = score_hash.at(scorer); */
+            this->S.set_scorer(scorer);
         }
 
         Evaluation::~Evaluation(){}
@@ -140,8 +142,8 @@ namespace FT{
                 }
                 else
                 {
-                    // assign fitness to individual
-                    assign_fit(ind,F,yhat,d.y,params,false);
+                    // assign weights to individual
+                    assign_fit(ind,F,yhat,d,params,false);
 
                     if (params.hillclimb)
                     {
@@ -150,9 +152,10 @@ namespace FT{
                         bool updated = false;
                         shared_ptr<CLabels> yhat2 = hc.run(ind, d, params,
                                               updated);
-                        if (updated)    // update the fitness of this individual
+                        // update the fitness of this individual
+                        if (updated)    
                         {
-                            assign_fit(ind, F, yhat2, d.y, params);
+                            assign_fit(ind, F, yhat2, d, params);
                         }
 
                     }
@@ -162,7 +165,7 @@ namespace FT{
         
         // assign fitness to program
         void Evaluation::assign_fit(Individual& ind, MatrixXf& F, 
-                const shared_ptr<CLabels>& yhat, const VectorXf& y, 
+                const shared_ptr<CLabels>& yhat, const Data& d, 
                 const Parameters& params, bool val)
         {
             /*!
@@ -173,7 +176,7 @@ namespace FT{
              *       ind: individual 
              *       F: n_samples x pop_size matrix of errors
              *       yhat: predicted output of ind
-             *       y: true labels
+             *       d: data
              *       params: feat parameters
              *
              *  Output:
@@ -182,17 +185,70 @@ namespace FT{
             */ 
             assert(F.cols()>ind.loc);
             VectorXf loss;
-            float f = score(y, yhat, loss, params.class_weights);
+            float f = S.score(d.y, yhat, loss, params.class_weights);
+            float fairness = marginal_fairness(loss, d, f);
             
+            if (fairness <0 )
+            {
+                cout << "fairness is " << fairness << "...\n";
+            }
             if (val)
+            {
                 ind.fitness_v = f;
+                ind.fairness_v = fairness;
+            }
             else
+            {
                 ind.fitness = f;
+                ind.fairness = fairness;
+            }
                 
             F.col(ind.loc) = loss;  
             
             logger.log("ind " + std::to_string(ind.loc) + " fitness: " 
                     + std::to_string(ind.fitness),3);
+        }
+
+        float Evaluation::marginal_fairness(VectorXf& loss, const Data& d, 
+                float base_score, bool use_alpha)
+        {
+            // averages the deviation of the loss function from average loss 
+            // over k
+            float avg_score = 0;
+            float count = 0;
+            float alpha = 1;
+
+            ArrayXb x_idx; 
+
+            for (const auto& pl : d.protect_levels)
+            {
+                for (const auto& lvl : pl.second)
+                {
+                    x_idx = (d.X.row(pl.first).array() == lvl);
+                    float len_g = x_idx.count();
+                    if (use_alpha)
+                        alpha = len_g/d.X.cols();
+                    /* cout << "alpha = " << len_g << "/" 
+                     * << d.X.cols() << endl; */
+                    float Beta = fabs(base_score - 
+                                    x_idx.select(loss,0).sum()/len_g);
+                    /* cout << "Beta = |" << base_score << " - " */ 
+                    /*     << x_idx.select(loss,0).sum() << "/" */ 
+                    /*     << len_g << "|" << endl; */
+                    avg_score += alpha * Beta;
+                    ++count;
+                }
+
+            }
+            avg_score /= count;
+            if (std::isinf(avg_score) 
+                    || std::isnan(avg_score)
+                    || avg_score < 0)
+                return MAX_FLT;
+                
+            return avg_score; 
+
+>>>>>>> master
         }
     }
 }

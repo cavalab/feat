@@ -6,7 +6,7 @@ license: GNU/GPL v3
 #define EVALUATION_H
 // internal includes
 #include "../model/ml.h"
-#include "metrics.h"
+#include "scorer.h"
 #include "../opt/auto_backprop.h"
 #include "../opt/hillclimb.h"
 using namespace shogun;
@@ -21,28 +21,31 @@ namespace FT{
      */
     namespace Eval{
     
-        ////////////////////////////////////////////////////////////////////////////////// Declarations
+        ////////////////////////////////////////////////////////// Declarations
         /*!
          * @class Evaluation
          * @brief evaluation mixin class for Feat
          */
-        typedef float (*funcPointer)(const VectorXf&, const shared_ptr<CLabels>&, VectorXf&,
-                                      const vector<float>&);
+        /* typedef float (*funcPointer)(const VectorXf&, */ 
+        /*                              const shared_ptr<CLabels>&, VectorXf&, */
+        /*                               const vector<float>&); */
         
         class Evaluation 
         {
             public:
             
-                float (* score)(const VectorXf&, const shared_ptr<CLabels>&, VectorXf&, 
-                                 const vector<float>&);    // pointer to scoring function
+                /* float (* score)(const VectorXf&, */ 
+                /*                 const shared_ptr<CLabels>&, */ 
+                /*                 VectorXf&, */ 
+                /*                 const vector<float>&);    // pointer to scoring function */
                                  
-                std::map<string, funcPointer> score_hash;
+                /* std::map<string, funcPointer> score_hash; */
 
                 Evaluation(string scorer);
 
                 ~Evaluation();
                     
-                void set_score(string scorer);
+                /* void set_score(string scorer); */
 
                 /// validation of population.
                 void validation(vector<Individual>& individuals,
@@ -59,9 +62,17 @@ namespace FT{
                              bool offspring = false
                              );
               
+                 
+                float marginal_fairness(VectorXf& loss, const Data& d, 
+                        float base_score, bool use_alpha=false);
+
                 /// assign fitness to an individual and to F.  
-                void assign_fit(Individual& ind, MatrixXf& F, const shared_ptr<CLabels>& yhat, 
-                                const VectorXf& y, const Parameters& params,bool val=false);       
+                void assign_fit(Individual& ind, MatrixXf& F, 
+                        const shared_ptr<CLabels>& yhat, 
+                        const Data& d, 
+                        const Parameters& params,bool val=false);       
+
+                Scorer S;
         };
     }
 }

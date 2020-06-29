@@ -22,8 +22,10 @@ namespace FT{
             
             ~SimAnneal();
            
-            vector<size_t> select(Population& pop, const MatrixXf& F, const Parameters& params);
-            vector<size_t> survive(Population& pop, const MatrixXf& F, const Parameters& params);
+            vector<size_t> select(Population& pop, const MatrixXf& F, 
+                    const Parameters& params, const Data& d);
+            vector<size_t> survive(Population& pop, const MatrixXf& F, 
+                    const Parameters& params, const Data& d);
         private:
             float t;           ///< annealing temperature
             float t0;          ///< initial temperature

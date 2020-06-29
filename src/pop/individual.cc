@@ -221,7 +221,8 @@ namespace FT{
             return yh;
         }
 
-        shared_ptr<CLabels> Individual::predict(const Data& d, const Parameters& params)
+        shared_ptr<CLabels> Individual::predict(const Data& d, 
+                const Parameters& params)
         {
             // calculate program output matrix Phi
             logger.log("Generating output for " + get_eqn(), 3);
@@ -230,16 +231,35 @@ namespace FT{
             // TODO: guarantee this is not changing nodes
 
             if (Phi_pred.size()==0)
-                HANDLE_ERROR_THROW("Phi_pred must be generated before predict() is called\n");
-            /* if (drop_idx >= 0)  // if drop_idx specified, mask that phi output */
-            /* { */
-            /*     cout << "dropping row " + std::to_string(drop_idx) + "\n"; */
-            /*     Phi.row(drop_idx) = VectorXf::Zero(Phi.cols()); */
-            /* } */
+            {
+                if (d.X.cols() == 0)
+                    HANDLE_ERROR_THROW("The prediction dataset has no data");
+                else
+                    HANDLE_ERROR_THROW("Phi_pred is empty");
+            }
             // calculate ML model from Phi
             logger.log("ML predicting on " + get_eqn(), 3);
             // assumes ML is already trained
             shared_ptr<CLabels> yhat = ml->predict(Phi_pred);
+            return yhat;
+        }
+
+        ArrayXXf Individual::predict_proba(const Data& d, 
+                const Parameters& params)
+        {
+            // calculate program output matrix Phi
+            logger.log("Generating output for " + get_eqn(), 3);
+            // toggle validation
+            MatrixXf Phi_pred = out(d, params, true);           
+            // TODO: guarantee this is not changing nodes
+
+            if (Phi_pred.size()==0)
+                HANDLE_ERROR_THROW("Phi_pred must be generated before "
+                        "predict() is called\n");
+            // calculate ML model from Phi
+            logger.log("ML predicting on " + get_eqn(), 3);
+            // assumes ML is already trained
+            ArrayXXf yhat = ml->predict_proba(Phi_pred);
             return yhat;
         }
 
@@ -272,7 +292,7 @@ namespace FT{
         {
             return ml->labels_to_vector(this->predict(d,params));
         }
-       
+
         MatrixXf Individual::state_to_phi(State& state)
         {
             // we want to preserve the order of the outputs in the program 
@@ -502,6 +522,7 @@ namespace FT{
 
         #ifndef USE_CUDA
         // calculate program output matrix
+        
         MatrixXf Individual::out_trace(const Data& d, const Parameters& params, 
                                        vector<Trace>& state_trace)
         {
@@ -567,6 +588,7 @@ namespace FT{
             return state_to_phi(state);
 
         }
+
         #else
         // calculate program output matrix
         MatrixXf Individual::out_trace(const Data& d,
@@ -758,6 +780,7 @@ namespace FT{
 
             return eqn;
         }
+
         
         // return vectorized symbolic representation of program 
         vector<string> Individual::get_features()
@@ -773,12 +796,44 @@ namespace FT{
                             + " in " + program_str() + " is invalid\n");
             }
             // tie state outputs together to return representation
-            for (auto s : state.fs) 
-                features.push_back(s);
-            for (auto s : state.bs) 
-                features.push_back(s);
-            for (auto s : state.cs)
-                features.push_back(s);
+            // order by root types
+            vector<char> root_types;
+            for (auto r : program.roots())
+            {
+                root_types.push_back(program.at(r)->otype);
+            }
+            std::map<char,int> rows;
+            rows['f']=0;
+            rows['c']=0;
+            rows['b']=0;
+
+            for (int i = 0; i < root_types.size(); ++i)
+            {
+                char rt = root_types.at(i);
+                switch (rt)
+                {
+                    case 'f':
+                        features.push_back(state.fs.at(rows[rt]));
+                        break;
+                    case 'c':
+                        features.push_back(state.cs.at(rows[rt]));
+                        break;
+                    case 'b':
+                        features.push_back(state.bs.at(rows[rt]));
+                        break;
+                    default:
+                        HANDLE_ERROR_THROW("Unknown root type");
+                }
+                ++rows.at(rt);
+            }
+
+            /* // tie state outputs together to return representation */
+            /* for (auto s : state.fs) */ 
+            /*     features.push_back(s); */
+            /* for (auto s : state.bs) */ 
+            /*     features.push_back(s); */
+            /* for (auto s : state.cs) */
+            /*     features.push_back(s); */
 
             return features;
         }
@@ -871,7 +926,10 @@ namespace FT{
                 // covariance structure of Phi
                 else if (n.compare("corr")==0)    
                     obj.push_back(mean_square_corrcoef(Phi));
-
+                else if (n.compare("fairness")==0)
+                    obj.push_back(fairness);
+                else
+                    HANDLE_ERROR_THROW(n+" is not a known objective");
             }
         
         }
@@ -940,6 +998,36 @@ namespace FT{
                     stack_size.at(a.first) -= a.second;       
             }	
             return max_stack_size;
+        }
+        shared_ptr<CLabels> Individual::fit_tune(const Data& d, 
+                const Parameters& params, bool& pass, bool set_default)
+        {
+            // calculate program output matrix Phi
+            logger.log("Generating output for " + get_eqn(), 3);
+            Phi = out(d, params, false);      
+            // calculate ML model from Phi
+            logger.log("ML training on " + get_eqn(), 3);
+            this->ml = std::make_shared<ML>(params.ml, true, 
+                    params.classification, params.n_classes);
+            
+            shared_ptr<CLabels> yh = this->ml->fit_tune(Phi, d.y, 
+                    params, pass, dtypes, set_default);
+
+            if (pass)
+            {
+                logger.log("Setting individual's weights...", 3);
+                set_p(this->ml->get_weights(),params.feedback,
+                        params.softmax_norm);
+            }
+            else
+            {   // set weights to zero
+                vector<float> w(Phi.rows(), 0);                     
+                set_p(w,params.feedback,params.softmax_norm);
+            }
+            
+            this->yhat = ml->labels_to_vector(yh);
+            
+            return yh;
         }
 
     }

@@ -55,7 +55,8 @@ TEST(Selection, SelectionOperator)
     
     feat.F.resize(d.X_t.cols(),int(2*feat.params.pop_size));
     feat.p_eval->fitness(feat.p_pop->individuals, *d.t, feat.F, feat.params);
-    vector<size_t> parents = feat.p_sel->select(*(feat.p_pop), feat.F, feat.params);
+    vector<size_t> parents = feat.p_sel->select(*(feat.p_pop), feat.F, 
+            feat.params, *d.t);
     
     ASSERT_EQ(parents.size(), feat.get_pop_size());
 }
