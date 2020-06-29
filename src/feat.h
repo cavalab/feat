@@ -79,20 +79,20 @@ namespace FT{
                  string ml = "LinearRidgeRegression", 
                  bool classification = false, int verbosity = 2, 
                  int max_stall = 0, string sel ="lexicase", 
-                 string surv="nsga2", float cross_rate = 0.5,
+                 string surv="nsga2", float cross_rate = 0.5, 
                  float root_xo_rate = 0.5, char otype='a', 
                  string functions = "", unsigned int max_depth = 3, 
                  unsigned int max_dim = 10, int random_state=0, 
                  bool erc = false, string obj="fitness,complexity", 
                  bool shuffle=true, float split=0.75, float fb=0.5, 
                  string scorer="", string feature_names="",
-                 bool backprop=false,int iters=10, float lr=0.1, int bs=100, 
-                 int n_threads=0, bool hillclimb=false, string logfile="", 
-                 int max_time=-1, bool use_batch = false, 
-                 bool residual_xo = false, bool stagewise_xo = false, 
-                 bool stagewise_tol = true, bool softmax_norm=false, 
-                 int print_pop=0, bool normalize=true, bool val_from_arch=true,
-                 bool corr_delete_mutate=false,bool simplify=false);
+                 bool backprop=false,int iters=10, float lr=0.1, 
+                 int batch_size=0, int n_threads=0, bool hillclimb=false, 
+                 string logfile="", int max_time=-1, bool residual_xo = false, 
+                 bool stagewise_xo = false, bool stagewise_tol = true, 
+                 bool softmax_norm=false, int print_pop=0, bool normalize=true, 
+                 bool val_from_arch=true, bool corr_delete_mutate=false, 
+                 bool simplify=false, string protected_groups="");
             
             /// set size of population 
             void set_pop_size(int pop_size);
@@ -207,6 +207,9 @@ namespace FT{
             void set_softmax_norm(bool sftmx=true){params.softmax_norm=sftmx;};
 
             void set_print_pop(int pp){ print_pop=pp; };
+
+            ///set protected groups for fairness
+            void set_protected_groups(string pg);
             /*                                                      
              * getting functions
              */
@@ -214,6 +217,9 @@ namespace FT{
             ///return population size
             int get_pop_size();
             
+            ///return archive size
+            int get_archive_size(){ return this->arch.archive.size(); };
+
             ///return size of max generations
             int get_generations();
             
@@ -320,6 +326,15 @@ namespace FT{
             /// predict on unseen data.             
             VectorXf predict(MatrixXf& X, LongData Z = LongData());  
             
+            /// predict on unseen data from the whole archive             
+            VectorXf predict_archive(int id, MatrixXf& X, 
+                    LongData Z = LongData());  
+            VectorXf predict_archive(int id, float * X, int rowsX, int colsX);
+            ArrayXXf predict_proba_archive(int id, MatrixXf& X, 
+                    LongData Z=LongData());
+
+            ArrayXXf predict_proba_archive(int id, 
+                    float * X, int rows_x, int cols_x);
             /// predict on unseen data. return CLabels.
             shared_ptr<CLabels> predict_labels(MatrixXf& X,
                              LongData Z = LongData());  

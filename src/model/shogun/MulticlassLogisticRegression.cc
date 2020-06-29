@@ -19,7 +19,7 @@ namespace shogun
 			return "MulticlassLogisticRegression";
 		}
 
-		inline void CMulticlassLogisticRegression::set_z(float64_t z)
+		void CMulticlassLogisticRegression::set_z(float64_t z)
 		{
 			ASSERT(z>0)
 			m_z = z;
@@ -27,7 +27,7 @@ namespace shogun
 		
 		inline float64_t CMulticlassLogisticRegression::get_z() const { return m_z; }
 
-		inline void CMulticlassLogisticRegression::set_epsilon(float64_t epsilon)
+		void CMulticlassLogisticRegression::set_epsilon(float64_t epsilon)
 		{
 			ASSERT(epsilon>0)
 			m_epsilon = epsilon;
@@ -35,7 +35,7 @@ namespace shogun
 		
 		inline float64_t CMulticlassLogisticRegression::get_epsilon() const { return m_epsilon; }
 
-		inline void CMulticlassLogisticRegression::set_max_iter(int32_t max_iter)
+		void CMulticlassLogisticRegression::set_max_iter(int32_t max_iter)
 		{
 			ASSERT(max_iter>0)
 			m_max_iter = max_iter;
