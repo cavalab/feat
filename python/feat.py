@@ -307,8 +307,8 @@ class Feat(BaseEstimator):
         """updates the statistics of the run"""
         self.stats["gens"] = self._pyfeat.get_gens()
         self.stats["time"] = self._pyfeat.get_timers()
-        self.stats["best_scores"] = self._pyfeat.get_best_scores()
-        self.stats["best_score_vals"] = self._pyfeat.get_best_score_vals()
+        self.stats["min_losses"] = self._pyfeat.get_min_losses()
+        self.stats["min_losses_val"] = self._pyfeat.get_min_losses_val()
         self.stats["med_scores"] = self._pyfeat.get_med_scores()
         self.stats["med_loss_vals"] = self._pyfeat.get_med_loss_vals()
         self.stats["med_size"] = self._pyfeat.get_med_size()

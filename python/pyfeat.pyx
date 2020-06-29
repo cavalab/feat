@@ -63,8 +63,8 @@ cdef extern from "feat.h" namespace "FT":
         
         vector[int] get_gens();        
         vector[float] get_timers();
-        vector[float] get_best_scores();
-        vector[float] get_best_score_vals();
+        vector[float] get_min_losses();
+        vector[float] get_min_losses_val();
         vector[float] get_med_scores();
         vector[float] get_med_loss_vals();
         vector[unsigned] get_med_size();
@@ -253,11 +253,11 @@ cdef class PyFeat:
     def get_timers(self):
         return self.ft.get_timers()
         
-    def get_best_scores(self):
-        return self.ft.get_best_scores()
+    def get_min_losses(self):
+        return self.ft.get_min_losses()
         
-    def get_best_score_vals(self):
-        return self.ft.get_best_score_vals()
+    def get_min_losses_val(self):
+        return self.ft.get_min_losses_val()
         
     def get_med_scores(self):
         return self.ft.get_med_scores()

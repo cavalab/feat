@@ -394,10 +394,10 @@ namespace FT{
             vector<float> get_timers();
             
             /// return best score statistics arrays
-            vector<float> get_best_scores();
+            vector<float> get_min_losses();
             
             /// return best score values statistics arrays
-            vector<float> get_best_score_vals();
+            vector<float> get_min_losses_val();
             
             /// return median scores statistics arrays
             vector<float> get_med_scores();
@@ -437,8 +437,8 @@ namespace FT{
             Normalizer N;                           ///< scales training data.
             string scorer;                          ///< scoring function name.
             // performance tracking
-            float best_score;                      ///< current best score
-            float best_score_v;                    ///< best validation score
+            float min_loss;                      ///< current best score
+            float min_loss_v;                    ///< best validation score
             float best_med_score;  ///< best median population score
             int best_complexity;  ///< complexity of the best model
             string str_dim; ///< dimensionality as multiple of number of cols 
