@@ -296,11 +296,12 @@ shared_ptr<CLabels> ML::fit(MatrixXf& X, VectorXf& y,
         else
             set_dtypes(dtypes);
     }
-   
+
     if (normalize)
     {
+        /* N.fit_normalize(X, find_dtypes(X)); */
         if (dtypes.empty())
-            N.fit_normalize(X, params.dtypes);  
+            N.fit_normalize(X, find_dtypes(X));  
         else 
             N.fit_normalize(X, dtypes);
     }
@@ -316,7 +317,7 @@ shared_ptr<CLabels> ML::fit(MatrixXf& X, VectorXf& y,
     {
 
         logger.log("Setting labels to zero since features are zero\n", 
-                3);
+                2);
 
         shared_ptr<CLabels> labels;
         
@@ -347,6 +348,8 @@ shared_ptr<CLabels> ML::fit(MatrixXf& X, VectorXf& y,
     // for liblinear L1, we have to transpose the features during training
     if (ml_type == L1_LR && this->prob_type==PT_BINARY)
         features = features->get_transposed();
+
+
      
     if(this->prob_type==PT_BINARY && in({LR, L1_LR, SVM}, ml_type))
     { 
@@ -376,7 +379,7 @@ shared_ptr<CLabels> ML::fit(MatrixXf& X, VectorXf& y,
         features = features->get_transposed();
 
     logger.log("exiting ml::fit",3); 
-    return this->get_labels(features, true, pass); 
+    return this->retrieve_labels(features, true, pass); 
 }
 
 VectorXf ML::fit_vector(MatrixXf& X, VectorXf& y, 
@@ -448,11 +451,9 @@ shared_ptr<CLabels> ML::predict(MatrixXf& X, bool print)
     MatrixXd _X = X.template cast<double>();
     auto features = some<CDenseFeatures<float64_t>>(
             SGMatrix<float64_t>(_X));
-    /* cout << "features:\n"; */
-    /* features->get_feature_matrix().display_matrix(); */
      
     bool pass = true; 
-    return this->get_labels(features, true, pass);
+    return this->retrieve_labels(features, true, pass);
 }
 
 VectorXf ML::predict_vector(MatrixXf& X)
@@ -533,7 +534,7 @@ float ML::get_bias()
         return 0;
 
 }
-shared_ptr<CLabels> ML::get_labels(CDenseFeatures<float64_t>* features, 
+shared_ptr<CLabels> ML::retrieve_labels(CDenseFeatures<float64_t>* features, 
                                    bool proba, bool& pass)
 {
     logger.log("ML::get_labels",3);
