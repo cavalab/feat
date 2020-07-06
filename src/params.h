@@ -68,6 +68,8 @@ namespace FT{
         bool softmax_norm;                          ///< use softmax norm on probabilities
         bool normalize;                             ///< whether to normalize the input data
         vector<bool> protected_groups;          ///<protected attributes in X
+        bool tune_initial; ///< tune initial ML model
+        bool tune_final; ///< tune final ML model
         
         struct BP 
         {
@@ -94,7 +96,8 @@ namespace FT{
                 bool constant, string obj, bool sh, float sp, float fb, 
                 string sc, string fn, bool bckprp, int iters, float lr, int bs, 
                 bool hclimb, int maxt, bool res_xo, bool stg_xo, 
-                bool stg_xo_tol, bool sftmx, bool nrm, bool corr_mut);
+                bool stg_xo_tol, bool sftmx, bool nrm, bool corr_mut, 
+                bool tune_init, bool tune_fin);
         
         ~Parameters();
         

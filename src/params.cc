@@ -15,7 +15,8 @@ Parameters::Parameters(int pop_size, int gens, string ml, bool classification,
         unsigned int max_dim, bool constant, string obj, bool sh, float sp, 
         float fb, string sc, string fn, bool bckprp, int iters, float lr,
         int bs, bool hclimb, int maxt, bool res_xo, bool stg_xo, 
-        bool stg_xo_tol, bool sftmx, bool nrm, bool corr_mut):    
+        bool stg_xo_tol, bool sftmx, bool nrm, bool corr_mut, bool tune_init,
+        bool tune_fin):    
         pop_size(pop_size),
         gens(gens),
         ml(ml),
@@ -40,7 +41,9 @@ Parameters::Parameters(int pop_size, int gens, string ml, bool classification,
         stagewise_xo_tol(stg_xo),
         corr_delete_mutate(corr_mut),
         softmax_norm(sftmx),
-        normalize(nrm)
+        normalize(nrm),
+        tune_initial(tune_init),
+        tune_final(tune_fin)
     {
         set_verbosity(verbosity);
         if (fs.empty())

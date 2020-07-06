@@ -317,7 +317,7 @@ shared_ptr<CLabels> ML::fit(MatrixXf& X, VectorXf& y,
     {
 
         logger.log("Setting labels to zero since features are zero\n", 
-                2);
+                3);
 
         shared_ptr<CLabels> labels;
         

@@ -30,7 +30,8 @@ class Feat(BaseEstimator):
                 residual_xo=False, stagewise_xo=False, 
                 stagewise_xo_tol=False, softmax_norm=False, print_pop=0, 
                 normalize=True, val_from_arch=True, corr_delete_mutate=False, 
-                simplify=False,protected_groups=[]):
+                simplify=False,protected_groups=[],
+                tune_initial=False, tune_final=True):
         self.pop_size = pop_size
         self.gens = gens
         self.ml = ml.encode() if( isinstance(ml,str) )  else ml
@@ -75,7 +76,8 @@ class Feat(BaseEstimator):
         self.simplify = simplify
         self.protected_groups = ','.join(
                 [str(int(pg)) for pg in protected_groups]).encode()
-        # if self.verbosity>0:
+        self.tune_initial = tune_initial
+        self.tune_final = tune_final
         self._pyfeat=None
         self.stats = {}
         self.__version__ = __version__
@@ -111,7 +113,9 @@ class Feat(BaseEstimator):
                 self.val_from_arch,
                 self.corr_delete_mutate,
                 self.simplify,
-                self.protected_groups)
+                self.protected_groups,
+                self.tune_initial,
+                self.tune_final)
    
 
     def fit(self,X,y,zfile=None,zids=None):
