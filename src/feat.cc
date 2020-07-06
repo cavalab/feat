@@ -32,14 +32,14 @@ Feat::Feat(int pop_size, int gens, string ml,
        bool stagewise_xo, bool stagewise_xo_tol,
        bool softmax_norm, int print_pop, bool normalize,
        bool val_from_arch, bool corr_delete_mutate, bool simplify,
-       string protected_groups):
+       string protected_groups, bool tune_initial, bool tune_final):
           // construct subclasses
           params(pop_size, gens, ml, classification, max_stall, otype, 
                  verbosity, functions, cross_rate, root_xo_rate, max_depth, 
                  max_dim, erc, obj, shuffle, split, fb, scorer, feature_names, 
                  backprop, iters, lr, batch_size, hillclimb, max_time,  
                  residual_xo, stagewise_xo, stagewise_xo_tol, softmax_norm, 
-                 normalize, corr_delete_mutate), 
+                 normalize, corr_delete_mutate, tune_initial, tune_final), 
           p_sel( make_shared<Selection>(sel) ),
           p_surv( make_shared<Selection>(surv, true) ),
           p_variation( make_shared<Variation>(cross_rate) ),
@@ -794,9 +794,12 @@ void Feat::final_model(DataRef& d)
 
     /* MatrixXf Phi = transform(X); */
     /* MatrixXf Phi = best_ind.out(*d.o, params); */        
-    
-    /* shared_ptr<CLabels> yhat = best_ind.fit_tune(*d.o, params, pass); */
-    shared_ptr<CLabels> yhat = best_ind.fit(*d.o, params, pass);
+    shared_ptr<CLabels> yhat;
+    if (params.tune_final)
+        yhat = best_ind.fit_tune(*d.o, params, pass);
+    else
+        yhat = best_ind.fit(*d.o, params, pass);
+
     VectorXf tmp;
     /* params.set_sample_weights(y);   // need to set new sample weights for y, */ 
                                     // which is probably from a validation set
@@ -1091,8 +1094,10 @@ void Feat::initial_model(DataRef &d)
     else 
     {
         // tune default ML parameters 
-        /* yhat = best_ind.fit_tune(*d.t, params, pass, true); */
-        yhat = best_ind.fit(*d.t, params, pass);
+        if (params.tune_initial)
+            yhat = best_ind.fit_tune(*d.t, params, pass, true);
+        else
+            yhat = best_ind.fit(*d.t, params, pass);
         // set terminal weights based on model
         vector<float> w = best_ind.ml->get_weights();
 

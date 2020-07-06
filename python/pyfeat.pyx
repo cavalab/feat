@@ -29,7 +29,8 @@ cdef extern from "feat.h" namespace "FT":
                int max_time, bool residual_xo, bool stagewise_xo, 
                bool stagewise_xo_tol, bool softmax_norm, int print_pop, 
                bool normalize, bool val_from_arch, bool corr_delete_mutate, 
-               bool simplify, string protected_groups
+               bool simplify, string protected_groups, bool tune_initial,
+               bool tune_final
                ) except + 
 
         void fit(float * X, int rowsX, int colsX, float*  y , int lenY)
@@ -85,7 +86,8 @@ cdef class PyFeat:
             string logfile, int max_time, bool residual_xo, 
             bool stagewise_xo, bool stagewise_xo_tol, bool softmax_norm, 
             int print_pop, bool normalize, bool val_from_arch, 
-            bool corr_delete_mutate, bool simplify, string protected_groups):
+            bool corr_delete_mutate, bool simplify, string protected_groups,
+            bool tune_initial, bool tune_final):
         
         cdef char otype_char
         if ( len(otype) == 0):
@@ -99,7 +101,7 @@ cdef class PyFeat:
                 n_threads, hillclimb, logfile, max_time, residual_xo, 
                 stagewise_xo, stagewise_xo_tol, softmax_norm, print_pop, 
                 normalize, val_from_arch, corr_delete_mutate, simplify,
-                protected_groups)
+                protected_groups, tune_initial, tune_final)
 
     def fit(self,np.ndarray X,np.ndarray y):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
