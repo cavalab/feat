@@ -113,7 +113,7 @@ namespace FT{
                 VectorXf labels_to_vector(const shared_ptr<CLabels>& labels);
                 
                 /// returns labels of a fitted model estimating on features
-                shared_ptr<CLabels> get_labels(
+                shared_ptr<CLabels> retrieve_labels(
                 CDenseFeatures<float64_t>* features, 
                 bool proba, bool& pass);
 

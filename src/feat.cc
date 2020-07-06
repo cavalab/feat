@@ -58,7 +58,7 @@ Feat::Feat(int pop_size, int gens, string ml,
     if (GPU)
         initialize_cuda();
     // set Feat's Normalizer to only normalize floats by default
-    N.scale_all = false;
+    this->N = Normalizer(false);
     params.set_protected_groups(protected_groups);
     arch.set_objectives(params.objectives);
 }
@@ -424,7 +424,10 @@ ArrayXXf Feat::predict_proba_archive(int id, float * X, int rows_x, int cols_x)
 VectorXf Feat::fit_predict(MatrixXf& X,
                      VectorXf& y,
                      LongData Z)
-                     { fit(X, y, Z); return predict(X, Z); } 
+{ 
+    fit(X, y, Z); 
+    return predict(X, Z); 
+} 
                      
 VectorXf Feat::fit_predict(float * X, int rows_x, int cols_x, float * Y, int len_y)
 {
@@ -517,7 +520,15 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     
     if (params.dtypes.size()==0)    // set feature types if not set
         set_dtypes(find_dtypes(X));
-   
+    if (params.verbosity >= 2)
+    {
+        cout << "X data types: ";
+        for (auto dt : params.dtypes)
+        {
+           cout << dt << ", "; 
+        }
+        cout << "\n";
+    }
     if (params.normalize)
         N.fit_normalize(X,params.dtypes);                   // normalize data
     /* p_ml = make_shared<ML>(params); // intialize ML */
@@ -784,7 +795,8 @@ void Feat::final_model(DataRef& d)
     /* MatrixXf Phi = transform(X); */
     /* MatrixXf Phi = best_ind.out(*d.o, params); */        
     
-    shared_ptr<CLabels> yhat = best_ind.fit_tune(*d.o, params, pass);
+    /* shared_ptr<CLabels> yhat = best_ind.fit_tune(*d.o, params, pass); */
+    shared_ptr<CLabels> yhat = best_ind.fit(*d.o, params, pass);
     VectorXf tmp;
     /* params.set_sample_weights(y);   // need to set new sample weights for y, */ 
                                     // which is probably from a validation set
@@ -1079,7 +1091,8 @@ void Feat::initial_model(DataRef &d)
     else 
     {
         // tune default ML parameters 
-        yhat = best_ind.fit_tune(*d.t, params, pass, true);
+        /* yhat = best_ind.fit_tune(*d.t, params, pass, true); */
+        yhat = best_ind.fit(*d.t, params, pass);
         // set terminal weights based on model
         vector<float> w = best_ind.ml->get_weights();
 
@@ -1158,6 +1171,8 @@ VectorXf Feat::predict(MatrixXf& X,
 {        
     /* MatrixXf Phi = transform(X, Z); */
     /* return best_ind.ml->predict_vector(Phi); */        
+    if (params.normalize)
+        N.normalize(X);       
     VectorXf dummy;
     Data d_tmp(X, dummy, Z);
     return best_ind.predict_vector(d_tmp, this->params);
@@ -1167,6 +1182,8 @@ VectorXf Feat::predict_archive(int id, MatrixXf& X,
                        LongData Z)
 {
     /* return predictions; */
+    if (params.normalize)
+        N.normalize(X);       
     VectorXf predictions(X.cols(),params.n_classes);
     VectorXf empty_y;
     Data tmp_data(X,empty_y,Z);
@@ -1194,6 +1211,8 @@ VectorXf Feat::predict_archive(int id, float * X, int rowsX,int colsX)
 ArrayXXf Feat::predict_proba_archive(int id, MatrixXf& X,
                        LongData Z)
 {
+    if (params.normalize)
+        N.normalize(X);       
     ArrayXXf predictions(X.cols(),params.n_classes);
     VectorXf empty_y;
     Data tmp_data(X,empty_y,Z);
@@ -1215,8 +1234,13 @@ ArrayXXf Feat::predict_proba_archive(int id, MatrixXf& X,
 shared_ptr<CLabels> Feat::predict_labels(MatrixXf& X,
                        LongData Z)
 {        
-    MatrixXf Phi = transform(X, Z);
-    return best_ind.ml->predict(Phi);        
+    /* MatrixXf Phi = transform(X, Z); */
+    if (params.normalize)
+        N.normalize(X);       
+    VectorXf empty_y;
+    Data tmp_data(X,empty_y,Z);
+
+    return best_ind.predict(tmp_data, this->params);        
 }
 
 VectorXf Feat::predict(float * X, int rowsX,int colsX)
@@ -1232,8 +1256,6 @@ VectorXf Feat::predict_with_z(float * X, int rowsX,int colsX,
 
     MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
     auto Z = get_Z(s, idx, idx_size);
-    // TODO: make sure long fns are set
-    /* string longfns = "mean,median,max,min,variance,skew,kurtosis,slope,count"; */
 
     return predict(matX,Z); 
 }
@@ -1241,8 +1263,12 @@ VectorXf Feat::predict_with_z(float * X, int rowsX,int colsX,
 ArrayXXf Feat::predict_proba(MatrixXf& X,
                          LongData Z)
 {
-    MatrixXf Phi = transform(X, Z);
-    return best_ind.ml->predict_proba(Phi);        
+
+    if (params.normalize)
+        N.normalize(X);       
+    VectorXf dummy;
+    Data d_tmp(X, dummy, Z);
+    return best_ind.predict_proba(d_tmp, this->params);
 }
 
 ArrayXXf Feat::predict_proba_with_z(float * X, int rowsX,int colsX, 
