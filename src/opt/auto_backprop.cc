@@ -66,7 +66,7 @@ namespace FT {
             vector<vector<float>> best_weights;
             // split up the data so we have a validation set
             DataRef BP_data(d.X, d.y, d.Z, d.classification);
-            BP_data.train_test_split(true, 0.8);
+            BP_data.train_test_split(true, 0.5);
             // set up batch data
             MatrixXf Xb, Xb_v;
             VectorXf yb, yb_v;

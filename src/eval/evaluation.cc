@@ -38,7 +38,7 @@ namespace FT{
                 start = individuals.size()/2;
 
             // loop through individuals
-            #pragma omp parallel for
+            /* #pragma omp parallel for */
             for (unsigned i = start; i<individuals.size(); ++i)
             {
                 Individual& ind = individuals.at(i);
@@ -115,6 +115,8 @@ namespace FT{
             {
                 Individual& ind = individuals.at(i);
 
+#pragma omp critical
+                {
                 if (params.backprop)
                 {
                     AutoBackProp backprop(params.scorer, params.bp.iters, 
@@ -122,7 +124,7 @@ namespace FT{
                     logger.log("Running backprop on " + ind.get_eqn(), 3);
                     backprop.run(ind, d, params);
                 }         
-
+                }
                 bool pass = true;
 
                 logger.log("Running ind " + to_string(i) 
@@ -144,6 +146,7 @@ namespace FT{
                 {
                     // assign weights to individual
                     assign_fit(ind,F,yhat,d,params,false);
+                    
 
                     if (params.hillclimb)
                     {
