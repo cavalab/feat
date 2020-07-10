@@ -509,26 +509,9 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
         set_max_dim(ceil(stod(dimension)*X.rows()));
     }
     
-    params.init();       
+    params.init(X, y, scorer);       
     this->arch.set_objectives(params.objectives);
 
-    if (params.classification)  // setup classification endpoint
-    {
-       params.set_classes(y);       
-       params.set_scorer(scorer);
-    } 
-    
-    if (params.dtypes.size()==0)    // set feature types if not set
-        set_dtypes(find_dtypes(X));
-    if (params.verbosity >= 2)
-    {
-        cout << "X data types: ";
-        for (auto dt : params.dtypes)
-        {
-           cout << dt << ", "; 
-        }
-        cout << "\n";
-    }
     if (params.normalize)
         N.fit_normalize(X,params.dtypes);                   // normalize data
     /* p_ml = make_shared<ML>(params); // intialize ML */
