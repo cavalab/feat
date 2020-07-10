@@ -106,7 +106,7 @@ namespace FT{
          *  make sure scorer is set. 
          *  for classification, check clases and find number.
          */
-        void init();
+        void init(const MatrixXf& X, const VectorXf& y, string scorer);
       
         /// sets current generation
         void set_current_gen(int g);
@@ -158,7 +158,7 @@ namespace FT{
         void set_otypes(bool terminals_set=false);
         
         /// sets the number of classes based on target vector y.
-        void set_classes(VectorXf& y);    
+        void set_classes(const VectorXf& y);    
         
         /// sets the weights of each sample (and class weights)
         void set_sample_weights(VectorXf& y);

@@ -4,6 +4,7 @@ license: GNU/GPL v3
 */
 
 #include "params.h"
+#include "util/utils.h"
 
 namespace FT{
 
@@ -70,12 +71,29 @@ Parameters::~Parameters(){}
  *  make sure scorer is set. 
  *  for classification, check clases and find number.
  */
-void Parameters::init()
+void Parameters::init(const MatrixXf& X, const VectorXf& y, string scorer)
 {
     if (!ml.compare("LinearRidgeRegression") && classification)
     {
         logger.log("Setting ML type to LR",2);
         ml = "LR";            
+    }
+    if (this->classification)  // setup classification endpoint
+    {
+       this->set_classes(y);       
+       this->set_scorer(scorer);
+    } 
+    
+    if (this->dtypes.size()==0)    // set feature types if not set
+        this->dtypes = find_dtypes(X);
+    if (this->verbosity >= 2)
+    {
+        cout << "X data types: ";
+        for (auto dt : this->dtypes)
+        {
+           cout << dt << ", "; 
+        }
+        cout << "\n";
     }
 }
 
@@ -210,7 +228,9 @@ void Parameters::set_otypes(bool terminals_set)
             // if terminals are all boolean, remove floating point functions
             if (ttypes.size()==1 && ttypes.at(0)=='b')
             {
-                logger.log("otypes is size 1 and otypes[0]==b\nerasing functions...\n",2);
+                logger.log(string("otypes is size 1 and otypes[0]==b\n") 
+                        + string("setting otypes to boolean...\n"),
+                        2);
                 /* size_t n = functions.size(); */
                 /* for (vector<int>::size_type i =n-1; */ 
                 /*      i != (std::vector<int>::size_type) -1; i--){ */
@@ -748,7 +768,7 @@ void Parameters::set_verbosity(int verbosity)
     this->verbosity = verbosity;
 }
 
-void Parameters::set_classes(VectorXf& y)
+void Parameters::set_classes(const VectorXf& y)
 {
     classes.clear();
 

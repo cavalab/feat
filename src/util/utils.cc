@@ -46,7 +46,7 @@ namespace FT{
         }
 
         /// determines data types of columns of matrix X.
-        vector<char> find_dtypes(MatrixXf &X)
+        vector<char> find_dtypes(const MatrixXf &X)
         {
 	        vector<char> dtypes;
 	        
@@ -81,10 +81,6 @@ namespace FT{
                         dtypes.push_back('f');
                 }
             }
-            /* cout << "dtypes: " ; */ 
-            /* for (const auto& dt : dtypes) */
-            /*     cout << dt << ", "; */
-            /* cout << "\n"; */
             return dtypes;
 
 	    }
@@ -217,50 +213,6 @@ namespace FT{
 		    return high_resolution_clock::now() - _start;
 	    }
        
-        /// fit the scale and offset of data. 
-        void Normalizer::fit(MatrixXf& X, const vector<char>& dt)
-        {
-            scale.clear();
-            offset.clear();
-            dtypes = dt; 
-            for (unsigned int i=0; i<X.rows(); ++i)
-            {
-                // mean center
-                VectorXf tmp = X.row(i).array()-X.row(i).mean();
-                // scale by the standard deviation
-                scale.push_back(std::sqrt((tmp.array()).square().sum()/(tmp.size()-1)));
-                offset.push_back(X.row(i).mean());
-            }
-              
-        }
-      
-        /// normalize matrix.
-        void Normalizer::normalize(MatrixXf& X)
-        {  
-            // normalize features
-            for (unsigned int i=0; i<X.rows(); ++i)
-            {
-                if (std::isinf(scale.at(i)))
-                {
-                    X.row(i) = VectorXf::Zero(X.row(i).size());
-                    continue;
-                }
-                // scale, potentially skipping binary and categorical rows
-                if (this->scale_all || dtypes.at(i)=='f')                   
-                {
-                    X.row(i) = X.row(i).array() - offset.at(i);
-                    if (scale.at(i) > NEAR_ZERO)
-                        X.row(i) = X.row(i).array()/scale.at(i);
-                }
-            }
-        }
-        
-        void Normalizer::fit_normalize(MatrixXf& X, const vector<char>& dtypes)
-        {
-            fit(X, dtypes);
-            normalize(X);
-        }
-
         /// returns true for elements of x that are infinite
         ArrayXb isinf(const ArrayXf& x)
         {

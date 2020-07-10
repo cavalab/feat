@@ -92,22 +92,24 @@ namespace FT{
                 vector<float> get_weights();
                 
                 // train ml model on X and return label object. 
-                shared_ptr<CLabels> fit(MatrixXf& X, VectorXf& y, 
+                shared_ptr<CLabels> fit(const MatrixXf& X, const VectorXf& y, 
                         const Parameters& params, bool& pass,
                         const vector<char>& dtypes=vector<char>());
 
                 // train ml model on X and return estimation y. 
-                VectorXf fit_vector(MatrixXf& X, VectorXf& y, const Parameters& params, bool& pass,
-                             const vector<char>& dtypes=vector<char>());
+                VectorXf fit_vector(const MatrixXf& X, const VectorXf& y, 
+                        const Parameters& params, bool& pass,
+                        const vector<char>& dtypes=vector<char>());
 
                 // predict using a trained ML model, returning a label object. 
-                shared_ptr<CLabels> predict(MatrixXf& X, bool print=false);
+                shared_ptr<CLabels> predict(const MatrixXf& X, 
+                        bool print=false);
                 
                 // predict using a trained ML model, returning a vector of predictions. 
-                VectorXf predict_vector(MatrixXf& X);
+                VectorXf predict_vector(const MatrixXf& X);
      
                 // predict using a trained ML model, returning a vector of predictions. 
-                ArrayXXf predict_proba(MatrixXf& X);
+                ArrayXXf predict_proba(const MatrixXf& X);
                
                 /// utility function to convert CLabels types to VectorXd types. 
                 VectorXf labels_to_vector(const shared_ptr<CLabels>& labels);

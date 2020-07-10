@@ -150,12 +150,53 @@ namespace FT{
             bool scale_all;
             
             /// fit the scale and offset of data. 
-            void fit(MatrixXf& X, const vector<char>& dt);
-            
+            template <typename T> 
+            void fit(const MatrixBase<T>& X, const vector<char>& dt)
+            {
+                scale.clear();
+                offset.clear();
+                dtypes = dt; 
+                for (unsigned int i=0; i<X.rows(); ++i)
+                {
+                    // mean center
+                    auto tmp = X.row(i).array()-X.row(i).mean();
+                    /* VectorXf tmp; */
+                    // scale by the standard deviation
+                    scale.push_back(
+                        std::sqrt(tmp.square().sum()/(tmp.size()-1)));
+                    offset.push_back(float(X.row(i).mean()));
+                }
+                  
+            }
             /// normalize matrix.
-            void normalize(MatrixXf& X);
-            
-            void fit_normalize(MatrixXf& X, const vector<char>& dtypes);
+            template <typename T> 
+            void normalize(MatrixBase<T>& X)
+            {  
+                // normalize features
+                for (unsigned int i=0; i<X.rows(); ++i)
+                {
+                    if (std::isinf(scale.at(i)))
+                    {
+                        /* X.row(i) = Matrix<T, Dynamic, 1>::Zero(X.row(i).size()); */
+                        continue;
+                    }
+                    // scale, potentially skipping binary and categorical rows
+                    if (this->scale_all || dtypes.at(i)=='f')                   
+                    {
+                        X.row(i) = X.row(i).array() - offset.at(i);
+                        if (scale.at(i) > NEAR_ZERO)
+                            X.row(i) = X.row(i).array()/scale.at(i);
+                    }
+                }
+            }
+            /// fit then normalize
+            template <typename T> 
+            void fit_normalize(MatrixBase<T>& X, 
+                    const vector<char>& dtypes) 
+            {
+                this->fit(X, dtypes);
+                this->normalize(X);
+            }
         };
 
         /// returns true for elements of x that are infinite
@@ -165,7 +206,7 @@ namespace FT{
         ArrayXb isnan(const ArrayXf& x);
        
         /// calculates data types for each column of X
-        vector<char> find_dtypes(MatrixXf &X);
+        vector<char> find_dtypes(const MatrixXf &X);
 	
         /// returns unique elements in vector
         template <typename T>

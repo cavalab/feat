@@ -260,7 +260,7 @@ vector<float> ML::get_weights()
     return vector<float>(w.begin(), w.end());
 }
 
-shared_ptr<CLabels> ML::fit(MatrixXf& X, VectorXf& y, 
+shared_ptr<CLabels> ML::fit(const MatrixXf& X, const VectorXf& y, 
         const Parameters& params, bool& pass,
                  const vector<char>& dtypes)
 { 
@@ -279,6 +279,9 @@ shared_ptr<CLabels> ML::fit(MatrixXf& X, VectorXf& y,
     
     // for random forest we need to set the number of features per bag
     init();
+
+    MatrixXd _X = X.cast<double>();
+    VectorXd _y = y.cast<double>();
 
     if (ml_type == RF)
     {
@@ -301,16 +304,14 @@ shared_ptr<CLabels> ML::fit(MatrixXf& X, VectorXf& y,
     {
         /* N.fit_normalize(X, find_dtypes(X)); */
         if (dtypes.empty())
-            N.fit_normalize(X, find_dtypes(X));  
+            N.fit_normalize(_X, find_dtypes(X));  
         else 
-            N.fit_normalize(X, dtypes);
+            N.fit_normalize(_X, dtypes);
     }
 
     /* else */
         /* cout << "normlize is false\n"; */
         
-    MatrixXd _X = X.template cast<double>();
-    VectorXd _y = y.template cast<double>();
     
     
     if(_X.isZero(0.0001))
@@ -382,7 +383,7 @@ shared_ptr<CLabels> ML::fit(MatrixXf& X, VectorXf& y,
     return this->retrieve_labels(features, true, pass); 
 }
 
-VectorXf ML::fit_vector(MatrixXf& X, VectorXf& y, 
+VectorXf ML::fit_vector(const MatrixXf& X, const VectorXf& y, 
         const Parameters& params, bool& pass,
                  const vector<char>& dtypes)
 {
@@ -392,10 +393,11 @@ VectorXf ML::fit_vector(MatrixXf& X, VectorXf& y,
 }
 
 
-shared_ptr<CLabels> ML::predict(MatrixXf& X, bool print)
+shared_ptr<CLabels> ML::predict(const MatrixXf& X, bool print)
 {
     logger.log("ML::predict...",3);
     shared_ptr<CLabels> labels;
+    MatrixXd _X = X.template cast<double>();
     // make sure the model fit() method passed
     if (get_weights().empty())
     {
@@ -403,8 +405,8 @@ shared_ptr<CLabels> ML::predict(MatrixXf& X, bool print)
         if (this->prob_type==PT_BINARY) 
         {
             labels = std::shared_ptr<CLabels>(
-                    new CBinaryLabels(X.cols()));
-            for (unsigned i = 0; i < X.cols() ; ++i)
+                    new CBinaryLabels(_X.cols()));
+            for (unsigned i = 0; i < _X.cols() ; ++i)
             {
                 dynamic_pointer_cast<CBinaryLabels>(
                         labels)->set_value(0,i);
@@ -416,8 +418,8 @@ shared_ptr<CLabels> ML::predict(MatrixXf& X, bool print)
         else if (this->prob_type == PT_MULTICLASS)
         {
             labels = std::shared_ptr<CLabels>(
-                    new CMulticlassLabels(X.cols()));
-            for (unsigned i = 0; i < X.cols() ; ++i)
+                    new CMulticlassLabels(_X.cols()));
+            for (unsigned i = 0; i < _X.cols() ; ++i)
             {
                 dynamic_pointer_cast<CMulticlassLabels>(
                         labels)->set_value(0,i);
@@ -429,8 +431,8 @@ shared_ptr<CLabels> ML::predict(MatrixXf& X, bool print)
         else
         {
             labels = std::shared_ptr<CLabels>(
-                    new CRegressionLabels(X.cols()));
-            for (unsigned i = 0; i < X.cols() ; ++i)
+                    new CRegressionLabels(_X.cols()));
+            for (unsigned i = 0; i < _X.cols() ; ++i)
             {
                 dynamic_pointer_cast<CRegressionLabels>(
                         labels)->set_value(0,i);
@@ -446,9 +448,8 @@ shared_ptr<CLabels> ML::predict(MatrixXf& X, bool print)
     /* cout << "\n"; */
     /* cout << "normalize\n"; */ 
     if (normalize)
-        N.normalize(X);
+        N.normalize(_X);
     
-    MatrixXd _X = X.template cast<double>();
     auto features = some<CDenseFeatures<float64_t>>(
             SGMatrix<float64_t>(_X));
      
@@ -456,14 +457,14 @@ shared_ptr<CLabels> ML::predict(MatrixXf& X, bool print)
     return this->retrieve_labels(features, true, pass);
 }
 
-VectorXf ML::predict_vector(MatrixXf& X)
+VectorXf ML::predict_vector(const MatrixXf& X)
 {
     shared_ptr<CLabels> labels = predict(X);
     return labels_to_vector(labels);     
     
 }
 
-ArrayXXf ML::predict_proba(MatrixXf& X)
+ArrayXXf ML::predict_proba(const MatrixXf& X)
 {
     shared_ptr<CLabels> labels = shared_ptr<CLabels>(predict(X));
        
