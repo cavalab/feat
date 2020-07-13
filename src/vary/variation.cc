@@ -6,7 +6,7 @@ license: GNU/GPL v3
 #include "variation.h"
 
 namespace FT{
-    namespace Vary{
+namespace Vary{
 /// constructor
 Variation::Variation(float cr): cross_rate(cr) {}
            
@@ -102,19 +102,13 @@ void Variation::vary(Population& pop, const vector<size_t>& parents,
             if (pass)
             {
                 assert(child.size()>0);
-                assert(pop.open_loc.size()>i-start);
                 logger.log("assigning " + child.program_str() + 
-                        " to pop.individuals[" + std::to_string(i) + 
-                        "] with pop.open_loc[" + std::to_string(i-start) + 
-                    "]=" + std::to_string(pop.open_loc.at(i-start)),3);
+                        " to pop.individuals[" + std::to_string(i) + "]",3);
 
                 pop.individuals.at(i) = child;
-                pop.individuals.at(i).loc = pop.open_loc.at(i-start);                   
             }
         }    
    }
-  
-   pop.update_open_loc();
 }
 
 bool Variation::mutate(const Individual& mom, Individual& child, 

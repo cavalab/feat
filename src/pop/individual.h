@@ -31,6 +31,7 @@ namespace FT{
             NodeVector program; ///< executable data structure
             MatrixXf Phi;      ///< transformation output of program 
             VectorXf yhat;     ///< current output
+            VectorXf error;     ///< training error
             shared_ptr<ML> ml; ///< ML model, trained on Phi
             float fitness;     ///< aggregate fitness score
             float fitness_v;   ///< aggregate validation fitness score

@@ -401,7 +401,7 @@ shared_ptr<CLabels> ML::predict(const MatrixXf& X, bool print)
     // make sure the model fit() method passed
     if (get_weights().empty())
     {
-        HANDLE_ERROR_NO_THROW("weight empty; returning zeros"); 
+        logger.log("weight empty; returning zeros",3); 
         if (this->prob_type==PT_BINARY) 
         {
             labels = std::shared_ptr<CLabels>(

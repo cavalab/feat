@@ -578,12 +578,9 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     p_pop->init(best_ind,params,random);
     logger.log("Initial population:\n"+p_pop->print_eqns(),3);
 
-    // resize F to be twice the pop-size x number of samples
-    F.resize(d.t->X.cols(),int(2*params.pop_size));
-   
     // evaluate initial population
     logger.log("Evaluating initial population",2);
-    p_eval->fitness(p_pop->individuals,*d.t,F,params);
+    p_eval->fitness(p_pop->individuals,*d.t,params);
     p_eval->validation(p_pop->individuals,*d.v,params);
     
     logger.log("Initial population done",2);
@@ -680,7 +677,7 @@ void Feat::run_generation(unsigned int g,
 
     // select parents
     logger.log("selection..", 2);
-    vector<size_t> parents = p_sel->select(*p_pop, F, params, *d.t);
+    vector<size_t> parents = p_sel->select(*p_pop, params, *d.t);
     logger.log("parents:\n"+p_pop->print_eqns(), 3);          
     
     // variation to produce offspring
@@ -690,12 +687,12 @@ void Feat::run_generation(unsigned int g,
 
     // evaluate offspring
     logger.log("evaluating offspring...", 2);
-    p_eval->fitness(p_pop->individuals, *d.t, F, params, true);
+    p_eval->fitness(p_pop->individuals, *d.t, params, true);
     p_eval->validation(p_pop->individuals, *d.v, params, true);
 
     // select survivors from combined pool of parents and offspring
     logger.log("survival...", 2);
-    survivors = p_surv->survive(*p_pop, F, params, *d.t);
+    survivors = p_surv->survive(*p_pop, params, *d.t);
    
     // reduce population to survivors
     logger.log("shrinking pop to survivors...",2);
@@ -1283,7 +1280,7 @@ bool Feat::update_best(const DataRef& d, bool validation)
 
     bool updated = false; 
 
-    for (const auto ind: pop)
+    for (const auto& ind: pop)
     {
         if (!val_from_arch || (val_from_arch && ind.rank == 1))
         {
@@ -1316,16 +1313,23 @@ float Feat::score(MatrixXf& X, const VectorXf& y, LongData Z)
 void Feat::calculate_stats(const DataRef& d)
 {
 
+    VectorXf losses(p_pop->size());
+    int i=0;
+    for (const auto& p: p_pop->individuals)
+    {
+        losses(i) = p.fitness;
+        ++i;
+    }
     // min loss
-    float min_loss = F.colwise().mean().minCoeff();  
+    float min_loss = losses.minCoeff();  
 
     // median loss
-    float med_loss = median(F.colwise().mean().array());  
+    float med_loss = median(losses.array());  
     
     // median program size
     ArrayXf Sizes(p_pop->size());
     
-    unsigned i = 0;
+    i = 0;
     
     for (const auto& p : p_pop->individuals)
     { 

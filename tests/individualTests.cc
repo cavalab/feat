@@ -55,7 +55,7 @@ TEST(Individual, EvalEquation)
     
     std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > z; 
 
-    feat.params.init();       
+    feat.params.init(X, y);       
   
     feat.set_dtypes(find_dtypes(X));
             

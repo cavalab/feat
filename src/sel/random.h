@@ -22,9 +22,9 @@ namespace FT{
             
             ~Random();
            
-            vector<size_t> select(Population& pop, const MatrixXf& F, 
+            vector<size_t> select(Population& pop,  
                     const Parameters& params, const Data& d);
-            vector<size_t> survive(Population& pop, const MatrixXf& F, 
+            vector<size_t> survive(Population& pop,  
                     const Parameters& params, const Data& d);
             /// replaces worst individual in selected with best individual in Pop.
             void enforce_elite(Population& pop, vector<size_t>& selected);

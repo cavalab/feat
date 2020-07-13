@@ -1,4 +1,4 @@
-/* FEWTWO
+/* FEAT
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
@@ -12,7 +12,7 @@ license: GNU/GPL v3
 namespace FT{
 
     namespace Sel{
-        ////////////////////////////////////////////////////////////////////////////////// Declarations
+        ////////////////////////////////////////////////////////// Declarations
         /*!
          * @class FairLexicase
          * @brief FairLexicase selection operator.
@@ -23,12 +23,12 @@ namespace FT{
             
             ~FairLexicase();
 
-            /// function returns a set of selected indices from F. 
-            vector<size_t> select(Population& pop, const MatrixXf& F, 
+            /// function returns a set of selected indices  
+            vector<size_t> select(Population& pop,  
                     const Parameters& params, const Data& d); 
             
             /// lexicase survival
-            vector<size_t> survive(Population& pop, const MatrixXf& F, 
+            vector<size_t> survive(Population& pop,  
                     const Parameters& params, const Data& d); 
 
         };

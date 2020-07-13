@@ -15,13 +15,12 @@ namespace FT{
         
         Random::~Random(){}
            
-        vector<size_t> Random::select(Population& pop, const MatrixXf& F, 
+        vector<size_t> Random::select(Population& pop,  
                 const Parameters& params, const Data& d)
         {
             /* Selects parents for making offspring.  
              *
              * @param pop: population of programs, all potential parents. 
-             * @param F: n_samples x 2 * popsize matrix of program behaviors. 
              * @param params: parameters.
              *
              * @return selected: vector of indices corresponding to offspring that are selected.
@@ -45,20 +44,19 @@ namespace FT{
             return selected;
         }
 
-        vector<size_t> Random::survive(Population& pop, const MatrixXf& F, 
+        vector<size_t> Random::survive(Population& pop, 
                 const Parameters& params, const Data& d)
         {
             /* Selects the offspring for survival. 
              *
              * @param pop: population of programs, parents + offspring.
-             * @param F: n_samples x 2 * popsize matrix of program behaviors. 
              * @param params: parameters.
              *
              * @return selected: vector of indices corresponding to offspring that are selected.
              *      
              */
           
-            int P = F.cols()/2; // index P is where the offspring begin, and also the size of the pop
+            int P = pop.individuals.size()/2; // index P is where the offspring begin, and also the size of the pop
            
             vector<size_t> all_idx(pop.size());
             std::iota(all_idx.begin(), all_idx.end(), 0);
