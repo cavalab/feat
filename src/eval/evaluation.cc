@@ -79,25 +79,22 @@ namespace FT{
         // fitness of population
         void Evaluation::fitness(vector<Individual>& individuals,
                                  const Data& d, 
-                                 MatrixXf& F, 
                                  const Parameters& params, 
                                  bool offspring)
         {
         	/*!
              *      @param individuals: population
              *      @param d: Data structure
-             *      @param F: matrix of raw fitness values
              *      @param params: algorithm parameters
              *      @param offspring: if true, only evaluate last half of population
              
              * Output 
              
-             *      F is modified
-             *      pop[:].fitness is modified
+             *      individuals.fitness, yhat, error is modified
              */
             
             unsigned start =0;
-            if (offspring) start = F.cols()/2;
+            if (offspring) start = individuals.size()/2;
 
             /* for (unsigned i = start; i<individuals.size(); ++i) */
             /* { */
@@ -115,15 +112,15 @@ namespace FT{
             {
                 Individual& ind = individuals.at(i);
 
-#pragma omp critical
-                {
                 if (params.backprop)
                 {
+                    #pragma omp critical
+                    {
                     AutoBackProp backprop(params.scorer, params.bp.iters, 
                             params.bp.learning_rate);
                     logger.log("Running backprop on " + ind.get_eqn(), 3);
                     backprop.run(ind, d, params);
-                }         
+                    }         
                 }
                 bool pass = true;
 
@@ -140,12 +137,12 @@ namespace FT{
                 {
 
                     ind.fitness = MAX_FLT;
-                    F.col(ind.loc) = MAX_FLT*VectorXf::Ones(d.y.size());
+                    ind.error = MAX_FLT*VectorXf::Ones(d.y.size());
                 }
                 else
                 {
                     // assign weights to individual
-                    assign_fit(ind,F,yhat,d,params,false);
+                    assign_fit(ind,yhat,d,params,false);
                     
 
                     if (params.hillclimb)
@@ -158,7 +155,7 @@ namespace FT{
                         // update the fitness of this individual
                         if (updated)    
                         {
-                            assign_fit(ind, F, yhat2, d, params);
+                            assign_fit(ind, yhat2, d, params);
                         }
 
                     }
@@ -167,28 +164,27 @@ namespace FT{
         }
         
         // assign fitness to program
-        void Evaluation::assign_fit(Individual& ind, MatrixXf& F, 
+        void Evaluation::assign_fit(Individual& ind,  
                 const shared_ptr<CLabels>& yhat, const Data& d, 
                 const Parameters& params, bool val)
         {
             /*!
-             * assign raw errors to F, and aggregate fitnesses to individuals. 
+             * assign raw errors and aggregate fitnesses to individuals. 
              *
              *  Input: 
              *
              *       ind: individual 
-             *       F: n_samples x pop_size matrix of errors
              *       yhat: predicted output of ind
              *       d: data
              *       params: feat parameters
              *
              *  Output:
              *
-             *       modifies F and ind.fitness
+             *       modifies individual metrics
             */ 
-            assert(F.cols()>ind.loc);
             VectorXf loss;
             float f = S.score(d.y, yhat, loss, params.class_weights);
+            //TODO: add if condition for this
             float fairness = marginal_fairness(loss, d, f);
             
             if (fairness <0 )
@@ -204,10 +200,9 @@ namespace FT{
             {
                 ind.fitness = f;
                 ind.fairness = fairness;
+                ind.error = loss;
             }
                 
-            F.col(ind.loc) = loss;  
-            
             logger.log("ind " + std::to_string(ind.loc) + " fitness: " 
                     + std::to_string(ind.fitness),3);
         }

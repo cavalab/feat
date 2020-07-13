@@ -48,7 +48,7 @@ TEST(Variation, MutationTests)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158;
     y_v << 0.57015434, -1.20648656, -2.68773747;
 
-    feat.params.init();       
+    feat.params.init(X, y, "");       
   
     feat.set_dtypes(find_dtypes(X));
             
@@ -73,9 +73,7 @@ TEST(Variation, MutationTests)
     // initialize population 
     feat.p_pop->init(feat.best_ind, feat.params);
     
-    feat.F.resize(X.cols(),int(2*feat.params.pop_size));
-    
-    feat.p_eval->fitness(feat.p_pop->individuals, dt,feat.F,feat.params);
+    feat.p_eval->fitness(feat.p_pop->individuals, dt, feat.params);
     
     vector<size_t> parents;
     parents.push_back(2);
@@ -92,8 +90,6 @@ TEST(Variation, MutationTests)
 		
 		if (pass)                   // congrats! you produced a viable child.
 		{
-			// give child an open location in F
-			child.loc = feat.p_pop->get_open_loc(); 
 			//push child into pop
 			feat.p_pop->individuals.push_back(child);
 		}
@@ -132,7 +128,7 @@ TEST(Variation, CrossoverTests)
 
     std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > z; 
 
-    feat.params.init();       
+    feat.params.init(X, y);       
   
     feat.set_dtypes(find_dtypes(X));
             
@@ -159,7 +155,7 @@ TEST(Variation, CrossoverTests)
     
     feat.F.resize(X.cols(),int(2*feat.params.pop_size));
     
-    feat.p_eval->fitness(feat.p_pop->individuals,dt,feat.F,feat.params);
+    feat.p_eval->fitness(feat.p_pop->individuals,dt,feat.params);
     
     vector<size_t> parents;
     parents.push_back(2);
@@ -180,8 +176,6 @@ TEST(Variation, CrossoverTests)
 		
 		if (pass)                   // congrats! you produced a viable child.
 		{
-			// give child an open location in F
-			child.loc = feat.p_pop->get_open_loc(); 
 			//push child into pop
 			feat.p_pop->individuals.push_back(child);
 		}

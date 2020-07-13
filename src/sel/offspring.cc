@@ -13,23 +13,22 @@ namespace FT{
         
         Offspring::~Offspring(){}
            
-        vector<size_t> Offspring::survive(Population& pop, const MatrixXf& F, 
+        vector<size_t> Offspring::survive(Population& pop,  
                 const Parameters& params, const Data& d)
         {
             /* Selects the offspring for survival. 
              *
              * @param pop: population of programs, parents + offspring.
-             * @param F: n_samples x 2 * popsize matrix of program behaviors. 
              * @param params: parameters.
              *
              * @return selected: vector of indices corresponding to offspring that are selected.
              *      
              */
           
-            int P = F.cols()/2; // index P is where the offspring begin, and also the size of the pop
+            int P = pop.individuals.size()/2; // index P is where the offspring begin, and also the size of the pop
             
             vector<size_t> selected(P);
-            // select F/2 to F individuals
+            // select popsize/2 to popsize individuals
             std::iota(selected.begin(),selected.end(),P);
             
             if (selected.at(selected.size()-1) > pop.size())

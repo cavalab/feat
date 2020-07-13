@@ -13,13 +13,12 @@ namespace FT{
         
         SimAnneal::~SimAnneal(){}
            
-        vector<size_t> SimAnneal::select(Population& pop, const MatrixXf& F, 
+        vector<size_t> SimAnneal::select(Population& pop,  
                 const Parameters& params, const Data& d)
         {
             /* Selects parents for making offspring.  
              *
              * @param pop: population of programs, all potential parents
-             * * @param F: n_samples x 2 * popsize matrix of program behaviors. 
              * @param params: parameters.
              *
              * @return selected: vector of indices corresponding to offspring that are selected.
@@ -33,7 +32,7 @@ namespace FT{
             return all_idx;
         }
 
-        vector<size_t> SimAnneal::survive(Population& pop, const MatrixXf& F, 
+        vector<size_t> SimAnneal::survive(Population& pop,  
                 const Parameters& params, const Data& d)
         {
             /* Selects the offspring for survival using simulated annealing.
@@ -46,7 +45,6 @@ namespace FT{
              * where t is the temperature. 
              *
              * @param pop: population of programs, parents + offspring.
-             * @param F: n_samples x 2 * popsize matrix of program behaviors. 
              * @param params: parameters.
              *
              * @return selected: vector of indices corresponding to offspring that are selected.
@@ -58,10 +56,10 @@ namespace FT{
             this->t = pow(0.9, float(params.current_gen))*this->t0;  
             /* cout << "t: " << this->t << "\n"; */
 
-            int P = F.cols()/2; // index P is where the offspring begin, and also the size of the pop
+            int P = pop.individuals.size()/2; // index P is where the offspring begin, and also the size of the pop
             vector<size_t> selected(P); 
             #pragma omp parallel for        
-            for (unsigned i = P; i < F.cols(); ++i)
+            for (unsigned i = P; i < pop.individuals.size(); ++i)
             {
                 Individual& offspring = pop.individuals.at(i);
                 /* cout << "offspring: " << offspring.get_eqn() << "\n"; */

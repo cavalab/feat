@@ -301,12 +301,11 @@ TEST(Evaluation, fitness)
     pop.individuals[1].program.push_back(std::unique_ptr<Node>(new NodeVariable<float>(0)));
     pop.individuals[1].loc = 1;
     //std::cout << pop.individuals[1].get_eqn() + "\n";    
-    MatrixXf F(10,2);   // output matrix
 
     // get fitness
     Evaluation eval("mse"); 
 
-    eval.fitness(pop.individuals, d, F, ft.params);
+    eval.fitness(pop.individuals, d, ft.params);
     
     // check results
     //cout << pop.individuals[0].fitness << " , should be near zero\n";

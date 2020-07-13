@@ -27,9 +27,8 @@ TEST(Population, PopulationTests)
     
     std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > z;
 
-    feat.params.init();       
+    feat.params.init(X, y);       
   
-    feat.set_dtypes(find_dtypes(X));
     cout << "dtypes: ";
     for (const auto& d : feat.params.dtypes)
         cout << d << ",";
@@ -57,24 +56,5 @@ TEST(Population, PopulationTests)
     // initialize population 
     feat.p_pop->init(feat.best_ind, feat.params);
     
-    vector<size_t> current_locs; 
-    int i;
-    for(i = 0; i < feat.p_pop->individuals.size(); i++)
-    {
-    	ASSERT_NO_THROW(feat.p_pop->individuals[i]);
-	    current_locs.push_back(feat.p_pop->individuals[i].loc);
-	}
-	    
-	size_t loc1 = feat.p_pop->get_open_loc();
-	size_t loc2 = feat.p_pop->get_open_loc();
-	size_t loc3 = feat.p_pop->get_open_loc();
-	size_t loc4 = feat.p_pop->get_open_loc();
-	
-	ASSERT_FALSE(std::find(current_locs.begin(), current_locs.end(), loc1) != current_locs.end());
-	ASSERT_FALSE(std::find(current_locs.begin(), current_locs.end(), loc2) != current_locs.end());
-	ASSERT_FALSE(std::find(current_locs.begin(), current_locs.end(), loc3) != current_locs.end());
-	ASSERT_FALSE(std::find(current_locs.begin(), current_locs.end(), loc4) != current_locs.end());
-	
-	//TODO put a check in get_open_loc()
 }
 
