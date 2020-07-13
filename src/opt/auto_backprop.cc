@@ -96,7 +96,7 @@ namespace FT {
                 // get batch data for training
                 BP_data.t->get_batch(batch_data, batch_size); 
                 /* cout << "batch_data.y: " */ 
-                     << batch_data.y.transpose() << "\n"; 
+                /*      << batch_data.y.transpose() << "\n"; */ 
                 // Evaluate forward pass
                 MatrixXf Phi; 
                 /* cout << "forward pass\n"; */
