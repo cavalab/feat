@@ -37,7 +37,7 @@ TEST(Selection, SelectionOperator)
     
     feat.timer.Reset();
 	
-	feat.params.init();       
+	feat.params.init(X, y, "");       
 
     feat.set_dtypes(find_dtypes(X));
             
@@ -53,10 +53,9 @@ TEST(Selection, SelectionOperator)
     // initialize population 
     feat.p_pop->init(feat.best_ind, feat.params);
     
-    feat.F.resize(d.X_t.cols(),int(2*feat.params.pop_size));
-    feat.p_eval->fitness(feat.p_pop->individuals, *d.t, feat.F, feat.params);
-    vector<size_t> parents = feat.p_sel->select(*(feat.p_pop), feat.F, 
-            feat.params, *d.t);
+    feat.p_eval->fitness(feat.p_pop->individuals, *d.t, feat.params);
+    vector<size_t> parents = feat.p_sel->select(*(feat.p_pop), feat.params, 
+            *d.t);
     
     ASSERT_EQ(parents.size(), feat.get_pop_size());
 }

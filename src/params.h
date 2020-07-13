@@ -106,7 +106,7 @@ namespace FT{
          *  make sure scorer is set. 
          *  for classification, check clases and find number.
          */
-        void init(const MatrixXf& X, const VectorXf& y, string scorer);
+        void init(const MatrixXf& X, const VectorXf& y, string scorer="");
       
         /// sets current generation
         void set_current_gen(int g);

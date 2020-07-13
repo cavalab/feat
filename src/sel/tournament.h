@@ -1,4 +1,4 @@
-/* FEWTWO
+/* FEAT
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
@@ -23,11 +23,11 @@ namespace FT{
             ~Tournament();
 
             /// selection according to the survival scheme of Tournament
-            vector<size_t> select(Population& pop, const MatrixXf& F, 
+            vector<size_t> select(Population& pop,  
                     const Parameters& p, const Data& d);
             
             /// survival according to the survival scheme of Tournament
-            vector<size_t> survive(Population& pop, const MatrixXf& F, 
+            vector<size_t> survive(Population& pop, 
                     const Parameters& p, const Data& d);
 
             private:    

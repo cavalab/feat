@@ -31,7 +31,7 @@ namespace FT{
 
         }
         
-        vector<size_t> Tournament::select(Population& pop, const MatrixXf& F, 
+        vector<size_t> Tournament::select(Population& pop,  
                 const Parameters& params, const Data& d)
         {
             /* Selection using tournament selection. 
@@ -64,7 +64,7 @@ namespace FT{
             return selected;
         }
 
-        vector<size_t> Tournament::survive(Population& pop, const MatrixXf& F, 
+        vector<size_t> Tournament::survive(Population& pop,  
                 const Parameters& params, const Data& d)
         {
             /* Selection using the survival scheme of NSGA-II. 
