@@ -1,4 +1,4 @@
-/* FEWTWO
+/* FEAT
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
@@ -23,18 +23,21 @@ namespace FT{
             ~NSGA2();
 
             /// selection according to the survival scheme of NSGA-II
-            vector<size_t> select(Population& pop, const MatrixXf& F, 
+            vector<size_t> select(Population& pop,  
                     const Parameters& p, const Data& d);
             
             /// survival according to the survival scheme of NSGA-II
-            vector<size_t> survive(Population& pop, const MatrixXf& F, 
+            vector<size_t> survive(Population& pop,  
                     const Parameters& p, const Data& d);
+            
+            //< the Pareto fronts
+            vector<vector<int>> front;                
 
-            vector<vector<int>> front;                //< the Pareto fronts
-            
-            void fast_nds(vector<Individual>&);               //< Fast non-dominated sorting 
-            
-            void crowding_distance(Population&, int); //< crowding distance of a front i
+            //< Fast non-dominated sorting
+            void fast_nds(vector<Individual>&);                
+
+            //< crowding distance of a front i
+            void crowding_distance(Population&, int); 
                 
             private:    
 

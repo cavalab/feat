@@ -6,24 +6,23 @@ license: GNU/GPL v3
 #include "selection_operator.h"
 
 namespace FT{
+namespace Sel{
 
-    namespace Sel{
+SelectionOperator::~SelectionOperator(){}
 
-        SelectionOperator::~SelectionOperator(){}
-        
-        vector<size_t> SelectionOperator::select(Population& pop, 
-                const MatrixXf& F, const Parameters& p, const Data& d) 
-        {   
-            HANDLE_ERROR_THROW("Undefined select() operation");
-        }
-        
-        vector<size_t> SelectionOperator::survive(Population& pop, 
-                const MatrixXf& F, const Parameters& p, const Data& d)
-        {
-            HANDLE_ERROR_THROW("Undefined select() operation");
-        }
-        
-    }
+vector<size_t> SelectionOperator::select(Population& pop, 
+        const Parameters& p, const Data& d) 
+{   
+    HANDLE_ERROR_THROW("Undefined select() operation");
+}
+
+vector<size_t> SelectionOperator::survive(Population& pop, 
+        const Parameters& p, const Data& d)
+{
+    HANDLE_ERROR_THROW("Undefined select() operation");
+}
+    
+}
 
 }
 

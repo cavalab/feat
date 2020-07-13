@@ -9,7 +9,6 @@ license: GNU/GPL v3
 #include "selection_operator.h"
 #include "lexicase.h"
 #include "fair_lexicase.h"
-#include "fair_lexicase2.h"
 #include "nsga2.h"
 #include "tournament.h"
 #include "offspring.h"
@@ -45,11 +44,11 @@ namespace FT{
             string get_type();
             
             /// perform selection 
-            vector<size_t> select(Population& pop, const MatrixXf& F, 
+            vector<size_t> select(Population& pop,  
                     const Parameters& params, const Data& d);
             
             /// perform survival
-            vector<size_t> survive(Population& pop, const MatrixXf& F,  
+            vector<size_t> survive(Population& pop,  
                     const Parameters& params, const Data& d);
         };
         
