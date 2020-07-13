@@ -115,7 +115,7 @@ namespace FT{
             {
                 Individual& ind = individuals.at(i);
 
-#pragma omp critical
+                /* #pragma omp critical */
                 {
                 if (params.backprop)
                 {

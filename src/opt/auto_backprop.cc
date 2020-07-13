@@ -70,7 +70,8 @@ namespace FT {
             // set up batch data
             MatrixXf Xb, Xb_v;
             VectorXf yb, yb_v;
-            std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Zb, Zb_v;
+            /* std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Zb, Zb_v; */
+            LongData Zb, Zb_v;
             /* cout << "y: " << d.y.transpose() << "\n"; */ 
             Data batch_data(Xb, yb, Zb, params.classification);
             /* Data db_val(Xb_v, yb_v, Zb_v, params.classification); */
@@ -79,8 +80,8 @@ namespace FT {
             int batch_size = params.bp.batch_size > 0? 
                 params.bp.batch_size : .2*BP_data.t->y.size(); 
             /* d.get_batch(db_val, );     // draw a batch for the validation data */
-            
-            int patience = 3;   // number of iterations to allow validation fitness to not improve
+            // number of iterations to allow validation fitness to not improve
+            int patience = 3;               
             int missteps = 0;
 
             this->epk = n;  // starting learning rate
@@ -88,25 +89,26 @@ namespace FT {
             logger.log("=========================",3);
             logger.log("Iteration,Train Loss,Val Loss,Weights",3);
             logger.log("=========================",3);
+            cout << ind.get_eqn() << endl;
             for (int x = 0; x < this->iters; x++)
             {
-                /* cout << "get batch\n"; */
+                cout << "get batch\n";
                 // get batch data for training
                 BP_data.t->get_batch(batch_data, batch_size); 
-                /* cout << "batch_data.y: " 
-                 * << batch_data.y.transpose() << "\n"; */ 
+                cout << "batch_data.y: " 
+                     << batch_data.y.transpose() << "\n"; 
                 // Evaluate forward pass
                 MatrixXf Phi; 
-                /* cout << "forward pass\n"; */
+                cout << "forward pass\n";
                 vector<Trace> stack_trace = forward_prop(ind, batch_data, 
                         Phi, params);
-                /* cout << "just finished forward_pass\n"; */
+                cout << "just finished forward_pass\n";
                 // Evaluate ML model on Phi
                 bool pass = true;
                 auto ml = std::make_shared<ML>(params.ml, true, 
                         params.classification, params.n_classes);
 
-                /* cout << "ml fit\n"; */
+                cout << "ml fit\n";
                 shared_ptr<CLabels> yhat = ml->fit(Phi,
                         batch_data.y,params,pass,ind.dtypes);
                 
@@ -115,7 +117,7 @@ namespace FT {
                     break;
 
                 vector<float> Beta = ml->get_weights();
-                /* cout << "cost func\n"; */
+                cout << "cost func\n";
                 current_loss = this->cost_func(batch_data.y, yhat, 
                         params.class_weights).mean();
 
@@ -137,7 +139,7 @@ namespace FT {
 
                 // check validation fitness for early stopping
                 MatrixXf Phival = ind.out((*BP_data.v),params);
-                /* cout << "checking validation fitness\n"; */
+                cout << "checking validation fitness\n";
                 /* cout << "Phival: " << Phival.rows() 
                  * << " x " << Phival.cols() << "\n"; */
                 /* cout << "y_val\n"; */
@@ -145,7 +147,7 @@ namespace FT {
                 /* cout << "val_loss\n"; */
                 current_val_loss = this->cost_func(BP_data.v->y, y_val, 
                         params.class_weights).mean();
-                /* cout << "check for min loss\n"; */ 
+                cout << "check for min loss\n"; 
                 if (x==0 || current_val_loss < min_loss)
                 {
                     min_loss = current_val_loss;
