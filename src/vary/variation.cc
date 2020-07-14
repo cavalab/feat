@@ -257,21 +257,27 @@ void Variation::insert_mutate(Individual& child,
                 { 
                     // find fns with matching output types that take 
                     // this node type as arg
-                    if (f->arity.at(child.program.at(i)->otype) > 0 && 
-                            f->otype==child.program.at(i)->otype )
+                    if (f->otype==child.program.at(i)->otype 
+                        && f->arity.at(child.program.at(i)->otype) > 0)
                     { 
-                        // make sure there are satisfactory types in n
+                        // make sure there are satisfactory types in 
                         // terminals to fill fns' args
-                        if (child.program.at(i)->otype=='b')
+                        map<char,unsigned> fn_arity = f->arity;
+                        --fn_arity.at(child.program.at(i)->otype);
+                        bool valid_function = true;
+                        for (auto kv : fn_arity)
                         {
-                            if (in(params.dtypes,'b') || f->arity.at('b')==1)
-                                fns.push_back(f->rnd_clone());
+                            if (kv.second > 0)
+                            {
+                                if (!in(params.dtypes, kv.first))
+                                {
+                                    valid_function=false;
+                                }
+                            }
+                            
                         }
-                        else if (child.program.at(i)->otype=='f')
-                        {
-                            if (f->arity.at('b')==0 || in(params.dtypes,'b') )
-                                fns.push_back(f->rnd_clone());              
-                        }
+                        if (valid_function)
+                            fns.push_back(f->rnd_clone());
                     }
                 }
 
@@ -287,18 +293,14 @@ void Variation::insert_mutate(Individual& child,
                 // now we need to manually construct a subtree with this 
                 // insertion node, with the child program stiched in as an 
                 // argument.
-                map<char, unsigned> insert_arity; 
-                insert_arity['f'] = insertion.back()->arity.at('f'); 
-                insert_arity['b'] = insertion.back()->arity.at('b'); 
-                insert_arity['c'] = insertion.back()->arity.at('c'); 
-                insert_arity['z'] = insertion.back()->arity.at('z'); 
+                map<char, unsigned> insert_arity = insertion.back()->arity;
 
                 // decrement function arity by one for child node 
                 --insert_arity.at(child.program.at(i)->otype);
                 
-                vector<char> types = {'f','b','c','z'};
-                for (auto type : types)
+                for (const auto& kv : insert_arity)
                 {
+                    char type = kv.first;
                     // push back new arguments for the rest of the function
                     for (unsigned j = 0; j< insert_arity.at(type); ++j)
                     {
@@ -487,7 +489,8 @@ bool Variation::correlation_delete_mutate(Individual& child,
            float corr = pearson_correlation(Phi.row(i).array(),
                         Phi.row(j).array());
 
-           /* cout << "correlation (" << i << "," << j << "): " << corr << "\n"; */
+           /* cout << "correlation (" << i << "," << j << "): " */ 
+           /*     << corr << "\n"; */
 
            if (corr > highest_corr)
            {
@@ -501,7 +504,7 @@ bool Variation::correlation_delete_mutate(Individual& child,
             + "; corr = " + to_string(highest_corr), 3);
     if (f1 == 0 && f2 == 0)
     {
-        HANDLE_ERROR_NO_THROW("ERROR: couldn't get proper "
+        HANDLE_ERROR_NO_THROW("WARNING: couldn't get proper "
                 "correlations. aborting correlation_delete_mutate\n");
         return false;
     }
