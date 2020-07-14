@@ -141,7 +141,7 @@ class Feat(BaseEstimator):
             fairness constraints. 
         tune_initial: boolean, optional (default: False)
             Tune the initial linear model's penalization parameter. 
-        tune_final:
+        tune_final: boolean, optional (default: True)
             Tune the final linear model's penalization parameter. 
         """
         self.pop_size = pop_size
