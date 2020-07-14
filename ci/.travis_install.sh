@@ -81,9 +81,6 @@ sudo cp *.a /usr/lib
 echo "back to $old_path.."
 cd $old_path; pwd
 
-
-
-
 ###################
 # feat installation
 ###################
