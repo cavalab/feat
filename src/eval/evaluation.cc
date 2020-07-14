@@ -14,14 +14,6 @@ namespace FT{
     
         Evaluation::Evaluation(string scorer): S(scorer)
         {
-            /* score_hash["mse"] = &mse_label; */
-            /* score_hash["zero_one"] = &zero_one_loss_label; */
-            /* score_hash["bal_zero_one"] = &bal_zero_one_loss_label; */
-            /* score_hash["log"] =  &log_loss_label; */ 
-            /* score_hash["multi_log"] =  &multi_log_loss_label; */ 
-            /* score_hash["fpr"] =  &false_positive_loss_label; */ 
-        
-            /* score = score_hash.at(scorer); */
             this->S.set_scorer(scorer);
         }
 
