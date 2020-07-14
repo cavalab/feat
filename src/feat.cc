@@ -47,12 +47,12 @@ Feat::Feat(int pop_size, int gens, string ml,
           val_from_arch(val_from_arch),
           simplify(simplify)
 {
+    if (n_threads!=0)
+        omp_set_num_threads(n_threads);
     r.set_seed(random_state);
     str_dim = "";
     set_logfile(logfile);
     this->scorer=scorer;
-    if (n_threads!=0)
-        omp_set_num_threads(n_threads);
     survival = surv;
     
     if (GPU)

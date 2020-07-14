@@ -103,13 +103,46 @@ class Feat(BaseEstimator):
         batch_size: int, optional (default: 0)
             Number of samples to train on each generation. 0 means train on 
             all the samples.
-
-
-
-
-
-
-        
+        n_threads: int, optional (default: 0)
+            Number of parallel threads to use. If 0, this will be 
+            automatically determined by OMP. 
+        hillclimb: boolean, optional (default: False)
+            Applies stochastic hillclimbing to feature weights. 
+        logfile: str, optional (default: "")
+            If specified, spits statistics into a logfile. "" means don't log.
+        max_time: int, optional (default: -1)
+            Maximum time terminational criterion in seconds. If -1, not used.
+        residual_xo: boolean, optional (default: False)
+            Use residual crossover. 
+        stagewise_xo: boolean, optional (default: False)
+            Use stagewise crossover.
+        stagewise_xo_tol: boolean, optional (default:False)
+            Terminates stagewise crossover based on an error value rather than
+            dimensionality. 
+        softmax_norm: boolean, optional (default: False)
+            Uses softmax normalization of probabilities of variation across
+            the features. 
+        print_pop: int, optional (default: 0)
+            Prints the population of models. 0: don't print; 1: print final 
+            population; 2: print every generation. 
+        normalize: boolean, optional (default: True)
+            Normalizes the floating point input variables using z-scores. 
+        val_from_arch: boolean, optional (default: True)
+            Validates the final model using the archive rather than the whole 
+            population.
+        corr_delete_mutate: boolean, optional (default: False)
+            Replaces root deletion mutation with a deterministic deletion 
+            operator that deletes the feature with highest collinearity. 
+        simplify: boolean, optional (default: False)
+            Runs post-run simplification to try to shrink the final model 
+            without changing its output.
+        protected_groups: list, optional (default: [])
+            Defines protected attributes in the data. Uses for adding 
+            fairness constraints. 
+        tune_initial: boolean, optional (default: False)
+            Tune the initial linear model's penalization parameter. 
+        tune_final:
+            Tune the final linear model's penalization parameter. 
         """
         self.pop_size = pop_size
         self.gens = gens
