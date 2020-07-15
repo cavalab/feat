@@ -126,9 +126,9 @@ namespace FT {
                 for (int i = 0; i < stack_trace.size(); ++i)
                 {
                     while (!ind.program.at(roots.at(s))->isNodeDx()) ++s;
-                    cout << "roots.at(s): " << roots.at(s) << endl;
-                    cout << "running backprop on " 
-                         << ind.get_eqn() << "\n"; 
+                    /* cout << "roots.at(s): " << roots.at(s) << endl; */
+                    /* cout << "running backprop on " */ 
+                    /*      << ind.get_eqn() << "\n"; */ 
                     /* << " from " */
                     /*      << roots.at(s) << " to " */  
                     /*      << ind.program.subtree(roots.at(s)) << "\n"; */

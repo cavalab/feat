@@ -105,8 +105,9 @@ namespace FT{
                        + to_string(i) + " and program size " 
                        + to_string(this->size()));
                   
-           cout << indent << "getting subtree(" << i << "," << otype << ") for " 
-               << this->at(i)->name << " of type " << this->at(i)->otype << endl;
+           /* cout << indent << "getting subtree(" << i << "," */ 
+           /*     << otype << ") for " << this->at(i)->name */ 
+           /*     << " of type " << this->at(i)->otype << endl; */
            // return this index if it is a terminal
            if (this->at(i)->total_arity()==0)                   
            {
