@@ -291,7 +291,6 @@ void Variation::insert_mutate(Individual& child,
 
                 // grab chosen node's subtree
                 int end = i;
-                cout << "calling subtree with i=" << end << endl;
                 int start = child.program.subtree(end); 
                 logger.log("\t\tinsert mutation from " + to_string(end)
                         + " to " + to_string(start), 3);
@@ -372,12 +371,10 @@ void Variation::delete_mutate(Individual& child,
     for (unsigned i = 0; i< child.program.size(); ++i)
     {
         // mutate with weighted probability
-        cout << "calling subtree with i=" << i << endl;
         if (child.program.subtree(i) != i && r() < child.get_p(i))                      
         {
             // get subtree indices of program to delete
             size_t end = i; 
-            cout << "calling subtree with i=" << end << endl;
             size_t start = child.program.subtree(end);  
             string portion="";
             for (int j=start; j<=end; ++j)
@@ -451,7 +448,6 @@ void Variation::delete_dimension_mutate(Individual& child,
     vector<size_t> roots = child.program.roots();
     
     size_t end = r.random_choice(roots,child.p); 
-    cout << "calling subtree with i=" << end << endl;
     size_t start = child.program.subtree(end);  
     if (logger.get_log_level() >= 3)
     { 
@@ -529,7 +525,6 @@ bool Variation::correlation_delete_mutate(Individual& child,
     // pick the subtree starting at roots(choice) and delete it
     vector<size_t> roots = child.program.roots();
     size_t end = roots.at(choice); 
-    cout << "calling subtree with i=" << end << endl;
     size_t start = child.program.subtree(end);  
     if (logger.get_log_level() >=3)
     { 
@@ -626,14 +621,12 @@ bool Variation::cross(const Individual& mom, const Individual& dad,
     /* cout << "mom subtree\t" << mom.program_str() << " starting at " */ 
     /*     << j1 << "\n"; */
     // get subtree              
-    cout << "calling subtree with i=" << j1 << endl;
     i1 = mom.program.subtree(j1);
     /* cout << "mom i1: " << i1 << endl; */                    
     /* cout << "dad subtree\n" << dad.program_str() << "\n"; */
     /* cout << "dad subtree\n"; */
     // get dad subtree
     j2 = r.random_choice(dlocs);
-    cout << "calling subtree with i=" << j2 << endl;
     i2 = dad.program.subtree(j2); 
            
     /* cout << "splice programs\n"; */
