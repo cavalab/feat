@@ -253,20 +253,20 @@ namespace FT{
              * recursively builds a program with complete arguments.
              */
             // debugging output
-            std::cout << "current program: [";
-            for (const auto& p : *(this) ) std::cout << p->name << " ";
-            std::cout << "]\n";
-            std::cout << "otype: " << otype << "\n";
-            std::cout << "max_d: " << max_d << "\n";
+            /* std::cout << "current program: ["; */
+            /* for (const auto& p : *(this) ) std::cout << p->name << " "; */
+            /* std::cout << "]\n"; */
+            /* std::cout << "otype: " << otype << "\n"; */
+            /* std::cout << "max_d: " << max_d << "\n"; */
 
             if (max_d == 0 || r.rnd_flt() < terminals.size()/(terminals.size()+functions.size())) 
             {
                 // append terminal 
                 vector<size_t> ti;  // indices of valid terminals 
                 vector<float> tw;  // weights of valid terminals
-                cout << "terminals: " ;
-                for (const auto& t : terminals) cout << t->name << "(" << t->otype << "),"; 
-                cout << "\n";
+                /* cout << "terminals: " ; */
+                /* for (const auto& t : terminals) cout << t->name << "(" << t->otype << "),"; */ 
+                /* cout << "\n"; */
                 
                 for (size_t i = 0; i<terminals.size(); ++i)
                 {
@@ -277,16 +277,16 @@ namespace FT{
                     }
                         
                 }
-                cout << "valid terminals: ";
-                for (unsigned i = 0; i < ti.size(); ++i) 
-                    cout << terminals.at(ti.at(i))->name << "(" << terminals.at(ti.at(i))->otype << ", " 
-                         << tw.at(i) << "), "; 
-                cout << "\n";
+                /* cout << "valid terminals: "; */
+                /* for (unsigned i = 0; i < ti.size(); ++i) */ 
+                /*     cout << terminals.at(ti.at(i))->name << "(" << terminals.at(ti.at(i))->otype << ", " */ 
+                /*          << tw.at(i) << "), "; */ 
+                /* cout << "\n"; */
                 
                 if(ti.size() > 0 && tw.size() > 0)
                 {
                     auto t = terminals.at(r.random_choice(ti,tw))->clone();
-                    std::cout << "chose " << t->name << " ";
+                    /* std::cout << "chose " << t->name << " "; */
                     push_back(t->rnd_clone());
                 }
                 else
@@ -308,9 +308,9 @@ namespace FT{
                 bool bterms = in(term_types, 'b');   // are there boolean terminals?
                 bool cterms = in(term_types, 'c');   // are there categorical terminals?
                 bool zterms = in(term_types, 'z');   // are there long terminals?
-                std::cout << "fterms: " << fterms << ", bterms: " << bterms 
-                    << ",cterms: " << cterms 
-                  << ",zterms: " << zterms << "\n"; 
+                /* std::cout << "fterms: " << fterms << ", bterms: " << bterms */ 
+                /*     << ",cterms: " << cterms */ 
+                /*   << ",zterms: " << zterms << "\n"; */ 
                 for (size_t i = 0; i<functions.size(); ++i)
                     if (functions.at(i)->otype==otype &&
                         (max_d>1 || functions.at(i)->arity.at('f')==0 || fterms) &&
@@ -322,54 +322,29 @@ namespace FT{
                         fw.push_back(op_weights.at(i));
                     }
                 
-                if (fi.size()==0){
-                        make_tree(functions, terminals, 0, term_weights, 
+                // if there are no valid functions, add a terminal
+                if (fi.size()==0)
+                {
+                    make_tree(functions, terminals, 0, term_weights, 
                                 op_weights, otype, term_types);
-                        return;
+                    return;
 
-                    /* if(otype == 'z') */
-                    /* { */
-                    /*     make_tree(functions, terminals, 0, term_weights, op_weights, 'z', */ 
-                    /*               term_types); */
-                    /*     return; */
-                    /* } */
-                    /* else if (otype == 'c') */
-                    /* { */
-                    /*     make_tree(functions, terminals, 0, term_weights, op_weights, 'c', */ 
-                    /*               term_types); */
-                    /*     return; */
-                    /* } */
-                    /* else{ */            
-                    /*     //std::cout << "---\n"; */
-                    /*     //std::cout << "f1.size()=0. current program: "; */
-                    /*     //for (const auto& p : *(this)) std::cout << p->name << " "; */
-                    /*     //std::cout << "\n"; */
-                    /*     //std::cout << "otype: " << otype << "\n"; */
-                    /*     //std::cout << "max_d: " << max_d << "\n"; */
-                    /*     //std::cout << "functions: "; */
-                    /*     //for (const auto& f: functions) std::cout << f->name << " "; */
-                    /*     //std::cout << "\n"; */
-                    /*     //std::cout << "---\n"; */
-                    /*     make_tree(functions, terminals, max_d+1, term_weights, */ 
-                    /*             op_weights, otype, term_types); */
-                    /*     return; */
-                    /* } */
                 }
                 if (fi.size() == 0)
                     HANDLE_ERROR_THROW("The operator set specified "
                             "results in incomplete programs.");
                 
                 // append a random choice from fs            
-                cout << "function choices: \n";
-                for (unsigned fis =0; fis < fi.size(); ++fis)
-                    cout << "(" << functions[fi[fis]]->name << "," << fw[fis] << ") ,";
-                cout << "\n";
+                /* cout << "function choices: \n"; */
+                /* for (unsigned fis =0; fis < fi.size(); ++fis) */
+                /*     cout << "(" << functions[fi[fis]]->name << "," << fw[fis] << ") ,"; */
+                /* cout << "\n"; */
                 
                 push_back(functions.at(r.random_choice(fi,fw))->rnd_clone());
                 
-                std::cout << "back(): " << back()->name << "\n"; 
-                std::unique_ptr<Node> chosen(back()->clone());
-                std::cout << "chosen: " << chosen->name << "\n"; 
+                /* std::unique_ptr<Node> chosen(back()->clone()); */
+                map<char, unsigned> chosen_arity = back()->arity;
+                /* std::cout << "chosen: " << chosen->name << "\n"; */ 
                 /* std::cout << "continue?" ; */
                 /* int cont = 0; */
                 /* std::cin >>  cont ; */ 
@@ -379,28 +354,13 @@ namespace FT{
                 vector<char> type_order = {'f','b','c','z'};
                 for (auto type : type_order)
                 {
-                    for (size_t i = 0; i < chosen->arity.at(type); ++i)
+                    for (size_t i = 0; i < chosen_arity.at(type); ++i)
                     {
                         make_tree(functions, terminals, max_d-1, term_weights, 
                                 op_weights, type, term_types);
                     }
 
                 }
-                /* for (size_t i = 0; i < chosen->arity.at('b'); ++i) */
-                /* { */
-                /*     make_tree(functions, terminals, max_d-1, term_weights, */ 
-                /*             op_weights, 'b', term_types); */
-                /* } */
-                /* for (size_t i = 0; i < chosen->arity.at('c'); ++i) */
-                /* { */
-                /*     make_tree(functions, terminals, max_d-1, term_weights, */ 
-                /*             op_weights, 'c', term_types); */
-                /* } */
-                /* for (size_t i = 0; i < chosen->arity.at('z'); ++i) */
-                /* { */
-                /*     make_tree(functions, terminals, max_d-1, term_weights, */ 
-                /*             op_weights, 'z', term_types); */
-                /* } */
             }
             
             /* std::cout << "finished program: ["; */
