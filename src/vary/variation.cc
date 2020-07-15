@@ -131,17 +131,20 @@ bool Variation::mutate(const Individual& mom, Individual& child,
     {
         if (r() < 0.5)
         {
+            logger.log("\tdeletion mutation",2);
             delete_mutate(child,params); 
         }
         else 
         {
             if (params.corr_delete_mutate)
             {
+                logger.log("\tcorrelation_delete_mutate",2);
                 bool perfect_correlation = correlation_delete_mutate(
                         child,mom.Phi,params,d); 
             }
             else
             {
+                logger.log("\tdelete_dimension_mutate",2);
                 delete_dimension_mutate(child, params);
             }
         }
@@ -150,12 +153,14 @@ bool Variation::mutate(const Individual& mom, Individual& child,
     }
     else if (rf < 2.0/3.0 && child.size() < params.max_size)
     {
+        logger.log("\tinsert mutation",2);
         insert_mutate(child,params);
         assert(child.program.is_valid_program(params.num_features, 
                     params.longitudinalMap));
     }
     else
     {        
+        logger.log("\tpoint mutation",2);
         point_mutate(child,params);
         assert(child.program.is_valid_program(params.num_features, 
                     params.longitudinalMap));
@@ -173,7 +178,6 @@ void Variation::point_mutate(Individual& child, const Parameters& params)
      * @param params: parameters 
      * @return modified child
      * */
-    logger.log("\tpoint mutation",3);
     float n = child.size(); 
     unsigned i = 0;
     // loop thru child's program
@@ -192,10 +196,11 @@ void Variation::point_mutate(Individual& child, const Parameters& params)
                 for (const auto& f: params.functions)
                 {
                     if (f->otype == p->otype &&
-                        f->arity.at('f')==p->arity.at('f') && 
-                        f->arity.at('b')==p->arity.at('b') &&
-                        f->arity.at('c')==p->arity.at('c') &&
-                        f->arity.at('z')==p->arity.at('z'))
+                            f->arity == p->arity)
+                        /* f->arity.at('f')==p->arity.at('f') && */ 
+                        /* f->arity.at('b')==p->arity.at('b') && */
+                        /* f->arity.at('c')==p->arity.at('c') && */
+                        /* f->arity.at('z')==p->arity.at('z')) */
                         replacements.push_back(f->rnd_clone());
                 }
             }
@@ -233,7 +238,6 @@ void Variation::insert_mutate(Individual& child,
      * @return modified child
      * */
     
-    logger.log("\tinsert mutation",3);
     float n = child.size(); 
     
     if (r()<0.5 || child.get_dim() == params.max_dim)
@@ -283,10 +287,15 @@ void Variation::insert_mutate(Individual& child,
 
                 if (fns.size()==0)  // if no insertion functions match, skip
                     continue;
+                cout << "fns.size(): " << fns.size() << endl;
 
                 // grab chosen node's subtree
                 int end = i;
+                cout << "calling subtree with i=" << end << endl;
                 int start = child.program.subtree(end); 
+                logger.log("\t\tinsert mutation from " + to_string(end)
+                        + " to " + to_string(start), 3);
+
 
                 // choose a function to insert                    
                 insertion.push_back(random_node(fns));
@@ -297,17 +306,10 @@ void Variation::insert_mutate(Individual& child,
 
                 // decrement function arity by one for child node 
                 --insert_arity.at(child.program.at(i)->otype);
-                
-                for (const auto& kv : insert_arity)
+                 
+                vector<char> type_order = {'f','b','c','z'};
+                for (auto type : type_order)
                 {
-                    char type = kv.first;
-                    // push back new arguments for the rest of the function
-                    for (unsigned j = 0; j< insert_arity.at(type); ++j)
-                    {
-                        insertion.make_tree(params.functions,params.terminals,
-                                0, params.term_weights,params.op_weights,
-                                type, params.ttypes);
-                    }
                     // add the child now if type matches
                     if (child.program.at(i)->otype==type)                        
                     {
@@ -319,6 +321,13 @@ void Variation::insert_mutate(Individual& child,
                             insertion.push_back(child.program.at(k)->clone());
                         }
                         /* cout << "]\n"; */
+                    }
+                    // push back new arguments for the rest of the function
+                    for (unsigned j = 0; j< insert_arity.at(type); ++j)
+                    {
+                        insertion.make_tree(params.functions,params.terminals,
+                                0, params.term_weights,params.op_weights,
+                                type, params.ttypes);
                     }
                 }
                 // post-fix notation
@@ -358,16 +367,17 @@ void Variation::delete_mutate(Individual& child,
      * @param params: parameters  
      * @return mutated child
      * */
-    logger.log("\tdeletion mutation",3);
     logger.log("\t\tprogram: " + child.program_str(),3);
     // loop thru child's program
     for (unsigned i = 0; i< child.program.size(); ++i)
     {
         // mutate with weighted probability
+        cout << "calling subtree with i=" << i << endl;
         if (child.program.subtree(i) != i && r() < child.get_p(i))                      
         {
             // get subtree indices of program to delete
             size_t end = i; 
+            cout << "calling subtree with i=" << end << endl;
             size_t start = child.program.subtree(end);  
             string portion="";
             for (int j=start; j<=end; ++j)
@@ -437,11 +447,11 @@ void Variation::delete_dimension_mutate(Individual& child,
      * @param params: parameters  
      * @return mutated child
      * */
-    logger.log("\tdelete_dimension_mutate",3);
     logger.log("\t\tprogram: " + child.program_str(),3);
     vector<size_t> roots = child.program.roots();
     
     size_t end = r.random_choice(roots,child.p); 
+    cout << "calling subtree with i=" << end << endl;
     size_t start = child.program.subtree(end);  
     if (logger.get_log_level() >= 3)
     { 
@@ -471,7 +481,6 @@ bool Variation::correlation_delete_mutate(Individual& child,
      * @param d: data
      * @return mutated child
      * */
-    logger.log("\tcorrelation_delete_mutate",3);
     logger.log("\t\tprogram: " + child.program_str(),3); 
     // mean center features
     for (int i = 0; i < Phi.rows(); ++i)
@@ -520,6 +529,7 @@ bool Variation::correlation_delete_mutate(Individual& child,
     // pick the subtree starting at roots(choice) and delete it
     vector<size_t> roots = child.program.roots();
     size_t end = roots.at(choice); 
+    cout << "calling subtree with i=" << end << endl;
     size_t start = child.program.subtree(end);  
     if (logger.get_log_level() >=3)
     { 
@@ -616,12 +626,14 @@ bool Variation::cross(const Individual& mom, const Individual& dad,
     /* cout << "mom subtree\t" << mom.program_str() << " starting at " */ 
     /*     << j1 << "\n"; */
     // get subtree              
+    cout << "calling subtree with i=" << j1 << endl;
     i1 = mom.program.subtree(j1);
     /* cout << "mom i1: " << i1 << endl; */                    
     /* cout << "dad subtree\n" << dad.program_str() << "\n"; */
     /* cout << "dad subtree\n"; */
     // get dad subtree
     j2 = r.random_choice(dlocs);
+    cout << "calling subtree with i=" << j2 << endl;
     i2 = dad.program.subtree(j2); 
            
     /* cout << "splice programs\n"; */

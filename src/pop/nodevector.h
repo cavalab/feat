@@ -45,7 +45,7 @@ namespace FT{
             /// returns indices of root nodes 
             vector<size_t> roots() const;
 
-            size_t subtree(size_t i, char otype='0') const;
+            size_t subtree(size_t i, char otype='0', string indent="> ") const;
             
             void set_weights(vector<vector<float>>& weights);
             
