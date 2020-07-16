@@ -46,12 +46,11 @@ namespace FT{
                 bool pass = true;
 
                 logger.log("Validating ind " + to_string(i) 
-                        + ", location: " + to_string(ind.loc), 3);
+                        + ", id: " + to_string(ind.id), 3);
 
                 shared_ptr<CLabels> yhat =  ind.predict(d,params);
                 // assign aggregate fitness
                 logger.log("Assigning fitness to ind " + to_string(i) 
-                        + ", location: " + to_string(ind.loc) 
                         + ", eqn: " + ind.get_eqn(), 3);
 
                 if (!pass)
@@ -117,12 +116,11 @@ namespace FT{
                 bool pass = true;
 
                 logger.log("Running ind " + to_string(i) 
-                        + ", location: " + to_string(ind.loc), 3);
+                        + ", id: " + to_string(ind.id), 3);
 
                 shared_ptr<CLabels> yhat =  ind.fit(d,params,pass); 
                 // assign F and aggregate fitness
                 logger.log("Assigning fitness to ind " + to_string(i) 
-                        + ", location: " + to_string(ind.loc) 
                         + ", eqn: " + ind.get_eqn(), 3);
 
                 if (!pass)
@@ -195,7 +193,7 @@ namespace FT{
                 ind.error = loss;
             }
                 
-            logger.log("ind " + std::to_string(ind.loc) + " fitness: " 
+            logger.log("ind " + std::to_string(ind.id) + " fitness: " 
                     + std::to_string(ind.fitness),3);
         }
 

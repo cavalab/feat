@@ -87,28 +87,27 @@ namespace FT {
             this->epk = n;  // starting learning rate
             /* logger.log("running backprop on " + ind.get_eqn(), 2); */
             /* cout << ind.get_eqn() << endl; */
-            logger.log("=========================",3);
-            logger.log("Iteration,Train Loss,Val Loss,Weights",3);
-            logger.log("=========================",3);
+            logger.log("=========================",4);
+            logger.log("Iteration,Train Loss,Val Loss,Weights",4);
+            logger.log("=========================",4);
             for (int x = 0; x < this->iters; x++)
             {
-                /* cout << "get batch\n"; */
+                logger.log("get batch",3);
                 // get batch data for training
                 BP_data.t->get_batch(batch_data, batch_size); 
                 /* cout << "batch_data.y: " */ 
                 /*      << batch_data.y.transpose() << "\n"; */ 
                 // Evaluate forward pass
                 MatrixXf Phi; 
-                /* cout << "forward pass\n"; */
+                logger.log("forward pass",3);
                 vector<Trace> stack_trace = forward_prop(ind, batch_data, 
                         Phi, params);
-                /* cout << "just finished forward_pass\n"; */
                 // Evaluate ML model on Phi
                 bool pass = true;
                 auto ml = std::make_shared<ML>(params.ml, true, 
                         params.classification, params.n_classes);
 
-                /* cout << "ml fit\n"; */
+                logger.log("ml fit",3);
                 shared_ptr<CLabels> yhat = ml->fit(Phi,
                         batch_data.y,params,pass,ind.dtypes);
                 
@@ -141,15 +140,13 @@ namespace FT {
 
                 // check validation fitness for early stopping
                 MatrixXf Phival = ind.out((*BP_data.v),params);
-                /* cout << "checking validation fitness\n"; */
+                logger.log("checking validation fitness",3);
                 /* cout << "Phival: " << Phival.rows() 
                  * << " x " << Phival.cols() << "\n"; */
                 /* cout << "y_val\n"; */
                 shared_ptr<CLabels> y_val = ml->predict(Phival);
-                /* cout << "val_loss\n"; */
                 current_val_loss = this->cost_func(BP_data.v->y, y_val, 
                         params.class_weights).mean();
-                /* cout << "check for min loss\n"; */ 
                 if (x==0 || current_val_loss < min_loss)
                 {
                     min_loss = current_val_loss;
@@ -175,7 +172,7 @@ namespace FT {
                 this->epk = (1 - alpha)*this->epk + alpha*this->epT;  
                 /* this->epk = this->epk + this->epT; */ 
                 /* cout << "epk: " << this->epk << "\n"; */
-                if (params.verbosity>2)
+                if (params.verbosity>3)
                 {
                     cout << x << "," 
                      << current_loss << "," 
@@ -183,10 +180,10 @@ namespace FT {
                      print_weights(ind.program);
                 }
             }
-            logger.log("",3);
-            logger.log("=========================",3);
-            logger.log("done=====================",3);
-            logger.log("=========================",3);
+            logger.log("",4);
+            logger.log("=========================",4);
+            logger.log("done=====================",4);
+            logger.log("=========================",4);
             ind.program.set_weights(best_weights);
         }
         

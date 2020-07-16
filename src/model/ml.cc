@@ -219,11 +219,16 @@ vector<float> ML::get_weights()
                 
             /* for( int j = 0;j<weights.at(0).size(); j++) */ 
             /*     w.push_back(0); */
+            if (weights.empty())
+                return vector<float>();
+
             w = vector<double>(weights.at(0).size());
             /* cout << "weights.size(): " << weights.size() << "\n"; */
             /* cout << "w size: " << w.size() << "\n"; */
             /* cout << "getting abs weights\n"; */
             
+            // if this is multiclass, we average the weights across 
+            // estimators in order to return one weight for each feature.
             for( int i = 0 ; i < weights.size(); ++i )
             {
                 /* cout << "weights:\n"; */
@@ -397,7 +402,9 @@ shared_ptr<CLabels> ML::predict(const MatrixXf& X, bool print)
 {
     logger.log("ML::predict...",3);
     shared_ptr<CLabels> labels;
+    logger.log("X size: " + to_string(X.rows()) + "x" + to_string(X.cols()),3);
     MatrixXd _X = X.template cast<double>();
+    logger.log("cast X to double",3);
     // make sure the model fit() method passed
     if (get_weights().empty())
     {
