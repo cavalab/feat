@@ -38,7 +38,6 @@ namespace FT{
             float fairness;     ///< aggregate fairness score
             float fairness_v;   ///< aggregate validation fairness score
             float CN;
-            size_t loc;        ///< index of individual in semantic matrix F
             vector<float> w;   ///< weights from ML training on program output
             vector<float> p;   ///< probability of variation of subprograms
             unsigned int dim;  ///< dimensionality of individual

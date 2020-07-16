@@ -131,20 +131,20 @@ bool Variation::mutate(const Individual& mom, Individual& child,
     {
         if (r() < 0.5)
         {
-            logger.log("\tdeletion mutation",2);
+            logger.log("\tdeletion mutation",3);
             delete_mutate(child,params); 
         }
         else 
         {
             if (params.corr_delete_mutate)
             {
-                logger.log("\tcorrelation_delete_mutate",2);
+                logger.log("\tcorrelation_delete_mutate",3);
                 bool perfect_correlation = correlation_delete_mutate(
                         child,mom.Phi,params,d); 
             }
             else
             {
-                logger.log("\tdelete_dimension_mutate",2);
+                logger.log("\tdelete_dimension_mutate",3);
                 delete_dimension_mutate(child, params);
             }
         }
@@ -153,14 +153,14 @@ bool Variation::mutate(const Individual& mom, Individual& child,
     }
     else if (rf < 2.0/3.0 && child.size() < params.max_size)
     {
-        logger.log("\tinsert mutation",2);
+        logger.log("\tinsert mutation",3);
         insert_mutate(child,params);
         assert(child.program.is_valid_program(params.num_features, 
                     params.longitudinalMap));
     }
     else
     {        
-        logger.log("\tpoint mutation",2);
+        logger.log("\tpoint mutation",3);
         point_mutate(child,params);
         assert(child.program.is_valid_program(params.num_features, 
                     params.longitudinalMap));
@@ -287,7 +287,6 @@ void Variation::insert_mutate(Individual& child,
 
                 if (fns.size()==0)  // if no insertion functions match, skip
                     continue;
-                cout << "fns.size(): " << fns.size() << endl;
 
                 // grab chosen node's subtree
                 int end = i;
