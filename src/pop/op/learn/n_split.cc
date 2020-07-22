@@ -17,6 +17,7 @@ namespace FT{
 	            otype = 'b';
                 complexity = 2;
                 threshold = 0;
+                train = true;
 	
 	        }
 	
@@ -28,6 +29,7 @@ namespace FT{
 	            otype = 'b';
                 complexity = 2;
                 threshold = 0;
+                train = true;
 	        }
 
              #ifndef USE_CUDA

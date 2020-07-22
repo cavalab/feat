@@ -18,6 +18,7 @@ namespace FT{
                 complexity = 2;
                 threshold = 0;
                 threshold_set = false;
+                train = true;
 	
 	        }
 	
@@ -30,6 +31,7 @@ namespace FT{
                 complexity = 2;
                 threshold = 0;
                 threshold_set = false;
+                train = true;
 	        }
 
              #ifndef USE_CUDA

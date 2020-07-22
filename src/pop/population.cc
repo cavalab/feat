@@ -12,8 +12,6 @@ namespace FT{
         
         int last; 
 
-        Population::Population(){}
-        
         Population::Population(int p)
         {
             individuals.resize(p); 
@@ -71,7 +69,7 @@ namespace FT{
                                                     ot, 
                                                     params.longitudinalMap, 
                                                     params.ttypes);
-                
+                individuals.at(i).set_id(i);
                 /* std::cout << individuals.at(i).program_str() + " -> "; */
                 /* std::cout << individuals.at(i).get_eqn() + "\n"; */
                

@@ -9,8 +9,13 @@ namespace FT{
 
     namespace Pop{ 
            
-        Individual::Individual(){c = 0; dim = 0; parent_id.clear(); 
-            parent_id.push_back(-1);}
+        Individual::Individual()
+        {
+            c = 0; dim = 0; 
+            parent_id.clear(); 
+            parent_id.push_back(-1); 
+            set_id(-1);
+        }
 
         /* Individual::Individual(Individual && other) = default; */
 

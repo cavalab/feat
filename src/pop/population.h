@@ -28,9 +28,7 @@ struct Population
 {
     vector<Individual> individuals;     ///< individual programs
 
-    Population();
-    
-    Population(int p);
+    Population(int p = 0);
     
     ~Population();
     
