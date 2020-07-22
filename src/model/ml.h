@@ -82,7 +82,7 @@ namespace FT{
                 ML(string ml="LinearRidgeRegression", bool norm=true, 
                         bool classification = false, int n_classes = 2);
 
-                void init();
+                void init(bool assign_p_est=true);
             
                 ~ML();
 

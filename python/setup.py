@@ -54,8 +54,8 @@ if 'SHOGUN_LIB' in env_params:
 
 # get path to feat shared library for linking
 cwd = '/'.join(os.getcwd().split('/')[:-1])
-feat_lib = cwd + '/build/'
-# feat_lib = cwd + '/profile/'
+# feat_lib = cwd + '/build/'
+feat_lib = cwd + '/profile/'
 # feat_lib = cwd + '/debug/'
 print('package version:',package_version)
 

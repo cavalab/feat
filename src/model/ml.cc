@@ -55,20 +55,23 @@ ML::ML(string ml, bool norm, bool classification, int n_classes)
             this->prob_type = PT_MULTICLASS;               
     }
     this->C = C_DEFAULT.at(ml_type);
+    this->init(true);
 }
 
-void ML::init()
+void ML::init(bool assign_p_est)
 {
     // set up ML based on type
     if (ml_type == LARS)
     {
-        p_est = make_shared<sh::CLeastAngleRegression>(true);
+        if (assign_p_est)
+            p_est = make_shared<sh::CLeastAngleRegression>(true);
         dynamic_pointer_cast<sh::CLeastAngleRegression>(
                 p_est)->set_max_non_zero(int(this->C));
     }
     else if (ml_type == Ridge)
     {
-        p_est = make_shared<sh::CLinearRidgeRegression>();
+        if (assign_p_est)
+            p_est = make_shared<sh::CLinearRidgeRegression>();
         dynamic_pointer_cast<sh::CLinearRidgeRegression>(
                 p_est)->set_compute_bias(true);
         dynamic_pointer_cast<sh::CLinearRidgeRegression>(
@@ -76,7 +79,8 @@ void ML::init()
     }
     else if (ml_type == RF)
     {
-        p_est = make_shared<sh::CMyRandomForest>();
+        if (assign_p_est)
+            p_est = make_shared<sh::CMyRandomForest>();
         dynamic_pointer_cast<sh::CMyRandomForest>(
                 p_est)->set_machine_problem_type(this->prob_type);
         dynamic_pointer_cast<sh::CMyRandomForest>(
@@ -98,7 +102,8 @@ void ML::init()
     }
     else if (ml_type == CART)
     {
-        p_est = make_shared<sh::CMyCARTree>();
+        if (assign_p_est)
+            p_est = make_shared<sh::CMyCARTree>();
         dynamic_pointer_cast<sh::CMyCARTree>(
                 p_est)->set_machine_problem_type(this->prob_type);
         dynamic_pointer_cast<sh::CMyCARTree>(
@@ -108,16 +113,19 @@ void ML::init()
     else if (ml_type == SVM)
     {               
         if(this->prob_type==PT_BINARY)
-            p_est = make_shared<sh::CMyLibLinear>(
-                    sh::L2R_L2LOSS_SVC_DUAL);       
+            if (assign_p_est)
+                p_est = make_shared<sh::CMyLibLinear>(
+                        sh::L2R_L2LOSS_SVC_DUAL);       
         else if (this->prob_type==PT_MULTICLASS){
-            p_est = make_shared<CMyMulticlassLibLinear>();
-            dynamic_pointer_cast<CMyMulticlassLibLinear>(
-                    p_est)->set_prob_heuris(sh::OVA_NORM);
+            if (assign_p_est)
+                p_est = make_shared<CMyMulticlassLibLinear>();
+                dynamic_pointer_cast<CMyMulticlassLibLinear>(
+                        p_est)->set_prob_heuris(sh::OVA_NORM);
 
         }
         else                // SVR
-            p_est = make_shared<sh::CLibLinearRegression>(); 
+            if (assign_p_est)
+                p_est = make_shared<sh::CLibLinearRegression>(); 
         
     }
     else if (in({LR, L1_LR}, ml_type))
@@ -127,12 +135,14 @@ void ML::init()
         if (this->prob_type == PT_BINARY){
             if (this->ml_type == LR)
             {
-                p_est = make_shared<sh::CMyLibLinear>(
-                    sh::L2R_LR);
+                if (assign_p_est)
+                    p_est = make_shared<sh::CMyLibLinear>(
+                        sh::L2R_LR);
             }
             else
             {
-                p_est = make_shared<sh::CMyLibLinear>(sh::L1R_LR);
+                if (assign_p_est)
+                    p_est = make_shared<sh::CMyLibLinear>(sh::L1R_LR);
             }
 
             // setting parameters to match sklearn defaults
@@ -148,7 +158,8 @@ void ML::init()
         }
         else    // multiclass  
         {
-            p_est = make_shared<sh::CMulticlassLogisticRegression>();
+            if (assign_p_est)
+                p_est = make_shared<sh::CMulticlassLogisticRegression>();
             dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(
                     p_est)->set_prob_heuris(sh::OVA_NORM);
             dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(
@@ -169,7 +180,10 @@ void ML::init()
     p_est->set_max_train_time(max_train_time);          
 }
 
-ML::~ML(){}
+ML::~ML()
+{
+    this->p_est.reset();
+}
 
 void ML::set_dtypes(const vector<char>& dtypes)
 {
@@ -282,8 +296,7 @@ shared_ptr<CLabels> ML::fit(const MatrixXf& X, const VectorXf& y,
      * @return yhat: n_samples vector of outputs
     */ 
     
-    // for random forest we need to set the number of features per bag
-    init();
+    init(false);
 
     MatrixXd _X = X.cast<double>();
     VectorXd _y = y.cast<double>();
