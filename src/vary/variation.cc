@@ -250,8 +250,7 @@ void Variation::insert_mutate(Individual& child,
             {
                 logger.log("\t\tinsert mutating node " + 
                         child.program.at(i)->name + " with probability " +
-                        std::to_string(child.get_p(i)) + "/" + 
-                        std::to_string(n), 3);
+                        std::to_string(child.get_p(i)), 3);
                 NodeVector insertion;  // inserted segment
                 NodeVector fns;  // potential fns 
                 
@@ -520,7 +519,7 @@ bool Variation::correlation_delete_mutate(Individual& child,
     logger.log( "corr (" + to_string(f1) + ", y): " + to_string(corr_f1), 3);
     logger.log( "corr (" + to_string(f2) + ", y): " + to_string(corr_f2), 3);
     int choice = corr_f1 <= corr_f2 ? f1 : f2; 
-    /* cout << "chose " << choice << endl; */
+    logger.log( "chose (" + to_string(choice), 3);
     // pick the subtree starting at roots(choice) and delete it
     vector<size_t> roots = child.program.roots();
     size_t end = roots.at(choice); 
@@ -528,14 +527,16 @@ bool Variation::correlation_delete_mutate(Individual& child,
     if (logger.get_log_level() >=3)
     { 
         std::string s="";
-        for (unsigned i = start; i<=end; ++i) s+= child.program.at(i)->name + " ";
+        for (unsigned i = start; i<=end; ++i) 
+            s+= child.program.at(i)->name + " ";
         logger.log("\t\tdeleting " + std::to_string(start) + " to " + 
                 std::to_string(end) + ": " + s, 3);
     }    
     child.program.erase(child.program.begin()+start,
             child.program.begin()+end+1);
 
-    logger.log("\t\tresult of corr delete mutation: " + child.program_str(), 3);
+    logger.log("\t\tresult of corr delete mutation: " 
+               + child.program_str(), 3);
 
     if (!child.program.is_valid_program(d.X.rows(), 
                 params.longitudinalMap))
@@ -546,7 +547,7 @@ bool Variation::correlation_delete_mutate(Individual& child,
         cout << child.get_eqn() << endl;
     }
 
-    return highest_corr == 1.0;
+    return highest_corr > 0.999;
 }
 
 bool Variation::cross(const Individual& mom, const Individual& dad, 
