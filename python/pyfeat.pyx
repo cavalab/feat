@@ -29,7 +29,7 @@ cdef extern from "feat.h" namespace "FT":
                int max_time, bool residual_xo, bool stagewise_xo, 
                bool stagewise_xo_tol, bool softmax_norm, int print_pop, 
                bool normalize, bool val_from_arch, bool corr_delete_mutate, 
-               bool simplify, string protected_groups, bool tune_initial,
+               float simplify, string protected_groups, bool tune_initial,
                bool tune_final
                ) except + 
 
@@ -86,7 +86,7 @@ cdef class PyFeat:
             string logfile, int max_time, bool residual_xo, 
             bool stagewise_xo, bool stagewise_xo_tol, bool softmax_norm, 
             int print_pop, bool normalize, bool val_from_arch, 
-            bool corr_delete_mutate, bool simplify, string protected_groups,
+            bool corr_delete_mutate, float simplify, string protected_groups,
             bool tune_initial, bool tune_final):
         
         cdef char otype_char

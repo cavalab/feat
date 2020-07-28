@@ -31,7 +31,7 @@ Feat::Feat(int pop_size, int gens, string ml,
        bool hillclimb, string logfile, int max_time,  bool residual_xo, 
        bool stagewise_xo, bool stagewise_xo_tol,
        bool softmax_norm, int print_pop, bool normalize,
-       bool val_from_arch, bool corr_delete_mutate, bool simplify,
+       bool val_from_arch, bool corr_delete_mutate, float simplify,
        string protected_groups, bool tune_initial, bool tune_final):
           // construct subclasses
           params(pop_size, gens, ml, classification, max_stall, otype, 
@@ -157,7 +157,7 @@ void Feat::set_feature_names(vector<string>& s){params.feature_names = s;}
 /// set constant optimization options
 void Feat::set_backprop(bool bp){params.backprop=bp;}
 
-void Feat::set_simplify(bool s){this->simplify=s;}
+void Feat::set_simplify(float s){this->simplify=s;}
 
 void Feat::set_corr_delete_mutate(bool s){this->params.corr_delete_mutate=s;}
 
@@ -644,7 +644,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     final_model(d);   
 
     // simplify the final model
-    if (simplify)
+    if (simplify > 0.0)
     {
         simplify_model(d, this->best_ind);
     }
@@ -808,6 +808,7 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
     vector<size_t> idx_to_remove;
 
     logger.log("\n=========\ndoing pattern pruning...",2);
+    logger.log("simplify: " + to_string(this->simplify), 2);
 
     for (auto r : roots)
     {
@@ -851,7 +852,10 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
             + to_string(starting_size - end_size)
             + " nodes\n=========\n", 1);
     if (tmp_ind.size() < ind.size())
+    {
         ind = tmp_ind;
+        logger.log("new model:" + ind.get_eqn(),2);
+    }
 
     ///////////////////
     // prune dimensions
@@ -860,7 +864,15 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
     int iterations = ind.get_dim();
     logger.log("\n=========\ndoing correlation deletion mutations...",2);
     starting_size = ind.size();
-    float tolerance = 0.001;
+    VectorXf original_yhat;
+    if (params.classification && params.n_classes==2)
+         original_yhat = ind.predict_proba(*d.o, params).row(0); 
+    else
+         original_yhat = ind.yhat; 
+    cout << "original_yhat ( " << original_yhat.rows() 
+        << "x" << original_yhat.cols() << "): " << original_yhat.transpose()
+        << endl;
+
     for (int i = 0; i < iterations; ++i)
     {
         Individual tmp_ind = ind;
@@ -872,24 +884,35 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
             continue;
         }
         bool pass = true;
-        shared_ptr<CLabels> yhat = tmp_ind.fit(*d.o, params, pass);
+        tmp_ind.fit(*d.o, params, pass);
+
+        VectorXf new_yhat;
+        if (params.classification && params.n_classes==2)
+             new_yhat = tmp_ind.predict_proba(*d.o, params).row(0); 
+        else
+             new_yhat = tmp_ind.yhat; 
 
 
-        if (((ind.yhat - tmp_ind.yhat).norm()/ind.yhat.norm() 
-                <= tolerance ) 
+        if (((original_yhat - new_yhat).norm()/original_yhat.norm() 
+                <= this->simplify ) 
                 or perfect_correlation)
         {
             logger.log("\ndelete dimension mutation success: went from "
                 + to_string(ind.size()) + " to " 
-                + to_string(tmp_ind.size()), 3); 
+                + to_string(tmp_ind.size()) + " nodes. Output changed by " 
+                 + to_string(100*(original_yhat
+                        -new_yhat).norm()/(original_yhat.norm()))
+                 + " %", 2); 
+            if (perfect_correlation)
+                logger.log("perfect correlation",2);
             ind = tmp_ind;
         }
         else
         {
-            logger.log("\ndelete dimension mutation failure: output changed by " 
-                 + to_string(100*(ind.yhat
-                        -tmp_ind.yhat).norm()/(ind.yhat.norm()))
-                 + " %", 3);
+            logger.log("\ndelete dimension mutation failure. Output changed by " 
+                 + to_string(100*(original_yhat
+                        -new_yhat).norm()/(original_yhat.norm()))
+                 + " %", 2);
             // if this mutation fails, it will continue to fail since it 
             // is deterministic. so, break in this case.
             break;
@@ -900,11 +923,13 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
     logger.log("correlation pruning reduced best model size by " 
             + to_string(starting_size - end_size)
             + " nodes\n=========\n", 2);
+    if (end_size < starting_size)
+        logger.log("new model:" + ind.get_eqn(),2);
 
     /////////////////
     // prune subtrees
     /////////////////
-    iterations = 100;
+    iterations = 1000;
     logger.log("\n=========\ndoing subtree deletion mutations...", 2);
     starting_size = ind.size();
     for (int i = 0; i < iterations; ++i)
@@ -914,22 +939,34 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
         if (ind.size() == tmp_ind.size())
             continue;
         bool pass = true;
-        shared_ptr<CLabels> yhat = tmp_ind.fit(*d.o, params, pass);
+        tmp_ind.fit(*d.o, params, pass);
 
-        if ((ind.yhat - tmp_ind.yhat).norm()/ind.yhat.norm() 
-                <= tolerance)
+        VectorXf new_yhat;
+        if (params.classification && params.n_classes==2)
+             new_yhat = tmp_ind.predict_proba(*d.o, params).row(0); 
+        else
+             new_yhat = tmp_ind.yhat; 
+
+        if ((original_yhat - new_yhat).norm()/original_yhat.norm() 
+                <= this->simplify )
         {
             logger.log("\ndelete mutation success: went from "
                 + to_string(ind.size()) + " to " 
-                + to_string(tmp_ind.size()), 3); 
+                + to_string(tmp_ind.size()) + " nodes. Output changed by " 
+                 + to_string(100*(original_yhat
+                        -new_yhat).norm()/(original_yhat.norm()))
+                 + " %", 2); 
             ind = tmp_ind;
         }
         else
         {
-            logger.log("\ndelete mutation failure: output changed by " 
-                 + to_string(100*(ind.yhat
-                        -tmp_ind.yhat).norm()/(ind.yhat.norm()))
-                 + " %", 3);
+            logger.log("\ndelete mutation failure. Output changed by " 
+                 + to_string(100*(original_yhat
+                        -new_yhat).norm()/(original_yhat.norm()))
+                 + " %", 2);
+            // if this mutation fails, it will continue to fail since it 
+            // is deterministic. so, break in this case.
+            break;
         }
 
     }
@@ -937,6 +974,8 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
     logger.log("subtree deletion reduced best model size by " 
             + to_string( starting_size - end_size )
             + " nodes", 2);
+    VectorXf difference = ind.yhat - original_yhat;
+    cout << "difference: " << difference.transpose() << endl;
 }
 
 vector<float> Feat::univariate_initial_model(DataRef &d, int n_feats) 

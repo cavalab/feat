@@ -68,49 +68,29 @@ namespace FT{
             X = Map<MatrixXf>(values.data(), values.size()/(rows-1), rows-1);
             y = Map<VectorXf>(targets.data(), targets.size());
             
-            assert(X.cols() == y.size() && "different numbers of samples in X and y");
-            assert(X.rows() == names.size() && "header missing or incorrect number of feature names");
+            if (X.cols() != y.size())
+                HANDLE_ERROR_THROW("different numbers of samples in X and y");
+            if (X.rows() != names.size())
+            {
+                string error_msg = "header missing or incorrect number of "
+                                   "feature names\n";
+                error_msg += "X size: " + to_string(X.rows()) + "x" 
+                    + to_string(X.cols()) +"\n";
+                error_msg += "feature names: ";
+                for (auto fn: names)
+                    error_msg += fn + ",";
+                HANDLE_ERROR_THROW(error_msg);
+            }
            
             dtypes = find_dtypes(X);
 
-            cout << "dtypes: " ; 
+            string print_dtypes = "dtypes: "; 
             for (unsigned i = 0; i < dtypes.size(); ++i) 
-                cout << names.at(i) << " (" << dtypes.at(i) << "), ";
-            cout << "\n";
+                print_dtypes += (names.at(i) + " (" + to_string(dtypes.at(i)) 
+                        + "), ");
+            print_dtypes += "\n";
+            cout << print_dtypes;
 
-
-    /*         // get feature types (binary or continuous/categorical) */
-    /*         int i, j; */
-    /*         bool isBinary; */
-    /*         bool isCategorical; */
-    /*         std::map<float, bool> uniqueMap; */
-    /*         for(i = 0; i < X.rows(); i++) */
-    /*         { */
-    /*             isBinary = true; */
-    /*             isCategorical = true; */
-    /*             uniqueMap.clear(); */
-                
-    /*             for(j = 0; j < X.cols(); j++) */
-    /*             { */
-    /*                 if(X(i, j) != 0 && X(i, j) != 1) */
-    /*                     isBinary = false; */
-    /*                 if(X(i,j) != floor(X(i, j)) && X(i,j) != ceil(X(i,j))) */
-    /*                     isCategorical = false; */
-    /*                 else */
-    /*                     uniqueMap[X(i, j)] = true; */
-    /*             } */
-            
-    /*             if(isBinary) */
-    /*                 dtypes.push_back('b'); */
-    /*             else */
-    /*             { */
-    /*                 if(isCategorical && uniqueMap.size() < 10) */
-    /*                     dtypes.push_back('c'); */    
-    /*                 else */
-    /*                     dtypes.push_back('f'); */
-    /*             } */
-    /*         } */
-            
             // check if endpoint is binary
             binary_endpoint = (y.array() == 0 || y.array() == 1).all();
             

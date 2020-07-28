@@ -475,7 +475,7 @@ bool Variation::correlation_delete_mutate(Individual& child,
      * @param d: data
      * @return mutated child
      * */
-    logger.log("\t\tprogram: " + child.program_str(),3); 
+    logger.log("\t\tprogram: " + child.program_str(),2); 
     // mean center features
     for (int i = 0; i < Phi.rows(); ++i)
     {
@@ -504,7 +504,7 @@ bool Variation::correlation_delete_mutate(Individual& child,
         }
     }
     logger.log("chosen pair: " + to_string(f1) +  ", " + to_string(f2)
-            + "; corr = " + to_string(highest_corr), 3);
+            + "; corr = " + to_string(highest_corr), 2);
     if (f1 == 0 && f2 == 0)
     {
         HANDLE_ERROR_NO_THROW("WARNING: couldn't get proper "
@@ -516,27 +516,27 @@ bool Variation::correlation_delete_mutate(Individual& child,
                                         Phi.row(f1).array()); 
     float corr_f2 = pearson_correlation(d.y.array()-d.y.mean(),
                                         Phi.row(f2).array()); 
-    logger.log( "corr (" + to_string(f1) + ", y): " + to_string(corr_f1), 3);
-    logger.log( "corr (" + to_string(f2) + ", y): " + to_string(corr_f2), 3);
+    logger.log( "corr (" + to_string(f1) + ", y): " + to_string(corr_f1), 2);
+    logger.log( "corr (" + to_string(f2) + ", y): " + to_string(corr_f2), 2);
     int choice = corr_f1 <= corr_f2 ? f1 : f2; 
-    logger.log( "chose (" + to_string(choice), 3);
+    logger.log( "chose (" + to_string(choice), 2);
     // pick the subtree starting at roots(choice) and delete it
     vector<size_t> roots = child.program.roots();
     size_t end = roots.at(choice); 
     size_t start = child.program.subtree(end);  
-    if (logger.get_log_level() >=3)
+    if (logger.get_log_level() >=2)
     { 
         std::string s="";
         for (unsigned i = start; i<=end; ++i) 
             s+= child.program.at(i)->name + " ";
         logger.log("\t\tdeleting " + std::to_string(start) + " to " + 
-                std::to_string(end) + ": " + s, 3);
+                std::to_string(end) + ": " + s, 2);
     }    
     child.program.erase(child.program.begin()+start,
             child.program.begin()+end+1);
 
     logger.log("\t\tresult of corr delete mutation: " 
-               + child.program_str(), 3);
+               + child.program_str(), 2);
 
     if (!child.program.is_valid_program(d.X.rows(), 
                 params.longitudinalMap))

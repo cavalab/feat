@@ -28,7 +28,7 @@ class Feat(BaseEstimator):
                 residual_xo=False, stagewise_xo=False, 
                 stagewise_xo_tol=False, softmax_norm=False, print_pop=0, 
                 normalize=True, val_from_arch=True, corr_delete_mutate=False, 
-                simplify=False,protected_groups=[],
+                simplify=0.0,protected_groups=[],
                 tune_initial=False, tune_final=True):
         """Feat uses GP to find a data representation that improves the 
         performance of a given ML method.
@@ -133,9 +133,11 @@ class Feat(BaseEstimator):
         corr_delete_mutate: boolean, optional (default: False)
             Replaces root deletion mutation with a deterministic deletion 
             operator that deletes the feature with highest collinearity. 
-        simplify: boolean, optional (default: False)
+        simplify: float, optional (default: 0)
             Runs post-run simplification to try to shrink the final model 
-            without changing its output.
+            without changing its output more than the simplify tolerance.
+            This tolerance is the norm of the difference in outputs, divided
+            by the norm of the output. If simplify=0, it is ignored. 
         protected_groups: list, optional (default: [])
             Defines protected attributes in the data. Uses for adding 
             fairness constraints. 
