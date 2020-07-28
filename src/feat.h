@@ -92,7 +92,7 @@ namespace FT{
                  bool stagewise_xo = false, bool stagewise_tol = true, 
                  bool softmax_norm=false, int print_pop=0, bool normalize=true, 
                  bool val_from_arch=true, bool corr_delete_mutate=false, 
-                 bool simplify=false, string protected_groups="",
+                 float simplify=0.0, string protected_groups="",
                  bool tune_initial=false, bool tune_final=true);
             
             /// set size of population 
@@ -174,7 +174,7 @@ namespace FT{
             /// set constant optimization options
             void set_backprop(bool bp);
             
-            void set_simplify(bool s);
+            void set_simplify(float s);
 
             void set_corr_delete_mutate(bool s);
             
@@ -455,7 +455,7 @@ namespace FT{
             string logfile;                         ///< log filename
             int print_pop;  ///< controls whether pop is printed each gen
             bool val_from_arch; ///< model selection only uses Pareto front
-            bool simplify;  ///< post-run simplification
+            float simplify;  ///< post-run simplification
 
             // gets weights via univariate initial models
             vector<float> univariate_initial_model(DataRef &d, int n_feats);
