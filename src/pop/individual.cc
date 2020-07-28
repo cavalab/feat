@@ -226,6 +226,13 @@ namespace FT{
             return yh;
         }
 
+        shared_ptr<CLabels> Individual::fit(const Data& d, 
+                const Parameters& params)
+        {
+            bool pass = true;
+            return this->fit(d, params, pass);
+        }
+
         shared_ptr<CLabels> Individual::predict(const Data& d, 
                 const Parameters& params)
         {
@@ -1005,7 +1012,7 @@ namespace FT{
             return max_stack_size;
         }
         shared_ptr<CLabels> Individual::fit_tune(const Data& d, 
-                const Parameters& params, bool& pass, bool set_default)
+                const Parameters& params, bool set_default)
         {
             // calculate program output matrix Phi
             logger.log("Generating output for " + get_eqn(), 3);
@@ -1014,7 +1021,7 @@ namespace FT{
             logger.log("ML training on " + get_eqn(), 3);
             this->ml = std::make_shared<ML>(params.ml, true, 
                     params.classification, params.n_classes);
-            
+            bool pass = true; 
             shared_ptr<CLabels> yh = this->ml->fit_tune(Phi, d.y, 
                     params, pass, dtypes, set_default);
 

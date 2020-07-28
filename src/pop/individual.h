@@ -74,13 +74,14 @@ namespace FT{
             MatrixXf state_to_phi(State& state);
 
             /// fits an ML model to the data after transformation
-            shared_ptr<CLabels> fit(const Data& d, 
-                    const Parameters& params, bool& pass);
+            shared_ptr<CLabels> fit(const Data& d, const Parameters& params, 
+                    bool& pass);
+            /// fits an ML model to the data after transformation
+            shared_ptr<CLabels> fit(const Data& d, const Parameters& params);
             
             /// fits and tunes an ML model to the data after transformation
             shared_ptr<CLabels> fit_tune(const Data& d, 
-                    const Parameters& params, bool& pass, 
-                    bool set_default=false);
+                    const Parameters& params, bool set_default=false);
 
             /// tunes an ML model to the data after transformation
             void tune(const Data& d, const Parameters& params);
