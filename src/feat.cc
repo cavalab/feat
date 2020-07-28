@@ -870,8 +870,7 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
     else
          original_yhat = ind.yhat; 
     cout << "original_yhat ( " << original_yhat.rows() 
-        << "x" << original_yhat.cols() << "): " << original_yhat.transpose()
-        << endl;
+        << "x" << original_yhat.cols() << ")\n"; 
 
     for (int i = 0; i < iterations; ++i)
     {
@@ -975,7 +974,8 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
             + to_string( starting_size - end_size )
             + " nodes", 2);
     VectorXf difference = ind.yhat - original_yhat;
-    cout << "difference: " << difference.transpose() << endl;
+    cout << "final % difference: " << difference.norm()/original_yhat.norm() 
+        << endl;
 }
 
 vector<float> Feat::univariate_initial_model(DataRef &d, int n_feats) 
