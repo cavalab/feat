@@ -640,14 +640,16 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     logger.log("validation score: " + std::to_string(min_loss_v), 2);
     logger.log("fitting final model to all training data...",2);
 
-    // fit final model to best features
-    final_model(d);   
 
     // simplify the final model
     if (simplify > 0.0)
     {
+        this->best_ind.fit(*d.o, params);
         simplify_model(d, this->best_ind);
     }
+
+    // fit final model to best features
+    final_model(d);   
 
     // if we're not using an archive, let's store the final population in the 
     // archive
@@ -770,15 +772,13 @@ void Feat::fit_with_z(float * X, int rowsX, int colsX, float * Y, int lenY, stri
 void Feat::final_model(DataRef& d)	
 {
     // fits final model to best tranformation found.
-    bool pass = true;
-
     /* MatrixXf Phi = transform(X); */
     /* MatrixXf Phi = best_ind.out(*d.o, params); */        
     shared_ptr<CLabels> yhat;
     if (params.tune_final)
-        yhat = best_ind.fit_tune(*d.o, params, pass);
+        yhat = best_ind.fit_tune(*d.o, params);
     else
-        yhat = best_ind.fit(*d.o, params, pass);
+        yhat = best_ind.fit(*d.o, params);
 
     VectorXf tmp;
     /* params.set_sample_weights(y);   // need to set new sample weights for y, */ 
@@ -883,8 +883,8 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
         {
             continue;
         }
-        bool pass = true;
-        tmp_ind.fit(*d.o, params, pass);
+
+        tmp_ind.fit(*d.o, params);
 
         VectorXf new_yhat;
         if (params.classification && params.n_classes==2)
@@ -938,8 +938,8 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
         this->p_variation->delete_mutate(tmp_ind, params);
         if (ind.size() == tmp_ind.size())
             continue;
-        bool pass = true;
-        tmp_ind.fit(*d.o, params, pass);
+
+        tmp_ind.fit(*d.o, params);
 
         VectorXf new_yhat;
         if (params.classification && params.n_classes==2)
@@ -1101,22 +1101,21 @@ void Feat::initial_model(DataRef &d)
     }
     logger.log("initial model: " + best_ind.get_eqn(), 1);
     // fit model
-    bool pass = true;
 
     shared_ptr<CLabels> yhat;
 
     
     if (univariate_initialization)
     { 
-        yhat = best_ind.fit(*d.t,params,pass);
+        yhat = best_ind.fit(*d.t,params);
     }
     else 
     {
         // tune default ML parameters 
         if (params.tune_initial)
-            yhat = best_ind.fit_tune(*d.t, params, pass, true);
+            yhat = best_ind.fit_tune(*d.t, params, true);
         else
-            yhat = best_ind.fit(*d.t, params, pass);
+            yhat = best_ind.fit(*d.t, params);
         // set terminal weights based on model
         vector<float> w = best_ind.ml->get_weights();
 
