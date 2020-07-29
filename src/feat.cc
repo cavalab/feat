@@ -975,9 +975,9 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
             + " nodes", 2);
     VectorXf new_yhat;
     if (params.classification && params.n_classes==2)
-         new_yhat = tmp_ind.predict_proba(*d.o, params).row(0); 
+         new_yhat = ind.predict_proba(*d.o, params).row(0); 
     else
-         new_yhat = tmp_ind.yhat; 
+         new_yhat = ind.yhat; 
     VectorXf difference = new_yhat - original_yhat;
     cout << "final % difference: " << difference.norm()/original_yhat.norm() 
         << endl;
