@@ -17,7 +17,7 @@ namespace FT{
 	            otype = 'b';
                 complexity = 2;
                 threshold = 0;
-                train = true;	
+                train = false;	
 	        }
 	
 	        template <>
@@ -28,7 +28,7 @@ namespace FT{
 	            otype = 'b';
                 complexity = 2;
                 threshold = 0;
-                train = true;	
+                train = false;	
 	        }
 
              #ifndef USE_CUDA

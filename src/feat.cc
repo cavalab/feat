@@ -973,7 +973,12 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
     logger.log("subtree deletion reduced best model size by " 
             + to_string( starting_size - end_size )
             + " nodes", 2);
-    VectorXf difference = ind.yhat - original_yhat;
+    VectorXf new_yhat;
+    if (params.classification && params.n_classes==2)
+         new_yhat = tmp_ind.predict_proba(*d.o, params).row(0); 
+    else
+         new_yhat = tmp_ind.yhat; 
+    VectorXf difference = new_yhat - original_yhat;
     cout << "final % difference: " << difference.norm()/original_yhat.norm() 
         << endl;
 }

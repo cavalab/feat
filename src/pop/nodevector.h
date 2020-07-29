@@ -6,6 +6,7 @@ license: GNU/GPL v3
 #define NODEVECTOR_H
 #include <memory>
 #include "op/node.h"
+#include "op/n_train.h"
 #include "op/n_Dx.h"
 
 #include "../util/error.h"
