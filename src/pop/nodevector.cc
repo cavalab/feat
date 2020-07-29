@@ -227,6 +227,9 @@ namespace FT{
             
             unsigned i = 0; 
             for (const auto& n : *this){
+                // learning nodes are set for fit or predict mode
+                if (n->isNodeTrain())                     
+                    dynamic_cast<NodeTrain*>(n.get())->train = false;
                 if (state.check(n->arity))
                     n->evaluate(data, state);
                 else
