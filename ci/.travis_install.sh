@@ -50,6 +50,7 @@ then
     mkdocs --version
 fi
 
+which conda
 conda info -a
 
 # conda update --yes conda
