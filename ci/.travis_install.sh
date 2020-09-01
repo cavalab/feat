@@ -39,8 +39,10 @@ echo "installing shogun and eigen via conda..."
 wget http://repo.continuum.io/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh -O miniconda.sh
 bash miniconda.sh -b -p $HOME/miniconda
 export PATH="$HOME/miniconda/bin:$PATH"
+source "$HOME/miniconda/etc/profile.d/conda.sh"
+hash -r
 echo "creating conda environment"
-conda config --set always_yes yes
+conda config --set always_yes yes --set changeps1 no
 conda create -c conda-forge -q -n test-environment python=3.7 shogun-cpp=6.1.3 eigen=3.3.7 json-c=0.12.1-0 cython scikit-learn pandas
 # conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION -c conda-forge shogun-cpp eigen json-c=0.12.1-0 cython scikit-learn pandas
 conda activate test-environment
