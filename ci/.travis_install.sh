@@ -41,6 +41,7 @@ bash miniconda.sh -b -p $HOME/miniconda
 export PATH="$HOME/miniconda/bin:$PATH"
 source "$HOME/miniconda/etc/profile.d/conda.sh"
 hash -r
+conda info -a
 echo "creating conda environment"
 conda config --set always_yes yes --set changeps1 no
 conda create -c conda-forge -q -n test-environment python=3.7 shogun-cpp=6.1.3 eigen=3.3.7 json-c=0.12.1-0 cython scikit-learn pandas
@@ -103,7 +104,7 @@ cd $old_path; pwd
 echo "installing feat..."
 mkdir build;
 cd build; pwd
-cmake -DTEST=ON -DEIGEN_DIR=OFF -DSHOGUN_DIR=ON ..
+cmake -DTEST=ON -DEIGEN_DIR=ON -DSHOGUN_DIR=ON ..
 cd ..
 make -C build VERBOSE=1
 
