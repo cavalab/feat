@@ -39,7 +39,7 @@ echo "installing shogun and eigen via conda..."
 wget http://repo.continuum.io/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh -O miniconda.sh
 bash miniconda.sh -b -p $HOME/miniconda
 export PATH="$HOME/miniconda/bin:$PATH"
-source "$HOME/miniconda/etc/profile.d/conda.sh"
+. "$HOME/miniconda/etc/profile.d/conda.sh"
 hash -r
 conda info -a
 echo "creating conda environment"
