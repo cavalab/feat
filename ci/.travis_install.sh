@@ -4,7 +4,6 @@ python --version
 
 echo "cython path is..."
 which cython
-
 echo "installing cmake"
 # sudo add-apt-repository -y ppa:george-edison55/cmake-3.x
 # sudo apt-get update -y
@@ -16,16 +15,20 @@ sudo cmake --version
 
 # echo "installing pip"
 # sudo apt install python3-pip
-echo "installing setuptools"
-sudo -H pip3 install setuptools
+# echo "installing setuptools"
+# sudo -H pip3 install setuptools
 echo "installing wheel"
 sudo -H pip3 install wheel
 
-echo "installing mkdocs"
-sudo -H pip3 install mkdocs==1.1 mkdocs-material pymdown-extensions pygments
+# install packages for the docs
+if [ "$TRAVIS_BRANCH" = "master" ]
+then
+    echo "installing mkdocs"
+    sudo -H pip3 install mkdocs==1.1 mkdocs-material pymdown-extensions pygments
 
-echo "mkdocs version"
-mkdocs --version
+    echo "mkdocs version"
+    mkdocs --version
+fi
 
 #wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"
 # wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.bz2"
@@ -41,12 +44,14 @@ bash miniconda.sh -b -p $HOME/miniconda
 export PATH="$HOME/miniconda/bin:$PATH"
 . "$HOME/miniconda/etc/profile.d/conda.sh"
 hash -r
-conda info -a
 echo "creating conda environment"
 conda config --set always_yes yes --set changeps1 no
-conda create -c conda-forge -q -n test-environment python=3.7 shogun-cpp=6.1.3 eigen=3.3.7 json-c=0.12.1-0 cython scikit-learn pandas
+conda create -c conda-forge -q -n test-environment python=3.7 shogun-cpp=6.1.3 eigen=3.3.7 json-c=0.12.1-0 cython scikit-learn pandas setuptools
 # conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION -c conda-forge shogun-cpp eigen json-c=0.12.1-0 cython scikit-learn pandas
+echo "activating test-environment"
 conda activate test-environment
+
+conda info -a
 
 # conda update --yes conda
 # conda install --yes -c conda-forge shogun-cpp eigen
@@ -71,6 +76,13 @@ conda activate test-environment
 
 echo "printing conda environment"
 conda-env export
+
+echo "python path is..."
+which python
+python --version
+
+echo "cython path is..."
+which cython
 ##########CONDA##############
 
 # set environment variables for eigen and shogun includes
