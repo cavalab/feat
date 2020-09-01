@@ -19,7 +19,7 @@ sudo cmake --version
 echo "installing setuptools"
 sudo -H pip3 install setuptools
 echo "installing wheel"
-sudo -H pip3 install setuptools
+sudo -H pip3 install wheel
 
 echo "installing mkdocs"
 sudo -H pip3 install mkdocs==1.1 mkdocs-material pymdown-extensions pygments
@@ -33,7 +33,7 @@ mkdocs --version
 # mkdir eigen-3.3.4
 # mv eigen-eigen*/* eigen-3.3.4
 
-#_______________________________________________
+##########CONDA##############
 
 echo "installing shogun and eigen via conda..."
 wget http://repo.continuum.io/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh -O miniconda.sh
@@ -64,6 +64,10 @@ conda install --yes scikit-learn
 
 echo "installing pandas via conda..."
 conda install --yes pandas
+
+echo "printing conda environment"
+conda-env export
+##########CONDA##############
 
 #building and installing google tests
 echo "installing google test"
