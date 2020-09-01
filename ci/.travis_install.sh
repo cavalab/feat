@@ -27,25 +27,26 @@ sudo -H pip3 install mkdocs==1.1 mkdocs-material pymdown-extensions pygments
 echo "mkdocs version"
 mkdocs --version
 
-echo "installing eigen..."
 #wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"
-wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.bz2"
-tar xvjf 3.3.4.tar.bz2
-mkdir eigen-3.3.4
-mv eigen-eigen*/* eigen-3.3.4
+# wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.bz2"
+# tar xvjf 3.3.4.tar.bz2
+# mkdir eigen-3.3.4
+# mv eigen-eigen*/* eigen-3.3.4
 
-export EIGEN3_INCLUDE_DIR="$(pwd)/eigen-3.3.4/"
-echo "EIGEN3_INCLUDE_DIR set to $EIGEN3_INCLUDE_DIR"
 #_______________________________________________
 
-echo "installing shogun via conda..."
+echo "installing shogun and eigen via conda..."
 wget http://repo.continuum.io/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh -O miniconda.sh
 bash miniconda.sh -b -p $HOME/miniconda
 export PATH="$HOME/miniconda/bin:$PATH"
 
 
 # conda update --yes conda
-conda install --yes -c conda-forge shogun-cpp
+conda install --yes -c conda-forge shogun-cpp eigen
+
+# export EIGEN3_INCLUDE_DIR="$(pwd)/eigen-3.3.4/"
+# echo "EIGEN3_INCLUDE_DIR set to $EIGEN3_INCLUDE_DIR"
+# conda install -c conda-forge eigen
 
 # the new version of json-c seems to be missing a fn shogun is linked to;
 # force install of older version
@@ -87,7 +88,7 @@ cd $old_path; pwd
 echo "installing feat..."
 mkdir build;
 cd build; pwd
-cmake -DTEST=ON -DEIGEN_DIR=ON -DSHOGUN_DIR=ON ..
+cmake -DTEST=ON -DEIGEN_DIR=OFF -DSHOGUN_DIR=ON ..
 cd ..
 make -C build VERBOSE=1
 
