@@ -98,7 +98,7 @@ if (CORE_USE_CUDA)
 endif()
 #############################################
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-ignored-attributes")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-ignored-attributes -Wno-deprecated")
 
 # gather list of source files
 if (CORE_USE_CUDA)   
