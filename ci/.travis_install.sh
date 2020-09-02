@@ -14,10 +14,11 @@ hash -r
 echo "creating conda environment"
 conda config --set always_yes yes --set changeps1 no
 # cython=0.29.12
-conda create -c conda-forge -q -n test-environment python=3.7 shogun-cpp=6.1.3 eigen json-c=0.12.1-0 cython scikit-learn pandas wheel setuptools=41.0.1
+# conda create -c conda-forge -q -n test-environment python=3.7 shogun-cpp=6.1.3 eigen json-c=0.12.1-0 cython scikit-learn pandas wheel setuptools=41.0.1
+conda env create -f ci/test-environment.yml
 # conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION -c conda-forge shogun-cpp eigen json-c=0.12.1-0 cython scikit-learn pandas
 echo "activating test-environment"
-conda activate test-environment
+conda activate test
 
 # install packages for the docs
 if [ "$TRAVIS_BRANCH" = "master" ]
@@ -43,12 +44,12 @@ which cython
 ##########CONDA##############
 
 # set environment variables for eigen and shogun includes
-export EIGEN3_INCLUDE_DIR="$HOME/miniconda/envs/test-environment/include/eigen3/"
+export EIGEN3_INCLUDE_DIR="$HOME/miniconda/envs/test/include/eigen3/"
 echo "EIGEN3_INCLUDE_DIR set to $EIGEN3_INCLUDE_DIR"
 
-export SHOGUN_LIB=/home/travis/miniconda/envs/test-environment/lib/
+export SHOGUN_LIB=/home/travis/miniconda/envs/test/lib/
 echo "SHOGUN_LIB set to $SHOGUN_LIB"
-export SHOGUN_DIR=/home/travis/miniconda/envs/test-environment/include/
+export SHOGUN_DIR=/home/travis/miniconda/envs/test/include/
 echo "SHOGUN_DIR set to $SHOGUN_DIR"
 
 
