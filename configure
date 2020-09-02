@@ -43,6 +43,6 @@ elif [ "$1" == "gpu" ] ; then
     cd ..
 else
     rm -rf build; mkdir build; cd build; 
-    cmake -DSHOGUN_DIR=ON ..
+    cmake -DSHOGUN_DIR=ON -DEIGEN_DIR=ON ..
     cd ..
 fi
