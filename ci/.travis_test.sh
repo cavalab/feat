@@ -11,8 +11,8 @@ echo "sourcing conda"
 . /home/travis/miniconda/etc/profile.d/conda.sh
 which conda
 
-echo "reactivating test-environment"
-conda activate test-environment
+echo "reactivating test"
+conda activate test
 conda info -a
 echo "running wrapper test"
 python tests/wrappertest.py -v 1
