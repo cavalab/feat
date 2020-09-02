@@ -5,7 +5,7 @@ echo "==========\nc++ tests\n=========="
 echo "==========\npython tests\n=========="
 # python tests
 echo "sourcing conda"
-. "$HOME/miniconda/etc/profile.d/conda.sh"
+source "$HOME/miniconda/etc/profile.d/conda.sh"
 hash -r
 echo "reactivating test-environment"
 /home/travis/miniconda/condabin/conda activate test-environment
