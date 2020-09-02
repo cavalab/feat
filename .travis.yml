@@ -12,7 +12,7 @@ addons:
         - libgtest-dev
         - python3
         - python3-pip
-        # - cmake
+        - cmake # needed for building gtests
     
   sources:
         - ubuntu-toolchain-r-test
