@@ -5,11 +5,12 @@ echo "==========\nc++ tests\n=========="
 echo "==========\npython tests\n=========="
 # python tests
 echo "sourcing conda"
-source "$HOME/miniconda/etc/profile.d/conda.sh"
-hash -r
+. /home/travis/miniconda/etc/profile.d/conda.sh
+which conda
+
 echo "reactivating test-environment"
-/home/travis/miniconda/condabin/conda activate test-environment
-/home/travis/miniconda/condabin/conda info -a
+conda activate test-environment
+conda info -a
 echo "running wrapper test"
 /home/travis/miniconda/bin/python3 python/wrappertest.py -v 1
 
