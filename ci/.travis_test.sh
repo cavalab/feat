@@ -15,6 +15,6 @@ echo "reactivating test-environment"
 conda activate test-environment
 conda info -a
 echo "running wrapper test"
-python python/wrappertest.py -v 1
+python tests/wrappertest.py -v 1
 
 
