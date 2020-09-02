@@ -78,7 +78,7 @@ setup(
         include_dirs = ['../build/','../src/',eigen_dir,shogun_include_dir]
                           +eigency.get_includes(include_eigen=False),
         extra_compile_args = ['-std=c++1y','-fopenmp','-Wno-sign-compare',
-                                 '-Wno-reorder'],
+                                 '-Wno-reorder','-Wno-unused-variable'],
         library_dirs = [shogun_lib,feat_lib],
         runtime_library_dirs = [feat_lib],
         extra_link_args = ['-lshogun','-lfeat_lib'],      
