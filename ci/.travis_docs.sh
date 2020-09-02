@@ -9,6 +9,10 @@ then
 
     cd ..
 
+    echo "sourcing conda"
+    . /home/travis/miniconda/etc/profile.d/conda.sh
+    conda activate feat-env
+
     echo "Building mkdocs"
     mkdocs build --verbose --clean
 fi
