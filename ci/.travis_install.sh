@@ -14,7 +14,7 @@ hash -r
 echo "creating conda environment"
 conda config --set always_yes yes --set changeps1 no
 # cython=0.29.12
-conda create -c conda-forge -q -n test-environment python=3.7 shogun-cpp=6.1.3 eigen=3.3.5 json-c=0.12.1-0 cython scikit-learn pandas wheel setuptools=41.0.1
+conda create -c conda-forge -q -n test-environment python=3.7 shogun-cpp=6.1.3 eigen json-c=0.12.1-0 cython scikit-learn pandas wheel setuptools=41.0.1
 # conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION -c conda-forge shogun-cpp eigen json-c=0.12.1-0 cython scikit-learn pandas
 echo "activating test-environment"
 conda activate test-environment
@@ -82,6 +82,3 @@ echo "installing wrapper"
 cd ./python
 python setup.py install
 cd ..
-
-echo "copying wrapper test to the python folder"
-sudo cp tests/wrappertest.py python/ #Copy the file to python folder
