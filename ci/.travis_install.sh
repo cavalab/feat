@@ -69,4 +69,4 @@ cd $old_path; pwd
 echo "configuring feat..."
 ./configure tests
 echo "install feat..."
-./install tests y
+./install -C build -j 4 y
