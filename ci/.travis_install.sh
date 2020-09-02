@@ -19,7 +19,7 @@ conda activate feat-env
 if [ "$TRAVIS_BRANCH" = "master" ]
 then
     echo "installing mkdocs"
-    conda install mkdocs==1.1 mkdocs-material pymdown-extensions pygments
+    conda install -c conda-forge mkdocs==1.1 mkdocs-material pymdown-extensions pygments
     echo "mkdocs version"
     mkdocs --version
 fi
