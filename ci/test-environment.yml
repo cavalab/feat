@@ -10,3 +10,6 @@ dependencies:
     - setuptools=45.*
     - shogun-cpp=6.1.3
     - wheel
+    - pip
+    - pip:
+        - eigency
