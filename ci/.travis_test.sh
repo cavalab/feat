@@ -1,3 +1,6 @@
+echo "=========\njust a quick run====="
+./build/feat docs/examples/data/d_enc.csv -rs 42 -g 2 -p 5
+
 # feat c++ tests
 echo "==========\nc++ tests\n=========="
 ./build/tests
@@ -12,6 +15,6 @@ echo "reactivating test-environment"
 conda activate test-environment
 conda info -a
 echo "running wrapper test"
-/home/travis/miniconda/bin/python3 python/wrappertest.py -v 1
+python python/wrappertest.py -v 1
 
 

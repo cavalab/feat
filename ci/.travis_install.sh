@@ -127,6 +127,3 @@ cd ..
 
 echo "copying wrapper test to the python folder"
 sudo cp tests/wrappertest.py python/ #Copy the file to python folder
-
-echo "running feat.."
-./build/feat docs/examples/data/d_enc.csv -rs 42 -g 2 -p 5
