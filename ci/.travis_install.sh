@@ -59,8 +59,8 @@ old_path=$(pwd)
 
 echo "building google test.."
 cd /usr/src/gtest; echo "changed to $(pwd)"
-echo "ls"
-ls
+echo "which cmake?"
+which cmake
 sudo cmake CMakeLists.txt
 
 sudo make
@@ -75,6 +75,8 @@ cd $old_path; pwd
 echo "installing feat..."
 mkdir build;
 cd build; pwd
+echo "which cmake?"
+which cmake
 cmake -DTEST=ON -DEIGEN_DIR=ON -DSHOGUN_DIR=ON ..
 cd ..
 make -C build VERBOSE=1
