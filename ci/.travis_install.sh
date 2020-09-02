@@ -36,7 +36,7 @@ export PATH="$HOME/miniconda/bin:$PATH"
 hash -r
 echo "creating conda environment"
 conda config --set always_yes yes --set changeps1 no
-conda create -c conda-forge -q -n test-environment python=3.7 shogun-cpp=6.1.3 eigen=3.3.4 json-c=0.12.1-0 cython scikit-learn pandas wheel setuptools
+conda create -c conda-forge -q -n test-environment python=3.7 shogun-cpp=6.1.3 eigen=3.3.4 json-c=0.12.1-0 cython=0.29.12 scikit-learn pandas wheel setuptools
 # conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION -c conda-forge shogun-cpp eigen json-c=0.12.1-0 cython scikit-learn pandas
 echo "activating test-environment"
 conda activate test-environment
