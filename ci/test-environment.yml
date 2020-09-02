@@ -1,8 +1,9 @@
-name: test
+name: feat-env
 channels:
     - conda-forge
 dependencies:
     - python=3.*
+    - cmake=3.*
     - eigen=3.3.*
     - cython
     - pandas

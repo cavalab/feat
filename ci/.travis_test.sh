@@ -12,7 +12,7 @@ echo "sourcing conda"
 which conda
 
 echo "reactivating test"
-conda activate test
+conda activate feat-env
 conda info -a
 echo "running wrapper test"
 python tests/wrappertest.py -v 1

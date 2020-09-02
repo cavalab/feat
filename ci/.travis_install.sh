@@ -1,7 +1,7 @@
-echo "cmake version:"
-cmake --version
-echo "sudo cmake version:"
-sudo cmake --version
+# echo "cmake version:"
+# cmake --version
+# echo "sudo cmake version:"
+# sudo cmake --version
 
 ##########CONDA##############
 
@@ -18,7 +18,7 @@ conda config --set always_yes yes --set changeps1 no
 conda env create -f ci/test-environment.yml
 # conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION -c conda-forge shogun-cpp eigen json-c=0.12.1-0 cython scikit-learn pandas
 echo "activating test-environment"
-conda activate test
+conda activate feat-env
 
 # install packages for the docs
 if [ "$TRAVIS_BRANCH" = "master" ]
@@ -44,12 +44,12 @@ which cython
 ##########CONDA##############
 
 # set environment variables for eigen and shogun includes
-export EIGEN3_INCLUDE_DIR="$HOME/miniconda/envs/test/include/eigen3/"
+export EIGEN3_INCLUDE_DIR="$HOME/miniconda/envs/feat-env/include/eigen3/"
 echo "EIGEN3_INCLUDE_DIR set to $EIGEN3_INCLUDE_DIR"
 
-export SHOGUN_LIB=/home/travis/miniconda/envs/test/lib/
+export SHOGUN_LIB=/home/travis/miniconda/envs/feat-env/lib/
 echo "SHOGUN_LIB set to $SHOGUN_LIB"
-export SHOGUN_DIR=/home/travis/miniconda/envs/test/include/
+export SHOGUN_DIR=/home/travis/miniconda/envs/feat-env/include/
 echo "SHOGUN_DIR set to $SHOGUN_DIR"
 
 
