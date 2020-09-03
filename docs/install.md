@@ -9,7 +9,7 @@ Then the build process is the following:
 
     git clone https://github.com/lacava/feat # clone the repo
     cd feat # enter the directory
-    conda create env -f ci/test-environment.yml
+    conda env create -f ci/test-environment.yml
     conda activate feat-env
     #add some environment variables
     export SHOGUN_LIB=/path/to/anaconda/envs/feat-env/lib/
