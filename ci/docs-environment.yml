@@ -5,5 +5,6 @@ channels:
 dependencies:
     - mkdocs=1.1
     - mkdocs-material
+    - mkdocs-material-extensions=1.*
     - pymdown-extensions
     - pygments
