@@ -11,10 +11,10 @@ Then the build process is the following:
     cd feat # enter the directory
     conda env create -f ci/test-environment.yml
     conda activate feat-env
-    #add some environment variables
-    export SHOGUN_LIB=/path/to/anaconda/envs/feat-env/lib/
-    export SHOGUN_DIR=/path/to/anaconda/envs/feat-env/include/
-    export EIGEN3_INCLUDE_DIR=/path/to/anaconda/envs/feat-env/include/eigen3/
+    #add some environment variables, where CONDA_PREFIX is the path to the environment
+    export SHOGUN_LIB=$CONDA_PREFIX/lib/
+    export SHOGUN_DIR=$CONDA_PREFIX/include/
+    export EIGEN3_INCLUDE_DIR=$CONDA_PREFIX/include/eigen3/
     # install feat
     ./configure # this runs "mkdir build; cd build; cmake .. " 
     ./install # this runs "make -C build VERBOSE=1 -j8; python setup.py install"
