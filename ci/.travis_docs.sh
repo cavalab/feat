@@ -5,7 +5,7 @@ then
     cd docs
     doxygen Doxyfile
 
-    echo "docs build successfully"
+    echo "doxygen docs build successfully"
 
     cd ..
 
@@ -13,6 +13,8 @@ then
     . /home/travis/miniconda/etc/profile.d/conda.sh
     conda activate feat-env
 
-    echo "Building mkdocs"
+    echo "mkdocs location:"
+    which mkdocs
+    echo "Building website"
     mkdocs build --verbose --clean
 fi
