@@ -2,37 +2,53 @@
 
 check_for_python=true
 choice="n"
-nobuild=false
+njobs=""
+folder="build"
 
-if [ $# > 0 ] ; then 
-    for var in $@ ; do
-        if [ $var == "debug" ] ; then
-            make -C debug -j
-        elif [ $var == "profile" ] ; then
-            make -C profile -j
-        elif [ $var == "lpc" ] ; then
-            module load gcc/5.2.0
-            export EIGEN3_INCLUDE_DIR="$HOME/eigen-3.3.4/"
-            export SHOGUN_DIR="$HOME/anaconda3/include/"
-            export SHOGUN_LIB="$HOME/anaconda3/lib/"    
-        elif [ $var == "n" ] ; then
-            check_for_python=false
-        elif [ $var == "y" ] || [ $var == "python" ] ; then
-            # echo "installing python module..."
-            # cd python
-            # rm -rf build 
-            # rm -rf dist
-            # python setup.py install
-            # cd ..
-            check_for_python=false
-            choice="y"
-        fi 
-    done
-fi
+POSITIONAL=()
+while [[ $# > 0 ]]
+do
+    key="$1"
 
-if [ $nobuild == false ] ; then
-    make -C build -j 
-fi
+    case $key in 
+    -C)
+        folder=$2
+        shift
+        shift
+        ;;
+    lpc)
+        module load gcc/5.2.0
+        export EIGEN3_INCLUDE_DIR="$HOME/eigen-3.3.4/"
+        export SHOGUN_DIR="$HOME/anaconda3/include/"
+        export SHOGUN_LIB="$HOME/anaconda3/lib/"    
+        shift
+        ;;
+    n)
+        check_for_python=false
+        shift
+        ;;
+    y)
+        check_for_python=false
+        choice="y"
+        shift
+        ;;
+    -j|njobs)
+        njobs="$2"
+        shift
+        shift
+        ;;
+    *) # unknown option
+    POSITIONAL+=("$1") # save it in an array for later
+    shift # past argument
+    ;;
+   esac
+done
+
+echo "Build folder = ${folder}"
+echo "Numer of jobs = ${njobs}"
+
+make -C ${folder} -j ${njobs}
+
 if [ $check_for_python == true ] ; then
     read -p "Install python wrapper? (y/n) " choice
 fi

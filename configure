@@ -2,6 +2,7 @@
 # ===
 # Configuration Options:
 # ./configure : builds a release version of feat.
+# ./configure tests: builds a release version of feat and the tests.
 # ./configure debug : builds a debug version of feat.
 # ./configure profile: build a version of feat use with profiling tools. 
 # ===
@@ -35,7 +36,7 @@ elif [ "$1" == "lpc_cuda" ] ; then
     cd ..
 elif [ "$1" == "tests" ] ; then 
     rm -rf build; mkdir build; cd build; 
-    cmake -DSHOGUN_DIR=ON .. -DTEST=ON ..
+    cmake -DSHOGUN_DIR=ON -DEIGEN_DIR=ON -DTEST=ON ..
     cd ..
 elif [ "$1" == "gpu" ] ; then
     rm -rf buildGPU; mkdir buildGPU; cd buildGPU; 
@@ -43,6 +44,6 @@ elif [ "$1" == "gpu" ] ; then
     cd ..
 else
     rm -rf build; mkdir build; cd build; 
-    cmake -DSHOGUN_DIR=ON ..
+    cmake -DSHOGUN_DIR=ON -DEIGEN_DIR=ON ..
     cd ..
 fi

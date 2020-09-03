@@ -2,25 +2,32 @@
 
 To see our installation process from scratch, check out the [Travis install file](http://github.com/lacava/feat/blob/master/ci/.travis_install.sh).
 
-Feat depends on the [Eigen](http://eigen.tuxfamily.org) matrix library for C++ as well as the [Shogun](http://shogun.ml) ML library. Both come in easy packages that work across platforms. If you need Eigen and Shogun, follow the instructions in [Dependencies](#dependencies). 
+#### Conda
 
-Feat uses [cmake](https://cmake.org/) to build. It uses the typical set of instructions:
-    
+The easiest option for install is to use the [conda environment we provide](http://github.com/lacava/feat/blob/master/ci/test-environment.yml). 
+Then the build process is the following:
+
     git clone https://github.com/lacava/feat # clone the repo
     cd feat # enter the directory
+    conda create env -f ci/test-environment.yml
+    conda activate feat-env
+    #add some environment variables
+    export SHOGUN_LIB=/path/to/anaconda/envs/feat-env/lib/
+    export SHOGUN_DIR=/path/to/anaconda/envs/feat-env/include/
+    export EIGEN3_INCLUDE_DIR=/path/to/anaconda/envs/feat-env/include/eigen3/
+    # install feat
     ./configure # this runs "mkdir build; cd build; cmake .. " 
-    ./install # this runs "make -C build VERBOSE=1 -j8"
+    ./install # this runs "make -C build VERBOSE=1 -j8; python setup.py install"
+    
 
-## Python wrapper
-
-The python wrapper is installed using setuptools as follows: 
-
-```bash
-cd python
-python setup.py install
-```
+If you want to roll your own with the dependencies, some other options are shown below. 
 
 ## Dependencies
+
+Feat uses [cmake](https://cmake.org/) to build. 
+It also depends on the [Eigen](http://eigen.tuxfamily.org) matrix library for C++ as well as the [Shogun](http://shogun.ml) ML library. 
+Both come in packages on conda that should work across platforms. 
+If you need Eigen and Shogun and don't want to use conda, follow these instructions. 
 
 ### Eigen 
 
@@ -48,17 +55,6 @@ export EIGEN3_INCLUDE_DIR="$(pwd)/eigen-3.3.4/"
 
 You don't have to compile Shogun, just download the binaries. [Their install guide is good.](https://github.com/shogun-toolbox/shogun/blob/develop/doc/readme/INSTALL.md#binaries) We've listed two of the options here.
 
-#### Anaconda
-
-A good option for Anaconda users is the Shogun Anaconda package. If you use conda, you can get what you need by 
-
-    conda install -c conda-forge shogun-cpp
-
-If you do this, you need tell cmake where to find Anaconda's library and include directories. 
-Set these two variables appropriately:
-
-    export SHOGUN_LIB=/home/travis/miniconda/lib/
-    export SHOGUN_DIR=/home/travis/miniconda/include/
 
 #### Debian/Ubuntu
 

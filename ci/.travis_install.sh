@@ -1,3 +1,35 @@
+##############################
+# conda setup and installation
+##############################
+
+echo "installing shogun and eigen via conda..."
+wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+bash miniconda.sh -b -p $HOME/miniconda
+export PATH="$HOME/miniconda/bin:$PATH"
+. "$HOME/miniconda/etc/profile.d/conda.sh"
+hash -r
+echo "creating conda environment"
+conda config --set always_yes yes --set changeps1 no
+conda env create -f ci/test-environment.yml
+# conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION -c conda-forge shogun-cpp eigen json-c=0.12.1-0 cython scikit-learn pandas
+echo "activating test-environment"
+conda activate feat-env
+
+# install packages for the docs
+if [ "$TRAVIS_BRANCH" = "master" ]
+then
+    echo "installing mkdocs"
+    conda env update feat-env -f ci/docs-environment.yml
+    echo "mkdocs version"
+    mkdocs --version
+fi
+
+which conda
+conda info -a
+
+echo "printing conda environment"
+conda-env export
+
 echo "python path is..."
 which python
 python --version
@@ -5,74 +37,24 @@ python --version
 echo "cython path is..."
 which cython
 
-echo "installing cmake"
-# sudo add-apt-repository -y ppa:george-edison55/cmake-3.x
-# sudo apt-get update -y
-# sudo apt-get install cmake
-echo "cmake version:"
-cmake --version
-echo "sudo cmake version:"
-sudo cmake --version
-
-# echo "installing pip"
-# sudo apt install python3-pip
-echo "installing setuptools"
-sudo -H pip3 install setuptools
-echo "installing wheel"
-sudo -H pip3 install setuptools
-
-echo "installing mkdocs"
-sudo -H pip3 install mkdocs==1.1 mkdocs-material pymdown-extensions pygments
-
-echo "mkdocs version"
-mkdocs --version
-
-echo "installing eigen..."
-#wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"
-wget "http://bitbucket.org/eigen/eigen/get/3.3.4.tar.bz2"
-tar xvjf 3.3.4.tar.bz2
-mkdir eigen-3.3.4
-mv eigen-eigen*/* eigen-3.3.4
-
-export EIGEN3_INCLUDE_DIR="$(pwd)/eigen-3.3.4/"
+# set environment variables for eigen and shogun includes
+export EIGEN3_INCLUDE_DIR="$HOME/miniconda/envs/feat-env/include/eigen3/"
 echo "EIGEN3_INCLUDE_DIR set to $EIGEN3_INCLUDE_DIR"
-#_______________________________________________
+export SHOGUN_LIB=/home/travis/miniconda/envs/feat-env/lib/
+echo "SHOGUN_LIB set to $SHOGUN_LIB"
+export SHOGUN_DIR=/home/travis/miniconda/envs/feat-env/include/
+echo "SHOGUN_DIR set to $SHOGUN_DIR"
 
-echo "installing shogun via conda..."
-wget http://repo.continuum.io/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh -O miniconda.sh
-bash miniconda.sh -b -p $HOME/miniconda
-export PATH="$HOME/miniconda/bin:$PATH"
-
-
-# conda update --yes conda
-conda install --yes -c conda-forge shogun-cpp
-
-# the new version of json-c seems to be missing a fn shogun is linked to;
-# force install of older version
-conda install --yes json-c=0.12.1-0
-
-export SHOGUN_LIB=/home/travis/miniconda/lib/
-export SHOGUN_DIR=/home/travis/miniconda/include/
-# commending out the following installs which should be triggered
-# by call to setup.py
-echo "installing cython using conda..."
-conda install --yes cython
-
-echo "installing scikit-learn via conda..."
-conda install --yes scikit-learn
-
-echo "installing pandas via conda..."
-conda install --yes pandas
-
+####################################
 #building and installing google tests
+####################################
 echo "installing google test"
-# sudo apt-get install libgtest-dev
 old_path=$(pwd)
 
 echo "building google test.."
 cd /usr/src/gtest; echo "changed to $(pwd)"
-echo "ls"
-ls
+echo "which cmake?"
+which cmake
 sudo cmake CMakeLists.txt
 
 sudo make
@@ -84,20 +66,7 @@ cd $old_path; pwd
 ###################
 # feat installation
 ###################
-echo "installing feat..."
-mkdir build;
-cd build; pwd
-cmake -DTEST=ON -DEIGEN_DIR=ON -DSHOGUN_DIR=ON ..
-cd ..
-make -C build VERBOSE=1
-
-echo "installing wrapper"
-cd ./python
-python setup.py install
-cd ..
-
-echo "copying wrapper test to the python folder"
-sudo cp tests/wrappertest.py python/ #Copy the file to python folder
-
-echo "running feat.."
-./build/feat docs/examples/data/d_enc.csv -rs 42 -g 2 -p 5
+echo "configuring feat..."
+./configure tests
+echo "install feat..."
+./install -C build -j 4 y
