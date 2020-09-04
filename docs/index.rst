@@ -9,16 +9,32 @@ Feat wraps around a user-chosen ML method and provides a set of representations 
 Each individual in Feat's population is its own data representation. 
 
 .. toctree::
-    :maxdepth: 3
+    :caption: Getting Started
+    :maxdepth: 2
 
     install
+
+.. toctree::
+    :caption: User Guide
+    :maxdepth: 2
+
     guide/overview
     guide/basics
+
+.. toctree::
+    :caption: Examples
+    :maxdepth: 1
+
     examples/command_line
     examples/archive.ipynb
     examples/longitudinal
-    api
-    contributing
+
+.. toctree::
+    :caption: API
+    :maxdepth: 1
+     
+    py_api
+    `C++ API <api_c.html>`_
 
 Index
 ~~~~~

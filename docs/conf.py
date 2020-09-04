@@ -15,7 +15,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../'))
-sys.path.insert(0, os.path.abspath('../../'))
+# sys.path.insert(0, os.path.abspath('../../'))
 sys.path.insert(0, os.path.abspath('../python/'))
 
 
@@ -47,7 +47,7 @@ extensions = [
     'sphinx.ext.doctest',
     'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
-    'sphinx.ext.viewcode',
+    'sphinx.ext.linkcode',
     'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
     'recommonmark',
@@ -111,9 +111,9 @@ html_theme_options = {
     "html_minify": False,
     "html_prettify": True,
     "css_minify": True,
-    "logo_icon": "&#xe869",
+    # "logo_icon": "&#xe869",
     "repo_type": "github",
-    "globaltoc_depth": 2,
+    "globaltoc_depth": 1,
     # "color_primary": "blue",
     # "color_accent": "cyan",
     'color_primary': 'white',
@@ -122,7 +122,7 @@ html_theme_options = {
     "theme_color": "#2196f3",
     "master_doc": False,
     # If False, expand all TOC entries
-    'globaltoc_collapse': True,
+    # 'globaltoc_collapse': True,
     # "nav_links": [
     #     {"href": "index", "internal": True, "title": "Material"},
     #     {
@@ -230,6 +230,18 @@ texinfo_documents = [
 
 # autodoc_mock_imports = ['feat']
 # Render these files as indicated
-source_parsers = {
-                  '.md': 'recommonmark.parser.CommonMarkParser'
-                 }
+# source_parsers = {
+#                   '.md': 'recommonmark.parser.CommonMarkParser'
+#                  }
+# Napolean settings
+napoleon_numpy_docstring = True
+napoleon_include_init_with_doc = False
+
+#linkcode resolution
+def linkcode_resolve(domain, info):
+    if domain != 'py':
+        return None
+    if not info['module']:
+        return None
+    filename = info['module'].replace('.', '/')
+    return "https://github.com/lacava/feat/blob/master/python/%s.py" % filename

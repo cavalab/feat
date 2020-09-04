@@ -6,7 +6,7 @@ SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 SPHINXPROJ    = Feat
 SOURCEDIR     = ./
-BUILDDIR      = site
+BUILDDIR      = ../_site
 
 # Put it first so that "make" without argument is like "make help".
 help:
