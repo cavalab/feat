@@ -467,6 +467,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
      *	   7. select surviving individuals from parents and offspring
      */
 
+    cout << "Feat::fit()\n";
     // start the clock
     timer.Reset();
     params.use_batch = params.bp.batch_size>0;
@@ -510,8 +511,9 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     }
     
     params.init(X, y, scorer);       
+    cout << "513\n";
     this->arch.set_objectives(params.objectives);
-
+    cout << "514\n";
     if (params.normalize)
         N.fit_normalize(X,params.dtypes);                   // normalize data
     /* p_ml = make_shared<ML>(params); // intialize ML */
@@ -524,7 +526,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     /* else */
     /*     use_arch = true; */
     use_arch = false;
-    
+    cout << "528\n"; 
     string log_msg = "functions set: [";
     for (const auto& f: params.functions) log_msg += f->name + ", "; 
     log_msg += "]\n";

@@ -73,6 +73,7 @@ Parameters::~Parameters(){}
  */
 void Parameters::init(const MatrixXf& X, const VectorXf& y, string scorer)
 {
+    cout << "entering init\n";
     if (!ml.compare("LinearRidgeRegression") && classification)
     {
         logger.log("Setting ML type to LR",2);
@@ -95,6 +96,7 @@ void Parameters::init(const MatrixXf& X, const VectorXf& y, string scorer)
         }
         cout << "\n";
     }
+    cout << "exiting init\n";
 }
 
 /// sets current generation

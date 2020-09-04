@@ -5,19 +5,19 @@ import numpy as np
 from feat import Feat
 from sklearn.model_selection import StratifiedKFold
 
-df = pd.read_csv('d_example_patients.csv')
+df = pd.read_csv('../data/d_example_patients.csv')
 df.drop('id',axis=1,inplace=True)
 X = df.drop('class',axis=1).values
 y = df['class'].values
-zfile = 'd_example_patients_long.csv'
-kf = StratifiedKFold(n_splits=3,random_state=42)
+zfile = '../data/d_example_patients_long.csv'
+kf = StratifiedKFold(n_splits=3)
 kf.get_n_splits(X)
 
 clf = Feat(max_depth=5,
            max_dim=min(50,2*X.shape[1]),
            gens = 20,
            pop_size = 100,
-           verbosity=1,
+           verbosity=3,
            shuffle=True,
            ml='LR',
            classification=True,
