@@ -18,3 +18,8 @@ echo "running wrapper test"
 python tests/wrappertest.py -v 1
 
 
+# test example notebooks if on master branch
+if [ "$TRAVIS_BRANCH" = "master" ]
+then
+    python tests/nb_tests.py
+fi
