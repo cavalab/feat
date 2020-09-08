@@ -3,15 +3,28 @@ Feature Engineering Automation Tool
 
 |Build Status| |License: GPL v3|
 
-**Feat** is a feature engineering automation tool that learns new
+**FEAT** is a feature engineering automation tool that learns new
 representations of raw data to improve classifier and regressor
 performance. The underlying methods use Pareto optimization and
 evolutionary computation to search the space of possible
 transformations.
 
-Feat wraps around a user-chosen ML method and provides a set of
+FEAT wraps around a user-chosen ML method and provides a set of
 representations that give the best performance for that method. Each
-individual in Feat’s population is its own data representation.
+individual in FEAT’s population is its own data representation.
+
+
+Contact
+-------
+
+Maintained by William La Cava (lacava at upenn.edu)
+
+Acknowledgments
+---------------
+
+This work is supported by grant K99-LM012926 from the National Library of Medicine. 
+FEAT is being developed to study human disease by the `Epistasis
+Lab at UPenn <http://epistasis.org>`__.
 
 Cite
 ----
@@ -33,22 +46,13 @@ Bibtex:
        author = {La Cava, William and Singh, Tilak Raj and Taggart, James and Suri, Srinivas and Moore, Jason H.},
        year = {2019},
    }
-
-Acknowledgments
----------------
-
-This method is being developed to study human disease in the `Epistasis
-Lab at UPenn <http://epistasis.org>`__.
-
-License
--------
-
-GNU GPLv3
-
 .. |Build Status| image:: https://travis-ci.org/lacava/feat.svg?branch=master
    :target: https://travis-ci.org/lacava/feat
 .. |License: GPL v3| image:: https://img.shields.io/badge/License-GPL%20v3-blue.svg
    :target: https://github.com/lacava/feat/blob/master/LICENSE
+
+Table of Contents
+-----------------
 
 .. toctree::
     :caption: Getting Started

@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath('../python/'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'Feat'
+project = 'FEAT'
 copyright = '2016, William La Cava, Tilak Raj Singh, University of Pennsylvania'
 author = 'William La Cava, Tilak Raj Singh, University of Pennsylvania'
 
@@ -78,17 +78,13 @@ language = None
 # This pattern also affects html_static_path and html_extra_path .
 exclude_patterns = []
 
-# The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
-
-
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
 html_theme = 'sphinx_material'
-html_title = 'Feat'
+html_title = 'FEAT'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -108,19 +104,21 @@ html_title = 'Feat'
 html_theme_options = {
     "base_url": "https://lacava.github.io/feat",
     "repo_url": "https://github.com/lacava/feat/",
-    "repo_name": "Feat",
+    "repo_name": "FEAT",
     "html_minify": False,
     "html_prettify": True,
     "css_minify": True,
-    # "logo_icon": "&#xe869",
+    # "logo_icon": "&#120601",
+    "logo_icon": "&#120593",
     "repo_type": "github",
     "globaltoc_depth": 1,
-    # "color_primary": "blue",
-    # "color_accent": "cyan",
-    'color_primary': 'white',
-    'color_accent': 'Deep Purple',
-    # "touch_icon": "images/feat_icon.png",
+    "color_primary": "deep purple",
+    "color_accent": "white",
+    # 'color_primary': 'white',
+    # 'color_accent': 'Deep Purple',
+    "touch_icon": "icon.jpeg",
     "theme_color": "#2196f3",
+    "codebgcolor": "#2196f3",
     "master_doc": False,
     # If False, expand all TOC entries
     # 'globaltoc_collapse': True,
@@ -132,10 +130,10 @@ html_theme_options = {
     #         "title": "Material for MkDocs",
     #     },
     # ],
-    # "heroes": {
-    #     "index": "A responsive Material Design theme for Sphinx sites.",
-    #     "customization": "Configuration options to personalize your site.",
-    # },
+    "heroes": {
+        "index": "A tool for learning intelligible models",
+        # "customization": "Configuration options to personalize your site.",
+    },
     # "version_dropdown": True,
     # "version_json": "_static/versions.json",
     # "version_info": {
@@ -216,8 +214,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'Feat', 'Feat Documentation',
-     author, 'Feat', 'Feature Engineering Automation Tool',
+    (master_doc, 'FEAT', 'Feat Documentation',
+     author, 'FEAT', 'Feature Engineering Automation Tool',
      'Miscellaneous'),
 ]
 
