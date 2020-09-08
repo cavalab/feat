@@ -3,6 +3,7 @@ if [ "$TRAVIS_BRANCH" = "master" ]
 then
     echo "building doxygen docs"
     cd docs
+    mkdir doxygen_site/
     doxygen Doxyfile
 
     echo "doxygen docs build successfully"
@@ -13,8 +14,6 @@ then
     . /home/travis/miniconda/etc/profile.d/conda.sh
     conda activate feat-env
 
-    echo "mkdocs location:"
-    which mkdocs
-    echo "Building website"
-    mkdocs build --verbose --clean
+    echo "building sphinx docs"
+    make html
 fi
