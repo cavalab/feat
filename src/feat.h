@@ -292,7 +292,7 @@ namespace FT{
             int get_complexity();
 
             ///return population as string
-            string get_eqns(bool front=true);
+            string get_archive(bool front=true);
            
             /// return the coefficients or importance scores of the best model. 
             ArrayXf get_coefs();

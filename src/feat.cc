@@ -297,7 +297,7 @@ int Feat::get_complexity(){ return best_ind.complexity(); }
 int Feat::get_n_nodes(){ return best_ind.program.size(); }
 
 ///return population as string
-string Feat::get_eqns(bool front)
+string Feat::get_archive(bool front)
 {
     vector<string> fields = {"id", "size", "complexity", "fitness", 
         "fitness_v", "coefficients", "pareto_rank", "eqn"};

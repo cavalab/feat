@@ -45,7 +45,7 @@ deploy: # Deploy documentation to Github in the gh_pages branch
     provider: pages
     skip_cleanup: true
     github_token: $github_token
-    local_dir: _site
+    local_dir: _site/html
     keep_history: true
     on:
         branch: master
