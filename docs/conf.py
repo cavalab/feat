@@ -118,7 +118,6 @@ html_theme_options = {
     # 'color_accent': 'Deep Purple',
     "touch_icon": "icon.jpeg",
     "theme_color": "#2196f3",
-    "codebgcolor": "#2196f3",
     "master_doc": False,
     # If False, expand all TOC entries
     # 'globaltoc_collapse': True,
