@@ -1,23 +1,25 @@
 Overview
 ========
 
-This section describes the basic approach used by FEAT. A more detailed
-description, along with experiments, is available in `this
-preprint. <https://arxiv.org/abs/1807.00981>`__
+This section describes the basic learning approach used by FEAT. 
+A more detailed description, along with experiments, is available 
+`here <https://arxiv.org/abs/1807.00981>`__ and from [[3]_].
 
 Representation Learning
 -----------------------
 
 The goal of representation learning in regression or classification is
 to learn a new representation of your data that makes it easier to
-model. As an example, consider the figure below [1]_, where each point
+model. As an example, consider the figure below, where each point
 is a sample belonging to one of 4 colored classes. Here, we want to
 learn the equations on the axes of the right plot (labelled on the
 axes), which will make it easier classify the data belonging to each
 class.
 
-|Representation Learning Example| *(Left) raw data. (Right) Data after
-transformation according to a 2d representation shown on the axes [2]_.*
+.. figure:: rep_learning_demo_2d.svg 
+
+    (Left) raw data. (Right) Data after transformation according to a 
+    2d representation shown on the axes (Image from [[1]_]).
 
 It’s worth noting that the representation in the right panel will be
 easier for certain machine learning methods to classify, and harder for
@@ -29,6 +31,12 @@ random forests are also supported.
 
 Approach
 --------
+
+.. figure:: feat_diagram.svg 
+    :align: center
+
+    A) Steps in the learning process. B) How a single model is trained. 
+    Image from [3]_. 
 
 FEAT is a wrapper-based learning method that trains ML methods on a
 population of representations, and optimizes the representations to
@@ -56,8 +64,9 @@ representations, :math:`N = \{n_1\;\dots\;n_P\}`, where :math:`n` is an
 
 Individuals are evaluated using an initial forward pass, after which
 each representation is used to fit a linear model using ridge
-regression [3]_. The weights of the differentiable features in the
+regression. The weights of the differentiable features in the
 representation are then updated using stochastic gradient descent.
+
 
 Feature representation
 ----------------------
@@ -71,7 +80,7 @@ operators for handling sequential data.
 Selection and Archiving
 -----------------------
 
-By default, FEAT uses lexicase selection [4]_ as the selection operation
+By default, FEAT uses lexicase selection [[2]_] as the selection operation
 and NSGA-II for survival. This allows FEAT to maintain an archive of
 accuracy-complexity tradeoffs to aid in interpretability. FEAT also
 supports simulated annealing, tournament selection and random search.
@@ -82,17 +91,11 @@ supports simulated annealing, tournament selection and random search.
    multiclass classification. Swarm and Evolutionary Computation.
 
 .. [2]
-   La Cava, W., Silva, S., Danai, K., Spector, L., Vanneschi, L., &
-   Moore, J. H. (2018). Multidimensional genetic programming for
-   multiclass classification. Swarm and Evolutionary Computation.
-
-.. [3]
-   Hoerl, A. E., & Kennard, R. W. (1970). Ridge regression: Biased
-   estimation for nonorthogonal problems. Technometrics, 12(1), 55–67.
-
-.. [4]
    La Cava, W., Helmuth, T., Spector, L., & Moore, J. H. (2018). A
    probabilistic and multi-objective analysis of lexicase selection and
    ε-lexicase selection. Evolutionary computation, 1-28.
 
-.. |Representation Learning Example| image:: rep_learning_demo_2d.svg
+.. [3] 
+   La Cava, W., & Moore, J. H. (2020). 
+   Learning feature spaces for regression with genetic programming. 
+   Genetic Programming and Evolvable Machines, 1-35.

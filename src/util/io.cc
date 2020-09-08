@@ -185,16 +185,7 @@ namespace FT{
             /* for (unsigned i = 0; i<idx.size(); ++i) */
             /*     cout << i << "," << idx[i] << "\n"; */
             std::unordered_set<int> idSet; //(idx.begin(), idx.end());
-            /* idSet.insert(idx.begin(), idx.end()); */
-            // write out info about unordered_set
-            
-            /* cout << "max_size = " << idSet.max_size() << "\n"; */ 
-            /* cout << "max_bucket_count = " << idSet.max_bucket_count() << "\n"; */
-            /* cout << "max_load_factor = " << idSet.max_load_factor() << "\n"; */
-            /* cout << "idSet: "; */
-            /* for (auto s : idSet) */
-            /*     cout << s << ","; */
-            /* cout << "\n"; */
+
             std::map<int, vector<int>> idLoc;   // maps IDs to X/y row index (i.e. Loc)
             std::map<int, int> locID;           // maps X/y row indices (i.e. loc) to sample IDs 
             unsigned i = 0;
@@ -217,7 +208,7 @@ namespace FT{
                     }
                 } 
                 idLoc[id].push_back(i);
-                locID.at(i) = id;
+                locID[i] = id;
                 ++i;
             }
             /* cout << "idSet size: " << idSet.size() << "\n"; */

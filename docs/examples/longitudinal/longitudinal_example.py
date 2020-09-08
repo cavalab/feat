@@ -13,6 +13,7 @@ zfile = '../data/d_example_patients_long.csv'
 kf = StratifiedKFold(n_splits=3)
 kf.get_n_splits(X)
 
+
 clf = Feat(max_depth=5,
            max_dim=min(50,2*X.shape[1]),
            gens = 20,
@@ -28,6 +29,7 @@ clf = Feat(max_depth=5,
            iters=10,
            random_state=42,
            n_threads=1)
+print('Feat version:',clf.__version__)
 scores=[]
 
 for train_idx, test_idx in kf.split(X,y):

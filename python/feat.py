@@ -233,12 +233,6 @@ class Feat(BaseEstimator):
 
     def fit(self,X,y,zfile=None,zids=None):
         """Fit a model."""    
-        # if type(X).__name__ == 'DataFrame':
-        #     if len(list(X.columns)) == X.shape[1]:
-        #         self.feature_names = ','.join(X.columns).encode()
-        #     X = X.values
-        # if type(y).__name__ in ['DataFrame','Series']:
-        #     y = y.values
         X = self._clean(X, set_feature_names=True)
         y = self._clean(y)
 
@@ -345,11 +339,7 @@ class Feat(BaseEstimator):
     def score(self,X,y,zfile=None,zids=None):
         """Returns a score for the predictions of Feat on X versus true 
         labels y""" 
-        if zfile:
-            zfile = zfile.encode() if isinstance(zfile,str) else zfile
-            yhat = self._pyfeat.predict_with_z(X,zfile,zids).flatten()
-        else:
-            yhat = self.predict(X).flatten()
+        yhat = self.predict(X,zfile,zids).flatten()
         if ( self.classification ):
             return log_loss(y,yhat, labels=y)
         else:

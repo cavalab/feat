@@ -50,6 +50,7 @@ extensions = [
     'sphinx.ext.linkcode',
     'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
+    'sphinx_copybutton',
     'recommonmark',
     'nbsphinx'
 ]
@@ -223,10 +224,10 @@ texinfo_documents = [
 
 # -- Extension configuration -------------------------------------------------
 # build Doxygen documentation
-# import subprocess
-# subprocess.call('doxygen', shell=True)
-# # path to Doxygen documentation
-# html_extra_path = ['site/api/c/html'] 
+import subprocess
+subprocess.call('doxygen', shell=True)
+# path to Doxygen documentation
+html_extra_path = ['doxygen_site'] 
 
 # autodoc_mock_imports = ['feat']
 # Render these files as indicated

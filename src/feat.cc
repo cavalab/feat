@@ -467,7 +467,6 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
      *	   7. select surviving individuals from parents and offspring
      */
 
-    cout << "Feat::fit()\n";
     // start the clock
     timer.Reset();
     params.use_batch = params.bp.batch_size>0;
@@ -511,9 +510,9 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     }
     
     params.init(X, y, scorer);       
-    cout << "513\n";
+    
     this->arch.set_objectives(params.objectives);
-    cout << "514\n";
+
     if (params.normalize)
         N.fit_normalize(X,params.dtypes);                   // normalize data
     /* p_ml = make_shared<ML>(params); // intialize ML */
@@ -526,7 +525,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     /* else */
     /*     use_arch = true; */
     use_arch = false;
-    cout << "528\n"; 
+
     string log_msg = "functions set: [";
     for (const auto& f: params.functions) log_msg += f->name + ", "; 
     log_msg += "]\n";
@@ -565,12 +564,15 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
         params.set_sample_weights(d.t->y); 
     
     // initial model
+    ////////////////
     logger.log("Fitting initial model", 2);
     t0 =  timer.Elapsed().count();
     initial_model(d);  
     logger.log("Initial fitting took " 
             + std::to_string(timer.Elapsed().count() - t0) + " seconds",2);
+
     // initialize population 
+    ////////////////////////
     logger.log("Initializing population", 2);
    
     bool random = false;
@@ -1134,16 +1136,16 @@ void Feat::initial_model(DataRef &d)
     if (params.split < 1.0)
     {
         shared_ptr<CLabels> yhat_v = best_ind.predict(*d.v, params);
-        min_loss_v = p_eval->S.score(d.v->y, yhat_v, params.class_weights); 
+        this->min_loss_v = p_eval->S.score(d.v->y, yhat_v, params.class_weights); 
     }
     else
-        min_loss_v = min_loss;
+        this->min_loss_v = min_loss;
     
     best_ind.fitness = min_loss;
     
     this->best_complexity = best_ind.get_complexity();
     logger.log("initial training score: " +std::to_string(min_loss),2);
-    logger.log("initial validation score: " +std::to_string(min_loss_v),2);
+    logger.log("initial validation score: " +std::to_string(this->min_loss_v),2);
 }
 
 MatrixXf Feat::transform(MatrixXf& X,
@@ -1340,9 +1342,11 @@ bool Feat::update_best(const DataRef& d, bool validation)
                 /* ind.clone(best_ind); */
                 this->best_complexity = ind.get_complexity();
                 updated = true;
+                logger.log("updating best model: " + this->best_ind.get_eqn(), 2);
             }
         }
     }
+    logger.log("current best model: " + this->best_ind.get_eqn(), 2);
     this->min_loss_v = bs; 
 
     return updated;
@@ -1482,14 +1486,15 @@ void Feat::print_stats(std::ofstream& log, float fraction)
               << stats.min_loss.back() << " (" 
               << stats.med_loss.back() << ")\n"
               << "Val Loss (Med): " 
-              << min_loss_v << " (" << stats.med_loss_v.back() << ")\n"
+              << this->min_loss_v << " (" << stats.med_loss_v.back() << ")\n"
               << "Median Size (Max): " 
               << stats.med_size.back() << " (" << max_size << ")\n"
               << "Time (s): "   << timer << "\n";
     std::cout << "Representation Pareto Front--------------------------------------\n";
     std::cout << "Rank\t"; //Complexity\tLoss\tRepresentation\n";
-    for (const auto& o : params.objectives)
-        std::cout << o << "\t";
+    /* for (const auto& o : params.objectives) */
+    /*     std::cout << o << "\t"; */
+    cout << "fitness\tfitness_v\tcomplexity\t";
     cout << "Representation\n";
 
     std::cout << std::scientific;
@@ -1510,11 +1515,12 @@ void Feat::print_stats(std::ofstream& log, float fraction)
             if (lim_model.size()==60) 
                 lim_model += "...";
             
-            std::cout <<  arch.archive[i].rank          << "\t" ;
-            for (const auto& o : arch.archive[i].obj)
-                std::cout << o << "\t";
-                  /* <<  arch.archive[i].complexity()  << "\t" */ 
-                  /* <<  arch.archive[i].fitness       << "\t" */ 
+            std::cout <<  arch.archive[i].rank          << "\t" 
+            /* for (const auto& o : arch.archive[i].obj) */
+            /*     std::cout << o << "\t"; */
+                  <<  arch.archive[i].fitness       << "\t" 
+                  <<  arch.archive[i].fitness_v       << "\t" 
+                  <<  arch.archive[i].complexity()  << "\t" ;
             cout <<  lim_model << "\n";  
         }
     }
@@ -1536,9 +1542,12 @@ void Feat::print_stats(std::ofstream& log, float fraction)
                 lim_model.push_back(model.at(j));
             if (lim_model.size()==60) 
                 lim_model += "...";
-            std::cout << p_pop->individuals[f[j]].rank              << "\t" ;
-            for (const auto& o : p_pop->individuals[f[j]].obj)
-                std::cout << o << "\t";
+            std::cout << p_pop->individuals[f[j]].rank              << "\t" 
+                      << p_pop->individuals[f[j]].fitness              << "\t" 
+                      << p_pop->individuals[f[j]].fitness_v              << "\t" 
+                      << p_pop->individuals[f[j]].complexity()              << "\t" ;
+            /* for (const auto& o : p_pop->individuals[f[j]].obj) */
+            /*     std::cout << o << "\t"; */
                       /* <<  p_pop->individuals[f[j]].complexity()     << "\t" */ 
                       /* << (*p_pop)[f[j]].fitness                     << "\t" */
             cout << "\t" << lim_model << "\n";  
@@ -1568,7 +1577,7 @@ void Feat::print_stats(std::ofstream& log, float fraction)
         log << params.current_gen  << sep
             << timer.Elapsed().count() << sep
             << stats.min_loss.back()          << sep
-            << min_loss_v        << sep
+            << this->min_loss_v        << sep
             << stats.med_loss.back()  << sep
             << stats.med_loss_v.back() << sep
             << stats.med_size.back()   << sep

@@ -1,5 +1,5 @@
-Basics
-======
+Basic Usage
+===========
 
 Feat handles continuous, categorical and boolean data types, as well as
 sequential (i.e. longitudinal) data. By default, FEAT will attempt to
