@@ -8,8 +8,6 @@ then
 
     echo "doxygen docs build successfully"
 
-    cd ..
-
     echo "sourcing conda"
     . /home/travis/miniconda/etc/profile.d/conda.sh
     conda activate feat-env
