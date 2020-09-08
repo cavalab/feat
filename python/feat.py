@@ -16,6 +16,121 @@ from sklearn.metrics import log_loss
 import pdb
 
 class Feat(BaseEstimator):
+    """Feature Engineering Automation Tool
+
+    Parameters
+    ----------
+    pop_size: int, optional (default: 100)
+        Size of the population of models
+    gens: int, optional (default: 100)
+        Number of iterations to train for
+    ml: str, optional (default: "LinearRidgeRegression")
+        ML pairing. Choices: LinearRidgeRegression, Lasso, L1_LR, L2_LR
+    classification: boolean, optional (default: False)
+        Whether to do classification instead of regression. 
+    verbosity: int, optional (default: 0)
+        How much to print out (0, 1, 2)
+    max_stall: int, optional (default: 0)
+        How many generations to continue after the validation loss has
+        stalled. If 0, not used.
+    sel: str, optional (default: "lexicase")
+        Selection algorithm to use.   
+    surv: str, optional (default: "nsga2")
+        Survival algorithm to use. 
+    cross_rate: float, optional (default: 0.5)
+        How often to do crossover for variation versus mutation. 
+    root_xo_rate: float, optional (default: 0.5)
+        When performing crossover, how often to choose from the roots of 
+        the trees, rather than within the tree. Root crossover essentially
+        swaps features in models.
+    otype: string, optional (default: 'a')
+        Feature output types:
+        'a': all
+        'b': boolean only
+        'f': floating point only
+    functions: string, optional (default: "")
+        What operators to use to build features. If functions="", all the
+        available functions are used. 
+    max_depth: int, optional (default: 3)
+        Maximum depth of a feature's tree representation.
+    max_dim: int, optional (default: 10)
+        Maximum dimension of a model. The dimension of a model is how many
+        independent features it has. Controls the number of trees in each 
+        individual.
+    random_state: int, optional (default: 0)
+        Random seed.
+    erc: boolean, optional (default: False)
+        If true, ephemeral random constants are included as nodes in trees.
+    obj: str, optional (default: "fitness,complexity")
+        Objectives to use for multi-objective optimization.
+    shuffle: boolean, optional (default: True)
+        Whether to shuffle the training data before beginning training.
+    split: float, optional (default: 0.75)
+        The internal fraction of training data to use. The validation fold
+        is then 1-split fraction of the data. 
+    fb: float, optional (default: 0.5)
+        Controls the amount of feedback from the ML weights used during 
+        variation. Higher values make variation less random.
+    scorer: str, optional (default: '')
+        Scoring function to use internally. 
+    feature_names: str, optional (default: '')
+        Optionally provide comma-separated feature names. Should be equal
+        to the number of features in your data. This will be set 
+        automatically if a Pandas dataframe is passed to fit(). 
+    backprop: boolean, optional (default: False)
+        Perform gradient descent on feature weights using backpropagation.
+    iters: int, optional (default: 10)
+        Controls the number of iterations of backprop as well as 
+        hillclimbing for learning weights.
+    lr: float, optional (default: 0.1)
+        Learning rate used for gradient descent. This the initial rate, 
+        and is scheduled to decrease exponentially with generations. 
+    batch_size: int, optional (default: 0)
+        Number of samples to train on each generation. 0 means train on 
+        all the samples.
+    n_threads: int, optional (default: 0)
+        Number of parallel threads to use. If 0, this will be 
+        automatically determined by OMP. 
+    hillclimb: boolean, optional (default: False)
+        Applies stochastic hillclimbing to feature weights. 
+    logfile: str, optional (default: "")
+        If specified, spits statistics into a logfile. "" means don't log.
+    max_time: int, optional (default: -1)
+        Maximum time terminational criterion in seconds. If -1, not used.
+    residual_xo: boolean, optional (default: False)
+        Use residual crossover. 
+    stagewise_xo: boolean, optional (default: False)
+        Use stagewise crossover.
+    stagewise_xo_tol: boolean, optional (default:False)
+        Terminates stagewise crossover based on an error value rather than
+        dimensionality. 
+    softmax_norm: boolean, optional (default: False)
+        Uses softmax normalization of probabilities of variation across
+        the features. 
+    print_pop: int, optional (default: 0)
+        Prints the population of models. 0: don't print; 1: print final 
+        population; 2: print every generation. 
+    normalize: boolean, optional (default: True)
+        Normalizes the floating point input variables using z-scores. 
+    val_from_arch: boolean, optional (default: True)
+        Validates the final model using the archive rather than the whole 
+        population.
+    corr_delete_mutate: boolean, optional (default: False)
+        Replaces root deletion mutation with a deterministic deletion 
+        operator that deletes the feature with highest collinearity. 
+    simplify: float, optional (default: 0)
+        Runs post-run simplification to try to shrink the final model 
+        without changing its output more than the simplify tolerance.
+        This tolerance is the norm of the difference in outputs, divided
+        by the norm of the output. If simplify=0, it is ignored. 
+    protected_groups: list, optional (default: [])
+        Defines protected attributes in the data. Uses for adding 
+        fairness constraints. 
+    tune_initial: boolean, optional (default: False)
+        Tune the initial linear model's penalization parameter. 
+    tune_final: boolean, optional (default: True)
+        Tune the final linear model's penalization parameter. 
+    """
     def __init__(self, pop_size=100,  gens=100,  ml = "LinearRidgeRegression", 
                 classification=False,  verbosity=0,  max_stall=0,
                 sel ="lexicase",  surv ="nsga2",  cross_rate=0.5, 
@@ -30,122 +145,6 @@ class Feat(BaseEstimator):
                 normalize=True, val_from_arch=True, corr_delete_mutate=False, 
                 simplify=0.0,protected_groups=[],
                 tune_initial=False, tune_final=True):
-        """Feat uses GP to find a data representation that improves the 
-        performance of a given ML method.
-
-        Parameters
-        ----------
-        pop_size: int, optional (default: 100)
-            Size of the population of models
-        gens: int, optional (default: 100)
-            Number of iterations to train for
-        ml: str, optional (default: "LinearRidgeRegression")
-            ML pairing. Choices: LinearRidgeRegression, Lasso, L1_LR, L2_LR
-        classification: boolean, optional (default: False)
-            Whether to do classification instead of regression. 
-        verbosity: int, optional (default: 0)
-            How much to print out (0, 1, 2)
-        max_stall: int, optional (default: 0)
-            How many generations to continue after the validation loss has
-            stalled. If 0, not used.
-        sel: str, optional (default: "lexicase")
-            Selection algorithm to use.   
-        surv: str, optional (default: "nsga2")
-            Survival algorithm to use. 
-        cross_rate: float, optional (default: 0.5)
-            How often to do crossover for variation versus mutation. 
-        root_xo_rate: float, optional (default: 0.5)
-            When performing crossover, how often to choose from the roots of 
-            the trees, rather than within the tree. Root crossover essentially
-            swaps features in models.
-        otype: string, optional (default: 'a')
-            Feature output types:
-            'a': all
-            'b': boolean only
-            'f': floating point only
-        functions: string, optional (default: "")
-            What operators to use to build features. If functions="", all the
-            available functions are used. 
-        max_depth: int, optional (default: 3)
-            Maximum depth of a feature's tree representation.
-        max_dim: int, optional (default: 10)
-            Maximum dimension of a model. The dimension of a model is how many
-            independent features it has. Controls the number of trees in each 
-            individual.
-        random_state: int, optional (default: 0)
-            Random seed.
-        erc: boolean, optional (default: False)
-            If true, ephemeral random constants are included as nodes in trees.
-        obj: str, optional (default: "fitness,complexity")
-            Objectives to use for multi-objective optimization.
-        shuffle: boolean, optional (default: True)
-            Whether to shuffle the training data before beginning training.
-        split: float, optional (default: 0.75)
-            The internal fraction of training data to use. The validation fold
-            is then 1-split fraction of the data. 
-        fb: float, optional (default: 0.5)
-            Controls the amount of feedback from the ML weights used during 
-            variation. Higher values make variation less random.
-        scorer: str, optional (default: '')
-            Scoring function to use internally. 
-        feature_names: str, optional (default: '')
-            Optionally provide comma-separated feature names. Should be equal
-            to the number of features in your data. This will be set 
-            automatically if a Pandas dataframe is passed to fit(). 
-        backprop: boolean, optional (default: False)
-            Perform gradient descent on feature weights using backpropagation.
-        iters: int, optional (default: 10)
-            Controls the number of iterations of backprop as well as 
-            hillclimbing for learning weights.
-        lr: float, optional (default: 0.1)
-            Learning rate used for gradient descent. This the initial rate, 
-            and is scheduled to decrease exponentially with generations. 
-        batch_size: int, optional (default: 0)
-            Number of samples to train on each generation. 0 means train on 
-            all the samples.
-        n_threads: int, optional (default: 0)
-            Number of parallel threads to use. If 0, this will be 
-            automatically determined by OMP. 
-        hillclimb: boolean, optional (default: False)
-            Applies stochastic hillclimbing to feature weights. 
-        logfile: str, optional (default: "")
-            If specified, spits statistics into a logfile. "" means don't log.
-        max_time: int, optional (default: -1)
-            Maximum time terminational criterion in seconds. If -1, not used.
-        residual_xo: boolean, optional (default: False)
-            Use residual crossover. 
-        stagewise_xo: boolean, optional (default: False)
-            Use stagewise crossover.
-        stagewise_xo_tol: boolean, optional (default:False)
-            Terminates stagewise crossover based on an error value rather than
-            dimensionality. 
-        softmax_norm: boolean, optional (default: False)
-            Uses softmax normalization of probabilities of variation across
-            the features. 
-        print_pop: int, optional (default: 0)
-            Prints the population of models. 0: don't print; 1: print final 
-            population; 2: print every generation. 
-        normalize: boolean, optional (default: True)
-            Normalizes the floating point input variables using z-scores. 
-        val_from_arch: boolean, optional (default: True)
-            Validates the final model using the archive rather than the whole 
-            population.
-        corr_delete_mutate: boolean, optional (default: False)
-            Replaces root deletion mutation with a deterministic deletion 
-            operator that deletes the feature with highest collinearity. 
-        simplify: float, optional (default: 0)
-            Runs post-run simplification to try to shrink the final model 
-            without changing its output more than the simplify tolerance.
-            This tolerance is the norm of the difference in outputs, divided
-            by the norm of the output. If simplify=0, it is ignored. 
-        protected_groups: list, optional (default: [])
-            Defines protected attributes in the data. Uses for adding 
-            fairness constraints. 
-        tune_initial: boolean, optional (default: False)
-            Tune the initial linear model's penalization parameter. 
-        tune_final: boolean, optional (default: True)
-            Tune the final linear model's penalization parameter. 
-        """
         self.pop_size = pop_size
         self.gens = gens
         self.ml = ml.encode() if( isinstance(ml,str) )  else ml
@@ -234,12 +233,6 @@ class Feat(BaseEstimator):
 
     def fit(self,X,y,zfile=None,zids=None):
         """Fit a model."""    
-        # if type(X).__name__ == 'DataFrame':
-        #     if len(list(X.columns)) == X.shape[1]:
-        #         self.feature_names = ','.join(X.columns).encode()
-        #     X = X.values
-        # if type(y).__name__ in ['DataFrame','Series']:
-        #     y = y.values
         X = self._clean(X, set_feature_names=True)
         y = self._clean(y)
 
@@ -346,11 +339,7 @@ class Feat(BaseEstimator):
     def score(self,X,y,zfile=None,zids=None):
         """Returns a score for the predictions of Feat on X versus true 
         labels y""" 
-        if zfile:
-            zfile = zfile.encode() if isinstance(zfile,str) else zfile
-            yhat = self._pyfeat.predict_with_z(X,zfile,zids).flatten()
-        else:
-            yhat = self.predict(X).flatten()
+        yhat = self.predict(X,zfile,zids).flatten()
         if ( self.classification ):
             return log_loss(y,yhat, labels=y)
         else:

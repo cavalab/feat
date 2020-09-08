@@ -497,10 +497,11 @@ void Parameters::set_protected_groups(string pg)
             protected_groups.push_back(token != "0");
             pg.erase(0, pos + delim.length());
         }
-        cout << "protected_groups: "; 
+        string msg =  "protected_groups: "; 
         for (auto pg : protected_groups)
-            cout << pg << ",";
-        cout << "\n";
+            msg += pg + ",";
+        msg += "\n";
+        logger.log(msg,2);
     }
 }
 void Parameters::set_feature_names(string fn)

@@ -91,8 +91,8 @@ namespace FT{
             db.y.resize(batch_size);
             for (const auto& val: Z )
             {
-                db.Z.at(val.first).first.resize(batch_size);
-                db.Z.at(val.first).second.resize(batch_size);
+                db.Z[val.first].first.resize(batch_size);
+                db.Z[val.first].second.resize(batch_size);
             }
             for (unsigned i = 0; i<batch_size; ++i)
             {
