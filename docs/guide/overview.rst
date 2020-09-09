@@ -23,11 +23,14 @@ class.
 
 It’s worth noting that the representation in the right panel will be
 easier for certain machine learning methods to classify, and harder for
-others. For this reason we’ve written FEAT to wrap around the Shogun ML
-toolbox, which means it can learn representations for different ML
-approaches. The default approach is linear and logistic regression, but
-currently decision trees (CART), support vector machines (SVM) and
-random forests are also supported.
+others. We’ve written FEAT to wrap around the Shogun ML
+toolbox, which means it could eventually learn representations for different ML
+approaches. At the moment, linear and logistic regression with different
+penalizations are supported. In addition, decision trees (CART), 
+support vector machines (SVM) and random forests are experimentally 
+available. Because different feature transformations work better than others
+for a given ML method, FEAT uses the performance of the ML method as
+a measure of how good a candidate representation is during optimization.
 
 Approach
 --------
