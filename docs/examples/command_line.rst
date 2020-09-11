@@ -25,7 +25,7 @@ seed of 42, type
 
 ::
 
-   ./build/feat docs/examples/d_enc.csv -p 100 -g 100 -r 42
+   ./build/feat docs/examples/data/d_enc.csv -p 100 -g 100 -r 42
 
 The default verbosity=1, so you will get a printout of summary
 statistics each generation. The final output should look like
