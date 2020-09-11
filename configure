@@ -14,6 +14,10 @@ export SHOGUN_LIB=$CONDA_PREFIX/lib/
 export SHOGUN_DIR=$CONDA_PREFIX/include/
 export EIGEN3_INCLUDE_DIR=$CONDA_PREFIX/include/eigen3/
 
+echo "SHOGUN_LIB set to $SHOGUN_LIB"
+echo "SHOGUN_DIR set to $SHOGUN_DIR"
+echo "EIGEN3_INCLUDE_DIR set to $EIGEN3_INCLUDE_DIR"
+
 # configuration options
 SHOGUN_KNOWN=ON
 EIGEN_KNOWN=ON
