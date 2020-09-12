@@ -37,6 +37,15 @@ python --version
 echo "cython path is..."
 which cython
 
+# set environment variables for eigen and shogun includes
+export EIGEN3_INCLUDE_DIR="$CONDA_PREFIX/include/eigen3/"
+echo "EIGEN3_INCLUDE_DIR set to $EIGEN3_INCLUDE_DIR"
+export SHOGUN_LIB="$CONDA_PREFIX/lib/"
+echo "SHOGUN_LIB set to $SHOGUN_LIB"
+export SHOGUN_DIR="$CONDA_PREFIX/include/"
+echo "SHOGUN_DIR set to $SHOGUN_DIR"
+
+
 ####################################
 #building and installing google tests
 ####################################
