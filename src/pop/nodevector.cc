@@ -385,5 +385,33 @@ namespace FT{
             assert(is_valid_program(terminals.size(), longitudinalMap));
         }
         
+        //serialization
+        void to_json(json& j, const NodeVector& nv)
+        {
+            /* vector<json> program; */
+            for (const auto& n : nv)
+            {
+                json k;
+                // cast different types of nodes
+                if (typeid(*n) == typeid(NodeSplit<float>))
+                    Op::to_json(k, *dynamic_cast<NodeSplit<float>*>(n.get()));
+                else if (typeid(*n) == typeid(NodeSplit<int>))
+                    Op::to_json(k, *dynamic_cast<NodeSplit<int>*>(n.get()));
+                else if (n->isNodeTrain())                     
+                    Op::to_json(k, *dynamic_cast<NodeTrain*>(n.get()));
+                else if (n->isNodeDx())                     
+                    Op::to_json(k, *dynamic_cast<NodeDx*>(n.get()));
+                else
+                    Op::to_json(k, *n);
+                cout << "json: " << k << endl;
+                j.push_back(k);
+            }
+            
+        }
+        void from_json(const json& j, NodeVector& nv)
+        {
+            //TODO: write this
+
+        }
     }
 } // FT

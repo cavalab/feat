@@ -165,8 +165,12 @@ namespace FT{
             /// get maximum stack size needed for evaluation.
             std::map<char,size_t> get_max_state_size();
             
+            /// save individual as a json object.
+            void save();
+
             typedef Array<bool, Dynamic, Dynamic, RowMajor> ArrayXXb;
             /* typedef Array<float, Dynamic, Dynamic, RowMajor> ArrayXXf; */
+        
         };
     }
 }

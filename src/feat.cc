@@ -63,6 +63,32 @@ Feat::Feat(int pop_size, int gens, string ml,
     arch.set_objectives(params.objectives);
 }
 
+/// save the population
+void Feat::save()
+{
+
+    json j;
+    cout << "Individual json:" << to_json(j, *this);
+
+    /* cout << "nodes:\n"; */
+    /* for (const auto& p : program) */
+    /* { */
+    /*     json j; */
+    /*     // cast different types of nodes */
+    /*     if (typeid(*p) == typeid(NodeSplit<float>)) */
+    /*         Op::to_json(j, *dynamic_cast<NodeSplit<float>*>(p.get())); */
+    /*     else if (typeid(*p) == typeid(NodeSplit<int>)) */
+    /*         Op::to_json(j, *dynamic_cast<NodeSplit<int>*>(p.get())); */
+    /*     else if (p->isNodeTrain()) */                     
+    /*         Op::to_json(j, *dynamic_cast<NodeTrain*>(p.get())); */
+    /*     else if (p->isNodeDx()) */                     
+    /*         Op::to_json(j, *dynamic_cast<NodeDx*>(p.get())); */
+    /*     else */
+    /*         Op::to_json(j, *p); */
+    /*     cout << "json: " << j << endl; */
+    /* } */
+}
+
 /// set size of population 
 void Feat::set_pop_size(int pop_size){ params.pop_size = pop_size; }            
 
@@ -665,6 +691,8 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
 
     logger.log("\n===\nRun Completed. Total time taken is " 
             + std::to_string(timer.Elapsed().count()) + "\n", 1);
+
+    this->best_ind.save();
     
     if (log.is_open())
         log.close();

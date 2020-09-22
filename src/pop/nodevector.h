@@ -10,6 +10,10 @@ license: GNU/GPL v3
 #include "op/n_Dx.h"
 
 #include "../util/error.h"
+/* #include "../util/json.hpp" */
+/* using nlohmann::json; */ 
+#include "../util/serializer.h"
+
 namespace FT{
     
     namespace Pop{
@@ -69,7 +73,12 @@ namespace FT{
                               vector<string> longitudinalMap, const vector<char>& term_types);
             
         }; //NodeVector
+        // serializatoin
+        // forward declaration
+        void to_json(json& j, const NodeVector& nv);
+        void from_json(json& j, const NodeVector& nv);
         
     }
 } // FT
 #endif
+

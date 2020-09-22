@@ -17,6 +17,7 @@ license: GNU/GPL v3
 #include "util/logger.h"
 #include "util/utils.h"
 #include "util/io.h"
+#include "util/serializer.h"
 #include "params.h"
 #include "pop/population.h"
 #include "sel/selection.h"

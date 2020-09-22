@@ -19,7 +19,6 @@ license: GNU/GPL v3
 #include <memory>
 #include <iostream>
 #include <numeric>
-
 using Eigen::MatrixXf;
 using Eigen::VectorXf;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;

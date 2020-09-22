@@ -1041,6 +1041,30 @@ namespace FT{
             
             return yh;
         }
+        void Individual::save()
+        {}
+        /* { */
+        /*     json j; */
+        /*     cout << "Individual json:" << to_json(j, *this); */
+
+        /*     cout << "nodes:\n"; */
+        /*     for (const auto& p : program) */
+        /*     { */
+        /*         json j; */
+        /*         // cast different types of nodes */
+        /*         if (typeid(*p) == typeid(NodeSplit<float>)) */
+        /*             Op::to_json(j, *dynamic_cast<NodeSplit<float>*>(p.get())); */
+        /*         else if (typeid(*p) == typeid(NodeSplit<int>)) */
+        /*             Op::to_json(j, *dynamic_cast<NodeSplit<int>*>(p.get())); */
+        /*         else if (p->isNodeTrain()) */                     
+        /*             Op::to_json(j, *dynamic_cast<NodeTrain*>(p.get())); */
+        /*         else if (p->isNodeDx()) */                     
+        /*             Op::to_json(j, *dynamic_cast<NodeDx*>(p.get())); */
+        /*         else */
+        /*             Op::to_json(j, *p); */
+        /*         cout << "json: " << j << endl; */
+        /*     } */
+        /* } */
 
     }
 
