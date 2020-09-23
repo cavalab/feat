@@ -13,166 +13,194 @@ license: GNU/GPL v3
 #include "../params.h"
 #include "../model/ml.h"
 #include "../util/utils.h"
+#include "../util/serialization.h"
+#include "nodevector.h"
 
 namespace FT{
 
-    using namespace Model;
+using namespace Model;
+
+namespace Pop{
     
-    namespace Pop{
-        
-        ////////////////////////////////////////////////////////// Declarations
+////////////////////////////////////////////////////////// Declarations
 
-        /*!
-         * @class Individual
-         * @brief individual programs in the population
-         */
-        class Individual{
-        public:        
-            NodeVector program; ///< executable data structure
-            MatrixXf Phi;      ///< transformation output of program 
-            VectorXf yhat;     ///< current output
-            VectorXf error;     ///< training error
-            shared_ptr<ML> ml; ///< ML model, trained on Phi
-            float fitness;     ///< aggregate fitness score
-            float fitness_v;   ///< aggregate validation fitness score
-            float fairness;     ///< aggregate fairness score
-            float fairness_v;   ///< aggregate validation fairness score
-            float CN;
-            vector<float> w;   ///< weights from ML training on program output
-            vector<float> p;   ///< probability of variation of subprograms
-            unsigned int dim;  ///< dimensionality of individual
-            vector<float> obj; ///< objectives for use with Pareto selection
-            unsigned int dcounter;  ///< number of individuals this dominates
-            vector<unsigned int> dominated; ///< individual indices this dominates
-            unsigned int rank;             ///< pareto front rank
-            float crowd_dist;   ///< crowding distance on the Pareto front
-            unsigned int c; ///< the complexity of the program.    
-            vector<char> dtypes;    ///< the data types of each column of the 
-                                                          // program output
-            unsigned id;                                ///< tracking id
-            vector<int> parent_id;                      ///< ids of parents
-           
-            Individual();
+/*!
+ * @class Individual
+ * @brief individual programs in the population
+ */
+class Individual{
+public:        
+    NodeVector program; ///< executable data structure
+    MatrixXf Phi;      ///< transformation output of program 
+    VectorXf yhat;     ///< current output
+    VectorXf error;     ///< training error
+    shared_ptr<ML> ml; ///< ML model, trained on Phi
+    float fitness;     ///< aggregate fitness score
+    float fitness_v;   ///< aggregate validation fitness score
+    float fairness;     ///< aggregate fairness score
+    float fairness_v;   ///< aggregate validation fairness score
+    float CN;
+    vector<float> w;   ///< weights from ML training on program output
+    vector<float> p;   ///< probability of variation of subprograms
+    unsigned int dim;  ///< dimensionality of individual
+    vector<float> obj; ///< objectives for use with Pareto selection
+    unsigned int dcounter;  ///< number of individuals this dominates
+    vector<unsigned int> dominated; ///< individual indices this dominates
+    unsigned int rank;             ///< pareto front rank
+    float crowd_dist;   ///< crowding distance on the Pareto front
+    unsigned int c; ///< the complexity of the program.    
+    vector<char> dtypes;    ///< the data types of each column of the 
+                                                  // program output
+    unsigned id;                                ///< tracking id
+    vector<int> parent_id;                      ///< ids of parents
+   
+    Individual();
 
-            /// copy assignment
-            /* Individual(const Individual& other); */
-            
-            /* Individual(Individual && other); */
-            
-            /* Individual& operator=(Individual const& other); */
-            
-            /* Individual& operator=(Individual && other); */
+    /// copy assignment
+    /* Individual(const Individual& other); */
+    
+    /* Individual(Individual && other); */
+    
+    /* Individual& operator=(Individual const& other); */
+    
+    /* Individual& operator=(Individual && other); */
 
-            /// calculate program output matrix Phi
-            MatrixXf out(const Data& d, const Parameters& params, bool predict=false);
+    /// calculate program output matrix Phi
+    MatrixXf out(const Data& d, const Parameters& params, bool predict=false);
 
-            /// calculate program output while maintaining stack trace
-            MatrixXf out_trace(const Data& d,
-                         const Parameters& params, vector<Trace>& stack_trace);
-       
-            /// converts program states to output matrices
-            MatrixXf state_to_phi(State& state);
+    /// calculate program output while maintaining stack trace
+    MatrixXf out_trace(const Data& d,
+                 const Parameters& params, vector<Trace>& stack_trace);
 
-            /// fits an ML model to the data after transformation
-            shared_ptr<CLabels> fit(const Data& d, const Parameters& params, 
-                    bool& pass);
-            /// fits an ML model to the data after transformation
-            shared_ptr<CLabels> fit(const Data& d, const Parameters& params);
-            
-            /// fits and tunes an ML model to the data after transformation
-            shared_ptr<CLabels> fit_tune(const Data& d, 
-                    const Parameters& params, bool set_default=false);
+    /// converts program states to output matrices
+    MatrixXf state_to_phi(State& state);
 
-            /// tunes an ML model to the data after transformation
-            void tune(const Data& d, const Parameters& params);
-            /*! generates prediction on data using transformation and ML predict. 
-             *  @param drop_idx if specified, the phi output at drop_idx is set to zero, effectively
-             *  removing its output from the transformation. used in semantic crossover.
-             */
-            shared_ptr<CLabels> predict(const Data& d, 
-                    const Parameters& params);
-            VectorXf predict_vector(const Data& d, const Parameters& params);
-            VectorXf predict_drop(const Data& d, const Parameters& params, 
-                    int drop_idx);
-            ArrayXXf predict_proba(const Data& d, const Parameters& params);
-            /// return symbolic representation of program
-            string get_eqn() const;
+    /// fits an ML model to the data after transformation
+    shared_ptr<CLabels> fit(const Data& d, const Parameters& params, 
+            bool& pass);
+    /// fits an ML model to the data after transformation
+    shared_ptr<CLabels> fit(const Data& d, const Parameters& params);
+    
+    /// fits and tunes an ML model to the data after transformation
+    shared_ptr<CLabels> fit_tune(const Data& d, 
+            const Parameters& params, bool set_default=false);
 
-            /// return vectorized representation of program
-            vector<string> get_features();
+    /// tunes an ML model to the data after transformation
+    void tune(const Data& d, const Parameters& params);
+    /*! generates prediction on data using transformation and ML predict. 
+     *  @param drop_idx if specified, the phi output at drop_idx is set to zero, effectively
+     *  removing its output from the transformation. used in semantic crossover.
+     */
+    shared_ptr<CLabels> predict(const Data& d, 
+            const Parameters& params);
+    VectorXf predict_vector(const Data& d, const Parameters& params);
+    VectorXf predict_drop(const Data& d, const Parameters& params, 
+            int drop_idx);
+    ArrayXXf predict_proba(const Data& d, const Parameters& params);
+    /// return symbolic representation of program
+    string get_eqn() const;
 
-            /// return program name list 
-            string program_str() const;
+    /// return vectorized representation of program
+    vector<string> get_features();
 
-            /// setting and getting from individuals vector
-            /* const std::unique_ptr<Node> operator [](int i) const {return program.at(i);} */ 
-            /* const std::unique_ptr<Node> & operator [](int i) {return program.at(i);} */
+    /// return program name list 
+    string program_str() const;
 
-            /// set rank
-            void set_rank(unsigned r);
-            
-            /// return size of program
-            int size() const;
-            
-            /// get number of params in program
-            int get_n_params();
-            
-            /// grab sub-tree locations given starting point.
-            /* size_t subtree(size_t i, char otype) const; */
+    /// setting and getting from individuals vector
+    /* const std::unique_ptr<Node> operator [](int i) const {return program.at(i);} */ 
+    /* const std::unique_ptr<Node> & operator [](int i) {return program.at(i);} */
 
-            // // get program depth.
-            // unsigned int depth();
+    /// set rank
+    void set_rank(unsigned r);
+    
+    /// return size of program
+    int size() const;
+    
+    /// get number of params in program
+    int get_n_params();
+    
+    /// grab sub-tree locations given starting point.
+    /* size_t subtree(size_t i, char otype) const; */
 
-            /// get program dimensionality
-            unsigned int get_dim();
-            
-            /// check whether this dominates b. 
-            int check_dominance(const Individual& b) const;
-            
-            /// set obj vector given a string of objective names
-            void set_obj(const vector<string>&); 
-            
-            /// calculate program complexity. 
-            unsigned int complexity();
-            
-            unsigned int get_complexity() const;
-          
-            /// clone this individual 
-            void clone(Individual& cpy, bool sameid=true) const;
-            Individual clone();
-            
-            void set_id(unsigned i);
+    // // get program depth.
+    // unsigned int depth();
 
-            /// set parent ids using parents  
-            void set_parents(const vector<Individual>& parents);
-            
-            /// set parent ids using id values 
-            void set_parents(const vector<int>& parents){ parent_id = parents; }
+    /// get program dimensionality
+    unsigned int get_dim();
+    
+    /// check whether this dominates b. 
+    int check_dominance(const Individual& b) const;
+    
+    /// set obj vector given a string of objective names
+    void set_obj(const vector<string>&); 
+    
+    /// calculate program complexity. 
+    unsigned int complexity();
+    
+    unsigned int get_complexity() const;
+  
+    /// clone this individual 
+    void clone(Individual& cpy, bool sameid=true) const;
+    Individual clone();
+    
+    void set_id(unsigned i);
 
-            /// get probabilities of variation
-            vector<float> get_p() const;
-            
-            /// get inverted weight probability for pogram location i
-            float get_p(const size_t i, bool normalize=true) const;
-            
-            /// get probability of variation for program locations locs
-            vector<float> get_p(const vector<size_t>& locs, bool normalize=false) const; 
+    /// set parent ids using parents  
+    void set_parents(const vector<Individual>& parents);
+    
+    /// set parent ids using id values 
+    void set_parents(const vector<int>& parents){ parent_id = parents; }
 
-            /// set probabilities
-            void set_p(const vector<float>& weights, const float& fb, 
-                       const bool softmax_norm=false);
-            
-            /// get maximum stack size needed for evaluation.
-            std::map<char,size_t> get_max_state_size();
-            
-            /// save individual as a json object.
-            void save();
+    /// get probabilities of variation
+    vector<float> get_p() const;
+    
+    /// get inverted weight probability for pogram location i
+    float get_p(const size_t i, bool normalize=true) const;
+    
+    /// get probability of variation for program locations locs
+    vector<float> get_p(const vector<size_t>& locs, bool normalize=false) const; 
 
-            typedef Array<bool, Dynamic, Dynamic, RowMajor> ArrayXXb;
-            /* typedef Array<float, Dynamic, Dynamic, RowMajor> ArrayXXf; */
-        
-        };
-    }
+    /// set probabilities
+    void set_p(const vector<float>& weights, const float& fb, 
+               const bool softmax_norm=false);
+    
+    /// get maximum stack size needed for evaluation.
+    std::map<char,size_t> get_max_state_size();
+    
+    /// save individual as a json object.
+    void save();
+
+    typedef Array<bool, Dynamic, Dynamic, RowMajor> ArrayXXb;
+    /* typedef Array<float, Dynamic, Dynamic, RowMajor> ArrayXXf; */
+
+};
+
+// serialization
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Individual, 
+        program,
+        Phi,
+        yhat,
+        error,
+        ml,
+        fitness,
+        fitness_v,
+        fairness,
+        fairness_v,
+        CN,
+        w,
+        p,
+        dim,
+        obj,
+        dcounter,
+        dominated,
+        rank,
+        crowd_dist,
+        c,
+        dtypes,
+        id,
+        parent_id
+        )
+}
 }
 
 #endif

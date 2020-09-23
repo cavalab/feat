@@ -77,7 +77,7 @@ namespace shogun
     }
 
 
-     vector<SGVector<float64_t>> CMulticlassLogisticRegression::get_w()
+    vector<SGVector<float64_t>> CMulticlassLogisticRegression::get_w()
     {
         vector<SGVector<float64_t>> weights_vector;
         
@@ -92,6 +92,18 @@ namespace shogun
          return weights_vector;	
     }
 
+    void CMulticlassLogisticRegression::set_w(vector<Eigen::VectorXd>& wnew)
+    {
+        
+        int n_machines = get_num_machines();
+        
+        for (int32_t i=0; i<n_machines; i++)
+	    {
+		    CLinearMachine* machine = (CLinearMachine*)m_machines->get_element(i);
+		    machine->set_w(SGVector<float64_t>(wnew.at(i)));
+	    }
+	
+    }
 
     bool CMulticlassLogisticRegression::train_machine(CFeatures* data)
     {

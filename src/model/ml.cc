@@ -544,8 +544,10 @@ VectorXf ML::labels_to_vector(const shared_ptr<CLabels>& labels)
     clean(yhatf);
     return yhatf;
 }
-float ML::get_bias()
-{   // get bias weight. only works with linear machines
+
+float ML::get_bias() const
+{   
+    // get bias weight. only works with linear machines
     if (in({L1_LR, LR, LARS, Ridge}, ml_type) )
     {
         return dynamic_pointer_cast<sh::CLinearMachine>(
@@ -555,6 +557,19 @@ float ML::get_bias()
         return 0;
 
 }
+
+void ML::set_bias(float b)
+{
+    // set bias weight. only works with linear machines
+    if (in({L1_LR, LR, LARS, Ridge}, ml_type) )
+    {
+        return dynamic_pointer_cast<sh::CLinearMachine>(
+                p_est)->set_bias(b);
+    }
+    else
+        HANDLE_ERROR_NO_THROW("WARNING: Couldn't set bias, not a binary linear machine");
+}
+
 shared_ptr<CLabels> ML::retrieve_labels(CDenseFeatures<float64_t>* features, 
                                    bool proba, bool& pass)
 {
@@ -688,6 +703,118 @@ shared_ptr<CLabels> ML::fit_tune(MatrixXf& X, VectorXf& y,
     }
 }
 
+//serialization
+void to_json(json& j, const ML& ml)
+{
+    /* j = json{ */ 
+    /*         {"ml_type", ml.ml_type}, */
+    /*         {"ml_str", ml.ml_str}, */
+    /*         {"prob_type", ml.prob_type}, */
+    /*         {"N", ml.N}, */
+    /*         {"max_train_time", ml.max_train_time}, */
+    /*         {"normalize", ml.normalize}, */
+    /*         {"C", ml.C} */
+    /*         }; */
+    j["ml_type"] =  ml.ml_type;
+    j["ml_str"] =  ml.ml_str;
+    j["prob_type"] =  ml.prob_type;
+    j["N"] =  ml.N;
+    j["max_train_time"] =  ml.max_train_time;
+    j["normalize"] =  ml.normalize;
+    j["C"] =  ml.C;
+    // if ml is a linear model, store the weights and bias so it can be reproduced
+    if (in({LARS, Ridge, LR, L1_LR, SVM}, ml.ml_type))
+    {
+        if (ml.prob_type == PT_MULTICLASS
+                && in({LR, L1_LR, SVM}, ml.ml_type) ) 
+        {
+            vector<SGVector<double>> shogun_weights;
+
+            if( in({LR, L1_LR}, ml.ml_type))
+                shogun_weights = dynamic_pointer_cast<
+                    sh::CMulticlassLogisticRegression>(ml.p_est)->get_w();
+            else //SVM
+                shogun_weights = \
+                  dynamic_pointer_cast<sh::CMyMulticlassLibLinear>(
+                          ml.p_est)->get_w();
+
+            vector<VectorXd> weights;
+            for (int i = 0; i < shogun_weights.size(); ++i)
+            {
+                //TODO: fix this, grab shogun data from underlying array
+                weights.push_back(VectorXd());
+                weights.at(i) = Map<VectorXd>(shogun_weights.at(i).data(), 
+                        shogun_weights.at(i).size());
+            } 
+            j["w"] = weights;
+        }
+        else
+        {
+            vector<double> weights;
+            auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(
+                    ml.p_est)->get_w();
+            
+            weights.assign(tmp.data(), tmp.data()+tmp.size());          
+            j["w"] = weights;
+        }
+        j["bias"] = ml.get_bias();
+        
+    }
+    else
+        HANDLE_ERROR_NO_THROW("WARNING: this is not a linear model; at the moment,"
+                " it will need to be refit to be used after loading.");
+}
+
+void from_json(const json& j, ML& ml)
+{
+
+    j.at("ml_type").get_to(ml.ml_type); 
+    j.at("ml_str").get_to(ml.ml_str); 
+    j.at("prob_type").get_to(ml.prob_type); 
+    j.at("N").get_to(ml.N); 
+    j.at("max_train_time").get_to(ml.max_train_time); 
+    j.at("normalize").get_to(ml.normalize); 
+    j.at("C").get_to(ml.C); 
+ 
+    // initialize the underlying shogun ML model
+    ml.init(true);
+    
+    // if ml is a linear model, set the weights and bias so it can be reproduced
+    if (in({LARS, Ridge, LR, L1_LR, SVM}, ml.ml_type))
+    {
+        if(ml.prob_type == PT_MULTICLASS 
+                && in({LR, L1_LR, SVM}, ml.ml_type) ) 
+        {
+            vector<VectorXd> weights = j.at("w");
+            if( in({LR, L1_LR}, ml.ml_type))
+                dynamic_pointer_cast<
+                    sh::CMulticlassLogisticRegression>(ml.p_est)->set_w(weights);
+            else //SVM
+                dynamic_pointer_cast<sh::CMyMulticlassLibLinear>(
+                          ml.p_est)->set_w(weights);
+        }
+        else
+        {
+            VectorXd weights = j.at("w");
+            dynamic_pointer_cast<sh::CLinearMachine>(
+                    ml.p_est)->set_w(weights);
+            dynamic_pointer_cast<sh::CLinearMachine>(
+                    ml.p_est)->set_bias(j.at("bias"));
+        }
+
+     }
+ 
+ 
+}
+void to_json(json& j, const shared_ptr<ML>& ml)
+{
+    to_json(j, *ml);
+}
+
+void from_json(const json& j, shared_ptr<ML>& ml)
+{
+    from_json(j, *ml);
+}
 
 } // namespace Model
 } // namespace FT

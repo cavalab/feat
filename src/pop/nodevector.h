@@ -5,14 +5,8 @@ license: GNU/GPL v3
 #ifndef NODEVECTOR_H
 #define NODEVECTOR_H
 #include <memory>
-#include "op/node.h"
-#include "op/n_train.h"
-#include "op/n_Dx.h"
-
+#include "nodewrapper.h"
 #include "../util/error.h"
-/* #include "../util/json.hpp" */
-/* using nlohmann::json; */ 
-#include "../util/serializer.h"
 
 namespace FT{
     
@@ -76,7 +70,7 @@ namespace FT{
         // serializatoin
         // forward declaration
         void to_json(json& j, const NodeVector& nv);
-        void from_json(json& j, const NodeVector& nv);
+        void from_json(const json& j, NodeVector& nv);
         
     }
 } // FT

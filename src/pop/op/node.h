@@ -94,7 +94,9 @@ namespace Op{
             virtual Node* clone_impl() const = 0;
             virtual Node* rnd_clone_impl() const = 0;
     };
-    
+   
+    // macro to define from_json and to_json
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Node, name, otype, arity, complexity, visits)
 }
 }
 }

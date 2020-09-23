@@ -7,30 +7,31 @@
 // Need to remember for implementing auto-backprop that the arguments are in reverse order (top of the state is the last argument)
 
 namespace FT{
+namespace Pop{
+namespace Op{
 
-    namespace Pop{
-        namespace Op{
+class NodeDx : public Node
+{
+    public:
+        std::vector<float> W;
+        std::vector<float> V;  
+    
+        virtual ~NodeDx();
 
-            class NodeDx : public Node
-            {
-            	public:
-            		std::vector<float> W;
-                    std::vector<float> V;  
-            	
-            		virtual ~NodeDx();
+        virtual ArrayXf getDerivative(Trace& state, int loc) = 0;
+        
+        void derivative(vector<ArrayXf>& gradients, Trace& state, int loc);
 
-            		virtual ArrayXf getDerivative(Trace& state, int loc) = 0;
-            		
-            		void derivative(vector<ArrayXf>& gradients, Trace& state, int loc);
+        void update(vector<ArrayXf>& gradients, Trace& state, float n, float a);
 
-                    void update(vector<ArrayXf>& gradients, Trace& state, float n, float a);
+        void print_weight();
 
-                    void print_weight();
-
-                    bool isNodeDx();
-            };
-        }
-    }
+        bool isNodeDx();
+};
+// serialization
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(NodeDx, name, otype, arity, complexity, visits, W, V)
+}
+}
 }	
 
 #endif

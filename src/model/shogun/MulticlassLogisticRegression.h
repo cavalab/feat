@@ -23,6 +23,7 @@
 #include <vector>
 
 using std::vector;
+#include <Eigen/Dense>
 
 namespace shogun
 {
@@ -83,6 +84,7 @@ namespace shogun
 		    inline int32_t get_max_iter() const;
            		
 		    vector<SGVector<float64_t>> get_w();
+            void set_w(vector<Eigen::VectorXd>& wnew);
 
 	    protected:
 

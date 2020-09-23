@@ -179,6 +179,19 @@ namespace shogun
          return weights_vector;
 
     }
+
+    void CMyMulticlassLibLinear::set_w(vector<Eigen::VectorXd>& wnew)
+    {
+        
+	    int32_t num_classes = ((CMulticlassLabels*) m_labels)->get_num_classes();
+        
+        for (int32_t i=0; i<num_classes; i++)
+	    {
+		    CLinearMachine* machine = (CLinearMachine*)m_machines->get_element(i);
+		    machine->set_w(SGVector<float64_t>(wnew.at(i)));
+	    }
+	
+    }
     
     bool CMyMulticlassLibLinear::train_machine(CFeatures* data)
     {

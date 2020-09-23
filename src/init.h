@@ -31,6 +31,8 @@ using std::shared_ptr;
 using std::make_shared;
 using std::cout; 
 // internal includes
+#include "util/json.hpp"
+using nlohmann::json;
 
 namespace FT{
 

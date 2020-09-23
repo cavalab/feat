@@ -17,7 +17,6 @@ license: GNU/GPL v3
 #include "util/logger.h"
 #include "util/utils.h"
 #include "util/io.h"
-#include "util/serializer.h"
 #include "params.h"
 #include "pop/population.h"
 #include "sel/selection.h"
@@ -469,6 +468,8 @@ namespace FT{
             /// updates stall count for early stopping
             void update_stall_count(unsigned& stall_count, bool updated);
             
+            //save state
+            void save();
             Log_Stats stats;
     };
 }

@@ -12,6 +12,8 @@ license: GNU/GPL v3
 #endif
 
 #include "op/node.h"
+#include "op/n_train.h"
+#include "op/n_Dx.h"
 
 //arithmatic nodes
 #include "op/arithmetic/n_2dgaussian.h"
