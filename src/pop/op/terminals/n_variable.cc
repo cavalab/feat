@@ -11,12 +11,21 @@ namespace FT{
         namespace Op{
         
             template <class T>
+            NodeVariable<T>::NodeVariable()
+            {
+                name = "variable";
+                loc = -1;
+                complexity = 1;
+            }
+
+            template <class T>
             NodeVariable<T>::NodeVariable(const size_t& l, char ntype, std::string n)
             {
+                name = "variable";
                 if (n.empty())
-	                name = "x_" + std::to_string(l);
+	                variable_name = "x_" + std::to_string(l);
                 else
-                    name = n;
+                    variable_name = n;
 	            otype = ntype;
 	            complexity = 1;
 	            loc = l;
@@ -56,7 +65,7 @@ namespace FT{
             template <class T>
             void NodeVariable<T>::eval_eqn(State& state)
             {
-                state.push<T>(name);
+                state.push<T>(variable_name);
             }
 
             template <class T>

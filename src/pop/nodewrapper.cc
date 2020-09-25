@@ -59,11 +59,11 @@ map<string, Node*> node_map = {
     { "recent", new NodeRecent() },
 
     // terminals
-    /* { "xf", new NodeVariable<float>() }, */
-    /* { "xb", new NodeVariable<bool>() }, */
-    /* { "xc", new NodeVariable<int>() }, */
-    /* { "kb", new NodeConstant() }, */
-    /* { "kd", new NodeConstant() }, */
+    { "variable_f", new NodeVariable<float>() },
+    { "variable_b", new NodeVariable<bool>() },
+    { "variable_c", new NodeVariable<int>() },
+    { "constant_b", new NodeConstant() },
+    { "constant_d", new NodeConstant() },
     /* { "z", new NodeLongitudinal() } */
 }; //node_map
 } // Op

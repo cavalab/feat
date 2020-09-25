@@ -422,6 +422,17 @@ void from_json(const json& j, NodeVector& nv)
             nv.push_back(node_map[k.at("name")]->clone());
             Op::from_json(k, *nv.back());
         }
+        else if (Op::node_map.find(k.at("name").get<string>() + string("_") 
+                    + to_string(k.at("otype"))) 
+                != Op::node_map.end())
+        {
+            string node_name = k.at("name").get<string>() + "_" 
+                + to_string(k.at("otype"));
+            nv.push_back(node_map[node_name]->clone());
+            Op::from_json(k, *nv.back());
+        }
+        else
+            cout << k.at("name") << " not found :(\n";
 
     }
     cout <<"NodeVector::from_json exiting\n";
