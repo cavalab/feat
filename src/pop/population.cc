@@ -132,8 +132,9 @@ void Population::load(string filename, const Parameters& params, bool random)
 
     while (std::getline(indata, line)) 
     {
+        cout << "individual " << i << endl;
+        cout << "line: " << line << endl;
         json j = json::parse(line);
-        cout << i << endl;
         cout << "loading " << j.dump() << "\n";
         if (i < individuals.size())
         {
@@ -142,9 +143,10 @@ void Population::load(string filename, const Parameters& params, bool random)
         else
         {
             HANDLE_ERROR_THROW("Couldn't load individual " + to_string(i) 
-                    +", pop size is " + to_string(individuals.size()));
+                    +", pop size is limited to " + to_string(individuals.size()));
         }
 
+        cout << "completed invidual " << i << endl;
         ++i;
     }
     // if there are more individuals than were in the file, make random ones

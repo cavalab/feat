@@ -414,7 +414,7 @@ void to_json(json& j, const NodeVector& nv)
 void from_json(const json& j, NodeVector& nv)
 {
     //TODO: write this
-    cout << "from_json nodevector";
+    cout <<"NodeVector::from_json starting\n";
     for (const auto& k : j)
     {
         if (Op::node_map.find(k.at("name")) != Op::node_map.end())
@@ -424,6 +424,7 @@ void from_json(const json& j, NodeVector& nv)
         }
 
     }
+    cout <<"NodeVector::from_json exiting\n";
 
 }
 } // Pop

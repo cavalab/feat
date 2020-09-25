@@ -62,6 +62,7 @@ Parameters::Parameters(int pop_size, int gens, string ml, bool classification,
         n_classes = 2;
         set_scorer(sc);
         use_batch = bs>0;
+        set_current_gen(0);
     }
 
 Parameters::~Parameters(){}

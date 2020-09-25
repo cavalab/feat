@@ -767,7 +767,8 @@ void to_json(json& j, const ML& ml)
 
 void from_json(const json& j, ML& ml)
 {
-
+    cout << "ML::from_json starting\n";
+    cout << "j: " << j.dump() << endl;
     j.at("ml_type").get_to(ml.ml_type); 
     j.at("ml_str").get_to(ml.ml_str); 
     j.at("prob_type").get_to(ml.prob_type); 
@@ -777,7 +778,9 @@ void from_json(const json& j, ML& ml)
     j.at("C").get_to(ml.C); 
  
     // initialize the underlying shogun ML model
+    cout << "init\n";
     ml.init(true);
+    cout << "init done\n";
     
     // if ml is a linear model, set the weights and bias so it can be reproduced
     if (in({LARS, Ridge, LR, L1_LR, SVM}, ml.ml_type))
@@ -795,15 +798,17 @@ void from_json(const json& j, ML& ml)
         }
         else
         {
-            VectorXd weights = j.at("w");
+            VectorXd weights; 
+            j.at("w").get_to(weights);
             dynamic_pointer_cast<sh::CLinearMachine>(
                     ml.p_est)->set_w(weights);
             dynamic_pointer_cast<sh::CLinearMachine>(
-                    ml.p_est)->set_bias(j.at("bias"));
+                    ml.p_est)->set_bias(j.at("bias").get<float>());
         }
 
      }
  
+    cout << "ML::from_json exiting\n";
  
 }
 void to_json(json& j, const shared_ptr<ML>& ml)
@@ -813,6 +818,8 @@ void to_json(json& j, const shared_ptr<ML>& ml)
 
 void from_json(const json& j, shared_ptr<ML>& ml)
 {
+    if (ml == 0)
+        ml = shared_ptr<ML>(new ML());
     from_json(j, *ml);
 }
 

@@ -11,35 +11,15 @@ license: GNU/GPL v3
 #include "../init.h"
 #include "json.hpp"
 using nlohmann::json;
-/**
- * Provide to_json() and from_json() overloads for nlohmann::json,
- * which allows simple syntax like:
- * 
- * @code
- * Eigen::Matrix3f in, out;
- * 
- * json j;
- * j = in;
- * out = j;
- * @endcode
- * 
- */
 
 namespace Eigen
 {
     
-    // MatrixBase
-
-    /* template <typename Derived> */
-    /* void to_json(json& j, const MatrixBase<Derived>& matrix); */
-    
-    /* template <typename Derived> */
-    /* void from_json(const json& j, MatrixBase<Derived>& matrix); */
-    
-    // IMPLEMENTATION
-
-    template <typename Derived>
-    void to_json(json& j, const MatrixBase<Derived>& matrix)
+    /*
+     * Serialization for Eigen dynamic types
+     */
+    template <typename T>
+    void to_json(json& j, const MatrixBase<T>& matrix)
     {
         for (int row = 0; row < matrix.rows(); ++row)
         {
@@ -52,20 +32,40 @@ namespace Eigen
         }
     }
     
-    template <typename Derived>
-    void from_json(const json& j, MatrixBase<Derived>& matrix)
+    template <typename T>
+    void from_json(const json& j, Matrix<T, Dynamic, Dynamic>& matrix)
     {
-        using Scalar = typename MatrixBase<Derived>::Scalar;
-        
+        if (j.size() == 0) return;
+        matrix.resize(j.size(), j.at(0).size());
+        cout << "matrix size: " << matrix.size() << endl;
+        cout << "json: " << j.dump() << endl; 
+        cout << "json size: " << j.size() << endl;
+        cout << "json is array: " << j.is_array() << endl;
         for (std::size_t row = 0; row < j.size(); ++row)
         {
             const auto& jrow = j.at(row);
             for (std::size_t col = 0; col < jrow.size(); ++col)
             {
                 const auto& value = jrow.at(col);
-                matrix(row, col) = value.get<Scalar>();
+                value.get_to(matrix(row, col));
             }
+
         }
+    }
+
+    template <typename T>
+    void from_json(const json& j, Matrix<T, Dynamic, 1>& V)
+    {
+        V.resize(j.size());
+        cout << "Vector size: " << V.size() << endl;
+        cout << "json: " << j.dump() << endl; 
+        cout << "json size: " << j.size() << endl;
+        cout << "json is array: " << j.is_array() << endl;
+        for (int i = 0 ; i < j.size(); ++i)
+        {
+            j.at(i).get_to(V(i));
+        }
+
     }
 }
 

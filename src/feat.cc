@@ -673,7 +673,8 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
             + std::to_string(timer.Elapsed().count()) + "\n", 1);
 
     if (print_pop > 0)
-        p_pop->save(this->logfile+".pop");
+        p_pop->save(this->logfile+".pop"
+                +".gen" + to_string(params.current_gen));
         this->best_ind.save(this->logfile+".best");
     
     if (log.is_open())

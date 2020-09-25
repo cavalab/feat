@@ -15,6 +15,7 @@ namespace FT{
             parent_id.clear(); 
             parent_id.push_back(-1); 
             set_id(-1);
+            this->p.clear();
         }
 
         void Individual::initialize(const Parameters& params, bool random, int id)
@@ -145,6 +146,8 @@ namespace FT{
             float sum = 0;
             for (unsigned i =0; i<weights.size(); ++i)
                 sum += fabs(weights.at(i));
+            if (sum == 0)
+                sum = 1;
 
             p.resize(weights.size());
             for (unsigned i=0; i< weights.size(); ++i)
