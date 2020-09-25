@@ -9,38 +9,41 @@ license: GNU/GPL v3
 
 namespace FT{
 
-    namespace Pop{
-        namespace Op{
-	        class NodeConstant : public Node
-            {
-            	public:
-            		
-            		float d_value;           ///< value, for k and x types
-            		bool b_value;
-            		
-            		NodeConstant();
-            		
-                    /// declares a boolean constant
-            		NodeConstant(bool& v);
+namespace Pop{
+namespace Op{
+class NodeConstant : public Node
+{
+    public:
+        
+        float d_value;           ///< value, for k and x types
+        bool b_value;
+        
+        NodeConstant();
+        
+        /// declares a boolean constant
+        NodeConstant(bool& v);
 
-                    /// declares a float constant
-            		NodeConstant(const float& v);
-            		
-                    /// Evaluates the node and updates the state states. 
-                    void evaluate(const Data& data, State& state);
+        /// declares a float constant
+        NodeConstant(const float& v);
+        
+        /// Evaluates the node and updates the state states. 
+        void evaluate(const Data& data, State& state);
 
-                    /// Evaluates the node symbolically
-                    void eval_eqn(State& state);
+        /// Evaluates the node symbolically
+        void eval_eqn(State& state);
 
-                    // Make the derivative 1
-            		
-                protected:
-                        NodeConstant* clone_impl() const override;
-              
-                        NodeConstant* rnd_clone_impl() const override;
-            };
-        }
-    }
-}	
+        // Make the derivative 1
+        
+    protected:
+            NodeConstant* clone_impl() const override;
+  
+            NodeConstant* rnd_clone_impl() const override;
+};
+// serialization
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(NodeConstant, name, otype, arity, complexity, 
+        visits, d_value, b_value)
+} // Op
+} // Pop
+} // FT
 
 #endif

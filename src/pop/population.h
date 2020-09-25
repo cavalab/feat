@@ -82,6 +82,11 @@ struct Population
         }
     };
 
+    // save serialized population
+    void save(string filename);
+    // load serialized population
+    void load(string filename, const Parameters& params, bool random);
+
 };        
 
 }//Pop

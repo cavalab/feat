@@ -396,6 +396,14 @@ void to_json(json& j, const NodeVector& nv)
             Op::to_json(k, *dynamic_cast<NodeTrain*>(n.get()));
         else if (n->isNodeDx())                     
             Op::to_json(k, *dynamic_cast<NodeDx*>(n.get()));
+        else if (typeid(*n) == typeid(NodeVariable<float>))
+            Op::to_json(k, *dynamic_cast<NodeVariable<float>*>(n.get()));
+        else if (typeid(*n) == typeid(NodeVariable<int>))
+            Op::to_json(k, *dynamic_cast<NodeVariable<int>*>(n.get()));
+        else if (typeid(*n) == typeid(NodeVariable<bool>))
+            Op::to_json(k, *dynamic_cast<NodeVariable<bool>*>(n.get()));
+        else if (typeid(*n) == typeid(NodeConstant))
+            Op::to_json(k, *dynamic_cast<NodeConstant*>(n.get()));
         else
             Op::to_json(k, *n);
         cout << "json: " << k << endl;
@@ -406,6 +414,16 @@ void to_json(json& j, const NodeVector& nv)
 void from_json(const json& j, NodeVector& nv)
 {
     //TODO: write this
+    cout << "from_json nodevector";
+    for (const auto& k : j)
+    {
+        if (Op::node_map.find(k.at("name")) != Op::node_map.end())
+        {
+            nv.push_back(node_map[k.at("name")]->clone());
+            Op::from_json(k, *nv.back());
+        }
+
+    }
 
 }
 } // Pop

@@ -64,6 +64,7 @@ public:
     /* Individual& operator=(Individual const& other); */
     
     /* Individual& operator=(Individual && other); */
+    void initialize(const Parameters& params, bool random, int id=0);
 
     /// calculate program output matrix Phi
     MatrixXf out(const Data& d, const Parameters& params, bool predict=false);
@@ -168,7 +169,7 @@ public:
     std::map<char,size_t> get_max_state_size();
     
     /// save individual as a json object.
-    void save();
+    void save(string filename);
 
     typedef Array<bool, Dynamic, Dynamic, RowMajor> ArrayXXb;
     /* typedef Array<float, Dynamic, Dynamic, RowMajor> ArrayXXf; */
@@ -178,9 +179,9 @@ public:
 // serialization
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Individual, 
         program,
-        Phi,
-        yhat,
-        error,
+        /* Phi, */
+        /* yhat, */
+        /* error, */
         ml,
         fitness,
         fitness_v,

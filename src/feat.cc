@@ -32,7 +32,8 @@ Feat::Feat(int pop_size, int gens, string ml,
        bool stagewise_xo, bool stagewise_xo_tol,
        bool softmax_norm, int print_pop, bool normalize,
        bool val_from_arch, bool corr_delete_mutate, float simplify,
-       string protected_groups, bool tune_initial, bool tune_final):
+       string protected_groups, bool tune_initial, bool tune_final,
+       string starting_pop):
           // construct subclasses
           params(pop_size, gens, ml, classification, max_stall, otype, 
                  verbosity, functions, cross_rate, root_xo_rate, max_depth, 
@@ -45,7 +46,8 @@ Feat::Feat(int pop_size, int gens, string ml,
           p_variation( make_shared<Variation>(cross_rate) ),
           print_pop(print_pop),
           val_from_arch(val_from_arch),
-          simplify(simplify)
+          simplify(simplify),
+          starting_pop(starting_pop)
 {
     if (n_threads!=0)
         omp_set_num_threads(n_threads);
@@ -63,14 +65,6 @@ Feat::Feat(int pop_size, int gens, string ml,
     arch.set_objectives(params.objectives);
 }
 
-/// save the population
-void Feat::save()
-{
-
-    json j;
-    to_json(j, this->best_ind);
-    cout << "Individual json:" << j.dump() << endl;
-}
 
 /// set size of population 
 void Feat::set_pop_size(int pop_size){ params.pop_size = pop_size; }            
@@ -588,7 +582,10 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     if (!p_sel->get_type().compare("random"))
         random = true;
 
-    p_pop->init(best_ind,params,random);
+    if (!this->starting_pop.empty())
+        p_pop->load(this->starting_pop, params, random);
+    else
+        p_pop->init(best_ind,params,random);
     logger.log("Initial population:\n"+p_pop->print_eqns(),3);
 
     // evaluate initial population
@@ -675,7 +672,9 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     logger.log("\n===\nRun Completed. Total time taken is " 
             + std::to_string(timer.Elapsed().count()) + "\n", 1);
 
-    this->best_ind.save();
+    if (print_pop > 0)
+        p_pop->save(this->logfile+".pop");
+        this->best_ind.save(this->logfile+".best");
     
     if (log.is_open())
         log.close();
@@ -735,7 +734,7 @@ void Feat::run_generation(unsigned int g,
         printProgress(fraction);
     
     if (print_pop > 1 || print_pop > 0 && g == params.gens-1)
-        print_population();
+        p_pop->save(this->logfile);
 
     // tighten learning rate for grad descent as evolution progresses
     if (params.backprop)
@@ -1596,39 +1595,6 @@ void Feat::print_stats(std::ofstream& log, float fraction)
             << stats.med_num_params.back() << sep
             << stats.med_dim.back()        << "\n"; 
     } 
-}
-void Feat::print_population()
-{
-    std::ofstream out;                      ///< log file stream
-    string sep = "\t";
-    if (!logfile.empty())
-        out.open(logfile + ".pop" + std::to_string(params.current_gen));
-    else
-        out.open("pop" + std::to_string(params.current_gen));
-
-    out << "id" << sep << "parent_id" << sep; 
-    for (const auto& o : params.objectives)
-        out << o << sep;
-    out << "rank" << sep << "eqn";
-    out << "\n"; 
-    /* out << "\n"; */
-    for (auto& i : p_pop->individuals)
-    {
-        out << i.id << sep; 
-        for (unsigned j = 0; j<i.parent_id.size(); ++j) 
-        {
-            if (j > 0) 
-                out << ",";
-            out << i.parent_id.at(j) ;
-        }
-        out << sep ;
-        for (const auto& o : i.obj)
-            out << o << sep;
-        out << i.rank << sep;
-        out << i.get_eqn() ;
-        out << "\n";
-    }
-    out.close();
 }
 
 vector<int> Feat::get_gens(){return stats.generation;}

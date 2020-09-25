@@ -61,14 +61,6 @@ int main(int argc, char** argv){
     std::string ldataFile = "";
     float split = 0.75;    // split of input data used to trian Feat
 
-    /* cout << "\n" << */ 
-    /* "/////////////////////////////////////////////////////////////////////////////////////////////" */
-    /* << "\n" << */ 
-    /* "                                        FEAT                                               " */
-    /* << "\n" << */
-    /* "/////////////////////////////////////////////////////////////////////////////////////////////" */
-    /* << "\n"; */
- 
     //////////////////////////////////////// parse arguments
     InputParser input(argc, argv);
     if(input.cmdOptionExists("-h") || input.dataset.empty()){
@@ -119,6 +111,8 @@ int main(int argc, char** argv){
         cout << "--simplify\tPost-run simplification\n";
         cout << "--corr_delete_mutate\tPost-run simplification\n";
         cout << "-print_pop\tPrint the population objective scores. 0: never, 1: at end, "
+                "2: each generation. (0)\n";
+        cout << "-starting_pop\tSpecify a filename containg json formatted starting population"
                 "2: each generation. (0)\n";
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
@@ -220,6 +214,8 @@ int main(int argc, char** argv){
         feat.set_corr_delete_mutate(true);
     if(input.cmdOptionExists("-print_pop"))
         feat.set_print_pop(std::stoi(input.getCmdOption("-print_pop")));
+    if(input.cmdOptionExists("-starting_pop"))
+        feat.set_starting_pop(input.getCmdOption("-starting_pop"));
 
     //cout << "done.\n";
     ///////////////////////////////////////

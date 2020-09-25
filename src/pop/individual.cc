@@ -17,6 +17,35 @@ namespace FT{
             set_id(-1);
         }
 
+        void Individual::initialize(const Parameters& params, bool random, int id)
+        {
+
+            // pick a dimensionality for this individual
+            int dim = r.rnd_int(1,params.max_dim);      
+            // pick depth from [params.min_depth, params.max_depth]
+            /* unsigned init_max = std::min(params.max_depth, unsigned int(3)); */
+            int depth;
+            if (random)
+                depth = r.rnd_int(1, params.max_depth);
+            else
+                /* depth =  r.rnd_int(1, std::min(params.max_depth,unsigned(3))); */
+                depth =  r.rnd_int(1, params.max_depth);
+            // make a program for each individual
+            char ot = r.random_choice(params.otypes);
+            this->program.make_program(params.functions, 
+                                       params.terminals, 
+                                       depth,
+                                       params.term_weights,
+                                       params.op_weights, 
+                                       dim, 
+                                       ot, 
+                                       params.longitudinalMap, 
+                                       params.ttypes);
+            this->set_id(id);
+            /* std::cout << this->program_str() + " -> "; */
+            /* std::cout << this->get_eqn() + "\n"; */
+        }
+
         /* Individual::Individual(Individual && other) = default; */
 
         /* Individual& Individual::operator=(Individual && other) = default; */
@@ -275,13 +304,14 @@ namespace FT{
             return yhat;
         }
 
-        VectorXf Individual::predict_drop(const Data& d, const Parameters& params, int drop_idx)
+        VectorXf Individual::predict_drop(const Data& d, const Parameters& params, 
+                int drop_idx)
         {
             // calculate program output matrix Phi
             logger.log("Generating output for " + get_eqn(), 3);
             // toggle validation
-            MatrixXf PhiDrop = Phi;           // TODO: guarantee this is not changing nodes
-             
+            // TODO: guarantee this is not changing nodes
+            MatrixXf PhiDrop = Phi;                        
             if (Phi.size()==0)
                 HANDLE_ERROR_THROW("Phi must be generated before predict_drop() is called\n");
             if (drop_idx >= 0)  // if drop_idx specified, mask that phi output
@@ -1041,8 +1071,17 @@ namespace FT{
             
             return yh;
         }
-        void Individual::save()
-        {}
+
+        void Individual::save(string filename)
+        {
+            std::ofstream out;                      
+            if (!filename.empty())
+                out.open(filename);
+            json j;
+            to_json(j, *this);
+            out << j ;
+            out.close();
+        }
         /* { */
         /*     json j; */
         /*     cout << "Individual json:" << to_json(j, *this); */

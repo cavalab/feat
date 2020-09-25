@@ -93,7 +93,8 @@ namespace FT{
                  bool softmax_norm=false, int print_pop=0, bool normalize=true, 
                  bool val_from_arch=true, bool corr_delete_mutate=false, 
                  float simplify=0.0, string protected_groups="",
-                 bool tune_initial=false, bool tune_final=true);
+                 bool tune_initial=false, bool tune_final=true,
+                 string starting_pop="");
             
             /// set size of population 
             void set_pop_size(int pop_size);
@@ -208,6 +209,8 @@ namespace FT{
             void set_softmax_norm(bool sftmx=true){params.softmax_norm=sftmx;};
 
             void set_print_pop(int pp){ print_pop=pp; };
+            
+            void set_starting_pop(string sp){ starting_pop=sp; };
 
             ///set protected groups for fairness
             void set_protected_groups(string pg);
@@ -385,8 +388,6 @@ namespace FT{
             /// scoring function 
             float score(MatrixXf& X, const VectorXf& y,
                      LongData Z = LongData()); 
-            /// prints population obj scores each generation 
-            void print_population();
             
             /// return generations statistics arrays
             vector<int> get_gens();
@@ -443,6 +444,7 @@ namespace FT{
             float best_med_score;  ///< best median population score
             int best_complexity;  ///< complexity of the best model
             string str_dim; ///< dimensionality as multiple of number of cols 
+            string starting_pop; ///< file with starting population
 
             /// updates best score
             bool update_best(const DataRef& d, bool val=false);    
@@ -468,8 +470,6 @@ namespace FT{
             /// updates stall count for early stopping
             void update_stall_count(unsigned& stall_count, bool updated);
             
-            //save state
-            void save();
             Log_Stats stats;
     };
 }
