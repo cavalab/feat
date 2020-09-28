@@ -673,8 +673,8 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
             + std::to_string(timer.Elapsed().count()) + "\n", 1);
 
     if (print_pop > 0)
-        p_pop->save(this->logfile+".pop.gen" + to_string(params.current_gen));
-        this->best_ind.save(this->logfile+".best");
+        p_pop->save(this->logfile+".pop.gen" + to_string(params.current_gen) + ".json");
+        this->best_ind.save(this->logfile+".best.json");
     
     if (log.is_open())
         log.close();
@@ -734,7 +734,7 @@ void Feat::run_generation(unsigned int g,
         printProgress(fraction);
     
     if (print_pop > 1)
-        p_pop->save(this->logfile+".pop.gen" + to_string(params.current_gen));
+        p_pop->save(this->logfile+".pop.gen" + to_string(params.current_gen) + ".json");
 
     // tighten learning rate for grad descent as evolution progresses
     if (params.backprop)

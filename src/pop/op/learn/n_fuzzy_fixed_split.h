@@ -45,9 +45,10 @@ class NodeFuzzyFixedSplit : public NodeTrain
         NodeFuzzyFixedSplit* rnd_clone_impl() const override;
 };
 // serialization
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(NodeFuzzyFixedSplit<float>, name, otype, arity, complexity, visits, train, threshold, threshold_set)
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(NodeFuzzyFixedSplit<int>, name, otype, arity, complexity, visits, 
-                               train, threshold, threshold_set)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(NodeFuzzyFixedSplit<float>, name, otype, arity, 
+        complexity, visits, train, threshold, threshold_set)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(NodeFuzzyFixedSplit<int>, name, otype, arity, 
+        complexity, visits, train, threshold, threshold_set)
 } // Op
 } // Pop
 }// FT	
