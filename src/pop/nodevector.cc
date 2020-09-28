@@ -390,22 +390,43 @@ void to_json(json& j, const NodeVector& nv)
         // cast different types of nodes
         if (typeid(*n) == typeid(NodeSplit<float>))
             Op::to_json(k, *dynamic_cast<NodeSplit<float>*>(n.get()));
+        
         else if (typeid(*n) == typeid(NodeSplit<int>))
             Op::to_json(k, *dynamic_cast<NodeSplit<int>*>(n.get()));
+
+        else if (typeid(*n) == typeid(NodeFuzzySplit<float>))
+            Op::to_json(k, *dynamic_cast<NodeFuzzySplit<float>*>(n.get()));
+
+        else if (typeid(*n) == typeid(NodeFuzzySplit<int>))
+            Op::to_json(k, *dynamic_cast<NodeFuzzySplit<int>*>(n.get()));
+
+        else if (typeid(*n) == typeid(NodeFuzzyFixedSplit<float>))
+            Op::to_json(k, *dynamic_cast<NodeFuzzyFixedSplit<float>*>(n.get()));
+
+        else if (typeid(*n) == typeid(NodeFuzzyFixedSplit<int>))
+            Op::to_json(k, *dynamic_cast<NodeFuzzyFixedSplit<int>*>(n.get()));
+
         else if (n->isNodeTrain())                     
             Op::to_json(k, *dynamic_cast<NodeTrain*>(n.get()));
+
         else if (n->isNodeDx())                     
             Op::to_json(k, *dynamic_cast<NodeDx*>(n.get()));
+
         else if (typeid(*n) == typeid(NodeVariable<float>))
             Op::to_json(k, *dynamic_cast<NodeVariable<float>*>(n.get()));
+
         else if (typeid(*n) == typeid(NodeVariable<int>))
             Op::to_json(k, *dynamic_cast<NodeVariable<int>*>(n.get()));
+
         else if (typeid(*n) == typeid(NodeVariable<bool>))
             Op::to_json(k, *dynamic_cast<NodeVariable<bool>*>(n.get()));
+
         else if (typeid(*n) == typeid(NodeConstant))
             Op::to_json(k, *dynamic_cast<NodeConstant*>(n.get()));
+
         else
             Op::to_json(k, *n);
+
         j.push_back(k);
     }
     
@@ -428,22 +449,43 @@ void from_json(const json& j, NodeVector& nv)
         // cast different types of nodes
         if (typeid(*n) == typeid(NodeSplit<float>))
             Op::from_json(k, *dynamic_cast<NodeSplit<float>*>(n.get()));
+
         else if (typeid(*n) == typeid(NodeSplit<int>))
             Op::from_json(k, *dynamic_cast<NodeSplit<int>*>(n.get()));
+
+        else if (typeid(*n) == typeid(NodeFuzzySplit<int>))
+            Op::from_json(k, *dynamic_cast<NodeFuzzySplit<int>*>(n.get()));
+
+        else if (typeid(*n) == typeid(NodeFuzzySplit<float>))
+            Op::from_json(k, *dynamic_cast<NodeFuzzySplit<float>*>(n.get()));
+
+        else if (typeid(*n) == typeid(NodeFuzzyFixedSplit<float>))
+            Op::from_json(k, *dynamic_cast<NodeFuzzyFixedSplit<float>*>(n.get()));
+
+        else if (typeid(*n) == typeid(NodeFuzzyFixedSplit<int>))
+            Op::from_json(k, *dynamic_cast<NodeFuzzyFixedSplit<int>*>(n.get()));
+
         else if (n->isNodeTrain())                     
             Op::from_json(k, *dynamic_cast<NodeTrain*>(n.get()));
+
         else if (n->isNodeDx())                     
             Op::from_json(k, *dynamic_cast<NodeDx*>(n.get()));
+
         else if (typeid(*n) == typeid(NodeVariable<float>))
             Op::from_json(k, *dynamic_cast<NodeVariable<float>*>(n.get()));
+
         else if (typeid(*n) == typeid(NodeVariable<int>))
             Op::from_json(k, *dynamic_cast<NodeVariable<int>*>(n.get()));
+
         else if (typeid(*n) == typeid(NodeVariable<bool>))
             Op::from_json(k, *dynamic_cast<NodeVariable<bool>*>(n.get()));
+
         else if (typeid(*n) == typeid(NodeConstant))
             Op::from_json(k, *dynamic_cast<NodeConstant*>(n.get()));
+
         else
             Op::from_json(k, *n);
+
         // check
         json k2;
         nv.push_back(n->clone());

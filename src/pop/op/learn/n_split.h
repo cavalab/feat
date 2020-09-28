@@ -43,10 +43,10 @@ class NodeSplit : public NodeTrain
         NodeSplit* rnd_clone_impl() const override;
 };
 // serialization
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(NodeSplit<float>, name, otype, arity, complexity, visits, 
-                               train, threshold)
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(NodeSplit<int>, name, otype, arity, complexity, visits, 
-                               train, threshold)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(NodeSplit<float>, name, otype, arity, complexity, 
+        visits, train, threshold)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(NodeSplit<int>, name, otype, arity, complexity, 
+        visits, train, threshold)
 }
 }
 }	
