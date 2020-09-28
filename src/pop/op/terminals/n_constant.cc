@@ -11,13 +11,13 @@ namespace FT{
 
             NodeConstant::NodeConstant()
             {
-                HANDLE_ERROR_THROW("error in nodeconstant.h : invalid constructor called");
+                HANDLE_ERROR_THROW("NodeConstant must be constructed with a value");
             }
 
             /// declares a boolean constant
             NodeConstant::NodeConstant(bool& v)
             {
-	            name = "k_b";
+	            name = "constant_b";
 	            otype = 'b';
 	            complexity = 1;
 	            b_value = v;
@@ -26,7 +26,7 @@ namespace FT{
             /// declares a float constant
             NodeConstant::NodeConstant(const float& v)
             {
-	            name = "k_d";
+	            name = "constant_d";
 	            otype = 'f';
 	            complexity = 1;
 	            d_value = v;

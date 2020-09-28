@@ -13,7 +13,7 @@ namespace FT{
         namespace Op{
             Node2dGaussian::Node2dGaussian(vector<float> W0)
             {
-                name = "gaussian2d";
+                name = "gauss2d";
 	            otype = 'f';
 	            arity['f'] = 2;
 	            complexity = 4;

@@ -767,8 +767,8 @@ void to_json(json& j, const ML& ml)
 
 void from_json(const json& j, ML& ml)
 {
-    cout << "ML::from_json starting\n";
-    cout << "j: " << j.dump() << endl;
+    /* cout << "ML::from_json starting\n"; */
+    /* cout << "j: " << j.dump() << endl; */
     j.at("ml_type").get_to(ml.ml_type); 
     j.at("ml_str").get_to(ml.ml_str); 
     j.at("prob_type").get_to(ml.prob_type); 
@@ -778,9 +778,9 @@ void from_json(const json& j, ML& ml)
     j.at("C").get_to(ml.C); 
  
     // initialize the underlying shogun ML model
-    cout << "init\n";
+    /* cout << "init\n"; */
     ml.init(true);
-    cout << "init done\n";
+    /* cout << "init done\n"; */
     
     // if ml is a linear model, set the weights and bias so it can be reproduced
     if (in({LARS, Ridge, LR, L1_LR, SVM}, ml.ml_type))
@@ -808,7 +808,7 @@ void from_json(const json& j, ML& ml)
 
      }
  
-    cout << "ML::from_json exiting\n";
+    /* cout << "ML::from_json exiting\n"; */
  
 }
 void to_json(json& j, const shared_ptr<ML>& ml)

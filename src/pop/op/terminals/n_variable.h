@@ -35,11 +35,11 @@ class NodeVariable : public Node
 
 // serialization
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(NodeVariable<float>, name, otype, arity, complexity, 
-        visits, loc)
+        visits, loc, variable_name)
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(NodeVariable<bool>, name, otype, arity, complexity, 
-        visits, loc)
+        visits, loc, variable_name)
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(NodeVariable<int>, name, otype, arity, complexity, 
-        visits, loc)
+        visits, loc, variable_name)
 } // Op
 } // Pop
 } // FT

@@ -1085,6 +1085,7 @@ namespace FT{
             out << j ;
             out.close();
         }
+        //TODO: load() function to load from file
         /* { */
         /*     json j; */
         /*     cout << "Individual json:" << to_json(j, *this); */

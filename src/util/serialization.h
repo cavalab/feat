@@ -37,10 +37,6 @@ namespace Eigen
     {
         if (j.size() == 0) return;
         matrix.resize(j.size(), j.at(0).size());
-        cout << "matrix size: " << matrix.size() << endl;
-        cout << "json: " << j.dump() << endl; 
-        cout << "json size: " << j.size() << endl;
-        cout << "json is array: " << j.is_array() << endl;
         for (std::size_t row = 0; row < j.size(); ++row)
         {
             const auto& jrow = j.at(row);
@@ -57,10 +53,6 @@ namespace Eigen
     void from_json(const json& j, Matrix<T, Dynamic, 1>& V)
     {
         V.resize(j.size());
-        cout << "Vector size: " << V.size() << endl;
-        cout << "json: " << j.dump() << endl; 
-        cout << "json size: " << j.size() << endl;
-        cout << "json is array: " << j.is_array() << endl;
         for (int i = 0 ; i < j.size(); ++i)
         {
             j.at(i).get_to(V(i));

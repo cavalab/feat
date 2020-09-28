@@ -113,6 +113,8 @@ void Population::save(string filename)
 
     for (const auto& ind: this->individuals)
     {
+
+        cout << "Saving equation: " << ind.get_eqn() << endl;
         json j;
         to_json(j, ind);
         out << j << "\n";
@@ -122,6 +124,7 @@ void Population::save(string filename)
 
 void Population::load(string filename, const Parameters& params, bool random)
 {
+    // TODO: make individual store equation to compare to loaded equations
     std::ifstream indata;
     indata.open(filename);
     if (!indata.good())
@@ -132,13 +135,11 @@ void Population::load(string filename, const Parameters& params, bool random)
 
     while (std::getline(indata, line)) 
     {
-        cout << "individual " << i << endl;
-        cout << "line: " << line << endl;
         json j = json::parse(line);
-        cout << "loading " << j.dump() << "\n";
         if (i < individuals.size())
         {
             from_json(j, individuals.at(i));
+            cout << "Loaded equation: " << individuals.at(i).get_eqn() << endl;
         }
         else
         {
@@ -146,7 +147,6 @@ void Population::load(string filename, const Parameters& params, bool random)
                     +", pop size is limited to " + to_string(individuals.size()));
         }
 
-        cout << "completed invidual " << i << endl;
         ++i;
     }
     // if there are more individuals than were in the file, make random ones

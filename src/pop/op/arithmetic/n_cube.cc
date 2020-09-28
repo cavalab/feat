@@ -10,7 +10,7 @@ namespace FT{
         namespace Op{    		  
             NodeCube::NodeCube(vector<float> W0)
             {
-		        name = "cube";
+		        name = "^3";
 		        otype = 'f';
 		        arity['f'] = 1;
 		        arity['b'] = 0;
