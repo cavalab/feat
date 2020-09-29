@@ -66,7 +66,7 @@ struct Population
         SortComplexity(Population& p): pop(p){}
         bool operator()(size_t i, size_t j)
         { 
-            return pop.individuals[i].complexity() < pop.individuals[j].complexity();
+            return pop.individuals[i].set_complexity() < pop.individuals[j].set_complexity();
         }
     };
     
@@ -78,7 +78,7 @@ struct Population
         bool operator()(size_t i, size_t j)
         {
             return (pop.individuals[i].fitness == pop.individuals[j].fitness &&
-                   pop.individuals[i].complexity() == pop.individuals[j].complexity());
+                   pop.individuals[i].set_complexity() == pop.individuals[j].set_complexity());
         }
     };
 

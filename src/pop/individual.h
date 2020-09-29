@@ -48,11 +48,12 @@ public:
     vector<unsigned int> dominated; ///< individual indices this dominates
     unsigned int rank;             ///< pareto front rank
     float crowd_dist;   ///< crowding distance on the Pareto front
-    unsigned int c; ///< the complexity of the program.    
+    unsigned int complexity; ///< the complexity of the program.    
     vector<char> dtypes;    ///< the data types of each column of the 
                                                   // program output
     unsigned id;                                ///< tracking id
     vector<int> parent_id;                      ///< ids of parents
+    string eqn; ///< equation form of the program
    
     Individual();
 
@@ -99,7 +100,7 @@ public:
             int drop_idx);
     ArrayXXf predict_proba(const Data& d, const Parameters& params);
     /// return symbolic representation of program
-    string get_eqn() const;
+    string get_eqn() ;
 
     /// return vectorized representation of program
     vector<string> get_features();
@@ -135,9 +136,10 @@ public:
     /// set obj vector given a string of objective names
     void set_obj(const vector<string>&); 
     
-    /// calculate program complexity. 
-    unsigned int complexity();
-    
+    /// calculate program complexity and return it. 
+    unsigned int set_complexity();
+   
+    /// get the program complexity without updating it.
     unsigned int get_complexity() const;
   
     /// clone this individual 
@@ -182,6 +184,7 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Individual,
         /* Phi, */
         /* yhat, */
         /* error, */
+        eqn,
         ml,
         fitness,
         fitness_v,
@@ -196,7 +199,7 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Individual,
         dominated,
         rank,
         crowd_dist,
-        c,
+        complexity,
         dtypes,
         id,
         parent_id

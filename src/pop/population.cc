@@ -111,7 +111,7 @@ void Population::save(string filename)
     else
         out.open("pop.json");
 
-    for (const auto& ind: this->individuals)
+    for (auto& ind: this->individuals)
     {
 
         cout << "Saving equation: " << ind.get_eqn() << endl;

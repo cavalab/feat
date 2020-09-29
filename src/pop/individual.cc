@@ -11,7 +11,7 @@ namespace FT{
            
         Individual::Individual()
         {
-            c = 0; dim = 0; 
+            complexity = 0; dim = 0; 
             parent_id.clear(); 
             parent_id.push_back(-1); 
             set_id(-1);
@@ -103,7 +103,7 @@ namespace FT{
             return n_params;
         }
         
-        unsigned int Individual::get_complexity() const {return c;};
+        unsigned int Individual::get_complexity() const {return this->complexity;};
       
         
         void Individual::set_id(unsigned i) { id = i; }
@@ -774,7 +774,7 @@ namespace FT{
         #endif
         
         // return symbolic representation of program 
-        string Individual::get_eqn() const
+        string Individual::get_eqn() 
         {
             string eqn="";
             State state;
@@ -823,6 +823,7 @@ namespace FT{
                 ++rows.at(rt);
             }
 
+            this->eqn = eqn;
             return eqn;
         }
 
@@ -959,7 +960,7 @@ namespace FT{
                 if (n.compare("fitness")==0)
                     obj.push_back(fitness);
                 else if (n.compare("complexity")==0)
-                    obj.push_back(complexity());
+                    obj.push_back(set_complexity());
                 else if (n.compare("size")==0)
                     obj.push_back(program.size());
                 // condition number of Phi
@@ -979,32 +980,19 @@ namespace FT{
         
         }
 
-        unsigned int Individual::complexity()
+        unsigned int Individual::set_complexity()
         {
-            if (c==0)
-            {
-                std::map<char, vector<unsigned int>> state_c; 
-                
-                for (const auto& n : program)
-                    n->eval_complexity(state_c);
+            complexity = 0;
+            std::map<char, vector<unsigned int>> state_c; 
             
-                for (const auto& s : state_c)
-                    for (const auto& t : s.second)
-                        c += t;
-                //// debug
-                //std::map<char, vector<string>> state_cs; 
-                //string complex_eqn;
-                //for (const auto& n : program)
-                //    n->eval_complexity_db(state_cs);
-                //
-                //for (const auto& s : state_cs)
-                //    for (const auto& t : s.second)
-                //        complex_eqn += "+" + t;
-
-                //std::cout << "eqn: " + eqn + ", complexity: " 
-                //+ complex_eqn +"=" +std::to_string(c) + "\n";
-            }
-            return c;
+            for (const auto& n : program)
+                n->eval_complexity(state_c);
+        
+            for (const auto& s : state_c)
+                for (const auto& t : s.second)
+                    complexity += t;
+            
+            return complexity;
         }
 
         string Individual::program_str() const

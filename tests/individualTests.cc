@@ -146,24 +146,24 @@ TEST(Individual, Complexity)
 	a.program.push_back(std::unique_ptr<Node>(new NodeSubtract()));
 	a.program.push_back(std::unique_ptr<Node>(new NodeMultiply()));
 	
-	ASSERT_EQ(a.complexity(), 14);
+	ASSERT_EQ(a.set_complexity(), 14);
 	
 	a.program.clear();
-	a.c = 0;
+	a.complexity = 0;
 	
 	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<float>(1)));
 	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<float>(2)));
 	a.program.push_back(std::unique_ptr<Node>(new NodeMultiply()));
 	
-	ASSERT_EQ(a.complexity(), 6);
+	ASSERT_EQ(a.set_complexity(), 6);
 	
 	a.program.clear();
-	a.c = 0;
+	a.complexity = 0;
 	
 	a.program.push_back(std::unique_ptr<Node>(new NodeVariable<float>(1)));
 	a.program.push_back(std::unique_ptr<Node>(new NodeSin()));
 	
-	ASSERT_EQ(a.complexity(), 6);
-	a.c = 0;
+	ASSERT_EQ(a.set_complexity(), 6);
+	a.complexity = 0;
 }
 

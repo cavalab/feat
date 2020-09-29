@@ -293,7 +293,7 @@ int Feat::get_n_params(){ return best_ind.get_n_params(); }
 int Feat::get_dim(){ return best_ind.get_dim(); } 
 
 ///get dimensionality of best
-int Feat::get_complexity(){ return best_ind.complexity(); } 
+int Feat::get_complexity(){ return best_ind.get_complexity(); } 
 
 
 /// return the number of nodes in the best model
@@ -358,7 +358,7 @@ string Feat::get_archive(bool front)
             else if (fields.at(f) == "size")
                 r += to_string(ind.size());
             else if (fields.at(f) == "complexity")
-                r += to_string(ind.complexity());
+                r += to_string(ind.get_complexity());
             else if (fields.at(f) == "fitness")
                 r += to_string(ind.fitness);
             else if (fields.at(f) == "fitness_v")
@@ -1402,7 +1402,7 @@ void Feat::calculate_stats(const DataRef& d)
     i = 0; 
     for (auto& p : p_pop->individuals)
     { 
-        Complexities(i) = p.complexity(); 
+        Complexities(i) = p.get_complexity(); 
         ++i;
     }
 
@@ -1530,7 +1530,7 @@ void Feat::print_stats(std::ofstream& log, float fraction)
             /*     std::cout << o << "\t"; */
                   <<  arch.archive[i].fitness       << "\t" 
                   <<  arch.archive[i].fitness_v       << "\t" 
-                  <<  arch.archive[i].complexity()  << "\t" ;
+                  <<  arch.archive[i].get_complexity()  << "\t" ;
             cout <<  lim_model << "\n";  
         }
     }
@@ -1555,7 +1555,7 @@ void Feat::print_stats(std::ofstream& log, float fraction)
             std::cout << p_pop->individuals[f[j]].rank              << "\t" 
                       << p_pop->individuals[f[j]].fitness              << "\t" 
                       << p_pop->individuals[f[j]].fitness_v              << "\t" 
-                      << p_pop->individuals[f[j]].complexity()              << "\t" ;
+                      << p_pop->individuals[f[j]].get_complexity()              << "\t" ;
             /* for (const auto& o : p_pop->individuals[f[j]].obj) */
             /*     std::cout << o << "\t"; */
                       /* <<  p_pop->individuals[f[j]].complexity()     << "\t" */ 
