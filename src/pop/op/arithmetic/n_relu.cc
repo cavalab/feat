@@ -45,7 +45,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeRelu::eval_eqn(State& state)
             {
-                state.push<float>("relu("+ state.popStr<float>() +")");         	
+                state.push<float>("relu(" + to_string(W[0], 2) + "*" + state.popStr<float>() +")");         	
             }
 
             ArrayXf NodeRelu::getDerivative(Trace& state, int loc)

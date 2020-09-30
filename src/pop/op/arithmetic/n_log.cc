@@ -43,7 +43,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeLog::eval_eqn(State& state)
             {
-                state.push<float>("log(" + state.popStr<float>() + ")");
+                state.push<float>("log(" + to_string(W[0],2) + "*" + state.popStr<float>() + ")");
             }
 
             ArrayXf NodeLog::getDerivative(Trace& state, int loc)

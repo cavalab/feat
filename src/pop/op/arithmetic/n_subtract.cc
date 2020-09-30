@@ -44,7 +44,8 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeSubtract::eval_eqn(State& state)
             {
-                state.push<float>("(" + state.popStr<float>() + "-" + state.popStr<float>() + ")");
+                state.push<float>("(" + to_string(W[0],2) + "*" + state.popStr<float>() + "-" 
+                       + to_string(W[1],2) + "*" + state.popStr<float>() + ")");
             }
 
             ArrayXf NodeSubtract::getDerivative(Trace& state, int loc)

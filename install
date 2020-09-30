@@ -2,7 +2,7 @@
 
 check_for_python=true
 choice="n"
-njobs=""
+njobs="4"
 folder="build"
 
 POSITIONAL=()

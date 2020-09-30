@@ -9,6 +9,7 @@ license: GNU/GPL v3
 #include <Eigen/Dense>
 #include <vector>
 #include <fstream>
+#include <sstream>
 #include <chrono>
 #include <ostream>
 #include <map>
@@ -283,6 +284,15 @@ struct Log_Stats
 
 typedef struct Log_Stats Log_stats;
 
+
+template <typename T>
+std::string to_string(const T a_value, const int n)
+{
+    std::ostringstream out;
+    out.precision(n);
+    out << std::fixed << a_value;
+    return out.str();
+}
 } // Util
 
 } // FT
