@@ -172,6 +172,8 @@ public:
     
     /// save individual as a json object.
     void save(string filename);
+    /// load individual from a file. 
+    void load(string filename);
 
     typedef Array<bool, Dynamic, Dynamic, RowMajor> ArrayXXb;
     /* typedef Array<float, Dynamic, Dynamic, RowMajor> ArrayXXf; */

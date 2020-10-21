@@ -191,15 +191,15 @@ TEST(Individual, serialization)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158;
     y_v << 0.57015434, -1.20648656, -2.68773747;
     
-    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > z; 
+    LongitudinalData z; 
 
     feat.params.init(X, y);       
   
     feat.set_dtypes(find_dtypes(X));
             
-    feat.p_ml = make_shared<ML>(); // intialize ML
-    feat.p_pop = make_shared<Population>(feat.params.pop_size);
-    feat.p_eval = make_shared<Evaluation>(feat.params.scorer);
+    /* feat.p_ml = make_shared<ML>(); // intialize ML */
+    /* feat.p_pop = make_shared<Population>(feat.params.pop_size); */
+    /* feat.p_eval = make_shared<Evaluation>(feat.params.scorer); */
 
 	feat.params.set_terminals(X.rows());
 	
@@ -211,11 +211,22 @@ TEST(Individual, serialization)
     d.setTrainingData(&dt);
     d.setValidationData(&dv); 
         
+    std::string filename = "test_ind.json";
     // initial model on raw input
     feat.initial_model(d);
-                  
-    // initialize population 
-    feat.p_pop->init(feat.best_ind, feat.params);
+    Individual ind; 
+    ind.initialize(feat.params, false, 0);
+    bool pass = true;
+    ind.fit(d, feat.params, pass);
+    VectorXf initial_output = ind.predict_vector(d, feat.params); 
+    ind.save(filename); 
+
+    // load the ind and check its output
+    Individual loaded_ind;
+    loaded_ind.load(filename);
+    VectorXf loaded_output = loaded_ind.predict_vector(d, feat.params);
+
+    ASSERT_EQ(initial_output, loaded_output);     
 
     //TODO: write this test!
     // train individuals, save behavior

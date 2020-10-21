@@ -16,7 +16,8 @@ class NodeTrain : public Node
         bool isNodeTrain(){ return true; };
 };
 // serialization
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(NodeTrain, name, otype, arity, complexity, visits, train)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(NodeTrain, name, otype, arity, complexity, 
+                                   visits, train)
 }
 }
 }	

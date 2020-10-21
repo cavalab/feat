@@ -236,14 +236,6 @@ vector<T> unique(Matrix<T, Dynamic, -1> w)
     vector<T> wv( w.data(), w.data()+w.rows()*w.cols());
     return unique(wv);
 }
-///template function to convert objects to string for logging
-template <typename T>
-string to_string(const T& value)
-{
-    std::stringstream ss;
-    ss << value;
-    return ss.str();
-}
  
 /// returns the condition number of a matrix.
 float condition_number(const MatrixXf& X);
@@ -284,6 +276,15 @@ struct Log_Stats
 
 typedef struct Log_Stats Log_stats;
 
+
+///template function to convert objects to string for logging
+template <typename T>
+std::string to_string(const T& value)
+{
+    std::stringstream ss;
+    ss << value;
+    return ss.str();
+}
 
 template <typename T>
 std::string to_string(const T a_value, const int n)

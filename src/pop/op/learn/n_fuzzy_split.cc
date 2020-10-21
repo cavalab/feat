@@ -85,10 +85,10 @@ namespace FT{
             {
                 if(arity['f'])
                     state.push<bool>("(" + state.popStr<T>() + "<" + 
-                            std::to_string(threshold, 2) + ")");
+                            to_string(threshold, 2) + ")");
                 else
                     state.push<bool>("(" + state.popStr<T>() + "==" + 
-                            std::to_string(threshold, 2) + ")");
+                            to_string(threshold, 2) + ")");
             }
             
             template <class T>

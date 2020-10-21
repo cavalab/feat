@@ -35,7 +35,8 @@ const Individual Population::operator [](size_t i) const {return individuals.at(
 const Individual & Population::operator [](size_t i) {return individuals.at(i);}
 
 
-void Population::init(const Individual& starting_model, const Parameters& params,
+void Population::init(const Individual& starting_model, 
+                      const Parameters& params,
                       bool random)
 {
     /*!

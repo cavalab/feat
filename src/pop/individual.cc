@@ -1073,6 +1073,20 @@ namespace FT{
             out << j ;
             out.close();
         }
+        /// load individual from a file. 
+        void Individual::load(string filename)
+        {
+            std::ifstream indata;
+            indata.open(filename);
+            if (!indata.good())
+                HANDLE_ERROR_THROW("Invalid input file " + filename + "\n"); 
+
+            std::string line;
+            indata >> line; 
+
+            json j = json::parse(line);
+            from_json(j, *this);
+        }
         //TODO: load() function to load from file
         /* { */
         /*     json j; */
