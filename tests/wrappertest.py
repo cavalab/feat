@@ -106,6 +106,7 @@ class TestFeatWrapper(unittest.TestCase):
             self.assertEqual(len(self.clf.stats[key]), self.clf.gens)
 
     #Test ability to pickle feat model
+    # TODO: change to test of loading and saving
     def test_pickling(self):
         self.debug("Pickle Feat object")
     

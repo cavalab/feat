@@ -30,7 +30,7 @@ cdef extern from "feat.h" namespace "FT":
                bool stagewise_xo_tol, bool softmax_norm, int print_pop, 
                bool normalize, bool val_from_arch, bool corr_delete_mutate, 
                float simplify, string protected_groups, bool tune_initial,
-               bool tune_final
+               bool tune_final, string starting_pop 
                ) except + 
 
         void fit(float * X, int rowsX, int colsX, float*  y , int lenY)
@@ -72,6 +72,10 @@ cdef extern from "feat.h" namespace "FT":
         vector[unsigned] get_med_complexities();
         vector[unsigned] get_med_num_params();
         vector[unsigned] get_med_dim();
+        void load(string filename);
+        void save(string filename);
+        void load_best_ind(string filename);
+        void load_population(string filename);
 
 #@cython.auto_pickle(True)
 cdef class PyFeat:
@@ -87,7 +91,7 @@ cdef class PyFeat:
             bool stagewise_xo, bool stagewise_xo_tol, bool softmax_norm, 
             int print_pop, bool normalize, bool val_from_arch, 
             bool corr_delete_mutate, float simplify, string protected_groups,
-            bool tune_initial, bool tune_final):
+            bool tune_initial, bool tune_final, string starting_pop):
         
         cdef char otype_char
         if ( len(otype) == 0):
@@ -101,7 +105,7 @@ cdef class PyFeat:
                 n_threads, hillclimb, logfile, max_time, residual_xo, 
                 stagewise_xo, stagewise_xo_tol, softmax_norm, print_pop, 
                 normalize, val_from_arch, corr_delete_mutate, simplify,
-                protected_groups, tune_initial, tune_final)
+                protected_groups, tune_initial, tune_final, starting_pop)
 
     def fit(self,np.ndarray X,np.ndarray y):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
@@ -281,3 +285,15 @@ cdef class PyFeat:
    
     def get_archive_size(self):
         return self.ft.get_archive_size()
+
+    def load(self, filename):
+        self.ft.load(filename)
+
+    def save(self, filename):
+        self.ft.save(filename)
+
+    def load_best_ind(self, filename):
+        self.ft.load_best_ind(filename)
+
+    def load_population(self, filename):
+        self.ft.load_population(filename)

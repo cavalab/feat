@@ -22,52 +22,54 @@ using namespace Op;
  */
 struct Parameters
 {
-    int pop_size;                   			///< population size
-    int gens;                       			///< max generations
-    int current_gen;                            ///< holds current generation
-    string ml;                      			///< machine learner used with Feat
-    bool classification;            			///< flag to conduct classification rather than 
-    int max_stall;                  			///< maximum stall in learning, in generations
-    vector<char> otypes;                     	///< program output types ('f', 'b')
-    vector<char> ttypes;                     	///< program terminal types ('f', 'b')
-    char otype;                                 ///< user parameter for output type setup
-    int verbosity;                  			///< amount of printing. 0: none, 1: minimal, 
-                                                // 2: all
-    vector<float> term_weights;    			    ///< probability weighting of terminals
-    vector<float> op_weights;    			    ///< probability weighting of functions
-    NodeVector functions;                       ///< function nodes available in programs
-    NodeVector terminals;                       ///< terminal nodes available in programs
-    vector<std::string> longitudinalMap;        ///<vector storing longitudinal data keys
+    int pop_size; ///< population size
+    int gens;    ///< max generations
+    int current_gen;///< holds current generation
+    string ml;      ///< machine learner used with Feat
+    bool classification; ///< flag to conduct classification rather than 
+    int max_stall;      ///< maximum stall in learning, in generations
+    vector<char> otypes; ///< program output types ('f', 'b')
+    vector<char> ttypes; ///< program terminal types ('f', 'b')
+    char otype;         ///< user parameter for output type setup
+    /*! amount of printing. 0: none, 1: minimal, 
+     *  2: all*/
+    int verbosity;          
+    vector<float> term_weights; ///< probability weighting of terminals
+    vector<float> op_weights;   ///< probability weighting of functions
+    NodeVector functions;       ///< function nodes available in programs
+    NodeVector terminals;       ///< terminal nodes available in programs
+    ///<vector storing longitudinal data keys
+    vector<std::string> longitudinalMap; 
 
-    unsigned int max_depth;         			///< max depth of programs
-    unsigned int max_size;          			///< max size of programs (length)
-    unsigned int max_dim;           			///< maximum dimensionality of programs
-    bool erc;								    ///< whether to include constants for terminals 
-    unsigned num_features;                      ///< number of features
-    vector<string> objectives;                  ///< Pareto objectives 
-    bool shuffle;                               ///< option to shuffle the data
-    float split;                               ///< fraction of data to use for training
-    vector<char> dtypes;                        ///< data types of input parameters
-    float feedback;                            ///< strength of ml feedback on probabilities
-    unsigned int n_classes;                     ///< number of classes for classification 
-    float cross_rate;                           ///< cross rate for variation
-    vector<int> classes;                        ///< class labels
-    vector<float> class_weights;                ///< weights for each class
-    vector<float> sample_weights;               ///< weights for each sample 
-    string scorer;                              ///< loss function
-    vector<string> feature_names;               ///< names of features
-    bool backprop;                              ///< turns on backpropagation
-    bool hillclimb;                             ///< turns on parameter hill climbing
-    int max_time;                               ///< max time for fit method
-    bool use_batch;                             ///< whether to use mini batch for training
-    bool residual_xo;                           ///< use residual crossover  
-    bool stagewise_xo;                          ///< use stagewise crossover  
-    bool stagewise_xo_tol;                      ///< use stagewise crossover  
-    bool corr_delete_mutate;                    ///< use correlation delete mutation   
-    float root_xo_rate;                         ///<  crossover  
-    bool softmax_norm;                          ///< use softmax norm on probabilities
-    bool normalize;                             ///< whether to normalize the input data
-    vector<bool> protected_groups;          ///<protected attributes in X
+    unsigned int max_depth;	///< max depth of programs
+    unsigned int max_size;	///< max size of programs (length)
+    unsigned int max_dim;	///< maximum dimensionality of programs
+    bool erc;			///< whether to include constants for terminals 
+    unsigned num_features; ///< number of features
+    vector<string> objectives;///< Pareto objectives 
+    bool shuffle;             ///< option to shuffle the data
+    float split;              ///< fraction of data to use for training
+    vector<char> dtypes;      ///< data types of input parameters
+    float feedback;           ///< strength of ml feedback on probabilities
+    unsigned int n_classes;   ///< number of classes for classification 
+    float cross_rate;         ///< cross rate for variation
+    vector<int> classes;      ///< class labels
+    vector<float> class_weights;  ///< weights for each class
+    vector<float> sample_weights; ///< weights for each sample 
+    string scorer;                ///< loss function
+    vector<string> feature_names; ///< names of features
+    bool backprop;  ///< turns on backpropagation
+    bool hillclimb; ///< turns on parameter hill climbing
+    int max_time;  ///< max time for fit method
+    bool use_batch; ///< whether to use mini batch for training
+    bool residual_xo; ///< use residual crossover  
+    bool stagewise_xo; ///< use stagewise crossover  
+    bool stagewise_xo_tol; ///< use stagewise crossover  
+    bool corr_delete_mutate;    ///< use correlation delete mutation   
+    float root_xo_rate; ///<  crossover  
+    bool softmax_norm; ///< use softmax norm on probabilities
+    bool normalize;    ///< whether to normalize the input data
+    vector<bool> protected_groups;  ///<protected attributes in X
     bool tune_initial; ///< tune initial ML model
     bool tune_final; ///< tune final ML model
     
@@ -164,5 +166,54 @@ struct Parameters
     void set_sample_weights(VectorXf& y);
 
 };
-}
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Parameters,
+    pop_size,                   			
+    gens,                       			
+    current_gen,                            
+    ml,                      			
+    classification,            			
+    max_stall,                  			
+    otypes,                     	
+    ttypes,                     	
+    otype,                                 
+    verbosity,
+    term_weights,    			    
+    op_weights,    			    
+    functions,                       
+    terminals,                       
+    longitudinalMap,        
+    max_depth,         			
+    max_size,          			
+    max_dim,           			
+    erc,								    
+    num_features,                      
+    objectives,                  
+    shuffle,                               
+    split,                               
+    dtypes,                        
+    feedback,                            
+    n_classes,                     
+    cross_rate,                           
+    classes,                        
+    class_weights,                
+    sample_weights,               
+    scorer,                              
+    feature_names,               
+    backprop,                              
+    hillclimb,                             
+    max_time,                              
+    use_batch,                             
+    residual_xo,                           
+    stagewise_xo,                         
+    stagewise_xo_tol,                      
+    corr_delete_mutate,                    
+    root_xo_rate,                         
+    softmax_norm,                          
+    normalize,                             
+    protected_groups,          
+    tune_initial, 
+    tune_final 
+    );
+} // FT
 #endif

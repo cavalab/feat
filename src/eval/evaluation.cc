@@ -48,7 +48,7 @@ namespace FT{
                 logger.log("Validating ind " + to_string(i) 
                         + ", id: " + to_string(ind.id), 3);
 
-                shared_ptr<CLabels> yhat =  ind.predict(d,params);
+                shared_ptr<CLabels> yhat =  ind.predict(d);
                 // assign aggregate fitness
                 logger.log("Assigning fitness to ind " + to_string(i) 
                         + ", eqn: " + ind.get_eqn(), 3);

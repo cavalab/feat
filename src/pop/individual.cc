@@ -212,7 +212,7 @@ shared_ptr<CLabels> Individual::fit(const Data& d,
 {
     // calculate program output matrix Phi
     logger.log("Generating output for " + get_eqn(), 3);
-    Phi = out(d, params, false);      
+    Phi = out(d, false);      
     // calculate ML model from Phi
     logger.log("ML training on " + get_eqn(), 3);
     this->ml = std::make_shared<ML>(params.ml, true, 
@@ -244,13 +244,12 @@ shared_ptr<CLabels> Individual::fit(const Data& d,
     return this->fit(d, params, pass);
 }
 
-shared_ptr<CLabels> Individual::predict(const Data& d, 
-        const Parameters& params)
+shared_ptr<CLabels> Individual::predict(const Data& d)
 {
     // calculate program output matrix Phi
     logger.log("Generating output for " + get_eqn(), 3);
     // toggle validation
-    MatrixXf Phi_pred = out(d, params, true);           
+    MatrixXf Phi_pred = out(d, true);           
     // TODO: guarantee this is not changing nodes
 
     if (Phi_pred.size()==0)
@@ -267,13 +266,12 @@ shared_ptr<CLabels> Individual::predict(const Data& d,
     return yhat;
 }
 
-ArrayXXf Individual::predict_proba(const Data& d, 
-        const Parameters& params)
+ArrayXXf Individual::predict_proba(const Data& d)
 {
     // calculate program output matrix Phi
     logger.log("Generating output for " + get_eqn(), 3);
     // toggle validation
-    MatrixXf Phi_pred = out(d, params, true);           
+    MatrixXf Phi_pred = out(d, true);           
     // TODO: guarantee this is not changing nodes
 
     if (Phi_pred.size()==0)
@@ -286,35 +284,9 @@ ArrayXXf Individual::predict_proba(const Data& d,
     return yhat;
 }
 
-VectorXf Individual::predict_drop(const Data& d, const Parameters& params, 
-        int drop_idx)
+VectorXf Individual::predict_vector(const Data& d)
 {
-    // calculate program output matrix Phi
-    logger.log("Generating output for " + get_eqn(), 3);
-    // toggle validation
-    // TODO: guarantee this is not changing nodes
-    MatrixXf PhiDrop = Phi;                        
-    if (Phi.size()==0)
-        HANDLE_ERROR_THROW("Phi must be generated before predict_drop() is called\n");
-    if (drop_idx >= 0)  // if drop_idx specified, mask that phi output
-    {
-        if (drop_idx >= PhiDrop.rows())
-            HANDLE_ERROR_THROW("drop_idx ( " + std::to_string(drop_idx) + " > Phi size (" 
-                               + std::to_string(Phi.rows()) + ")\n");
-        cout << "dropping row " + std::to_string(drop_idx) + "\n";
-        /* PhiDrop.row(drop_idx) = VectorXf::Zero(Phi.cols()); */
-        PhiDrop.row(drop_idx).setZero();
-    }
-    // calculate ML model from Phi
-    /* logger.log("ML predicting on " + get_eqn(), 3); */
-    // assumes ML is already trained
-    VectorXf yh = ml->predict_vector(PhiDrop);
-    return yh;
-}
-
-VectorXf Individual::predict_vector(const Data& d, const Parameters& params)
-{
-    return ml->labels_to_vector(this->predict(d,params));
+    return ml->labels_to_vector(this->predict(d));
 }
 
 MatrixXf Individual::state_to_phi(State& state)
@@ -392,8 +364,7 @@ MatrixXf Individual::state_to_phi(State& state)
 
 #ifndef USE_CUDA
 // calculate program output matrix
-MatrixXf Individual::out(const Data& d, const Parameters& params, 
-        bool predict)
+MatrixXf Individual::out(const Data& d,  bool predict)
 {
     /*!
      * @param d: Data structure
@@ -424,8 +395,7 @@ MatrixXf Individual::out(const Data& d, const Parameters& params,
     return state_to_phi(state);
 }
 #else
-MatrixXf Individual::out(const Data& d, const Parameters& params, 
-        bool predict)
+MatrixXf Individual::out(const Data& d, bool predict)
 {
 
     /*!
@@ -547,8 +517,7 @@ MatrixXf Individual::out(const Data& d, const Parameters& params,
 #ifndef USE_CUDA
 // calculate program output matrix
 
-MatrixXf Individual::out_trace(const Data& d, const Parameters& params, 
-                               vector<Trace>& state_trace)
+MatrixXf Individual::out_trace(const Data& d, vector<Trace>& state_trace)
 {
     /*!
      * @param X: n_features x n_samples data
@@ -615,8 +584,7 @@ MatrixXf Individual::out_trace(const Data& d, const Parameters& params,
 
 #else
 // calculate program output matrix
-MatrixXf Individual::out_trace(const Data& d,
-                 const Parameters& params, vector<Trace>& state_trace)
+MatrixXf Individual::out_trace(const Data& d, vector<Trace>& state_trace)
 {
     /*!
      * @params X: n_features x n_samples data
@@ -1016,7 +984,7 @@ shared_ptr<CLabels> Individual::fit_tune(const Data& d,
 {
     // calculate program output matrix Phi
     logger.log("Generating output for " + get_eqn(), 3);
-    Phi = out(d, params, false);      
+    Phi = out(d, false);      
     // calculate ML model from Phi
     logger.log("ML training on " + get_eqn(), 3);
     this->ml = std::make_shared<ML>(params.ml, true, 
@@ -1065,6 +1033,7 @@ void Individual::load(string filename)
 
     json j = json::parse(line);
     from_json(j, *this);
+    indata.close();
 }
 
 } // Pop

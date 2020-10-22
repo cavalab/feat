@@ -112,8 +112,8 @@ class Timer
         std::chrono::duration<float> Elapsed() const;
         
         template <typename T, typename Traits>
-        friend std::basic_ostream<T, Traits>& operator<<(std::basic_ostream<T, Traits>& out, 
-                                                         const Timer& timer)
+        friend std::basic_ostream<T, Traits>& operator<<(
+                std::basic_ostream<T, Traits>& out, const Timer& timer)
         {
             return out << timer.Elapsed().count();
         }

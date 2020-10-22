@@ -41,7 +41,7 @@ namespace FT{
                                  
                 /* std::map<string, funcPointer> score_hash; */
 
-                Evaluation(string scorer);
+                Evaluation(string scorer="");
 
                 ~Evaluation();
                     

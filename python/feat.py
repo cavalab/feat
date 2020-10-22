@@ -14,6 +14,7 @@ from sklearn.metrics import mean_squared_error as mse
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import log_loss
 import pdb
+import json
 
 class Feat(BaseEstimator):
     """Feature Engineering Automation Tool
@@ -107,7 +108,7 @@ class Feat(BaseEstimator):
     softmax_norm: boolean, optional (default: False)
         Uses softmax normalization of probabilities of variation across
         the features. 
-    print_pop: int, optional (default: 0)
+    save_pop: int, optional (default: 0)
         Prints the population of models. 0: don't print; 1: print final 
         population; 2: print every generation. 
     normalize: boolean, optional (default: True)
@@ -130,6 +131,8 @@ class Feat(BaseEstimator):
         Tune the initial linear model's penalization parameter. 
     tune_final: boolean, optional (default: True)
         Tune the final linear model's penalization parameter. 
+    starting_pop: str, optional (default: "")
+        Provide a starting pop in json format. 
     """
     def __init__(self, pop_size=100,  gens=100,  ml = "LinearRidgeRegression", 
                 classification=False,  verbosity=0,  max_stall=0,
@@ -141,10 +144,11 @@ class Feat(BaseEstimator):
                 backprop=False, iters=10, lr=0.1, batch_size=0, 
                 n_threads=0, hillclimb=False, logfile="", max_time=-1, 
                 residual_xo=False, stagewise_xo=False, 
-                stagewise_xo_tol=False, softmax_norm=False, print_pop=0, 
+                stagewise_xo_tol=False, softmax_norm=False, save_pop=0, 
                 normalize=True, val_from_arch=True, corr_delete_mutate=False, 
                 simplify=0.0,protected_groups=[],
-                tune_initial=False, tune_final=True):
+                tune_initial=False, tune_final=True,
+                starting_pop=""):
         self.pop_size = pop_size
         self.gens = gens
         self.ml = ml.encode() if( isinstance(ml,str) )  else ml
@@ -182,7 +186,7 @@ class Feat(BaseEstimator):
         self.stagewise_xo = stagewise_xo
         self.stagewise_xo_tol = stagewise_xo_tol
         self.softmax_norm = softmax_norm
-        self.print_pop = print_pop
+        self.save_pop = save_pop
         self.normalize = normalize
         self.val_from_arch = val_from_arch
         self.corr_delete_mutate = corr_delete_mutate
@@ -191,6 +195,10 @@ class Feat(BaseEstimator):
                 [str(int(pg)) for pg in protected_groups]).encode()
         self.tune_initial = tune_initial
         self.tune_final = tune_final
+        if isinstance(starting_pop,str):
+            self.starting_pop = starting_pop.encode()  
+        else:
+            self.starting_pop = starting_pop
         self._pyfeat=None
         self.stats = {}
         self.__version__ = __version__
@@ -221,14 +229,15 @@ class Feat(BaseEstimator):
                 self.stagewise_xo,
                 self.stagewise_xo_tol,
                 self.softmax_norm,
-                self.print_pop,
+                self.save_pop,
                 self.normalize,
                 self.val_from_arch,
                 self.corr_delete_mutate,
                 self.simplify,
                 self.protected_groups,
                 self.tune_initial,
-                self.tune_final)
+                self.tune_final, 
+                self.starting_pop)
    
 
     def fit(self,X,y,zfile=None,zids=None):
@@ -319,10 +328,6 @@ class Feat(BaseEstimator):
 
     def fit_predict(self,X,y):
         """Convenience method that runs fit(X,y) then predict(X)"""
-        # X, _ = self._clean(X)
-        # self._init_pyfeat()    
-        # result = self._pyfeat.fit_predict(X,y)
-        # self.update_stats()
         self.fit(X,y)
         result = self.predict(X)
         return result
@@ -331,9 +336,6 @@ class Feat(BaseEstimator):
         """Convenience method that runs fit(X,y) then transform(X)"""
         self.fit(X,y)
         result = self.transform(X)
-        # self._init_pyfeat() 
-        # result = self._pyfeat.fit_transform(X, y)
-        # self.update_stats()   
         return result
 
     def score(self,X,y,zfile=None,zids=None):
@@ -366,24 +368,28 @@ class Feat(BaseEstimator):
             
     def get_archive(self,justfront=False):
         """Returns all the final representation equations in the archive"""
+        archive = []
         str_arc = self._pyfeat.get_archive(justfront)
-        # store archive data from string
-        archive=[]
-        index = {}
-        for i,s in enumerate(str_arc.split('\n')):
-            if i == 0:
-                for j,key in enumerate(s.split('\t')):
-                    index[j] = key
-            else:
-                ind= {}
-                for k,val in enumerate(s.split('\t')):
-                    if ',' in val:
-                        ind[index[k]] = []
-                        for el in val.split(','):
-                            ind[index[k]].append(self._typify(el))
-                        continue
-                    ind[index[k]] = self._typify(val)
-                archive.append(ind)
+        for model in str_arc.splitlines():
+            archive.append( json.loads(model))
+
+        # # store archive data from string
+        # archive=[]
+        # index = {}
+        # for i,s in enumerate(str_arc.split('\n')):
+        #     if i == 0:
+        #         for j,key in enumerate(s.split('\t')):
+        #             index[j] = key
+        #     else:
+        #         ind= {}
+        #         for k,val in enumerate(s.split('\t')):
+        #             if ',' in val:
+        #                 ind[index[k]] = []
+        #                 for el in val.split(','):
+        #                     ind[index[k]].append(self._typify(el))
+        #                 continue
+        #             ind[index[k]] = self._typify(val)
+        #         archive.append(ind)
         return archive
 
     def get_archive_size(self):
@@ -438,3 +444,22 @@ class Feat(BaseEstimator):
         else:
             assert(type(x).__name__ == 'ndarray')
             return x
+
+    def load(self, filename):
+        """Loads a previous Feat state from file."""
+        self._pyfeat.load(filename.encode())
+        #TODO: if a Feat state is loaded for pyfeat, pyfeat's parameters have
+        # to then be passed to Feat(), otherwise they will be overwritten by
+        # calls to _init_pyfeat in fit(). 
+
+    def save(self, filename):
+        """Saves current Feat state to file."""
+        self._pyfeat.save(filename.encode())
+
+    def load_model(self, filename):
+        """Loads a json model into best_ind, which is then used for
+        prediction."""
+        self._pyfeat.load_best_ind(filename.encode())
+
+    def load_population(self, filename):
+        self._pyfeat.load_population(filename)

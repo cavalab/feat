@@ -35,10 +35,14 @@ namespace FT{
         struct Selection
         {
             shared_ptr<SelectionOperator> pselector; 
+            string type;
+            bool survival;
             
             Selection(string type="lexicase", bool survival=false);
             
             ~Selection();
+
+            void set_operator();
             
             /// return type of selectionoperator
             string get_type();
@@ -51,6 +55,8 @@ namespace FT{
             vector<size_t> survive(Population& pop,  
                     const Parameters& params, const Data& d);
         };
+
+        NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Selection, type, survival);
         
     }
     

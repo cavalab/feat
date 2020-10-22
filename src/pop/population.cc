@@ -35,6 +35,22 @@ const Individual Population::operator [](size_t i) const {return individuals.at(
 const Individual & Population::operator [](size_t i) {return individuals.at(i);}
 
 
+void Population::init(string filename, 
+                      const Parameters& params,
+                      bool random)
+{
+    int starting_size = 0;
+    starting_size = this->load(filename);
+
+    /* if the starting pop is smaller than the 
+     * set size of the population, initialize
+     * additional individuals.*/
+    #pragma omp parallel for
+    for (unsigned i = starting_size; i< individuals.size(); ++i)
+    {          
+        individuals.at(i).initialize(params, random, i);
+    }
+}
 void Population::init(const Individual& starting_model, 
                       const Parameters& params,
                       bool random)
@@ -112,51 +128,60 @@ void Population::save(string filename)
     else
         out.open("pop.json");
 
-    for (auto& ind: this->individuals)
-    {
-
-        cout << "Saving equation: " << ind.get_eqn() << endl;
-        json j;
-        to_json(j, ind);
-        out << j << "\n";
-    }
+    json j;
+    to_json(j, *this);
+    out << j ;
     out.close();
+    logger.log("Saved population to file " + filename, 1);
 }
 
-void Population::load(string filename, const Parameters& params, bool random)
+int Population::load(string filename)
 {
-    // TODO: make individual store equation to compare to loaded equations
+    //TODO: replace with from_json(j, this) call
     std::ifstream indata;
     indata.open(filename);
     if (!indata.good())
-        HANDLE_ERROR_THROW("Invalid population input file " + filename + "\n"); 
+        HANDLE_ERROR_THROW("Invalid input file " + filename + "\n"); 
 
     std::string line;
-    int i = 0;
+    indata >> line; 
 
-    while (std::getline(indata, line)) 
-    {
-        json j = json::parse(line);
-        if (i < individuals.size())
-        {
-            from_json(j, individuals.at(i));
-            cout << "Loaded equation: " << individuals.at(i).get_eqn() << endl;
-        }
-        else
-        {
-            HANDLE_ERROR_THROW("Couldn't load individual " + to_string(i) 
-                    +", pop size is limited to " + to_string(individuals.size()));
-        }
+    json j = json::parse(line);
+    from_json(j, *this);
 
-        ++i;
-    }
-    // if there are more individuals than were in the file, make random ones
-    if (i < individuals.size())
-    {
-        for (int j = i; j < individuals.size(); ++j)
-            individuals.at(i).initialize(params, random, j);
-    }
+    logger.log("Loaded population from " + filename + " of size = " 
+            + to_string(this->size()),1);
+
+    indata.close();
+    /* std::ifstream indata; */
+    /* indata.open(filename); */
+    /* if (!indata.good()) */
+    /*     HANDLE_ERROR_THROW("Invalid population input file " + filename + "\n"); */ 
+
+    /* std::string line; */
+    /* int i = 0; */
+
+    /* while (std::getline(indata, line)) */ 
+    /* { */
+    /*     json j = json::parse(line); */
+    /*     if (i < individuals.size()) */
+    /*     { */
+    /*         from_json(j, individuals.at(i)); */
+    /*         logger.log("Loaded equation: " + individuals.at(i).get_eqn() */
+    /*                    + " from " + filename, 2); */     
+    /*     } */
+    /*     else */
+    /*     { */
+    /*         HANDLE_ERROR_THROW("Couldn't load individual " + to_string(i) */ 
+    /*                            +", pop size is limited to " */ 
+    /*                            + to_string(individuals.size())); */
+    /*     } */
+
+    /*     ++i; */
+    /* } */
+    /* return i; */
 }
+
 
 } // Pop
 } // FT

@@ -68,11 +68,10 @@ public:
     void initialize(const Parameters& params, bool random, int id=0);
 
     /// calculate program output matrix Phi
-    MatrixXf out(const Data& d, const Parameters& params, bool predict=false);
+    MatrixXf out(const Data& d, bool predict=false);
 
     /// calculate program output while maintaining stack trace
-    MatrixXf out_trace(const Data& d,
-                 const Parameters& params, vector<Trace>& stack_trace);
+    MatrixXf out_trace(const Data& d, vector<Trace>& stack_trace);
 
     /// converts program states to output matrices
     MatrixXf state_to_phi(State& state);
@@ -93,12 +92,9 @@ public:
      *  @param drop_idx if specified, the phi output at drop_idx is set to zero, effectively
      *  removing its output from the transformation. used in semantic crossover.
      */
-    shared_ptr<CLabels> predict(const Data& d, 
-            const Parameters& params);
-    VectorXf predict_vector(const Data& d, const Parameters& params);
-    VectorXf predict_drop(const Data& d, const Parameters& params, 
-            int drop_idx);
-    ArrayXXf predict_proba(const Data& d, const Parameters& params);
+    shared_ptr<CLabels> predict(const Data& d);
+    VectorXf predict_vector(const Data& d);
+    ArrayXXf predict_proba(const Data& d);
     /// return symbolic representation of program
     string get_eqn() ;
 

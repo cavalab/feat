@@ -139,7 +139,7 @@ namespace FT {
                 }
 
                 // check validation fitness for early stopping
-                MatrixXf Phival = ind.out((*BP_data.v),params);
+                MatrixXf Phival = ind.out((*BP_data.v));
                 logger.log("checking validation fitness",3);
                 /* cout << "Phival: " << Phival.rows() 
                  * << " x " << Phival.cols() << "\n"; */
@@ -194,7 +194,7 @@ namespace FT {
             /* cout << "Forward pass\n"; */
             // Iterate through all the nodes evaluating and tracking ouputs
             vector<Trace> stack_trace;
-            Phi = ind.out_trace(d, params, stack_trace);
+            Phi = ind.out_trace(d, stack_trace);
             // Use stack_f and execution stack to avoid issue of branches affecting what elements 
             // appear before a node 
             /* cout << "Returning forward pass.\n"; */
