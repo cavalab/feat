@@ -204,7 +204,7 @@ void ML::set_dtypes(const vector<char>& dtypes)
     this->dtypes = dtypes;
 }
 
-vector<float> ML::get_weights()
+vector<float> ML::get_weights() const
 {    
     /*!
      * @return weight vector from model.
@@ -213,8 +213,9 @@ vector<float> ML::get_weights()
     
     if (in({LARS, Ridge, SVM, LR, L1_LR}, ml_type))
     {
-        // for multiclass, return the average weight magnitude over 
-        // the OVR models
+        /* For multiclass, return the average weight magnitude over 
+         * the OVR models. These weights are normalized. 
+         */
         if(this->prob_type == PT_MULTICLASS 
                 && in({LR, L1_LR, SVM}, ml_type) ) 
         {
@@ -260,15 +261,17 @@ vector<float> ML::get_weights()
             
             return vector<float>(w.begin(), w.end());
         }
+        /* For linear regression and binary classification
+         * models, return the true weights. */
         else
         {
-            // otherwise, return the true weights 
             auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(
                     p_est)->get_w();
             
             w.assign(tmp.data(), tmp.data()+tmp.size());          
         }
     }
+    /* For decision trees, return the feature importance scores.  */
     else if (ml_type == CART)           
         w = dynamic_pointer_cast<sh::CMyCARTree>(
                 p_est)->feature_importances();
@@ -393,7 +396,7 @@ shared_ptr<CLabels> ML::fit(const MatrixXf& X, const VectorXf& y,
 
     logger.log("done!",3);
    
-    // tranpose features back
+    // transpose features back
     if (ml_type == L1_LR && this->prob_type==PT_BINARY)
         features = features->get_transposed();
 
@@ -418,7 +421,10 @@ shared_ptr<CLabels> ML::predict(const MatrixXf& X, bool print)
     logger.log("X size: " + to_string(X.rows()) + "x" + to_string(X.cols()),3);
     MatrixXd _X = X.template cast<double>();
     logger.log("cast X to double",3);
-    // make sure the model fit() method passed
+
+    /* Make sure the model fit() method passed by
+     * looking for empty weights.
+     * If the weights are empty, assign dummy labels. */
     if (get_weights().empty())
     {
         logger.log("weight empty; returning zeros",3); 
@@ -462,11 +468,9 @@ shared_ptr<CLabels> ML::predict(const MatrixXf& X, bool print)
             return labels;
         }
     }
-    /* cout << "weights: \n"; */
-    /* for (const auto& w : get_weights()) */
-    /*     cout << w << ", " ; */
-    /* cout << "\n"; */
-    /* cout << "normalize\n"; */ 
+
+    /* Otherwise, apply normalization and retrieve labels
+     * from the model. */
     if (normalize)
         N.normalize(_X);
     
@@ -765,62 +769,64 @@ void to_json(json& j, const ML& ml)
                 " it will need to be refit to be used after loading.");
 }
 
-void from_json(const json& j, ML& ml)
+void from_json(const json& j, ML& model)
 {
-    /* cout << "ML::from_json starting\n"; */
-    /* cout << "j: " << j.dump() << endl; */
-    j.at("ml_type").get_to(ml.ml_type); 
-    j.at("ml_str").get_to(ml.ml_str); 
-    j.at("prob_type").get_to(ml.prob_type); 
-    j.at("N").get_to(ml.N); 
-    j.at("max_train_time").get_to(ml.max_train_time); 
-    j.at("normalize").get_to(ml.normalize); 
-    j.at("C").get_to(ml.C); 
+    j.at("ml_type").get_to(model.ml_type); 
+    j.at("ml_str").get_to(model.ml_str); 
+    j.at("prob_type").get_to(model.prob_type); 
+    j.at("N").get_to(model.N); 
+    j.at("max_train_time").get_to(model.max_train_time); 
+    j.at("normalize").get_to(model.normalize); 
+    j.at("C").get_to(model.C); 
  
     // initialize the underlying shogun ML model
-    /* cout << "init\n"; */
-    ml.init(true);
-    /* cout << "init done\n"; */
+    model.init(true);
     
-    // if ml is a linear model, set the weights and bias so it can be reproduced
-    if (in({LARS, Ridge, LR, L1_LR, SVM}, ml.ml_type))
+    // if model is a linear model, set the weights and bias 
+    // so it can be reproduced
+    
+    if (in({LARS, Ridge, LR, L1_LR, SVM}, model.ml_type))
     {
-        if(ml.prob_type == PT_MULTICLASS 
-                && in({LR, L1_LR, SVM}, ml.ml_type) ) 
+        if(model.prob_type == PT_MULTICLASS 
+                && in({LR, L1_LR, SVM}, model.ml_type) ) 
         {
-            vector<VectorXd> weights = j.at("w");
-            if( in({LR, L1_LR}, ml.ml_type))
+            vector<VectorXd> multi_weights = j.at("w");
+            if( in({LR, L1_LR}, model.ml_type))
                 dynamic_pointer_cast<
-                    sh::CMulticlassLogisticRegression>(ml.p_est)->set_w(weights);
+                    sh::CMulticlassLogisticRegression>(model.p_est)->set_w(
+                            multi_weights);
             else //SVM
                 dynamic_pointer_cast<sh::CMyMulticlassLibLinear>(
-                          ml.p_est)->set_w(weights);
+                          model.p_est)->set_w(multi_weights);
         }
         else
         {
             VectorXd weights; 
             j.at("w").get_to(weights);
+
             dynamic_pointer_cast<sh::CLinearMachine>(
-                    ml.p_est)->set_w(weights);
+                    model.p_est)->set_w(sh::SGVector<double>(weights).clone());
             dynamic_pointer_cast<sh::CLinearMachine>(
-                    ml.p_est)->set_bias(j.at("bias").get<float>());
+                    model.p_est)->set_bias(j.at("bias").get<float>());
         }
 
      }
- 
-    /* cout << "ML::from_json exiting\n"; */
- 
-}
-void to_json(json& j, const shared_ptr<ML>& ml)
-{
-    to_json(j, *ml);
 }
 
-void from_json(const json& j, shared_ptr<ML>& ml)
+void to_json(json& j, const shared_ptr<ML>& model)
 {
-    if (ml == 0)
-        ml = shared_ptr<ML>(new ML());
-    from_json(j, *ml);
+    to_json(j, *model);
+}
+
+void from_json(const json& j, shared_ptr<ML>& model)
+{
+    if (model == 0)
+        model = shared_ptr<ML>(new ML());
+    from_json(j, *model);
+    cout << "ML::from_json() assigned weights: ";
+    auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(
+            model->p_est)->get_w();
+    for (auto w : tmp) cout << w << ", "; cout << endl;
 }
 
 } // namespace Model

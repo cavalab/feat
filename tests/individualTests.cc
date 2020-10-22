@@ -1,5 +1,6 @@
 #include "testsHeader.h"
 
+
 bool checkBrackets(string str)
 {
 	stack<char> st;
@@ -169,8 +170,11 @@ TEST(Individual, Complexity)
 
 TEST(Individual, serialization)
 {
-	Feat feat(100, 100, "LinearRidgeRegression", false, 1);
-	feat.set_random_state(666);
+    /* setup data, then test random individuals. 
+     * save the individuals and load them from file. 
+     * check that their predictions on train and test match.
+     * repeat for different ML pairings.
+     */
 	
     MatrixXf X(4,2); 
     MatrixXf X_v(3,2); 
@@ -185,24 +189,17 @@ TEST(Individual, serialization)
     X.transposeInPlace();
     X_v.transposeInPlace();
 
-    VectorXf y(4); 
-    VectorXf y_v(3); 
+    VectorXf y(4), yb(4); 
+    VectorXf y_v(3), yb_v(3); 
     // y = 2*x1 + 3.x2
     y << 3.0,  3.59159876,  3.30384889,  2.20720158;
+    yb << 1,  0, 1, 1;
     y_v << 0.57015434, -1.20648656, -2.68773747;
+    yb_v << 0, 1, 0, 1;
     
-    LongitudinalData z; 
-
-    feat.params.init(X, y);       
+    LongData z; 
   
-    feat.set_dtypes(find_dtypes(X));
-            
-    /* feat.p_ml = make_shared<ML>(); // intialize ML */
-    /* feat.p_pop = make_shared<Population>(feat.params.pop_size); */
-    /* feat.p_eval = make_shared<Evaluation>(feat.params.scorer); */
 
-	feat.params.set_terminals(X.rows());
-	
 	Data dt(X, y, z);
     Data dv(X_v, y_v, z);
     
@@ -212,21 +209,75 @@ TEST(Individual, serialization)
     d.setValidationData(&dv); 
         
     std::string filename = "test_ind.json";
-    // initial model on raw input
-    feat.initial_model(d);
-    Individual ind; 
-    ind.initialize(feat.params, false, 0);
-    bool pass = true;
-    ind.fit(d, feat.params, pass);
-    VectorXf initial_output = ind.predict_vector(d, feat.params); 
-    ind.save(filename); 
 
-    // load the ind and check its output
-    Individual loaded_ind;
-    loaded_ind.load(filename);
-    VectorXf loaded_output = loaded_ind.predict_vector(d, feat.params);
+    for (string model : {"Ridge","Lasso","L1_LR","L2_LR"})
+    {
+        cout << "model: " << model << endl;
+        bool classification = in({"L1_LR","L2_LR"}, model);
+        Feat feat(100, 100, "LinearRidgeRegression", classification, 1);
+        feat.set_random_state(666);
+        if (classification)
+        {
+            feat.params.init(X,yb);
+        }
+        else
+            feat.params.init(X, y);       
 
-    ASSERT_EQ(initial_output, loaded_output);     
+	    feat.params.set_terminals(X.rows());
+
+        for (int i = 0 ; i < 100; ++i)
+        {
+            Individual ind; 
+            cout << "initialize individual\n";
+            ind.initialize(feat.params, false, 0);
+            bool pass = true;
+            cout << "fit individual\n";
+            ind.fit(dt, feat.params, pass);
+            VectorXf initial_output_train = ind.predict_vector(dt, feat.params); 
+            VectorXf initial_output_test = ind.predict_vector(dv, feat.params); 
+            cout << "saving eqn: " << ind.get_eqn() << endl;
+            ind.save(filename); 
+
+            // load the ind and check its output
+            Individual loaded_ind;
+            loaded_ind.load(filename);
+            VectorXf loaded_output_train = loaded_ind.predict_vector(dt, 
+                    feat.params);
+            VectorXf loaded_output_test = loaded_ind.predict_vector(dv, 
+                    feat.params);
+            // compare
+            /* cout << "fitted eqn: " << ind.get_eqn() << endl; */
+            /* cout << "loaded eqn: " << loaded_ind.get_eqn() << endl; */
+            ASSERT_EQ(ind.get_eqn(), loaded_ind.get_eqn());
+
+            /* cout << "fitted weights:"; */
+            /* for (auto w : ind.w) cout << w << ", "; cout << endl; */
+            /* cout << "loaded weights:"; */
+            /* for (auto w : loaded_ind.w) cout << w << ", "; cout << endl; */
+            ASSERT_EQ(ind.w, loaded_ind.w);
+
+            /* cout << "fitted ML weights:"; */
+            /* for (auto w : ind.ml->get_weights()) cout << w << ", "; cout << endl; */
+            /* cout << "loaded ml weights:"; */
+            /* for (auto w : loaded_ind.ml->get_weights()) cout << w << ", "; cout << endl; */
+            ASSERT_EQ(ind.ml->get_weights(), loaded_ind.ml->get_weights());
+            /* cout << "initial output train:" << initial_output_train.transpose() */ 
+            /*     << endl; */
+            /* cout << "loaded output train:" << loaded_output_train.transpose() */ 
+            /*     << endl; */
+
+            /* cout << "initial output test:" << initial_output_test.transpose() */ 
+            /*     << endl; */
+            /* cout << "loaded output test:" << loaded_output_test.transpose() */ 
+            /*     << endl; */
+
+            ASSERT_LE((initial_output_train - loaded_output_train).norm(),
+                      0.00001);     
+            ASSERT_LE((initial_output_test - loaded_output_test).norm(),
+                      0.00001);     
+        }
+    }
+    
 
     //TODO: write this test!
     // train individuals, save behavior

@@ -35,7 +35,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeOr::eval_eqn(State& state)
             {
-                state.push<bool>("(" + state.popStr<bool>() + " OR " + state.popStr<bool>() + ")");
+                state.push<bool>("OR(" + state.popStr<bool>() + "," + state.popStr<bool>() + ")");
             }
             
             NodeOr* NodeOr::clone_impl() const { return new NodeOr(*this); }

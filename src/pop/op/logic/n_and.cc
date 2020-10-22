@@ -33,7 +33,8 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeAnd::eval_eqn(State& state)
             {
-                state.push<bool>("(" + state.popStr<bool>() + " AND " + state.popStr<bool>() + ")");
+                state.push<bool>("AND(" + state.popStr<bool>() + "," 
+                                 + state.popStr<bool>() + ")");
             }
             
             NodeAnd* NodeAnd::clone_impl() const { return new NodeAnd(*this); }

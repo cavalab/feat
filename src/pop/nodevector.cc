@@ -370,10 +370,12 @@ void NodeVector::make_program(const NodeVector& functions,
                               const vector<float>& term_weights, 
                               const vector<float>& op_weights, 
                               int dim, char otype, 
-                              vector<string> longitudinalMap, const vector<char>& term_types)
+                              vector<string> longitudinalMap, 
+                              const vector<char>& term_types)
 {
     for (unsigned i = 0; i<dim; ++i)    // build trees
-        make_tree(functions, terminals, max_d, term_weights, op_weights, otype, term_types);
+        make_tree(functions, terminals, max_d, term_weights, op_weights, otype, 
+                  term_types);
     
     // reverse program so that it is post-fix notation
     std::reverse(begin(), end());
@@ -496,8 +498,7 @@ void from_json(const json& j, NodeVector& nv)
     }
     json check;
     to_json(check, nv);
-    cout << "loaded nodevector: " << check.dump() << endl;
-
 }
+
 } // Pop
 } // FT

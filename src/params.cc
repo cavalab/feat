@@ -559,8 +559,7 @@ void Parameters::set_op_weights()
     /* ow += "\n"; */
     /* logger.log(ow,2); */
 }
-void Parameters::set_terminals(int nf,
-                               std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
+void Parameters::set_terminals(int nf, LongData Z)
 {
     /*!
      * defines terminals using nf (number of features) as well as Z data directly
@@ -593,6 +592,8 @@ void Parameters::set_terminals(int nf,
     
     set_otypes(true);
     set_op_weights();
+    // set dummy term_weights to zero
+    this->set_term_weights(vector<float>());
 }
 
 void Parameters::set_objectives(string obj)

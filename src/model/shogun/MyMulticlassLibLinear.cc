@@ -173,14 +173,14 @@ namespace shogun
 	    for (int32_t i=0; i<num_classes; i++)
 	    {
 		    CLinearMachine* machine = (CLinearMachine*)m_machines->get_element(i);
-		    weights_vector.push_back(machine->get_w());
+		    weights_vector.push_back(machine->get_w().clone());
 	    }
 
          return weights_vector;
 
     }
 
-    void CMyMulticlassLibLinear::set_w(vector<Eigen::VectorXd>& wnew)
+    void CMyMulticlassLibLinear::set_w(vector<Eigen::VectorXd> wnew)
     {
         
 	    int32_t num_classes = ((CMulticlassLabels*) m_labels)->get_num_classes();

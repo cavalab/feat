@@ -124,7 +124,7 @@ namespace shogun
 		    * @return the vector of weights for each subclass
 		    */
 		    vector<SGVector<float64_t>> get_w() const;
-            void set_w(vector<Eigen::VectorXd>& wnew);
+            void set_w(vector<Eigen::VectorXd> wnew);
 
     protected:
 

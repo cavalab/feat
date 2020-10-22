@@ -45,7 +45,7 @@ do
 done
 
 echo "Build folder = ${folder}"
-echo "Numer of jobs = ${njobs}"
+echo "Number of jobs = ${njobs}"
 
 make -C ${folder} -j ${njobs}
 

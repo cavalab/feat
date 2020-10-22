@@ -39,7 +39,6 @@ license: GNU/GPL v3
 using Eigen::MatrixXf;
 using Eigen::VectorXf;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
-typedef std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>> LongData;
 using std::vector;
 using std::string;
 using std::unique_ptr;
