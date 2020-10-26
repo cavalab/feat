@@ -9,14 +9,14 @@ from versionstr import __version__
 from sklearn.base import BaseEstimator
 import numpy as np
 import pandas as pd
-import pyfeat as pyfeat
+from pyfeat import PyFeat
 from sklearn.metrics import mean_squared_error as mse
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import log_loss
 import pdb
 import json
 
-class Feat(pyfeat.PyFeat, BaseEstimator):
+class Feat(PyFeat, BaseEstimator):
     """Feature Engineering Automation Tool
 
     Parameters
@@ -134,168 +134,116 @@ class Feat(pyfeat.PyFeat, BaseEstimator):
     starting_pop: str, optional (default: "")
         Provide a starting pop in json format. 
     """
-    def __init__(self, pop_size=100,  gens=100,  ml = "LinearRidgeRegression", 
-                classification=False,  verbosity=0,  max_stall=0,
-                sel ="lexicase",  surv ="nsga2",  cross_rate=0.5, 
-                root_xo_rate=0.5, otype ='a',  functions ="", 
-                max_depth=3,   max_dim=10,  random_state=0, 
-                erc = False,  obj ="fitness,complexity", shuffle=True,  
-                split=0.75,  fb=0.5, scorer ='',feature_names="", 
-                backprop=False, iters=10, lr=0.1, batch_size=0, 
-                n_threads=0, hillclimb=False, logfile="", max_time=-1, 
-                residual_xo=False, stagewise_xo=False, 
-                stagewise_xo_tol=False, softmax_norm=False, save_pop=0, 
-                normalize=True, val_from_arch=True, corr_delete_mutate=False, 
-                simplify=0.0,protected_groups=[],
-                tune_initial=False, tune_final=True,
-                starting_pop=""):
-        # self.pop_size = pop_size
-        # self.gens = gens
-        # self.ml = ml.encode() if( isinstance(ml,str) )  else ml
+    # def __init__(self, pop_size=100,  gens=100,  ml = "LinearRidgeRegression", 
+    #             classification=False,  verbosity=0,  max_stall=0,
+    #             sel ="lexicase",  surv ="nsga2",  cross_rate=0.5, 
+    #             root_xo_rate=0.5, otype ='a',  functions ="", 
+    #             max_depth=3,   max_dim=10,  random_state=0, 
+    #             erc = False,  obj ="fitness,complexity", shuffle=True,  
+    #             split=0.75,  fb=0.5, scorer ='',feature_names="", 
+    #             backprop=False, iters=10, lr=0.1, batch_size=0, 
+    #             n_threads=0, hillclimb=False, logfile="", max_time=-1, 
+    #             residual_xo=False, stagewise_xo=False, 
+    #             stagewise_xo_tol=False, softmax_norm=False, save_pop=0, 
+    #             normalize=True, val_from_arch=True, corr_delete_mutate=False, 
+    #             simplify=0.0,protected_groups=[],
+    #             tune_initial=False, tune_final=True,
+    #             starting_pop=""):
 
-        # self.classification = classification
-        # self.verbosity = verbosity
-        # self.max_stall = max_stall
-        # self.sel = sel.encode() if( isinstance(sel,str) )  else sel
-        # self.surv = surv.encode() if( isinstance(surv,str) )  else surv
-        # self.cross_rate = cross_rate
-        # self.root_xo_rate = root_xo_rate
-        # self.otype = otype.encode() if( isinstance(otype,str) )  else otype
-        # self.functions = (functions.encode() if( isinstance(functions,str) )  
-        #         else functions)
-        # self.max_depth = max_depth
-        # self.max_dim = max_dim
-        # self.random_state = int(random_state)
-        # self.erc = erc      
-        # self.obj = obj.encode() if( isinstance(obj,str) )  else obj
-        # self.shuffle = shuffle
-        # self.split = split
-        # self.fb = fb
-        # self.scorer = scorer.encode() if( isinstance(scorer,str) )  else scorer
-        # self.feature_names = (feature_names.encode() 
-        #         if isinstance(feature_names,str) else feature_names )
-        # self.backprop = bool(backprop)
-        # self.iters = int(iters)
-        # self.lr = float(lr)
-        # self.batch_size= int(batch_size)
-        # self.n_threads = int(n_threads)
-        # self.hillclimb= bool(hillclimb) 
-        # self.logfile = logfile.encode() if isinstance(logfile,str) else logfile
-        # self.max_time = max_time
-        # self.residual_xo = residual_xo
-        # self.stagewise_xo = stagewise_xo
-        # self.stagewise_xo_tol = stagewise_xo_tol
-        # self.softmax_norm = softmax_norm
-        # self.save_pop = save_pop
-        # self.normalize = normalize
-        # self.val_from_arch = val_from_arch
-        # self.corr_delete_mutate = corr_delete_mutate
-        # self.simplify = simplify
-        # self.protected_groups = ','.join(
-        #         [str(int(pg)) for pg in protected_groups]).encode()
-        # self.tune_initial = tune_initial
-        # self.tune_final = tune_final
-        # if isinstance(starting_pop,str):
-        #     self.starting_pop = starting_pop.encode()  
-        # else:
-        #     self.starting_pop = starting_pop
-        # # self._pyfeat=None
-        # # self._init_pyfeat()   
-        # self.stats = {}
-        # self.__version__ = __version__
+    #     super(PyFeat).__cinit__(self,
+    #             pop_size,  
+    #             gens,  
+    #             ml.encode() if( isinstance(ml,str) )  else ml,
+    #             classification,  
+    #             verbosity,  
+    #             max_stall,
+    #             sel.encode() if( isinstance(sel,str) )  else sel,
+    #             surv.encode() if( isinstance(surv,str) )  else surv,
+    #             cross_rate, 
+    #             root_xo_rate,
+    #             otype.encode() if( isinstance(otype,str) )  else otype,
+    #             str(functions).encode(),
+    #             max_depth,   
+    #             max_dim,  
+    #             int(random_state),
+    #             erc,  
+    #             str(obj).encode(),
+    #             shuffle,  
+    #             split,  
+    #             fb,
+    #             str(scorer).encode(),
+    #             str(feature_names).encode(),
+    #             bool(backprop),
+    #             int(iters),
+    #             float(lr),
+    #             int(batch_size),
+    #             int(n_threads),
+    #             bool(hillclimb),
+    #             str(logfile).encode(),
+    #             max_time,
+    #             residual_xo,
+    #             stagewise_xo,
+    #             stagewise_xo_tol,
+    #             softmax_norm,
+    #             save_pop,
+    #             normalize,
+    #             val_from_arch,
+    #             corr_delete_mutate,
+    #             simplify,
+    #             protected_groups,
+    #             tune_initial,
+    #             tune_final, 
+    #             str(starting_pop).encode()
+    #     )
+    #     self.__version__ = __version__
 
-        super(Feat,self).__cinit__(
-                pop_size,  
-                gens,  
-                ml.encode() if( isinstance(ml,str) )  else ml,
-                classification,  
-                verbosity,  
-                max_stall,
-                sel.encode() if( isinstance(sel,str) )  else sel,
-                surv.encode() if( isinstance(surv,str) )  else surv,
-                cross_rate, 
-                root_xo_rate,
-                otype.encode() if( isinstance(otype,str) )  else otype,
-                str(functions).encode(),
-                max_depth,   
-                max_dim,  
-                int(random_state),
-                erc,  
-                str(obj).encode(),
-                shuffle,  
-                split,  
-                fb,
-                str(scorer).encode(),
-                str(feature_names).encode(),
-                bool(backprop),
-                int(iters),
-                float(lr),
-                int(batch_size),
-                int(n_threads),
-                bool(hillclimb),
-                str(logfile).encode(),
-                max_time,
-                residual_xo,
-                stagewise_xo,
-                stagewise_xo_tol,
-                softmax_norm,
-                save_pop,
-                normalize,
-                val_from_arch,
-                corr_delete_mutate,
-                simplify,
-                protected_groups,
-                tune_initial,
-                tune_final, 
-                str(starting_pop).encode()
-        )
-    def _init_pyfeat(self):
-        """set up pyfeat glue class object"""
-        self._pyfeat = pyfeat.PyFeat( 
-                self.pop_size,  
-                self.gens,  
-                self.ml, 
-                self.classification,  
-                self.verbosity,  
-                self.max_stall,
-                self.sel,  
-                self.surv,  
-                self.cross_rate, 
-                self.root_xo_rate,
-                self.otype,  
-                self.functions, 
-                self.max_depth,   
-                self.max_dim,  
-                self.random_state, 
-                self.erc,  
-                self.obj, 
-                self.shuffle,  
-                self.split,  
-                self.fb,
-                self.scorer,
-                self.feature_names,
-                self.backprop,
-                self.iters,
-                self.lr,
-                self.batch_size,
-                self.n_threads,
-                self.hillclimb,
-                self.logfile,
-                self.max_time,
-                self.residual_xo,
-                self.stagewise_xo,
-                self.stagewise_xo_tol,
-                self.softmax_norm,
-                self.save_pop,
-                self.normalize,
-                self.val_from_arch,
-                self.corr_delete_mutate,
-                self.simplify,
-                self.protected_groups,
-                self.tune_initial,
-                self.tune_final, 
-                self.starting_pop
-        )
+    # def _init_pyfeat(self):
+    #     """set up pyfeat glue class object"""
+    #     self._pyfeat = pyfeat.PyFeat( 
+    #             self.pop_size,  
+    #             self.gens,  
+    #             self.ml, 
+    #             self.classification,  
+    #             self.verbosity,  
+    #             self.max_stall,
+    #             self.sel,  
+    #             self.surv,  
+    #             self.cross_rate, 
+    #             self.root_xo_rate,
+    #             self.otype,  
+    #             self.functions, 
+    #             self.max_depth,   
+    #             self.max_dim,  
+    #             self.random_state, 
+    #             self.erc,  
+    #             self.obj, 
+    #             self.shuffle,  
+    #             self.split,  
+    #             self.fb,
+    #             self.scorer,
+    #             self.feature_names,
+    #             self.backprop,
+    #             self.iters,
+    #             self.lr,
+    #             self.batch_size,
+    #             self.n_threads,
+    #             self.hillclimb,
+    #             self.logfile,
+    #             self.max_time,
+    #             self.residual_xo,
+    #             self.stagewise_xo,
+    #             self.stagewise_xo_tol,
+    #             self.softmax_norm,
+    #             self.save_pop,
+    #             self.normalize,
+    #             self.val_from_arch,
+    #             self.corr_delete_mutate,
+    #             self.simplify,
+    #             self.protected_groups,
+    #             self.tune_initial,
+    #             self.tune_final, 
+    #             self.starting_pop
+    #     )
    
 
     def fit(self,X,y,zfile=None,zids=None):
@@ -307,11 +255,9 @@ class Feat(pyfeat.PyFeat, BaseEstimator):
         
         if zfile:
             zfile = zfile.encode() if isinstance(zfile,str) else zfile
-            self._pyfeat.fit_with_z(X,y,zfile,zids)
+            self._fit_with_z(X,y,zfile,zids)
         else:
             self._fit(X,y)
-
-        self.update_stats()
 
         return self
 
@@ -320,9 +266,9 @@ class Feat(pyfeat.PyFeat, BaseEstimator):
         X = self._clean(X)
         if zfile:
             zfile = zfile.encode() if isinstance(zfile,str) else zfile
-            return self._pyfeat.predict_with_z(X,zfile,zids)
+            return self._predict_with_z(X,zfile,zids)
         else:
-            return self._pyfeat.predict(X)
+            return self._predict(X)
 
     def predict_archive(self,X,zfile=None,zids=None):
         """Returns a list of dictionary predictions for all models."""
@@ -337,7 +283,7 @@ class Feat(pyfeat.PyFeat, BaseEstimator):
         for ind in archive:
             tmp = {}
             tmp['id'] = ind['id']
-            tmp['y_pred'] = self._pyfeat.predict_archive(ind['id'], X) 
+            tmp['y_pred'] = self._predict_archive(ind['id'], X) 
             preds.append(tmp)
 
         return preds
@@ -348,7 +294,7 @@ class Feat(pyfeat.PyFeat, BaseEstimator):
         if zfile:
             raise ImplementationError('longitudinal not implemented')
             # zfile = zfile.encode() if isinstance(zfile,str) else zfile
-            # return self._pyfeat.predict_with_z(X,zfile,zids)
+            # return self._predict_with_z(X,zfile,zids)
             return 1
 
         archive = self.get_archive()
@@ -356,7 +302,7 @@ class Feat(pyfeat.PyFeat, BaseEstimator):
         for ind in archive:
             tmp = {}
             tmp['id'] = ind['id']
-            tmp['y_proba'] = self._pyfeat.predict_proba_archive(ind['id'], X)
+            tmp['y_proba'] = self._predict_proba_archive(ind['id'], X)
             probs.append(tmp)
 
         return probs
@@ -366,9 +312,9 @@ class Feat(pyfeat.PyFeat, BaseEstimator):
         X = self._clean(X)
         if zfile:
             zfile = zfile.encode() if isinstance(zfile,str) else zfile
-            tmp = self._pyfeat.predict_proba_with_z(X,zfile,zids)
+            tmp = self._predict_proba_with_z(X,zfile,zids)
         else:
-            tmp = self._pyfeat.predict_proba(X)
+            tmp = self._predict_proba(X)
         
         if len(tmp.shape)<2:
                 tmp  = np.vstack((1-tmp,tmp)).transpose()
@@ -380,9 +326,9 @@ class Feat(pyfeat.PyFeat, BaseEstimator):
         X = self._clean(X)
         if zfile:
             zfile = zfile.encode() if isinstance(zfile,str) else zfile
-            return self._pyfeat.transform_with_z(X,zfile,zids)
+            return self._transform_with_z(X,zfile,zids)
         else:
-            return self._pyfeat.transform(X)
+            return self._transform(X)
 
     def fit_predict(self,X,y):
         """Convenience method that runs fit(X,y) then predict(X)"""
@@ -504,30 +450,30 @@ class Feat(pyfeat.PyFeat, BaseEstimator):
             assert(type(x).__name__ == 'ndarray')
             return x
 
-    def load(self, filename):
-        """Loads a previous Feat state from file."""
-        self._load(filename.encode())
-        #TODO: if a Feat state is loaded for pyfeat, pyfeat's parameters have
-        # to then be passed to Feat(), otherwise they will be overwritten by
-        # calls to _init_pyfeat in fit(). 
+    #def load(self, filename):
+    #    """Loads a previous Feat state from file."""
+    #    self._load(filename.encode())
+    #    #TODO: if a Feat state is loaded for pyfeat, pyfeat's parameters have
+    #    # to then be passed to Feat(), otherwise they will be overwritten by
+    #    # calls to _init_pyfeat in fit(). 
 
-        # 10/26: this concern should be resolved by inheriting from PyFeat
-        # and using setter/getter properties for attributes.
-        # for k,v in self._pyfeat.__dict__.items():
-        #     if hasattr(self, k):
-        #         setattr(self,k,v)
-        #     else:
-        #         print('Feat does not have',k,'attribute')
-        return self
+    #    # 10/26: this concern should be resolved by inheriting from PyFeat
+    #    # and using setter/getter properties for attributes.
+    #    # for k,v in self._pyfeat.__dict__.items():
+    #    #     if hasattr(self, k):
+    #    #         setattr(self,k,v)
+    #    #     else:
+    #    #         print('Feat does not have',k,'attribute')
+    #    return self
 
-    def save(self, filename):
-        """Saves current Feat state to file."""
-        self._save(filename.encode())
+    #def save(self, filename):
+    #    """Saves current Feat state to file."""
+    #    self._save(filename.encode())
 
-    def load_best_ind(self, filename):
-        """Loads a json model into best_ind, which is then used for
-        prediction."""
-        self._load_best_ind(filename.encode())
+    #def load_best_ind(self, filename):
+    #    """Loads a json model into best_ind, which is then used for
+    #    prediction."""
+    #    self._load_best_ind(filename.encode())
 
-    def load_population(self, filename):
-        self._load_population(filename.encode())
+    #def load_population(self, filename):
+    #    self._load_population(filename.encode())

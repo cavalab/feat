@@ -112,13 +112,21 @@ class TestFeatWrapper(unittest.TestCase):
     
         clf = Feat(verbosity=verbosity, n_threads=1, gens=5)
         clf.fit(self.X, self.y)
+        initial_pred = clf.predict(self.X)
         clf.save('Feat_tmp.json')
 
         loaded_clf = Feat().load('Feat_tmp.json')
-        assert(clf.__dict__ == loaded_clf.__dict__)
-        loaded_clf.fit(self.X, self.y)
+        print('loaded_clf:',type(loaded_clf).__name__)
+        loaded_pred = loaded_clf.predict(self.X)
+        print('initial pred:',initial_pred)
+        print('loaded pred:',loaded_pred)
+        assert(all([ip==lp for ip,lp in zip(initial_pred, loaded_pred)]))
 
+        assert(clf.representation() == loaded_clf.representation())
+        assert(clf.get_model() == loaded_clf.get_model())
+        assert(clf.get_coefs() == loaded_clf.get_coefs())
         assert(loaded_clf.get_params() == self.clf.get_params())
+        loaded_clf.fit(self.X, self.y)
 
     def test_archive(self):
         """test archiving ability"""

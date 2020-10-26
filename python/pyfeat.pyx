@@ -28,7 +28,7 @@ cdef extern from "feat.h" namespace "FT":
                string feature_names, bool backprop, int iters, float lr, 
                int batch_size, int n_threads, bool hillclimb, string logfile, 
                int max_time, bool residual_xo, bool stagewise_xo, 
-               bool stagewise_xo_tol, bool softmax_norm, int print_pop, 
+               bool stagewise_xo_tol, bool softmax_norm, int save_pop, 
                bool normalize, bool val_from_arch, bool corr_delete_mutate, 
                float simplify, string protected_groups, bool tune_initial,
                bool tune_final, string starting_pop 
@@ -152,16 +152,6 @@ cdef extern from "feat.h" namespace "FT":
 
         string get_stats()
         
-        # vector[int] get_gens();        
-        # vector[float] get_timers();
-        # vector[float] get_min_losses();
-        # vector[float] get_min_losses_val();
-        # vector[float] get_med_scores();
-        # vector[float] get_med_loss_vals();
-        # vector[unsigned] get_med_size();
-        # vector[unsigned] get_med_complexities();
-        # vector[unsigned] get_med_num_params();
-        # vector[unsigned] get_med_dim();
         void load(string filename)
         void save(string filename)
         void load_best_ind(string filename)
@@ -169,19 +159,167 @@ cdef extern from "feat.h" namespace "FT":
 
 #@cython.auto_pickle(True)
 cdef class PyFeat:
+    """Feature Engineering Automation Tool
+
+    Parameters
+    ----------
+    pop_size: int, optional (default: 100)
+        Size of the population of models
+    gens: int, optional (default: 100)
+        Number of iterations to train for
+    ml: str, optional (default: "LinearRidgeRegression")
+        ML pairing. Choices: LinearRidgeRegression, Lasso, L1_LR, L2_LR
+    classification: boolean, optional (default: False)
+        Whether to do classification instead of regression. 
+    verbosity: int, optional (default: 0)
+        How much to print out (0, 1, 2)
+    max_stall: int, optional (default: 0)
+        How many generations to continue after the validation loss has
+        stalled. If 0, not used.
+    sel: str, optional (default: "lexicase")
+        Selection algorithm to use.   
+    surv: str, optional (default: "nsga2")
+        Survival algorithm to use. 
+    cross_rate: float, optional (default: 0.5)
+        How often to do crossover for variation versus mutation. 
+    root_xo_rate: float, optional (default: 0.5)
+        When performing crossover, how often to choose from the roots of 
+        the trees, rather than within the tree. Root crossover essentially
+        swaps features in models.
+    otype: string, optional (default: 'a')
+        Feature output types:
+        'a': all
+        'b': boolean only
+        'f': floating point only
+    functions: string, optional (default: "")
+        What operators to use to build features. If functions="", all the
+        available functions are used. 
+    max_depth: int, optional (default: 3)
+        Maximum depth of a feature's tree representation.
+    max_dim: int, optional (default: 10)
+        Maximum dimension of a model. The dimension of a model is how many
+        independent features it has. Controls the number of trees in each 
+        individual.
+    random_state: int, optional (default: 0)
+        Random seed.
+    erc: boolean, optional (default: False)
+        If true, ephemeral random constants are included as nodes in trees.
+    obj: str, optional (default: "fitness,complexity")
+        Objectives to use for multi-objective optimization.
+    shuffle: boolean, optional (default: True)
+        Whether to shuffle the training data before beginning training.
+    split: float, optional (default: 0.75)
+        The internal fraction of training data to use. The validation fold
+        is then 1-split fraction of the data. 
+    fb: float, optional (default: 0.5)
+        Controls the amount of feedback from the ML weights used during 
+        variation. Higher values make variation less random.
+    scorer: str, optional (default: '')
+        Scoring function to use internally. 
+    feature_names: str, optional (default: '')
+        Optionally provide comma-separated feature names. Should be equal
+        to the number of features in your data. This will be set 
+        automatically if a Pandas dataframe is passed to fit(). 
+    backprop: boolean, optional (default: False)
+        Perform gradient descent on feature weights using backpropagation.
+    iters: int, optional (default: 10)
+        Controls the number of iterations of backprop as well as 
+        hillclimbing for learning weights.
+    lr: float, optional (default: 0.1)
+        Learning rate used for gradient descent. This the initial rate, 
+        and is scheduled to decrease exponentially with generations. 
+    batch_size: int, optional (default: 0)
+        Number of samples to train on each generation. 0 means train on 
+        all the samples.
+    n_threads: int, optional (default: 0)
+        Number of parallel threads to use. If 0, this will be 
+        automatically determined by OMP. 
+    hillclimb: boolean, optional (default: False)
+        Applies stochastic hillclimbing to feature weights. 
+    logfile: str, optional (default: "")
+        If specified, spits statistics into a logfile. "" means don't log.
+    max_time: int, optional (default: -1)
+        Maximum time terminational criterion in seconds. If -1, not used.
+    residual_xo: boolean, optional (default: False)
+        Use residual crossover. 
+    stagewise_xo: boolean, optional (default: False)
+        Use stagewise crossover.
+    stagewise_xo_tol: boolean, optional (default:False)
+        Terminates stagewise crossover based on an error value rather than
+        dimensionality. 
+    softmax_norm: boolean, optional (default: False)
+        Uses softmax normalization of probabilities of variation across
+        the features. 
+    save_pop: int, optional (default: 0)
+        Prints the population of models. 0: don't print; 1: print final 
+        population; 2: print every generation. 
+    normalize: boolean, optional (default: True)
+        Normalizes the floating point input variables using z-scores. 
+    val_from_arch: boolean, optional (default: True)
+        Validates the final model using the archive rather than the whole 
+        population.
+    corr_delete_mutate: boolean, optional (default: False)
+        Replaces root deletion mutation with a deterministic deletion 
+        operator that deletes the feature with highest collinearity. 
+    simplify: float, optional (default: 0)
+        Runs post-run simplification to try to shrink the final model 
+        without changing its output more than the simplify tolerance.
+        This tolerance is the norm of the difference in outputs, divided
+        by the norm of the output. If simplify=0, it is ignored. 
+    protected_groups: list, optional (default: [])
+        Defines protected attributes in the data. Uses for adding 
+        fairness constraints. 
+    tune_initial: boolean, optional (default: False)
+        Tune the initial linear model's penalization parameter. 
+    tune_final: boolean, optional (default: True)
+        Tune the final linear model's penalization parameter. 
+    starting_pop: str, optional (default: "")
+        Provide a starting pop in json format. 
+    """
     cdef Feat ft  # hold a c++ instance which we're wrapping
-    def __cinit__(self, int pop_size, int gens, string ml, bool classification, 
-            int verbosity, int max_stall,string sel, string surv, 
-            float cross_rate, float root_xo_rate, string otype, 
-            string functions, unsigned int max_depth, unsigned int max_dim, 
-            int random_state, bool erc , string obj, bool shuffle, float split, 
-            float fb, string scorer, string feature_names, bool backprop, 
-            int iters, float lr, int batch_size, int n_threads, bool hillclimb, 
-            string logfile, int max_time, bool residual_xo, 
-            bool stagewise_xo, bool stagewise_xo_tol, bool softmax_norm, 
-            int print_pop, bool normalize, bool val_from_arch, 
-            bool corr_delete_mutate, float simplify, string protected_groups,
-            bool tune_initial, bool tune_final, string starting_pop):
+    def __cinit__(self, 
+                  int pop_size=100, 
+                  int gens=100, 
+                  string ml= "LinearRidgeRegression", 
+                  bool classification=False, 
+                  int verbosity=0, 
+                  int max_stall=0, 
+                  string sel="lexicase", 
+                  string surv="nsga2", 
+                  float cross_rate=0.5, 
+                  float root_xo_rate=0.5, 
+                  string otype='a', 
+                  string functions="", 
+                  unsigned int max_depth=3, 
+                  unsigned int max_dim=10, 
+                  int random_state=0, 
+                  bool erc= False , 
+                  string obj="fitness,complexity", 
+                  bool shuffle=True, 
+                  float split=0.75, 
+                  float fb=0.5, 
+                  string scorer='', 
+                  string feature_names="", 
+                  bool backprop=False, 
+                  int iters=10, float lr=0.1, 
+                  int batch_size=0, 
+                  int n_threads=0, 
+                  bool hillclimb=False, 
+                  string logfile="", 
+                  int max_time=-1, 
+                  bool residual_xo=False, 
+                  bool stagewise_xo=False, 
+                  bool stagewise_xo_tol=False, 
+                  bool softmax_norm=False, 
+                  int save_pop=0, 
+                  bool normalize=True, 
+                  bool val_from_arch=True, 
+                  bool corr_delete_mutate=False, 
+                  float simplify=0.0, 
+                  string protected_groups="", 
+                  bool tune_initial=False, 
+                  bool tune_final=True, 
+                  string starting_pop=""):
         
         cdef char otype_char
         if ( len(otype) == 0):
@@ -193,7 +331,7 @@ cdef class PyFeat:
                 max_depth, max_dim, random_state, erc, obj, shuffle, split, fb,
                 scorer, feature_names, backprop, iters, lr, batch_size, 
                 n_threads, hillclimb, logfile, max_time, residual_xo, 
-                stagewise_xo, stagewise_xo_tol, softmax_norm, print_pop, 
+                stagewise_xo, stagewise_xo_tol, softmax_norm, save_pop, 
                 normalize, val_from_arch, corr_delete_mutate, simplify,
                 protected_groups, tune_initial, tune_final, starting_pop)
 
@@ -379,6 +517,7 @@ cdef class PyFeat:
 
     def load(self, filename):
         self.ft.load(str(filename).encode())
+        return self
 
     def save(self, filename):
         self.ft.save(str(filename).encode())
@@ -389,7 +528,127 @@ cdef class PyFeat:
     def _load_population(self, filename):
         self.ft.load_population(filename)
 
+    # def _clean(self, x, set_feature_names=False):
+    #     """Converts dataframe to array, optionally returning feature names"""
+    #     feature_names = ''.encode()
+    #     if type(x).__name__ == 'DataFrame':
+    #         if set_feature_names and len(list(x.columns)) == x.shape[1]:
+    #             self.feature_names = ','.join(x.columns).encode()
+    #             return x.values
+    #         else:
+    #             return x.values
+    #     elif type(x).__name__ == 'Series':
+    #         return x.values
+    #     else:
+    #         assert(type(x).__name__ == 'ndarray')
+    #         return x
 
+    # def fit(self,X,y,zfile=None,zids=None):
+    #     """Fit a model."""    
+    #     X = self._clean(X, set_feature_names=True)
+    #     y = self._clean(y)
+
+    #     # self._init_pyfeat()   
+        
+    #     if zfile:
+    #         zfile = zfile.encode() if isinstance(zfile,str) else zfile
+    #         self._fit_with_z(X,y,zfile,zids)
+    #     else:
+    #         self._fit(X,y)
+
+    #     self.update_stats()
+
+    #     return self
+
+    # def predict(self,X,zfile=None,zids=None):
+    #     """Predict on X."""
+    #     X = self._clean(X)
+    #     if zfile:
+    #         zfile = zfile.encode() if isinstance(zfile,str) else zfile
+    #         return self._predict_with_z(X,zfile,zids)
+    #     else:
+    #         return self._predict(X)
+
+    # def predict_archive(self,X,zfile=None,zids=None):
+    #     """Returns a list of dictionary predictions for all models."""
+    #     X = self._clean(X)
+
+    #     if zfile:
+    #         raise ImplementationError('longitudinal not implemented')
+    #         return 1
+
+    #     archive = self.get_archive(justfront=False)
+    #     preds = []
+    #     for ind in archive:
+    #         tmp = {}
+    #         tmp['id'] = ind['id']
+    #         tmp['y_pred'] = self._predict_archive(ind['id'], X) 
+    #         preds.append(tmp)
+
+    #     return preds
+
+    # def predict_proba_archive(self,X,zfile=None,zids=None):
+    #     """Returns a dictionary of prediction probabilities for all models."""
+    #     X = self._clean(X)
+    #     if zfile:
+    #         raise ImplementationError('longitudinal not implemented')
+    #         # zfile = zfile.encode() if isinstance(zfile,str) else zfile
+    #         # return self._predict_with_z(X,zfile,zids)
+    #         return 1
+
+    #     archive = self.get_archive()
+    #     probs = []
+    #     for ind in archive:
+    #         tmp = {}
+    #         tmp['id'] = ind['id']
+    #         tmp['y_proba'] = self._predict_proba_archive(ind['id'], X)
+    #         probs.append(tmp)
+
+    #     return probs
+
+    # def predict_proba(self,X,zfile=None,zids=None):
+    #     """Return probabilities of predictions for data X"""
+    #     X = self._clean(X)
+    #     if zfile:
+    #         zfile = zfile.encode() if isinstance(zfile,str) else zfile
+    #         tmp = self._predict_proba_with_z(X,zfile,zids)
+    #     else:
+    #         tmp = self._predict_proba(X)
+        
+    #     if len(tmp.shape)<2:
+    #             tmp  = np.vstack((1-tmp,tmp)).transpose()
+    #     return tmp         
+
+
+    # def transform(self,X,zfile=None,zids=None):
+    #     """Return the representation's transformation of X"""
+    #     X = self._clean(X)
+    #     if zfile:
+    #         zfile = zfile.encode() if isinstance(zfile,str) else zfile
+    #         return self._transform_with_z(X,zfile,zids)
+    #     else:
+    #         return self._transform(X)
+
+    # def fit_predict(self,X,y):
+    #     """Convenience method that runs fit(X,y) then predict(X)"""
+    #     self.fit(X,y)
+    #     result = self.predict(X)
+    #     return result
+
+    # def fit_transform(self,X,y):
+    #     """Convenience method that runs fit(X,y) then transform(X)"""
+    #     self.fit(X,y)
+    #     result = self.transform(X)
+    #     return result
+
+    # def score(self,X,y,zfile=None,zids=None):
+    #     """Returns a score for the predictions of Feat on X versus true 
+    #     labels y""" 
+    #     yhat = self.predict(X,zfile,zids).flatten()
+    #     if ( self.classification ):
+    #         return log_loss(y,yhat, labels=y)
+    #     else:
+    #         return mse(y,yhat)
     ###########################################################################
     # setters and getters
     ###########################################################################

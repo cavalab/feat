@@ -473,7 +473,14 @@ class Feat
         string str_dim; ///< dimensionality as multiple of number of cols 
         string starting_pop; ///< file with starting population
         int random_state; ///< random state used to seed run
+        Individual best_ind;                    ///< best individual
+        string logfile;                         ///< log filename
+        int save_pop;  ///< controls whether pop is printed each gen
+        bool val_from_arch; ///< model selection only uses Pareto front
+        float simplify;  ///< post-run simplification
+        Log_Stats stats; ///< runtime stats
 
+        /* functions */
         /// updates best score
         bool update_best(const DataRef& d, bool val=false);    
         
@@ -481,11 +488,6 @@ class Feat
         void calculate_stats(const DataRef& d);
         void print_stats(std::ofstream& log,
                          float fraction);      
-        Individual best_ind;                    ///< best individual
-        string logfile;                         ///< log filename
-        int save_pop;  ///< controls whether pop is printed each gen
-        bool val_from_arch; ///< model selection only uses Pareto front
-        float simplify;  ///< post-run simplification
 
         // gets weights via univariate initial models
         vector<float> univariate_initial_model(DataRef &d, int n_feats);
@@ -498,9 +500,7 @@ class Feat
         /// updates stall count for early stopping
         void update_stall_count(unsigned& stall_count, bool updated);
         
-
-        Log_Stats stats;
-
+        //serialization
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(Feat,
                 params,
                 pop,
@@ -516,7 +516,9 @@ class Feat
                 best_med_score,
                 best_complexity,
                 str_dim,
-                starting_pop
+                starting_pop,
+                random_state,
+                best_ind
                 );
                 
 
