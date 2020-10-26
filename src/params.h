@@ -128,6 +128,7 @@ struct Parameters
     
     /// sets available functions based on comma-separated list.
     void set_functions(string fs);
+    string get_functions();
     
     /// max_size is max_dim binary trees of max_depth
     void updateSize();
@@ -138,14 +139,17 @@ struct Parameters
     /// set maximum dimensionality of programs
     void set_max_dim(unsigned int max_dim);
     
-    /// set the terminals
-    void set_terminals(int nf,
-                       std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z = 
-                       std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > ());
+    /// set the terminals with longitudinal data
+    void set_terminals(int nf, const LongData& Z);
 
     void set_feature_names(string fn); 
+    string get_feature_names();
     
+    string get_protected_groups();
     void set_protected_groups(string fn); 
+
+    /// get objectives as comma-delimited string
+    string get_objectives();
     /// set the objectives
     void set_objectives(string obj);
     

@@ -107,14 +107,16 @@ class TestFeatWrapper(unittest.TestCase):
 
     #Test ability to pickle feat model
     # TODO: change to test of loading and saving
-    def test_pickling(self):
+    def test_saving_loading(self):
         self.debug("Pickle Feat object")
     
-        with open('test_pickle.pkl','wb') as f:
-            pickle.dump(self.clf, f)
+        clf = Feat(verbosity=verbosity, n_threads=1, gens=5)
+        clf.fit(self.X, self.y)
+        clf.save('Feat_tmp.json')
 
-        with open('test_pickle.pkl','rb') as f:
-            loaded_clf = pickle.load(f)
+        loaded_clf = Feat().load('Feat_tmp.json')
+        assert(clf.__dict__ == loaded_clf.__dict__)
+        loaded_clf.fit(self.X, self.y)
 
         assert(loaded_clf.get_params() == self.clf.get_params())
 

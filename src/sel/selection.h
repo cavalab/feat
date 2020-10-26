@@ -46,6 +46,7 @@ namespace FT{
             
             /// return type of selectionoperator
             string get_type();
+            void set_type(string);
             
             /// perform selection 
             vector<size_t> select(Population& pop,  

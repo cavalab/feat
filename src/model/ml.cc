@@ -823,10 +823,6 @@ void from_json(const json& j, shared_ptr<ML>& model)
     if (model == 0)
         model = shared_ptr<ML>(new ML());
     from_json(j, *model);
-    cout << "ML::from_json() assigned weights: ";
-    auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(
-            model->p_est)->get_w();
-    for (auto w : tmp) cout << w << ", "; cout << endl;
 }
 
 } // namespace Model

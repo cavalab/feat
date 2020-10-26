@@ -49,14 +49,15 @@ Feat::Feat(int pop_size, int gens, string ml,
           simplify(simplify),
           starting_pop(starting_pop),
           scorer(scorer),
-          survival(surv)
+          survival(surv),
+          random_state(random_state)
 {
     if (n_threads!=0)
         omp_set_num_threads(n_threads);
     r.set_seed(random_state);
     str_dim = "";
     set_logfile(logfile);
-    
+
     if (GPU)
         initialize_cuda();
     // set Feat's Normalizer to only normalize floats by default
@@ -70,7 +71,7 @@ Feat::Feat(int pop_size, int gens, string ml,
 void Feat::set_pop_size(int pop_size){ params.pop_size = pop_size; }            
 
 /// set size of max generations              
-void Feat::set_generations(int gens){ params.gens = gens;}         
+void Feat::set_gens(int gens){ params.gens = gens;}         
             
 /// set ML algorithm to use              
 void Feat::set_ml(string ml){ params.ml = ml; }            
@@ -129,7 +130,11 @@ void Feat::set_max_dim(unsigned int max_dim){	params.set_max_dim(max_dim); }
 void Feat::set_max_dim(string str) { str_dim = str; }            
 
 /// set seeds for each core's random number generator              
-void Feat::set_random_state(int random_state){ r.set_seed(random_state); }
+void Feat::set_random_state(int rs)
+{ 
+    this->random_state = rs; 
+    r.set_seed(this->random_state); 
+}
             
 /// flag to set whether to use variable or constants for terminals              
 void Feat::set_erc(bool erc){ params.erc = erc; }
@@ -147,16 +152,14 @@ void Feat::set_split(float sp){params.split = sp;}
 void Feat::set_dtypes(vector<char> dtypes){params.dtypes = dtypes;}
 
 ///set feedback
-void Feat::set_feedback(float fb){ params.feedback = fb;}
+void Feat::set_fb(float fb){ params.feedback = fb;}
 
 ///set name for files
 void Feat::set_logfile(string s){logfile = s;}
 
 ///set scoring function
 void Feat::set_scorer(string s){scorer=s; params.scorer=s;}
-
-void Feat::set_feature_names(string s){params.set_feature_names(s);}
-void Feat::set_feature_names(vector<string>& s){params.feature_names = s;}
+string Feat::get_scorer(){return scorer;}
 
 /// set constant optimization options
 void Feat::set_backprop(bool bp){params.backprop=bp;}
@@ -196,7 +199,7 @@ void Feat::set_protected_groups(string pg)
 int Feat::get_pop_size(){ return params.pop_size; }
 
 ///return size of max generations
-int Feat::get_generations(){ return params.gens; }
+int Feat::get_gens(){ return params.gens; }
 
 ///return ML algorithm string
 string Feat::get_ml(){ return params.ml; }
@@ -247,7 +250,7 @@ float Feat::get_split(){ return params.split; }
 vector<char> Feat::get_dtypes(){ return params.dtypes; }
 
 ///return feedback setting
-float Feat::get_feedback(){ return params.feedback; }
+float Feat::get_fb(){ return params.feedback; }
 
 ///return best model
 string Feat::get_representation(){ return best_ind.get_eqn();}
@@ -1599,26 +1602,28 @@ void Feat::print_stats(std::ofstream& log, float fraction)
             << stats.med_dim.back()        << "\n"; 
     } 
 }
+//TODO: replace these with json
+string Feat::get_stats(){ json j; to_json(j, this->stats); return j.dump();}
 
-vector<int> Feat::get_gens(){return stats.generation;}
+/* vector<int> Feat::get_stats_gens(){return stats.generation;} */
 
-vector<float> Feat::get_timers(){return stats.time;}
+/* vector<float> Feat::get_stats_timers(){return stats.time;} */
 
-vector<float> Feat::get_min_losses(){return stats.min_loss;}
+/* vector<float> Feat::get_stats_min_losses(){return stats.min_loss;} */
 
-vector<float> Feat::get_min_losses_val(){return stats.min_loss_v;}
+/* vector<float> Feat::get_stats_min_losses_val(){return stats.min_loss_v;} */
 
-vector<float> Feat::get_med_scores(){return stats.med_loss;}
+/* vector<float> Feat::get_stats_med_scores(){return stats.med_loss;} */
 
-vector<float> Feat::get_med_loss_vals(){return stats.med_loss_v;}
+/* vector<float> Feat::get_stats_med_loss_vals(){return stats.med_loss_v;} */
 
-vector<unsigned> Feat::get_med_size(){return stats.med_size;}
+/* vector<unsigned> Feat::get_stats_med_size(){return stats.med_size;} */
 
-vector<unsigned> Feat::get_med_complexities(){return stats.med_complexity;}
+/* vector<unsigned> Feat::get_stats_med_complexities(){return stats.med_complexity;} */
 
-vector<unsigned> Feat::get_med_num_params(){return stats.med_num_params;}
+/* vector<unsigned> Feat::get_stats_med_num_params(){return stats.med_num_params;} */
 
-vector<unsigned> Feat::get_med_dim(){return stats.med_dim;}
+/* vector<unsigned> Feat::get_stats_med_dim(){return stats.med_dim;} */
 
 void Feat::load_best_ind(string filename)
 {

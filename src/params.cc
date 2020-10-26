@@ -354,6 +354,18 @@ void Parameters::set_protected_groups(string pg)
         logger.log(msg,2);
     }
 }
+string Parameters::get_protected_groups()
+{
+    string out = "";
+    for (int i = 0; i < protected_groups.size(); ++i)
+    {
+        out += protected_groups.at(i);
+        if (i < protected_groups.size() - 1)
+            out += ",";
+    }
+    return out;
+}
+
 void Parameters::set_feature_names(string fn)
 {
     if (fn.empty())
@@ -371,6 +383,10 @@ void Parameters::set_feature_names(string fn)
             fn.erase(0, pos + delim.length());
         }
     }
+}
+string Parameters::get_feature_names()
+{
+    return ravel(this->feature_names);
 }
 
 void Parameters::set_functions(string fs)
@@ -408,6 +424,13 @@ void Parameters::set_functions(string fs)
     
     // reset output types
     set_otypes();
+}
+string Parameters::get_functions()
+{
+    vector<string> fn_vec;
+    for (const auto& fn : this->functions)
+        fn_vec.push_back(fn->name);
+    return ravel(fn_vec);
 }
 
 void Parameters::set_op_weights()
@@ -559,18 +582,16 @@ void Parameters::set_op_weights()
     /* ow += "\n"; */
     /* logger.log(ow,2); */
 }
-void Parameters::set_terminals(int nf, LongData Z)
+
+void Parameters::set_terminals(int nf, const LongData& Z)
 {
-    /*!
-     * defines terminals using nf (number of features) as well as Z data directly
-     * sets operator types and op_weights as well
-     */
     terminals.clear();
     num_features = nf; 
     for (size_t i = 0; i < nf; ++i)
         terminals.push_back(createNode(string("x"), 0, 0, i));
     
     if(erc)
+    {
         for (int i = 0; i < nf; ++i)
         {
             if(r() < 0.5)
@@ -578,15 +599,13 @@ void Parameters::set_terminals(int nf, LongData Z)
             else
                 terminals.push_back(createNode(string("kd"), r(), 0, 0));
         }        
-   
+    }
+
     for (const auto &val : Z)
     {
         longitudinalMap.push_back(val.first);
         terminals.push_back(createNode(string("z"), 0, 0, 0, val.first));
     }
-    /* for (const auto& t : terminals) */ 
-    /*     cout << t->name << " " ; */
-    /* cout << "\n"; */
     // reset output types
     set_ttypes();
     
@@ -595,6 +614,7 @@ void Parameters::set_terminals(int nf, LongData Z)
     // set dummy term_weights to zero
     this->set_term_weights(vector<float>());
 }
+
 
 void Parameters::set_objectives(string obj)
 {
@@ -613,6 +633,11 @@ void Parameters::set_objectives(string obj)
         obj.erase(0, pos + delim.length());
     }
 }
+string Parameters::get_objectives()
+{
+    return ravel(this->objectives);
+}
+
 
 void Parameters::set_verbosity(int verbosity)
 {

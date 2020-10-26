@@ -37,7 +37,7 @@ namespace FT {
                 
             instance = NULL;
         }
-        
+       
         void Rnd::set_seed(int seed)
         { 
             /*!

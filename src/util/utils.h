@@ -276,6 +276,17 @@ struct Log_Stats
 
 typedef struct Log_Stats Log_stats;
 
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Log_Stats,
+    generation,
+    time,
+    min_loss,
+    min_loss_v,
+    med_loss,
+    med_loss_v,
+    med_size,
+    med_complexity,
+    med_num_params,
+    med_dim);
 
 ///template function to convert objects to string for logging
 template <typename T>
@@ -294,6 +305,10 @@ std::string to_string(const T a_value, const int n)
     out << std::fixed << a_value;
     return out.str();
 }
+
+///takes a vector string and returns it as a delimited string.
+std::string ravel(const vector<string>& v, string sep=",");
+
 } // Util
 
 } // FT

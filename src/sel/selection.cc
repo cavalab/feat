@@ -45,6 +45,9 @@ Selection::~Selection(){}
 /// return type of selectionoperator
 string Selection::get_type(){ return pselector->name; }
 
+/// set type of selectionoperator
+void Selection::set_type(string in){ type = in; set_operator();}
+
 /// perform selection 
 vector<size_t> Selection::select(Population& pop,  
         const Parameters& params, const Data& d)

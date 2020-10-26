@@ -110,7 +110,7 @@ int main(int argc, char** argv){
         cout << "--softmax\tSet flag to use softmax normalization of feedback\n";
         cout << "--simplify\tPost-run simplification\n";
         cout << "--corr_delete_mutate\tPost-run simplification\n";
-        cout << "-print_pop\tPrint the population objective scores. 0: never, 1: at end, "
+        cout << "-save_pop\tPrint the population objective scores. 0: never, 1: at end, "
                 "2: each generation. (0)\n";
         cout << "-starting_pop\tSpecify a filename containg json formatted starting population"
                 "2: each generation. (0)\n";
@@ -121,7 +121,7 @@ int main(int argc, char** argv){
     if(input.cmdOptionExists("-p"))
         feat.set_pop_size(stoi(input.getCmdOption("-p")));
     if(input.cmdOptionExists("-g"))
-        feat.set_generations(stoi(input.getCmdOption("-g")));
+        feat.set_gens(stoi(input.getCmdOption("-g")));
     if(input.cmdOptionExists("-ml"))
         feat.set_ml(input.getCmdOption("-ml"));
     if(input.cmdOptionExists("--c"))
@@ -162,7 +162,7 @@ int main(int argc, char** argv){
     if(input.cmdOptionExists("-isplit"))
         feat.set_split(std::stod(input.getCmdOption("-isplit")));
     if(input.cmdOptionExists("-f"))
-        feat.set_feedback(std::stod(input.getCmdOption("-f")));
+        feat.set_fb(std::stod(input.getCmdOption("-f")));
     if(input.cmdOptionExists("-log"))
         feat.set_logfile(input.getCmdOption("-log"));
     if(input.cmdOptionExists("-ldata"))
@@ -212,8 +212,8 @@ int main(int argc, char** argv){
         feat.set_simplify(true);
     if(input.cmdOptionExists("--corr_delete_mutate"))
         feat.set_corr_delete_mutate(true);
-    if(input.cmdOptionExists("-print_pop"))
-        feat.set_print_pop(std::stoi(input.getCmdOption("-print_pop")));
+    if(input.cmdOptionExists("-save_pop"))
+        feat.set_save_pop(std::stoi(input.getCmdOption("-save_pop")));
     if(input.cmdOptionExists("-starting_pop"))
         feat.set_starting_pop(input.getCmdOption("-starting_pop"));
 
@@ -234,7 +234,7 @@ int main(int argc, char** argv){
     
     cout << "load_csv...";
     FT::load_csv(input.dataset,X,y,names,dtypes,binary_endpoint,delim);
-    feat.set_feature_names(names);
+    feat.set_feature_names(FT::Util::ravel(names));
     feat.set_dtypes(dtypes);
     
     if (binary_endpoint)
@@ -247,7 +247,7 @@ int main(int argc, char** argv){
                       
     }
     
-    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z;
+    LongData Z;
    
     if(ldataFile.compare("")) 
         FT::load_longitudinal(ldataFile, Z);
@@ -260,10 +260,10 @@ int main(int argc, char** argv){
         d.train_test_split(feat.get_shuffle(), split);
        
         MatrixXf X_tcopy = d.t->X;     
-        std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z_tcopy = d.t->Z;
+        LongData Z_tcopy = d.t->Z;
         VectorXf y_tcopy = d.t->y;
         MatrixXf X_vcopy = d.v->X;     
-        std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z_vcopy = d.v->Z;
+        LongData Z_vcopy = d.v->Z;
         VectorXf y_vcopy = d.v->y;
 
         cout << "fitting model...\n";

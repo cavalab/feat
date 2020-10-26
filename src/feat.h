@@ -99,7 +99,7 @@ class Feat
         void set_pop_size(int pop_size);
         
         /// set size of max generations              
-        void set_generations(int gens);
+        void set_gens(int gens);
                     
         /// set ML algorithm to use              
         void set_ml(string ml);
@@ -124,6 +124,7 @@ class Feat
         
         /// set root xo rate in variation              
         void set_root_xo_rate(float cross_rate);
+        float get_root_xo_rate(){return this->params.root_xo_rate;};
                     
         /// set program output type ('f', 'b')              
         void set_otype(char ot);
@@ -142,6 +143,7 @@ class Feat
         
         /// set seeds for each core's random number generator              
         void set_random_state(int random_state);
+        int get_random_state(){ return random_state; };
                     
         /// flag to set whether to use variable or constants for terminals
         void set_erc(bool erc);
@@ -159,60 +161,76 @@ class Feat
         void set_dtypes(vector<char> dtypes);
 
         ///set feedback
-        void set_feedback(float fb);
+        void set_fb(float fb);
 
         ///set name for files
         void set_logfile(string s);
 
         ///set scoring function
         void set_scorer(string s);
+        string get_scorer();
         
-        void set_feature_names(string s);
-        
-        void set_feature_names(vector<string>& s);
+        void set_feature_names(string s){params.set_feature_names(s); };
+        string get_feature_names(){return params.get_feature_names(); };
 
         /// set constant optimization options
         void set_backprop(bool bp);
+        bool get_backprop(){return params.backprop;};
         
         void set_simplify(float s);
+        float get_simplify(){return simplify;};
 
         void set_corr_delete_mutate(bool s);
+        bool get_corr_delete_mutate(){return params.corr_delete_mutate;};
         
         void set_hillclimb(bool hc);
+        bool get_hillclimb(){return params.hillclimb;};
         
         void set_iters(int iters);
+        int get_iters(){return params.bp.iters;};
         
         void set_lr(float lr);
+        float get_lr(){return params.bp.learning_rate;};
         
+        int get_batch_size(){return params.bp.batch_size;};
         void set_batch_size(int bs);
          
         ///set number of threads
         void set_n_threads(unsigned t);
+        int get_n_threads(){return omp_get_num_threads();};
         
         ///set max time in seconds for fit method
         void set_max_time(int time);
+        int get_max_time(){return params.max_time;};
         
         ///set flag to use batch for training
         void set_use_batch();
         
         /// use residual crossover
         void set_residual_xo(bool res_xo=true){params.residual_xo=res_xo;};
+        bool get_residual_xo(){return params.residual_xo;};
         
         /// use stagewise crossover
-        void set_stagewise_xo(bool sem_xo=true)
-        {
-            params.stagewise_xo=sem_xo;
-        };
+        void set_stagewise_xo(bool sem_xo=true){ params.stagewise_xo=sem_xo; };
+        bool get_stagewise_xo(){return params.stagewise_xo;};
+
+        void set_stagewise_xo_tol(int tol){ params.stagewise_xo_tol = tol;};
+        int get_stagewise_xo_tol(){return params.stagewise_xo_tol;};
         
         /// use softmax
         void set_softmax_norm(bool sftmx=true){params.softmax_norm=sftmx;};
+        bool get_softmax_norm(){return params.softmax_norm;};
 
-        void set_print_pop(int pp){ save_pop=pp; };
+        void set_save_pop(int pp){ save_pop=pp; };
+        int get_save_pop(){ return save_pop; };
         
         void set_starting_pop(string sp){ starting_pop=sp; };
+        string get_starting_pop(){ return starting_pop; };
 
-        ///set protected groups for fairness
-        void set_protected_groups(string pg);
+        void set_normalize(bool in){params.normalize = in;};
+        bool get_normalize(){return params.normalize;};
+
+
         /*                                                      
          * getting functions
          */
@@ -224,7 +242,7 @@ class Feat
         int get_archive_size(){ return this->arch.archive.size(); };
 
         ///return size of max generations
-        int get_generations();
+        int get_gens();
         
         ///return ML algorithm string
         string get_ml();
@@ -237,6 +255,8 @@ class Feat
         
         ///return program output type ('f', 'b')             
         vector<char> get_otypes();
+        ///return parameter otype, used to set otypes
+        char get_otype(){return params.otype;};
         
         ///return current verbosity level set
         int get_verbosity();
@@ -276,7 +296,7 @@ class Feat
         vector<char> get_dtypes();
 
         ///return feedback setting
-        float get_feedback();
+        float get_fb();
        
         ///return best model
         string get_representation();
@@ -305,6 +325,31 @@ class Feat
         /// get longitudinal data from file s
         LongData get_Z(string s, 
                 int * idx, int idx_size);
+
+        string get_sel(){return this->selector.get_type();};
+        void set_sel(string in){this->selector.set_type(in); };
+
+        string get_surv(){return this->survivor.get_type();};
+        void set_surv(string in){this->survivor.set_type(in); };
+
+        bool get_tune_initial(){ return this->params.tune_initial;};
+        void set_tune_initial(bool in){ this->params.tune_initial = in;};
+
+        bool get_tune_final(){ return this->params.tune_final;};
+        void set_tune_final(bool in){ this->params.tune_final = in;};
+
+        string get_functions(){return params.get_functions();};
+
+        string get_obj(){return params.get_objectives(); };  
+        void set_obj(string in){return params.set_objectives(in); };  
+
+        string get_protected_groups(){ return params.get_protected_groups(); };
+        ///set protected groups for fairness
+        void set_protected_groups(string pg);
+
+        bool get_val_from_arch(){return val_from_arch; };
+        void set_val_from_arch(bool in){val_from_arch = in; };
+
 
         /// destructor             
         ~Feat();
@@ -375,48 +420,23 @@ class Feat
                              VectorXf& y,
                              LongData Z = LongData());
                              
-        VectorXf fit_predict(float * X, int rows_x, int cols_x, float * Y, int len_y);
+        VectorXf fit_predict(float * X, int rows_x, int cols_x, float * Y, 
+                int len_y);
         
         /// convenience function calls fit then transform. 
         MatrixXf fit_transform(MatrixXf& X,
                                VectorXf& y,
                                LongData Z = LongData());
                                
-        MatrixXf fit_transform(float * X, int rows_x, int cols_x, float * Y, int len_y);
+        MatrixXf fit_transform(float * X, int rows_x, int cols_x, float * Y, 
+                int len_y);
               
         /// scoring function 
         float score(MatrixXf& X, const VectorXf& y,
                  LongData Z = LongData()); 
         
-        /// return generations statistics arrays
-        vector<int> get_gens();
-        
-        /// return time statistics arrays
-        vector<float> get_timers();
-        
-        /// return best score statistics arrays
-        vector<float> get_min_losses();
-        
-        /// return best score values statistics arrays
-        vector<float> get_min_losses_val();
-        
-        /// return median scores statistics arrays
-        vector<float> get_med_scores();
-        
-        /// return median loss values statistics arrays
-        vector<float> get_med_loss_vals();
-        
-        /// return median size statistics arrays
-        vector<unsigned> get_med_size();
-        
-        /// return median complexity statistics arrays
-        vector<unsigned> get_med_complexities();
-        
-        /// return median num params statistics arrays
-        vector<unsigned> get_med_num_params();
-        
-        /// return median dimensions statistics arrays
-        vector<unsigned> get_med_dim();
+        /// return statistics from the run as a json string
+        string get_stats();
 
         /// load best_ind from file
         void load_best_ind(string filename);
@@ -452,6 +472,7 @@ class Feat
         int best_complexity;  ///< complexity of the best model
         string str_dim; ///< dimensionality as multiple of number of cols 
         string starting_pop; ///< file with starting population
+        int random_state; ///< random state used to seed run
 
         /// updates best score
         bool update_best(const DataRef& d, bool val=false);    
