@@ -86,7 +86,7 @@ class Feat
              bool shuffle=true, float split=0.75, float fb=0.5, 
              string scorer="", string feature_names="",
              bool backprop=false,int iters=10, float lr=0.1, 
-             int batch_size=0, int n_threads=0, bool hillclimb=false, 
+             int batch_size=0, int n_jobs=0, bool hillclimb=false, 
              string logfile="", int max_time=-1, bool residual_xo = false, 
              bool stagewise_xo = false, bool stagewise_tol = true, 
              bool softmax_norm=false, int save_pop=0, bool normalize=true, 
@@ -196,8 +196,8 @@ class Feat
         void set_batch_size(int bs);
          
         ///set number of threads
-        void set_n_threads(unsigned t);
-        int get_n_threads(){return omp_get_num_threads();};
+        void set_n_jobs(unsigned t);
+        int get_n_jobs(){return omp_get_num_threads();};
         
         ///set max time in seconds for fit method
         void set_max_time(int time);
@@ -449,6 +449,7 @@ class Feat
         /// save Feat state to file.
         void save(string filename);
         
+        bool fitted; ///< keeps track of whether fit was called.
     private:
         // Parameters
         Parameters params;  ///< hyperparameters of Feat 
@@ -518,12 +519,10 @@ class Feat
                 str_dim,
                 starting_pop,
                 random_state,
-                best_ind
+                best_ind,
+                fitted
                 );
                 
-
-
-
 };
 
 // serialization

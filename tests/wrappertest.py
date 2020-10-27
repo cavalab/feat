@@ -3,7 +3,7 @@
 Copyright 2016 William La Cava
 license: GNU/GPLv3
 """
-from feat import Feat
+from feat import Feat, FeatRegressor, FeatClassifier
 from sklearn.datasets import load_diabetes
 import unittest
 import argparse
@@ -11,45 +11,62 @@ import sys
 import pandas as pd
 import numpy as np
 import pickle
+from sklearn.utils.estimator_checks import check_estimator
 verbosity = 2
 
 class TestFeatWrapper(unittest.TestCase):
 
     def setUp(self):
         self.v = verbosity
-        self.clf = Feat(verbosity=verbosity, n_threads=1, gens=5)
+        self.reg = Feat(verbosity=verbosity, n_jobs=1, gens=5)
+        self.clf = Feat(classification=True, ml=b"LR", verbosity=verbosity, n_jobs=1, gens=5)
         diabetes = load_diabetes()
         self.X = diabetes.data
-        self.y = diabetes.target
+        self.yr = diabetes.target
+        self.yc = diabetes.target < np.median(diabetes.target)
+
+    def test_sklearn_api(self):
+        # clf = self.clf
+        # clf.classification = True
+        check_generator = check_estimator(self.clf, generate_only=True)
+        check_generator2 = check_estimator(self.reg, generate_only=True)
+
+        for est, check in check_generator:
+            print(check)
+            check(est)
         
+        for est, check in check_generator2:
+            print(check)
+            check(est)
+
     #Test 1: Assert the length of labels returned from predict
     def test_predict_length(self):
         self.debug("Fit the Data")
-        self.clf.fit(self.X,self.y)
+        self.clf.fit(self.X,self.yc)
 
         self.debug("Predicting the Results")
         pred = self.clf.predict(self.X)
 
         self.debug("Comparing the Length of labls in Predicted vs Actual ")
-        expected_length = len(self.y)
+        expected_length = len(self.yr)
         actual_length = len(pred)
         self.assertEqual( actual_length , expected_length )
 
     #Test 2:  Assert the length of labels returned from fit_predict
     def test_fitpredict_length(self):
         self.debug("Calling fit_predict from Feat")
-        pred = self.clf.fit_predict(self.X,self.y)
+        pred = self.reg.fit_predict(self.X,self.yr)
 
         self.debug("Comparing the length of labls in fit_predict vs actual ")
-        expected_length = len(self.y)
+        expected_length = len(self.yr)
         actual_length = len(pred)
         self.assertEqual( actual_length , expected_length )
 
     #Test 3:  Assert the length of labels returned from transform
     def test_transform_length(self):
         self.debug("Calling fit")
-        self.clf.fit(self.X,self.y)
-        trans_X = self.clf.transform(self.X)
+        self.reg.fit(self.X,self.yr)
+        trans_X = self.reg.transform(self.X)
 
         self.debug("Comparing the length of labls in transform vs actual feature set ")
         expected_value = self.X.shape[0]
@@ -59,7 +76,7 @@ class TestFeatWrapper(unittest.TestCase):
     #Test 4:  Assert the length of labels returned from fit_transform
     def test_fit_transform_length(self):
         self.debug("In wrappertest.py...Calling fit transform")
-        trans_X = self.clf.fit_transform(self.X,self.y)
+        trans_X = self.reg.fit_transform(self.X,self.yr)
 
         self.debug("Comparing the length of labls in transform vs actual feature set ")
         expected_value = self.X.shape[0]
@@ -69,8 +86,8 @@ class TestFeatWrapper(unittest.TestCase):
     #Test 5:  Transform with Z
     def test_transform_length_z(self,zfile=None,zids=None):
         self.debug("Calling fit")
-        self.clf.fit(self.X,self.y)
-        trans_X = self.clf.transform(self.X,zfile,zids)
+        self.reg.fit(self.X,self.yr)
+        trans_X = self.reg.transform(self.X,zfile,zids)
 
         self.debug("Comparing the length of labls in transform vs actual feature set ")
         expected_value = self.X.shape[0]
@@ -83,8 +100,8 @@ class TestFeatWrapper(unittest.TestCase):
 
     def test_coefs(self):
         self.debug("In wrappertest.py...Calling test_coefs")
-        self.clf.fit(self.X,self.y)
-        coefs = self.clf.get_coefs()
+        self.reg.fit(self.X,self.yr)
+        coefs = self.reg.get_coefs()
         self.assertTrue( len(coefs)>0 )
 
     def test_dataframe(self):
@@ -92,26 +109,26 @@ class TestFeatWrapper(unittest.TestCase):
         dfX = pd.DataFrame(data=self.X,columns=['fishy'+str(i) 
                                         for i in np.arange(self.X.shape[1])],
                                         index=None)
-        dfy = pd.DataFrame(data={'label':self.y})
+        dfy = pd.DataFrame(data={'label':self.yr})
 
-        self.clf.fit(dfX,dfy['label'])
-        assert(self.clf.feature_names == ','.join(dfX.columns).encode())
+        self.reg.fit(dfX,dfy['label'])
+        assert(self.reg.feature_names == ','.join(dfX.columns).encode())
 
     #Test: Assert the length of labels returned from predict
     def test_predict_stats_length(self):
         self.debug("Fit the Data")
-        self.clf.fit(self.X,self.y)
+        self.reg.fit(self.X,self.yr)
 
-        for key in self.clf.stats:
-            self.assertEqual(len(self.clf.stats[key]), self.clf.gens)
+        for key in self.reg.stats_:
+            self.assertEqual(len(self.reg.stats_[key]), self.reg.gens)
 
     #Test ability to pickle feat model
     # TODO: change to test of loading and saving
     def test_saving_loading(self):
         self.debug("Pickle Feat object")
     
-        clf = Feat(verbosity=verbosity, n_threads=1, gens=5)
-        clf.fit(self.X, self.y)
+        clf = Feat(verbosity=verbosity, n_jobs=1, gens=5)
+        clf.fit(self.X, self.yr)
         initial_pred = clf.predict(self.X)
         clf.save('Feat_tmp.json')
 
@@ -131,16 +148,28 @@ class TestFeatWrapper(unittest.TestCase):
         assert(clf.representation() == loaded_clf.representation())
         assert(clf.get_model() == loaded_clf.get_model())
         assert((clf.get_coefs() == loaded_clf.get_coefs()).all())
-        assert(loaded_clf.get_params() == self.clf.get_params())
-        loaded_clf.fit(self.X, self.y)
+        loaded_params = loaded_clf.get_params()
+        print(10*'=')
+        print('loaded_params:')
+        for k,v in loaded_params.items():
+            print(k,':',v)
+
+        for k,v in clf.get_params().items():
+            if k not in loaded_params.keys():
+                print(k,'not in ',loaded_params.keys())
+                assert(k in loaded_params.keys())
+            elif loaded_params[k] != v:
+                print('loaded_params[',k,'] =',
+                      loaded_params[k], '!=', v)
+                assert(loaded_params[k] == v)
+
+        loaded_clf.fit(self.X, self.yr)
 
     def test_archive(self):
         """test archiving ability"""
         self.debug("Test archive")
 
-        self.clf.classification = True
-        self.clf.ml = b'LR'
-        self.clf.fit(self.X,np.array(self.y > np.median(self.y),dtype=np.int))
+        self.clf.fit(self.X,self.yc)
         archive = self.clf.get_archive()
         preds = self.clf.predict_archive(self.X)
         probs = self.clf.predict_proba_archive(self.X)
@@ -151,11 +180,10 @@ class TestFeatWrapper(unittest.TestCase):
 
     def test_lr_l1(self):
         """testing l1 penalized LR"""
-        self.clf.classification = True
         self.clf.ml = b'L1_LR'
-        self.clf.fit(self.X,np.array(self.y > np.median(self.y),dtype=np.int))
+        self.clf.fit(self.X,self.yc)
 
-        self.assertEqual(len(self.clf.predict(self.X)), len(self.y))
+        self.assertEqual(len(self.clf.predict(self.X)), len(self.yc))
 
 
 if __name__ == '__main__':

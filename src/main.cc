@@ -92,7 +92,7 @@ int main(int argc, char** argv){
         cout << "-isplit\tInternal slit for Feat's training procedure (0.75)\n";
         cout << "-f\tfeedback strength of ML on variation probabilities (0.5)\n";
         cout << "-log\tlog file name\n";
-        cout << "-n_threads\tmaximum number of threads\n";
+        cout << "-n_jobs\tmaximum number of threads\n";
         cout << "-ldata\tpath to longitudinal data file\n";
         cout << "-scorer\tscoring function [mse, zero_one, bal_zero_one, log, multi_log]\n"; 
         cout << "-bp\tbackpropagation iterations (zero)\n"; 
@@ -186,8 +186,8 @@ int main(int argc, char** argv){
         feat.set_use_batch();
         feat.set_batch_size(std::stoi(input.getCmdOption("-batch")));
     }
-    if(input.cmdOptionExists("-n_threads"))
-        feat.set_n_threads(std::stoi(input.getCmdOption("-n_threads")));
+    if(input.cmdOptionExists("-n_jobs"))
+        feat.set_n_jobs(std::stoi(input.getCmdOption("-n_jobs")));
     if(input.cmdOptionExists("-max_time"))
     {
         int time = std::stoi(input.getCmdOption("-max_time"));

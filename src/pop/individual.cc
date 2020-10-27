@@ -10,11 +10,18 @@ namespace Pop{
            
 Individual::Individual()
 {
-    complexity = 0; dim = 0; 
+    complexity = 0; 
+    dim = 0; 
     parent_id.clear(); 
     parent_id.push_back(-1); 
     set_id(-1);
     this->p.clear();
+    fitness = -1;
+    fitness_v = -1;
+    fairness = -1;
+    fairness_v = -1;
+    dcounter=-1;
+    crowd_dist = -1;
 }
 
 void Individual::initialize(const Parameters& params, bool random, int id)
@@ -913,8 +920,7 @@ void Individual::set_obj(const vector<string>& objectives)
         // condition number of Phi
         else if (n.compare("CN")==0)    
         {
-            CN = condition_number(Phi.transpose());
-            obj.push_back(CN);
+            obj.push_back(condition_number(Phi.transpose()));
         }
         // covariance structure of Phi
         else if (n.compare("corr")==0)    

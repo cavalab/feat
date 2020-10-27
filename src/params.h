@@ -72,7 +72,9 @@ struct Parameters
     vector<bool> protected_groups;  ///<protected attributes in X
     bool tune_initial; ///< tune initial ML model
     bool tune_final; ///< tune final ML model
-    
+    ///< string of comma-delimited operator names, used to choose functions
+    string fn_str;      
+
     struct BP 
     {
        int iters;
@@ -184,7 +186,7 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Parameters,
     verbosity,
     term_weights,    			    
     op_weights,    			    
-    functions,                       
+    fn_str,                       
     terminals,                       
     longitudinalMap,        
     max_depth,         			

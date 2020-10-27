@@ -402,11 +402,12 @@ void Parameters::set_functions(string fs)
      *
      */
 
+    this->fn_str = fs;
     fs += ',';          // add delimiter to end 
     string delim = ",";
     size_t pos = 0;
     string token;
-    functions.clear();
+    this->functions.clear();
     while ((pos = fs.find(delim)) != string::npos) 
     {
         token = fs.substr(0, pos);

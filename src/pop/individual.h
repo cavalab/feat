@@ -39,7 +39,6 @@ public:
     float fitness_v;   ///< aggregate validation fitness score
     float fairness;     ///< aggregate fairness score
     float fairness_v;   ///< aggregate validation fairness score
-    float CN;
     vector<float> w;   ///< weights from ML training on program output
     vector<float> p;   ///< probability of variation of subprograms
     unsigned int dim;  ///< dimensionality of individual
@@ -188,7 +187,6 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Individual,
         fitness_v,
         fairness,
         fairness_v,
-        CN,
         w,
         p,
         dim,

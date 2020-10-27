@@ -26,7 +26,7 @@ cdef extern from "feat.h" namespace "FT":
                bool erc, string obj,bool shuffle, 
                float split, float fb, string scorer, 
                string feature_names, bool backprop, int iters, float lr, 
-               int batch_size, int n_threads, bool hillclimb, string logfile, 
+               int batch_size, int n_jobs, bool hillclimb, string logfile, 
                int max_time, bool residual_xo, bool stagewise_xo, 
                bool stagewise_xo_tol, bool softmax_norm, int save_pop, 
                bool normalize, bool val_from_arch, bool corr_delete_mutate, 
@@ -115,8 +115,8 @@ cdef extern from "feat.h" namespace "FT":
         void set_lr(float)
         int get_batch_size()
         void set_batch_size(int)
-        int get_n_threads()
-        void set_n_threads(int)
+        int get_n_jobs()
+        void set_n_jobs(int)
         bool get_hillclimb()
         void set_hillclimb(bool)
         string get_logfile()        
@@ -156,6 +156,7 @@ cdef extern from "feat.h" namespace "FT":
         void save(string filename)
         void load_best_ind(string filename)
         void load_population(string filename)
+        bool fitted
 
 cdef class PyFeat:
     """Feature Engineering Automation Tool
@@ -230,7 +231,7 @@ cdef class PyFeat:
     batch_size: int, optional (default: 0)
         Number of samples to train on each generation. 0 means train on 
         all the samples.
-    n_threads: int, optional (default: 0)
+    n_jobs: int, optional (default: 0)
         Number of parallel threads to use. If 0, this will be 
         automatically determined by OMP. 
     hillclimb: boolean, optional (default: False)
@@ -279,7 +280,7 @@ cdef class PyFeat:
     def __cinit__(self, 
                   int pop_size=100, 
                   int gens=100, 
-                  string ml= "LinearRidgeRegression", 
+                  string ml= b"LinearRidgeRegression", 
                   bool classification=False, 
                   int verbosity=0, 
                   int max_stall=0, 
@@ -287,7 +288,7 @@ cdef class PyFeat:
                   string surv="nsga2", 
                   float cross_rate=0.5, 
                   float root_xo_rate=0.5, 
-                  string otype='a', 
+                  char otype='a', 
                   string functions="", 
                   unsigned int max_depth=3, 
                   unsigned int max_dim=10, 
@@ -300,9 +301,10 @@ cdef class PyFeat:
                   string scorer='', 
                   string feature_names="", 
                   bool backprop=False, 
-                  int iters=10, float lr=0.1, 
+                  int iters=10, 
+                  float lr=0.1, 
                   int batch_size=0, 
-                  int n_threads=0, 
+                  int n_jobs=0, 
                   bool hillclimb=False, 
                   string logfile="", 
                   int max_time=-1, 
@@ -318,21 +320,21 @@ cdef class PyFeat:
                   string protected_groups="", 
                   bool tune_initial=False, 
                   bool tune_final=True, 
-                  string starting_pop=""):
-        
-        cdef char otype_char
-        if ( len(otype) == 0):
-            otype_char = 'a' #Defaut Value
-        else:
-            otype_char = ord(otype)
-        self.ft = Feat(pop_size,gens,ml,classification, verbosity,max_stall,sel,
-                surv, cross_rate, root_xo_rate, otype_char, functions, 
-                max_depth, max_dim, random_state, erc, obj, shuffle, split, fb,
-                scorer, feature_names, backprop, iters, lr, batch_size, 
-                n_threads, hillclimb, logfile, max_time, residual_xo, 
-                stagewise_xo, stagewise_xo_tol, softmax_norm, save_pop, 
-                normalize, val_from_arch, corr_delete_mutate, simplify,
-                protected_groups, tune_initial, tune_final, starting_pop)
+                  string starting_pop=""
+                 ):
+        # if len(otype) > 1:
+        #     print('otype len is >1:',otype)
+        # cdef char otype_char = ord(otype)
+
+        self.ft = Feat(pop_size,gens,ml,classification, verbosity,max_stall,
+                       sel, surv, cross_rate, root_xo_rate, otype, 
+                       functions, max_depth, max_dim, random_state, erc, obj, 
+                       shuffle, split, fb, scorer, feature_names, backprop, 
+                       iters, lr, batch_size, n_jobs, hillclimb, logfile, 
+                       max_time, residual_xo, stagewise_xo, stagewise_xo_tol, 
+                       softmax_norm, save_pop, normalize, val_from_arch, 
+                       corr_delete_mutate, simplify, protected_groups, 
+                       tune_initial, tune_final, starting_pop)
 
     def _fit(self,np.ndarray X,np.ndarray y):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
@@ -459,8 +461,13 @@ cdef class PyFeat:
     def representation(self):
         return self.ft.get_representation().decode()
 
-    def _get_archive(self,justfront):
-        return self.ft.get_archive(justfront).decode()
+    def get_archive(self,justfront=False):
+        """Returns all the final representation equations in the archive"""
+        archive = []
+        str_arc = self.ft.get_archive(justfront).decode()
+        for model in str_arc.splitlines():
+            archive.append( json.loads(model))
+        return archive
 
     def get_model(self):
         return self.ft.get_model().decode()
@@ -480,37 +487,6 @@ cdef class PyFeat:
     def get_n_nodes(self):
         return self.ft.get_n_nodes()
         
-    @property
-    def stats(self):
-        return json.loads(self.ft.get_stats())
-        
-    # def get_timers(self):
-    #     return self.ft.get_stats_timers()
-        
-    # def get_min_losses(self):
-    #     return self.ft.get_min_losses()
-        
-    # def get_min_losses_val(self):
-    #     return self.ft.get_min_losses_val()
-        
-    # def get_med_scores(self):
-    #     return self.ft.get_med_scores()
-        
-    # def get_med_loss_vals(self):
-    #     return self.ft.get_med_loss_vals()
-        
-    # def get_med_size(self):
-    #     return self.ft.get_med_size()
-        
-    # def get_med_complexities(self):
-    #     return self.ft.get_med_complexities()
-        
-    # def get_med_num_params(self):
-    #     return self.ft.get_med_num_params()
-        
-    # def get_med_dim(self):
-    #     return self.ft.get_med_dim()
-   
     def get_archive_size(self):
         return self.ft.get_archive_size()
 
@@ -527,130 +503,16 @@ cdef class PyFeat:
     def _load_population(self, filename):
         self.ft.load_population(filename)
 
-    # def _clean(self, x, set_feature_names=False):
-    #     """Converts dataframe to array, optionally returning feature names"""
-    #     feature_names = ''.encode()
-    #     if type(x).__name__ == 'DataFrame':
-    #         if set_feature_names and len(list(x.columns)) == x.shape[1]:
-    #             self.feature_names = ','.join(x.columns).encode()
-    #             return x.values
-    #         else:
-    #             return x.values
-    #     elif type(x).__name__ == 'Series':
-    #         return x.values
-    #     else:
-    #         assert(type(x).__name__ == 'ndarray')
-    #         return x
+    # def _get_params():
+    #     return json.loads(self.ft.get_params())
 
-    # def fit(self,X,y,zfile=None,zids=None):
-    #     """Fit a model."""    
-    #     X = self._clean(X, set_feature_names=True)
-    #     y = self._clean(y)
-
-    #     # self._init_pyfeat()   
-        
-    #     if zfile:
-    #         zfile = zfile.encode() if isinstance(zfile,str) else zfile
-    #         self._fit_with_z(X,y,zfile,zids)
-    #     else:
-    #         self._fit(X,y)
-
-    #     self.update_stats()
-
-    #     return self
-
-    # def predict(self,X,zfile=None,zids=None):
-    #     """Predict on X."""
-    #     X = self._clean(X)
-    #     if zfile:
-    #         zfile = zfile.encode() if isinstance(zfile,str) else zfile
-    #         return self._predict_with_z(X,zfile,zids)
-    #     else:
-    #         return self._predict(X)
-
-    # def predict_archive(self,X,zfile=None,zids=None):
-    #     """Returns a list of dictionary predictions for all models."""
-    #     X = self._clean(X)
-
-    #     if zfile:
-    #         raise ImplementationError('longitudinal not implemented')
-    #         return 1
-
-    #     archive = self.get_archive(justfront=False)
-    #     preds = []
-    #     for ind in archive:
-    #         tmp = {}
-    #         tmp['id'] = ind['id']
-    #         tmp['y_pred'] = self._predict_archive(ind['id'], X) 
-    #         preds.append(tmp)
-
-    #     return preds
-
-    # def predict_proba_archive(self,X,zfile=None,zids=None):
-    #     """Returns a dictionary of prediction probabilities for all models."""
-    #     X = self._clean(X)
-    #     if zfile:
-    #         raise ImplementationError('longitudinal not implemented')
-    #         # zfile = zfile.encode() if isinstance(zfile,str) else zfile
-    #         # return self._predict_with_z(X,zfile,zids)
-    #         return 1
-
-    #     archive = self.get_archive()
-    #     probs = []
-    #     for ind in archive:
-    #         tmp = {}
-    #         tmp['id'] = ind['id']
-    #         tmp['y_proba'] = self._predict_proba_archive(ind['id'], X)
-    #         probs.append(tmp)
-
-    #     return probs
-
-    # def predict_proba(self,X,zfile=None,zids=None):
-    #     """Return probabilities of predictions for data X"""
-    #     X = self._clean(X)
-    #     if zfile:
-    #         zfile = zfile.encode() if isinstance(zfile,str) else zfile
-    #         tmp = self._predict_proba_with_z(X,zfile,zids)
-    #     else:
-    #         tmp = self._predict_proba(X)
-        
-    #     if len(tmp.shape)<2:
-    #             tmp  = np.vstack((1-tmp,tmp)).transpose()
-    #     return tmp         
-
-
-    # def transform(self,X,zfile=None,zids=None):
-    #     """Return the representation's transformation of X"""
-    #     X = self._clean(X)
-    #     if zfile:
-    #         zfile = zfile.encode() if isinstance(zfile,str) else zfile
-    #         return self._transform_with_z(X,zfile,zids)
-    #     else:
-    #         return self._transform(X)
-
-    # def fit_predict(self,X,y):
-    #     """Convenience method that runs fit(X,y) then predict(X)"""
-    #     self.fit(X,y)
-    #     result = self.predict(X)
-    #     return result
-
-    # def fit_transform(self,X,y):
-    #     """Convenience method that runs fit(X,y) then transform(X)"""
-    #     self.fit(X,y)
-    #     result = self.transform(X)
-    #     return result
-
-    # def score(self,X,y,zfile=None,zids=None):
-    #     """Returns a score for the predictions of Feat on X versus true 
-    #     labels y""" 
-    #     yhat = self.predict(X,zfile,zids).flatten()
-    #     if ( self.classification ):
-    #         return log_loss(y,yhat, labels=y)
-    #     else:
-    #         return mse(y,yhat)
     ###########################################################################
-    # setters and getters
+    # decorated property setters and getters
     ###########################################################################
+    @property
+    def stats_(self):
+        return json.loads(self.ft.get_stats())
+
     @property
     def pop_size(self):  
         return self.ft.get_pop_size()
@@ -723,7 +585,9 @@ cdef class PyFeat:
 
     @property
     def otype(self):  
-        return str(self.ft.get_otype())
+        cdef char otype = self.ft.get_otype()
+        return otype
+        # return str(self.ft.get_otype()).encode()
     @otype.setter
     def otype(self, value):
         self.ft.set_otype(ord(value))
@@ -834,11 +698,11 @@ cdef class PyFeat:
         self.ft.set_batch_size(value)
 
     @property
-    def n_threads(self):
-        return self.ft.get_n_threads()
-    @n_threads.setter
-    def n_threads(self, value):
-        self.ft.set_n_threads(value)
+    def n_jobs(self):
+        return self.ft.get_n_jobs()
+    @n_jobs.setter
+    def n_jobs(self, value):
+        self.ft.set_n_jobs(value)
 
     @property
     def hillclimb(self):
@@ -952,3 +816,53 @@ cdef class PyFeat:
     def starting_pop(self, value):
         self.ft.set_starting_pop(value)
 
+    @property
+    def fitted_(self):
+        return self.ft.fitted
+
+    def get_params(self, deep=False):
+        return {
+                'pop_size': self.pop_size, 
+                'gens': self.gens, 
+                'ml': self.ml,
+                'classification': self.classification,
+                'verbosity': self.verbosity,
+                'max_stall': self.max_stall,
+                'sel': self.sel,
+                'surv': self.surv,
+                'cross_rate': self.cross_rate,
+                'root_xo_rate': self.root_xo_rate,
+                'otype': self.otype,
+                'functions': self.functions,
+                'max_depth': self.max_depth,
+                'max_dim': self.max_dim,
+                'random_state': self.random_state,
+                'erc': self.erc,
+                'obj': self.obj,
+                'shuffle': self.shuffle,
+                'split': self.split,
+                'fb': self.fb,
+                'scorer': self.scorer,
+                'feature_names': self.feature_names,
+                'backprop': self.backprop,
+                'iters': self.iters,
+                'lr': self.lr,
+                'batch_size': self.batch_size,
+                'n_jobs': self.n_jobs,
+                'hillclimb': self.hillclimb,
+                'logfile': self.logfile,
+                'max_time': self.max_time,
+                'residual_xo': self.residual_xo,
+                'stagewise_xo': self.stagewise_xo,
+                'stagewise_xo_tol': self.stagewise_xo_tol,
+                'softmax_norm': self.softmax_norm,
+                'save_pop': self.save_pop,
+                'normalize': self.normalize,
+                'val_from_arch': self.val_from_arch,
+                'corr_delete_mutate': self.corr_delete_mutate,
+                'simplify': self.simplify,
+                'protected_groups': self.protected_groups,
+                'tune_initial': self.tune_initial,
+                'tune_final': self.tune_final,
+                'starting_pop': self.starting_pop,
+                }

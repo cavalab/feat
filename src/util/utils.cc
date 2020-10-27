@@ -232,41 +232,22 @@ ArrayXb isnan(const ArrayXf& x)
 
 }
 
-/* Defined in utils.h
-///template function to convert objects to string for logging
-template <typename T>
-string to_string(const T& value)
-{
-    std::stringstream ss;
-    ss << value;
-    return ss.str();
-}*/
 /// returns the condition number of a matrix.
 float condition_number(const MatrixXf& X)
 {
-    /* cout << "X (" << X.rows() << "x" << X.cols() << "): " << X.transpose() << "\n"; */
-    /* MatrixXf Y = X; */
-    /* try */
-    /* { */
-    /* JacobiSVD<MatrixXf> svd(Y); */
     BDCSVD<MatrixXf> svd(X);
-    /* cout << "JacobiSVD declared\n"; */
     float cond=MAX_FLT; 
-    /* cout << "running svals\n"; */
     ArrayXf svals = svd.singularValues();
-    /* cout << "svals: " << svals.transpose() << "\n"; */
     if (svals.size()>0)
     {
         cond= svals(0) / svals(svals.size()-1);
     }
-    /* cout << "CN: " + std::to_string(cond) + "\n"; */
+
+    if (std::isnan(cond) || std::isinf(cond))
+        return MAX_FLT;
+        
     return cond;
 
-    /* } */
-    /* catch (...) */
-    /* { */
-    return MAX_FLT;
-    /* } */
 }
 
 /// returns the pearson correlation coefficients of matrix.
@@ -274,17 +255,10 @@ MatrixXf corrcoef(const MatrixXf& X)
 { 
     MatrixXf centered = X.colwise() - X.rowwise().mean();
 
-    /* std::cout << "centered: " << centered.rows() << "x" << centered.cols() << ": " */ 
-    /*           << centered << "\n\n"; */
     MatrixXf cov = ( centered * centered.adjoint()) / float(X.cols() - 1);
-    /* std::cout << "cov: " << cov.rows() << "x" << cov.cols() << ": " << cov << "\n\n"; */
     VectorXf tmp = 1/cov.diagonal().array().sqrt();
     auto d = tmp.asDiagonal();
-    /* std::cout << "1/sqrt(diag(cov)): " << d.rows() << "x" << d.cols() << ": " */ 
-    /*           << d.diagonal() << "\n"; */
     MatrixXf corrcoef = d * cov * d;
-    /* std::cout << "cov/d: " << corrcoef.rows() << "x" << corrcoef.cols() << ": " */ 
-    /*           << corrcoef << "\n"; */
     return corrcoef;
 }
 

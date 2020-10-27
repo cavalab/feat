@@ -27,7 +27,7 @@ Feat::Feat(int pop_size, int gens, string ml,
        unsigned int max_depth, unsigned int max_dim, int random_state, 
        bool erc, string obj, bool shuffle, 
        float split, float fb, string scorer, string feature_names,
-       bool backprop,int iters, float lr, int batch_size, int n_threads,
+       bool backprop,int iters, float lr, int batch_size, int n_jobs,
        bool hillclimb, string logfile, int max_time,  bool residual_xo, 
        bool stagewise_xo, bool stagewise_xo_tol,
        bool softmax_norm, int save_pop, bool normalize,
@@ -52,8 +52,8 @@ Feat::Feat(int pop_size, int gens, string ml,
           survival(surv),
           random_state(random_state)
 {
-    if (n_threads!=0)
-        omp_set_num_threads(n_threads);
+    if (n_jobs!=0)
+        omp_set_num_threads(n_jobs);
     r.set_seed(random_state);
     str_dim = "";
     set_logfile(logfile);
@@ -64,6 +64,7 @@ Feat::Feat(int pop_size, int gens, string ml,
     this->N = Normalizer(false);
     params.set_protected_groups(protected_groups);
     arch.set_objectives(params.objectives);
+    fitted=false;
 }
 
 
@@ -181,7 +182,7 @@ void Feat::set_batch_size(int bs)
 }
  
 ///set number of threads
-void Feat::set_n_threads(unsigned t){ omp_set_num_threads(t); }
+void Feat::set_n_jobs(unsigned t){ omp_set_num_threads(t); }
 
 void Feat::set_max_time(int time){ params.max_time = time; }
 
@@ -689,6 +690,8 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     
     if (log.is_open())
         log.close();
+
+    this->fitted = true;
 }
 
 void Feat::run_generation(unsigned int g,
