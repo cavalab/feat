@@ -277,6 +277,8 @@ cdef class PyFeat:
         Provide a starting pop in json format. 
     """
     cdef Feat ft  # hold a c++ instance which we're wrapping
+    #TODO: make string types unicode strings (aka str), and explicitly encode
+    # them when passed to Feat, and decode them in getter functions.
     def __cinit__(self, 
                   int pop_size=100, 
                   int gens=100, 
@@ -284,7 +286,7 @@ cdef class PyFeat:
                   bool classification=False, 
                   int verbosity=0, 
                   int max_stall=0, 
-                  string sel="lexicase", 
+                  str sel="lexicase", 
                   string surv="nsga2", 
                   float cross_rate=0.5, 
                   float root_xo_rate=0.5, 
@@ -327,7 +329,7 @@ cdef class PyFeat:
         # cdef char otype_char = ord(otype)
 
         self.ft = Feat(pop_size,gens,ml,classification, verbosity,max_stall,
-                       sel, surv, cross_rate, root_xo_rate, otype, 
+                       sel.encode(), surv, cross_rate, root_xo_rate, otype, 
                        functions, max_depth, max_dim, random_state, erc, obj, 
                        shuffle, split, fb, scorer, feature_names, backprop, 
                        iters, lr, batch_size, n_jobs, hillclimb, logfile, 
