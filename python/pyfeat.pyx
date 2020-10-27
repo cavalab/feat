@@ -157,7 +157,6 @@ cdef extern from "feat.h" namespace "FT":
         void load_best_ind(string filename)
         void load_population(string filename)
 
-#@cython.auto_pickle(True)
 cdef class PyFeat:
     """Feature Engineering Automation Tool
 

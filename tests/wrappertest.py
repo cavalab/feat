@@ -116,15 +116,21 @@ class TestFeatWrapper(unittest.TestCase):
         clf.save('Feat_tmp.json')
 
         loaded_clf = Feat().load('Feat_tmp.json')
-        print('loaded_clf:',type(loaded_clf).__name__)
+        # print('loaded_clf:',type(loaded_clf).__name__)
         loaded_pred = loaded_clf.predict(self.X)
-        print('initial pred:',initial_pred)
-        print('loaded pred:',loaded_pred)
-        assert(all([ip==lp for ip,lp in zip(initial_pred, loaded_pred)]))
+        # print('initial pred:',initial_pred)
+        # print('loaded pred:',loaded_pred)
+        diff = np.abs(initial_pred-loaded_pred)
+        for i,d in enumerate(diff):
+            if d > 0.0001:
+                print('pred:',initial_pred[i],'loaded:',loaded_pred[i],
+                      'diff:',d)
+            assert(d < 0.0001)
+        # assert(all([ip==lp for ip,lp in zip(initial_pred, loaded_pred)]))
 
         assert(clf.representation() == loaded_clf.representation())
         assert(clf.get_model() == loaded_clf.get_model())
-        assert(clf.get_coefs() == loaded_clf.get_coefs())
+        assert((clf.get_coefs() == loaded_clf.get_coefs()).all())
         assert(loaded_clf.get_params() == self.clf.get_params())
         loaded_clf.fit(self.X, self.y)
 
