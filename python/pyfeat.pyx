@@ -159,128 +159,12 @@ cdef extern from "feat.h" namespace "FT":
         bool fitted
 
 cdef class PyFeat:
-    """Feature Engineering Automation Tool
-
-    Parameters
-    ----------
-    pop_size: int, optional (default: 100)
-        Size of the population of models
-    gens: int, optional (default: 100)
-        Number of iterations to train for
-    ml: str, optional (default: "LinearRidgeRegression")
-        ML pairing. Choices: LinearRidgeRegression, Lasso, L1_LR, L2_LR
-    classification: boolean, optional (default: False)
-        Whether to do classification instead of regression. 
-    verbosity: int, optional (default: 0)
-        How much to print out (0, 1, 2)
-    max_stall: int, optional (default: 0)
-        How many generations to continue after the validation loss has
-        stalled. If 0, not used.
-    sel: str, optional (default: "lexicase")
-        Selection algorithm to use.   
-    surv: str, optional (default: "nsga2")
-        Survival algorithm to use. 
-    cross_rate: float, optional (default: 0.5)
-        How often to do crossover for variation versus mutation. 
-    root_xo_rate: float, optional (default: 0.5)
-        When performing crossover, how often to choose from the roots of 
-        the trees, rather than within the tree. Root crossover essentially
-        swaps features in models.
-    otype: string, optional (default: 'a')
-        Feature output types:
-        'a': all
-        'b': boolean only
-        'f': floating point only
-    functions: string, optional (default: "")
-        What operators to use to build features. If functions="", all the
-        available functions are used. 
-    max_depth: int, optional (default: 3)
-        Maximum depth of a feature's tree representation.
-    max_dim: int, optional (default: 10)
-        Maximum dimension of a model. The dimension of a model is how many
-        independent features it has. Controls the number of trees in each 
-        individual.
-    random_state: int, optional (default: 0)
-        Random seed.
-    erc: boolean, optional (default: False)
-        If true, ephemeral random constants are included as nodes in trees.
-    obj: str, optional (default: "fitness,complexity")
-        Objectives to use for multi-objective optimization.
-    shuffle: boolean, optional (default: True)
-        Whether to shuffle the training data before beginning training.
-    split: float, optional (default: 0.75)
-        The internal fraction of training data to use. The validation fold
-        is then 1-split fraction of the data. 
-    fb: float, optional (default: 0.5)
-        Controls the amount of feedback from the ML weights used during 
-        variation. Higher values make variation less random.
-    scorer: str, optional (default: '')
-        Scoring function to use internally. 
-    feature_names: str, optional (default: '')
-        Optionally provide comma-separated feature names. Should be equal
-        to the number of features in your data. This will be set 
-        automatically if a Pandas dataframe is passed to fit(). 
-    backprop: boolean, optional (default: False)
-        Perform gradient descent on feature weights using backpropagation.
-    iters: int, optional (default: 10)
-        Controls the number of iterations of backprop as well as 
-        hillclimbing for learning weights.
-    lr: float, optional (default: 0.1)
-        Learning rate used for gradient descent. This the initial rate, 
-        and is scheduled to decrease exponentially with generations. 
-    batch_size: int, optional (default: 0)
-        Number of samples to train on each generation. 0 means train on 
-        all the samples.
-    n_jobs: int, optional (default: 0)
-        Number of parallel threads to use. If 0, this will be 
-        automatically determined by OMP. 
-    hillclimb: boolean, optional (default: False)
-        Applies stochastic hillclimbing to feature weights. 
-    logfile: str, optional (default: "")
-        If specified, spits statistics into a logfile. "" means don't log.
-    max_time: int, optional (default: -1)
-        Maximum time terminational criterion in seconds. If -1, not used.
-    residual_xo: boolean, optional (default: False)
-        Use residual crossover. 
-    stagewise_xo: boolean, optional (default: False)
-        Use stagewise crossover.
-    stagewise_xo_tol: boolean, optional (default:False)
-        Terminates stagewise crossover based on an error value rather than
-        dimensionality. 
-    softmax_norm: boolean, optional (default: False)
-        Uses softmax normalization of probabilities of variation across
-        the features. 
-    save_pop: int, optional (default: 0)
-        Prints the population of models. 0: don't print; 1: print final 
-        population; 2: print every generation. 
-    normalize: boolean, optional (default: True)
-        Normalizes the floating point input variables using z-scores. 
-    val_from_arch: boolean, optional (default: True)
-        Validates the final model using the archive rather than the whole 
-        population.
-    corr_delete_mutate: boolean, optional (default: False)
-        Replaces root deletion mutation with a deterministic deletion 
-        operator that deletes the feature with highest collinearity. 
-    simplify: float, optional (default: 0)
-        Runs post-run simplification to try to shrink the final model 
-        without changing its output more than the simplify tolerance.
-        This tolerance is the norm of the difference in outputs, divided
-        by the norm of the output. If simplify=0, it is ignored. 
-    protected_groups: list, optional (default: [])
-        Defines protected attributes in the data. Uses for adding 
-        fairness constraints. 
-    tune_initial: boolean, optional (default: False)
-        Tune the initial linear model's penalization parameter. 
-    tune_final: boolean, optional (default: True)
-        Tune the final linear model's penalization parameter. 
-    starting_pop: str, optional (default: "")
-        Provide a starting pop in json format. 
-    """
+    
     cdef Feat ft  # hold a c++ instance which we're wrapping
-    def __init__(self, **kwargs):
+    def __cinit__(self, **kwargs):
 
         self.ft = Feat()
-        self._set_params(kwargs)
+        self._set_params(**kwargs)
 
     def _fit(self,np.ndarray X,np.ndarray y):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
@@ -448,14 +332,20 @@ cdef class PyFeat:
     def _load_population(self, filename):
         self.ft.load_population(filename)
 
-    def _set_params(self, params):
+    def _set_params(self, **params):
         print('_set_params called with',params)
         for k,v in params.items():
             setattr(self, k, v)
 
     def _get_params(self):
-        property_names=[p for p in dir(self.__class__) if
-                        isinstance(getattr(self,p),property)]
+        property_names=[]
+        for p in dir(self.__class__):
+            if p.startswith('__') or p.endswith('_'): continue
+            # this line avoids BaseEstimator param '_repr_html_', that is not 
+            # defined and also cannot be caught for some reason
+            if p == '_repr_html_': continue
+            if isinstance(getattr(self,p),property):
+                property_names.append(p)
         return {p:getattr(self,p) for p in property_names}
         # return json.loads(self.ft.get_params())
 
@@ -463,7 +353,7 @@ cdef class PyFeat:
     # decorated property setters and getters
     ###########################################################################
     @property
-    def _stats_(self):
+    def stats_(self):
         return json.loads(self.ft.get_stats())
 
     @property
@@ -588,6 +478,7 @@ cdef class PyFeat:
         return self.ft.get_obj().decode()
     @_obj.setter
     def _obj(self, value):
+        if isinstance(value,str): value = value.encode() 
         self.ft.set_obj(value)
 
     @property
@@ -774,55 +665,9 @@ cdef class PyFeat:
         return self.ft.get_starting_pop().decode()
     @_starting_pop.setter
     def _starting_pop(self, value):
+        if isinstance(value,str): value = value.encode() 
         self.ft.set_starting_pop(value)
 
     @property
-    def fitted_(self):
-        return self._fitted_
-
-        # return self.__dict__
-        # return {
-        #         'pop_size': self.pop_size, 
-        #         'gens': self.gens, 
-        #         'ml': self.ml,
-        #         'classification': self.classification,
-        #         'verbosity': self.verbosity,
-        #         'max_stall': self.max_stall,
-        #         'sel': self.sel,
-        #         'surv': self.surv,
-        #         'cross_rate': self.cross_rate,
-        #         'root_xo_rate': self.root_xo_rate,
-        #         'otype': self.otype,
-        #         'functions': self.functions,
-        #         'max_depth': self.max_depth,
-        #         'max_dim': self.max_dim,
-        #         'random_state': self.random_state,
-        #         'erc': self.erc,
-        #         'obj': self.obj,
-        #         'shuffle': self.shuffle,
-        #         'split': self.split,
-        #         'fb': self.fb,
-        #         'scorer': self.scorer,
-        #         'feature_names': self.feature_names,
-        #         'backprop': self.backprop,
-        #         'iters': self.iters,
-        #         'lr': self.lr,
-        #         'batch_size': self.batch_size,
-        #         'n_jobs': self.n_jobs,
-        #         'hillclimb': self.hillclimb,
-        #         'logfile': self.logfile,
-        #         'max_time': self.max_time,
-        #         'residual_xo': self.residual_xo,
-        #         'stagewise_xo': self.stagewise_xo,
-        #         'stagewise_xo_tol': self.stagewise_xo_tol,
-        #         'softmax_norm': self.softmax_norm,
-        #         'save_pop': self.save_pop,
-        #         'normalize': self.normalize,
-        #         'val_from_arch': self.val_from_arch,
-        #         'corr_delete_mutate': self.corr_delete_mutate,
-        #         'simplify': self.simplify,
-        #         'protected_groups': self.protected_groups,
-        #         'tune_initial': self.tune_initial,
-        #         'tune_final': self.tune_final,
-        #         'starting_pop': self.starting_pop,
-        #         }
+    def _fitted_(self):
+        return self.ft.fitted

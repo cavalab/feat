@@ -47,12 +47,6 @@ Parameters::Parameters(int pop_size, int gens, string ml, bool classification,
         tune_final(tune_fin)
     {
         set_verbosity(verbosity);
-        if (fs.empty())
-            fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
-                  "logit,tanh,gauss,relu,"
-                  "split,split_c,fuzzy_split,fuzzy_split_c,"
-                  "fuzzy_fixed_split,fuzzy_fixed_split_c,"
-                  "b2f,c2f,and,or,not,xor,=,<,<=,>,>=,if,ite";
             
         set_functions(fs);
         set_objectives(obj);
@@ -74,7 +68,7 @@ Parameters::~Parameters(){}
  */
 void Parameters::init(const MatrixXf& X, const VectorXf& y, string scorer)
 {
-    if (!ml.compare("LinearRidgeRegression") && classification)
+    if (ml == "LinearRidgeRegression" && classification)
     {
         logger.log("Setting ML type to LR",2);
         ml = "LR";            
@@ -402,7 +396,12 @@ void Parameters::set_functions(string fs)
      *
      */
 
-    this->fn_str = fs;
+    if (fs.empty())
+        fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
+              "logit,tanh,gauss,relu,"
+              "split,split_c,fuzzy_split,fuzzy_split_c,"
+              "fuzzy_fixed_split,fuzzy_fixed_split_c,"
+              "b2f,c2f,and,or,not,xor,=,<,<=,>,>=,if,ite";
     fs += ',';          // add delimiter to end 
     string delim = ",";
     size_t pos = 0;

@@ -159,7 +159,7 @@ void Feat::set_fb(float fb){ params.feedback = fb;}
 void Feat::set_logfile(string s){logfile = s;}
 
 ///set scoring function
-void Feat::set_scorer(string s){scorer=s; params.scorer=s;}
+void Feat::set_scorer(string s){scorer=s;}
 string Feat::get_scorer(){return scorer;}
 
 /// set constant optimization options

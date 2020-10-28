@@ -17,7 +17,123 @@ import json
 
 
 class Feat(PyFeat, BaseEstimator):
+    """Feature Engineering Automation Tool
 
+    Parameters
+    ----------
+    pop_size: int, optional (default: 100)
+        Size of the population of models
+    gens: int, optional (default: 100)
+        Number of iterations to train for
+    ml: str, optional (default: "LinearRidgeRegression")
+        ML pairing. Choices: LinearRidgeRegression, Lasso, L1_LR, L2_LR
+    classification: boolean, optional (default: False)
+        Whether to do classification instead of regression. 
+    verbosity: int, optional (default: 0)
+        How much to print out (0, 1, 2)
+    max_stall: int, optional (default: 0)
+        How many generations to continue after the validation loss has
+        stalled. If 0, not used.
+    sel: str, optional (default: "lexicase")
+        Selection algorithm to use.   
+    surv: str, optional (default: "nsga2")
+        Survival algorithm to use. 
+    cross_rate: float, optional (default: 0.5)
+        How often to do crossover for variation versus mutation. 
+    root_xo_rate: float, optional (default: 0.5)
+        When performing crossover, how often to choose from the roots of 
+        the trees, rather than within the tree. Root crossover essentially
+        swaps features in models.
+    otype: string, optional (default: 'a')
+        Feature output types:
+        'a': all
+        'b': boolean only
+        'f': floating point only
+    functions: string, optional (default: "")
+        What operators to use to build features. If functions="", all the
+        available functions are used. 
+    max_depth: int, optional (default: 3)
+        Maximum depth of a feature's tree representation.
+    max_dim: int, optional (default: 10)
+        Maximum dimension of a model. The dimension of a model is how many
+        independent features it has. Controls the number of trees in each 
+        individual.
+    random_state: int, optional (default: 0)
+        Random seed.
+    erc: boolean, optional (default: False)
+        If true, ephemeral random constants are included as nodes in trees.
+    obj: str, optional (default: "fitness,complexity")
+        Objectives to use for multi-objective optimization.
+    shuffle: boolean, optional (default: True)
+        Whether to shuffle the training data before beginning training.
+    split: float, optional (default: 0.75)
+        The internal fraction of training data to use. The validation fold
+        is then 1-split fraction of the data. 
+    fb: float, optional (default: 0.5)
+        Controls the amount of feedback from the ML weights used during 
+        variation. Higher values make variation less random.
+    scorer: str, optional (default: '')
+        Scoring function to use internally. 
+    feature_names: str, optional (default: '')
+        Optionally provide comma-separated feature names. Should be equal
+        to the number of features in your data. This will be set 
+        automatically if a Pandas dataframe is passed to fit(). 
+    backprop: boolean, optional (default: False)
+        Perform gradient descent on feature weights using backpropagation.
+    iters: int, optional (default: 10)
+        Controls the number of iterations of backprop as well as 
+        hillclimbing for learning weights.
+    lr: float, optional (default: 0.1)
+        Learning rate used for gradient descent. This the initial rate, 
+        and is scheduled to decrease exponentially with generations. 
+    batch_size: int, optional (default: 0)
+        Number of samples to train on each generation. 0 means train on 
+        all the samples.
+    n_jobs: int, optional (default: 0)
+        Number of parallel threads to use. If 0, this will be 
+        automatically determined by OMP. 
+    hillclimb: boolean, optional (default: False)
+        Applies stochastic hillclimbing to feature weights. 
+    logfile: str, optional (default: "")
+        If specified, spits statistics into a logfile. "" means don't log.
+    max_time: int, optional (default: -1)
+        Maximum time terminational criterion in seconds. If -1, not used.
+    residual_xo: boolean, optional (default: False)
+        Use residual crossover. 
+    stagewise_xo: boolean, optional (default: False)
+        Use stagewise crossover.
+    stagewise_xo_tol: boolean, optional (default:False)
+        Terminates stagewise crossover based on an error value rather than
+        dimensionality. 
+    softmax_norm: boolean, optional (default: False)
+        Uses softmax normalization of probabilities of variation across
+        the features. 
+    save_pop: int, optional (default: 0)
+        Prints the population of models. 0: don't print; 1: print final 
+        population; 2: print every generation. 
+    normalize: boolean, optional (default: True)
+        Normalizes the floating point input variables using z-scores. 
+    val_from_arch: boolean, optional (default: True)
+        Validates the final model using the archive rather than the whole 
+        population.
+    corr_delete_mutate: boolean, optional (default: False)
+        Replaces root deletion mutation with a deterministic deletion 
+        operator that deletes the feature with highest collinearity. 
+    simplify: float, optional (default: 0)
+        Runs post-run simplification to try to shrink the final model 
+        without changing its output more than the simplify tolerance.
+        This tolerance is the norm of the difference in outputs, divided
+        by the norm of the output. If simplify=0, it is ignored. 
+    protected_groups: list, optional (default: [])
+        Defines protected attributes in the data. Uses for adding 
+        fairness constraints. 
+    tune_initial: boolean, optional (default: False)
+        Tune the initial linear model's penalization parameter. 
+    tune_final: boolean, optional (default: True)
+        Tune the final linear model's penalization parameter. 
+    starting_pop: str, optional (default: "")
+        Provide a starting pop in json format. 
+    """
     def __init__(self, 
                  pop_size=100, 
                  gens=100, 
@@ -62,7 +178,7 @@ class Feat(PyFeat, BaseEstimator):
                  tune_initial=False, 
                  tune_final=True, 
                  starting_pop="",
-                )
+                ):
         self.pop_size=pop_size
         self.gens=gens
         self.ml=ml
@@ -107,22 +223,24 @@ class Feat(PyFeat, BaseEstimator):
         self.tune_final=tune_final
         self.starting_pop=starting_pop
 
-        self._set_params(self.get_params())
+        #TODO: figure out correct setting of scorer
+        # self._set_params(**{'_'+k:v for k,v in self.get_params().items()})
+        # self.set_params(**{k[1:]:v for k,v in self._get_params().items()})
    
-    def set_params(self, params):
+    def set_params(self, **params):
         for k,v in params.items():
             setattr(self,k,v)
 
     def load(self, filename):
         self._load(filename)
-        self.set_params({k[1:]:v for k,v in self._get_params().items()})
+        self.set_params(**{k[1:]:v for k,v in self._get_params().items()})
 
     def get_params(self, deep=False):
         return self.__dict__
 
     def fit(self,X,y,zfile=None,zids=None):
         """Fit a model."""    
-        self._set_params({'_'+k:v for k,v in self.get_params().items()})
+        self._set_params(**{'_'+k:v for k,v in self.get_params().items()})
 
         X = self._clean(X, set_feature_names=True)
         y = self._clean(y)
@@ -136,7 +254,7 @@ class Feat(PyFeat, BaseEstimator):
 
     def predict(self,X,zfile=None,zids=None):
         """Predict on X."""
-        if not self.fitted_:
+        if not self._fitted_:
             raise ValueError("Call fit before calling predict.")
 
 
@@ -148,7 +266,7 @@ class Feat(PyFeat, BaseEstimator):
 
     def predict_archive(self,X,zfile=None,zids=None):
         """Returns a list of dictionary predictions for all models."""
-        if not self.fitted_:
+        if not self._fitted_:
             raise ValueError("Call fit before calling predict.")
 
         X = self._clean(X)
@@ -170,7 +288,7 @@ class Feat(PyFeat, BaseEstimator):
 
     def transform(self,X,zfile=None,zids=None):
         """Return the representation's transformation of X"""
-        if not self.fitted_:
+        if not self._fitted_:
             raise ValueError("Call fit before calling predict.")
 
         X = self._clean(X)
@@ -243,7 +361,7 @@ class Feat(PyFeat, BaseEstimator):
 
     def predict_proba(self,X,zfile=None,zids=None):
         """Return probabilities of predictions for data X"""
-        if not self.fitted_:
+        if not self._fitted_:
             raise ValueError("Call fit before calling predict.")
 
         X = self._clean(X)
@@ -258,7 +376,7 @@ class Feat(PyFeat, BaseEstimator):
 
     def predict_proba_archive(self,X,zfile=None,zids=None):
         """Returns a dictionary of prediction probabilities for all models."""
-        if not self.fitted_:
+        if not self._fitted_:
             raise ValueError("Call fit before calling predict.")
 
         X = self._clean(X)
@@ -276,314 +394,3 @@ class Feat(PyFeat, BaseEstimator):
             probs.append(tmp)
 
         return probs
-    ###########################################################################
-    # decorated property setters and getters
-    ############################################################################
-    #@property
-    #def stats_(self):
-    #    return self._stats_ 
-
-    #@property
-    #def pop_size(self):  
-    #    return self._pop_size
-    #@pop_size.setter
-    #def pop_size(self, value):
-    #    self._pop_size = value
-
-    #@property
-    #def gens(self):  
-    #    return self._gens
-    #@gens.setter
-    #def gens(self, value):
-    #    self._gens = value
-
-    #@property
-    #def ml(self): 
-    #    return self._ml
-    #@ml.setter
-    #def ml(self, value):
-    #    self._ml = value 
-
-    #@property
-    #def classification(self):  
-    #    return self._classification
-    #@classification.setter
-    #def classification(self, value):
-    #    self._classification = value
-
-    #@property
-    #def verbosity(self):  
-    #    return self._verbosity
-    #@verbosity.setter
-    #def verbosity(self, value):
-    #    self._verbosity = value
-
-    #@property
-    #def max_stall(self):
-    #    return self._max_stall
-    #@max_stall.setter
-    #def max_stall(self, value):
-    #    self._max_stall = value
-
-    #@property
-    #def sel(self):  
-    #    return self._sel
-    #@sel.setter
-    #def sel(self, value):
-    #    self._sel = value
-
-    #@property
-    #def surv(self):  
-    #    return self._surv
-    #@surv.setter
-    #def surv(self, value):
-    #    self._surv = value
-
-    #@property
-    #def cross_rate(self): 
-    #    return self._cross_rate
-    #@cross_rate.setter
-    #def cross_rate(self, value):
-    #    self._cross_rate = value
-
-    #@property
-    #def root_xo_rate(self):
-    #    return self._root_xo_rate
-    #@root_xo_rate.setter
-    #def root_xo_rate(self, value):
-    #    self._root_xo_rate = value
-
-    #@property
-    #def otype(self):  
-    #    return self._otype
-    #@otype.setter
-    #def otype(self, value):
-    #    self._otype = value
-
-    #@property
-    #def functions(self): 
-    #    return self._functions
-    #@functions.setter
-    #def functions(self, value):
-    #    self._functions = value
-
-    #@property
-    #def max_depth(self):   
-    #    return self._max_depth
-    #@max_depth.setter
-    #def max_depth(self, value):
-    #    self._max_depth = value
-
-    #@property
-    #def max_dim(self):  
-    #    return self._max_dim
-    #@max_dim.setter
-    #def max_dim(self, value):
-    #    self._max_dim = value
-
-    #@property
-    #def random_state(self): 
-    #    return self._random_state
-    #@random_state.setter
-    #def random_state(self, value):
-    #    self._random_state = value
-
-    #@property
-    #def erc(self):  
-    #    return self._erc
-    #@erc.setter
-    #def erc(self, value):
-    #    self._erc = value
-
-    #@property
-    #def obj(self): 
-    #    return self._obj
-    #@obj.setter
-    #def obj(self, value):
-    #    self._obj = value
-
-    #@property
-    #def shuffle(self):  
-    #    return self._shuffle
-    #@shuffle.setter
-    #def shuffle(self, value):
-    #    self._shuffle = value
-
-    #@property
-    #def split(self):  
-    #    return self._split
-    #@split.setter
-    #def split(self, value):
-    #    self._split = value
-
-    #@property
-    #def fb(self):
-    #    return self._fb
-    #@fb.setter
-    #def fb(self, value):
-    #    self._fb = value
-
-    #@property
-    #def scorer(self):
-    #    return self._scorer
-    #@scorer.setter
-    #def scorer(self, value):
-    #    self._scorer = value
-
-    #@property
-    #def feature_names(self):
-    #    return self._feature_names
-    #@feature_names.setter
-    #def feature_names(self, value):
-    #    self._feature_names = value
-
-    #@property
-    #def backprop(self):
-    #    return self._backprop
-    #@backprop.setter
-    #def backprop(self, value):
-    #    self._backprop = value
-
-    #@property
-    #def iters(self):
-    #    return self._iters
-    #@iters.setter
-    #def iters(self, value):
-    #    self._iters = value
-
-    #@property
-    #def lr(self):
-    #    return self._lr
-    #@lr.setter
-    #def lr(self, value):
-    #    self._lr = value
-
-    #@property
-    #def batch_size(self):
-    #    return self._batch_size
-    #@batch_size.setter
-    #def batch_size(self, value):
-    #    self._batch_size = value
-
-    #@property
-    #def n_jobs(self):
-    #    return self._n_jobs
-    #@n_jobs.setter
-    #def n_jobs(self, value):
-    #    self._n_jobs = value
-
-    #@property
-    #def hillclimb(self):
-    #    return self._hillclimb
-    #@hillclimb.setter
-    #def hillclimb(self, value):
-    #    self._hillclimb = value
-
-    #@property
-    #def logfile(self):
-    #    return self._logfile
-    #@logfile.setter
-    #def logfile(self, value):
-    #    self._logfile = value
-
-    #@property
-    #def max_time(self):
-    #    return self._max_time
-    #@max_time.setter
-    #def max_time(self, value):
-    #    self._max_time = value
-
-    #@property
-    #def residual_xo(self):
-    #    return self._residual_xo
-    #@residual_xo.setter
-    #def residual_xo(self, value):
-    #    self._residual_xo = value
-
-    #@property
-    #def stagewise_xo(self):
-    #    return self._stagewise_xo
-    #@stagewise_xo.setter
-    #def stagewise_xo(self, value):
-    #    self._stagewise_xo = value
-
-    #@property
-    #def stagewise_xo_tol(self):
-    #    return self._stagewise_xo_tol
-    #@stagewise_xo_tol.setter
-    #def stagewise_xo_tol(self, value):
-    #    self._stagewise_xo_tol = value
-
-    #@property
-    #def softmax_norm(self):
-    #    return self._softmax_norm
-    #@softmax_norm.setter
-    #def softmax_norm(self, value):
-    #    self._softmax_norm = value
-
-    #@property
-    #def save_pop(self):
-    #    return self._save_pop
-    #@save_pop.setter
-    #def save_pop(self, value):
-    #    self._save_pop = value
-
-    #@property
-    #def normalize(self):
-    #    return self._normalize
-    #@normalize.setter
-    #def normalize(self, value):
-    #    self._normalize = value
-
-    #@property
-    #def val_from_arch(self):
-    #    return self._val_from_arch
-    #@val_from_arch.setter
-    #def val_from_arch(self, value):
-    #    self._val_from_arch = value
-
-    #@property
-    #def corr_delete_mutate(self):
-    #    return self._corr_delete_mutate
-    #@corr_delete_mutate.setter
-    #def corr_delete_mutate(self, value):
-    #    self._corr_delete_mutate = value
-
-    #@property
-    #def simplify(self):
-    #    return self._simplify
-    #@simplify.setter
-    #def simplify(self, value):
-    #    self._simplify = value
-
-    #@property
-    #def protected_groups(self):
-    #    return self._protected_groups
-    #@protected_groups.setter
-    #def protected_groups(self, value):
-    #    self._protected_groups = value
-
-    #@property
-    #def tune_initial(self):
-    #    return self._tune_initial
-    #@tune_initial.setter
-    #def tune_initial(self, value):
-    #    self._tune_initial = value
-
-    #@property
-    #def tune_final(self): 
-    #    return self._tune_final
-    #@tune_final.setter
-    #def tune_final(self, value):
-    #    self._tune_final = value
-
-    #@property
-    #def starting_pop(self):
-    #    return self._starting_pop
-    #@starting_pop.setter
-    #def starting_pop(self, value):
-    #    self._starting_pop = value
-
-    #@property
-    #def fitted_(self):
-    #    return self._fitted_
