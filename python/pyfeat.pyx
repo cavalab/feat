@@ -277,8 +277,7 @@ cdef class PyFeat:
         Provide a starting pop in json format. 
     """
     cdef Feat ft  # hold a c++ instance which we're wrapping
-    cdef dict __dict__
-    def __init__(self, **kwargs
+    def __cinit__(self, **kwargs
                   # int pop_size=100, 
                   # int gens=100, 
                   # str ml= "LinearRidgeRegression", 
@@ -325,8 +324,6 @@ cdef class PyFeat:
                  ):
 
         self.ft = Feat()
-        for k,v in kwargs.items():
-            setattr(self, k, v)
                        # pop_size,
                        # gens,
                        # ml.encode(),
@@ -546,410 +543,326 @@ cdef class PyFeat:
     # decorated property setters and getters
     ###########################################################################
     @property
-    def stats_(self):
-        self._stats_ = json.loads(self.ft.get_stats())
-        return self._stats_ 
+    def _stats_(self):
+        return json.loads(self.ft.get_stats())
 
     @property
-    def pop_size(self):  
-        self._pop_size = self.ft.get_pop_size()
-        return self._pop_size
-    @pop_size.setter
-    def pop_size(self, value):
-        self._pop_size = value
+    def _pop_size(self):  
+        return self.ft.get_pop_size()
+    @_pop_size.setter
+    def _pop_size(self, value):
         self.ft.set_pop_size(value)
 
     @property
-    def gens(self):  
-        self._gens = self.ft.get_gens()
-        return self._gens
-    @gens.setter
-    def gens(self, value):
-        self._gens = value
+    def _gens(self):  
+        return self.ft.get_gens()
+    @_gens.setter
+    def _gens(self, value):
         self.ft.set_gens(value)
 
     @property
-    def ml(self): 
-        self._ml = self.ft.get_ml().decode()
-        return self._ml
-    @ml.setter
-    def ml(self, value):
-        self._ml = value 
+    def _ml(self): 
+        return self.ft.get_ml().decode()
+    @_ml.setter
+    def _ml(self, value):
         if isinstance(value,str): value = value.encode() 
         self.ft.set_ml(value)
 
     @property
-    def classification(self):  
-        self._classification = self.ft.get_classification()
-        return self._classification
-    @classification.setter
-    def classification(self, value):
-        self._classification = value
+    def _classification(self):  
+        return self.ft.get_classification()
+    @_classification.setter
+    def _classification(self, value):
         self.ft.set_classification(value)
 
     @property
-    def verbosity(self):  
-        self._verbosity = self.ft.get_verbosity()
-        return self._verbosity
-    @verbosity.setter
-    def verbosity(self, value):
-        self._verbosity = value
+    def _verbosity(self):  
+        return self.ft.get_verbosity()
+    @_verbosity.setter
+    def _verbosity(self, value):
         self.ft.set_verbosity(value)
 
     @property
-    def max_stall(self):
-        self._max_stall = self.ft.get_max_stall()
-        return self._max_stall
-    @max_stall.setter
-    def max_stall(self, value):
-        self._max_stall = value
+    def _max_stall(self):
+        return self.ft.get_max_stall()
+    @_max_stall.setter
+    def _max_stall(self, value):
         self.ft.set_max_stall(value)
 
     @property
-    def sel(self):  
-        self._sel = self.ft.get_sel().decode()
-        return self._sel
-    @sel.setter
-    def sel(self, value):
-        self._sel = value
+    def _sel(self):  
+        return self.ft.get_sel().decode()
+    @_sel.setter
+    def _sel(self, value):
         if isinstance(value,str): value = value.encode() 
         self.ft.set_sel(value)
 
     @property
-    def surv(self):  
-        self._surv = self.ft.get_surv().decode()
-        return self._surv
-    @surv.setter
-    def surv(self, value):
-        self._surv = value
+    def _surv(self):  
+        return self.ft.get_surv().decode()
+    @_surv.setter
+    def _surv(self, value):
         if isinstance(value,str): value = value.encode() 
         self.ft.set_surv(value)
 
     @property
-    def cross_rate(self): 
-        self._cross_rate = self.ft.get_cross_rate()
-        return self._cross_rate
-    @cross_rate.setter
-    def cross_rate(self, value):
-        self._cross_rate = value
+    def _cross_rate(self): 
+        return self.ft.get_cross_rate()
+    @_cross_rate.setter
+    def _cross_rate(self, value):
         self.ft.set_cross_rate(value)
 
     @property
-    def root_xo_rate(self):
-        self._root_xo_rate = self.ft.get_root_xo_rate()
-        return self._root_xo_rate
-    @root_xo_rate.setter
-    def root_xo_rate(self, value):
-        self._root_xo_rate = value
+    def _root_xo_rate(self):
+        return self.ft.get_root_xo_rate()
+    @_root_xo_rate.setter
+    def _root_xo_rate(self, value):
         self.ft.set_root_xo_rate(value)
 
     @property
-    def otype(self):  
-        self._otype = self.ft.get_otype()
-        return self._otype
+    def _otype(self):  
+        return self.ft.get_otype()
         # return str(self.ft.get_otype()).encode()
-    @otype.setter
-    def otype(self, value):
-        self._otype = ord(value)
-        self.ft.set_otype(ord(value))
+    @_otype.setter
+    def _otype(self, value):
+        if isinstance(value,str): 
+            value = ord(value) 
+        
+        self.ft.set_otype(value)
 
     @property
-    def functions(self): 
-        self._functions = self.ft.get_functions().decode()
-        return self._functions
-    @functions.setter
-    def functions(self, value):
-        self._functions = value
+    def _functions(self): 
+        return self.ft.get_functions().decode()
+    @_functions.setter
+    def _functions(self, value):
         if isinstance(value,str): value = value.encode() 
         self.ft.set_functions(value)
 
     @property
-    def max_depth(self):   
-        self._max_depth = self.ft.get_max_depth()
-        return self._max_depth
-    @max_depth.setter
-    def max_depth(self, value):
-        self._max_depth = value
+    def _max_depth(self):   
+        return self.ft.get_max_depth()
+    @_max_depth.setter
+    def _max_depth(self, value):
         self.ft.set_max_depth(value)
 
     @property
-    def max_dim(self):  
-        self._max_dim = self.ft.get_max_dim()
-        return self._max_dim
-    @max_dim.setter
-    def max_dim(self, value):
-        self._max_dim = value
+    def _max_dim(self):  
+        return self.ft.get_max_dim()
+    @_max_dim.setter
+    def _max_dim(self, value):
         self.ft.set_max_dim(value)
 
     @property
-    def random_state(self): 
-        self._random_state = self.ft.get_random_state()
-        return self._random_state
-    @random_state.setter
-    def random_state(self, value):
-        self._random_state = value
+    def _random_state(self): 
+        return self.ft.get_random_state()
+    @_random_state.setter
+    def _random_state(self, value):
         self.ft.set_random_state(value)
 
     @property
-    def erc(self):  
-        self._erc = self.ft.get_erc()
-        return self._erc
-    @erc.setter
-    def erc(self, value):
-        self._erc = value
+    def _erc(self):  
+        return self.ft.get_erc()
+    @_erc.setter
+    def _erc(self, value):
         self.ft.set_erc(value)
 
     @property
-    def obj(self): 
-        self._obj = self.ft.get_obj().decode()
-        return self._obj
-    @obj.setter
-    def obj(self, value):
-        self._obj = value
+    def _obj(self): 
+        return self.ft.get_obj().decode()
+    @_obj.setter
+    def _obj(self, value):
+        if isinstance(value,str): value = value.encode() 
         self.ft.set_obj(value)
 
     @property
-    def shuffle(self):  
-        self._shuffle = self.ft.get_shuffle()
-        return self._shuffle
-    @shuffle.setter
-    def shuffle(self, value):
-        self._shuffle = value
+    def _shuffle(self):  
+        return self.ft.get_shuffle()
+    @_shuffle.setter
+    def _shuffle(self, value):
         self.ft.set_shuffle(value)
 
     @property
-    def split(self):  
-        self._split = self.ft.get_split()
-        return self._split
-    @split.setter
-    def split(self, value):
-        self._split = value
+    def _split(self):  
+        return self.ft.get_split()
+    @_split.setter
+    def _split(self, value):
         self.ft.set_split(value)
 
     @property
-    def fb(self):
-        self._fb = self.ft.get_fb()
-        return self._fb
-    @fb.setter
-    def fb(self, value):
-        self._fb = value
+    def _fb(self):
+        return self.ft.get_fb()
+    @_fb.setter
+    def _fb(self, value):
         self.ft.set_fb(value)
 
     @property
-    def scorer(self):
-        self._scorer = self.ft.get_scorer().decode()
-        return self._scorer
-    @scorer.setter
-    def scorer(self, value):
-        self._scorer = value
+    def _scorer(self):
+        return self.ft.get_scorer().decode()
+    @_scorer.setter
+    def _scorer(self, value):
         if isinstance(value,str): value = value.encode() 
         self.ft.set_scorer(value)
 
     @property
-    def feature_names(self):
-        self._feature_names = self.ft.get_feature_names().decode()
-        return self._feature_names
-    @feature_names.setter
-    def feature_names(self, value):
-        self._feature_names = value
+    def _feature_names(self):
+        return self.ft.get_feature_names().decode()
+    @_feature_names.setter
+    def _feature_names(self, value):
         if isinstance(value,str): value = value.encode() 
         self.ft.set_feature_names(value)
 
     @property
-    def backprop(self):
-        self._backprop = self.ft.get_backprop()
-        return self._backprop
-    @backprop.setter
-    def backprop(self, value):
-        self._backprop = value
+    def _backprop(self):
+        return self.ft.get_backprop()
+    @_backprop.setter
+    def _backprop(self, value):
         self.ft.set_backprop(value)
 
     @property
-    def iters(self):
-        self._iters = self.ft.get_iters()
-        return self._iters
-    @iters.setter
-    def iters(self, value):
-        self._iters = value
+    def _iters(self):
+        return self.ft.get_iters()
+    @_iters.setter
+    def _iters(self, value):
         self.ft.set_iters(value)
 
     @property
-    def lr(self):
-        self._lr = self.ft.get_lr()
-        return self._lr
-    @lr.setter
-    def lr(self, value):
-        self._lr = value
+    def _lr(self):
+        return self.ft.get_lr()
+    @_lr.setter
+    def _lr(self, value):
         self.ft.set_lr(value)
 
     @property
-    def batch_size(self):
-        self._batch_size = self.ft.get_batch_size()
-        return self._batch_size
-    @batch_size.setter
-    def batch_size(self, value):
-        self._batch_size = value
+    def _batch_size(self):
+        return self.ft.get_batch_size()
+    @_batch_size.setter
+    def _batch_size(self, value):
         self.ft.set_batch_size(value)
 
     @property
-    def n_jobs(self):
-        self._n_jobs = self.ft.get_n_jobs()
-        return self._n_jobs
-    @n_jobs.setter
-    def n_jobs(self, value):
-        self._n_jobs = value
+    def _n_jobs(self):
+        return self.ft.get_n_jobs()
+    @_n_jobs.setter
+    def _n_jobs(self, value):
         self.ft.set_n_jobs(value)
 
     @property
-    def hillclimb(self):
-        self._hillclimb = self.ft.get_hillclimb()
-        return self._hillclimb
-    @hillclimb.setter
-    def hillclimb(self, value):
-        self._hillclimb = value
+    def _hillclimb(self):
+        return self.ft.get_hillclimb()
+    @_hillclimb.setter
+    def _hillclimb(self, value):
         self.ft.set_hillclimb(value)
 
     @property
-    def logfile(self):
-        self._logfile = self.ft.get_logfile().decode()
-        return self._logfile
-    @logfile.setter
-    def logfile(self, value):
-        self._logfile = value
+    def _logfile(self):
+        return self.ft.get_logfile().decode()
+    @_logfile.setter
+    def _logfile(self, value):
         if isinstance(value,str): value = value.encode() 
         self.ft.set_logfile(value)
 
     @property
-    def max_time(self):
-        self._max_time = self.ft.get_max_time()
-        return self._max_time
-    @max_time.setter
-    def max_time(self, value):
-        self._max_time = value
+    def _max_time(self):
+        return self.ft.get_max_time()
+    @_max_time.setter
+    def _max_time(self, value):
         self.ft.set_max_time(value)
 
     @property
-    def residual_xo(self):
-        self._residual_xo = self.ft.get_residual_xo()
-        return self._residual_xo
-    @residual_xo.setter
-    def residual_xo(self, value):
-        self._residual_xo = value
+    def _residual_xo(self):
+        return self.ft.get_residual_xo()
+    @_residual_xo.setter
+    def _residual_xo(self, value):
         self.ft.set_residual_xo(value)
 
     @property
-    def stagewise_xo(self):
-        self._stagewise_xo = self.ft.get_stagewise_xo()
-        return self._stagewise_xo
-    @stagewise_xo.setter
-    def stagewise_xo(self, value):
-        self._stagewise_xo = value
+    def _stagewise_xo(self):
+        return self.ft.get_stagewise_xo()
+    @_stagewise_xo.setter
+    def _stagewise_xo(self, value):
         self.ft.set_stagewise_xo(value)
 
     @property
-    def stagewise_xo_tol(self):
-        self._stagewise_xo_tol = self.ft.get_stagewise_xo_tol()
-        return self._stagewise_xo_tol
-    @stagewise_xo_tol.setter
-    def stagewise_xo_tol(self, value):
-        self._stagewise_xo_tol = value
+    def _stagewise_xo_tol(self):
+        return self.ft.get_stagewise_xo_tol()
+    @_stagewise_xo_tol.setter
+    def _stagewise_xo_tol(self, value):
         self.ft.set_stagewise_xo_tol(value)
 
     @property
-    def softmax_norm(self):
-        self._softmax_norm = self.ft.get_softmax_norm()
-        return self._softmax_norm
-    @softmax_norm.setter
-    def softmax_norm(self, value):
-        self._softmax_norm = value
+    def _softmax_norm(self):
+        return self.ft.get_softmax_norm()
+    @_softmax_norm.setter
+    def _softmax_norm(self, value):
         self.ft.set_softmax_norm(value)
 
     @property
-    def save_pop(self):
-        self._save_pop = self.ft.get_save_pop()
-        return self._save_pop
-    @save_pop.setter
-    def save_pop(self, value):
-        self._save_pop = value
+    def _save_pop(self):
+        return self.ft.get_save_pop()
+    @_save_pop.setter
+    def _save_pop(self, value):
         self.ft.set_save_pop(value)
 
     @property
-    def normalize(self):
-        self._normalize = self.ft.get_normalize()
-        return self._normalize
-    @normalize.setter
-    def normalize(self, value):
-        self._normalize = value
+    def _normalize(self):
+        return self.ft.get_normalize()
+    @_normalize.setter
+    def _normalize(self, value):
         self.ft.set_normalize(value)
 
     @property
-    def val_from_arch(self):
-        self._val_from_arch = self.ft.get_val_from_arch()
-        return self._val_from_arch
-    @val_from_arch.setter
-    def val_from_arch(self, value):
-        self._val_from_arch = value
+    def _val_from_arch(self):
+        return self.ft.get_val_from_arch()
+    @_val_from_arch.setter
+    def _val_from_arch(self, value):
         self.ft.set_val_from_arch(value)
 
     @property
-    def corr_delete_mutate(self):
-        self._corr_delete_mutate = self.ft.get_corr_delete_mutate()
-        return self._corr_delete_mutate
-    @corr_delete_mutate.setter
-    def corr_delete_mutate(self, value):
-        self._corr_delete_mutate = value
+    def _corr_delete_mutate(self):
+        return self.ft.get_corr_delete_mutate()
+    @_corr_delete_mutate.setter
+    def _corr_delete_mutate(self, value):
         self.ft.set_corr_delete_mutate(value)
 
     @property
-    def simplify(self):
-        self._simplify = self.ft.get_simplify()
-        return self._simplify
-    @simplify.setter
-    def simplify(self, value):
-        self._simplify = value
+    def _simplify(self):
+        return self.ft.get_simplify()
+    @_simplify.setter
+    def _simplify(self, value):
         self.ft.set_simplify(value)
 
     @property
-    def protected_groups(self):
-        self._protected_groups = self.ft.get_protected_groups().decode()
-        return self._protected_groups
-    @protected_groups.setter
-    def protected_groups(self, value):
-        self._protected_groups = value
+    def _protected_groups(self):
+        return self.ft.get_protected_groups().decode()
+    @_protected_groups.setter
+    def _protected_groups(self, value):
         if isinstance(value,str): value = value.encode() 
         self.ft.set_protected_groups(value)
 
     @property
-    def tune_initial(self):
-        self._tune_initial = self.ft.get_tune_initial()
-        return self._tune_initial
-    @tune_initial.setter
-    def tune_initial(self, value):
-        self._tune_initial = value
+    def _tune_initial(self):
+        return self.ft.get_tune_initial()
+    @_tune_initial.setter
+    def _tune_initial(self, value):
         self.ft.set_tune_initial(value)
 
     @property
-    def tune_final(self): 
-        self._tune_final = self.ft.get_tune_final()
-        return self._tune_final
-    @tune_final.setter
-    def tune_final(self, value):
-        self._tune_final = value
+    def _tune_final(self): 
+        return self.ft.get_tune_final()
+    @_tune_final.setter
+    def _tune_final(self, value):
         self.ft.set_tune_final(value)
 
     @property
-    def starting_pop(self):
-        self._starting_pop = self.ft.get_starting_pop().decode()
-        return self._starting_pop
-    @starting_pop.setter
-    def starting_pop(self, value):
-        self._starting_pop = value
+    def _starting_pop(self):
+        return self.ft.get_starting_pop().decode()
+    @_starting_pop.setter
+    def _starting_pop(self, value):
         self.ft.set_starting_pop(value)
 
     @property
-    def fitted_(self):
-        self._fitted_ = self.ft.fitted
-        return self._fitted_
+    def _fitted_(self):
+        return self.ft.fitted
 
         # return self.__dict__
         # return {
