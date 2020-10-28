@@ -277,97 +277,10 @@ cdef class PyFeat:
         Provide a starting pop in json format. 
     """
     cdef Feat ft  # hold a c++ instance which we're wrapping
-    def __cinit__(self, **kwargs
-                  # int pop_size=100, 
-                  # int gens=100, 
-                  # str ml= "LinearRidgeRegression", 
-                  # bool classification=False, 
-                  # int verbosity=0, 
-                  # int max_stall=0, 
-                  # str sel="lexicase", 
-                  # str surv="nsga2", 
-                  # float cross_rate=0.5, 
-                  # float root_xo_rate=0.5, 
-                  # char otype='a', 
-                  # str functions="", 
-                  # unsigned int max_depth=3, 
-                  # unsigned int max_dim=10, 
-                  # int random_state=0, 
-                  # bool erc= False , 
-                  # str obj="fitness,complexity", 
-                  # bool shuffle=True, 
-                  # float split=0.75, 
-                  # float fb=0.5, 
-                  # str scorer='', 
-                  # str feature_names="", 
-                  # bool backprop=False, 
-                  # int iters=10, 
-                  # float lr=0.1, 
-                  # int batch_size=0, 
-                  # int n_jobs=0, 
-                  # bool hillclimb=False, 
-                  # str logfile="", 
-                  # int max_time=-1, 
-                  # bool residual_xo=False, 
-                  # bool stagewise_xo=False, 
-                  # bool stagewise_xo_tol=False, 
-                  # bool softmax_norm=False, 
-                  # int save_pop=0, 
-                  # bool normalize=True, 
-                  # bool val_from_arch=True, 
-                  # bool corr_delete_mutate=False, 
-                  # float simplify=0.0, 
-                  # str protected_groups="", 
-                  # bool tune_initial=False, 
-                  # bool tune_final=True, 
-                  # str starting_pop=""
-                 ):
+    def __init__(self, **kwargs):
 
         self.ft = Feat()
-                       # pop_size,
-                       # gens,
-                       # ml.encode(),
-                       # classification, 
-                       # verbosity,
-                       # max_stall,
-                       # sel.encode(), 
-                       # surv.encode(), 
-                       # cross_rate, 
-                       # root_xo_rate, 
-                       # otype, 
-                       # functions.encode(), 
-                       # max_depth, 
-                       # max_dim, 
-                       # random_state, 
-                       # erc, 
-                       # obj.encode(), 
-                       # shuffle, 
-                       # split, 
-                       # fb, 
-                       # scorer.encode(),
-                       # feature_names.encode(), 
-                       # backprop, 
-                       # iters, 
-                       # lr, 
-                       # batch_size, 
-                       # n_jobs, 
-                       # hillclimb,
-                       # logfile.encode(), 
-                       # max_time, 
-                       # residual_xo, 
-                       # stagewise_xo, 
-                       # stagewise_xo_tol, 
-                       # softmax_norm, 
-                       # save_pop, 
-                       # normalize, 
-                       # val_from_arch, 
-                       # corr_delete_mutate, 
-                       # simplify, 
-                       # protected_groups.encode(), 
-                       # tune_initial, 
-                       # tune_final, 
-                       # starting_pop.encode()
-                      # )
+        self._set_params(kwargs)
 
     def _fit(self,np.ndarray X,np.ndarray y):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
@@ -523,9 +436,8 @@ cdef class PyFeat:
     def get_archive_size(self):
         return self.ft.get_archive_size()
 
-    def load(self, filename):
+    def _load(self, filename):
         self.ft.load(str(filename).encode())
-        return self
 
     def save(self, filename):
         self.ft.save(str(filename).encode())
@@ -536,8 +448,16 @@ cdef class PyFeat:
     def _load_population(self, filename):
         self.ft.load_population(filename)
 
-    # def _get_params():
-    #     return json.loads(self.ft.get_params())
+    def _set_params(self, params):
+        print('_set_params called with',params)
+        for k,v in params.items():
+            setattr(self, k, v)
+
+    def _get_params(self):
+        property_names=[p for p in dir(self.__class__) if
+                        isinstance(getattr(self,p),property)]
+        return {p:getattr(self,p) for p in property_names}
+        # return json.loads(self.ft.get_params())
 
     ###########################################################################
     # decorated property setters and getters
@@ -625,10 +545,7 @@ cdef class PyFeat:
         # return str(self.ft.get_otype()).encode()
     @_otype.setter
     def _otype(self, value):
-        if isinstance(value,str): 
-            value = ord(value) 
-        
-        self.ft.set_otype(value)
+        self.ft.set_otype(ord(value))
 
     @property
     def _functions(self): 
@@ -671,7 +588,6 @@ cdef class PyFeat:
         return self.ft.get_obj().decode()
     @_obj.setter
     def _obj(self, value):
-        if isinstance(value,str): value = value.encode() 
         self.ft.set_obj(value)
 
     @property
@@ -861,8 +777,8 @@ cdef class PyFeat:
         self.ft.set_starting_pop(value)
 
     @property
-    def _fitted_(self):
-        return self.ft.fitted
+    def fitted_(self):
+        return self._fitted_
 
         # return self.__dict__
         # return {
