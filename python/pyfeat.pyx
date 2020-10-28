@@ -277,66 +277,100 @@ cdef class PyFeat:
         Provide a starting pop in json format. 
     """
     cdef Feat ft  # hold a c++ instance which we're wrapping
-    #TODO: make string types unicode strings (aka str), and explicitly encode
-    # them when passed to Feat, and decode them in getter functions.
-    def __cinit__(self, 
-                  int pop_size=100, 
-                  int gens=100, 
-                  string ml= b"LinearRidgeRegression", 
-                  bool classification=False, 
-                  int verbosity=0, 
-                  int max_stall=0, 
-                  str sel="lexicase", 
-                  string surv="nsga2", 
-                  float cross_rate=0.5, 
-                  float root_xo_rate=0.5, 
-                  char otype='a', 
-                  string functions="", 
-                  unsigned int max_depth=3, 
-                  unsigned int max_dim=10, 
-                  int random_state=0, 
-                  bool erc= False , 
-                  string obj="fitness,complexity", 
-                  bool shuffle=True, 
-                  float split=0.75, 
-                  float fb=0.5, 
-                  string scorer='', 
-                  string feature_names="", 
-                  bool backprop=False, 
-                  int iters=10, 
-                  float lr=0.1, 
-                  int batch_size=0, 
-                  int n_jobs=0, 
-                  bool hillclimb=False, 
-                  string logfile="", 
-                  int max_time=-1, 
-                  bool residual_xo=False, 
-                  bool stagewise_xo=False, 
-                  bool stagewise_xo_tol=False, 
-                  bool softmax_norm=False, 
-                  int save_pop=0, 
-                  bool normalize=True, 
-                  bool val_from_arch=True, 
-                  bool corr_delete_mutate=False, 
-                  float simplify=0.0, 
-                  string protected_groups="", 
-                  bool tune_initial=False, 
-                  bool tune_final=True, 
-                  string starting_pop=""
+    cdef dict __dict__
+    def __init__(self, **kwargs
+                  # int pop_size=100, 
+                  # int gens=100, 
+                  # str ml= "LinearRidgeRegression", 
+                  # bool classification=False, 
+                  # int verbosity=0, 
+                  # int max_stall=0, 
+                  # str sel="lexicase", 
+                  # str surv="nsga2", 
+                  # float cross_rate=0.5, 
+                  # float root_xo_rate=0.5, 
+                  # char otype='a', 
+                  # str functions="", 
+                  # unsigned int max_depth=3, 
+                  # unsigned int max_dim=10, 
+                  # int random_state=0, 
+                  # bool erc= False , 
+                  # str obj="fitness,complexity", 
+                  # bool shuffle=True, 
+                  # float split=0.75, 
+                  # float fb=0.5, 
+                  # str scorer='', 
+                  # str feature_names="", 
+                  # bool backprop=False, 
+                  # int iters=10, 
+                  # float lr=0.1, 
+                  # int batch_size=0, 
+                  # int n_jobs=0, 
+                  # bool hillclimb=False, 
+                  # str logfile="", 
+                  # int max_time=-1, 
+                  # bool residual_xo=False, 
+                  # bool stagewise_xo=False, 
+                  # bool stagewise_xo_tol=False, 
+                  # bool softmax_norm=False, 
+                  # int save_pop=0, 
+                  # bool normalize=True, 
+                  # bool val_from_arch=True, 
+                  # bool corr_delete_mutate=False, 
+                  # float simplify=0.0, 
+                  # str protected_groups="", 
+                  # bool tune_initial=False, 
+                  # bool tune_final=True, 
+                  # str starting_pop=""
                  ):
-        # if len(otype) > 1:
-        #     print('otype len is >1:',otype)
-        # cdef char otype_char = ord(otype)
 
-        self.ft = Feat(pop_size,gens,ml,classification, verbosity,max_stall,
-                       sel.encode(), surv, cross_rate, root_xo_rate, otype, 
-                       functions, max_depth, max_dim, random_state, erc, obj, 
-                       shuffle, split, fb, scorer, feature_names, backprop, 
-                       iters, lr, batch_size, n_jobs, hillclimb, logfile, 
-                       max_time, residual_xo, stagewise_xo, stagewise_xo_tol, 
-                       softmax_norm, save_pop, normalize, val_from_arch, 
-                       corr_delete_mutate, simplify, protected_groups, 
-                       tune_initial, tune_final, starting_pop)
+        self.ft = Feat()
+        for k,v in kwargs.items():
+            setattr(self, k, v)
+                       # pop_size,
+                       # gens,
+                       # ml.encode(),
+                       # classification, 
+                       # verbosity,
+                       # max_stall,
+                       # sel.encode(), 
+                       # surv.encode(), 
+                       # cross_rate, 
+                       # root_xo_rate, 
+                       # otype, 
+                       # functions.encode(), 
+                       # max_depth, 
+                       # max_dim, 
+                       # random_state, 
+                       # erc, 
+                       # obj.encode(), 
+                       # shuffle, 
+                       # split, 
+                       # fb, 
+                       # scorer.encode(),
+                       # feature_names.encode(), 
+                       # backprop, 
+                       # iters, 
+                       # lr, 
+                       # batch_size, 
+                       # n_jobs, 
+                       # hillclimb,
+                       # logfile.encode(), 
+                       # max_time, 
+                       # residual_xo, 
+                       # stagewise_xo, 
+                       # stagewise_xo_tol, 
+                       # softmax_norm, 
+                       # save_pop, 
+                       # normalize, 
+                       # val_from_arch, 
+                       # corr_delete_mutate, 
+                       # simplify, 
+                       # protected_groups.encode(), 
+                       # tune_initial, 
+                       # tune_final, 
+                       # starting_pop.encode()
+                      # )
 
     def _fit(self,np.ndarray X,np.ndarray y):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
@@ -348,7 +382,7 @@ cdef class PyFeat:
 
         self.ft.fit(&arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y))
 
-    def _fit_with_z(self,np.ndarray X,np.ndarray y, string zfile, 
+    def _fit_with_z(self,np.ndarray X,np.ndarray y, str zfile, 
             np.ndarray zids):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
         cdef np.ndarray[np.float32_t, ndim=1, mode="fortran"] arr_y
@@ -360,16 +394,16 @@ cdef class PyFeat:
         arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
 
         self.ft.fit_with_z(&arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],
-                len(arr_y), zfile, &arr_z_id[0], len(arr_z_id))
+                len(arr_y), zfile.encode(), &arr_z_id[0], len(arr_z_id))
                            
-    def _transform_with_z(self,np.ndarray X, string zfile, np.ndarray zids):
+    def _transform_with_z(self,np.ndarray X, str zfile, np.ndarray zids):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
         cdef np.ndarray[int, ndim=1, mode="fortran"] arr_z_id
         X = X.transpose()
         arr_x = np.asfortranarray(X, dtype=np.float32)
         arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
         res = ndarray(self.ft.transform_with_z(&arr_x[0,0],X.shape[0],
-            X.shape[1], zfile, &arr_z_id[0], len(arr_z_id)))
+            X.shape[1], zfile.encode(), &arr_z_id[0], len(arr_z_id)))
         return res.transpose()
 
 
@@ -399,7 +433,7 @@ cdef class PyFeat:
             X.shape[0],X.shape[1]))
         return res
 
-    def _predict_with_z(self,np.ndarray X, string zfile, np.ndarray zids):
+    def _predict_with_z(self,np.ndarray X, str zfile, np.ndarray zids):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
         cdef np.ndarray[int, ndim=1, mode="fortran"] arr_z_id
         X = X.transpose()
@@ -407,7 +441,7 @@ cdef class PyFeat:
         arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
         
         res = ndarray(self.ft.predict_with_z(&arr_x[0,0],X.shape[0],X.shape[1],
-                                         zfile, &arr_z_id[0], len(arr_z_id)))
+                                 zfile.encode(), &arr_z_id[0], len(arr_z_id)))
         return res.flatten()
 
     def _predict_proba(self,np.ndarray X):
@@ -418,7 +452,7 @@ cdef class PyFeat:
         res = ndarray(self.ft.predict_proba(&arr_x[0,0],X.shape[0],X.shape[1]))
         return res.flatten()
 
-    def _predict_proba_with_z(self,np.ndarray X, string zfile, np.ndarray zids):
+    def _predict_proba_with_z(self,np.ndarray X, str zfile, np.ndarray zids):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
         cdef np.ndarray[int, ndim=1, mode="fortran"] arr_z_id
         X = X.transpose()
@@ -426,7 +460,7 @@ cdef class PyFeat:
         arr_z_id = np.asfortranarray(zids, dtype=ctypes.c_int)
         
         res = ndarray(self.ft.predict_proba_with_z(&arr_x[0,0],
-            X.shape[0],X.shape[1], zfile, &arr_z_id[0], len(arr_z_id)))
+            X.shape[0],X.shape[1], zfile.encode(), &arr_z_id[0], len(arr_z_id)))
         return res.flatten()
 
     def _transform(self,np.ndarray X):
@@ -513,358 +547,453 @@ cdef class PyFeat:
     ###########################################################################
     @property
     def stats_(self):
-        return json.loads(self.ft.get_stats())
+        self._stats_ = json.loads(self.ft.get_stats())
+        return self._stats_ 
 
     @property
     def pop_size(self):  
-        return self.ft.get_pop_size()
+        self._pop_size = self.ft.get_pop_size()
+        return self._pop_size
     @pop_size.setter
     def pop_size(self, value):
+        self._pop_size = value
         self.ft.set_pop_size(value)
 
     @property
     def gens(self):  
-        return self.ft.get_gens()
+        self._gens = self.ft.get_gens()
+        return self._gens
     @gens.setter
     def gens(self, value):
+        self._gens = value
         self.ft.set_gens(value)
 
     @property
     def ml(self): 
-        return self.ft.get_ml()
+        self._ml = self.ft.get_ml().decode()
+        return self._ml
     @ml.setter
     def ml(self, value):
+        self._ml = value 
+        if isinstance(value,str): value = value.encode() 
         self.ft.set_ml(value)
 
     @property
     def classification(self):  
-        return self.ft.get_classification()
+        self._classification = self.ft.get_classification()
+        return self._classification
     @classification.setter
     def classification(self, value):
+        self._classification = value
         self.ft.set_classification(value)
 
     @property
     def verbosity(self):  
-        return self.ft.get_verbosity()
+        self._verbosity = self.ft.get_verbosity()
+        return self._verbosity
     @verbosity.setter
     def verbosity(self, value):
+        self._verbosity = value
         self.ft.set_verbosity(value)
 
     @property
     def max_stall(self):
-        return self.ft.get_max_stall()
+        self._max_stall = self.ft.get_max_stall()
+        return self._max_stall
     @max_stall.setter
     def max_stall(self, value):
+        self._max_stall = value
         self.ft.set_max_stall(value)
 
     @property
     def sel(self):  
-        return self.ft.get_sel()
+        self._sel = self.ft.get_sel().decode()
+        return self._sel
     @sel.setter
     def sel(self, value):
+        self._sel = value
+        if isinstance(value,str): value = value.encode() 
         self.ft.set_sel(value)
 
     @property
     def surv(self):  
-        return self.ft.get_surv()
+        self._surv = self.ft.get_surv().decode()
+        return self._surv
     @surv.setter
     def surv(self, value):
+        self._surv = value
+        if isinstance(value,str): value = value.encode() 
         self.ft.set_surv(value)
 
     @property
     def cross_rate(self): 
-        return self.ft.get_cross_rate()
+        self._cross_rate = self.ft.get_cross_rate()
+        return self._cross_rate
     @cross_rate.setter
     def cross_rate(self, value):
+        self._cross_rate = value
         self.ft.set_cross_rate(value)
 
     @property
     def root_xo_rate(self):
-        return self.ft.get_root_xo_rate()
+        self._root_xo_rate = self.ft.get_root_xo_rate()
+        return self._root_xo_rate
     @root_xo_rate.setter
     def root_xo_rate(self, value):
+        self._root_xo_rate = value
         self.ft.set_root_xo_rate(value)
 
     @property
     def otype(self):  
-        cdef char otype = self.ft.get_otype()
-        return otype
+        self._otype = self.ft.get_otype()
+        return self._otype
         # return str(self.ft.get_otype()).encode()
     @otype.setter
     def otype(self, value):
+        self._otype = ord(value)
         self.ft.set_otype(ord(value))
 
     @property
     def functions(self): 
-        return self.ft.get_functions()
+        self._functions = self.ft.get_functions().decode()
+        return self._functions
     @functions.setter
     def functions(self, value):
+        self._functions = value
+        if isinstance(value,str): value = value.encode() 
         self.ft.set_functions(value)
 
     @property
     def max_depth(self):   
-        return self.ft.get_max_depth()
+        self._max_depth = self.ft.get_max_depth()
+        return self._max_depth
     @max_depth.setter
     def max_depth(self, value):
+        self._max_depth = value
         self.ft.set_max_depth(value)
 
     @property
     def max_dim(self):  
-        return self.ft.get_max_dim()
+        self._max_dim = self.ft.get_max_dim()
+        return self._max_dim
     @max_dim.setter
     def max_dim(self, value):
+        self._max_dim = value
         self.ft.set_max_dim(value)
 
     @property
     def random_state(self): 
-        return self.ft.get_random_state()
+        self._random_state = self.ft.get_random_state()
+        return self._random_state
     @random_state.setter
     def random_state(self, value):
+        self._random_state = value
         self.ft.set_random_state(value)
 
     @property
     def erc(self):  
-        return self.ft.get_erc()
+        self._erc = self.ft.get_erc()
+        return self._erc
     @erc.setter
     def erc(self, value):
+        self._erc = value
         self.ft.set_erc(value)
 
     @property
     def obj(self): 
-        return self.ft.get_obj()
+        self._obj = self.ft.get_obj().decode()
+        return self._obj
     @obj.setter
     def obj(self, value):
+        self._obj = value
         self.ft.set_obj(value)
 
     @property
     def shuffle(self):  
-        return self.ft.get_shuffle()
+        self._shuffle = self.ft.get_shuffle()
+        return self._shuffle
     @shuffle.setter
     def shuffle(self, value):
+        self._shuffle = value
         self.ft.set_shuffle(value)
 
     @property
     def split(self):  
-        return self.ft.get_split()
+        self._split = self.ft.get_split()
+        return self._split
     @split.setter
     def split(self, value):
+        self._split = value
         self.ft.set_split(value)
 
     @property
     def fb(self):
-        return self.ft.get_fb()
+        self._fb = self.ft.get_fb()
+        return self._fb
     @fb.setter
     def fb(self, value):
+        self._fb = value
         self.ft.set_fb(value)
 
     @property
     def scorer(self):
-        return self.ft.get_scorer()
+        self._scorer = self.ft.get_scorer().decode()
+        return self._scorer
     @scorer.setter
     def scorer(self, value):
+        self._scorer = value
+        if isinstance(value,str): value = value.encode() 
         self.ft.set_scorer(value)
 
     @property
     def feature_names(self):
-        return self.ft.get_feature_names()
+        self._feature_names = self.ft.get_feature_names().decode()
+        return self._feature_names
     @feature_names.setter
     def feature_names(self, value):
+        self._feature_names = value
+        if isinstance(value,str): value = value.encode() 
         self.ft.set_feature_names(value)
 
     @property
     def backprop(self):
-        return self.ft.get_backprop()
+        self._backprop = self.ft.get_backprop()
+        return self._backprop
     @backprop.setter
     def backprop(self, value):
+        self._backprop = value
         self.ft.set_backprop(value)
 
     @property
     def iters(self):
-        return self.ft.get_iters()
+        self._iters = self.ft.get_iters()
+        return self._iters
     @iters.setter
     def iters(self, value):
+        self._iters = value
         self.ft.set_iters(value)
 
     @property
     def lr(self):
-        return self.ft.get_lr()
+        self._lr = self.ft.get_lr()
+        return self._lr
     @lr.setter
     def lr(self, value):
+        self._lr = value
         self.ft.set_lr(value)
 
     @property
     def batch_size(self):
-        return self.ft.get_batch_size()
+        self._batch_size = self.ft.get_batch_size()
+        return self._batch_size
     @batch_size.setter
     def batch_size(self, value):
+        self._batch_size = value
         self.ft.set_batch_size(value)
 
     @property
     def n_jobs(self):
-        return self.ft.get_n_jobs()
+        self._n_jobs = self.ft.get_n_jobs()
+        return self._n_jobs
     @n_jobs.setter
     def n_jobs(self, value):
+        self._n_jobs = value
         self.ft.set_n_jobs(value)
 
     @property
     def hillclimb(self):
-        return self.ft.get_hillclimb()
+        self._hillclimb = self.ft.get_hillclimb()
+        return self._hillclimb
     @hillclimb.setter
     def hillclimb(self, value):
+        self._hillclimb = value
         self.ft.set_hillclimb(value)
 
     @property
     def logfile(self):
-        return self.ft.get_logfile()
+        self._logfile = self.ft.get_logfile().decode()
+        return self._logfile
     @logfile.setter
     def logfile(self, value):
+        self._logfile = value
+        if isinstance(value,str): value = value.encode() 
         self.ft.set_logfile(value)
 
     @property
     def max_time(self):
-        return self.ft.get_max_time()
+        self._max_time = self.ft.get_max_time()
+        return self._max_time
     @max_time.setter
     def max_time(self, value):
+        self._max_time = value
         self.ft.set_max_time(value)
 
     @property
     def residual_xo(self):
-        return self.ft.get_residual_xo()
+        self._residual_xo = self.ft.get_residual_xo()
+        return self._residual_xo
     @residual_xo.setter
     def residual_xo(self, value):
+        self._residual_xo = value
         self.ft.set_residual_xo(value)
 
     @property
     def stagewise_xo(self):
-        return self.ft.get_stagewise_xo()
+        self._stagewise_xo = self.ft.get_stagewise_xo()
+        return self._stagewise_xo
     @stagewise_xo.setter
     def stagewise_xo(self, value):
+        self._stagewise_xo = value
         self.ft.set_stagewise_xo(value)
 
     @property
     def stagewise_xo_tol(self):
-        return self.ft.get_stagewise_xo_tol()
+        self._stagewise_xo_tol = self.ft.get_stagewise_xo_tol()
+        return self._stagewise_xo_tol
     @stagewise_xo_tol.setter
     def stagewise_xo_tol(self, value):
+        self._stagewise_xo_tol = value
         self.ft.set_stagewise_xo_tol(value)
 
     @property
     def softmax_norm(self):
-        return self.ft.get_softmax_norm()
+        self._softmax_norm = self.ft.get_softmax_norm()
+        return self._softmax_norm
     @softmax_norm.setter
     def softmax_norm(self, value):
+        self._softmax_norm = value
         self.ft.set_softmax_norm(value)
 
     @property
     def save_pop(self):
-        return self.ft.get_save_pop()
+        self._save_pop = self.ft.get_save_pop()
+        return self._save_pop
     @save_pop.setter
     def save_pop(self, value):
+        self._save_pop = value
         self.ft.set_save_pop(value)
 
     @property
     def normalize(self):
-        return self.ft.get_normalize()
+        self._normalize = self.ft.get_normalize()
+        return self._normalize
     @normalize.setter
     def normalize(self, value):
+        self._normalize = value
         self.ft.set_normalize(value)
 
     @property
     def val_from_arch(self):
-        return self.ft.get_val_from_arch()
+        self._val_from_arch = self.ft.get_val_from_arch()
+        return self._val_from_arch
     @val_from_arch.setter
     def val_from_arch(self, value):
+        self._val_from_arch = value
         self.ft.set_val_from_arch(value)
 
     @property
     def corr_delete_mutate(self):
-        return self.ft.get_corr_delete_mutate()
+        self._corr_delete_mutate = self.ft.get_corr_delete_mutate()
+        return self._corr_delete_mutate
     @corr_delete_mutate.setter
     def corr_delete_mutate(self, value):
+        self._corr_delete_mutate = value
         self.ft.set_corr_delete_mutate(value)
 
     @property
     def simplify(self):
-        return self.ft.get_simplify()
+        self._simplify = self.ft.get_simplify()
+        return self._simplify
     @simplify.setter
     def simplify(self, value):
+        self._simplify = value
         self.ft.set_simplify(value)
 
     @property
     def protected_groups(self):
-        return self.ft.get_protected_groups()
+        self._protected_groups = self.ft.get_protected_groups().decode()
+        return self._protected_groups
     @protected_groups.setter
     def protected_groups(self, value):
+        self._protected_groups = value
+        if isinstance(value,str): value = value.encode() 
         self.ft.set_protected_groups(value)
 
     @property
     def tune_initial(self):
-        return self.ft.get_tune_initial()
+        self._tune_initial = self.ft.get_tune_initial()
+        return self._tune_initial
     @tune_initial.setter
     def tune_initial(self, value):
+        self._tune_initial = value
         self.ft.set_tune_initial(value)
 
     @property
     def tune_final(self): 
-        return self.ft.get_tune_final()
+        self._tune_final = self.ft.get_tune_final()
+        return self._tune_final
     @tune_final.setter
     def tune_final(self, value):
+        self._tune_final = value
         self.ft.set_tune_final(value)
 
     @property
     def starting_pop(self):
-        return self.ft.get_starting_pop()
+        self._starting_pop = self.ft.get_starting_pop().decode()
+        return self._starting_pop
     @starting_pop.setter
     def starting_pop(self, value):
+        self._starting_pop = value
         self.ft.set_starting_pop(value)
 
     @property
     def fitted_(self):
-        return self.ft.fitted
+        self._fitted_ = self.ft.fitted
+        return self._fitted_
 
-    def get_params(self, deep=False):
-        return {
-                'pop_size': self.pop_size, 
-                'gens': self.gens, 
-                'ml': self.ml,
-                'classification': self.classification,
-                'verbosity': self.verbosity,
-                'max_stall': self.max_stall,
-                'sel': self.sel,
-                'surv': self.surv,
-                'cross_rate': self.cross_rate,
-                'root_xo_rate': self.root_xo_rate,
-                'otype': self.otype,
-                'functions': self.functions,
-                'max_depth': self.max_depth,
-                'max_dim': self.max_dim,
-                'random_state': self.random_state,
-                'erc': self.erc,
-                'obj': self.obj,
-                'shuffle': self.shuffle,
-                'split': self.split,
-                'fb': self.fb,
-                'scorer': self.scorer,
-                'feature_names': self.feature_names,
-                'backprop': self.backprop,
-                'iters': self.iters,
-                'lr': self.lr,
-                'batch_size': self.batch_size,
-                'n_jobs': self.n_jobs,
-                'hillclimb': self.hillclimb,
-                'logfile': self.logfile,
-                'max_time': self.max_time,
-                'residual_xo': self.residual_xo,
-                'stagewise_xo': self.stagewise_xo,
-                'stagewise_xo_tol': self.stagewise_xo_tol,
-                'softmax_norm': self.softmax_norm,
-                'save_pop': self.save_pop,
-                'normalize': self.normalize,
-                'val_from_arch': self.val_from_arch,
-                'corr_delete_mutate': self.corr_delete_mutate,
-                'simplify': self.simplify,
-                'protected_groups': self.protected_groups,
-                'tune_initial': self.tune_initial,
-                'tune_final': self.tune_final,
-                'starting_pop': self.starting_pop,
-                }
+        # return self.__dict__
+        # return {
+        #         'pop_size': self.pop_size, 
+        #         'gens': self.gens, 
+        #         'ml': self.ml,
+        #         'classification': self.classification,
+        #         'verbosity': self.verbosity,
+        #         'max_stall': self.max_stall,
+        #         'sel': self.sel,
+        #         'surv': self.surv,
+        #         'cross_rate': self.cross_rate,
+        #         'root_xo_rate': self.root_xo_rate,
+        #         'otype': self.otype,
+        #         'functions': self.functions,
+        #         'max_depth': self.max_depth,
+        #         'max_dim': self.max_dim,
+        #         'random_state': self.random_state,
+        #         'erc': self.erc,
+        #         'obj': self.obj,
+        #         'shuffle': self.shuffle,
+        #         'split': self.split,
+        #         'fb': self.fb,
+        #         'scorer': self.scorer,
+        #         'feature_names': self.feature_names,
+        #         'backprop': self.backprop,
+        #         'iters': self.iters,
+        #         'lr': self.lr,
+        #         'batch_size': self.batch_size,
+        #         'n_jobs': self.n_jobs,
+        #         'hillclimb': self.hillclimb,
+        #         'logfile': self.logfile,
+        #         'max_time': self.max_time,
+        #         'residual_xo': self.residual_xo,
+        #         'stagewise_xo': self.stagewise_xo,
+        #         'stagewise_xo_tol': self.stagewise_xo_tol,
+        #         'softmax_norm': self.softmax_norm,
+        #         'save_pop': self.save_pop,
+        #         'normalize': self.normalize,
+        #         'val_from_arch': self.val_from_arch,
+        #         'corr_delete_mutate': self.corr_delete_mutate,
+        #         'simplify': self.simplify,
+        #         'protected_groups': self.protected_groups,
+        #         'tune_initial': self.tune_initial,
+        #         'tune_final': self.tune_final,
+        #         'starting_pop': self.starting_pop,
+        #         }

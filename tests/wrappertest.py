@@ -3,7 +3,7 @@
 Copyright 2016 William La Cava
 license: GNU/GPLv3
 """
-from feat import Feat, FeatRegressor, FeatClassifier
+from feat import Feat 
 from sklearn.datasets import load_diabetes
 import unittest
 import argparse
@@ -19,7 +19,8 @@ class TestFeatWrapper(unittest.TestCase):
     def setUp(self):
         self.v = verbosity
         self.reg = Feat(verbosity=verbosity, n_jobs=1, gens=5)
-        self.clf = Feat(classification=True, ml=b"LR", verbosity=verbosity, n_jobs=1, gens=5)
+        self.clf = Feat(classification=True, ml="LR", verbosity=verbosity, 
+                        n_jobs=1, gens=5)
         diabetes = load_diabetes()
         self.X = diabetes.data
         self.yr = diabetes.target
@@ -28,6 +29,7 @@ class TestFeatWrapper(unittest.TestCase):
     def test_sklearn_api(self):
         # clf = self.clf
         # clf.classification = True
+        self.debug("Fit the Data")
         check_generator = check_estimator(self.clf, generate_only=True)
         check_generator2 = check_estimator(self.reg, generate_only=True)
 
@@ -112,7 +114,7 @@ class TestFeatWrapper(unittest.TestCase):
         dfy = pd.DataFrame(data={'label':self.yr})
 
         self.reg.fit(dfX,dfy['label'])
-        assert(self.reg.feature_names == ','.join(dfX.columns).encode())
+        assert(self.reg.feature_names == ','.join(dfX.columns))
 
     #Test: Assert the length of labels returned from predict
     def test_predict_stats_length(self):
@@ -180,7 +182,7 @@ class TestFeatWrapper(unittest.TestCase):
 
     def test_lr_l1(self):
         """testing l1 penalized LR"""
-        self.clf.ml = b'L1_LR'
+        self.clf.ml = 'L1_LR'
         self.clf.fit(self.X,self.yc)
 
         self.assertEqual(len(self.clf.predict(self.X)), len(self.yc))

@@ -17,14 +17,31 @@ import json
 
 
 class Feat(PyFeat, BaseEstimator):
+
+    def __init__(self, **kwargs):
+        return PyFeat.__init__(self, **kwargs)
+    # def get_params(self, deep=False):
+    #     if deep:
+    #         return self.get_params()
+    #     return self.params
    
+    def get_params(self, deep=False):
+        # for name in dir(self.__class__):
+        #     print('getting',name)
+        #     obj = getattr(self.__class__, name)
+        #     if isinstance(obj, property):
+        #         val = obj.__get__(self, self.__class__)
+        params = {k[1:] : v for k, v in self.__dict__.items() 
+                if k.startswith("_") and not k.endswith("_")}
+        print('returning params:',params)
+        return params
+
     def fit(self,X,y,zfile=None,zids=None):
         """Fit a model."""    
         X = self._clean(X, set_feature_names=True)
         y = self._clean(y)
 
         if zfile:
-            zfile = zfile.encode() if isinstance(zfile,str) else zfile
             self._fit_with_z(X,y,zfile,zids)
         else:
             self._fit(X,y)
@@ -39,7 +56,6 @@ class Feat(PyFeat, BaseEstimator):
 
         X = self._clean(X)
         if zfile:
-            zfile = zfile.encode() if isinstance(zfile,str) else zfile
             return self._predict_with_z(X,zfile,zids)
         else:
             return self._predict(X)
@@ -73,7 +89,6 @@ class Feat(PyFeat, BaseEstimator):
 
         X = self._clean(X)
         if zfile:
-            zfile = zfile.encode() if isinstance(zfile,str) else zfile
             return self._transform_with_z(X,zfile,zids)
         else:
             return self._transform(X)
@@ -101,10 +116,10 @@ class Feat(PyFeat, BaseEstimator):
 
     def _clean(self, x, set_feature_names=False):
         """Converts dataframe to array, optionally returning feature names"""
-        feature_names = ''.encode()
+        feature_names = ''
         if type(x).__name__ == 'DataFrame':
             if set_feature_names and len(list(x.columns)) == x.shape[1]:
-                self.feature_names = ','.join(x.columns).encode()
+                self.feature_names = ','.join(x.columns)
                 return x.values
             else:
                 return x.values
@@ -114,29 +129,29 @@ class Feat(PyFeat, BaseEstimator):
             assert(type(x).__name__ == 'ndarray')
             return x
 
-class FeatRegressor(Feat, RegressorMixin):
+# class FeatRegressor(Feat, RegressorMixin):
     # def __new__(cls, **kwargs):
     #     kwargs['classification'] = False
     #     if 'ml' not in kwargs: kwargs['ml'] = b'Ridge'
     #     print('FeatRegressor.new', kwargs)
     #     return super().__new__(cls, **kwargs)
-    def fit(self,X,y,zfile=None,zids=None):
-        self.classification = False
-        Feat.fit(self,X,y,zfile,zids)
+    # def fit(self,X,y,zfile=None,zids=None):
+    #     self.classification = False
+    #     Feat.fit(self,X,y,zfile,zids)
 
-class FeatClassifier(Feat,ClassifierMixin):
+# class FeatClassifier(Feat,ClassifierMixin):
     # def __new__(cls, **kwargs):
     #     kwargs['classification'] = True
     #     if 'ml' not in kwargs: kwargs['ml'] = b'L2_LR'
     #     print('FeatClassifier.new', kwargs)
     #     return super().__new__(cls, **kwargs)
 
-    def fit(self,X,y,zfile=None,zids=None):
-        self.classification = True
-        # check ml is classifier
-        if self.ml == 'Ridge': 
-            self.ml = b'LR'
-        Feat.fit(self, X, y)
+    # def fit(self,X,y,zfile=None,zids=None):
+    #     self.classification = True
+    #     # check ml is classifier
+    #     if self.ml == 'Ridge': 
+    #         self.ml = b'LR'
+    #     Feat.fit(self, X, y)
 
         
 
@@ -147,7 +162,6 @@ class FeatClassifier(Feat,ClassifierMixin):
 
         X = self._clean(X)
         if zfile:
-            zfile = zfile.encode() if isinstance(zfile,str) else zfile
             tmp = self._predict_proba_with_z(X,zfile,zids)
         else:
             tmp = self._predict_proba(X)
@@ -164,7 +178,6 @@ class FeatClassifier(Feat,ClassifierMixin):
         X = self._clean(X)
         if zfile:
             raise ImplementationError('longitudinal not implemented')
-            # zfile = zfile.encode() if isinstance(zfile,str) else zfile
             # return self._predict_with_z(X,zfile,zids)
             return 1
 
