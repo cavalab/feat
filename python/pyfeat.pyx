@@ -164,7 +164,7 @@ cdef class PyFeat:
     def __cinit__(self, **kwargs):
 
         self.ft = Feat()
-        self._set_params(**kwargs)
+        # self._set_params(**kwargs)
 
     def _fit(self,np.ndarray X,np.ndarray y):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
@@ -340,13 +340,18 @@ cdef class PyFeat:
     def _get_params(self):
         property_names=[]
         for p in dir(self.__class__):
-            if p.startswith('__') or p.endswith('_'): continue
-            # this line avoids BaseEstimator param '_repr_html_', that is not 
-            # defined and also cannot be caught for some reason
-            if p == '_repr_html_': continue
-            if isinstance(getattr(self,p),property):
+            if ((not p.startswith('_')) 
+                or p.startswith('__') 
+                or p.endswith('_')): 
+                continue
+            # note: cython properties are actually basic data types
+            if type(getattr(self,p)).__name__ in ['bool','int','str','float']:
                 property_names.append(p)
-        return {p:getattr(self,p) for p in property_names}
+            # else:
+            #     print(p,'rejected, type name:',type(getattr(self,p)).__name__)
+        tmp = {p:getattr(self,p) for p in property_names}
+        print('returning',tmp,'from _get_params()')
+        return tmp
         # return json.loads(self.ft.get_params())
 
     ###########################################################################
@@ -431,7 +436,7 @@ cdef class PyFeat:
 
     @property
     def _otype(self):  
-        return self.ft.get_otype()
+        return string(1, <char>self.ft.get_otype()).decode()
         # return str(self.ft.get_otype()).encode()
     @_otype.setter
     def _otype(self, value):

@@ -66,7 +66,7 @@ Parameters::~Parameters(){}
  *  make sure scorer is set. 
  *  for classification, check clases and find number.
  */
-void Parameters::init(const MatrixXf& X, const VectorXf& y, string scorer)
+void Parameters::init(const MatrixXf& X, const VectorXf& y)
 {
     if (ml == "LinearRidgeRegression" && classification)
     {
@@ -76,7 +76,6 @@ void Parameters::init(const MatrixXf& X, const VectorXf& y, string scorer)
     if (this->classification)  // setup classification endpoint
     {
        this->set_classes(y);       
-       this->set_scorer(scorer);
     } 
     
     if (this->dtypes.size()==0)    // set feature types if not set
@@ -90,35 +89,42 @@ void Parameters::init(const MatrixXf& X, const VectorXf& y, string scorer)
         }
         cout << "\n";
     }
+    this->set_scorer("", true);
 }
 
 /// sets current generation
 void Parameters::set_current_gen(int g) { current_gen = g; }
 
 /// sets scorer type
-void Parameters::set_scorer(string sc)
+void Parameters::set_scorer(string sc, bool initialized)
 {
-    if (sc.empty())
+    string tmp_scorer = this->scorer;
+    if (sc.empty()) 
     {
-        if (classification && n_classes == 2)
+        if (this->scorer.empty() && initialized)
         {
-            if (ml.compare("LR") || ml.compare("SVM"))
-                scorer = "log";
+            if (classification && n_classes == 2)
+            {
+                if (ml.compare("LR") || ml.compare("SVM"))
+                    scorer = "log";
+                else
+                    scorer = "zero_one";
+            }
+            else if (classification){
+                if (ml.compare("LR") || ml.compare("SVM"))
+                    scorer = "multi_log";
+                else
+                    scorer = "bal_zero_one";
+            }
             else
-                scorer = "zero_one";
+                scorer = "mse";
         }
-        else if (classification){
-            if (ml.compare("LR") || ml.compare("SVM"))
-                scorer = "multi_log";
-            else
-                scorer = "bal_zero_one";
-        }
-        else
-            scorer = "mse";
     }
     else
         scorer = sc;
-    logger.log("scorer set to " + scorer,3);
+
+    if (!this->scorer.empty() && tmp_scorer != this->scorer)
+        logger.log("scorer changed to " + scorer,2);
 }
 
 /// sets weights for terminals. 

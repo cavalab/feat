@@ -134,11 +134,12 @@ class Feat(PyFeat, BaseEstimator):
     starting_pop: str, optional (default: "")
         Provide a starting pop in json format. 
     """
+    classification = None # set by derived classes
+
     def __init__(self, 
                  pop_size=100, 
                  gens=100, 
-                 ml= "LinearRidgeRegression", 
-                 classification=False, 
+                 ml= 'LinearRidgeRegression', 
                  verbosity=0, 
                  max_stall=0, 
                  sel="lexicase", 
@@ -182,7 +183,6 @@ class Feat(PyFeat, BaseEstimator):
         self.pop_size=pop_size
         self.gens=gens
         self.ml=ml
-        self.classification=classification
         self.verbosity=verbosity
         self.max_stall=max_stall
         self.sel=sel
@@ -222,6 +222,8 @@ class Feat(PyFeat, BaseEstimator):
         self.tune_initial=tune_initial
         self.tune_final=tune_final
         self.starting_pop=starting_pop
+        
+        print('self classification:',self.classification)
 
         #TODO: figure out correct setting of scorer
         # self._set_params(**{'_'+k:v for k,v in self.get_params().items()})
@@ -234,13 +236,15 @@ class Feat(PyFeat, BaseEstimator):
     def load(self, filename):
         self._load(filename)
         self.set_params(**{k[1:]:v for k,v in self._get_params().items()})
+        return self
 
     def get_params(self, deep=False):
         return self.__dict__
 
     def fit(self,X,y,zfile=None,zids=None):
         """Fit a model."""    
-        self._set_params(**{'_'+k:v for k,v in self.get_params().items()})
+        self._set_params(**{'_'+k:v for k,v in self.get_params().items()},
+                         _classification=self.classification)
 
         X = self._clean(X, set_feature_names=True)
         y = self._clean(y)
@@ -249,6 +253,8 @@ class Feat(PyFeat, BaseEstimator):
             self._fit_with_z(X,y,zfile,zids)
         else:
             self._fit(X,y)
+
+        self.set_params(**{k[1:]:v for k,v in self._get_params().items()})
 
         return self
 
@@ -289,7 +295,7 @@ class Feat(PyFeat, BaseEstimator):
     def transform(self,X,zfile=None,zids=None):
         """Return the representation's transformation of X"""
         if not self._fitted_:
-            raise ValueError("Call fit before calling predict.")
+            raise ValueError("Call fit before calling transform.")
 
         X = self._clean(X)
         if zfile:
@@ -333,31 +339,11 @@ class Feat(PyFeat, BaseEstimator):
             assert(type(x).__name__ == 'ndarray')
             return x
 
-# class FeatRegressor(Feat, RegressorMixin):
-    # def __new__(cls, **kwargs):
-    #     kwargs['classification'] = False
-    #     if 'ml' not in kwargs: kwargs['ml'] = b'Ridge'
-    #     print('FeatRegressor.new', kwargs)
-    #     return super().__new__(cls, **kwargs)
-    # def fit(self,X,y,zfile=None,zids=None):
-    #     self.classification = False
-    #     Feat.fit(self,X,y,zfile,zids)
+class FeatRegressor(Feat):
+    classification=False
 
-# class FeatClassifier(Feat,ClassifierMixin):
-    # def __new__(cls, **kwargs):
-    #     kwargs['classification'] = True
-    #     if 'ml' not in kwargs: kwargs['ml'] = b'L2_LR'
-    #     print('FeatClassifier.new', kwargs)
-    #     return super().__new__(cls, **kwargs)
-
-    # def fit(self,X,y,zfile=None,zids=None):
-    #     self.classification = True
-    #     # check ml is classifier
-    #     if self.ml == 'Ridge': 
-    #         self.ml = b'LR'
-    #     Feat.fit(self, X, y)
-
-        
+class FeatClassifier(Feat):
+    classification=True
 
     def predict_proba(self,X,zfile=None,zids=None):
         """Return probabilities of predictions for data X"""

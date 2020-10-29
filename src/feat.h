@@ -465,7 +465,6 @@ class Feat
         bool use_arch;         ///< internal control over use of archive
         string survival;                        ///< stores survival mode
         Normalizer N;                           ///< scales training data.
-        string scorer;                          ///< scoring function name.
         // performance tracking
         float min_loss;                      ///< current best score
         float min_loss_v;                    ///< best validation score
@@ -511,7 +510,6 @@ class Feat
                 use_arch,
                 survival,
                 N,
-                scorer,
                 min_loss,
                 min_loss_v,
                 best_med_score,

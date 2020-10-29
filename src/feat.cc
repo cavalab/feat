@@ -48,7 +48,6 @@ Feat::Feat(int pop_size, int gens, string ml,
           val_from_arch(val_from_arch),
           simplify(simplify),
           starting_pop(starting_pop),
-          scorer(scorer),
           survival(surv),
           random_state(random_state)
 {
@@ -159,8 +158,8 @@ void Feat::set_fb(float fb){ params.feedback = fb;}
 void Feat::set_logfile(string s){logfile = s;}
 
 ///set scoring function
-void Feat::set_scorer(string s){scorer=s;}
-string Feat::get_scorer(){return scorer;}
+void Feat::set_scorer(string s){params.set_scorer(s);}
+string Feat::get_scorer(){return params.scorer;}
 
 /// set constant optimization options
 void Feat::set_backprop(bool bp){params.backprop=bp;}
@@ -523,7 +522,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
         set_max_dim(ceil(stod(dimension)*X.rows()));
     }
     
-    params.init(X, y, scorer);       
+    params.init(X, y);       
     
     this->arch.set_objectives(params.objectives);
 

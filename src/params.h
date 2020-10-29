@@ -110,13 +110,13 @@ struct Parameters
      *  make sure scorer is set. 
      *  for classification, check clases and find number.
      */
-    void init(const MatrixXf& X, const VectorXf& y, string scorer="");
+    void init(const MatrixXf& X, const VectorXf& y);
   
     /// sets current generation
     void set_current_gen(int g);
     
     /// sets scorer type
-    void set_scorer(string sc);
+    void set_scorer(string sc="", bool initialized=false);
     
     /// sets weights for terminals. 
     void set_term_weights(const vector<float>& w);

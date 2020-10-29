@@ -3,7 +3,7 @@
 Copyright 2016 William La Cava
 license: GNU/GPLv3
 """
-from feat import Feat 
+from feat import Feat, FeatRegressor, FeatClassifier 
 from sklearn.datasets import load_diabetes
 import unittest
 import argparse
@@ -18,9 +18,8 @@ class TestFeatWrapper(unittest.TestCase):
 
     def setUp(self):
         self.v = verbosity
-        self.reg = Feat(verbosity=verbosity, n_jobs=1, gens=5)
-        self.clf = Feat(classification=True, ml="LR", verbosity=verbosity, 
-                        n_jobs=1, gens=5)
+        self.reg = FeatRegressor(verbosity=verbosity, n_jobs=1, gens=5)
+        self.clf = FeatClassifier(verbosity=verbosity, n_jobs=1, gens=5)
         diabetes = load_diabetes()
         self.X = diabetes.data
         self.yr = diabetes.target
@@ -34,10 +33,12 @@ class TestFeatWrapper(unittest.TestCase):
         check_generator2 = check_estimator(self.reg, generate_only=True)
 
         for est, check in check_generator:
+            est.verbosity=2
             print(check)
             check(est)
         
         for est, check in check_generator2:
+            est.verbosity=2
             print(check)
             check(est)
 
@@ -172,8 +173,11 @@ class TestFeatWrapper(unittest.TestCase):
         self.debug("Test archive")
 
         self.clf.fit(self.X,self.yc)
+        self.debug('grabbing archive..')
         archive = self.clf.get_archive()
+        self.debug('grabbing predictions..')
         preds = self.clf.predict_archive(self.X)
+        self.debug('grabbing prediction probs..')
         probs = self.clf.predict_proba_archive(self.X)
 
         for arch, pred, prob in zip(archive, preds, probs):
