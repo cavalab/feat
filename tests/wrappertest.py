@@ -32,12 +32,12 @@ class TestFeatWrapper(unittest.TestCase):
         check_generator = check_estimator(self.clf, generate_only=True)
         check_generator2 = check_estimator(self.reg, generate_only=True)
 
-        for est, check in check_generator:
-            est.verbosity=2
-            print(check)
-            check(est)
         
         for est, check in check_generator2:
+            print(check)
+            check(est)
+
+        for est, check in check_generator:
             est.verbosity=2
             print(check)
             check(est)

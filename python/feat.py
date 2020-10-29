@@ -27,8 +27,11 @@ class Feat(PyFeat, BaseEstimator):
         Number of iterations to train for
     ml: str, optional (default: "LinearRidgeRegression")
         ML pairing. Choices: LinearRidgeRegression, Lasso, L1_LR, L2_LR
-    classification: boolean, optional (default: False)
-        Whether to do classification instead of regression. 
+        FeatRegressor sets to "LinearRidgeRegression";
+        FeatClassifier sets to L2 penalized LR ("LR")
+    classification: boolean or None, optional (default: None)
+        Whether to do classification or regression. Set explicitly in 
+        FeatRegressor and FeatClassifier accordingly.
     verbosity: int, optional (default: 0)
         How much to print out (0, 1, 2)
     max_stall: int, optional (default: 0)
@@ -134,12 +137,12 @@ class Feat(PyFeat, BaseEstimator):
     starting_pop: str, optional (default: "")
         Provide a starting pop in json format. 
     """
-    classification = None # set by derived classes
 
     def __init__(self, 
                  pop_size=100, 
                  gens=100, 
                  ml= 'LinearRidgeRegression', 
+                 classification=False,
                  verbosity=0, 
                  max_stall=0, 
                  sel="lexicase", 
@@ -183,6 +186,7 @@ class Feat(PyFeat, BaseEstimator):
         self.pop_size=pop_size
         self.gens=gens
         self.ml=ml
+        self.classification = classification
         self.verbosity=verbosity
         self.max_stall=max_stall
         self.sel=sel
@@ -223,12 +227,6 @@ class Feat(PyFeat, BaseEstimator):
         self.tune_final=tune_final
         self.starting_pop=starting_pop
         
-        print('self classification:',self.classification)
-
-        #TODO: figure out correct setting of scorer
-        # self._set_params(**{'_'+k:v for k,v in self.get_params().items()})
-        # self.set_params(**{k[1:]:v for k,v in self._get_params().items()})
-   
     def set_params(self, **params):
         for k,v in params.items():
             setattr(self,k,v)
@@ -238,17 +236,23 @@ class Feat(PyFeat, BaseEstimator):
         self.set_params(**{k[1:]:v for k,v in self._get_params().items()})
         return self
 
-    def get_params(self, deep=False):
+    def get_params(self, deep=False, static_params=False):
+        # if static_params:
+        # # handle class-level params (e.g. classification)
+        #     params = self.__dict__
+        #     params.update({'classification':self.classification})
+        #     return params
+
         return self.__dict__
 
     def fit(self,X,y,zfile=None,zids=None):
         """Fit a model."""    
-        self._set_params(**{'_'+k:v for k,v in self.get_params().items()},
-                         _classification=self.classification)
 
         X = self._clean(X, set_feature_names=True)
         y = self._clean(y)
 
+        self._set_params(**{'_'+k:v for k,v in self.get_params(
+                            static_params=True).items()})
         if zfile:
             self._fit_with_z(X,y,zfile,zids)
         else:
@@ -336,14 +340,31 @@ class Feat(PyFeat, BaseEstimator):
         elif type(x).__name__ == 'Series':
             return x.values
         else:
-            assert(type(x).__name__ == 'ndarray')
+            if not isinstance(x, np.ndarray):
+                try:
+                    x = np.ndarray(x)
+                except Exception as e:
+                    raise e
+
+            assert isinstance(x, np.ndarray)
+
             return x
 
 class FeatRegressor(Feat):
-    classification=False
+    """Convenience method that enforces regression options."""
+    def fit(self,X,y,zfile=None,zids=None):
+        self.classification=False
+        if self.ml == "": self.ml = "LinearRidgeRegression"
+        Feat.fit(self,X,y,zfile,zids)
 
 class FeatClassifier(Feat):
-    classification=True
+    """Convenience method that enforces classification options.
+        Also includes methods for prediction probabilities.
+    """
+    def fit(self,X,y,zfile=None,zids=None):
+        self.classification=True
+        if self.ml == "": self.ml = "LR"
+        Feat.fit(self,X,y,zfile,zids)
 
     def predict_proba(self,X,zfile=None,zids=None):
         """Return probabilities of predictions for data X"""

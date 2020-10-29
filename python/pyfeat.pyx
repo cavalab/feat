@@ -333,16 +333,20 @@ cdef class PyFeat:
         self.ft.load_population(filename)
 
     def _set_params(self, **params):
-        print('_set_params called with',params)
+        # print('_set_params called with',params)
         for k,v in params.items():
-            setattr(self, k, v)
+            if not k.endswith('_'):
+                setattr(self, k, v)
 
     def _get_params(self):
+        exclusions = ['_repr_html_']
         property_names=[]
         for p in dir(self.__class__):
             if ((not p.startswith('_')) 
                 or p.startswith('__') 
-                or p.endswith('_')): 
+                ): 
+                continue
+            if p in exclusions:
                 continue
             # note: cython properties are actually basic data types
             if type(getattr(self,p)).__name__ in ['bool','int','str','float']:
@@ -350,7 +354,7 @@ cdef class PyFeat:
             # else:
             #     print(p,'rejected, type name:',type(getattr(self,p)).__name__)
         tmp = {p:getattr(self,p) for p in property_names}
-        print('returning',tmp,'from _get_params()')
+        # print('returning',tmp,'from _get_params()')
         return tmp
         # return json.loads(self.ft.get_params())
 
