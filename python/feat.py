@@ -165,7 +165,7 @@ class Feat(PyFeat, BaseEstimator):
                  iters=10, 
                  lr=0.1, 
                  batch_size=0, 
-                 n_jobs=0, 
+                 n_jobs=1, 
                  hillclimb=False, 
                  logfile="", 
                  max_time=-1, 
@@ -355,7 +355,7 @@ class FeatRegressor(Feat):
     def fit(self,X,y,zfile=None,zids=None):
         self.classification=False
         if self.ml == "": self.ml = "LinearRidgeRegression"
-        Feat.fit(self,X,y,zfile,zids)
+        return Feat.fit(self,X,y,zfile,zids)
 
 class FeatClassifier(Feat):
     """Convenience method that enforces classification options.
@@ -364,7 +364,7 @@ class FeatClassifier(Feat):
     def fit(self,X,y,zfile=None,zids=None):
         self.classification=True
         if self.ml == "": self.ml = "LR"
-        Feat.fit(self,X,y,zfile,zids)
+        return Feat.fit(self,X,y,zfile,zids)
 
     def predict_proba(self,X,zfile=None,zids=None):
         """Return probabilities of predictions for data X"""
