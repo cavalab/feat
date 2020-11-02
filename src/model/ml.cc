@@ -514,8 +514,12 @@ ArrayXXf ML::predict_proba(const MatrixXf& X)
             SGVector<double> tmp = \
                            MLabels->get_multiclass_confidences(int(i));
             confidences.row(i) = Map<ArrayXd>(tmp.data(),tmp.size());
-            /* std::cout << confidences.row(i) << "\n"; */
+            std::cout << "multiclass confidences, row " << i << endl;
+            std::cout << confidences.row(i) << endl;
         }
+        cout << "conf: \n" << confidences.transpose() << endl;
+        cout << "shape: " << confidences.rows() << "," << confidences.cols() << endl;
+
         return confidences.template cast<float>();;
     }
     else

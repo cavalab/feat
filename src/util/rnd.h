@@ -35,7 +35,9 @@ namespace FT {
                 
                 static void destroy();
 
-                void set_seed(int seed);
+                void set_seed(int new_seed);
+        
+                int get_seed(){return this->seed;};
                 
                 int rnd_int( int lowerLimit, int upperLimit );
 
@@ -125,6 +127,8 @@ namespace FT {
                 vector<std::mt19937> rg;
                 
                 static Rnd* instance;
+
+                int seed;
          
         };
         

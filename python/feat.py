@@ -12,9 +12,9 @@ import pandas as pd
 from pyfeat import PyFeat
 from sklearn.metrics import mean_squared_error as mse
 from sklearn.metrics import log_loss
+from sklearn.utils import check_X_y, check_array
 import pdb
 import json
-
 
 class Feat(PyFeat, BaseEstimator):
     """Feature Engineering Automation Tool
@@ -137,6 +137,7 @@ class Feat(PyFeat, BaseEstimator):
     starting_pop: str, optional (default: "")
         Provide a starting pop in json format. 
     """
+    # classification_default = None
 
     def __init__(self, 
                  pop_size=100, 
@@ -237,19 +238,13 @@ class Feat(PyFeat, BaseEstimator):
         return self
 
     def get_params(self, deep=False, static_params=False):
-        # if static_params:
-        # # handle class-level params (e.g. classification)
-        #     params = self.__dict__
-        #     params.update({'classification':self.classification})
-        #     return params
-
-        return self.__dict__
+        return {k:v for k,v in self.__dict__.items() if not k.endswith('_')}
 
     def fit(self,X,y,zfile=None,zids=None):
         """Fit a model."""    
 
-        X = self._clean(X, set_feature_names=True)
-        y = self._clean(y)
+        X,y = self._clean(X, y, set_feature_names=True)
+        self.n_features_ = X.shape[1]
 
         self._set_params(**{'_'+k:v for k,v in self.get_params(
                             static_params=True).items()})
@@ -258,7 +253,8 @@ class Feat(PyFeat, BaseEstimator):
         else:
             self._fit(X,y)
 
-        self.set_params(**{k[1:]:v for k,v in self._get_params().items()})
+        self.set_params(**{k[1:]:v for k,v in self._get_params().items() 
+                          if k.endswith('_')})
 
         return self
 
@@ -267,8 +263,9 @@ class Feat(PyFeat, BaseEstimator):
         if not self._fitted_:
             raise ValueError("Call fit before calling predict.")
 
+        X = check_array(X)
+        self._check_shape(X)
 
-        X = self._clean(X)
         if zfile:
             return self._predict_with_z(X,zfile,zids)
         else:
@@ -279,7 +276,8 @@ class Feat(PyFeat, BaseEstimator):
         if not self._fitted_:
             raise ValueError("Call fit before calling predict.")
 
-        X = self._clean(X)
+        X = check_array(X)
+        self._check_shape(X)
 
         if zfile:
             raise ImplementationError('longitudinal not implemented')
@@ -301,7 +299,9 @@ class Feat(PyFeat, BaseEstimator):
         if not self._fitted_:
             raise ValueError("Call fit before calling transform.")
 
-        X = self._clean(X)
+        X = check_array(X)
+        self._check_shape(X)
+
         if zfile:
             return self._transform_with_z(X,zfile,zids)
         else:
@@ -322,63 +322,74 @@ class Feat(PyFeat, BaseEstimator):
     def score(self,X,y,zfile=None,zids=None):
         """Returns a score for the predictions of Feat on X versus true 
         labels y""" 
-        yhat = self.predict(X,zfile,zids).flatten()
         if ( self.classification ):
+            yhat = self.predict_proba(X,zfile,zids)
+            print('y:',y,y.shape)
+            print('yhat:',yhat, yhat.shape)
             return log_loss(y,yhat, labels=y)
         else:
+            yhat = self.predict(X,zfile,zids).flatten()
             return mse(y,yhat)
 
-    def _clean(self, x, set_feature_names=False):
+    def _clean(self, x, y, set_feature_names=False):
         """Converts dataframe to array, optionally returning feature names"""
         feature_names = ''
         if type(x).__name__ == 'DataFrame':
             if set_feature_names and len(list(x.columns)) == x.shape[1]:
                 self.feature_names = ','.join(x.columns)
-                return x.values
-            else:
-                return x.values
-        elif type(x).__name__ == 'Series':
-            return x.values
-        else:
-            if not isinstance(x, np.ndarray):
-                try:
-                    x = np.ndarray(x)
-                except Exception as e:
-                    raise e
+        return check_X_y(x,y, ensure_min_samples=2)
 
-            assert isinstance(x, np.ndarray)
-
-            return x
+    def _check_shape(self, X):
+        if X.shape[1] != self.n_features_:
+            raise ValueError('The number of features ({}) in X do not match '
+                             'the number of features used for training '
+                             '({})'.format(X.shape[1],self.n_features_))
 
 class FeatRegressor(Feat):
     """Convenience method that enforces regression options."""
-    def fit(self,X,y,zfile=None,zids=None):
-        self.classification=False
-        if self.ml == "": self.ml = "LinearRidgeRegression"
-        return Feat.fit(self,X,y,zfile,zids)
+    def __init__(self,**kwargs):
+        kwargs.update({'classification':False})
+        if 'ml' not in kwargs: 
+            kwargs['ml'] = 'LinearRidgeRegression'
+        Feat.__init__(self,**kwargs)
 
 class FeatClassifier(Feat):
     """Convenience method that enforces classification options.
         Also includes methods for prediction probabilities.
     """
-    def fit(self,X,y,zfile=None,zids=None):
-        self.classification=True
-        if self.ml == "": self.ml = "LR"
-        return Feat.fit(self,X,y,zfile,zids)
+    # classification_default = True
+    def __init__(self,**kwargs):
+        kwargs.update({'classification':True})
+        if 'ml' not in kwargs: 
+            kwargs['ml'] = 'LR'
+        Feat.__init__(self,**kwargs)
+
+    # def fit(self,X,y,zfile=None,zids=None):
+    #     if self.ml == "": self.ml = "LR"
+    #     print('.....')
+    #     print('X:',X)
+    #     print('y:',y)
+    #     print('fitting...')
+    #     return Feat.fit(self,X,y,zfile,zids)
 
     def predict_proba(self,X,zfile=None,zids=None):
         """Return probabilities of predictions for data X"""
         if not self._fitted_:
             raise ValueError("Call fit before calling predict.")
 
-        X = self._clean(X)
+        X = check_array(X)
+        self._check_shape(X)
+
         if zfile:
             tmp = self._predict_proba_with_z(X,zfile,zids)
         else:
             tmp = self._predict_proba(X)
         
+        print('tmp shape:',tmp.shape)
+        print('tmp:',tmp)
         if len(tmp.shape)<2:
                 tmp  = np.vstack((1-tmp,tmp)).transpose()
+        print('returning tmp:',tmp)
         return tmp         
 
     def predict_proba_archive(self,X,zfile=None,zids=None):
@@ -386,7 +397,9 @@ class FeatClassifier(Feat):
         if not self._fitted_:
             raise ValueError("Call fit before calling predict.")
 
-        X = self._clean(X)
+        X = check_array(X)
+        self._check_shape(X)
+
         if zfile:
             raise ImplementationError('longitudinal not implemented')
             # return self._predict_with_z(X,zfile,zids)

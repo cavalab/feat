@@ -48,8 +48,7 @@ Feat::Feat(int pop_size, int gens, string ml,
           val_from_arch(val_from_arch),
           simplify(simplify),
           starting_pop(starting_pop),
-          survival(surv),
-          random_state(random_state)
+          survival(surv)
 {
     if (n_jobs!=0)
         omp_set_num_threads(n_jobs);
@@ -127,13 +126,12 @@ void Feat::set_max_depth(unsigned int max_depth)
 void Feat::set_max_dim(unsigned int max_dim){	params.set_max_dim(max_dim); }
 
 ///set dimensionality as multiple of the number of columns
-void Feat::set_max_dim(string str) { str_dim = str; }            
+void Feat::set_max_dim(string str){ str_dim = str; }            
 
 /// set seeds for each core's random number generator              
 void Feat::set_random_state(int rs)
 { 
-    this->random_state = rs; 
-    r.set_seed(this->random_state); 
+    r.set_seed(rs); 
 }
             
 /// flag to set whether to use variable or constants for terminals              
@@ -680,17 +678,20 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
         arch.archive = pop.individuals;
     }
 
-    logger.log("\n===\nRun Completed. Total time taken is " 
-            + std::to_string(timer.Elapsed().count()) + "\n", 1);
-
     if (save_pop > 0)
-        pop.save(this->logfile+".pop.gen" + to_string(params.current_gen) + ".json");
+    {
+        pop.save(this->logfile+".pop.gen" + to_string(params.current_gen) 
+                + ".json");
         this->best_ind.save(this->logfile+".best.json");
+    }
     
     if (log.is_open())
         log.close();
 
     this->fitted = true;
+    logger.log("\n===\nRun Completed. Total time taken is " 
+            + std::to_string(timer.Elapsed().count()) + "\n", 1);
+
 }
 
 void Feat::run_generation(unsigned int g,

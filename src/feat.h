@@ -81,7 +81,7 @@ class Feat
              string surv="nsga2", float cross_rate = 0.5, 
              float root_xo_rate = 0.5, char otype='a', 
              string functions = "", unsigned int max_depth = 3, 
-             unsigned int max_dim = 10, int random_state=0, 
+             unsigned int max_dim = 10, int random_state=-1, 
              bool erc = false, string obj="fitness,complexity", 
              bool shuffle=true, float split=0.75, float fb=0.5, 
              string scorer="", string feature_names="",
@@ -143,7 +143,7 @@ class Feat
         
         /// set seeds for each core's random number generator              
         void set_random_state(int random_state);
-        int get_random_state(){ return random_state; };
+        int get_random_state(){ return r.get_seed(); };
                     
         /// flag to set whether to use variable or constants for terminals
         void set_erc(bool erc);
@@ -472,7 +472,6 @@ class Feat
         int best_complexity;  ///< complexity of the best model
         string str_dim; ///< dimensionality as multiple of number of cols 
         string starting_pop; ///< file with starting population
-        int random_state; ///< random state used to seed run
         Individual best_ind;                    ///< best individual
         string logfile;                         ///< log filename
         int save_pop;  ///< controls whether pop is printed each gen
@@ -516,7 +515,6 @@ class Feat
                 best_complexity,
                 str_dim,
                 starting_pop,
-                random_state,
                 best_ind,
                 fitted
                 );
