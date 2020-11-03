@@ -143,7 +143,9 @@ class Feat
         
         /// set seeds for each core's random number generator              
         void set_random_state(int random_state);
-        int get_random_state(){ return r.get_seed(); };
+        int get_random_state() { return this->random_state; };
+        /// returns the actual seed determined by the input argument.
+        int get_random_state_() { return r.get_seed(); };
                     
         /// flag to set whether to use variable or constants for terminals
         void set_erc(bool erc);
@@ -168,7 +170,10 @@ class Feat
 
         ///set scoring function
         void set_scorer(string s);
+        // returns the input argument for scorer.
         string get_scorer();
+        // returns the actual scorer determined by the input argument.
+        string get_scorer_();
         
         void set_feature_names(string s){params.set_feature_names(s); };
         string get_feature_names(){return params.get_feature_names(); };
@@ -339,6 +344,7 @@ class Feat
         void set_tune_final(bool in){ this->params.tune_final = in;};
 
         string get_functions(){return params.get_functions();};
+        string get_functions_(){return params.get_functions_();};
 
         string get_obj(){return params.get_objectives(); };  
         void set_obj(string in){return params.set_objectives(in); };  
@@ -444,10 +450,14 @@ class Feat
         /// load population from file, optionall just Pareto front
         void load_population(string filename, bool justfront=false);
 
+        /// load Feat state from a json string.
+        void load(const string& feat_state);
         /// load Feat state from file.
-        void load(string filename);
+        void load_from_file(string filename);
+        /// save and return a json Feat state as string.
+        string save();
         /// save Feat state to file.
-        void save(string filename);
+        void save_to_file(string filename);
         
         bool fitted; ///< keeps track of whether fit was called.
     private:
@@ -478,6 +488,7 @@ class Feat
         bool val_from_arch; ///< model selection only uses Pareto front
         float simplify;  ///< post-run simplification
         Log_Stats stats; ///< runtime stats
+        int random_state;
 
         /* functions */
         /// updates best score
@@ -516,7 +527,8 @@ class Feat
                 str_dim,
                 starting_pop,
                 best_ind,
-                fitted
+                fitted,
+                random_state
                 );
                 
 };

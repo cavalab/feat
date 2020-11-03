@@ -37,6 +37,7 @@ struct Parameters
     vector<float> term_weights; ///< probability weighting of terminals
     vector<float> op_weights;   ///< probability weighting of functions
     NodeVector functions;       ///< function nodes available in programs
+    string function_str;       ///< the string arg passed to set_functions
     NodeVector terminals;       ///< terminal nodes available in programs
     ///<vector storing longitudinal data keys
     vector<std::string> longitudinalMap; 
@@ -56,7 +57,8 @@ struct Parameters
     vector<int> classes;      ///< class labels
     vector<float> class_weights;  ///< weights for each class
     vector<float> sample_weights; ///< weights for each sample 
-    string scorer;                ///< loss function
+    string scorer;                ///< loss function argument
+    string scorer_;   ///< actual loss function used, determined by scorer
     vector<string> feature_names; ///< names of features
     bool backprop;  ///< turns on backpropagation
     bool hillclimb; ///< turns on parameter hill climbing
@@ -130,7 +132,10 @@ struct Parameters
     
     /// sets available functions based on comma-separated list.
     void set_functions(string fs);
-    string get_functions();
+    /// returns the function_str argument used to determine the function set.
+    string get_functions(){return this->function_str; }
+    /// returns the set of functions to use determined at run-time.
+    string get_functions_();
     
     /// max_size is max_dim binary trees of max_depth
     void updateSize();
@@ -205,6 +210,7 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Parameters,
     class_weights,                
     sample_weights,               
     scorer,                              
+    scorer_,
     feature_names,               
     backprop,                              
     hillclimb,                             

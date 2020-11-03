@@ -141,7 +141,7 @@ int Population::load(string filename)
     std::ifstream indata;
     indata.open(filename);
     if (!indata.good())
-        HANDLE_ERROR_THROW("Invalid input file " + filename + "\n"); 
+        THROW_INVALID_ARGUMENT("Invalid input file " + filename + "\n"); 
 
     std::string line;
     indata >> line; 
@@ -156,7 +156,7 @@ int Population::load(string filename)
     /* std::ifstream indata; */
     /* indata.open(filename); */
     /* if (!indata.good()) */
-    /*     HANDLE_ERROR_THROW("Invalid population input file " + filename + "\n"); */ 
+    /*     THROW_INVALID_ARGUMENT("Invalid population input file " + filename + "\n"); */ 
 
     /* std::string line; */
     /* int i = 0; */
@@ -172,7 +172,7 @@ int Population::load(string filename)
     /*     } */
     /*     else */
     /*     { */
-    /*         HANDLE_ERROR_THROW("Couldn't load individual " + to_string(i) */ 
+    /*         THROW_INVALID_ARGUMENT("Couldn't load individual " + to_string(i) */ 
     /*                            +", pop size is limited to " */ 
     /*                            + to_string(individuals.size())); */
     /*     } */

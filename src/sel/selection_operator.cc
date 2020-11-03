@@ -13,13 +13,13 @@ SelectionOperator::~SelectionOperator(){}
 vector<size_t> SelectionOperator::select(Population& pop, 
         const Parameters& p, const Data& d) 
 {   
-    HANDLE_ERROR_THROW("Undefined select() operation");
+    THROW_INVALID_ARGUMENT("Undefined select() operation");
 }
 
 vector<size_t> SelectionOperator::survive(Population& pop, 
         const Parameters& p, const Data& d)
 {
-    HANDLE_ERROR_THROW("Undefined select() operation");
+    THROW_INVALID_ARGUMENT("Undefined select() operation");
 }
     
 }

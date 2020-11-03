@@ -44,7 +44,8 @@ Parameters::Parameters(int pop_size, int gens, string ml, bool classification,
         softmax_norm(sftmx),
         normalize(nrm),
         tune_initial(tune_init),
-        tune_final(tune_fin)
+        tune_final(tune_fin),
+        scorer(sc)
     {
         set_verbosity(verbosity);
             
@@ -98,7 +99,7 @@ void Parameters::set_current_gen(int g) { current_gen = g; }
 /// sets scorer type
 void Parameters::set_scorer(string sc, bool initialized)
 {
-    string tmp_scorer = this->scorer;
+    string tmp = this->scorer_;
     if (sc.empty()) 
     {
         if (this->scorer.empty() && initialized)
@@ -106,25 +107,25 @@ void Parameters::set_scorer(string sc, bool initialized)
             if (classification && n_classes == 2)
             {
                 if (ml.compare("LR") || ml.compare("SVM"))
-                    scorer = "log";
+                    scorer_ = "log";
                 else
-                    scorer = "zero_one";
+                    scorer_ = "zero_one";
             }
             else if (classification){
                 if (ml.compare("LR") || ml.compare("SVM"))
-                    scorer = "multi_log";
+                    scorer_ = "multi_log";
                 else
-                    scorer = "bal_zero_one";
+                    scorer_ = "bal_zero_one";
             }
             else
-                scorer = "mse";
+                scorer_ = "mse";
         }
     }
     else
-        scorer = sc;
+        scorer_ = sc;
 
-    if (!this->scorer.empty() && tmp_scorer != this->scorer)
-        logger.log("scorer changed to " + scorer,2);
+    if (tmp != this->scorer_)
+        logger.log("scorer changed to " + scorer_,2);
 }
 
 /// sets weights for terminals. 
@@ -155,7 +156,7 @@ void Parameters::set_term_weights(const vector<float>& w)
         }
         int x = 0;
         if (aw.size() != terminals.size())
-            HANDLE_ERROR_THROW("There are " + to_string(aw.size()) +
+            THROW_LENGTH_ERROR("There are " + to_string(aw.size()) +
                     "weights and " + to_string(terminals.size()) + 
                     "terminals");
         // assign transformed weights as terminal weights
@@ -327,7 +328,7 @@ std::unique_ptr<Node> Parameters::createNode(string str,
     }
         
     else
-        HANDLE_ERROR_THROW("Error: no node named '" + str + "' exists."); 
+        THROW_INVALID_ARGUMENT("Error: no node named '" + str + "' exists."); 
     
 }
 
@@ -401,6 +402,7 @@ void Parameters::set_functions(string fs)
      *		modifies functions 
      *
      */
+    this->function_str = fs;
 
     if (fs.empty())
         fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
@@ -431,7 +433,7 @@ void Parameters::set_functions(string fs)
     // reset output types
     set_otypes();
 }
-string Parameters::get_functions()
+string Parameters::get_functions_()
 {
     vector<string> fn_vec;
     for (const auto& fn : this->functions)
@@ -657,7 +659,25 @@ void Parameters::set_classes(const VectorXf& y)
 
     // set class labels
     vector<float> uc = unique(y);
-    
+
+    string str_classes = "{";
+    for (auto c : uc)
+        str_classes += to_string(c) + ",";
+    str_classes = str_classes.substr(0,str_classes.size()-1);
+    str_classes += "}";
+
+    // check that class labels are contiguous and start at 0
+    if (int(uc.at(0)) != 0)
+        THROW_INVALID_ARGUMENT("Class labels must start at 0 and be "
+                "contiguous. The input classes are " + str_classes);
+    vector<int> cont_classes(uc.size());
+    iota(cont_classes.begin(), cont_classes.end(), 0);
+    for (int i = 0; i < cont_classes.size(); ++i)
+    {
+        if ( int(uc.at(i)) != cont_classes.at(i))
+            THROW_INVALID_ARGUMENT("Class labels must start at 0 and be "
+                    "contiguous. Passed labels = " + str_classes);
+    }
     n_classes = uc.size();
 
     for (auto c : uc)
@@ -667,7 +687,6 @@ void Parameters::set_classes(const VectorXf& y)
 void Parameters::set_sample_weights(VectorXf& y)
 {
     // set class weights
-    /* cout << "setting sample weights\n"; */
     class_weights.resize(n_classes);
     sample_weights.clear();
     for (unsigned i = 0; i < n_classes; ++i){
@@ -675,12 +694,9 @@ void Parameters::set_sample_weights(VectorXf& y)
                (y.cast<int>().array() == int(classes.at(i))).count())/y.size(); 
         class_weights.at(i) = (1 - class_weights.at(i))*float(n_classes);
     }
-    /* cout << "y size: " << y.size() << "\n"; */
     for (unsigned i = 0; i < y.size(); ++i)
+    {
         sample_weights.push_back(class_weights.at(int(y(i))));
-    /* std::cout << "sample weights size: " << sample_weights.size() << "\n"; */
-    /* std::cout << "class weights: "; */ 
-    /* for (auto c : class_weights) std::cout << c << " " ; std::cout << "\n"; */
-    /* std::cout << "number of classes: " << n_classes << "\n"; */
+    }
 }
 }

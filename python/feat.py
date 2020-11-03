@@ -13,6 +13,7 @@ from pyfeat import PyFeat
 from sklearn.metrics import mean_squared_error as mse
 from sklearn.metrics import log_loss
 from sklearn.utils import check_X_y, check_array
+from sklearn.preprocessing import LabelEncoder
 import pdb
 import json
 
@@ -233,9 +234,32 @@ class Feat(PyFeat, BaseEstimator):
             setattr(self,k,v)
 
     def load(self, filename):
-        self._load(filename)
+        """Load a saved Feat state from file."""
+        with open(filename, 'r') as of:
+            feat_state = json.load(of)
+        # separate out the python-specific keys
+        py_keys = [k for k in feat_state if k.endswith('_')]
+        self.set_params(**{k:feat_state[k] for k in py_keys})
+        # remove python-specific keys before invoking c++ method
+        for k in py_keys: 
+            del feat_state[k]
+        self._load(json.dumps(feat_state))
+
         self.set_params(**{k[1:]:v for k,v in self._get_params().items()})
+
         return self
+
+    def save(self, filename):
+        """Save a Feat state to file."""
+
+        feat_state = json.loads(self._save())
+        # add python-specific parameters
+        for k in self.__dict__: 
+            if k.endswith('_'):
+                feat_state[k] = self.__dict__[k]
+
+        with open(filename, 'w') as of:
+            json.dump(feat_state, of)
 
     def get_params(self, deep=False, static_params=False):
         return {k:v for k,v in self.__dict__.items() if not k.endswith('_')}
@@ -244,7 +268,7 @@ class Feat(PyFeat, BaseEstimator):
         """Fit a model."""    
 
         X,y = self._clean(X, y, set_feature_names=True)
-        self.n_features_ = X.shape[1]
+        self.n_features_in_ = X.shape[1]
 
         self._set_params(**{'_'+k:v for k,v in self.get_params(
                             static_params=True).items()})
@@ -324,8 +348,6 @@ class Feat(PyFeat, BaseEstimator):
         labels y""" 
         if ( self.classification ):
             yhat = self.predict_proba(X,zfile,zids)
-            print('y:',y,y.shape)
-            print('yhat:',yhat, yhat.shape)
             return log_loss(y,yhat, labels=y)
         else:
             yhat = self.predict(X,zfile,zids).flatten()
@@ -340,10 +362,10 @@ class Feat(PyFeat, BaseEstimator):
         return check_X_y(x,y, ensure_min_samples=2)
 
     def _check_shape(self, X):
-        if X.shape[1] != self.n_features_:
+        if X.shape[1] != self.n_features_in_:
             raise ValueError('The number of features ({}) in X do not match '
                              'the number of features used for training '
-                             '({})'.format(X.shape[1],self.n_features_))
+                             '({})'.format(X.shape[1],self.n_features_in_))
 
 class FeatRegressor(Feat):
     """Convenience method that enforces regression options."""
@@ -364,13 +386,14 @@ class FeatClassifier(Feat):
             kwargs['ml'] = 'LR'
         Feat.__init__(self,**kwargs)
 
-    # def fit(self,X,y,zfile=None,zids=None):
-    #     if self.ml == "": self.ml = "LR"
-    #     print('.....')
-    #     print('X:',X)
-    #     print('y:',y)
-    #     print('fitting...')
-    #     return Feat.fit(self,X,y,zfile,zids)
+    def fit(self,X,y,zfile=None,zids=None):
+        self.le_ = LabelEncoder().fit(y)
+        return Feat.fit(self, X, self.le_.transform(y), zfile, zids)
+
+    def predict(self,X,zfile=None,zids=None):
+        return self.le_.transform(
+            Feat.predict(self, X, zfile, zids)
+        )
 
     def predict_proba(self,X,zfile=None,zids=None):
         """Return probabilities of predictions for data X"""
@@ -384,12 +407,9 @@ class FeatClassifier(Feat):
             tmp = self._predict_proba_with_z(X,zfile,zids)
         else:
             tmp = self._predict_proba(X)
-        
-        print('tmp shape:',tmp.shape)
-        print('tmp:',tmp)
+
         if len(tmp.shape)<2:
-                tmp  = np.vstack((1-tmp,tmp)).transpose()
-        print('returning tmp:',tmp)
+            tmp = np.vstack((1-tmp,tmp)).transpose()
         return tmp         
 
     def predict_proba_archive(self,X,zfile=None,zids=None):

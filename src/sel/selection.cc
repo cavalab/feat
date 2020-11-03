@@ -35,8 +35,7 @@ void Selection::set_operator()
     else if (this->type == "simanneal")    // offspring survival
         pselector = std::make_shared<SimAnneal>(survival);
     else
-        HANDLE_ERROR_NO_THROW("Undefined Selection Operator " 
-                + this->type + "\n");
+        WARN("Undefined Selection Operator " + this->type + "\n");
         
 }
 

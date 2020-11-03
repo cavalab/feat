@@ -31,7 +31,7 @@ void load_csv (const std::string & path, MatrixXf& X, VectorXf& y,
     std::ifstream indata;
     indata.open(path);
     if (!indata.good())
-        HANDLE_ERROR_THROW("Invalid input file " + path + "\n"); 
+        THROW_INVALID_ARGUMENT("Invalid input file " + path + "\n"); 
         
     std::string line;
     std::vector<float> values, targets;
@@ -69,7 +69,7 @@ void load_csv (const std::string & path, MatrixXf& X, VectorXf& y,
     y = Map<VectorXf>(targets.data(), targets.size());
     
     if (X.cols() != y.size())
-        HANDLE_ERROR_THROW("different numbers of samples in X and y");
+        THROW_LENGTH_ERROR("different numbers of samples in X and y");
     if (X.rows() != names.size())
     {
         string error_msg = "header missing or incorrect number of "
@@ -79,7 +79,7 @@ void load_csv (const std::string & path, MatrixXf& X, VectorXf& y,
         error_msg += "feature names: ";
         for (auto fn: names)
             error_msg += fn + ",";
-        HANDLE_ERROR_THROW(error_msg);
+        THROW_LENGTH_ERROR(error_msg);
     }
    
     dtypes = find_dtypes(X);
@@ -105,7 +105,7 @@ void load_longitudinal(const std::string & path,
     std::ifstream indata;
     indata.open(path);
     if (!indata.good())
-        HANDLE_ERROR_THROW("Invalid input file " + path + "\n"); 
+        THROW_INVALID_ARGUMENT("Invalid input file " + path + "\n"); 
         
     std::string line, firstKey = "";
    
@@ -205,8 +205,9 @@ void load_partial_longitudinal(const std::string & path,
                     blrg++;
                 }
                 if (blrg == 100)
-                    HANDLE_ERROR_THROW("insert failed on i = " + std::to_string(i) + 
-                                       " id = " + std::to_string(id));
+                    THROW_RUNTIME_ERROR("insert failed on i = " 
+                            + std::to_string(i) + " id = " 
+                            + std::to_string(id));
             }
         } 
         idLoc[id].push_back(i);
@@ -217,7 +218,7 @@ void load_partial_longitudinal(const std::string & path,
     /* cout << "idx size: " << idx.size() << "\n"; */
     /* if (idSet.size() != idx.size()) */
     /* { */
-    /*     HANDLE_ERROR_THROW("Sample IDs must be unique"); */ 
+    /*     THROW_RUNTIME_ERROR("Sample IDs must be unique"); */ 
     /* } */
     /* cout << "\n"; */
     // dataMap maps from the variable name (string) to a map containing 
@@ -228,7 +229,7 @@ void load_partial_longitudinal(const std::string & path,
     std::ifstream indata;
     indata.open(path);
     if (!indata.good())
-        HANDLE_ERROR_THROW("Invalid input file " + path + "\n");
+        THROW_INVALID_ARGUMENT("Invalid input file " + path + "\n");
     
     std::string line, firstKey = "";
    
@@ -303,9 +304,9 @@ void load_partial_longitudinal(const std::string & path,
         {
             if (val.second.find(x) == val.second.end())
             {
-                HANDLE_ERROR_THROW(std::to_string(x) + " not found (patient id = " 
-                                   + std::to_string(locID.at(x)) + ") in " + 
-                                   val.first);
+                THROW_RUNTIME_ERROR(std::to_string(x) 
+                        + " not found (patient id = " 
+                        + std::to_string(locID.at(x)) + ") in " + val.first);
                 pass = false;
             }
         }

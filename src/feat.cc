@@ -48,7 +48,8 @@ Feat::Feat(int pop_size, int gens, string ml,
           val_from_arch(val_from_arch),
           simplify(simplify),
           starting_pop(starting_pop),
-          survival(surv)
+          survival(surv),
+          random_state(random_state)
 {
     if (n_jobs!=0)
         omp_set_num_threads(n_jobs);
@@ -131,6 +132,7 @@ void Feat::set_max_dim(string str){ str_dim = str; }
 /// set seeds for each core's random number generator              
 void Feat::set_random_state(int rs)
 { 
+    this->random_state=rs;
     r.set_seed(rs); 
 }
             
@@ -157,6 +159,7 @@ void Feat::set_logfile(string s){logfile = s;}
 
 ///set scoring function
 void Feat::set_scorer(string s){params.set_scorer(s);}
+string Feat::get_scorer_(){return params.scorer_;}
 string Feat::get_scorer(){return params.scorer;}
 
 /// set constant optimization options
@@ -479,6 +482,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
 
     // start the clock
     timer.Reset();
+    r.set_seed(this->random_state); 
 
     params.use_batch = params.bp.batch_size>0;
 
@@ -528,7 +532,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     if (params.normalize)
         N.fit_normalize(X,params.dtypes);                   
     this->pop = Population(params.pop_size);
-    this->evaluator = Evaluation(params.scorer);
+    this->evaluator = Evaluation(params.scorer_);
 
     // create an archive to save Pareto front, unless NSGA-2 is being used for survival 
     /* if (!survival.compare("nsga2")) */
@@ -541,7 +545,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     for (const auto& f: params.functions) log_msg += f->name + ", "; 
     log_msg += "]\n";
     logger.log(log_msg, 1);
-    logger.log("scorer: " + params.scorer, 1);
+    logger.log("scorer: " + params.scorer_, 1);
 
     // split data into training and test sets
     //Data data(X, y, Z, params.classification);
@@ -1190,7 +1194,8 @@ MatrixXf Feat::transform(MatrixXf& X,
     if (ind == 0)        // if ind is empty, predict with best_ind
     {
         if (best_ind.program.size()==0)
-            HANDLE_ERROR_THROW("You need to train a model using fit() before making predictions.");
+            THROW_RUNTIME_ERROR("You need to train a model using fit() "
+                    "before making predictions.");
         
         return best_ind.out(d, true);
     }
@@ -1252,7 +1257,7 @@ VectorXf Feat::predict_archive(int id, MatrixXf& X,
 
     }
 
-    HANDLE_ERROR_THROW("Could not find id = "
+    THROW_INVALID_ARGUMENT("Could not find id = "
             + to_string(id) + "in archive.");
     return VectorXf();
 }
@@ -1281,7 +1286,7 @@ ArrayXXf Feat::predict_proba_archive(int id, MatrixXf& X,
 
     }
 
-    HANDLE_ERROR_THROW("Could not find id = "
+    THROW_INVALID_ARGUMENT("Could not find id = "
             + to_string(id) + "in archive.");
     return ArrayXXf();
     
@@ -1639,25 +1644,38 @@ void Feat::load_population(string filename, bool justfront)
     this->pop.load(filename);
 }
 
-void Feat::load(string filename)
+void Feat::load(const string& feat_state)
+{
+    json j = json::parse(feat_state);
+    from_json(j, *this);
+}
+
+void Feat::load_from_file(string filename)
 {
     std::ifstream indata;
     indata.open(filename);
     if (!indata.good())
-        HANDLE_ERROR_THROW("Invalid input file " + filename + "\n"); 
+        THROW_INVALID_ARGUMENT("Invalid input file " + filename + "\n"); 
 
     std::string line;
     indata >> line; 
 
-    json j = json::parse(line);
-    from_json(j, *this);
+    this->load(line);
 
     logger.log("Loaded Feat state from " + filename,1);
 
     indata.close();
 }
 
-void Feat::save(string filename)
+string Feat::save()
+{
+    json j;
+    to_json(j, *this);
+
+    return j.dump();
+}
+
+void Feat::save_to_file(string filename)
 {
     std::ofstream out;                      
     if (!filename.empty())
@@ -1665,9 +1683,7 @@ void Feat::save(string filename)
     else
         out.open("Feat.json");
 
-    json j;
-    to_json(j, *this);
-    out << j ;
+    out << this->save();
     out.close();
     logger.log("Saved Feat to file " + filename, 1);
 }

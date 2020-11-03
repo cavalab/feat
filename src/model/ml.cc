@@ -39,7 +39,7 @@ ML::ML(string ml, bool norm, bool classification, int n_classes)
     if ( ml_hash.find(ml) == ml_hash.end() ) 
     {
         // not found
-        HANDLE_ERROR_THROW("ml type '" + ml + "' not defined");
+        THROW_INVALID_ARGUMENT("ml type '" + ml + "' not defined");
     } 
     else 
         this->ml_type = ml_hash.at(ml);
@@ -120,7 +120,7 @@ void ML::init(bool assign_p_est)
             if (assign_p_est)
                 p_est = make_shared<CMyMulticlassLibLinear>();
                 dynamic_pointer_cast<CMyMulticlassLibLinear>(
-                        p_est)->set_prob_heuris(sh::OVA_NORM);
+                        p_est)->set_prob_heuris(sh::OVA_SOFTMAX);
 
         }
         else                // SVR
@@ -154,14 +154,13 @@ void ML::init(bool assign_p_est)
                     p_est)->set_max_iterations(100);
             dynamic_pointer_cast<sh::CMyLibLinear>(
                     p_est)->set_C(this->C,this->C); 
-            //cout << "set ml type to CMyLibLinear\n";
         }
         else    // multiclass  
         {
             if (assign_p_est)
                 p_est = make_shared<sh::CMulticlassLogisticRegression>();
             dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(
-                    p_est)->set_prob_heuris(sh::OVA_NORM);
+                    p_est)->set_prob_heuris(sh::OVA_SOFTMAX);
             dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(
                     p_est)->set_z(this->C);
             dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(
@@ -174,8 +173,7 @@ void ML::init(bool assign_p_est)
     
     }
     else
-        HANDLE_ERROR_NO_THROW("'" + ml_str 
-                + "' is not a valid ml choice\n");
+        THROW_INVALID_ARGUMENT("'" + ml_str + "' is not a valid ml choice\n");
     // set maximum training time per model 
     p_est->set_max_train_time(max_train_time);          
 }
@@ -507,23 +505,23 @@ ArrayXXf ML::predict_proba(const MatrixXf& X)
     {
         shared_ptr<CMulticlassLabels> MLabels = \
                     dynamic_pointer_cast<CMulticlassLabels>(labels);
-        MatrixXd confidences(MLabels->get_num_classes(), 
-                MLabels->get_num_labels()) ; 
-        for (unsigned i =0; i<confidences.rows(); ++i)
+
+        /* AFAIK, the only reliable way to get the number of classes
+         * is to measure the output */
+        int n_classes = MLabels->get_multiclass_confidences(0).size();
+        MatrixXd confidences(n_classes, 
+                             MLabels->get_num_labels()); 
+        for (int i =0; i<confidences.cols(); ++i)
         {
             SGVector<double> tmp = \
-                           MLabels->get_multiclass_confidences(int(i));
-            confidences.row(i) = Map<ArrayXd>(tmp.data(),tmp.size());
-            std::cout << "multiclass confidences, row " << i << endl;
-            std::cout << confidences.row(i) << endl;
+                           MLabels->get_multiclass_confidences(i);
+            confidences.col(i) = Map<ArrayXd>(tmp.data(),tmp.size());
         }
-        cout << "conf: \n" << confidences.transpose() << endl;
-        cout << "shape: " << confidences.rows() << "," << confidences.cols() << endl;
 
         return confidences.template cast<float>();;
     }
     else
-        HANDLE_ERROR_THROW("Error: predict_proba not defined for "
+        THROW_INVALID_ARGUMENT("Error: predict_proba not defined for "
                 "problem type or ML method");
 }
 
@@ -575,7 +573,8 @@ void ML::set_bias(float b)
                 p_est)->set_bias(b);
     }
     else
-        HANDLE_ERROR_NO_THROW("WARNING: Couldn't set bias, not a binary linear machine");
+        THROW_RUNTIME_ERROR("WARNING: Couldn't set bias, "
+                "not a binary linear machine");
 }
 
 shared_ptr<CLabels> ML::retrieve_labels(CDenseFeatures<float64_t>* features, 
@@ -630,16 +629,16 @@ shared_ptr<CLabels> ML::retrieve_labels(CDenseFeatures<float64_t>* features,
         y_pred = dynamic_pointer_cast<sh::CRegressionLabels>(
                 labels)->get_labels();
     }
-    // map to Eigen vector
+    // map to Eigen vector to check output
     Map<VectorXd> yhat(y_pred.data(),y_pred.size());
    
-
     if (isinf(yhat.array()).any() || isnan(yhat.array()).any() 
             || yhat.size()==0)
         pass = false;
 
     return labels;
 }
+
 shared_ptr<CLabels> ML::fit_tune(MatrixXf& X, VectorXf& y, 
         const Parameters& params, bool& pass, const vector<char>& dtypes, 
         bool set_default)
@@ -648,7 +647,7 @@ shared_ptr<CLabels> ML::fit_tune(MatrixXf& X, VectorXf& y,
     LongData Z;
     DataRef d_cv(X, y, Z, params.classification, 
             params.protected_groups);
-    FT::Eval::Scorer S(params.scorer);
+    FT::Eval::Scorer S(params.scorer_);
     // for linear models, tune the regularization strength
     if (in({LARS, Ridge, L1_LR, LR}, this->ml_type) )
     {
@@ -769,7 +768,7 @@ void to_json(json& j, const ML& ml)
         
     }
     else
-        HANDLE_ERROR_NO_THROW("WARNING: this is not a linear model; at the moment,"
+        WARN("this is not a linear model; at the moment,"
                 " it will need to be refit to be used after loading.");
 }
 

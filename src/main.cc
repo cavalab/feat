@@ -65,7 +65,7 @@ int main(int argc, char** argv){
     InputParser input(argc, argv);
     if(input.cmdOptionExists("-h") || input.dataset.empty()){
         if (input.dataset.empty() && !input.cmdOptionExists("-h")) 
-            HANDLE_ERROR_NO_THROW("Error: no dataset specified.\n---\n");
+            WARN("Error: no dataset specified.\n---\n");
         // Print help and exit. 
         cout << "Feat is a feature engineering wrapper for learning intelligible models.\n";
         cout << "Usage:\tfeat path/to/dataset [options]\n";
@@ -192,7 +192,7 @@ int main(int argc, char** argv){
     {
         int time = std::stoi(input.getCmdOption("-max_time"));
         if(time <= 0)
-            HANDLE_ERROR_NO_THROW("WARNING: max_time cannot be less than equal to 0");
+            WARN("WARNING: max_time cannot be less than equal to 0");
         else
             feat.set_max_time(time);
     }
@@ -240,7 +240,7 @@ int main(int argc, char** argv){
     if (binary_endpoint)
     {
         if (!feat.get_classification())
-            HANDLE_ERROR_NO_THROW("WARNING: binary endpoint detected. " \
+            WARN("WARNING: binary endpoint detected. " \
                                   "Feat is set for regression.");
         else
             std::cout << "setting binary endpoint\n";

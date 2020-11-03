@@ -96,7 +96,7 @@ size_t NodeVector::subtree(size_t i, char otype, string indent) const
     */
    size_t tmp = i;
    if (i<0 || i > this->size())
-       HANDLE_ERROR_THROW("Attempting got grab subtree with index " 
+       THROW_LENGTH_ERROR("Attempting got grab subtree with index " 
                + to_string(i) + " and program size " 
                + to_string(this->size()));
           
@@ -119,7 +119,7 @@ size_t NodeVector::subtree(size_t i, char otype, string indent) const
        while (i>0 && this->at(i)->otype != otype) --i;    
 
        if (this->at(i)->otype != otype)
-           HANDLE_ERROR_THROW("invalid subtree arguments");
+           THROW_INVALID_ARGUMENT("invalid subtree arguments");
    }
  
    /* cout << indent << "i at 125: " << i << "\n"; */
@@ -179,7 +179,7 @@ void NodeVector::set_weights(vector<vector<float>>& weights)
                          "].size() (" + to_string(weights.at(count).size()) +
                          ") != W.size() ("+ to_string(nd->W.size()) + "\n";
                          
-                HANDLE_ERROR_THROW(error);
+                THROW_LENGTH_ERROR(error);
             }
             ++count;
         }
@@ -292,7 +292,7 @@ void NodeVector::make_tree(const NodeVector& functions,
             string ttypes = "";
             for (const auto& t : terminals)
                 ttypes += t->name + ": " + t->otype + "\n";
-            HANDLE_ERROR_THROW("Error: make_tree couldn't find properly typed terminals\n"
+            THROW_RUNTIME_ERROR("Error: make_tree couldn't find properly typed terminals\n"
                                + ttypes);
         }
     }
@@ -329,7 +329,7 @@ void NodeVector::make_tree(const NodeVector& functions,
 
         }
         if (fi.size() == 0)
-            HANDLE_ERROR_THROW("The operator set specified "
+            THROW_RUNTIME_ERROR("The operator set specified "
                     "results in incomplete programs.");
         
         // append a random choice from fs            
@@ -342,12 +342,6 @@ void NodeVector::make_tree(const NodeVector& functions,
         
         /* std::unique_ptr<Node> chosen(back()->clone()); */
         map<char, unsigned> chosen_arity = back()->arity;
-        /* std::cout << "chosen: " << chosen->name << "\n"; */ 
-        /* std::cout << "continue?" ; */
-        /* int cont = 0; */
-        /* std::cin >>  cont ; */ 
-        /* if (cont != 1) */
-        /*     HANDLE_ERROR_THROW("exiting"); */
         // recurse to fulfill the arity of the chosen function
         vector<char> type_order = {'f','b','c','z'};
         for (auto type : type_order)
@@ -444,7 +438,7 @@ void from_json(const json& j, NodeVector& nv)
             node_name = k.at("name").get<string>() + "_" 
                                + to_string(k.at("otype").get<char>());
             if (Op::node_map.find(node_name) == Op::node_map.end())
-                HANDLE_ERROR_THROW(node_name + " not found");
+                THROW_INVALID_ARGUMENT(node_name + " not found");
         }
 
         auto n = node_map[node_name]->clone();

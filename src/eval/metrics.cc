@@ -102,7 +102,7 @@ namespace FT
                 else
                     loss(i) = -(y(i)*log(yhat(i)) + (1-y(i))*log(1-yhat(i)));
                 if (loss(i)<0)
-                    HANDLE_ERROR_THROW("loss(i)= " + to_string(loss(i)) 
+                    THROW_RUNTIME_ERROR("loss(i)= " + to_string(loss(i)) 
                             + ". y = " + to_string(y(i)) + ", yhat(i) = " 
                             + to_string(yhat(i)));
 

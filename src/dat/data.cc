@@ -81,7 +81,7 @@ namespace FT{
 
             batch_size =  std::min(batch_size,int(y.size()));
             if (batch_size < 1)
-                HANDLE_ERROR_NO_THROW("WARNING: batch_size is set to " 
+                WARN("batch_size is set to " 
                         + to_string(batch_size) + " when getting batch");
 
             vector<size_t> idx(y.size());

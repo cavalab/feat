@@ -107,7 +107,7 @@ namespace FT{
                 {
                     #pragma omp critical
                     {
-                    AutoBackProp backprop(params.scorer, params.bp.iters, 
+                    AutoBackProp backprop(params.scorer_, params.bp.iters, 
                             params.bp.learning_rate);
                     logger.log("Running backprop on " + ind.get_eqn(), 3);
                     backprop.run(ind, d, params);
@@ -137,7 +137,7 @@ namespace FT{
 
                     if (params.hillclimb)
                     {
-                        HillClimb hc(params.scorer, params.hc.iters, 
+                        HillClimb hc(params.scorer_, params.hc.iters, 
                                 params.hc.step);
                         bool updated = false;
                         shared_ptr<CLabels> yhat2 = hc.run(ind, d, params,

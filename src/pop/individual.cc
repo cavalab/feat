@@ -262,9 +262,9 @@ shared_ptr<CLabels> Individual::predict(const Data& d)
     if (Phi_pred.size()==0)
     {
         if (d.X.cols() == 0)
-            HANDLE_ERROR_THROW("The prediction dataset has no data");
+            THROW_LENGTH_ERROR("The prediction dataset has no data");
         else
-            HANDLE_ERROR_THROW("Phi_pred is empty");
+            THROW_LENGTH_ERROR("Phi_pred is empty");
     }
     // calculate ML model from Phi
     logger.log("ML predicting on " + get_eqn(), 3);
@@ -282,7 +282,7 @@ ArrayXXf Individual::predict_proba(const Data& d)
     // TODO: guarantee this is not changing nodes
 
     if (Phi_pred.size()==0)
-        HANDLE_ERROR_THROW("Phi_pred must be generated before "
+        THROW_RUNTIME_ERROR("Phi_pred must be generated before "
                 "predict() is called\n");
     // calculate ML model from Phi
     logger.log("ML predicting on " + get_eqn(), 3);
@@ -315,7 +315,7 @@ MatrixXf Individual::state_to_phi(State& state)
         if (state.c.size() == 0)
         {
             if (state.b.size() == 0)
-                HANDLE_ERROR_THROW("Error: no outputs in State");
+                THROW_RUNTIME_ERROR("Error: no outputs in State");
             
             cols = state.b.top().size();
         }
@@ -359,7 +359,7 @@ MatrixXf Individual::state_to_phi(State& state)
                     state.b.at(rows.at(rt)).data(),cols).cast<float>();
                 break;
             default:
-                HANDLE_ERROR_THROW("Unknown root type");
+                THROW_RUNTIME_ERROR("Unknown root type");
         }
         // remove nans, set infs to max and min
         clean(Row); 
@@ -394,7 +394,7 @@ MatrixXf Individual::out(const Data& d,  bool predict)
         if(state.check(n->arity))
             n->evaluate(d, state);
         else
-            HANDLE_ERROR_THROW("out() error: node " + n->name + " in " 
+            THROW_RUNTIME_ERROR("out() error: node " + n->name + " in " 
                     + program_str() + " failed arity check\n");
         
     }
@@ -473,7 +473,7 @@ MatrixXf Individual::out(const Data& d, bool predict)
         if (state.c.size() == 0)
         {
             if (state.b.size() == 0)
-                HANDLE_ERROR_THROW("Error: no outputs in state");
+                THROW_RUNTIME_ERROR("Error: no outputs in state");
             
             cols = state.b.cols();
         }
@@ -580,7 +580,7 @@ MatrixXf Individual::out_trace(const Data& d, vector<Trace>& state_trace)
             program.at(i)->visits = 0;
         }
         else
-            HANDLE_ERROR_THROW("out() error: node " 
+            THROW_RUNTIME_ERROR("out() error: node " 
                     + program.at(i)->name + " in " + program_str() 
                     + " is invalid\n");
     }
@@ -653,7 +653,7 @@ MatrixXf Individual::out_trace(const Data& d, vector<Trace>& state_trace)
             
         }
         else
-            HANDLE_ERROR_THROW("out_trace() error: node " 
+            THROW_RUNTIME_ERROR("out_trace() error: node " 
                     + program.at(i)->name + " in " + program_str() 
                     + " is invalid\n");
     }
@@ -669,7 +669,7 @@ MatrixXf Individual::out_trace(const Data& d, vector<Trace>& state_trace)
         if (state.c.size() == 0)
         {
             if (state.b.size() == 0)
-                HANDLE_ERROR_THROW("Error: no outputs in State");
+                THROW_RUNTIME_ERROR("Error: no outputs in State");
             
             cols = state.b.cols();
         }
@@ -739,7 +739,7 @@ string Individual::get_eqn()
         if(state.check_s(n->arity))
             n->eval_eqn(state);
         else
-            HANDLE_ERROR_THROW("get_eqn() error: node " 
+            THROW_RUNTIME_ERROR("get_eqn() error: node " 
                     + n->name + " at location " + to_string(i) 
                     + " in [ " + program_str() 
                     + " ] is invalid\n");
@@ -772,7 +772,7 @@ string Individual::get_eqn()
                 eqn += "[" + state.bs.at(rows[rt]) + "]";
                 break;
             default:
-                HANDLE_ERROR_THROW("Unknown root type");
+                THROW_RUNTIME_ERROR("Unknown root type");
         }
         ++rows.at(rt);
     }
@@ -792,7 +792,7 @@ vector<string> Individual::get_features()
         if(state.check_s(n->arity))
             n->eval_eqn(state);
         else
-            HANDLE_ERROR_THROW("get_eqn() error: node " + n->name 
+            THROW_RUNTIME_ERROR("get_eqn() error: node " + n->name 
                     + " in " + program_str() + " is invalid\n");
     }
     // tie state outputs together to return representation
@@ -822,7 +822,7 @@ vector<string> Individual::get_features()
                 features.push_back(state.bs.at(rows[rt]));
                 break;
             default:
-                HANDLE_ERROR_THROW("Unknown root type");
+                THROW_RUNTIME_ERROR("Unknown root type");
         }
         ++rows.at(rt);
     }
@@ -928,7 +928,7 @@ void Individual::set_obj(const vector<string>& objectives)
         else if (n.compare("fairness")==0)
             obj.push_back(fairness);
         else
-            HANDLE_ERROR_THROW(n+" is not a known objective");
+            THROW_INVALID_ARGUMENT(n+" is not a known objective");
     }
 
 }
@@ -1032,7 +1032,7 @@ void Individual::load(string filename)
     std::ifstream indata;
     indata.open(filename);
     if (!indata.good())
-        HANDLE_ERROR_THROW("Invalid input file " + filename + "\n"); 
+        THROW_INVALID_ARGUMENT("Invalid input file " + filename + "\n"); 
 
     std::string line;
     indata >> line; 

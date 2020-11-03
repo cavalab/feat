@@ -85,6 +85,7 @@ cdef extern from "feat.h" namespace "FT":
         char get_otype()
         void set_otype(char )
         string get_functions()
+        string get_functions_()
         void set_functions(string )
         int get_max_depth()   
         void set_max_depth(int)
@@ -152,7 +153,7 @@ cdef extern from "feat.h" namespace "FT":
         string get_stats()
         
         void load(string filename)
-        void save(string filename)
+        string save()
         void load_best_ind(string filename)
         void load_population(string filename)
         bool fitted
@@ -222,7 +223,7 @@ cdef class PyFeat:
 
         res = ndarray(self.ft.predict_proba_archive(i, &arr_x[0,0],
             X.shape[0],X.shape[1]))
-        return res
+        return np.transpose(res)
 
     def _predict_with_z(self,np.ndarray X, str zfile, np.ndarray zids):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
@@ -241,7 +242,7 @@ cdef class PyFeat:
         arr_x = np.asfortranarray(X, dtype=np.float32)
 
         res = ndarray(self.ft.predict_proba(&arr_x[0,0],X.shape[0],X.shape[1]))
-        return res.transpose()
+        return np.transpose(res)
 
     def _predict_proba_with_z(self,np.ndarray X, str zfile, np.ndarray zids):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
@@ -252,7 +253,7 @@ cdef class PyFeat:
         
         res = ndarray(self.ft.predict_proba_with_z(&arr_x[0,0],
             X.shape[0],X.shape[1], zfile.encode(), &arr_z_id[0], len(arr_z_id)))
-        return res.flatten()
+        return np.transpose(res)
 
     def _transform(self,np.ndarray X):
         cdef np.ndarray[np.float32_t, ndim=2, mode="fortran"] arr_x
@@ -315,14 +316,14 @@ cdef class PyFeat:
     def get_archive_size(self):
         return self.ft.get_archive_size()
 
-    def _load(self, filename):
-        self.ft.load(str(filename).encode())
+    def _load(self, feat_state):
+        self.ft.load(feat_state.encode())
 
-    def save(self, filename):
-        self.ft.save(str(filename).encode())
+    def _save(self):
+        return self.ft.save().decode()
 
-    def load_best_ind(self, filename):
-        self.ft.load_best_ind(str(filename).encode())
+    def _load_best_ind(self, filename):
+        self.ft.load_best_ind(filename.encode())
 
     def _load_population(self, filename):
         self.ft.load_population(filename)
@@ -441,6 +442,9 @@ cdef class PyFeat:
     def _otype(self, value):
         self.ft.set_otype(ord(value))
 
+    @property
+    def _functions_(self): 
+        return self.ft.get_functions_().decode()
     @property
     def _functions(self): 
         return self.ft.get_functions().decode()
