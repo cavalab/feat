@@ -38,12 +38,13 @@ echo "cython path is..."
 which cython
 
 # set environment variables for eigen and shogun includes
-export EIGEN3_INCLUDE_DIR="$HOME/miniconda/envs/feat-env/include/eigen3/"
+export EIGEN3_INCLUDE_DIR="$CONDA_PREFIX/include/eigen3/"
 echo "EIGEN3_INCLUDE_DIR set to $EIGEN3_INCLUDE_DIR"
-export SHOGUN_LIB=/home/travis/miniconda/envs/feat-env/lib/
+export SHOGUN_LIB="$CONDA_PREFIX/lib/"
 echo "SHOGUN_LIB set to $SHOGUN_LIB"
-export SHOGUN_DIR=/home/travis/miniconda/envs/feat-env/include/
+export SHOGUN_DIR="$CONDA_PREFIX/include/"
 echo "SHOGUN_DIR set to $SHOGUN_DIR"
+
 
 ####################################
 #building and installing google tests
@@ -69,4 +70,4 @@ cd $old_path; pwd
 echo "configuring feat..."
 ./configure tests
 echo "install feat..."
-./install -C build -j 4 y
+./install -j 4 y

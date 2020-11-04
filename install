@@ -18,9 +18,6 @@ do
         ;;
     lpc)
         module load gcc/5.2.0
-        export EIGEN3_INCLUDE_DIR="$HOME/eigen-3.3.4/"
-        export SHOGUN_DIR="$HOME/anaconda3/include/"
-        export SHOGUN_LIB="$HOME/anaconda3/lib/"    
         shift
         ;;
     n)

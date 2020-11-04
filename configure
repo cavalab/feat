@@ -6,44 +6,75 @@
 # ./configure debug : builds a debug version of feat.
 # ./configure profile: build a version of feat use with profiling tools. 
 # ===
+
+# add some environment variables
+# if you are not using conda, these paths should be changed
+# to point to the locations of the dependencies.
+export SHOGUN_LIB=$CONDA_PREFIX/lib/
+export SHOGUN_DIR=$CONDA_PREFIX/include/
+export EIGEN3_INCLUDE_DIR=$CONDA_PREFIX/include/eigen3/
+
+echo "SHOGUN_LIB set to $SHOGUN_LIB"
+echo "SHOGUN_DIR set to $SHOGUN_DIR"
+echo "EIGEN3_INCLUDE_DIR set to $EIGEN3_INCLUDE_DIR"
+
+# configuration options
+SHOGUN_KNOWN=ON
+EIGEN_KNOWN=ON
+OMP=ON
+EXTRA_FLAGS=""
+BUILD_DIR="build"
+
+# check if directories exist
+if [ ! -d "$SHOGUN_LIB" ]; then
+    echo "WARNING: SHOGUN_LIB path ($SHOGUN_LIB) does not exist."
+    echo "CMake will try to find it."
+    SHOGUN_KNOWN=OFF    
+fi
+
+if [ ! -d "$SHOGUN_DIR" ]; then
+    echo "WARNING: SHOGUN_DIR path ($SHOGUN_DIR) does not exist."
+    echo "CMake will try to find it."
+    SHOGUN_KNOWN=OFF    
+fi
+
+if [ ! -d "$EIGEN3_INCLUDE_DIR" ]; then
+    echo "WARNING: SHOGUN_LIB path ($EIGEN3_INCLUDE_DIR) does not exist."
+    echo "CMake will try to find it."
+    EIGEN_KNOWN=OFF    
+fi
+
 if [ "$1" == "debug" ]; then
-    rm -rf debug; mkdir debug; cd debug; 
-    cmake -DCMAKE_BUILD_TYPE=Debug -DSHOGUN_DIR=ON -DOMP=OFF ..
-    cd ..
+    BUILD_DIR="debug"
+    OMP=OFF
+    EXTRA_FLAGS="-DCMAKE_BUILD_TYPE=Debug"
 elif [ "$1" == "profile" ]; then
-    rm -rf profile; mkdir profile; cd profile;    
-    cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS=-p -DCMAKE_CXX_FLAGS=-O2 -DSHOGUN_DIR=ON ..
-    cd ..
+    BUILD_DIR="profile"
+    EXTRA_FLAGS="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS=-p -DCMAKE_CXX_FLAGS=-O2"
 elif [ "$1" == "lpc" ] ; then
     # set up LPC environment
-    module load cmake/3.4.3
     module load gcc/5.2.0
-    export EIGEN3_INCLUDE_DIR="$HOME/eigen-3.3.4/"
-    export SHOGUN_DIR="$HOME/anaconda3/include/"
-    export SHOGUN_LIB="$HOME/anaconda3/lib/"
-    rm -rf build; mkdir build; cd build; 
-    cmake -DEIGEN_DIR=ON -DSHOGUN_DIR=ON -DOMP=OFF ..
-    cd ..
+    OMP=OFF
 elif [ "$1" == "lpc_cuda" ] ; then
     # set up LPC environment
-    module load cmake/3.4.3
     module load gcc/5.2.0
-    export EIGEN3_INCLUDE_DIR="$HOME/eigen-3.3.4/"
-    export SHOGUN_DIR="$HOME/anaconda3/include/"
-    export SHOGUN_LIB="$HOME/anaconda3/lib/"
-    rm -rf buildGPU; mkdir buildGPU; cd buildGPU; 
-    cmake -DEIGEN_DIR=ON -DSHOGUN_DIR=ON -DOMP=OFF -DCORE_USE_CUDA=ON ..
-    cd ..
+    BUILD_DIR="buildGPU"
+    OMP=OFF
+    EXTRA_FLAGS="-DCORE_USE_CUDA=ON"
 elif [ "$1" == "tests" ] ; then 
-    rm -rf build; mkdir build; cd build; 
-    cmake -DSHOGUN_DIR=ON -DEIGEN_DIR=ON -DTEST=ON ..
-    cd ..
+    EXTRA_FLAGS="-DTEST=ON"
 elif [ "$1" == "gpu" ] ; then
-    rm -rf buildGPU; mkdir buildGPU; cd buildGPU; 
-    cmake -DCORE_USE_CUDA=ON -DSHOGUN_DIR=ON ..
-    cd ..
-else
-    rm -rf build; mkdir build; cd build; 
-    cmake -DSHOGUN_DIR=ON -DEIGEN_DIR=ON ..
-    cd ..
+    BUILD_DIR="buildGPU"
+    EXTRA_FLAGS="-DCORE_USE_CUDA=ON"
 fi
+
+echo "SHOGUN_KNOWN = $SHOGUN_KNOWN"
+echo "EIGEN_KNOWN = $EIGEN_KNOWN"
+echo "OMP = $OMP"
+echo "EXTRA_FLAGS = $EXTRA_FLAGS"
+echo "BUILD_DIR = $BUILD_DIR"
+
+#Run CMAKE
+rm -rf $BUILD_DIR; mkdir $BUILD_DIR; cd $BUILD_DIR; 
+cmake -DSHOGUN_DIR=$SHOGUN_KNOWN -DEIGEN_DIR=$EIGEN_KNOWN -DOMP=$OMP $EXTRA_FLAGS ..
+cd ..

@@ -15,7 +15,7 @@ Then the build process is the following:
     cd feat # enter the directory
     conda env create -f ci/test-environment.yml
     conda activate feat-env
-    #add some environment variables, where CONDA_PREFIX is the path to the environment
+    # add some environment variables. 
     export SHOGUN_LIB=$CONDA_PREFIX/lib/
     export SHOGUN_DIR=$CONDA_PREFIX/include/
     export EIGEN3_INCLUDE_DIR=$CONDA_PREFIX/include/eigen3/
@@ -25,6 +25,15 @@ Then the build process is the following:
     
 
 If you want to roll your own with the dependencies, some other options are shown below. 
+In this case, you need to tell the `configure` script where Shogun and Eigen are. 
+Edit this lines:
+
+.. code-block:: bash
+
+    export SHOGUN_LIB=/your/shogun/lib/
+    export SHOGUN_DIR=/your/shugn/include/
+    export EIGEN3_INCLUDE_DIR=/your/eigen/eigen3/
+
 
 Dependencies
 ------------
