@@ -9,6 +9,7 @@ license: GNU/GPL v3
 namespace FT{
 
 using namespace Util;
+using namespace Pop::Op;
     
 Parameters::Parameters(int pop_size, int gens, string ml, bool classification, 
         int max_stall, char ot, int verbosity, string fs, float cr, 
@@ -60,7 +61,12 @@ Parameters::Parameters(int pop_size, int gens, string ml, bool classification,
         set_current_gen(0);
     }
 
-Parameters::~Parameters(){}
+Parameters::~Parameters()
+{
+    
+}
+
+
 
 /*! checks initial parameter settings before training.
  *  make sure ml choice is valid for problem type.
@@ -275,7 +281,7 @@ std::unique_ptr<Node> Parameters::createNode(string str,
                                              string name)
 {
     // variables and constants
-    if (str.compare("x") == 0)
+    if (str == "x")
     { 
         if(dtypes.size() == 0)
         {
@@ -322,13 +328,20 @@ std::unique_ptr<Node> Parameters::createNode(string str,
             }
         }
     }
-    else if (Pop::Op::node_map.find(str) != Pop::Op::node_map.end())
-    {
-        return Pop::Op::node_map[str]->clone();
-    }
-        
+    else if (str == "z")
+        return std::unique_ptr<Node>(new NodeLongitudinal(name));
+    else if (NM.node_map.find(str) != NM.node_map.end())
+        return NM.node_map[str]->clone();
     else
+    {
+
+        cout << "NM.node_map = \n";
+        for (auto it = NM.node_map.cbegin(); it != NM.node_map.cend(); )
+        {
+            cout << it->first << it->second->name << endl;
+        }
         THROW_INVALID_ARGUMENT("Error: no node named '" + str + "' exists."); 
+    }
     
 }
 
@@ -407,8 +420,7 @@ void Parameters::set_functions(string fs)
     if (fs.empty())
         fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
               "logit,tanh,gauss,relu,"
-              "split,split_c,fuzzy_split,fuzzy_split_c,"
-              "fuzzy_fixed_split,fuzzy_fixed_split_c,"
+              "split,split_c,"
               "b2f,c2f,and,or,not,xor,=,<,<=,>,>=,if,ite";
     fs += ',';          // add delimiter to end 
     string delim = ",";
@@ -699,4 +711,69 @@ void Parameters::set_sample_weights(VectorXf& y)
         sample_weights.push_back(class_weights.at(int(y(i))));
     }
 }
+/* void Parameters::initialize_node_map() */
+/* { */
+
+/*    this->node_map = { */
+/*         //arithmetic operators */
+/*         { "+",  new NodeAdd({1.0,1.0})}, */ 
+/*         { "-",  new NodeSubtract({1.0,1.0})}, */ 
+/*         { "*",  new NodeMultiply({1.0,1.0})}, */ 
+/*         { "/",  new NodeDivide({1.0,1.0})}, */ 
+/*         { "sqrt",  new NodeSqrt({1.0})}, */ 
+/*         { "sin",  new NodeSin({1.0})}, */ 
+/*         { "cos",  new NodeCos({1.0})}, */ 
+/*         { "tanh",  new NodeTanh({1.0})}, */ 
+/*         { "^2",  new NodeSquare({1.0})}, */ 
+/*         { "^3",  new NodeCube({1.0})}, */ 
+/*         { "^",  new NodeExponent({1.0})}, */ 
+/*         { "exp",  new NodeExponential({1.0})}, */ 
+/*         { "gauss",  new NodeGaussian({1.0})}, */ 
+/*         { "gauss2d",  new Node2dGaussian({1.0, 1.0})}, */ 
+/*         { "log", new NodeLog({1.0}) }, */   
+/*         { "logit", new NodeLogit({1.0}) }, */
+/*         { "relu", new NodeRelu({1.0}) }, */
+/*         { "b2f", new NodeFloat<bool>() }, */
+/*         { "c2f", new NodeFloat<int>() }, */
+
+/*         // logical operators */
+/*         { "and", new NodeAnd() }, */
+/*         { "or", new NodeOr() }, */
+/*         { "not", new NodeNot() }, */
+/*         { "xor", new NodeXor() }, */
+/*         { "=", new NodeEqual() }, */
+/*         { ">", new NodeGreaterThan() }, */
+/*         { ">=", new NodeGEQ() }, */        
+/*         { "<", new NodeLessThan() }, */
+/*         { "<=", new NodeLEQ() }, */
+/*         { "split", new NodeSplit<float>() }, */
+/*         { "fuzzy_split", new NodeFuzzySplit<float>() }, */
+/*         { "fuzzy_fixed_split", new NodeFuzzyFixedSplit<float>() }, */
+/*         { "split_c", new NodeSplit<int>() }, */
+/*         { "fuzzy_split_c", new NodeFuzzySplit<int>() }, */
+/*         { "fuzzy_fixed_split_c", new NodeFuzzyFixedSplit<int>() }, */
+/*         { "if", new NodeIf() }, */   	    		
+/*         { "ite", new NodeIfThenElse() }, */
+/*         { "step", new NodeStep() }, */
+/*         { "sign", new NodeSign() }, */
+
+/*         // longitudinal nodes */
+/*         { "mean", new NodeMean() }, */
+/*         { "median", new NodeMedian() }, */
+/*         { "max", new NodeMax() }, */
+/*         { "min", new NodeMin() }, */
+/*         { "variance", new NodeVar() }, */
+/*         { "skew", new NodeSkew() }, */
+/*         { "kurtosis", new NodeKurtosis() }, */
+/*         { "slope", new NodeSlope() }, */
+/*         { "count", new NodeCount() }, */
+/*         { "recent", new NodeRecent() }, */
+/*         // terminals */
+/*         { "variable_f", new NodeVariable<float>() }, */
+/*         { "variable_b", new NodeVariable<bool>() }, */
+/*         { "variable_c", new NodeVariable<int>() }, */
+/*         { "constant_b", new NodeConstant(false) }, */
+/*         { "constant_d", new NodeConstant(0.0) }, */
+/*     }; */
+/* } */
 }

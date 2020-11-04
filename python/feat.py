@@ -63,7 +63,7 @@ class Feat(PyFeat, BaseEstimator):
         independent features it has. Controls the number of trees in each 
         individual.
     random_state: int, optional (default: 0)
-        Random seed.
+        Random seed. If -1, will choose a random random_state.
     erc: boolean, optional (default: False)
         If true, ephemeral random constants are included as nodes in trees.
     obj: str, optional (default: "fitness,complexity")
@@ -138,7 +138,8 @@ class Feat(PyFeat, BaseEstimator):
     starting_pop: str, optional (default: "")
         Provide a starting pop in json format. 
     """
-    # classification_default = None
+
+    __version__ = __version__
 
     def __init__(self, 
                  pop_size=100, 

@@ -433,15 +433,15 @@ void from_json(const json& j, NodeVector& nv)
     {
         string node_name = k.at("name").get<string>();
 
-        if (Op::node_map.find(node_name) == Op::node_map.end())
+        if (Op::NM.node_map.find(node_name) == Op::NM.node_map.end())
         {
             node_name = k.at("name").get<string>() + "_" 
                                + to_string(k.at("otype").get<char>());
-            if (Op::node_map.find(node_name) == Op::node_map.end())
+            if (Op::NM.node_map.find(node_name) == Op::NM.node_map.end())
                 THROW_INVALID_ARGUMENT(node_name + " not found");
         }
 
-        auto n = node_map[node_name]->clone();
+        auto n = NM.node_map[node_name]->clone();
         // cast different types of nodes
         if (typeid(*n) == typeid(NodeSplit<float>))
             Op::from_json(k, *dynamic_cast<NodeSplit<float>*>(n.get()));

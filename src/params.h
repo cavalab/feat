@@ -9,6 +9,7 @@ license: GNU/GPL v3
 #include "pop/nodevector.h"
 #include "util/logger.h"
 #include "util/utils.h"
+#include "pop/nodemap.h"
 
 namespace FT{
 
@@ -22,6 +23,7 @@ using namespace Op;
  */
 struct Parameters
 {
+    std::map<std::string, Node*> node_map;
     int pop_size; ///< population size
     int gens;    ///< max generations
     int current_gen;///< holds current generation
@@ -176,6 +178,8 @@ struct Parameters
     /// sets the weights of each sample (and class weights)
     void set_sample_weights(VectorXf& y);
 
+    /// defines a map of function names to their respective nodes.
+    void initialize_node_map();
 };
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Parameters,

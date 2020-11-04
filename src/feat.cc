@@ -256,38 +256,34 @@ float Feat::get_fb(){ return params.feedback; }
 ///return best model
 string Feat::get_representation(){ return best_ind.get_eqn();}
 
-string Feat::get_model()
+string Feat::get_model(bool sort)
 {   
     vector<string> features = best_ind.get_features();
     vector<float> weights = best_ind.ml->get_weights();
     float offset = best_ind.ml->get_bias(); 
-    vector<float> aweights(weights.size());
-    for (int i =0; i<aweights.size(); ++i) 
-        aweights[i] = fabs(weights[i]);
-    vector<size_t> order = argsort(aweights);
-    string output;
-    output += "Feature\t\tWeight\n";
-    output += "offset\t\t" + to_string(offset) + "\n";
-    for (unsigned i = order.size(); i --> 0;)
+
+    vector<size_t> order(weights.size());
+    if (sort)
     {
-        output += features.at(order[i]);
-        output += "\t\t";
-        output += std::to_string(weights.at(order[i]));
+        vector<float> aweights(weights.size());
+        for (int i =0; i<aweights.size(); ++i) 
+            aweights[i] = fabs(weights[i]);
+        order = argsort(aweights, false);
+    }
+    else
+        iota(order.begin(), order.end(), 0);
+
+    string output;
+    output += "Weight\tFeature\n";
+    output +=  to_string(offset) + "\toffset" + "\n";
+    for (const auto& o : order)
+    {
+        output += to_string(weights.at(o), 2);
+        output += "\t";
+        output += features.at(o);
         output += "\n";
     }
 
-    /* std::ofstream out;                      ///< log file stream */
-    /* out.open("final_model.csv"); */
-    /* string finalweights = "terminal,weight\n"; */
-    /* for (unsigned i = 0; i < order.size(); ++i) */
-    /* { */
-    /*     finalweights += features.at(order[i]); */
-    /*     finalweights += ","; */
-    /*     finalweights += std::to_string(weights.at(order[i])); */
-    /*     finalweights += "\n"; */
-    /* } */
-    /* out << finalweights; */
-    /* out.close(); */
     return output;
 }
 
@@ -307,25 +303,13 @@ int Feat::get_n_nodes(){ return best_ind.program.size(); }
 ///return population as string
 string Feat::get_archive(bool front)
 {
-    vector<string> fields = {"id", "size", "complexity", "fitness", 
-        "fitness_v", "coefficients", "pareto_rank", "eqn"};
-
-    for (const auto& o : params.objectives)
-    {
-        if (!in(fields,o))
-            fields.push_back(o);
-    }
-
+    /* TODO: maybe this should just return the to_json call of
+     * the underlying population / archive. I guess the problem
+     * is that we don't have to_json defined for vector<Individual>.
+     */
     vector<Individual>* printed_pop = NULL; 
 
     string r = "";
-    /* for (int f = 0; f < fields.size(); ++f) */
-    /* { */
-    /*     r += fields.at(f); */ 
-    /*     if (f < fields.size() -1) */
-    /*         r +="\t"; */
-    /* } */
-    /* r += "\n"; */
 
     vector<size_t> idx;
     bool subset = false;
@@ -352,6 +336,8 @@ string Feat::get_archive(bool front)
         std::iota(idx.begin(), idx.end(), 0);
     }
 
+    bool includes_best_ind = false;
+
     for (int i = 0; i < idx.size(); ++i)
     {
         Individual& ind = printed_pop->at(idx[i]); 
@@ -361,39 +347,24 @@ string Feat::get_archive(bool front)
 
         r += j.dump();
 
-        /* for (int f = 0; f < fields.size(); ++f) */
-        /* { */
-        /*     if (fields.at(f) == "id") */
-        /*         r += to_string(ind.id); */
-        /*     else if (fields.at(f) == "size") */
-        /*         r += to_string(ind.size()); */
-        /*     else if (fields.at(f) == "complexity") */
-        /*         r += to_string(ind.get_complexity()); */
-        /*     else if (fields.at(f) == "fitness") */
-        /*         r += to_string(ind.fitness); */
-        /*     else if (fields.at(f) == "fitness_v") */
-        /*         r += to_string(ind.fitness_v); */
-        /*     else if (fields.at(f) == "coefficients") */
-        /*     { */
-        /*         auto tmpw = ind.ml->get_weights(); */
-        /*         for (int w = 0; w < tmpw.size(); ++w) */
-        /*         { */
-        /*             r += to_string(tmpw.at(w)); */
-        /*             if (w != tmpw.size()-1) */ 
-        /*                 r += ","; */
-        /*         } */
-        /*     } */
-        /*     else if (fields.at(f) == "pareto_rank") */
-        /*         r += to_string(ind.rank); */
-        /*     else if (fields.at(f) == "eqn") */
-        /*         r += ind.get_eqn(); */
-
-        /*     if (f < fields.size() - 1) */
-        /*         r += "\t"; */
-        /* } */
         if (i < idx.size() -1)
             r += "\n";
+        // check if best_ind is in here
+        if (ind.id == best_ind.id)
+            includes_best_ind = true;
     }
+
+    // add best_ind, if it is not included
+    if (!includes_best_ind) 
+    {
+        r += "\n";
+        json j;
+        to_json(j, best_ind);
+        r += j.dump();
+    }
+
+    r += "\n";
+    // delete pop pointer
     printed_pop = NULL;
     delete printed_pop;
     
@@ -483,7 +454,8 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     // start the clock
     timer.Reset();
     r.set_seed(this->random_state); 
-
+    // reset statistics
+    this->stats = Log_Stats();
     params.use_batch = params.bp.batch_size>0;
 
     string FEAT = (  
@@ -534,7 +506,9 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     this->pop = Population(params.pop_size);
     this->evaluator = Evaluation(params.scorer_);
 
-    // create an archive to save Pareto front, unless NSGA-2 is being used for survival 
+    /* create an archive to save Pareto front, 
+     * unless NSGA-2 is being used for survival 
+     */
     /* if (!survival.compare("nsga2")) */
     /*     use_arch = false; */
     /* else */
@@ -1337,7 +1311,8 @@ ArrayXXf Feat::predict_proba_with_z(float * X, int rowsX,int colsX,
     MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
     auto Z = get_Z(s, idx, idx_size);
     // TODO: make sure long fns are set
-    /* string longfns = "mean,median,max,min,variance,skew,kurtosis,slope,count"; */
+    /* string longfns = "mean,median,max,min,variance,skew,kurtosis,"
+     * "slope,count"; */
 
     return predict_proba(matX,Z); 
 }
@@ -1345,8 +1320,6 @@ ArrayXXf Feat::predict_proba_with_z(float * X, int rowsX,int colsX,
 
 bool Feat::update_best(const DataRef& d, bool validation)
 {
-    logger.log("updating best..",2);
-
     float bs;
     bs = this->min_loss_v; 
     float f; 
@@ -1357,7 +1330,7 @@ bool Feat::update_best(const DataRef& d, bool validation)
 
     for (const auto& ind: pop_ref)
     {
-        if (!val_from_arch || (val_from_arch && ind.rank == 1))
+        if (!val_from_arch || ind.rank == 1)
         {
             f = ind.fitness_v;
 
@@ -1370,7 +1343,7 @@ bool Feat::update_best(const DataRef& d, bool validation)
                 /* ind.clone(best_ind); */
                 this->best_complexity = ind.get_complexity();
                 updated = true;
-                logger.log("updating best model: " + this->best_ind.get_eqn(), 2);
+                logger.log("better model found!", 2);
             }
         }
     }

@@ -45,7 +45,7 @@ cdef extern from "feat.h" namespace "FT":
                 int lenY)
         string get_representation()
         string get_archive(bool front)
-        string get_model()
+        string get_model(bool)
 
         void fit_with_z(float * X,int rowsX,int colsX, float * Y,int lenY, 
                 string s, int * train_idx, int train_size)
@@ -284,7 +284,7 @@ cdef class PyFeat:
             &arr_y[0],len(arr_y) ))
         return X.transpose()
     
-    def representation(self):
+    def get_representation(self):
         return self.ft.get_representation().decode()
 
     def get_archive(self,justfront=False):
@@ -295,8 +295,8 @@ cdef class PyFeat:
             archive.append( json.loads(model))
         return archive
 
-    def get_model(self):
-        return self.ft.get_model().decode()
+    def get_model(self, bool sort=True):
+        return self.ft.get_model(sort).decode()
 
     def get_coefs(self):
         return ndarray(self.ft.get_coefs()).flatten()

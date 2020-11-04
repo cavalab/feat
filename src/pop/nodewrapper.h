@@ -74,10 +74,4 @@ license: GNU/GPL v3
 #include "op/terminals/n_constant.h"
 #include "op/terminals/n_variable.h"
 
-// node map 
-namespace FT{
-namespace Pop{
-namespace Op{
-    extern std::map<std::string, Node*> node_map;
-}}}
 #endif
