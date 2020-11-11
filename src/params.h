@@ -150,6 +150,7 @@ struct Parameters
     
     /// set the terminals with longitudinal data
     void set_terminals(int nf, const LongData& Z);
+    void set_terminals(int nf){LongData Z; set_terminals(nf,Z); };
 
     void set_feature_names(string fn); 
     string get_feature_names();

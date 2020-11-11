@@ -60,9 +60,8 @@ TEST(Individual, EvalEquation)
   
     feat.set_dtypes(find_dtypes(X));
             
-    feat.p_ml = make_shared<ML>(); // intialize ML
-    feat.p_pop = make_shared<Population>(feat.params.pop_size);
-    feat.p_eval = make_shared<Evaluation>(feat.params.scorer);
+    feat.pop = Population(feat.params.pop_size);
+    feat.evaluator = Evaluation(feat.params.scorer_);
 
 	feat.params.set_terminals(X.rows());
 	
@@ -78,12 +77,12 @@ TEST(Individual, EvalEquation)
     feat.initial_model(d);
                   
     // initialize population 
-    feat.p_pop->init(feat.best_ind, feat.params);
+    feat.pop.init(feat.best_ind, feat.params);
     int i;
-    for(i = 0; i < feat.p_pop->individuals.size(); i++){
-	    if (!checkBrackets(feat.p_pop->individuals[i].get_eqn()))
-            std::cout << "check brackets failed on eqn " << feat.p_pop->individuals[i].get_eqn() << "\n";
-        ASSERT_TRUE(checkBrackets(feat.p_pop->individuals[i].get_eqn())); //TODO evaluate if string correct or not
+    for(i = 0; i < feat.pop.individuals.size(); i++){
+	    if (!checkBrackets(feat.pop.individuals[i].get_eqn()))
+            std::cout << "check brackets failed on eqn " << feat.pop.individuals[i].get_eqn() << "\n";
+        ASSERT_TRUE(checkBrackets(feat.pop.individuals[i].get_eqn())); //TODO evaluate if string correct or not
     }
 }
 
@@ -233,18 +232,16 @@ TEST(Individual, serialization)
             bool pass = true;
             cout << "fit individual\n";
             ind.fit(dt, feat.params, pass);
-            VectorXf initial_output_train = ind.predict_vector(dt, feat.params); 
-            VectorXf initial_output_test = ind.predict_vector(dv, feat.params); 
+            VectorXf initial_output_train = ind.predict_vector(dt); 
+            VectorXf initial_output_test = ind.predict_vector(dv); 
             cout << "saving eqn: " << ind.get_eqn() << endl;
             ind.save(filename); 
 
             // load the ind and check its output
             Individual loaded_ind;
             loaded_ind.load(filename);
-            VectorXf loaded_output_train = loaded_ind.predict_vector(dt, 
-                    feat.params);
-            VectorXf loaded_output_test = loaded_ind.predict_vector(dv, 
-                    feat.params);
+            VectorXf loaded_output_train = loaded_ind.predict_vector(dt);
+            VectorXf loaded_output_test = loaded_ind.predict_vector(dv);
             // compare
             /* cout << "fitted eqn: " << ind.get_eqn() << endl; */
             /* cout << "loaded eqn: " << loaded_ind.get_eqn() << endl; */

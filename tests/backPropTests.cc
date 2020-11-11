@@ -156,7 +156,7 @@ class TestBackProp
 
                 /* cout << "squared_difference\n"; */
 
-                MatrixXf Phival = ind.out(db_val,params);
+                MatrixXf Phival = ind.out(db_val);
 
                 current_val_loss = squared_difference(db_val.y, 
                         Phival.row(0)).mean();
@@ -355,7 +355,7 @@ Individual testDummyProgram(NodeVector p0, Data data, int iters,
     /* std::cout << "engine->run\n"; */
     engine->run(ind, data, feat.params); // Update pointer to NodeVector internally
     /* std::cout << "ind.out()"; */
-    MatrixXf Phi = ind.out(data,feat.params); 
+    MatrixXf Phi = ind.out(data); 
     yhat = Phi.row(0); 
 	return ind;
 
