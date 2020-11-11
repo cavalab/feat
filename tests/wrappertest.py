@@ -173,7 +173,7 @@ class TestFeatWrapper(unittest.TestCase):
             assert(d < 0.0001)
         # assert(all([ip==lp for ip,lp in zip(initial_pred, loaded_pred)]))
 
-        assert(reg.representation() == loaded_reg.representation())
+        assert(reg.get_representation() == loaded_reg.get_representation())
         assert(reg.get_model() == loaded_reg.get_model())
         assert((reg.get_coefs() == loaded_reg.get_coefs()).all())
         loaded_params = loaded_reg.get_params()
