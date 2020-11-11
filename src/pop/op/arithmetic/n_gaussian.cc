@@ -11,7 +11,7 @@ namespace FT{
         namespace Op{
             NodeGaussian::NodeGaussian(vector<float> W0)
             {
-                name = "gaussian";
+                name = "gauss";
 		        otype = 'f';
 		        arity['f'] = 1;
 		        complexity = 4;

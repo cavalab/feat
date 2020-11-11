@@ -48,13 +48,12 @@ TEST(Variation, MutationTests)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158;
     y_v << 0.57015434, -1.20648656, -2.68773747;
 
-    feat.params.init(X, y, "");       
+    feat.params.init(X, y);       
   
     feat.set_dtypes(find_dtypes(X));
             
-    feat.p_ml = make_shared<ML>(); // intialize ML
-    feat.p_pop = make_shared<Population>(feat.params.pop_size);
-    feat.p_eval = make_shared<Evaluation>(feat.params.scorer);
+    feat.pop = Population(feat.params.pop_size);
+    feat.evaluator = Evaluation(feat.params.scorer_);
 
 	feat.params.set_terminals(X.rows()); 
         
@@ -71,34 +70,34 @@ TEST(Variation, MutationTests)
     feat.initial_model(d);
                   
     // initialize population 
-    feat.p_pop->init(feat.best_ind, feat.params);
+    feat.pop.init(feat.best_ind, feat.params);
     
-    feat.p_eval->fitness(feat.p_pop->individuals, dt, feat.params);
+    feat.evaluator.fitness(feat.pop.individuals, dt, feat.params);
     
     vector<size_t> parents;
     parents.push_back(2);
     parents.push_back(5);
     parents.push_back(7);
     
-    while (feat.p_pop->size() < 2*feat.params.pop_size)
+    while (feat.pop.size() < 2*feat.params.pop_size)
     {
 		Individual child;
 		
 		int mom = r.random_choice(parents);
-		int pass = feat.p_variation->mutate(feat.p_pop->individuals[mom],
+		int pass = feat.variator.mutate(feat.pop.individuals[mom],
                 child,feat.params,dt);
 		
 		if (pass)                   // congrats! you produced a viable child.
 		{
 			//push child into pop
-			feat.p_pop->individuals.push_back(child);
+			feat.pop.individuals.push_back(child);
 		}
 	}
 	
 	int i;
 	
-	for(i = 0; i < feat.p_pop->individuals.size(); i++)
-		ASSERT_TRUE(isValidProgram(feat.p_pop->individuals[i].program, feat.params.terminals.size()));
+	for(i = 0; i < feat.pop.individuals.size(); i++)
+		ASSERT_TRUE(isValidProgram(feat.pop.individuals[i].program, feat.params.terminals.size()));
 	
 }
 
@@ -132,9 +131,8 @@ TEST(Variation, CrossoverTests)
   
     feat.set_dtypes(find_dtypes(X));
             
-    feat.p_ml = make_shared<ML>(); // intialize ML
-    feat.p_pop = make_shared<Population>(feat.params.pop_size);
-    feat.p_eval = make_shared<Evaluation>(feat.params.scorer);
+    feat.pop = Population(feat.params.pop_size);
+    feat.evaluator = Evaluation(feat.params.scorer_);
     
 	feat.params.set_terminals(X.rows()); 
 	
@@ -151,40 +149,38 @@ TEST(Variation, CrossoverTests)
 
                   
     // initialize population 
-    feat.p_pop->init(feat.best_ind, feat.params);
+    feat.pop.init(feat.best_ind, feat.params);
     
-    feat.F.resize(X.cols(),int(2*feat.params.pop_size));
-    
-    feat.p_eval->fitness(feat.p_pop->individuals,dt,feat.params);
+    feat.evaluator.fitness(feat.pop.individuals,dt,feat.params);
     
     vector<size_t> parents;
     parents.push_back(2);
     parents.push_back(5);
     parents.push_back(7);
     
-    while (feat.p_pop->size() < 2*feat.params.pop_size)
+    while (feat.pop.size() < 2*feat.params.pop_size)
     {
 		Individual child;
 		
 		int mom = r.random_choice(parents);
         int dad = r.random_choice(parents);
         
-		int pass = feat.p_variation->cross(feat.p_pop->individuals[mom],
-                                           feat.p_pop->individuals[dad],
+		int pass = feat.variator.cross(feat.pop.individuals[mom],
+                                           feat.pop.individuals[dad],
                                            child,
                                            feat.params,*d.t);
 		
 		if (pass)                   // congrats! you produced a viable child.
 		{
 			//push child into pop
-			feat.p_pop->individuals.push_back(child);
+			feat.pop.individuals.push_back(child);
 		}
 	}
 	
 	int i;
 	
-	for(i = 0; i < feat.p_pop->individuals.size(); i++)
-		ASSERT_TRUE(isValidProgram(feat.p_pop->individuals[i].program, 
+	for(i = 0; i < feat.pop.individuals.size(); i++)
+		ASSERT_TRUE(isValidProgram(feat.pop.individuals[i].program, 
                     feat.params.terminals.size()));
 }
 

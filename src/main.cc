@@ -61,19 +61,11 @@ int main(int argc, char** argv){
     std::string ldataFile = "";
     float split = 0.75;    // split of input data used to trian Feat
 
-    /* cout << "\n" << */ 
-    /* "/////////////////////////////////////////////////////////////////////////////////////////////" */
-    /* << "\n" << */ 
-    /* "                                        FEAT                                               " */
-    /* << "\n" << */
-    /* "/////////////////////////////////////////////////////////////////////////////////////////////" */
-    /* << "\n"; */
- 
     //////////////////////////////////////// parse arguments
     InputParser input(argc, argv);
     if(input.cmdOptionExists("-h") || input.dataset.empty()){
         if (input.dataset.empty() && !input.cmdOptionExists("-h")) 
-            HANDLE_ERROR_NO_THROW("Error: no dataset specified.\n---\n");
+            WARN("Error: no dataset specified.\n---\n");
         // Print help and exit. 
         cout << "Feat is a feature engineering wrapper for learning intelligible models.\n";
         cout << "Usage:\tfeat path/to/dataset [options]\n";
@@ -100,7 +92,7 @@ int main(int argc, char** argv){
         cout << "-isplit\tInternal slit for Feat's training procedure (0.75)\n";
         cout << "-f\tfeedback strength of ML on variation probabilities (0.5)\n";
         cout << "-log\tlog file name\n";
-        cout << "-n_threads\tmaximum number of threads\n";
+        cout << "-n_jobs\tmaximum number of threads\n";
         cout << "-ldata\tpath to longitudinal data file\n";
         cout << "-scorer\tscoring function [mse, zero_one, bal_zero_one, log, multi_log]\n"; 
         cout << "-bp\tbackpropagation iterations (zero)\n"; 
@@ -118,7 +110,9 @@ int main(int argc, char** argv){
         cout << "--softmax\tSet flag to use softmax normalization of feedback\n";
         cout << "--simplify\tPost-run simplification\n";
         cout << "--corr_delete_mutate\tPost-run simplification\n";
-        cout << "-print_pop\tPrint the population objective scores. 0: never, 1: at end, "
+        cout << "-save_pop\tPrint the population objective scores. 0: never, 1: at end, "
+                "2: each generation. (0)\n";
+        cout << "-starting_pop\tSpecify a filename containg json formatted starting population"
                 "2: each generation. (0)\n";
         cout << "-h\tDisplay this help message and exit.\n";
         return 0;
@@ -127,7 +121,7 @@ int main(int argc, char** argv){
     if(input.cmdOptionExists("-p"))
         feat.set_pop_size(stoi(input.getCmdOption("-p")));
     if(input.cmdOptionExists("-g"))
-        feat.set_generations(stoi(input.getCmdOption("-g")));
+        feat.set_gens(stoi(input.getCmdOption("-g")));
     if(input.cmdOptionExists("-ml"))
         feat.set_ml(input.getCmdOption("-ml"));
     if(input.cmdOptionExists("--c"))
@@ -168,7 +162,7 @@ int main(int argc, char** argv){
     if(input.cmdOptionExists("-isplit"))
         feat.set_split(std::stod(input.getCmdOption("-isplit")));
     if(input.cmdOptionExists("-f"))
-        feat.set_feedback(std::stod(input.getCmdOption("-f")));
+        feat.set_fb(std::stod(input.getCmdOption("-f")));
     if(input.cmdOptionExists("-log"))
         feat.set_logfile(input.getCmdOption("-log"));
     if(input.cmdOptionExists("-ldata"))
@@ -192,13 +186,13 @@ int main(int argc, char** argv){
         feat.set_use_batch();
         feat.set_batch_size(std::stoi(input.getCmdOption("-batch")));
     }
-    if(input.cmdOptionExists("-n_threads"))
-        feat.set_n_threads(std::stoi(input.getCmdOption("-n_threads")));
+    if(input.cmdOptionExists("-n_jobs"))
+        feat.set_n_jobs(std::stoi(input.getCmdOption("-n_jobs")));
     if(input.cmdOptionExists("-max_time"))
     {
         int time = std::stoi(input.getCmdOption("-max_time"));
         if(time <= 0)
-            HANDLE_ERROR_NO_THROW("WARNING: max_time cannot be less than equal to 0");
+            WARN("WARNING: max_time cannot be less than equal to 0");
         else
             feat.set_max_time(time);
     }
@@ -218,8 +212,10 @@ int main(int argc, char** argv){
         feat.set_simplify(true);
     if(input.cmdOptionExists("--corr_delete_mutate"))
         feat.set_corr_delete_mutate(true);
-    if(input.cmdOptionExists("-print_pop"))
-        feat.set_print_pop(std::stoi(input.getCmdOption("-print_pop")));
+    if(input.cmdOptionExists("-save_pop"))
+        feat.set_save_pop(std::stoi(input.getCmdOption("-save_pop")));
+    if(input.cmdOptionExists("-starting_pop"))
+        feat.set_starting_pop(input.getCmdOption("-starting_pop"));
 
     //cout << "done.\n";
     ///////////////////////////////////////
@@ -238,20 +234,20 @@ int main(int argc, char** argv){
     
     cout << "load_csv...";
     FT::load_csv(input.dataset,X,y,names,dtypes,binary_endpoint,delim);
-    feat.set_feature_names(names);
+    feat.set_feature_names(FT::Util::ravel(names));
     feat.set_dtypes(dtypes);
     
     if (binary_endpoint)
     {
         if (!feat.get_classification())
-            HANDLE_ERROR_NO_THROW("WARNING: binary endpoint detected. " \
+            WARN("WARNING: binary endpoint detected. " \
                                   "Feat is set for regression.");
         else
             std::cout << "setting binary endpoint\n";
                       
     }
     
-    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z;
+    LongData Z;
    
     if(ldataFile.compare("")) 
         FT::load_longitudinal(ldataFile, Z);
@@ -264,10 +260,10 @@ int main(int argc, char** argv){
         d.train_test_split(feat.get_shuffle(), split);
        
         MatrixXf X_tcopy = d.t->X;     
-        std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z_tcopy = d.t->Z;
+        LongData Z_tcopy = d.t->Z;
         VectorXf y_tcopy = d.t->y;
         MatrixXf X_vcopy = d.v->X;     
-        std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z_vcopy = d.v->Z;
+        LongData Z_vcopy = d.v->Z;
         VectorXf y_vcopy = d.v->y;
 
         cout << "fitting model...\n";

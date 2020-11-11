@@ -46,7 +46,7 @@ namespace FT{
                 if ( score_hash.find(this->scorer) == score_hash.end() ) 
                 {
                     // not found
-                    HANDLE_ERROR_THROW("Scoring function '" + this->scorer
+                    THROW_INVALID_ARGUMENT("Scoring function '" + this->scorer
                             + "' not defined");
                 } 
                 else 

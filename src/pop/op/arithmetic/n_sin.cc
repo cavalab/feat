@@ -43,7 +43,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeSin::eval_eqn(State& state)
             {
-                state.push<float>("sin(" + state.popStr<float>() + ")");
+                state.push<float>("sin(" + to_string(W[0],2) + "*" + state.popStr<float>() + ")");
             }
 
             ArrayXf NodeSin::getDerivative(Trace& state, int loc)

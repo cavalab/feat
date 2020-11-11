@@ -2,23 +2,17 @@
 
 TEST(Feat, SettingFunctions)
 {
-	Feat feat(100, 100, "LinearRidgeRegression", false, 1);
+	Feat feat(100, 10, "LinearRidgeRegression", false, 1);
 	feat.set_random_state(666);
     
     feat.set_pop_size(200);
-    ASSERT_EQ(200, feat.params.pop_size);
+    ASSERT_EQ(200, feat.get_pop_size());
     
-    feat.set_generations(50);
-    ASSERT_EQ(50, feat.params.gens);
+    feat.set_gens(50);
+    ASSERT_EQ(50, feat.get_gens());
     
     feat.set_ml("RandomForest");
     ASSERT_STREQ("RandomForest", feat.params.ml.c_str());
-    //ASSERT_STREQ("RandomForest", feat.p_ml->type.c_str());
-    //ASSERT_EQ(sh::EMachineType::CT_BAGGING, feat.p_ml->p_est->get_classifier_type());
-    //ASSERT_EQ(sh::EProblemType::PT_REGRESSION, feat.p_ml->p_est->get_machine_problem_type());
-    
-    //feat.set_classification(true);
-    //ASSERT_EQ(sh::EProblemType::PT_MULTICLASS, feat.p_ml->p_est->get_machine_problem_type());
     
     feat.set_verbosity(3);
     ASSERT_EQ(3, feat.params.verbosity);
@@ -27,13 +21,13 @@ TEST(Feat, SettingFunctions)
     ASSERT_EQ(2, feat.params.max_stall);
     
     feat.set_selection("nsga2");
-    ASSERT_STREQ("nsga2", feat.p_sel->get_type().c_str());
+    ASSERT_STREQ("nsga2", feat.selector.get_type().c_str());
     
     feat.set_survival("lexicase");
-    ASSERT_STREQ("lexicase", feat.p_surv->get_type().c_str());
+    ASSERT_STREQ("lexicase", feat.survivor.get_type().c_str());
     
     feat.set_cross_rate(0.6);
-    EXPECT_EQ(6, (int)(feat.p_variation->get_cross_rate()*10));
+    EXPECT_EQ(6, (int)(feat.variator.get_cross_rate()*10));
     
     feat.set_otype('b');
     ASSERT_EQ('b', feat.params.otypes[0]);
@@ -60,7 +54,7 @@ TEST(Feat, SettingFunctions)
 
 TEST(Feat, predict)
 {
-    Feat feat(100, 100, "LinearRidgeRegression", false, 1);
+    Feat feat(100, 10, "LinearRidgeRegression", false, 1);
     feat.set_random_state(666);
 
     
@@ -80,7 +74,7 @@ TEST(Feat, predict)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
              -1.20648656, -2.68773747;
     
-    feat.set_n_threads(1);
+    feat.set_n_jobs(1);
     /* cout << "line 143: predict\n"; */
     feat.fit(X, y);
     /* cout << "line 145: done with fit\n"; */
@@ -98,7 +92,7 @@ TEST(Feat, predict)
 
 TEST(Feat, transform)
 {
-    Feat feat(100, 100, "LinearRidgeRegression", false, 1);
+    Feat feat(100, 10, "LinearRidgeRegression", false, 1);
     feat.set_random_state(666);
     
     MatrixXf X(7,2); 
@@ -140,7 +134,7 @@ TEST(Feat, transform)
 
 TEST(Feat, fit_predict)
 {
-    Feat feat(100, 100, "LinearRidgeRegression", false, 1);
+    Feat feat(100, 10, "LinearRidgeRegression", false, 1);
     feat.set_random_state(666);
     
     MatrixXf X(7,2); 
@@ -166,7 +160,7 @@ TEST(Feat, fit_predict)
 
 TEST(Feat, fit_transform)
 {
-    Feat feat(100, 100, "LinearRidgeRegression", false, 1);
+    Feat feat(100, 10, "LinearRidgeRegression", false, 1);
     feat.set_random_state(666);
    
     feat.set_verbosity(1);
@@ -200,7 +194,7 @@ TEST(Feat, fit_transform)
 
 TEST(Feat, simplification)
 {
-    Feat feat(100, 100, "LinearRidgeRegression", false, 1);
+    Feat feat(100, 10, "LinearRidgeRegression", false, 1);
     feat.set_random_state(666);
     feat.set_verbosity(2);
 
@@ -284,3 +278,29 @@ TEST(Feat, simplification)
     ASSERT_EQ(test_ind3.program.size(), 2);
 }
 
+TEST(Feat, serialization)
+{
+    Feat feat(100, 10, "LinearRidgeRegression", false, 1);
+    feat.set_random_state(666);
+    feat.set_verbosity(2);
+
+    MatrixXf X(7,2); 
+    X << 0,1,  
+         0.47942554,0.87758256,  
+         0.84147098,  0.54030231,
+         0.99749499,  0.0707372,
+         0.90929743, -0.41614684,
+         0.59847214, -0.80114362,
+         0.14112001,-0.9899925;
+
+    X.transposeInPlace();
+    
+    VectorXf y(7); 
+    // y = 2*x1 + 3.x2
+    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
+             -1.20648656, -2.68773747;
+    std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z;
+    DataRef d(X, y, Z, false);
+
+    // TODO: write this test!
+}

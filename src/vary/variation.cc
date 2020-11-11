@@ -218,7 +218,7 @@ void Variation::point_mutate(Individual& child, const Parameters& params)
             // replace p with a random one
             if (replacements.size() == 0)
             {
-                HANDLE_ERROR_NO_THROW("WARNING: couldn't mutate " + 
+                WARN("WARNING: couldn't mutate " + 
                         to_string(p->name)+ ", no valid replacements found\n");
             }
             else
@@ -507,7 +507,7 @@ bool Variation::correlation_delete_mutate(Individual& child,
             + "; corr = " + to_string(highest_corr), 2);
     if (f1 == 0 && f2 == 0)
     {
-        HANDLE_ERROR_NO_THROW("WARNING: couldn't get proper "
+        WARN("WARNING: couldn't get proper "
                 "correlations. aborting correlation_delete_mutate\n");
         return false;
     }

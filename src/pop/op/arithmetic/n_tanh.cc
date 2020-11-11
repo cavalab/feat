@@ -42,7 +42,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeTanh::eval_eqn(State& state)
             {
-                state.push<float>("tanh(" + state.popStr<float>() + ")");
+                state.push<float>("tanh(" + to_string(W[0],2) + "*" + state.popStr<float>() + ")");
             }
 
             ArrayXf NodeTanh::getDerivative(Trace& state, int loc)

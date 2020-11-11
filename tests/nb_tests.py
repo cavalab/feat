@@ -12,5 +12,9 @@ def _exec_notebook(path):
 
 
 def test():
-	for f in glob('docs/examples/*.ipynb'):
-	    _exec_notebook(f)
+    for f in glob('docs/examples/*.ipynb'):
+        print('running',f)
+        _exec_notebook(f)
+
+if __name__ == '__main__':
+    test()

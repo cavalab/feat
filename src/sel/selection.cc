@@ -13,24 +13,29 @@ Selection::Selection(string type, bool survival)
     /*!
      * set type of selection operator.
      */
+    this->type = type;
+    this->survival = survival;
+    this->set_operator();
+}
 
-    if (!type.compare("lexicase"))
+void Selection::set_operator()
+{
+    if (this->type == "lexicase")
         pselector = std::make_shared<Lexicase>(survival); 
-    else if (!type.compare("fair_lexicase"))
+    else if (this->type == "fair_lexicase")
         pselector = std::make_shared<FairLexicase>(survival);
-    else if (!type.compare("nsga2"))
+    else if (this->type == "nsga2")
         pselector = std::make_shared<NSGA2>(survival);
-    else if (!type.compare("tournament"))
+    else if (this->type == "tournament")
         pselector = std::make_shared<Tournament>(survival);
-    else if (!type.compare("offspring"))    // offspring survival
+    else if (this->type == "offspring")    // offspring survival
         pselector = std::make_shared<Offspring>(survival);
-    else if (!type.compare("random"))    // offspring survival
+    else if (this->type == "random")    // offspring survival
         pselector = std::make_shared<Random>(survival);
-    else if (!type.compare("simanneal"))    // offspring survival
+    else if (this->type == "simanneal")    // offspring survival
         pselector = std::make_shared<SimAnneal>(survival);
     else
-        HANDLE_ERROR_NO_THROW("Undefined Selection Operator " 
-                + type + "\n");
+        WARN("Undefined Selection Operator " + this->type + "\n");
         
 }
 
@@ -38,6 +43,9 @@ Selection::~Selection(){}
 
 /// return type of selectionoperator
 string Selection::get_type(){ return pselector->name; }
+
+/// set type of selectionoperator
+void Selection::set_type(string in){ type = in; set_operator();}
 
 /// perform selection 
 vector<size_t> Selection::select(Population& pop,  

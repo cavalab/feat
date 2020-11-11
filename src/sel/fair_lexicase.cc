@@ -210,7 +210,7 @@ vector<size_t> FairLexicase::select(Population& pop,
     {
         std::cout << "selected: " ;
         for (auto s: selected) std::cout << s << " "; std::cout << "\n";
-        HANDLE_ERROR_THROW("Lexicase did not select correct number of \
+        THROW_LENGTH_ERROR("Lexicase did not select correct number of \
                 parents");
     }
     return selected;
@@ -220,7 +220,7 @@ vector<size_t> FairLexicase::survive(Population& pop,
         const Parameters& params, const Data& d)
 {
     /* FairLexicase survival */
-    HANDLE_ERROR_THROW("Lexicase survival not implemented");
+    THROW_RUNTIME_ERROR("Lexicase survival not implemented");
 }
     
 }

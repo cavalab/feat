@@ -42,7 +42,8 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeSquare::eval_eqn(State& state)
             {
-                state.push<float>("(" + state.popStr<float>() + "^2)");
+                state.push<float>("((" + to_string(W[0],2) + "*"
+                                  + state.popStr<float>() + ")^2)");
             }
 
             ArrayXf NodeSquare::getDerivative(Trace& state, int loc)

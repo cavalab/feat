@@ -44,7 +44,8 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeMultiply::eval_eqn(State& state)
             {
-	            state.push<float>("(" + state.popStr<float>() + "*" + state.popStr<float>() + ")");
+	            state.push<float>("(" + to_string(W[0]*W[1],2) + "*" 
+                        + state.popStr<float>() + "*" + state.popStr<float>() + ")");
             }
 
             ArrayXf NodeMultiply::getDerivative(Trace& state, int loc)

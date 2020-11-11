@@ -35,7 +35,9 @@ namespace FT {
                 
                 static void destroy();
 
-                void set_seed(int seed);
+                void set_seed(int new_seed);
+        
+                int get_seed(){return this->seed;};
                 
                 int rnd_int( int lowerLimit, int upperLimit );
 
@@ -89,11 +91,11 @@ namespace FT {
                     if(w.size() == 0)
                     {   
                         if (v.size() == 0)
-                            HANDLE_ERROR_THROW("random_choice() called with "
+                            THROW_LENGTH_ERROR("random_choice() called with "
                                     "w.size() = 0 and v.size() = 0");
                         else
                         {
-                            HANDLE_ERROR_NO_THROW("w.size() = 0, v.size() = "
+                            THROW_LENGTH_ERROR("w.size() = 0, v.size() = "
                                     +to_string(v.size())+
                                     "; Calling random_choice(v)");
                             
@@ -125,6 +127,8 @@ namespace FT {
                 vector<std::mt19937> rg;
                 
                 static Rnd* instance;
+
+                int seed;
          
         };
         

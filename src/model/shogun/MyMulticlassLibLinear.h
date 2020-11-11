@@ -20,7 +20,7 @@
 #include <shogun/lib/Signal.h>
 #include <shogun/labels/MulticlassLabels.h>
 #include <vector>
-
+#include <Eigen/Dense>
 using std::vector;
 
 
@@ -124,6 +124,7 @@ namespace shogun
 		    * @return the vector of weights for each subclass
 		    */
 		    vector<SGVector<float64_t>> get_w() const;
+            void set_w(vector<Eigen::VectorXd> wnew);
 
     protected:
 

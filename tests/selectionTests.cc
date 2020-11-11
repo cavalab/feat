@@ -4,6 +4,7 @@ TEST(Selection, SelectionOperator)
 {
     Feat feat(100, 100, "LinearRidgeRegression", false, 1);
     feat.set_random_state(666);
+    feat.set_scorer("mae");
     
     MatrixXf X(7,2); 
     X << 0,1,  
@@ -37,13 +38,12 @@ TEST(Selection, SelectionOperator)
     
     feat.timer.Reset();
 	
-	feat.params.init(X, y, "");       
+	feat.params.init(X, y);       
 
     feat.set_dtypes(find_dtypes(X));
             
-    feat.p_ml = make_shared<ML>(); // intialize ML
-    feat.p_pop = make_shared<Population>(feat.params.pop_size);    
-    feat.p_eval = make_shared<Evaluation>(feat.params.scorer);
+    feat.pop = Population(feat.params.pop_size);    
+    feat.evaluator = Evaluation(feat.params.scorer_);
 
 	feat.params.set_terminals(X.rows()); 
         
@@ -51,10 +51,10 @@ TEST(Selection, SelectionOperator)
     feat.initial_model(d);
                   
     // initialize population 
-    feat.p_pop->init(feat.best_ind, feat.params);
+    feat.pop.init(feat.best_ind, feat.params);
     
-    feat.p_eval->fitness(feat.p_pop->individuals, *d.t, feat.params);
-    vector<size_t> parents = feat.p_sel->select(*(feat.p_pop), feat.params, 
+    feat.evaluator.fitness(feat.pop.individuals, *d.t, feat.params);
+    vector<size_t> parents = feat.selector.select(feat.pop, feat.params, 
             *d.t);
     
     ASSERT_EQ(parents.size(), feat.get_pop_size());

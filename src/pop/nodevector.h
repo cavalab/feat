@@ -5,11 +5,10 @@ license: GNU/GPL v3
 #ifndef NODEVECTOR_H
 #define NODEVECTOR_H
 #include <memory>
-#include "op/node.h"
-#include "op/n_train.h"
-#include "op/n_Dx.h"
-
+#include "nodewrapper.h"
+#include "nodemap.h"
 #include "../util/error.h"
+
 namespace FT{
     
     namespace Pop{
@@ -69,7 +68,12 @@ namespace FT{
                               vector<string> longitudinalMap, const vector<char>& term_types);
             
         }; //NodeVector
+        // serializatoin
+        // forward declaration
+        void to_json(json& j, const NodeVector& nv);
+        void from_json(const json& j, NodeVector& nv);
         
     }
 } // FT
 #endif
+

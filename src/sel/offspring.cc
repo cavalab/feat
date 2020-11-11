@@ -32,7 +32,7 @@ namespace FT{
             std::iota(selected.begin(),selected.end(),P);
             
             if (selected.at(selected.size()-1) > pop.size())
-                HANDLE_ERROR_THROW("error: selected includes " +
+                THROW_LENGTH_ERROR("error: selected includes " +
                                     to_string(selected.at(selected.size()-1)) +
                                     ", pop size is " + to_string(pop.size()) + "\n");
               

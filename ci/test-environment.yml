@@ -14,3 +14,4 @@ dependencies:
     - pip=20.*
     - pip:
         - eigency==1.77
+        - pmlb==1.*

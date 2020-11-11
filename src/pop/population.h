@@ -32,8 +32,11 @@ struct Population
     
     ~Population();
     
-    /// initialize population of programs. 
+    /// initialize population of programs with a starting model. 
     void init(const Individual& starting_model, 
+            const Parameters& params, bool random = false);
+    /// initialize population of programs from a file. 
+    void init(string filename, 
             const Parameters& params, bool random = false);
     
     /// update individual vector size 
@@ -66,7 +69,7 @@ struct Population
         SortComplexity(Population& p): pop(p){}
         bool operator()(size_t i, size_t j)
         { 
-            return pop.individuals[i].complexity() < pop.individuals[j].complexity();
+            return pop.individuals[i].set_complexity() < pop.individuals[j].set_complexity();
         }
     };
     
@@ -78,12 +81,20 @@ struct Population
         bool operator()(size_t i, size_t j)
         {
             return (pop.individuals[i].fitness == pop.individuals[j].fitness &&
-                   pop.individuals[i].complexity() == pop.individuals[j].complexity());
+                   pop.individuals[i].set_complexity() == pop.individuals[j].set_complexity());
         }
     };
 
-};        
+    // save serialized population
+    void save(string filename);
+    // load serialized population
+    int load(string filename);
 
+};        
+//TODO
+/* void from_json(const json& j, Population& p); */
+/* void to_json(json& j, const Population& p); */
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Population, individuals);
 }//Pop
 }//FT    
 #endif

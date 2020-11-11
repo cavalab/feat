@@ -9,6 +9,7 @@ license: GNU/GPL v3
 namespace FT{
 
 using namespace Util;
+using namespace Pop::Op;
     
 Parameters::Parameters(int pop_size, int gens, string ml, bool classification, 
         int max_stall, char ot, int verbosity, string fs, float cr, 
@@ -44,15 +45,10 @@ Parameters::Parameters(int pop_size, int gens, string ml, bool classification,
         softmax_norm(sftmx),
         normalize(nrm),
         tune_initial(tune_init),
-        tune_final(tune_fin)
+        tune_final(tune_fin),
+        scorer(sc)
     {
         set_verbosity(verbosity);
-        if (fs.empty())
-            fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
-                  "logit,tanh,gauss,relu,"
-                  "split,split_c,fuzzy_split,fuzzy_split_c,"
-                  "fuzzy_fixed_split,fuzzy_fixed_split_c,"
-                  "b2f,c2f,and,or,not,xor,=,<,<=,>,>=,if,ite";
             
         set_functions(fs);
         set_objectives(obj);
@@ -62,18 +58,24 @@ Parameters::Parameters(int pop_size, int gens, string ml, bool classification,
         n_classes = 2;
         set_scorer(sc);
         use_batch = bs>0;
+        set_current_gen(0);
     }
 
-Parameters::~Parameters(){}
+Parameters::~Parameters()
+{
+    
+}
+
+
 
 /*! checks initial parameter settings before training.
  *  make sure ml choice is valid for problem type.
  *  make sure scorer is set. 
  *  for classification, check clases and find number.
  */
-void Parameters::init(const MatrixXf& X, const VectorXf& y, string scorer)
+void Parameters::init(const MatrixXf& X, const VectorXf& y)
 {
-    if (!ml.compare("LinearRidgeRegression") && classification)
+    if (ml == "LinearRidgeRegression" && classification)
     {
         logger.log("Setting ML type to LR",2);
         ml = "LR";            
@@ -81,7 +83,6 @@ void Parameters::init(const MatrixXf& X, const VectorXf& y, string scorer)
     if (this->classification)  // setup classification endpoint
     {
        this->set_classes(y);       
-       this->set_scorer(scorer);
     } 
     
     if (this->dtypes.size()==0)    // set feature types if not set
@@ -95,35 +96,42 @@ void Parameters::init(const MatrixXf& X, const VectorXf& y, string scorer)
         }
         cout << "\n";
     }
+    this->set_scorer("", true);
 }
 
 /// sets current generation
 void Parameters::set_current_gen(int g) { current_gen = g; }
 
 /// sets scorer type
-void Parameters::set_scorer(string sc)
+void Parameters::set_scorer(string sc, bool initialized)
 {
-    if (sc.empty())
+    string tmp = this->scorer_;
+    if (sc.empty()) 
     {
-        if (classification && n_classes == 2)
+        if (this->scorer.empty() && initialized)
         {
-            if (ml.compare("LR") || ml.compare("SVM"))
-                scorer = "log";
+            if (classification && n_classes == 2)
+            {
+                if (ml.compare("LR") || ml.compare("SVM"))
+                    scorer_ = "log";
+                else
+                    scorer_ = "zero_one";
+            }
+            else if (classification){
+                if (ml.compare("LR") || ml.compare("SVM"))
+                    scorer_ = "multi_log";
+                else
+                    scorer_ = "bal_zero_one";
+            }
             else
-                scorer = "zero_one";
+                scorer_ = "mse";
         }
-        else if (classification){
-            if (ml.compare("LR") || ml.compare("SVM"))
-                scorer = "multi_log";
-            else
-                scorer = "bal_zero_one";
-        }
-        else
-            scorer = "mse";
     }
     else
-        scorer = sc;
-    logger.log("scorer set to " + scorer,3);
+        scorer_ = sc;
+
+    if (tmp != this->scorer_)
+        logger.log("scorer changed to " + scorer_,2);
 }
 
 /// sets weights for terminals. 
@@ -154,7 +162,7 @@ void Parameters::set_term_weights(const vector<float>& w)
         }
         int x = 0;
         if (aw.size() != terminals.size())
-            HANDLE_ERROR_THROW("There are " + to_string(aw.size()) +
+            THROW_LENGTH_ERROR("There are " + to_string(aw.size()) +
                     "weights and " + to_string(terminals.size()) + 
                     "terminals");
         // assign transformed weights as terminal weights
@@ -272,155 +280,8 @@ std::unique_ptr<Node> Parameters::createNode(string str,
                                              size_t loc,
                                              string name)
 {
-    // algebraic operators
-    if (str.compare("+") == 0) 
-        return std::unique_ptr<Node>(new NodeAdd({1.0, 1.0}));
-    
-    else if (str.compare("-") == 0)
-        return std::unique_ptr<Node>(new NodeSubtract({1.0, 1.0}));
-
-    else if (str.compare("*") == 0)
-        return std::unique_ptr<Node>(new NodeMultiply({1.0, 1.0}));
-
-    else if (str.compare("/") == 0)
-        return std::unique_ptr<Node>(new NodeDivide({1.0, 1.0}));
-
-    else if (str.compare("sqrt") == 0)
-        return std::unique_ptr<Node>(new NodeSqrt({1.0}));
-    
-    else if (str.compare("sin") == 0)
-        return std::unique_ptr<Node>(new NodeSin({1.0}));
-        
-    else if (str.compare("cos") == 0)
-        return std::unique_ptr<Node>(new NodeCos({1.0}));
-        
-    else if (str.compare("tanh")==0)
-        return std::unique_ptr<Node>(new NodeTanh({1.0}));
-       
-    else if (str.compare("^2") == 0)
-        return std::unique_ptr<Node>(new NodeSquare({1.0}));
-
-    else if (str.compare("^3") == 0)
-        return std::unique_ptr<Node>(new NodeCube({1.0}));
-    
-    else if (str.compare("^") == 0)
-        return std::unique_ptr<Node>(new NodeExponent({1.0, 1.0}));
-
-    else if (str.compare("exp") == 0)
-        return std::unique_ptr<Node>(new NodeExponential({1.0}));
-        
-    else if (str.compare("gauss")==0)
-        return std::unique_ptr<Node>(new NodeGaussian({1.0}));
-    
-    else if (str.compare("gauss2d")==0)
-        return std::unique_ptr<Node>(new Node2dGaussian({1.0, 1.0}));
-
-    else if (str.compare("log") == 0)
-        return std::unique_ptr<Node>(new NodeLog({1.0}));   
-        
-    else if (str.compare("logit")==0)
-        return std::unique_ptr<Node>(new NodeLogit({1.0}));
-
-    else if (str.compare("relu")==0)
-        return std::unique_ptr<Node>(new NodeRelu({1.0}));
-
-    else if (str.compare("b2f")==0)
-        return std::unique_ptr<Node>(new NodeFloat<bool>());
-    
-    else if (str.compare("c2f")==0)
-        return std::unique_ptr<Node>(new NodeFloat<int>());
-    
-    // logical operators
-    else if (str.compare("and") == 0)
-        return std::unique_ptr<Node>(new NodeAnd());
-   
-    else if (str.compare("or") == 0)
-        return std::unique_ptr<Node>(new NodeOr());
-    
-    else if (str.compare("not") == 0)
-        return std::unique_ptr<Node>(new NodeNot());
-        
-    else if (str.compare("xor")==0)
-        return std::unique_ptr<Node>(new NodeXor());
-    
-    else if (str.compare("=") == 0)
-        return std::unique_ptr<Node>(new NodeEqual());
-        
-    else if (str.compare(">") == 0)
-        return std::unique_ptr<Node>(new NodeGreaterThan());
-
-    else if (str.compare(">=") == 0)
-        return std::unique_ptr<Node>(new NodeGEQ());        
-
-    else if (str.compare("<") == 0)
-        return std::unique_ptr<Node>(new NodeLessThan());
-    
-    else if (str.compare("<=") == 0)
-        return std::unique_ptr<Node>(new NodeLEQ());
-
-    else if (str.compare("split") == 0)
-        return std::unique_ptr<Node>(new NodeSplit<float>());
-    
-    else if (str.compare("fuzzy_split") == 0)
-        return std::unique_ptr<Node>(new NodeFuzzySplit<float>());
-    
-    else if (str.compare("fuzzy_fixed_split") == 0)
-        return std::unique_ptr<Node>(new NodeFuzzyFixedSplit<float>());
-        
-    else if (str.compare("split_c") == 0)
-        return std::unique_ptr<Node>(new NodeSplit<int>());
-    
-    else if (str.compare("fuzzy_split_c") == 0)
-        return std::unique_ptr<Node>(new NodeFuzzySplit<int>());
-    
-    else if (str.compare("fuzzy_fixed_split_c") == 0)
-        return std::unique_ptr<Node>(new NodeFuzzyFixedSplit<int>());
-
-    else if (str.compare("if") == 0)
-        return std::unique_ptr<Node>(new NodeIf());   	    		
-        
-    else if (str.compare("ite") == 0)
-        return std::unique_ptr<Node>(new NodeIfThenElse());
-        
-    else if (str.compare("step")==0)
-        return std::unique_ptr<Node>(new NodeStep());
-        
-    else if (str.compare("sign")==0)
-        return std::unique_ptr<Node>(new NodeSign());
-       
-    // longitudinal nodes
-    else if (str.compare("mean")==0)
-        return std::unique_ptr<Node>(new NodeMean());
-        
-    else if (str.compare("median")==0)
-        return std::unique_ptr<Node>(new NodeMedian());
-        
-    else if (str.compare("max")==0)
-        return std::unique_ptr<Node>(new NodeMax());
-    
-    else if (str.compare("min")==0)
-        return std::unique_ptr<Node>(new NodeMin());
-    
-    else if (str.compare("variance")==0)
-        return std::unique_ptr<Node>(new NodeVar());
-        
-    else if (str.compare("skew")==0)
-        return std::unique_ptr<Node>(new NodeSkew());
-        
-    else if (str.compare("kurtosis")==0)
-        return std::unique_ptr<Node>(new NodeKurtosis());
-        
-    else if (str.compare("slope")==0)
-        return std::unique_ptr<Node>(new NodeSlope());
-        
-    else if (str.compare("count")==0)
-        return std::unique_ptr<Node>(new NodeCount());
-    
-    else if (str.compare("recent")==0)
-        return std::unique_ptr<Node>(new NodeRecent());
-
     // variables and constants
-    else if (str.compare("x") == 0)
+    if (str == "x")
     { 
         if(dtypes.size() == 0)
         {
@@ -467,17 +328,20 @@ std::unique_ptr<Node> Parameters::createNode(string str,
             }
         }
     }
-        
-    else if (str.compare("kb")==0)
-        return std::unique_ptr<Node>(new NodeConstant(b_val));
-        
-    else if (str.compare("kd")==0)
-        return std::unique_ptr<Node>(new NodeConstant(d_val));
-        
-    else if (str.compare("z")==0)
+    else if (str == "z")
         return std::unique_ptr<Node>(new NodeLongitudinal(name));
+    else if (NM.node_map.find(str) != NM.node_map.end())
+        return NM.node_map[str]->clone();
     else
-        HANDLE_ERROR_THROW("Error: no node named '" + str + "' exists."); 
+    {
+
+        cout << "NM.node_map = \n";
+        for (auto it = NM.node_map.cbegin(); it != NM.node_map.cend(); )
+        {
+            cout << it->first << it->second->name << endl;
+        }
+        THROW_INVALID_ARGUMENT("Error: no node named '" + str + "' exists."); 
+    }
     
 }
 
@@ -504,6 +368,18 @@ void Parameters::set_protected_groups(string pg)
         logger.log(msg,2);
     }
 }
+string Parameters::get_protected_groups()
+{
+    string out = "";
+    for (int i = 0; i < protected_groups.size(); ++i)
+    {
+        out += protected_groups.at(i);
+        if (i < protected_groups.size() - 1)
+            out += ",";
+    }
+    return out;
+}
+
 void Parameters::set_feature_names(string fn)
 {
     if (fn.empty())
@@ -522,6 +398,10 @@ void Parameters::set_feature_names(string fn)
         }
     }
 }
+string Parameters::get_feature_names()
+{
+    return ravel(this->feature_names);
+}
 
 void Parameters::set_functions(string fs)
 {
@@ -535,12 +415,18 @@ void Parameters::set_functions(string fs)
      *		modifies functions 
      *
      */
+    this->function_str = fs;
 
+    if (fs.empty())
+        fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
+              "logit,tanh,gauss,relu,"
+              "split,split_c,"
+              "b2f,c2f,and,or,not,xor,=,<,<=,>,>=,if,ite";
     fs += ',';          // add delimiter to end 
     string delim = ",";
     size_t pos = 0;
     string token;
-    functions.clear();
+    this->functions.clear();
     while ((pos = fs.find(delim)) != string::npos) 
     {
         token = fs.substr(0, pos);
@@ -558,6 +444,13 @@ void Parameters::set_functions(string fs)
     
     // reset output types
     set_otypes();
+}
+string Parameters::get_functions_()
+{
+    vector<string> fn_vec;
+    for (const auto& fn : this->functions)
+        fn_vec.push_back(fn->name);
+    return ravel(fn_vec);
 }
 
 void Parameters::set_op_weights()
@@ -709,19 +602,16 @@ void Parameters::set_op_weights()
     /* ow += "\n"; */
     /* logger.log(ow,2); */
 }
-void Parameters::set_terminals(int nf,
-                               std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z)
+
+void Parameters::set_terminals(int nf, const LongData& Z)
 {
-    /*!
-     * defines terminals using nf (number of features) as well as Z data directly
-     * sets operator types and op_weights as well
-     */
     terminals.clear();
     num_features = nf; 
     for (size_t i = 0; i < nf; ++i)
         terminals.push_back(createNode(string("x"), 0, 0, i));
     
     if(erc)
+    {
         for (int i = 0; i < nf; ++i)
         {
             if(r() < 0.5)
@@ -729,21 +619,22 @@ void Parameters::set_terminals(int nf,
             else
                 terminals.push_back(createNode(string("kd"), r(), 0, 0));
         }        
-   
+    }
+
     for (const auto &val : Z)
     {
         longitudinalMap.push_back(val.first);
         terminals.push_back(createNode(string("z"), 0, 0, 0, val.first));
     }
-    /* for (const auto& t : terminals) */ 
-    /*     cout << t->name << " " ; */
-    /* cout << "\n"; */
     // reset output types
     set_ttypes();
     
     set_otypes(true);
     set_op_weights();
+    // set dummy term_weights to zero
+    this->set_term_weights(vector<float>());
 }
+
 
 void Parameters::set_objectives(string obj)
 {
@@ -762,6 +653,11 @@ void Parameters::set_objectives(string obj)
         obj.erase(0, pos + delim.length());
     }
 }
+string Parameters::get_objectives()
+{
+    return ravel(this->objectives);
+}
+
 
 void Parameters::set_verbosity(int verbosity)
 {
@@ -775,7 +671,25 @@ void Parameters::set_classes(const VectorXf& y)
 
     // set class labels
     vector<float> uc = unique(y);
-    
+
+    string str_classes = "{";
+    for (auto c : uc)
+        str_classes += to_string(c) + ",";
+    str_classes = str_classes.substr(0,str_classes.size()-1);
+    str_classes += "}";
+
+    // check that class labels are contiguous and start at 0
+    if (int(uc.at(0)) != 0)
+        THROW_INVALID_ARGUMENT("Class labels must start at 0 and be "
+                "contiguous. The input classes are " + str_classes);
+    vector<int> cont_classes(uc.size());
+    iota(cont_classes.begin(), cont_classes.end(), 0);
+    for (int i = 0; i < cont_classes.size(); ++i)
+    {
+        if ( int(uc.at(i)) != cont_classes.at(i))
+            THROW_INVALID_ARGUMENT("Class labels must start at 0 and be "
+                    "contiguous. Passed labels = " + str_classes);
+    }
     n_classes = uc.size();
 
     for (auto c : uc)
@@ -785,7 +699,6 @@ void Parameters::set_classes(const VectorXf& y)
 void Parameters::set_sample_weights(VectorXf& y)
 {
     // set class weights
-    /* cout << "setting sample weights\n"; */
     class_weights.resize(n_classes);
     sample_weights.clear();
     for (unsigned i = 0; i < n_classes; ++i){
@@ -793,12 +706,74 @@ void Parameters::set_sample_weights(VectorXf& y)
                (y.cast<int>().array() == int(classes.at(i))).count())/y.size(); 
         class_weights.at(i) = (1 - class_weights.at(i))*float(n_classes);
     }
-    /* cout << "y size: " << y.size() << "\n"; */
     for (unsigned i = 0; i < y.size(); ++i)
+    {
         sample_weights.push_back(class_weights.at(int(y(i))));
-    /* std::cout << "sample weights size: " << sample_weights.size() << "\n"; */
-    /* std::cout << "class weights: "; */ 
-    /* for (auto c : class_weights) std::cout << c << " " ; std::cout << "\n"; */
-    /* std::cout << "number of classes: " << n_classes << "\n"; */
+    }
 }
+/* void Parameters::initialize_node_map() */
+/* { */
+
+/*    this->node_map = { */
+/*         //arithmetic operators */
+/*         { "+",  new NodeAdd({1.0,1.0})}, */ 
+/*         { "-",  new NodeSubtract({1.0,1.0})}, */ 
+/*         { "*",  new NodeMultiply({1.0,1.0})}, */ 
+/*         { "/",  new NodeDivide({1.0,1.0})}, */ 
+/*         { "sqrt",  new NodeSqrt({1.0})}, */ 
+/*         { "sin",  new NodeSin({1.0})}, */ 
+/*         { "cos",  new NodeCos({1.0})}, */ 
+/*         { "tanh",  new NodeTanh({1.0})}, */ 
+/*         { "^2",  new NodeSquare({1.0})}, */ 
+/*         { "^3",  new NodeCube({1.0})}, */ 
+/*         { "^",  new NodeExponent({1.0})}, */ 
+/*         { "exp",  new NodeExponential({1.0})}, */ 
+/*         { "gauss",  new NodeGaussian({1.0})}, */ 
+/*         { "gauss2d",  new Node2dGaussian({1.0, 1.0})}, */ 
+/*         { "log", new NodeLog({1.0}) }, */   
+/*         { "logit", new NodeLogit({1.0}) }, */
+/*         { "relu", new NodeRelu({1.0}) }, */
+/*         { "b2f", new NodeFloat<bool>() }, */
+/*         { "c2f", new NodeFloat<int>() }, */
+
+/*         // logical operators */
+/*         { "and", new NodeAnd() }, */
+/*         { "or", new NodeOr() }, */
+/*         { "not", new NodeNot() }, */
+/*         { "xor", new NodeXor() }, */
+/*         { "=", new NodeEqual() }, */
+/*         { ">", new NodeGreaterThan() }, */
+/*         { ">=", new NodeGEQ() }, */        
+/*         { "<", new NodeLessThan() }, */
+/*         { "<=", new NodeLEQ() }, */
+/*         { "split", new NodeSplit<float>() }, */
+/*         { "fuzzy_split", new NodeFuzzySplit<float>() }, */
+/*         { "fuzzy_fixed_split", new NodeFuzzyFixedSplit<float>() }, */
+/*         { "split_c", new NodeSplit<int>() }, */
+/*         { "fuzzy_split_c", new NodeFuzzySplit<int>() }, */
+/*         { "fuzzy_fixed_split_c", new NodeFuzzyFixedSplit<int>() }, */
+/*         { "if", new NodeIf() }, */   	    		
+/*         { "ite", new NodeIfThenElse() }, */
+/*         { "step", new NodeStep() }, */
+/*         { "sign", new NodeSign() }, */
+
+/*         // longitudinal nodes */
+/*         { "mean", new NodeMean() }, */
+/*         { "median", new NodeMedian() }, */
+/*         { "max", new NodeMax() }, */
+/*         { "min", new NodeMin() }, */
+/*         { "variance", new NodeVar() }, */
+/*         { "skew", new NodeSkew() }, */
+/*         { "kurtosis", new NodeKurtosis() }, */
+/*         { "slope", new NodeSlope() }, */
+/*         { "count", new NodeCount() }, */
+/*         { "recent", new NodeRecent() }, */
+/*         // terminals */
+/*         { "variable_f", new NodeVariable<float>() }, */
+/*         { "variable_b", new NodeVariable<bool>() }, */
+/*         { "variable_c", new NodeVariable<int>() }, */
+/*         { "constant_b", new NodeConstant(false) }, */
+/*         { "constant_d", new NodeConstant(0.0) }, */
+/*     }; */
+/* } */
 }

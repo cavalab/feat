@@ -40,7 +40,8 @@ namespace FT
             /// Evaluates the node symbolically
             void NodeXor::eval_eqn(State& state)
             {
-                state.push<bool>("(" + state.popStr<bool>() + " XOR " + state.popStr<bool>() + ")");
+                state.push<bool>("XOR(" + state.popStr<bool>() + "," 
+                        + state.popStr<bool>() + ")");
             }
             
             NodeXor* NodeXor::clone_impl() const { return new NodeXor(*this); }

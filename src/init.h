@@ -10,6 +10,7 @@ license: GNU/GPL v3
     #include <omp.h>
 #else
     #define omp_get_thread_num() 0
+    #define omp_get_num_threads() 1
     #define omp_get_max_threads() 1
     #define omp_set_num_threads( x ) 0
 #endif
@@ -19,7 +20,7 @@ license: GNU/GPL v3
 #include <memory>
 #include <iostream>
 #include <numeric>
-
+#include <map>
 using Eigen::MatrixXf;
 using Eigen::VectorXf;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
@@ -31,7 +32,12 @@ using std::unique_ptr;
 using std::shared_ptr;
 using std::make_shared;
 using std::cout; 
+typedef std::map<string, 
+                 std::pair<vector<Eigen::ArrayXf>, vector<Eigen::ArrayXf>>
+                > LongData;
 // internal includes
+#include "util/json.hpp"
+using nlohmann::json;
 
 namespace FT{
 

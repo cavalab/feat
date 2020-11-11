@@ -37,22 +37,32 @@ namespace FT {
                 
             instance = NULL;
         }
-        
-        void Rnd::set_seed(int seed)
+       
+        void Rnd::set_seed(int new_seed)
         { 
             /*!
              * set seeds for each core's random number generator
              */
-            if (seed == 0)
+            if (new_seed == -1)
+            /* if seed is -1, choose a random seed. */
             {
-                std::random_device rd; 
 
-                for (auto& r : rg)
-                    r.seed(rd());
+                int imax = std::numeric_limits<int>::max();
+                
+                std::uniform_int_distribution<> dist(0, imax);
+
+                this->seed = dist(rg.at(0));
+
+                this->set_seed(this->seed);
             }
-            else    // seed first rg with seed, then seed rest with random ints from rg[0]. 
+            else     
+            /* seed first rg with seed, then seed rest with random ints 
+             * from rg[0].
+             */
             {
-                rg.at(0).seed(seed);
+                this->seed = new_seed;
+
+                rg.at(0).seed(this->seed);
                 
                 int imax = std::numeric_limits<int>::max();
                 
@@ -62,6 +72,7 @@ namespace FT {
                     rg.at(i).seed(dist(rg.at(0)));                     
             }
         }
+
 
         int Rnd::rnd_int( int lowerLimit, int upperLimit ) 
         {

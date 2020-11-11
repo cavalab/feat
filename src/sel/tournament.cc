@@ -81,7 +81,7 @@ namespace FT{
              *      modifies individual ranks, objectives and dominations.
              */
             
-            HANDLE_ERROR_THROW("Not implemented");
+            THROW_RUNTIME_ERROR("Not implemented");
             return vector<size_t>();
         }
 

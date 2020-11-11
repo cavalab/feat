@@ -15,7 +15,7 @@ echo "reactivating test"
 conda activate feat-env
 conda info -a
 echo "running wrapper test"
-python tests/wrappertest.py -v 1
+python tests/wrappertest.py -v 0
 
 
 # test example notebooks if on master branch

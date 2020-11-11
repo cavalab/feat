@@ -22,7 +22,7 @@ namespace FT{
         bool Archive::sortComplexity(const Individual& lhs, 
                 const Individual& rhs)
         {
-            return lhs.c < rhs.c;
+            return lhs.complexity < rhs.complexity;
         }
         
         bool Archive::sortObj1(const Individual& lhs, 
@@ -62,7 +62,7 @@ namespace FT{
            {
                if (t.rank ==1){
                    archive.push_back(t);
-                   archive.at(archive.size()-1).complexity();
+                   archive.at(archive.size()-1).set_complexity();
                }
            } 
            cout << "intializing archive with " << archive.size() << " inds\n"; 
@@ -93,7 +93,7 @@ namespace FT{
             for (const auto& i : pf)   // refill archive with new pareto front
             {
                 archive.push_back(tmp.at(i));
-                archive.at(archive.size()-1).complexity();
+                archive.at(archive.size()-1).set_complexity();
             }
             if (this->sort_complexity)
                 std::sort(archive.begin(),archive.end(),&sortComplexity); 
