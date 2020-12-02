@@ -108,15 +108,11 @@ namespace Op{
         // heuristic brought about by
         // splitting between that value and the next. 
         // set threshold according to the biggest reduction. 
-        vector<float> s;
-        for (unsigned i = 0; i < x.size(); ++i) 
-            s.push_back(x(i)); //(x.data(),x.size());
-
+        vector<float> s = unique(x);
         vector<float> unique_classes = unique(y);
-        vector<int> idx(s.size());
+        vector<int> idx(x.size());
         std::iota(idx.begin(),idx.end(), 0);
         Map<ArrayXi> midx(idx.data(),idx.size());
-        s = unique(s);
         float score = 0;
         float best_score = 0;
         /* cout << "s: " ; */ 
