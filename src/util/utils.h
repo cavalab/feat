@@ -221,17 +221,25 @@ vector<T> unique(vector<T> w)
     return w;
 }
 
-/// returns unique elements in Eigen vector
+/// returns unique elements in Eigen matrix of variable rows/cols
 template <typename T>
-vector<T> unique(Matrix<T, Dynamic, 1> w)
+vector<T> unique(Matrix<T, -1, -1> w)
 {
-    vector<T> wv( w.data(), w.data()+w.rows());
+    vector<T> wv( w.data(), w.data()+w.size());
     return unique(wv);
 }
 
-/// returns unique elements in Eigen Matrix 
+/// returns unique elements in Eigen vector
 template <typename T>
-vector<T> unique(Matrix<T, Dynamic, -1> w)
+vector<T> unique(Matrix<T, -1, 1> w)
+{
+    vector<T> wv( w.data(), w.data()+w.size());
+    return unique(wv);
+}
+
+/// returns unique elements in 1d Eigen array
+template <typename T>
+vector<T> unique(Array<T, -1, 1> w)
 {
     vector<T> wv( w.data(), w.data()+w.rows()*w.cols());
     return unique(wv);
