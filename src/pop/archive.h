@@ -25,7 +25,7 @@ namespace Pop{
     
 struct Archive  
 {
-    vector<Individual> archive; ///< individual programs in the archive
+    vector<Individual> individuals; ///< individual programs in the archive
     bool sort_complexity;    ///< whether to sort archive by complexity
 
     NSGA2 selector; ///< nsga2 selection operator for getting the front
@@ -50,7 +50,7 @@ struct Archive
    
 };
 //serialization
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Archive, archive, sort_complexity);
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Archive, individuals);
 } // Pop
 } // FT
 #endif

@@ -62,7 +62,7 @@ Feat::Feat(int pop_size, int gens, string ml,
     // set Feat's Normalizer to only normalize floats by default
     this->N = Normalizer(false);
     params.set_protected_groups(protected_groups);
-    arch.set_objectives(params.objectives);
+    archive.set_objectives(params.objectives);
     fitted=false;
 }
 
@@ -317,7 +317,7 @@ string Feat::get_archive(bool front)
     {
         if (use_arch)
         {
-            printed_pop = &arch.archive;
+            printed_pop = &archive.individuals;
         }
         else
         {
@@ -498,7 +498,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     
     params.init(X, y);       
     
-    this->arch.set_objectives(params.objectives);
+    this->archive.set_objectives(params.objectives);
 
     // normalize data
     if (params.normalize)
@@ -559,21 +559,16 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
    
     bool random = selector.get_type() == "random";
 
-    // if a starting_pop is provided, load it
-    if (!this->starting_pop.empty())
-        pop.init(this->starting_pop, params, random);
-    // otherwise, initialize a new population
-    else
-    {
-        // initial model
-        ////////////////
-        logger.log("Fitting initial model", 2);
-        t0 =  timer.Elapsed().count();
-        initial_model(d);  
-        logger.log("Initial fitting took " 
-                + std::to_string(timer.Elapsed().count() - t0) + " seconds",2);
-        pop.init(best_ind,params,random);
-    }
+    // initial model
+    ////////////////
+    logger.log("Fitting initial model", 2);
+    t0 =  timer.Elapsed().count();
+    initial_model(d);  
+    logger.log("Initial fitting took " 
+            + std::to_string(timer.Elapsed().count() - t0) + " seconds",2);
+
+    // initialize population with initial model and/or starting pop
+    pop.init(best_ind,params,random, this->starting_pop);
     logger.log("Initial population:\n"+pop.print_eqns(),3);
 
     // evaluate initial population
@@ -653,7 +648,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     // archive
     if (!use_arch)
     {
-        arch.archive = pop.individuals;
+        archive.individuals = pop.individuals;
     }
 
     if (save_pop > 0)
@@ -718,7 +713,7 @@ void Feat::run_generation(unsigned int g,
 
     logger.log("update archive...",2);
     if (use_arch) 
-        arch.update(pop,params);
+        archive.update(pop,params);
     
     if(params.verbosity>1)
         print_stats(log, fraction);    
@@ -1222,9 +1217,9 @@ VectorXf Feat::predict_archive(int id, MatrixXf& X,
     VectorXf empty_y;
     Data tmp_data(X,empty_y,Z);
 
-    for (int i = 0; i < this->arch.archive.size(); ++i)
+    for (int i = 0; i < this->archive.individuals.size(); ++i)
     {
-        Individual& ind = this->arch.archive.at(i);
+        Individual& ind = this->archive.individuals.at(i);
 
         if (id == ind.id)
             return ind.predict_vector(tmp_data);
@@ -1251,9 +1246,9 @@ ArrayXXf Feat::predict_proba_archive(int id, MatrixXf& X,
     VectorXf empty_y;
     Data tmp_data(X,empty_y,Z);
 
-    for (int i = 0; i < this->arch.archive.size(); ++i)
+    for (int i = 0; i < this->archive.individuals.size(); ++i)
     {
-        Individual& ind = this->arch.archive.at(i);
+        Individual& ind = this->archive.individuals.at(i);
 
         if (id == ind.id)
             return ind.predict_proba(tmp_data);
@@ -1324,7 +1319,7 @@ bool Feat::update_best(const DataRef& d, bool validation)
     bs = this->min_loss_v; 
     float f; 
     vector<Individual>& pop_ref = (use_arch ? 
-                               arch.archive : this->pop.individuals); 
+                               archive.individuals : this->pop.individuals); 
 
     bool updated = false; 
 
@@ -1503,12 +1498,12 @@ void Feat::print_stats(std::ofstream& log, float fraction)
     unsigned n = 1;
     if (use_arch)
     {
-        num_models = std::min(40, int(arch.archive.size()));
+        num_models = std::min(40, int(archive.individuals.size()));
 
         for (unsigned i = 0; i < num_models; ++i)
         {
             std::string lim_model;
-            std::string model = arch.archive[i].get_eqn();
+            std::string model = archive.individuals[i].get_eqn();
             for (unsigned j = 0; j< std::min(model.size(),size_t(60)); ++j)
             {
                 lim_model.push_back(model.at(j));
@@ -1516,12 +1511,12 @@ void Feat::print_stats(std::ofstream& log, float fraction)
             if (lim_model.size()==60) 
                 lim_model += "...";
             
-            std::cout <<  arch.archive[i].rank          << "\t" 
-            /* for (const auto& o : arch.archive[i].obj) */
+            std::cout <<  archive.individuals[i].rank          << "\t" 
+            /* for (const auto& o : archive.individuals[i].obj) */
             /*     std::cout << o << "\t"; */
-                  <<  arch.archive[i].fitness       << "\t" 
-                  <<  arch.archive[i].fitness_v       << "\t" 
-                  <<  arch.archive[i].get_complexity()  << "\t" ;
+                  <<  archive.individuals[i].fitness       << "\t" 
+                  <<  archive.individuals[i].fitness_v       << "\t" 
+                  <<  archive.individuals[i].get_complexity()  << "\t" ;
             cout <<  lim_model << "\n";  
         }
     }
