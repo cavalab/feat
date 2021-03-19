@@ -23,8 +23,8 @@ class InputParser{
                 dataset="";
             }
             else{
-                if (std::string(argv[1]).compare("-h")) //unless help message is requested
-                {
+                //unless help message is requested
+                if (std::string(argv[1]).compare("-h"))                 {
                     dataset = argv[1];
                     start = 2;
                 }            

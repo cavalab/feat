@@ -454,6 +454,8 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     // start the clock
     timer.Reset();
     r.set_seed(this->random_state); 
+    // signal handler
+    signal(SIGINT, my_handler);
     // reset statistics
     this->stats = Log_Stats();
     params.use_batch = params.bp.batch_size>0;

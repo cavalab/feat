@@ -83,8 +83,12 @@ namespace shogun
 		     */
 		    inline int32_t get_max_iter() const;
            		
+			/** get weights */
 		    vector<SGVector<float64_t>> get_w();
             void set_w(vector<Eigen::VectorXd>& wnew);
+
+			/** get biases */
+			vector<float64_t> get_bias();
 
 	    protected:
 

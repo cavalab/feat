@@ -38,6 +38,14 @@ void Warn(string err, const char *file, int line )
     err = "WARNING: " + str_file + ", line " + std::to_string(line) + ": " + err;
     std::cout << err << "\n";
 }
+
+/// handle signals (ctr-c etc.)
+void my_handler(int s)
+{
+    WARN("Caught signal "+ to_string(s) +", exiting");
+    exit(1); 
+}
+
 }
 }
 

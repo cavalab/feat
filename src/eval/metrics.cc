@@ -259,7 +259,17 @@ namespace FT
                     dynamic_pointer_cast<sh::CMulticlassLabels>(labels)->
                                             get_multiclass_confidences(int(i));
                 SGVector<float> tmp(_tmp.begin(), _tmp.end());
-                confidences.row(i) = Map<ArrayXf>(tmp.data(),tmp.size());
+                if (confidences.cols() != tmp.size())
+                {
+                    WARN("mismatch in confidences: expected "
+                         + to_string(confidences.cols()) 
+                         + " values, got "
+                         + to_string(tmp.size()) 
+                         + " from labels");
+                    confidences.row(i) = 0;
+                }
+                else
+                    confidences.row(i) = Map<ArrayXf>(tmp.data(),tmp.size());
                 /* std::cout << confidences.row(i) << "\n"; */
             }
             /* for (auto c : uc) */

@@ -9,6 +9,7 @@ license: GNU/GPL v3
 #include <string>
 #include <iostream>
 #include <stdexcept>
+#include <signal.h>
 
 using namespace std;
 
@@ -30,6 +31,10 @@ void Warn(string err, const char *file, int line);
 #define THROW_INVALID_ARGUMENT( err ) (FT::Util::ThrowInvalidArgument( err, __FILE__, __LINE__ ))
 #define THROW_LENGTH_ERROR( err ) (FT::Util::ThrowLengthError( err, __FILE__, __LINE__ ))
 #define WARN( err ) (FT::Util::Warn( err, __FILE__, __LINE__ ))
+
+/// handle signals (ctr-c etc.)
+void my_handler(int s);
+
 }
 }
 

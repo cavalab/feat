@@ -159,6 +159,7 @@ void ML::init(bool assign_p_est)
         {
             if (assign_p_est)
                 p_est = make_shared<sh::CMulticlassLogisticRegression>();
+
             dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(
                     p_est)->set_prob_heuris(sh::OVA_SOFTMAX);
             dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(
@@ -217,7 +218,6 @@ vector<float> ML::get_weights() const
         if(this->prob_type == PT_MULTICLASS 
                 && in({LR, L1_LR, SVM}, ml_type) ) 
         {
-            /* cout << "in get_weights(), multiclass LR\n"; */
             vector<SGVector<double>> weights;
 
             if( in({LR, L1_LR}, ml_type))
@@ -228,32 +228,21 @@ vector<float> ML::get_weights() const
                   dynamic_pointer_cast<sh::CMyMulticlassLibLinear>(
                           p_est)->get_w();
        
-            /* cout << "set weights from get_w()\n"; */
-                
-            /* for( int j = 0;j<weights.at(0).size(); j++) */ 
-            /*     w.push_back(0); */
             if (weights.empty())
                 return vector<float>();
 
             w = vector<double>(weights.at(0).size());
-            /* cout << "weights.size(): " << weights.size() << "\n"; */
-            /* cout << "w size: " << w.size() << "\n"; */
-            /* cout << "getting abs weights\n"; */
             
-            // if this is multiclass, we average the weights across 
+            // we have to average the absolute weights across 
             // estimators in order to return one weight for each feature.
             for( int i = 0 ; i < weights.size(); ++i )
             {
-                /* cout << "weights:\n"; */
-                /* weights.at(i).display_vector(); */
-
                 for( int j = 0;j<weights.at(i).size(); ++j) 
                 {
                     w.at(j) += fabs(weights.at(i)[j]);
-                    /* w.at(j) += weights.at(i)[j]; */
                 }
             }
-            /* cout << "normalizing weights\n"; */ 
+            // normalize by the number of classes
             for( int i = 0; i < w.size() ; i++) 
                 w.at(i) = w.at(i)/weights.size(); 
             
@@ -554,10 +543,18 @@ VectorXf ML::labels_to_vector(const shared_ptr<CLabels>& labels)
 float ML::get_bias() const
 {   
     // get bias weight. only works with linear machines
-    if (in({L1_LR, LR, LARS, Ridge}, ml_type) )
+    if ( in({L1_LR, LR, LARS, Ridge}, ml_type) )
     {
-        return dynamic_pointer_cast<sh::CLinearMachine>(
-                p_est)->get_bias();
+        // in the multiclass case, return the average bias
+        if (this->prob_type == sh::PT_MULTICLASS)
+        {
+            auto biases = \
+            dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(p_est)
+            ->get_bias();
+            return accumulate(biases.begin(), biases.end(), 0.0)/biases.size();
+        }
+        else
+            return dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_bias();
     }
     else
         return 0;
@@ -567,7 +564,8 @@ float ML::get_bias() const
 void ML::set_bias(float b)
 {
     // set bias weight. only works with linear machines
-    if (in({L1_LR, LR, LARS, Ridge}, ml_type) )
+    if (in({L1_LR, LR, LARS, Ridge}, ml_type) 
+        && this->prob_type != sh::PT_MULTICLASS)
     {
         return dynamic_pointer_cast<sh::CLinearMachine>(
                 p_est)->set_bias(b);
@@ -710,18 +708,9 @@ shared_ptr<CLabels> ML::fit_tune(MatrixXf& X, VectorXf& y,
     }
 }
 
-//serialization
+/// serialization
 void to_json(json& j, const ML& ml)
 {
-    /* j = json{ */ 
-    /*         {"ml_type", ml.ml_type}, */
-    /*         {"ml_str", ml.ml_str}, */
-    /*         {"prob_type", ml.prob_type}, */
-    /*         {"N", ml.N}, */
-    /*         {"max_train_time", ml.max_train_time}, */
-    /*         {"normalize", ml.normalize}, */
-    /*         {"C", ml.C} */
-    /*         }; */
     j["ml_type"] =  ml.ml_type;
     j["ml_str"] =  ml.ml_str;
     j["prob_type"] =  ml.prob_type;
@@ -730,16 +719,22 @@ void to_json(json& j, const ML& ml)
     j["normalize"] =  ml.normalize;
     j["C"] =  ml.C;
     // if ml is a linear model, store the weights and bias so it can be reproduced
+    // multiclass is handled first. 
     if (in({LARS, Ridge, LR, L1_LR, SVM}, ml.ml_type))
     {
         if (ml.prob_type == PT_MULTICLASS
                 && in({LR, L1_LR, SVM}, ml.ml_type) ) 
         {
             vector<SGVector<double>> shogun_weights;
+            vector<double> shogun_biases;
 
             if( in({LR, L1_LR}, ml.ml_type))
+            {
                 shogun_weights = dynamic_pointer_cast<
                     sh::CMulticlassLogisticRegression>(ml.p_est)->get_w();
+                shogun_biases = dynamic_pointer_cast<
+                    sh::CMulticlassLogisticRegression>(ml.p_est)->get_bias();
+            }
             else //SVM
                 shogun_weights = \
                   dynamic_pointer_cast<sh::CMyMulticlassLibLinear>(
@@ -754,6 +749,7 @@ void to_json(json& j, const ML& ml)
                         shogun_weights.at(i).size());
             } 
             j["w"] = weights;
+            j["bias"] = shogun_biases;
         }
         else
         {
@@ -763,8 +759,8 @@ void to_json(json& j, const ML& ml)
             
             weights.assign(tmp.data(), tmp.data()+tmp.size());          
             j["w"] = weights;
+            j["bias"] = ml.get_bias();
         }
-        j["bias"] = ml.get_bias();
         
     }
     else
@@ -793,6 +789,7 @@ void from_json(const json& j, ML& model)
         if(model.prob_type == PT_MULTICLASS 
                 && in({LR, L1_LR, SVM}, model.ml_type) ) 
         {
+            // TODO: set biases
             vector<VectorXd> multi_weights = j.at("w");
             if( in({LR, L1_LR}, model.ml_type))
                 dynamic_pointer_cast<

@@ -84,6 +84,7 @@ struct NodeMap
     {
 		for (auto it = node_map.cbegin(); it != node_map.cend(); )
 		{
+            delete it->second;
             node_map.erase(it++);    // or "it = m.erase(it)" since C++11
         }
     };

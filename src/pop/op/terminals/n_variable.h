@@ -16,7 +16,6 @@ class NodeVariable : public Node
 {
     public:
         size_t loc;             ///< column location in X, for x types
-        string variable_name;   ///< name of variable
 
         NodeVariable(const size_t& l, char ntype = 'f', std::string n="");
         NodeVariable();
@@ -26,7 +25,7 @@ class NodeVariable : public Node
 
         /// Evaluates the node symbolically
         void eval_eqn(State& state);
-        
+
     protected:
         NodeVariable* clone_impl() const override;  
         // rnd_clone is just clone_impl() for variable, since rand vars not supported

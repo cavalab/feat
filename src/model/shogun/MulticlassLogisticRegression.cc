@@ -74,6 +74,10 @@ namespace shogun
 
     CMulticlassLogisticRegression::~CMulticlassLogisticRegression()
     {
+		SG_UNREF(m_features);
+		SG_UNREF(m_machines);
+		SG_UNREF(m_machine);
+		SG_UNREF(m_multiclass_strategy);
     }
 
 
@@ -89,7 +93,22 @@ namespace shogun
 		    weights_vector.push_back(machine->get_w());
 	    }
 	
-         return weights_vector;	
+        return weights_vector;	
+    }
+
+    vector<float64_t> CMulticlassLogisticRegression::get_bias()
+    {
+        vector<float64_t> bias_vector;
+        
+        int n_machines = get_num_machines();
+        
+        for (int32_t i=0; i<n_machines; i++)
+	    {
+		    CLinearMachine* machine = (CLinearMachine*)m_machines->get_element(i);
+		    bias_vector.push_back(machine->get_bias());
+	    }
+	
+        return bias_vector;	
     }
 
     void CMulticlassLogisticRegression::set_w(vector<Eigen::VectorXd>& wnew)
