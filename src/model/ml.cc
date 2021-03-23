@@ -60,6 +60,8 @@ ML::ML(string ml, bool norm, bool classification, int n_classes)
 
 void ML::init(bool assign_p_est)
 {
+    if (assign_p_est)
+        this->p_est.reset();
     // set up ML based on type
     if (ml_type == LARS)
     {

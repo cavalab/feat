@@ -100,6 +100,9 @@ namespace shogun
 		    /** init defaults */
 		    void init_defaults();
 
+		    /** reset_train_state */
+		    void reset_train_state();
+
 		    /** register parameters */
 		    void register_parameters();
 
