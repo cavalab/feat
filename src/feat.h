@@ -244,7 +244,7 @@ class Feat
         int get_pop_size();
         
         ///return archive size
-        int get_archive_size(){ return this->arch.archive.size(); };
+        int get_archive_size(){ return this->archive.individuals.size(); };
 
         ///return size of max generations
         int get_gens();
@@ -471,7 +471,7 @@ class Feat
         Evaluation evaluator;      	///< evaluation code
         Variation variator;  	///< variation operators
         Selection survivor;       	///< survival algorithm
-        Archive arch;          ///< pareto front archive
+        Archive archive;          ///< pareto front archive
         bool use_arch;         ///< internal control over use of archive
         string survival;                        ///< stores survival mode
         Normalizer N;                           ///< scales training data.
@@ -516,7 +516,7 @@ class Feat
                 pop,
                 selector,
                 survivor,
-                arch,
+                archive,
                 use_arch,
                 survival,
                 N,

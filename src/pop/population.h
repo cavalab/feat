@@ -32,12 +32,12 @@ struct Population
     
     ~Population();
     
-    /// initialize population of programs with a starting model. 
+    /// initialize population of programs with a starting model and/or from file 
     void init(const Individual& starting_model, 
-            const Parameters& params, bool random = false);
-    /// initialize population of programs from a file. 
-    void init(string filename, 
-            const Parameters& params, bool random = false);
+              const Parameters& params, 
+              bool random = false,
+              string filename=""
+              );
     
     /// update individual vector size 
     void resize(int pop_size);

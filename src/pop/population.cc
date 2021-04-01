@@ -35,33 +35,58 @@ const Individual Population::operator [](size_t i) const {return individuals.at(
 const Individual & Population::operator [](size_t i) {return individuals.at(i);}
 
 
-void Population::init(string filename, 
+void Population::init(const Individual& starting_model, 
                       const Parameters& params,
-                      bool random)
+                      bool random,
+                      string filename
+                      )
 {
-    int starting_size = 0;
-    starting_size = this->load(filename);
+    /*!
+     *create random programs in the population, 
+     * seeded by initial model weights and potentially saved models
+     */
+    int starting_size = 1;
+
+    if (!filename.empty())
+    {
+        this->load(filename);
+
+        starting_size = this->individuals.size();
+        cout << "individuals.size(): " << this->individuals.size() << endl;
+        cout << "params.pop_size: " << params.pop_size << endl;
+
+        if (starting_size < params.pop_size)
+        {
+            individuals.resize(params.pop_size);
+            individuals.at(starting_size) = starting_model;
+            ++starting_size;
+        }
+        else if (starting_size == params.pop_size)
+        {
+            WARN("The first model provided in the startup file is going "
+                 "to get overwritten by the initial (linear) model. "
+                 "To avoid this, increase pop_size by 1."
+                 ); 
+            individuals.at(0) = starting_model;
+        }
+        else
+        {
+            WARN("Too many models provided in the startup file ("
+                 + to_string(starting_size) + "); pop_size is set to "
+                 + to_string(params.pop_size) + ". Also, the first model is going "
+                 "to get overwritten by the initial (linear) model."); 
+            individuals.at(0) = starting_model;
+        }
+    }
+    else
+        individuals.at(0) = starting_model;
+
 
     /* if the starting pop is smaller than the 
      * set size of the population, initialize
      * additional individuals.*/
     #pragma omp parallel for
     for (unsigned i = starting_size; i< individuals.size(); ++i)
-    {          
-        individuals.at(i).initialize(params, random, i);
-    }
-}
-void Population::init(const Individual& starting_model, 
-                      const Parameters& params,
-                      bool random)
-{
-    /*!
-     *create random programs in the population, seeded by initial model weights 
-     */
-    individuals.at(0) = starting_model;
-
-    #pragma omp parallel for
-    for (unsigned i = 1; i< individuals.size(); ++i)
     {          
         individuals.at(i).initialize(params, random, i);
     }
@@ -153,6 +178,7 @@ int Population::load(string filename)
             + to_string(this->size()),1);
 
     indata.close();
+    return this->size();
     /* std::ifstream indata; */
     /* indata.open(filename); */
     /* if (!indata.good()) */

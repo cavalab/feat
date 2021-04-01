@@ -732,17 +732,31 @@ string Individual::get_eqn()
 {
     string eqn="";
     State state;
-
+    
     int i = 0;
     for (const auto& n : program)
     {
         if(state.check_s(n->arity))
+        {
             n->eval_eqn(state);
+        }
         else
+        {
+            cout << n->name << " failed arity check" << endl;
+            cout << "state fs:\n";
+            for (auto s : state.fs)
+                cout << s << endl;
+            cout << "state bs:\n";
+            for (auto s : state.bs)
+                cout << s << endl;
+            cout << "state cs:\n";
+            for (auto s : state.cs)
+                cout << s << endl;
             THROW_RUNTIME_ERROR("get_eqn() error: node " 
                     + n->name + " at location " + to_string(i) 
                     + " in [ " + program_str() 
                     + " ] is invalid\n");
+        }
         ++i;
     }
     // tie state outputs together to return representation

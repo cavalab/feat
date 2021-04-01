@@ -113,8 +113,8 @@ class Feat(PyFeat, BaseEstimator):
         Uses softmax normalization of probabilities of variation across
         the features. 
     save_pop: int, optional (default: 0)
-        Prints the population of models. 0: don't print; 1: print final 
-        population; 2: print every generation. 
+        Saves the population of models. 0: don't save; 1: save final 
+        population; 2: save every generation. 
     normalize: boolean, optional (default: True)
         Normalizes the floating point input variables using z-scores. 
     val_from_arch: boolean, optional (default: True)
@@ -257,8 +257,17 @@ class Feat(PyFeat, BaseEstimator):
         # add python-specific parameters
         for k in self.__dict__: 
             if k.endswith('_'):
+                print('adding',k,'type:',self.__dict__[k].__class__.__name__)
+                if self.__dict__[k].__class__.__name__ == 'int64':
+                    print('WPOIEJ:FAOSINF:ODJ')
                 feat_state[k] = self.__dict__[k]
 
+        for k,v in feat_state.items():
+            # if v.__class__.__name__ == 'ndarray':
+            #     print(k,'is an ndarray')
+            # else:
+            if v.__class__.__name__ == 'int64':
+                print(k,':',v.__class__.__name__,':',v)
         with open(filename, 'w') as of:
             json.dump(feat_state, of)
 
@@ -388,13 +397,19 @@ class FeatClassifier(Feat):
         Feat.__init__(self,**kwargs)
 
     def fit(self,X,y,zfile=None,zids=None):
-        self.le_ = LabelEncoder().fit(y)
-        return Feat.fit(self, X, self.le_.transform(y), zfile, zids)
+        self.classes_ = [int(i) for i in np.unique(y)]
+        if (any([i != j for i,j in zip(self.classes_,
+                                      np.arange(np.max(self.classes_))
+                                      )
+               ])):
+            raise ValueError('y must be a contiguous set of labels from ',
+                             '0 to n_classes. y contains the values {}'.format(
+                                 np.unique(y)))
+       
+        return Feat.fit(self, X, y, zfile, zids)
 
     def predict(self,X,zfile=None,zids=None):
-        return self.le_.transform(
-            Feat.predict(self, X, zfile, zids)
-        )
+        return Feat.predict(self, X, zfile, zids)
 
     def predict_proba(self,X,zfile=None,zids=None):
         """Return probabilities of predictions for data X"""
@@ -408,8 +423,11 @@ class FeatClassifier(Feat):
             tmp = self._predict_proba_with_z(X,zfile,zids)
         else:
             tmp = self._predict_proba(X)
-
-        if len(tmp.shape)<2:
+        
+        # for binary classification, add a second column for 0 complement
+        if len(self.classes_) ==2:
+            tmp = tmp.ravel()
+            assert len(X) == len(tmp)
             tmp = np.vstack((1-tmp,tmp)).transpose()
         return tmp         
 

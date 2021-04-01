@@ -61,15 +61,15 @@ namespace FT{
            for (const auto& t : tmp )
            {
                if (t.rank ==1){
-                   archive.push_back(t);
-                   archive.at(archive.size()-1).set_complexity();
+                   individuals.push_back(t);
+                   individuals.at(individuals.size()-1).set_complexity();
                }
            } 
-           cout << "intializing archive with " << archive.size() << " inds\n"; 
+           cout << "intializing archive with " << individuals.size() << " inds\n"; 
            if (this->sort_complexity)
-               std::sort(archive.begin(),archive.end(), &sortComplexity); 
+               std::sort(individuals.begin(),individuals.end(), &sortComplexity); 
            else
-               std::sort(archive.begin(),archive.end(), &sortObj1); 
+               std::sort(individuals.begin(),individuals.end(), &sortObj1); 
 
         }
 
@@ -82,27 +82,27 @@ namespace FT{
             for (unsigned int i=0; i<tmp.size(); ++i)
                 tmp.at(i).set_obj(params.objectives);
 
-            for (const auto& p : archive)
+            for (const auto& p : individuals)
                 tmp.push_back(p);
 
             selector.fast_nds(tmp);
             
             vector<int> pf = selector.front.at(0);
           
-            archive.resize(0);  // clear archive
+            individuals.resize(0);  // clear archive
             for (const auto& i : pf)   // refill archive with new pareto front
             {
-                archive.push_back(tmp.at(i));
-                archive.at(archive.size()-1).set_complexity();
+                individuals.push_back(tmp.at(i));
+                individuals.at(individuals.size()-1).set_complexity();
             }
             if (this->sort_complexity)
-                std::sort(archive.begin(),archive.end(),&sortComplexity); 
+                std::sort(individuals.begin(),individuals.end(),&sortComplexity); 
             else
-                std::sort(archive.begin(),archive.end(), &sortObj1); 
-            /* auto it = std::unique(archive.begin(),archive.end(), &sameFitComplexity); */
-            auto it = std::unique(archive.begin(),archive.end(), 
+                std::sort(individuals.begin(),individuals.end(), &sortObj1); 
+            /* auto it = std::unique(individuals.begin(),individuals.end(), &sameFitComplexity); */
+            auto it = std::unique(individuals.begin(),individuals.end(), 
                     &sameObjectives);
-            archive.resize(std::distance(archive.begin(),it));
+            individuals.resize(std::distance(individuals.begin(),it));
         }
     }
 }
