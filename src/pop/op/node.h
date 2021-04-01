@@ -54,6 +54,7 @@ namespace Op{
     {       
         public:
             string name;              				///< node type
+            string variable_name;                   ///< name for terminals
             char otype;             				///< output type
             std::map<char, unsigned int> arity;		///< floating arity of the operator 
             int complexity;         ///< complexity of node

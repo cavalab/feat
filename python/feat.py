@@ -397,7 +397,6 @@ class FeatClassifier(Feat):
         Feat.__init__(self,**kwargs)
 
     def fit(self,X,y,zfile=None,zids=None):
-        # self.le_ = LabelEncoder().fit(y)
         self.classes_ = [int(i) for i in np.unique(y)]
         if (any([i != j for i,j in zip(self.classes_,
                                       np.arange(np.max(self.classes_))
@@ -410,9 +409,6 @@ class FeatClassifier(Feat):
         return Feat.fit(self, X, y, zfile, zids)
 
     def predict(self,X,zfile=None,zids=None):
-        # return self.le_.transform(
-        #     Feat.predict(self, X, zfile, zids)
-        # )
         return Feat.predict(self, X, zfile, zids)
 
     def predict_proba(self,X,zfile=None,zids=None):
