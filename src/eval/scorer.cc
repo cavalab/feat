@@ -48,6 +48,7 @@ namespace FT{
                     // not found
                     THROW_INVALID_ARGUMENT("Scoring function '" + this->scorer
                             + "' not defined");
+                    return 0;
                 } 
                 else 
                 {

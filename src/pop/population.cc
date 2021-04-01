@@ -135,7 +135,7 @@ void Population::save(string filename)
     logger.log("Saved population to file " + filename, 1);
 }
 
-int Population::load(string filename)
+void Population::load(string filename)
 {
     //TODO: replace with from_json(j, this) call
     std::ifstream indata;

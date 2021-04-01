@@ -88,7 +88,7 @@ struct Population
     // save serialized population
     void save(string filename);
     // load serialized population
-    int load(string filename);
+    void load(string filename);
 
 };        
 //TODO

@@ -514,6 +514,7 @@ ArrayXXf ML::predict_proba(const MatrixXf& X)
     else
         THROW_INVALID_ARGUMENT("Error: predict_proba not defined for "
                 "problem type or ML method");
+    return ArrayXXf();
 }
 
 VectorXf ML::labels_to_vector(const shared_ptr<CLabels>& labels)
@@ -708,6 +709,7 @@ shared_ptr<CLabels> ML::fit_tune(MatrixXf& X, VectorXf& y,
         }
         return this->fit(X, y, params, pass, dtypes);
     }
+    return shared_ptr<CLabels>();
 }
 
 /// serialization

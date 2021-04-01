@@ -346,6 +346,7 @@ std::unique_ptr<Node> Parameters::createNode(string str,
         THROW_INVALID_ARGUMENT("Error: no node named '" + str + "' exists."); 
     }
     
+    return std::unique_ptr<Node>();
 }
 
 void Parameters::set_protected_groups(string pg)
