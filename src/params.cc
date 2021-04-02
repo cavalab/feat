@@ -181,20 +181,12 @@ void Parameters::set_term_weights(const vector<float>& w)
     string weights = "terminal weights: ";
     for (unsigned i = 0; i < terminals.size(); ++i)
     {
-<<<<<<< HEAD
         weights += ("[" 
                 + terminals.at(i)->variable_name 
                 + " (" + 
                 terminals.at(i)->otype + "): " +
                 std::to_string(term_weights.at(i)) 
                 + "], "); 
-=======
-        weights += ("(" 
-                    + terminals.at(i)->variable_name 
-                    + "(" + 
-                    terminals.at(i)->otype + ")," 
-                    + std::to_string(term_weights.at(i)) + "), ") ; 
->>>>>>> 62235715677ce949aa2660cffae2e5cdd4330174
     }
     weights += "\n";
     logger.log(weights, 2);
@@ -354,6 +346,7 @@ std::unique_ptr<Node> Parameters::createNode(string str,
         THROW_INVALID_ARGUMENT("Error: no node named '" + str + "' exists."); 
     }
     
+    return std::unique_ptr<Node>();
 }
 
 void Parameters::set_protected_groups(string pg)

@@ -160,7 +160,7 @@ void Population::save(string filename)
     logger.log("Saved population to file " + filename, 1);
 }
 
-int Population::load(string filename)
+void Population::load(string filename)
 {
     //TODO: replace with from_json(j, this) call
     std::ifstream indata;
@@ -178,34 +178,6 @@ int Population::load(string filename)
             + to_string(this->size()),1);
 
     indata.close();
-    return this->size();
-    /* std::ifstream indata; */
-    /* indata.open(filename); */
-    /* if (!indata.good()) */
-    /*     THROW_INVALID_ARGUMENT("Invalid population input file " + filename + "\n"); */ 
-
-    /* std::string line; */
-    /* int i = 0; */
-
-    /* while (std::getline(indata, line)) */ 
-    /* { */
-    /*     json j = json::parse(line); */
-    /*     if (i < individuals.size()) */
-    /*     { */
-    /*         from_json(j, individuals.at(i)); */
-    /*         logger.log("Loaded equation: " + individuals.at(i).get_eqn() */
-    /*                    + " from " + filename, 2); */     
-    /*     } */
-    /*     else */
-    /*     { */
-    /*         THROW_INVALID_ARGUMENT("Couldn't load individual " + to_string(i) */ 
-    /*                            +", pop size is limited to " */ 
-    /*                            + to_string(individuals.size())); */
-    /*     } */
-
-    /*     ++i; */
-    /* } */
-    /* return i; */
 }
 
 

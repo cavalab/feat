@@ -221,6 +221,7 @@ vector<size_t> FairLexicase::survive(Population& pop,
 {
     /* FairLexicase survival */
     THROW_RUNTIME_ERROR("Lexicase survival not implemented");
+    return vector<size_t>();
 }
     
 }
