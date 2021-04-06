@@ -41,16 +41,27 @@ import os
 env_params = os.environ.keys() 
 if 'EIGEN3_INCLUDE_DIR' in env_params:
     eigen_dir = os.environ['EIGEN3_INCLUDE_DIR'] 
+elif 'CONDA_PREFIX' in env_params:
+    eigen_dir = os.environ['CONDA_PREFIX']+'/include/eigen3/'
 else:
     eigen_dir = '/usr/include/eigen3/'
+print('eigen_dir:',eigen_dir)
 
-shogun_include_dir = '/usr/include/'
-shogun_lib = '/usr/lib/'
 if 'SHOGUN_DIR' in env_params:
-    print('SHOGUN_DIR=',os.environ['SHOGUN_DIR'])
     shogun_include_dir = os.environ['SHOGUN_DIR']
+elif 'CONDA_PREFIX' in env_params:
+    shogun_include_dir = os.environ['CONDA_PREFIX']+'/include/'
+else:
+    shogun_include_dir = '/usr/include/'
+print('shogun_include_dir:',shogun_include_dir)
+
 if 'SHOGUN_LIB' in env_params:
     shogun_lib = os.environ['SHOGUN_LIB']
+elif 'CONDA_PREFIX' in env_params:
+    shogun_lib = os.environ['CONDA_PREFIX']+'/lib/'
+else:
+    shogun_lib = '/usr/lib/'
+print('shogun_lib:',shogun_lib)
 
 # get path to feat shared library for linking
 cwd = '/'.join(os.getcwd().split('/')[:-1])
