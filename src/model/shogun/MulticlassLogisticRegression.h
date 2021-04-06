@@ -24,6 +24,7 @@
 
 using std::vector;
 #include <Eigen/Dense>
+#include <shogun/base/some.h>                                                                       
 
 namespace shogun
 {
@@ -48,7 +49,7 @@ namespace shogun
 		    CMulticlassLogisticRegression(float64_t z, CDotFeatures* feats, CLabels* labs);
 
 		    /** destructor */
-		    virtual ~CMulticlassLogisticRegression();
+		    ~CMulticlassLogisticRegression();
 
 		    /** get name */
 		    virtual const char* get_name() const;
@@ -99,9 +100,6 @@ namespace shogun
 
 		    /** init defaults */
 		    void init_defaults();
-
-		    /** reset_train_state */
-		    void reset_train_state();
 
 		    /** register parameters */
 		    void register_parameters();

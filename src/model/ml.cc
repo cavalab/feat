@@ -74,31 +74,29 @@ void ML::init(bool assign_p_est)
     {
         if (assign_p_est)
             p_est = make_shared<sh::CLinearRidgeRegression>();
-        dynamic_pointer_cast<sh::CLinearRidgeRegression>(
-                p_est)->set_compute_bias(true);
-        dynamic_pointer_cast<sh::CLinearRidgeRegression>(
-                p_est)->set_tau(this->C);
+        // auto typed_p_est = typed<sh::CLinearRidgeRegression>();
+        auto typed_p_est = dynamic_pointer_cast<sh::CLinearRidgeRegression>(
+                            p_est);
+        typed_p_est->set_compute_bias(true);
+        typed_p_est->set_tau(this->C);
     }
     else if (ml_type == RF)
     {
         if (assign_p_est)
             p_est = make_shared<sh::CMyRandomForest>();
-        dynamic_pointer_cast<sh::CMyRandomForest>(
-                p_est)->set_machine_problem_type(this->prob_type);
-        dynamic_pointer_cast<sh::CMyRandomForest>(
-                p_est)->set_num_bags(10);
+        auto typed_p_est = dynamic_pointer_cast<sh::CMyRandomForest>(p_est);
+        typed_p_est->set_machine_problem_type(this->prob_type);
+        typed_p_est->set_num_bags(10);
                            
         if (this->prob_type != PT_REGRESSION)
         {
             auto CR = some<sh::CMajorityVote>();                        
-            dynamic_pointer_cast<sh::CMyRandomForest>(
-                    p_est)->set_combination_rule(CR);
+            typed_p_est->set_combination_rule(CR);
         }
         else
         {
             auto CR = some<sh::CMeanRule>();
-            dynamic_pointer_cast<sh::CMyRandomForest>(
-                    p_est)->set_combination_rule(CR);
+            typed_p_est->set_combination_rule(CR);
         }
         
     }
@@ -147,29 +145,24 @@ void ML::init(bool assign_p_est)
                     p_est = make_shared<sh::CMyLibLinear>(sh::L1R_LR);
             }
 
+            auto typed_p_est = dynamic_pointer_cast<sh::CMyLibLinear>(p_est);
             // setting parameters to match sklearn defaults
-            dynamic_pointer_cast<sh::CMyLibLinear>(
-                        p_est)->set_bias_enabled(true);
-            dynamic_pointer_cast<sh::CMyLibLinear>(
-                    p_est)->set_epsilon(0.0001);
-            dynamic_pointer_cast<sh::CMyLibLinear>(
-                    p_est)->set_max_iterations(100);
-            dynamic_pointer_cast<sh::CMyLibLinear>(
-                    p_est)->set_C(this->C,this->C); 
+            typed_p_est->set_bias_enabled(true);
+            typed_p_est->set_epsilon(0.0001);
+            typed_p_est->set_max_iterations(100);
+            typed_p_est->set_C(this->C,this->C); 
         }
         else    // multiclass  
         {
             if (assign_p_est)
                 p_est = make_shared<sh::CMulticlassLogisticRegression>();
 
-            dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(
-                    p_est)->set_prob_heuris(sh::OVA_SOFTMAX);
-            dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(
-                    p_est)->set_z(this->C);
-            dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(
-                    p_est)->set_epsilon(0.0001);
-            dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(
-                    p_est)->set_max_iter(100);
+            auto typed_p_est = \
+                dynamic_pointer_cast<sh::CMulticlassLogisticRegression>(p_est);
+            typed_p_est->set_prob_heuris(sh::OVA_SOFTMAX);
+            typed_p_est->set_z(this->C);
+            typed_p_est->set_epsilon(0.0001);
+            typed_p_est->set_max_iter(100);
 
         }
 
@@ -288,7 +281,7 @@ shared_ptr<CLabels> ML::fit(const MatrixXf& X, const VectorXf& y,
      * @return yhat: n_samples vector of outputs
     */ 
     
-    init(false);
+    init(true);
 
     MatrixXd _X = X.cast<double>();
     VectorXd _y = y.cast<double>();
@@ -390,7 +383,9 @@ shared_ptr<CLabels> ML::fit(const MatrixXf& X, const VectorXf& y,
         features = features->get_transposed();
 
     logger.log("exiting ml::fit",3); 
-    return this->retrieve_labels(features, true, pass); 
+    auto y_pred = this->retrieve_labels(features, true, pass);
+    features->free_features();
+    return y_pred; 
 }
 
 VectorXf ML::fit_vector(const MatrixXf& X, const VectorXf& y, 
@@ -467,7 +462,9 @@ shared_ptr<CLabels> ML::predict(const MatrixXf& X, bool print)
             SGMatrix<float64_t>(_X));
      
     bool pass = true; 
-    return this->retrieve_labels(features, true, pass);
+    auto y_pred = this->retrieve_labels(features, true, pass);
+    features->free_features();
+    return y_pred; 
 }
 
 VectorXf ML::predict_vector(const MatrixXf& X)

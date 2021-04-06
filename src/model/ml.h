@@ -118,8 +118,9 @@ class ML
         
         /// returns labels of a fitted model estimating on features
         shared_ptr<CLabels> retrieve_labels(
-        CDenseFeatures<float64_t>* features, 
-        bool proba, bool& pass);
+                                CDenseFeatures<float64_t>* features, 
+                                bool proba, 
+                                bool& pass);
 
         /* VectorXd predict(MatrixXd& X); */
         // set data types (for tree-based methods)            
