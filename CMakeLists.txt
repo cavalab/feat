@@ -35,16 +35,16 @@ set (CMAKE_CXX_STANDARD 14)
 project(Feat)
 
 # add Eigen include paths
-if (DEFINED ENV{EIGEN_INCLUDE_DIR})
-    set(EIGEN_INCLUDE_DIR $ENV{EIGEN_INCLUDE_DIR})
-    include_directories($ENV{EIGEN_INCLUDE_DIR})
-elseif(DEFINED EIGEN_INCLUDE_DIR)
-    include_directories("${EIGEN_INCLUDE_DIR}")
+if (DEFINED ENV{EIGEN3_INCLUDE_DIR})
+    set(EIGEN3_INCLUDE_DIR $ENV{EIGEN3_INCLUDE_DIR})
+    include_directories($ENV{EIGEN3_INCLUDE_DIR})
+elseif(DEFINED EIGEN3_INCLUDE_DIR)
+    include_directories("${EIGEN3_INCLUDE_DIR}")
 else()
-    message(STATUS "No EIGEN_INCLUDE_DIR found, using find_package...")
+    message(STATUS "No EIGEN3_INCLUDE_DIR found, using find_package...")
     find_package(Eigen3 REQUIRED NO_MODULE)
 endif()
-message(STATUS "EIGEN_INCLUDE_DIR=${EIGEN_INCLUDE_DIR}")
+message(STATUS "EIGEN3_INCLUDE_DIR=${EIGEN3_INCLUDE_DIR}")
 
 # add Shogun includes
 # find Shogun library
