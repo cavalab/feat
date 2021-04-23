@@ -46,6 +46,7 @@ cdef extern from "feat.h" namespace "FT":
         string get_representation()
         string get_archive(bool front)
         string get_model(bool)
+        string get_eqn(bool)
 
         void fit_with_z(float * X,int rowsX,int colsX, float * Y,int lenY, 
                 string s, int * train_idx, int train_size)
@@ -297,6 +298,10 @@ cdef class PyFeat:
 
     def get_model(self, bool sort=True):
         return self.ft.get_model(sort).decode()
+
+    def get_eqn(self, bool sort=True):
+        """best model as a single line equation"""
+        return self.ft.get_eqn(sort).decode()
 
     def get_coefs(self):
         return ndarray(self.ft.get_coefs()).flatten()

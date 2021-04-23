@@ -306,8 +306,11 @@ class Feat
         ///return best model
         string get_representation();
 
-        ///return best model: features plus their importances
+        ///return best model, in tabular form
         string get_model(bool sort=true);
+
+        ///return best model as a single line equation 
+        string get_eqn(bool sort) ;
 
         ///get number of parameters in best
         int get_n_params();

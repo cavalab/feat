@@ -256,6 +256,39 @@ float Feat::get_fb(){ return params.feedback; }
 ///return best model
 string Feat::get_representation(){ return best_ind.get_eqn();}
 
+string Feat::get_eqn(bool sort) 
+{   
+    vector<string> features = best_ind.get_features();
+    vector<float> weights = best_ind.ml->get_weights();
+    float offset = best_ind.ml->get_bias(); 
+
+    vector<size_t> order(weights.size());
+    if (sort)
+    {
+        vector<float> aweights(weights.size());
+        for (int i =0; i<aweights.size(); ++i) 
+            aweights[i] = fabs(weights[i]);
+        order = argsort(aweights, false);
+    }
+    else
+        iota(order.begin(), order.end(), 0);
+
+    string output;
+    output +=  to_string(offset) + "+";
+    int i = 0;
+    for (const auto& o : order)
+    {
+        output += to_string(weights.at(o), 2);
+        output += "*";
+        output += features.at(o);
+        if (i < order.size()-1)
+            output += "+";
+        ++i;
+    }
+
+    return output;
+}
+
 string Feat::get_model(bool sort)
 {   
     vector<string> features = best_ind.get_features();
