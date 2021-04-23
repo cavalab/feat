@@ -233,6 +233,7 @@ class Feat(PyFeat, BaseEstimator):
     def set_params(self, **params):
         for k,v in params.items():
             setattr(self,k,v)
+        return self
 
     def load(self, filename):
         """Load a saved Feat state from file."""
