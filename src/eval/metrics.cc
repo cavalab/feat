@@ -261,11 +261,11 @@ namespace FT
                 SGVector<float> tmp(_tmp.begin(), _tmp.end());
                 if (confidences.cols() != tmp.size())
                 {
-                    WARN("mismatch in confidences: expected "
-                         + to_string(confidences.cols()) 
-                         + " values, got "
-                         + to_string(tmp.size()) 
-                         + " from labels");
+                    /* WARN("mismatch in confidences: expected " */
+                    /*      + to_string(confidences.cols()) */ 
+                    /*      + " values, got " */
+                    /*      + to_string(tmp.size()) */ 
+                    /*      + " from labels"); */
                     confidences.row(i) = 0;
                 }
                 else

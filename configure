@@ -24,7 +24,6 @@ EXTRA_FLAGS=""
 BUILD_DIR="build"
 
 if [ "$1" == "debug" ]; then
-    BUILD_DIR="debug"
     OMP=OFF
     EXTRA_FLAGS="-DCMAKE_BUILD_TYPE=Debug"
 elif [ "$1" == "profile" ]; then
