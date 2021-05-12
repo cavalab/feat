@@ -42,7 +42,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeSquare::eval_eqn(State& state)
             {
-                state.push<float>("((" + to_string(W[0],2) + "*"
+                state.push<float>("((" + to_string(W[0], 4) + "*"
                                   + state.popStr<float>() + ")^2)");
             }
 

@@ -85,10 +85,10 @@ namespace Op{
     {
         if(arity['f'])
             state.push<bool>("(" + state.popStr<T>() + "<" + 
-                    to_string(threshold, 2) + ")");
+                    to_string(threshold, 4) + ")");
         else
             state.push<bool>("(" + state.popStr<T>() + "==" + 
-                    to_string(threshold, 2) + ")");
+                    to_string(threshold, 4) + ")");
     }
     
     template <class T>

@@ -48,8 +48,8 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeDivide::eval_eqn(State& state)
             {
-                state.push<float>("(" + to_string(W[0], 2) + "*" + state.popStr<float>() + "/" 
-                                  + to_string(W[1], 2) + "*" + state.popStr<float>() + ")");            	
+                state.push<float>("(" + to_string(W[0], 4) + "*" + state.popStr<float>() + "/" 
+                                  + to_string(W[1], 4) + "*" + state.popStr<float>() + ")");            	
             }
 
             // Might want to check derivative orderings for other 2 arg nodes

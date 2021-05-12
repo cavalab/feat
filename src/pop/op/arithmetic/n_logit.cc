@@ -42,7 +42,7 @@ namespace FT{
             void NodeLogit::eval_eqn(State& state)
             {
                 /* state.push<float>("1/(1+exp(-" + state.popStr<float>() + "))"); */
-                state.push<float>("logit(" + to_string(W[0],2) + "*"+ state.popStr<float>() + ")");
+                state.push<float>("logit(" + to_string(W[0], 4) + "*"+ state.popStr<float>() + ")");
             }
 
             ArrayXf NodeLogit::getDerivative(Trace& state, int loc) 

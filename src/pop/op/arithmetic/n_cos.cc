@@ -42,7 +42,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeCos::eval_eqn(State& state)
             {
-                state.push<float>("cos(" + to_string(W[0], 2) + "*" + state.popStr<float>() + ")");
+                state.push<float>("cos(" + to_string(W[0], 4) + "*" + state.popStr<float>() + ")");
             }
 
             ArrayXf NodeCos::getDerivative(Trace& state, int loc) {

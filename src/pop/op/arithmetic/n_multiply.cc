@@ -44,7 +44,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeMultiply::eval_eqn(State& state)
             {
-	            state.push<float>("(" + to_string(W[0]*W[1],2) + "*" 
+	            state.push<float>("(" + to_string(W[0]*W[1], 4) + "*" 
                         + state.popStr<float>() + "*" + state.popStr<float>() + ")");
             }
 

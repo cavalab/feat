@@ -42,7 +42,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeCube::eval_eqn(State& state)
             {
-                state.push<float>("(" + to_string(W[0], 2) + "*" + state.popStr<float>() + "^3)");
+                state.push<float>("(" + to_string(W[0], 4) + "*" + state.popStr<float>() + "^3)");
             }
 
             ArrayXf NodeCube::getDerivative(Trace& state, int loc)

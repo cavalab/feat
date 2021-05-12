@@ -45,8 +45,8 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeAdd::eval_eqn(State& state)
             {
-                state.push<float>("(" + to_string(W[0], 2) + "*" + state.popStr<float>() + "+" 
-                                    + to_string(W[1], 2) + "*" + state.popStr<float>() + ")");
+                state.push<float>("(" + to_string(W[0], 4) + "*" + state.popStr<float>() + "+" 
+                                    + to_string(W[1], 4) + "*" + state.popStr<float>() + ")");
             }
 
             // NEED TO MAKE SURE CASE 0 IS TOP OF STACK, CASE 2 IS w[0]

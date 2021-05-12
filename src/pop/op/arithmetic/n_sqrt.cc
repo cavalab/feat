@@ -42,7 +42,7 @@ namespace FT{
             /// Evaluates the node symbolically
             void NodeSqrt::eval_eqn(State& state)
             {
-                state.push<float>("sqrt(|" + to_string(W[0],2) + "*" 
+                state.push<float>("sqrt(|" + to_string(W[0], 4) + "*" 
                                   + state.popStr<float>() + "|)");
             }
 
