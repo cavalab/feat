@@ -229,8 +229,8 @@ namespace FT{
             {
                 VectorXf class_weights(uc.size());
                 for (auto c : uc){
-                    class_weights(c) = 0;
-                    class_weights(c) = float(
+                    class_weights(static_cast<Eigen::Index>(c)) = 0;
+                    class_weights(static_cast<Eigen::Index>(c)) = float(
                             (classes.cast<int>().array() == int(c)).count()
                             )/classes.size();
                     /* cout << "class_weights for " << c << ": " 
