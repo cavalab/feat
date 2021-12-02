@@ -12,7 +12,7 @@ performance for that method. Each individual in FEAT's population is its own dat
 
 FEAT uses the [Shogun C++ ML toolbox](http://shogun.ml) to fit models. 
 
-Check out the [documentation](https://lacava.github.io/feat) for installation and examples. 
+Check out the [documentation](https://cavalab.org/feat) for installation and examples. 
 
 ## Cite
 
@@ -32,7 +32,7 @@ Bibtex:
 
 ## Contact
 
-Maintained by William La Cava (lacava at upenn.edu)
+Maintained by William La Cava (william.lacava at childrens.harvard.edu)
 
 ## Acknowledgments
 
