@@ -14,21 +14,25 @@ FEAT uses the [Shogun C++ ML toolbox](http://shogun.ml) to fit models.
 
 Check out the [documentation](https://cavalab.org/feat) for installation and examples. 
 
-## Cite
+## References
 
-La Cava, W., Singh, T. R., Taggart, J., Suri, S., & Moore, J. H.. Learning concise representations for regression by evolving networks of trees. ICLR 2019. [arxiv:1807.0091](https://arxiv.org/abs/1807.00981)
+1. La Cava, W., Singh, T. R., Taggart, J., Suri, S., & Moore, J. H.. Learning concise representations for regression by evolving networks of trees. ICLR 2019. [arxiv:1807.0091](https://arxiv.org/abs/1807.00981)
 
-Bibtex: 
- 
-    @inproceedings{la_cava_learning_2019,
-        series = {{ICLR}},
-        title = {Learning concise representations for regression by evolving networks of trees},
-        url = {https://arxiv.org/abs/1807.00981},
-        language = {en},
-        booktitle = {International {Conference} on {Learning} {Representations}},
-        author = {La Cava, William and Singh, Tilak Raj and Taggart, James and Suri, Srinivas and Moore, Jason H.},
-        year = {2019},
-    }
+2. La Cava, W. & Moore, Jason H. (2020).
+Genetic programming approaches to learning fair classifiers.
+GECCO 2020.
+**Best Paper Award**.
+[ACM](https://dl.acm.org/doi/abs/10.1145/3377930.3390157),
+[arXiv](https://arxiv.org/abs/2004.13282),
+[experiments](https://github.com/lacava/fair_gp)
+
+2. La Cava, W., Lee, P.C., Ajmal, I., Ding, X., Cohen, J.B., Solanki, P., Moore, J.H., and Herman, D.S (2021).
+Application of concise machine learning to construct accurate and interpretable EHR computable phenotypes.
+In Review.
+[medRxiv](https://www.medrxiv.org/content/10.1101/2020.12.12.20248005v2),
+[experiments](https://bitbucket.org/hermanlab/ehr_feat/)
+
+
 
 ## Contact
 
@@ -36,9 +40,8 @@ Maintained by William La Cava (william.lacava at childrens.harvard.edu)
 
 ## Acknowledgments
 
-This work is supported by grant K99-LM012926 from the National Library of Medicine. 
-FEAT is being developed to study human disease in the [Epistasis Lab
-at UPenn](http://epistasis.org). 
+This work is supported by grant R00-LM012926 from the National Library of Medicine. 
+FEAT is being developed to learn clinical diagnostics in the [Cava Lab at Harvard Medical School](http://cavalab.org). 
 
 ## License
 
