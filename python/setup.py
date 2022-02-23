@@ -66,6 +66,7 @@ print('shogun_lib:',shogun_lib)
 # get path to feat shared library for linking
 cwd = '/'.join(os.getcwd().split('/')[:-1])
 feat_lib = cwd + '/build/'
+
 # feat_lib = cwd + '/profile/'
 print('package version:',package_version)
 
@@ -85,12 +86,12 @@ setup(
     py_modules=['feat','metrics','versionstr'],
     ext_modules = cythonize([Extension(name='pyfeat',
         sources =  ["pyfeat.pyx"],    # our cython source
-        include_dirs = ['../build/','../src/',eigen_dir,shogun_include_dir]
+        include_dirs = ['../src/',eigen_dir,shogun_include_dir]
                           +eigency.get_includes(include_eigen=False),
         extra_compile_args = ['-std=c++1y','-fopenmp','-Wno-sign-compare',
                                  '-Wno-reorder','-Wno-unused-variable'],
-        library_dirs = [shogun_lib,feat_lib],
-        runtime_library_dirs = [feat_lib],
+        library_dirs = [shogun_lib],
+        # runtime_library_dirs = [feat_lib],
         extra_link_args = ['-lshogun','-lfeat_lib'],      
         language='c++'
        )],
