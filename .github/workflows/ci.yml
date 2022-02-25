@@ -45,10 +45,12 @@ jobs:
       - 
         name: Wrapper Test 
         run: |
+          conda info
           cd tests
           ls
-          conda info
-          conda run -n feat python wrappertest.py -v
+          which python
+          # conda run -n feat python wrappertest.py -v
+          conda run -n feat python wrappertest.py -v 2
       - 
         name: Wrapper Test 
         run: |
