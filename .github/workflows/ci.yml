@@ -43,10 +43,12 @@ jobs:
         run: | 
           python setup.py install
       - 
-        name: Test Setup
+        name: Wrapper Test 
         run: |
           cd tests
           ls
+          conda info
+          conda run -n feat python wrappertest.py -v
       - 
         name: Wrapper Test 
         run: |
@@ -54,4 +56,7 @@ jobs:
       - 
         name: Notebook Test
         run: |
-            python nb_tests.py
+          cd tests
+          ls
+          conda info
+          conda run -n feat python nb_tests.py

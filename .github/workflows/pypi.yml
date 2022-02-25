@@ -1,8 +1,10 @@
 name: pypi deploy
 on:
   push:
-    branches:
-      - pip # change to version tag later
+    tag:
+      - "*"
+    # branches:
+    #   - pip # change to version tag later
 jobs:
   # Build and deploy manylinux wheel
   Linux-build:
