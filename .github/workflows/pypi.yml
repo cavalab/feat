@@ -12,7 +12,6 @@ jobs:
       TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
     steps:
       - uses: actions/checkout@v2
-      - 
       - name: build and upload manylinux wheels
         uses:  cavalab/manylinux-wheel-builder@master
         with:
