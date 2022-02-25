@@ -1,7 +1,8 @@
 name: install and test
 on:
   push:
-    - master
+    branches:
+      - pip
 
 jobs:
   build:
