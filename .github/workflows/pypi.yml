@@ -1,7 +1,7 @@
 name: pypi deploy
 on:
   push:
-    tag:
+    tags:
       - "*"
     # branches:
     #   - pip # change to version tag later
