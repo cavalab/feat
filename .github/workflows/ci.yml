@@ -42,11 +42,19 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: | 
           python setup.py install
-
-      - name: Test
+      - 
+        name: Test Setup
         run: |
           cd tests
-          for [ f in *test*py ] ; do
-            echo "running ${f}"
-            python $f
-          done
+          ls
+      - 
+        name: Wrapper Test 
+        run: |
+          python wrappertest.py -v
+      - 
+        name: Notebook Test
+        run: |
+            python nb_tests.py
+      - name: C++ Tests
+        run: |
+

@@ -129,6 +129,7 @@ class CMakeBuild(build_ext):
             f"-DEIGEN3_INCLUDE_DIR={EIGEN_DIR}",
             f"-DOMP={'OFF' if cfg=='Debug' else 'ON'}",
             f"-DLIB_ONLY=ON" # only build feat library
+            f"-DGTEST=ON" # build tests
         ]
         build_args = []
 
