@@ -39,4 +39,5 @@ jobs:
           which python
           cd tests
           ls
+          micromamba install jupyter
           python nb_tests.py

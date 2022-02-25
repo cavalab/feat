@@ -404,7 +404,8 @@ class FeatClassifier(Feat):
                ])):
             raise ValueError('y must be a contiguous set of labels from ',
                              '0 to n_classes. y contains the values {}'.format(
-                                 np.unique(y)))
+                                 np.unique(np.asarray(y)))
+                            )
        
         return Feat.fit(self, X, y, zfile, zids)
 
