@@ -20,11 +20,26 @@ jobs:
         with:
           miniforge-variant: Mambaforge
           miniforge-version: latest
-          environment-file: environment.yml
+          # environment-file: environment.yml
           activate-environment: feat
           use-mamba: true
       - 
+        name: Cache conda
+        uses: actions/cache@v2
+        with:
+          path: /usr/share/miniconda3/envs/feat
+          key: ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{hashFiles('environment.yml')}}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{ hashFiles('environment.yml') }}
+        id: cache
+      - 
+        name: Update environment
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: | 
+          mamba env update -n feat -f environment.yml 
+      - 
         name: Install
+        if: steps.cache.outputs.cache-hit != 'true'
         run: | 
           python setup.py install
 
