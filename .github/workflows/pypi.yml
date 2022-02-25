@@ -1,0 +1,40 @@
+name: pypi deploy
+on:
+  push:
+    - pip # change to version tag later
+jobs:
+  # Build and deploy manylinux wheel
+  Linux-build:
+    runs-on: ubuntu-latest
+    env:
+      TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+      TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v2
+      - 
+      - name: build and upload manylinux wheels
+        uses:  cavalab/manylinux-wheel-builder@master
+        with:
+          python-versions: "3.8"
+        # if true then github actions won't stop even if build for this job fails
+        continue-on-error: true
+
+  # # deploy source distribution
+  # Source-dist:
+  #   runs-on: windows-latest
+  #   env:
+  #     TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+  #     TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v2
+  #       with:
+  #         python-version: 3.7
+  #     - name: create source distribution
+  #       run: python setup.py sdist
+  #     - name: upload source distribution
+  #       run: |
+  #         pip install twine
+  #         twine upload dist/*
+  #       continue-on-error: true
