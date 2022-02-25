@@ -5,7 +5,7 @@ on:
       - pip
 
 jobs:
-  build:
+  build_and_test:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -55,6 +55,3 @@ jobs:
         name: Notebook Test
         run: |
             python nb_tests.py
-      - name: C++ Tests
-        run: |
-

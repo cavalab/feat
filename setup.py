@@ -7,39 +7,68 @@ from setuptools.command.build_ext import build_ext
 from distutils.dir_util import remove_tree
 from Cython.Build import cythonize
 import subprocess
-from version import get_version
+import eigency 
 
+################################################################################
 # PACKAGE VERSION #####
-# package_version = '0.3.1'
-package_version = get_version(write=True)
-#######################
-################################################################################
-# the setup file relies on eigency to import its include paths for the
-# extension modules. however eigency isn't known as a dependency until after
-# setup is parsed; so we need to check for and install eigency before setup.
-import importlib
-try:
-    importlib.import_module('eigency')
-except ImportError:
+# Source: https://github.com/Changaco/version.py
+
+from os.path import dirname, isdir, join
+import re
+
+
+PREFIX = ''
+
+tag_re = re.compile(r'\btag: %s([0-9][^,]*)\b' % PREFIX)
+version_re = re.compile('^Version: (.+)$', re.M)
+
+
+def get_version(write=False):
+    # Return the version if it has been injected into the file by git-archive
     try:
-        print('trying to install eigency prior to setup..')
-        subprocess.check_call([sys.executable, '-m', 'pip', 'install', 
-            'eigency'])
-        # # from pip._internal import main 
-        # import pip
-        # if hasattr(pip, 'main'):
-        #     # NOTE: Older versions of pip use this command:
-        #     pip.main(['install', 'eigency'])
-        # else:
-        #     # Newer versions of pip moved main to _internal:
-        #     pip._internal.main(['install', 'eigency'])
+        version = tag_re.search('$Format:%D$')
+        if version:
+            return version.group(1)
+
+        d = dirname(__file__) #+ '/../'
+
+        if isdir(join(d, '.git')):
+            # Get the version using "git describe".
+            cmd = 'git describe --tags --match %s[0-9]* --dirty' % PREFIX
+            try:
+                version = subprocess.check_output(
+                            cmd.split()).decode().strip()[len(PREFIX):]
+            except subprocess.CalledProcessError:
+                raise RuntimeError('Unable to get version number from git tags')
+
+            # PEP 440 compatibility
+            if '-' in version:
+                if version.endswith('-dirty'):
+                    raise RuntimeError('The working tree is dirty')
+                version = '.post'.join(version.split('-')[:2])
+
+        else:
+            # Extract the version from the PKG-INFO file.
+            with open(join(d, 'PKG-INFO')) as f:
+                version = version_re.search(f.read()).group(1)
+
+        # write version
+        if write:
+            with open('feat/versionstr.py','w') as wf:
+                wf.write('__version__="{}"'.format(version))
+
+        return version
     except Exception as e:
-        print(e)
-        raise ImportError('The eigency library must be installed before feat. '
-                          'Automatic install with pip failed.')
-finally:
-    globals()['eigency'] = importlib.import_module('eigency')
-################################################################################
+        print('Version error:',e)
+        print(
+        'Unable to get version number from git tags. Not updating version.')
+        with open('feat/versionstr.py','r') as f:
+            v =  f.readline().split('=')[-1][1:-1]
+            print('returning version=',v)
+            return v
+        # from versionstr import __version__
+        # return __version__
+package_version = get_version(write=True)
 
 ################################################################################
 # set paths
@@ -129,7 +158,6 @@ class CMakeBuild(build_ext):
             f"-DEIGEN3_INCLUDE_DIR={EIGEN_DIR}",
             f"-DOMP={'OFF' if cfg=='Debug' else 'ON'}",
             f"-DLIB_ONLY=ON" # only build feat library
-            f"-DGTEST=ON" # build tests
         ]
         build_args = []
 
@@ -194,11 +222,13 @@ setup(
         +package_version),
     license='GNU/GPLv3',
     description='A Feature Engineering Automation Tool',
-    install_requires=['Numpy>=1.8.2',
-                      'SciPy>=0.13.3',
+    python_requires='>=3',
+    install_requires=[
+                      'Numpy>=1.8.2',
                       'scikit-learn',
                       'Cython',
-                      'pandas'],
+                      'pandas'
+    ],
     # package_dir = {'','feat'},
     packages = ['feat'],
     # py_modules=['feat','metrics','versionstr'],
