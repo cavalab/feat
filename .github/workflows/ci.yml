@@ -29,19 +29,14 @@ jobs:
       - 
         name: Wrapper Test 
         run: |
-          conda info
+          which python
           cd tests
           ls
-          which python
-          conda run -n feat python wrappertest.py -v 1
-      - 
-        name: Wrapper Test 
-        run: |
-          python wrappertest.py -v
+          python wrappertest.py -v 1
       - 
         name: Notebook Test
         run: |
+          which python
           cd tests
           ls
-          conda info
-          conda run -n feat python nb_tests.py
+          python nb_tests.py
