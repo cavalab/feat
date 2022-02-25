@@ -46,4 +46,7 @@ jobs:
       - name: Test
         run: |
           cd tests
-          python wrapper_test.py -v
+          for f in "*test*py" ; do
+            echo "running ${f}"
+            python $f
+          done
