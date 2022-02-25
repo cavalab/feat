@@ -18,7 +18,7 @@ def get_version(write=False):
         if version:
             return version.group(1)
 
-        d = dirname(__file__) + '/../'
+        d = dirname(__file__) #+ '/../'
 
         if isdir(join(d, '.git')):
             # Get the version using "git describe".
@@ -41,7 +41,7 @@ def get_version(write=False):
 
         # write version
         if write:
-            with open('versionstr.py','w') as wf:
+            with open('feat/versionstr.py','w') as wf:
                 wf.write('__version__="{}"'.format(version))
 
         return version
@@ -49,8 +49,12 @@ def get_version(write=False):
         print('Version error:',e)
         print(
         'Unable to get version number from git tags. Not updating version.')
-        from versionstr import __version__
-        return __version__
+        with open('feat/versionstr.py','r') as f:
+            v =  f.readline().split('=')[-1][1:-1]
+            print('returning version=',v)
+            return v
+        # from versionstr import __version__
+        # return __version__
 
 
 

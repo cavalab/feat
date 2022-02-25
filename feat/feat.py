@@ -5,11 +5,11 @@ license: GNU/GPLv3
 """
 
 import argparse
-from versionstr import __version__
+from .versionstr import __version__
 from sklearn.base import BaseEstimator, RegressorMixin, ClassifierMixin
 import numpy as np
 import pandas as pd
-from pyfeat import PyFeat
+from .pyfeat import PyFeat
 from sklearn.metrics import mean_squared_error as mse
 from sklearn.metrics import log_loss
 from sklearn.utils import check_X_y, check_array
@@ -328,7 +328,6 @@ class Feat(PyFeat, BaseEstimator):
 
         return preds
 
-
     def transform(self,X,zfile=None,zids=None):
         """Return the representation's transformation of X"""
         if not self._fitted_:
@@ -434,6 +433,7 @@ class FeatClassifier(Feat):
 
     def predict_proba_archive(self,X,zfile=None,zids=None):
         """Returns a dictionary of prediction probabilities for all models."""
+
         if not self._fitted_:
             raise ValueError("Call fit before calling predict.")
 

@@ -131,15 +131,20 @@ endif()
 
 # executables
 
-#feat executable
-add_executable(feat src/main.cc)
+option(LIB_ONLY "only build a library" OFF)
 
-#link libraries for different executables
+if (NOT LIB_ONLY)
+    #feat executable
 
-if (CORE_USE_CUDA)
-    target_link_libraries(feat feat_lib shogun ${CUDA_LIBRARIES})
-else()
-    target_link_libraries(feat feat_lib shogun)
+    add_executable(feat src/main.cc)
+
+    #link libraries for different executables
+
+    if (CORE_USE_CUDA)
+        target_link_libraries(feat feat_lib shogun ${CUDA_LIBRARIES})
+    else()
+        target_link_libraries(feat feat_lib shogun)
+    endif()
 endif()
 
 if (GTEST)
