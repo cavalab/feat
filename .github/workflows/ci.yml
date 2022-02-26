@@ -2,7 +2,11 @@ name: install and test
 on:
   push:
     branches:
-      - pip
+      - master
+  pull_request:
+    branches:
+      - master
+
 
 env: 
   CACHE_NUMBER: 0
