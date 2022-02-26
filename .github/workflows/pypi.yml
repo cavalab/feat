@@ -1,25 +1,26 @@
-name: pypi deploy
-on:
-  push:
-    tags:
-      - "*"
-    # branches:
-    #   - pip # change to version tag later
-jobs:
-  # Build and deploy manylinux wheel
-  Linux-build:
-    runs-on: ubuntu-latest
-    env:
-      TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-      TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
-    steps:
-      - uses: actions/checkout@v2
-      - name: build and upload manylinux wheels
-        uses:  cavalab/manylinux-wheel-builder@master
-        with:
-          python-versions: "3.8"
-        # if true then github actions won't stop even if build for this job fails
-        continue-on-error: true
+# TODO
+# name: pypi deploy
+# on:
+#   push:
+#     tags:
+#       - "*"
+#     # branches:
+#     #   - pip # change to version tag later
+# jobs:
+#   # Build and deploy manylinux wheel
+#   Linux-build:
+#     runs-on: ubuntu-latest
+#     env:
+#       TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+#       TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+#     steps:
+#       - uses: actions/checkout@v2
+#       - name: build and upload manylinux wheels
+#         uses:  cavalab/manylinux-wheel-builder@master
+#         with:
+#           python-versions: "3.8"
+#         # if true then github actions won't stop even if build for this job fails
+#         continue-on-error: true
 
   # # deploy source distribution
   # Source-dist:
