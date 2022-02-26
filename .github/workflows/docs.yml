@@ -3,20 +3,20 @@ on:
   push:
     branches:
       - master
-    paths:
-    - 'docs/**'
+    # paths:
+    # - 'docs/**'
   pull_request:
     branches:
       - master
-    paths:
-    - 'docs/**'
+    # paths:
+    # - 'docs/**'
 
 
 env: 
   CACHE_NUMBER: 0
 
 jobs:
-  build_and_test:
+  build_docs:
     runs-on: ubuntu-latest
     defaults:
       run:
