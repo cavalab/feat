@@ -4,5 +4,6 @@ requires = [
     "cmake>=3.18",
     "ninja",
     "Cython",
-    "eigency~=1.77"
+    "eigency~=1.77",
+    "wheel"
 ]

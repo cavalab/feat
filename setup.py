@@ -248,8 +248,8 @@ setup(
                                               '-Wno-deprecated',
                                               '-Wno-deprecated-declarations'
                                              ],
-                        # library_dirs = [SHOGUN_LIB, LIB_PATH],
-                        runtime_library_dirs = [SHOGUN_LIB,LIB_PATH],
+                        library_dirs = [SHOGUN_LIB, LIB_PATH],
+                        # runtime_library_dirs = [SHOGUN_LIB,LIB_PATH],
                         extra_link_args = ['-lshogun','-lfeat_lib'],      
                         language='c++'
                        )])

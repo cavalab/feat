@@ -29,15 +29,15 @@ jobs:
       - 
         name: Wrapper Test 
         run: |
-          which python
+          # which python
           cd tests
-          ls
+          # ls
           python wrappertest.py -v 1
       - 
         name: Notebook Test
         run: |
-          which python
+          # which python
           cd tests
-          ls
+          # ls
           micromamba install jupyter
           python nb_tests.py
