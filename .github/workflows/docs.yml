@@ -19,6 +19,9 @@ jobs:
         shell: bash -l {0}
     steps:
       - 
+        name: Install Doxygen
+        run: sudo apt-get install doxygen
+      - 
         name: Checkout code
         uses: actions/checkout@v2
       - 
