@@ -4,6 +4,9 @@ on:
     branches:
       - pip
 
+env: 
+  CACHE_NUMBER: 0
+
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
@@ -22,6 +25,7 @@ jobs:
             python=3.7
           cache-env: true
           cache-downloads: true
+          # cache-downloads-key: ${{ runner.os }}-micromamba-${{ env.CACHE_NUMBER }}-${{hashFiles('environment.yml'}}
       - 
         name: Install
         run: | 
