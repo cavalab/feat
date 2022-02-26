@@ -42,7 +42,7 @@ jobs:
         name: Check commands
         run: |
           doxygen --version
-          sphix-build --version
+          sphinx-build --version
       - 
         name: doxygen docs
         run: |

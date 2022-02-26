@@ -1,5 +1,4 @@
-# note: this should be used to update feat-env only
-name: feat-env
+# note: this should be used to update feat environment
 channels:
     - conda-forge
 dependencies:
