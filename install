@@ -59,6 +59,8 @@ if [ $choice == "y" ] ; then
         cd python
         rm -rf build 
         rm -rf dist
+        mkdir lib/
+        cp ../build/libfeat_lib.so $CONDA_PREFIX/lib/
         python setup.py install
         cd ..
 fi

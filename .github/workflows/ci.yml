@@ -1,0 +1,47 @@
+name: install and test
+on:
+  push:
+    branches:
+      - pip
+
+env: 
+  CACHE_NUMBER: 0
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - 
+        name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install Conda environment with Micromamba
+        uses: mamba-org/provision-with-micromamba@main
+        with:
+          environment-file: environment.yml
+          # extra-specs: |
+          #   python=3.7
+          cache-env: true
+          # cache-downloads: true
+          # cache-downloads-key: ${{ runner.os }}-micromamba-${{ env.CACHE_NUMBER }}-${{hashFiles('environment.yml'}}
+      - 
+        name: Install
+        run: | 
+          python setup.py install
+      - 
+        name: Wrapper Test 
+        run: |
+          # which python
+          cd tests
+          # ls
+          python wrappertest.py -v 1
+      - 
+        name: Notebook Test
+        run: |
+          # which python
+          cd tests
+          # ls
+          micromamba install jupyter
+          python nb_tests.py
