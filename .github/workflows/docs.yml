@@ -3,9 +3,13 @@ on:
   push:
     branches:
       - master
+      paths:
+        - 'docs/**'
   pull_request:
     branches:
       - master
+      paths:
+        - 'docs/**'
 
 
 env: 
@@ -47,4 +51,9 @@ jobs:
       - 
         name: sphinx docs
         run: make html
-
+      - name: commit and push changes
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git diff-index --quiet HEAD ||  git commit -am "deploy updates to docs"  # commit to the repository (ignore if no modification)
+          git push origin ${{ GITHUB_BASE_REF }} # push to remote branch
