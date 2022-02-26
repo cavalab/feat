@@ -34,7 +34,6 @@ jobs:
       - 
         name: Check commands
         run: |
-          mkdocs --version
           doxygen --version
       - 
         name: doxygen docs
