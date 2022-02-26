@@ -16,7 +16,7 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../'))
 # sys.path.insert(0, os.path.abspath('../../'))
-sys.path.insert(0, os.path.abspath('../python/'))
+# sys.path.insert(0, os.path.abspath('../python/'))
 
 
 # -- Project information -----------------------------------------------------
@@ -25,7 +25,7 @@ project = 'FEAT'
 copyright = '2016, William La Cava, Tilak Raj Singh, University of Pennsylvania'
 author = 'William La Cava, Tilak Raj Singh, University of Pennsylvania'
 
-with open('../python/versionstr.py','r') as f:
+with open('../feat/versionstr.py','r') as f:
     versionstr = f.read().strip()
 # The short X.Y version
 version = versionstr

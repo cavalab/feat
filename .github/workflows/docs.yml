@@ -51,9 +51,10 @@ jobs:
       - 
         name: sphinx docs
         run: make html
-      - name: commit and push changes
-        run: |
-          git config --global user.name 'GitHub Action'
-          git config --global user.email 'action@github.com'
-          git diff-index --quiet HEAD ||  git commit -am "deploy updates to docs"  # commit to the repository (ignore if no modification)
-          git push origin ${{ GITHUB_BASE_REF }} # push to remote branch
+      - 
+        name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/master' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ../_site
