@@ -1,0 +1,48 @@
+name: build docs
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+
+env: 
+  CACHE_NUMBER: 0
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - 
+        name: Checkout code
+        uses: actions/checkout@v2
+      - 
+        name: Install Conda environment with Micromamba
+        uses: mamba-org/provision-with-micromamba@main
+        with:
+          environment-file: environment.yml
+          cache-env: true
+      - 
+        name: add docs environment
+        run: |
+          micromamba update -n feat -f ci/docs-environment.yml
+      - 
+        name: Check commands
+        run: |
+          mkdocs --version
+          doxygen --version
+      - 
+        name: doxygen docs
+        run: |
+          cd docs
+          mkdir doxygen_site/
+          doxygen Doxyfile
+      - 
+        name: sphinx docs
+        run: make html
+

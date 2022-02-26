@@ -1,28 +1,21 @@
 Installation
 ============
 
-To see our installation process from scratch, check out the `Travis install file <http://github.com/lacava/feat/blob/master/ci/.travis_install.sh>`_.
+To see our installation process from scratch, check out the `Github actions workflow <http://github.com/lacava/feat/blob/master/.github/workflows/ci.yml>`_.
 
 Conda
 -----
 
-The easiest option for install is to use the `conda environment we provide <http://github.com/lacava/feat/blob/master/ci/test-environment.yml>`_. 
+The easiest option for install is to use the `conda environment we provide <http://github.com/lacava/feat/blob/master/environment.yml>`_. 
 Then the build process is the following:
 
 .. code-block:: bash
 
     git clone https://github.com/lacava/feat # clone the repo
     cd feat # enter the directory
-    conda env create -f ci/test-environment.yml
-    conda activate feat-env
-    # add some environment variables. 
-    export SHOGUN_LIB=$CONDA_PREFIX/lib/
-    export SHOGUN_DIR=$CONDA_PREFIX/include/
-    export EIGEN3_INCLUDE_DIR=$CONDA_PREFIX/include/eigen3/
-    # install feat
-    ./configure # this runs "mkdir build; cd build; cmake .. " 
-    ./install # this runs "make -C build VERBOSE=1 -j8; python setup.py install"
-    
+    conda env create
+    conda activate feat
+    python setup.py install  
 
 If you want to roll your own with the dependencies, some other options are shown below. 
 In this case, you need to tell the `configure` script where Shogun and Eigen are. 
