@@ -42,7 +42,6 @@ jobs:
         name: Check commands
         run: |
           doxygen --version
-          sphinx-build --version
       - 
         name: doxygen docs
         run: |
