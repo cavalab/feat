@@ -1,4 +1,3 @@
-import pdb 
 #from distutils.core import setup
 import sys
 from setuptools import setup, find_packages
@@ -224,7 +223,7 @@ setup(
     description='A Feature Engineering Automation Tool',
     python_requires='>=3',
     install_requires=[
-                      'Numpy>=1.8.2',
+                      'Numpy',
                       'scikit-learn',
                       'Cython',
                       'pandas'
