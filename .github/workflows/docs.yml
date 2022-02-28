@@ -56,7 +56,7 @@ jobs:
       - 
         name: sphinx docs
         run: |
-          ls
+          cd docs
           sphinx-build -b html ./ ../_site
           make html
       - 
