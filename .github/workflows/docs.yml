@@ -56,8 +56,8 @@ jobs:
       - 
         name: sphinx docs
         run: |
-          micromamba list
-          sphinx-build -b html . ../_site
+          ls
+          sphinx-build -b html ./ ../_site
           make html
       - 
         name: Deploy
