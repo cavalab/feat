@@ -61,14 +61,13 @@ jobs:
       - 
         name: add docs environment
         run: |
-          micromamba install -y sphinx \
+          micromamba install -c conda-forge -y sphinx \
             sphinx-material \
             recommonmark \
-            nbsphinx
-            matplotlib \
-            jupyter \
             seaborn \ 
-            -c conda-forge
+            nbsphinx
+          micromamba install -y matplotlib \
+            jupyter 
           pip install sphinx-copybutton
           micromamba info
           micromamba list
