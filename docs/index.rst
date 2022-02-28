@@ -33,7 +33,7 @@ Genetic programming approaches to learning fair classifiers.
 GECCO 2020.
 **Best Paper Award**.
 `ACM <https://dl.acm.org/doi/abs/10.1145/3377930.3390157>`__,
-`arXiv<https://arxiv.org/abs/2004.13282>`__,
+`arXiv <https://arxiv.org/abs/2004.13282>`__,
 `experiments <https://github.com/lacava/fair_gp>`__
 
 3. La Cava, W., Lee, P.C., Ajmal, I., Ding, X., Cohen, J.B., Solanki, P., Moore, J.H., and Herman, D.S (2021).
