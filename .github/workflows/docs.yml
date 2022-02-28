@@ -32,14 +32,14 @@ jobs:
         name: Install Conda environment with Micromamba
         uses: mamba-org/provision-with-micromamba@main
         with:
-          environment-file: environment.yml
+          environment-file: ci/docs-environment.yml
           cache-env: true
       - 
         name: add docs environment
         run: |
-          micromamba deactivate 
-          micromamba update -n feat -f ci/docs-environment.yml
-          micromamba activate feat
+          # micromamba deactivate 
+          # micromamba update -n feat -f ci/docs-environment.yml
+          # micromamba activate feat
           micromamba info
           micromamba list
       - 

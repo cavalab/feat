@@ -1,7 +1,10 @@
 # note: this should be used to update feat environment
+name: feat-docs
 channels:
     - conda-forge
 dependencies:
+    # - python=3.*
+    # - scikit-learn=0.23.*
     - sphinx
     - sphinx-material
     - recommonmark
