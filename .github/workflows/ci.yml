@@ -66,8 +66,7 @@ jobs:
             recommonmark \
             seaborn \ 
             nbsphinx
-          micromamba install -y matplotlib \
-            jupyter 
+          micromamba install -c anaconda -y matplotlib jupyter 
           pip install sphinx-copybutton
           micromamba info
           micromamba list
