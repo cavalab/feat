@@ -26,7 +26,7 @@ GECCO 2020.
 [arXiv](https://arxiv.org/abs/2004.13282),
 [experiments](https://github.com/lacava/fair_gp)
 
-2. La Cava, W., Lee, P.C., Ajmal, I., Ding, X., Cohen, J.B., Solanki, P., Moore, J.H., and Herman, D.S (2021).
+3. La Cava, W., Lee, P.C., Ajmal, I., Ding, X., Cohen, J.B., Solanki, P., Moore, J.H., and Herman, D.S (2021).
 Application of concise machine learning to construct accurate and interpretable EHR computable phenotypes.
 In Review.
 [medRxiv](https://www.medrxiv.org/content/10.1101/2020.12.12.20248005v2),

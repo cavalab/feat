@@ -102,8 +102,8 @@ html_title = 'FEAT'
 #         }
 # material theme options (see theme.conf for more information)
 html_theme_options = {
-    "base_url": "https://lacava.github.io/feat",
-    "repo_url": "https://github.com/lacava/feat/",
+    "base_url": "https://cavalab.github.io/feat",
+    "repo_url": "https://github.com/cavalab/feat/",
     "repo_name": "FEAT",
     "html_minify": False,
     "html_prettify": True,
@@ -242,4 +242,4 @@ def linkcode_resolve(domain, info):
     if not info['module']:
         return None
     filename = info['module'].replace('.', '/')
-    return "https://github.com/lacava/feat/blob/master/python/%s.py" % filename
+    return "https://github.com/cavalab/feat/blob/master/feat/%s.py" % filename

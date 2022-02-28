@@ -1,8 +1,6 @@
 Feature Engineering Automation Tool
 ===================================
 
-|Build Status| |License: GPL v3|
-
 **FEAT** is a feature engineering automation tool that learns new
 representations of raw data to improve classifier and regressor
 performance. The underlying methods use Pareto optimization and
@@ -17,39 +15,32 @@ individual in FEAT’s population is its own data representation.
 Contact
 -------
 
-Maintained by William La Cava (lacava at upenn.edu)
+Maintained by William La Cava (lacava at childrens dot harvard dot edu)
 
 Acknowledgments
 ---------------
 
-This work is supported by grant K99-LM012926 from the National Library of Medicine. 
-FEAT is being developed to study human disease by the `Epistasis
-Lab at UPenn <http://epistasis.org>`__.
+This work is supported by grant R00-LM012926 from the National Library of Medicine. 
+FEAT is being developed to develop predictive health models by the `Cavalab <http://cavalab.org>`__.
 
 Cite
 ----
 
-La Cava, W., Singh, T. R., Taggart, J., Suri, S., & Moore, J. H..
-Learning concise representations for regression by evolving networks of
-trees. ICLR 2019. `arxiv:1807.0091 <https://arxiv.org/abs/1807.00981>`__
+1. La Cava, W., Singh, T. R., Taggart, J., Suri, S., & Moore, J. H.. Learning concise representations for regression by evolving networks of trees. ICLR 2019. `arxiv:1807.0091 <https://arxiv.org/abs/1807.00981>`__
 
-Bibtex:
+2. La Cava, W. & Moore, Jason H. (2020).
+Genetic programming approaches to learning fair classifiers.
+GECCO 2020.
+**Best Paper Award**.
+`ACM <https://dl.acm.org/doi/abs/10.1145/3377930.3390157>`__,
+`arXiv<https://arxiv.org/abs/2004.13282>`__,
+`experiments <https://github.com/lacava/fair_gp>`__
 
-::
-
-   @inproceedings{la_cava_learning_2019,
-       series = {{ICLR}},
-       title = {Learning concise representations for regression by evolving networks of trees},
-       url = {https://arxiv.org/abs/1807.00981},
-       language = {en},
-       booktitle = {International {Conference} on {Learning} {Representations}},
-       author = {La Cava, William and Singh, Tilak Raj and Taggart, James and Suri, Srinivas and Moore, Jason H.},
-       year = {2019},
-   }
-.. |Build Status| image:: https://travis-ci.org/lacava/feat.svg?branch=master
-   :target: https://travis-ci.org/lacava/feat
-.. |License: GPL v3| image:: https://img.shields.io/badge/License-GPL%20v3-blue.svg
-   :target: https://github.com/lacava/feat/blob/master/LICENSE
+3. La Cava, W., Lee, P.C., Ajmal, I., Ding, X., Cohen, J.B., Solanki, P., Moore, J.H., and Herman, D.S (2021).
+Application of concise machine learning to construct accurate and interpretable EHR computable phenotypes.
+In Review.
+`medRxiv <https://www.medrxiv.org/content/10.1101/2020.12.12.20248005v2>`__,
+`experiments <https://bitbucket.org/hermanlab/ehr_feat/>`__
 
 Table of Contents
 -----------------

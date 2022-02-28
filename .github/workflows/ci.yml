@@ -1,4 +1,4 @@
-name: install and test
+name: install, test, docs
 on:
   push:
     branches:
@@ -49,3 +49,58 @@ jobs:
           # ls
           micromamba install jupyter
           python nb_tests.py
+  build_docs:
+    runs-on: ubuntu-latest
+    needs: build_and_test
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - 
+        name: Install Doxygen
+        run: sudo apt-get install doxygen
+      - 
+        name: Checkout code
+        uses: actions/checkout@v2
+      - 
+        name: add docs environment
+        run: |
+          # micromamba deactivate 
+          # micromamba update -n feat -f ci/docs-environment.yml
+          # micromamba activate feat
+          micromamba install \ 
+            sphinx \
+            sphinx-material \
+            recommonmark \
+            nbsphinx
+            matplotlib \
+            jupyter \
+            seaborn \ 
+            -c conda-forge
+          pip install sphinx-copybutton
+          micromamba info
+          micromamba list
+      - 
+        name: Check commands
+        run: |
+          micromamba list
+          doxygen --version
+      - 
+        name: doxygen docs
+        run: |
+          cd docs
+          mkdir doxygen_site/
+          doxygen Doxyfile
+      - 
+        name: sphinx docs
+        run: |
+          cd docs
+          sphinx-build -b html ./ ../_site
+          make html
+      - 
+        name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/master' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ../_site
