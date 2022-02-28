@@ -38,9 +38,13 @@ jobs:
         name: add docs environment
         run: |
           micromamba update -n feat -f ci/docs-environment.yml
+          micromamba activate feat
+          micromamba info
+          micromamba list
       - 
         name: Check commands
         run: |
+          micromamba info
           doxygen --version
       - 
         name: doxygen docs
@@ -51,6 +55,7 @@ jobs:
       - 
         name: sphinx docs
         run: |
+          micromamba info
           sphinx-build -b html . ../_site
           make html
       - 
