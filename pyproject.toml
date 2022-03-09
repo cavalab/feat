@@ -3,7 +3,7 @@ requires = [
     "setuptools>=45",
     "cmake>=3.18",
     "ninja",
-    "Cython",
-    "eigency~=1.77",
+    "Cython>=29",
+    "eigency>=1.77",
     "wheel"
 ]

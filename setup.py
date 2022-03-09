@@ -212,7 +212,7 @@ except FileNotFoundError:
 
 print('package version:',package_version)
 setup(
-    name="feat",
+    name="feat-ml",
     version=package_version,
     author='William La Cava',
     author_email='williamlacava@gmail.com',
