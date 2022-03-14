@@ -7,7 +7,7 @@ from distutils.dir_util import remove_tree
 from Cython.Build import cythonize
 import subprocess
 import eigency 
-
+from sys import platform
 ################################################################################
 # PACKAGE VERSION #####
 # Source: https://github.com/Changaco/version.py
@@ -68,6 +68,7 @@ def get_version(write=False):
         # from versionstr import __version__
         # return __version__
 package_version = get_version(write=True)
+print('package version:',package_version)
 
 ################################################################################
 # set paths
@@ -208,9 +209,21 @@ try:
     print("Removed old build directory.")
 except FileNotFoundError:
     print("No existing build directory found - skipping.")
+
+# add extra compile args based on platform
+extra_compile_args = ['-std=c++1y',
+                      '-fopenmp',
+                      '-Wno-sign-compare',
+                      '-Wno-reorder',
+                      '-Wno-unused-variable',
+                      '-Wno-deprecated',
+                      '-Wno-deprecated-declarations'
+                     ]
+if platform == 'darwin':
+    extra_compile_args.append('-Winconsistent-missing-override')
 ################################################################################
 
-print('package version:',package_version)
+
 setup(
     name="feat-ml",
     version=package_version,
@@ -239,14 +252,7 @@ setup(
                                          SHOGUN_INCLUDE_DIR]
                                    + eigency.get_includes(include_eigen=False)
                                        ),
-                        extra_compile_args = ['-std=c++1y',
-                                              '-fopenmp',
-                                              '-Wno-sign-compare',
-                                              '-Wno-reorder',
-                                              '-Wno-unused-variable',
-                                              '-Wno-deprecated',
-                                              '-Wno-deprecated-declarations'
-                                             ],
+                        extra_compile_args = extra_compile_args,
                         library_dirs = [SHOGUN_LIB, LIB_PATH],
                         # runtime_library_dirs = [SHOGUN_LIB,LIB_PATH],
                         extra_link_args = ['-lshogun','-lfeat_lib'],      

@@ -145,6 +145,7 @@ vector<size_t> Lexicase::survive(Population& pop,
 {
     /* Lexicase survival */
     THROW_RUNTIME_ERROR("Lexicase survival not implemented");
+    return vector<size_t>();
 }
 
 }
