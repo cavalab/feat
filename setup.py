@@ -1,3 +1,4 @@
+import pdb
 #from distutils.core import setup
 import sys
 from setuptools import setup, find_packages
@@ -87,18 +88,18 @@ if 'CONDA_PREFIX' in env_params:
 else:
     # ENV_PREFIX = os.environ
     LIB_PATH = os.environ['LD_LIBRARY_PATH'].split(':')[0]
-    INCLUDE_PATH = '/usr/path'
+    INCLUDE_PATH = '/usr/include/'
 
 
     if 'EIGEN3_INCLUDE_DIR' in env_params:
         EIGEN_DIR = os.environ['EIGEN3_INCLUDE_DIR'] 
     else:
-        EIGEN_DIR = '/usr/include/eigen3/'
+        EIGEN_DIR = INCLUDE_PATH+'/eigen3/'
 
     if 'SHOGUN_DIR' in env_params:
         SHOGUN_INCLUDE_DIR = os.environ['SHOGUN_DIR']
     else:
-        SHOGUN_INCLUDE_DIR = '/usr/include/'
+        SHOGUN_INCLUDE_DIR = INCLUDE_PATH
 
 
     if 'SHOGUN_LIB' in env_params:
@@ -145,9 +146,10 @@ class CMakeBuild(build_ext):
         # cfg = "Debug"
         cfg = "Release"
 
-        # extdir = os.path.abspath(
-        #     os.path.dirname(self.get_ext_fullpath(ext.name)))
-        extdir = LIB_PATH
+        extdir = os.path.abspath(
+            os.path.dirname(self.get_ext_fullpath(ext.name)))
+        extsuffix = '.'+'.'.join(ext._file_name.split('.')[-2:])
+        # extdir = LIB_PATH
 
         cmake_generator = os.environ.get("CMAKE_GENERATOR", "")
         cmake_args = [
@@ -157,7 +159,8 @@ class CMakeBuild(build_ext):
             f"-DSHOGUN_LIB={SHOGUN_LIB}",
             f"-DEIGEN3_INCLUDE_DIR={EIGEN_DIR}",
             f"-DOMP={'OFF' if cfg=='Debug' else 'ON'}",
-            f"-DLIB_ONLY=ON" # only build feat library
+            f"-DLIB_ONLY=ON", # only build feat library
+            f"-DFEAT_LIB_SUFFIX={extsuffix}"
         ]
         build_args = []
 
@@ -244,9 +247,10 @@ setup(
     # package_dir = {'','feat'},
     packages = ['feat'],
     # py_modules=['feat','metrics','versionstr'],
-    ext_modules = ([CMakeExtension("feat.feat_lib")]
-                    + cythonize([Extension(name='feat.pyfeat',
-                        sources =  ["feat/pyfeat.pyx"],    # our cython source
+    ext_modules = ([CMakeExtension("feat.libfeat")]
+                    + cythonize([Extension(
+                        name='feat.cyfeat',
+                        sources =  ["feat/cyfeat.pyx"],    # our cython source
                         include_dirs = (['src',
                                          EIGEN_DIR, 
                                          SHOGUN_INCLUDE_DIR]

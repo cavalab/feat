@@ -292,8 +292,10 @@ void NodeVector::make_tree(const NodeVector& functions,
             string ttypes = "";
             for (const auto& t : terminals)
                 ttypes += t->name + ": " + t->otype + "\n";
-            THROW_RUNTIME_ERROR("Error: make_tree couldn't find properly typed terminals\n"
-                               + ttypes);
+            std::ostringstream msg;
+            msg << "Error: make_tree couldn't find a terminal of "
+                << "type " << otype <<  ". terminal types:\n" << ttypes ; 
+            THROW_RUNTIME_ERROR(msg.str());
         }
     }
     else

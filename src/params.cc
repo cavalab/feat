@@ -254,6 +254,22 @@ void Parameters::set_otypes(bool terminals_set)
                 otype = 'b';
                 otypes.push_back('b');
             }           
+            // if terminals are all floating, and functions are all floating,
+            // set otypes to f
+            else if (ttypes.size()==1 && ttypes.at(0)=='f')
+            {
+                int only_floating_ops=0;
+                for (const auto& op : functions)
+                {
+                    if (op->arity['f']==op->total_arity() && op->otype=='f')
+                        ++only_floating_ops;
+                }
+                if (only_floating_ops == functions.size())
+                {
+                    otype='f';
+                    otypes.push_back('f');
+                }
+            }
             else
             {
                 otypes.push_back('b');

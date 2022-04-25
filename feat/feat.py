@@ -9,7 +9,7 @@ from .versionstr import __version__
 from sklearn.base import BaseEstimator, RegressorMixin, ClassifierMixin
 import numpy as np
 import pandas as pd
-from .pyfeat import PyFeat
+from .cyfeat import CyFeat
 from sklearn.metrics import mean_squared_error as mse
 from sklearn.metrics import log_loss
 from sklearn.utils import check_X_y, check_array
@@ -17,7 +17,7 @@ from sklearn.preprocessing import LabelEncoder
 import pdb
 import json
 
-class Feat(PyFeat, BaseEstimator):
+class Feat(CyFeat, BaseEstimator):
     """Feature Engineering Automation Tool
 
     Parameters
