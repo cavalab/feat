@@ -259,7 +259,7 @@ setup(
                         extra_compile_args = extra_compile_args,
                         library_dirs = [SHOGUN_LIB, LIB_PATH],
                         # runtime_library_dirs = [SHOGUN_LIB,LIB_PATH],
-                        extra_link_args = ['-lshogun','-lfeat_lib'],      
+                        extra_link_args = ['-lshogun','-lfeat'],      
                         language='c++'
                        )])
                   ),
