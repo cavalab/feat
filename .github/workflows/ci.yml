@@ -2,10 +2,10 @@ name: install, test, docs
 on:
   push:
     branches:
-      - master
+      - fix_op_type_install
   pull_request:
     branches:
-      - master
+      - fix_op_type_install
 
 
 env: 
