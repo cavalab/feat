@@ -133,6 +133,10 @@ class CMakeExtension(Extension):
         Extension.__init__(self, name, sources=[])
         self.sourcedir = os.path.abspath(sourcedir)
 
+# class Cybuild_ext(build_ext):
+#     def run(self):
+#         build_ext.include_dirs += self.build_temp
+#         return build_ext.run(self)
 
 
 class CMakeBuild(build_ext):
@@ -146,10 +150,10 @@ class CMakeBuild(build_ext):
         # cfg = "Debug"
         cfg = "Release"
 
-        extdir = os.path.abspath(
+        linkdir = os.path.abspath(
             os.path.dirname(self.get_ext_fullpath(ext.name)))
         extsuffix = '.'+'.'.join(ext._file_name.split('.')[-2:])
-        # extdir = LIB_PATH
+        extdir = LIB_PATH
 
         cmake_generator = os.environ.get("CMAKE_GENERATOR", "")
         cmake_args = [
@@ -205,6 +209,11 @@ class CMakeBuild(build_ext):
         subprocess.check_call(
             ["cmake", "--build", "."] + build_args, cwd=self.build_temp
         )
+        # symbolic link the feat library
+        os.symlink( 
+                   f'{linkdir}/libfeat{extsuffix}',
+                   f'{extdir}/libfeat{extsuffix}',
+                  ) 
 
 # # # Clean old build/ directory if it exists
 try:
@@ -253,11 +262,13 @@ setup(
                         sources =  ["feat/cyfeat.pyx"],    # our cython source
                         include_dirs = (['src',
                                          EIGEN_DIR, 
-                                         SHOGUN_INCLUDE_DIR]
+                                         SHOGUN_INCLUDE_DIR,
+                                        ]
                                    + eigency.get_includes(include_eigen=False)
                                        ),
                         extra_compile_args = extra_compile_args,
-                        library_dirs = [SHOGUN_LIB, LIB_PATH],
+                        library_dirs = [SHOGUN_LIB, LIB_PATH,
+                                       ],
                         # runtime_library_dirs = [SHOGUN_LIB,LIB_PATH],
                         extra_link_args = ['-lshogun','-lfeat'],      
                         language='c++'
