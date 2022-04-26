@@ -112,7 +112,6 @@ print('LIB_PATH:',LIB_PATH)
 print('EIGEN_DIR:',EIGEN_DIR)
 print('SHOGUN_INCLUDE_DIR:',SHOGUN_INCLUDE_DIR)
 print('SHOGUN_LIB:',SHOGUN_LIB)
-
 ################################################################################
 
 ################################################################################
@@ -150,10 +149,10 @@ class CMakeBuild(build_ext):
         # cfg = "Debug"
         cfg = "Release"
 
-        linkdir = os.path.abspath(
+        linkdir = LIB_PATH
+        extdir = os.path.abspath(
             os.path.dirname(self.get_ext_fullpath(ext.name)))
         extsuffix = '.'+'.'.join(ext._file_name.split('.')[-2:])
-        extdir = LIB_PATH
 
         cmake_generator = os.environ.get("CMAKE_GENERATOR", "")
         cmake_args = [
@@ -210,9 +209,13 @@ class CMakeBuild(build_ext):
             ["cmake", "--build", "."] + build_args, cwd=self.build_temp
         )
         # symbolic link the feat library
+        linkext = '.'+extsuffix.split('.')[-1]
+        lib_fullname= f'{extdir}/libfeat{extsuffix}'
+        lib_linkname= f'{LIB_PATH}/libfeat{linkext}'
+        print(f'creating link named {lib_linkname} to {lib_fullname}')
         os.symlink( 
-                   f'{linkdir}/libfeat{extsuffix}',
-                   f'{extdir}/libfeat{extsuffix}',
+                   lib_fullname, 
+                   lib_linkname
                   ) 
 
 # # # Clean old build/ directory if it exists
@@ -267,8 +270,7 @@ setup(
                                    + eigency.get_includes(include_eigen=False)
                                        ),
                         extra_compile_args = extra_compile_args,
-                        library_dirs = [SHOGUN_LIB, LIB_PATH,
-                                       ],
+                        library_dirs = [SHOGUN_LIB, LIB_PATH],
                         # runtime_library_dirs = [SHOGUN_LIB,LIB_PATH],
                         extra_link_args = ['-lshogun','-lfeat'],      
                         language='c++'
