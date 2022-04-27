@@ -1,6 +1,8 @@
 import pdb
 #from distutils.core import setup
 import sys
+import os
+import shutil
 from setuptools import setup, find_packages
 from setuptools.extension import Extension
 from setuptools.command.build_ext import build_ext
@@ -73,7 +75,6 @@ print('package version:',package_version)
 
 ################################################################################
 # set paths
-import os
 
 env_params = os.environ.keys() 
 
@@ -149,7 +150,6 @@ class CMakeBuild(build_ext):
         # cfg = "Debug"
         cfg = "Release"
 
-        linkdir = LIB_PATH
         extdir = os.path.abspath(
             os.path.dirname(self.get_ext_fullpath(ext.name)))
         extsuffix = '.'+'.'.join(ext._file_name.split('.')[-2:])
@@ -209,13 +209,12 @@ class CMakeBuild(build_ext):
             ["cmake", "--build", "."] + build_args, cwd=self.build_temp
         )
         # symbolic link the feat library
-        linkext = '.'+extsuffix.split('.')[-1]
         lib_fullname= f'{extdir}/libfeat{extsuffix}'
-        lib_linkname= f'{LIB_PATH}/libfeat{linkext}'
-        print(f'creating link named {lib_linkname} to {lib_fullname}')
-        os.symlink( 
+        lib_copyname= f'{LIB_PATH}/libfeat{extsuffix}'
+        print(f'creating copy of {lib_fullname} named {lib_copyname} ')
+        shutil.copy(
                    lib_fullname, 
-                   lib_linkname
+                   lib_copyname
                   ) 
 
 # # # Clean old build/ directory if it exists
