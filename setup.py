@@ -142,6 +142,7 @@ class CMakeExtension(Extension):
 class CMakeBuild(build_ext):
     def build_extension(self, ext):
         if not isinstance(ext, CMakeExtension):
+            pdb.set_trace()
             return super().build_extension(ext)
 
         print("building extension...")
@@ -209,23 +210,23 @@ class CMakeBuild(build_ext):
         subprocess.check_call(
             ["cmake", "--build", "."] + build_args, cwd=self.build_temp
         )
-        # copy libfeat to the library path
-        lib_fullname= f'{extdir}/libfeat{extsuffix}'
-        lib_copyname= f'{LIB_PATH}/libfeat{extsuffix}'
-        # symbolic link the feat library to one without the added platform info
-        linksuffix = '.'+extsuffix.split('.')[-1]
-        lib_linkname= f'{LIB_PATH}/libfeat{linksuffix}'
+        # # copy libfeat to the library path
+        # lib_fullname= f'{extdir}/libfeat{extsuffix}'
+        # lib_copyname= f'{LIB_PATH}/libfeat{extsuffix}'
+        # # symbolic link the feat library to one without the added platform info
+        # linksuffix = '.'+extsuffix.split('.')[-1]
+        # lib_linkname= f'{LIB_PATH}/libfeat{linksuffix}'
 
-        print(f'creating copy of {lib_fullname} named {lib_copyname} ')
-        shutil.copy(
-                   lib_fullname, 
-                   lib_copyname
-                  ) 
-        print(f'creating a link to {lib_copyname} named {lib_linkname} ')
-        os.symlink(
-            lib_copyname,
-            lib_linkname
-        )
+        # print(f'creating copy of {lib_fullname} named {lib_copyname} ')
+        # shutil.copy(
+        #            lib_fullname, 
+        #            lib_copyname
+        #           ) 
+        # print(f'creating a link to {lib_copyname} named {lib_linkname} ')
+        # os.symlink(
+        #     lib_copyname,
+        #     lib_linkname
+        # )
 
 # # # Clean old build/ directory if it exists
 try:
@@ -280,6 +281,7 @@ setup(
                                        ),
                         extra_compile_args = extra_compile_args,
                         library_dirs = [SHOGUN_LIB, LIB_PATH],
+                        links_to_dynamic = True,
                         # runtime_library_dirs = [SHOGUN_LIB,LIB_PATH],
                         extra_link_args = ['-lshogun',
                                            '-lfeat'],      
