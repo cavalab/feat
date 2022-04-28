@@ -151,7 +151,8 @@ class CMakeBuild(build_ext):
         cfg = "Release"
 
         extdir = os.path.abspath(
-            os.path.dirname(self.get_ext_fullpath(ext.name)))
+            os.path.dirname(self.get_ext_fullpath(ext.name))
+        )
         extsuffix = '.'+'.'.join(ext._file_name.split('.')[-2:])
 
         cmake_generator = os.environ.get("CMAKE_GENERATOR", "")
@@ -208,14 +209,23 @@ class CMakeBuild(build_ext):
         subprocess.check_call(
             ["cmake", "--build", "."] + build_args, cwd=self.build_temp
         )
-        # symbolic link the feat library
+        # copy libfeat to the library path
         lib_fullname= f'{extdir}/libfeat{extsuffix}'
         lib_copyname= f'{LIB_PATH}/libfeat{extsuffix}'
+        # symbolic link the feat library to one without the added platform info
+        linksuffix = '.'+extsuffix.split('.')[-1]
+        lib_linkname= f'{LIB_PATH}/libfeat{linksuffix}'
+
         print(f'creating copy of {lib_fullname} named {lib_copyname} ')
         shutil.copy(
                    lib_fullname, 
                    lib_copyname
                   ) 
+        print(f'creating a link to {lib_copyname} named {lib_linkname} ')
+        os.symlink(
+            lib_copyname,
+            lib_linkname
+        )
 
 # # # Clean old build/ directory if it exists
 try:
@@ -271,7 +281,8 @@ setup(
                         extra_compile_args = extra_compile_args,
                         library_dirs = [SHOGUN_LIB, LIB_PATH],
                         # runtime_library_dirs = [SHOGUN_LIB,LIB_PATH],
-                        extra_link_args = ['-lshogun','-lfeat'],      
+                        extra_link_args = ['-lshogun',
+                                           '-lfeat'],      
                         language='c++'
                        )])
                   ),
