@@ -80,9 +80,7 @@ void Population::init(const Individual& starting_model,
     }
     else
     {
-        cout << "individuals.at(0):\n"; 
         cout << &individuals.at(0); 
-        cout << "starting_model:\n"; 
         cout << &starting_model; 
         individuals.at(0) = starting_model;
     }

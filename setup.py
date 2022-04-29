@@ -148,7 +148,7 @@ class CMakeBuild(build_ext):
                 os.path.dirname(self.get_ext_fullpath(self.ext_map['libfeat'].name))
             )
             ext.libraries += [libfeatname]
-            ext.library_dirs += [extdir]
+            # ext.library_dirs += [extdir]
             # pdb.set_trace()
             # add a runtime directory to where this extension is ending up
             return super().build_extension(ext)
@@ -220,17 +220,17 @@ class CMakeBuild(build_ext):
             ["cmake", "--build", "."] + build_args, cwd=self.build_temp
         )
         # # copy libfeat to the library path
-        # lib_fullname= f'{extdir}/libfeat{extsuffix}'
-        # lib_copyname= f'{LIB_PATH}/libfeat{extsuffix}'
+        lib_fullname= f'{extdir}/libfeat{extsuffix}'
+        lib_copyname= f'{LIB_PATH}/libfeat{extsuffix}'
         # # symbolic link the feat library to one without the added platform info
         # linksuffix = '.'+extsuffix.split('.')[-1]
         # lib_linkname= f'{LIB_PATH}/libfeat{linksuffix}'
 
-        # print(f'creating copy of {lib_fullname} named {lib_copyname} ')
-        # shutil.copy(
-        #            lib_fullname, 
-        #            lib_copyname
-        #           ) 
+        print(f'creating copy of {lib_fullname} named {lib_copyname} ')
+        shutil.copy(
+                   lib_fullname, 
+                   lib_copyname
+                  ) 
         # print(f'creating a link to {lib_copyname} named {lib_linkname} ')
         # os.symlink(
         #     lib_copyname,
@@ -290,7 +290,7 @@ setup(
                                        ),
                         extra_compile_args = extra_compile_args,
                         library_dirs = [SHOGUN_LIB, LIB_PATH],
-                        runtime_library_dirs = ['.'],
+                        runtime_library_dirs = [LIB_PATH],
                         libraries=['shogun'],
                         # extra_link_args = ['-lshogun'],      
                         language='c++'
