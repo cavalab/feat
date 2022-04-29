@@ -4,7 +4,7 @@ import sys
 import os
 import shutil
 from setuptools import setup, find_packages
-from setuptools.extension import Extension
+from setuptools.extension import Extension, Library
 from setuptools.command.build_ext import build_ext
 from distutils.dir_util import remove_tree
 from Cython.Build import cythonize
@@ -142,7 +142,15 @@ class CMakeExtension(Extension):
 class CMakeBuild(build_ext):
     def build_extension(self, ext):
         if not isinstance(ext, CMakeExtension):
-            pdb.set_trace()
+            libfeatname = \
+                    '.'.join(self.ext_map['libfeat']._file_name[3:].split('.')[:-1])
+            extdir = os.path.abspath(
+                os.path.dirname(self.get_ext_fullpath(self.ext_map['libfeat'].name))
+            )
+            ext.libraries += [libfeatname]
+            ext.library_dirs += [extdir]
+            # pdb.set_trace()
+            # add a runtime directory to where this extension is ending up
             return super().build_extension(ext)
 
         print("building extension...")
@@ -151,6 +159,7 @@ class CMakeBuild(build_ext):
         # cfg = "Debug"
         cfg = "Release"
 
+        # extdir = LIB_PATH
         extdir = os.path.abspath(
             os.path.dirname(self.get_ext_fullpath(ext.name))
         )
@@ -229,11 +238,11 @@ class CMakeBuild(build_ext):
         # )
 
 # # # Clean old build/ directory if it exists
-# try:
-#     remove_tree("./build")
-#     print("Removed old build directory.")
-# except FileNotFoundError:
-#     print("No existing build directory found - skipping removal.")
+try:
+    remove_tree("./build")
+    print("Removed old build directory.")
+except FileNotFoundError:
+    print("No existing build directory found - skipping removal.")
 
 # add extra compile args based on platform
 extra_compile_args = ['-std=c++1y',
@@ -269,7 +278,7 @@ setup(
     # package_dir = {'','feat'},
     packages = ['feat'],
     # py_modules=['feat','metrics','versionstr'],
-    ext_modules = ([CMakeExtension("feat.libfeat")]
+    ext_modules = ([CMakeExtension("libfeat")]
                     + cythonize([Extension(
                         name='feat.cyfeat',
                         sources =  ["feat/cyfeat.pyx"],    # our cython source
@@ -281,9 +290,8 @@ setup(
                                        ),
                         extra_compile_args = extra_compile_args,
                         library_dirs = [SHOGUN_LIB, LIB_PATH],
-                        links_to_dynamic = True,
-                        # runtime_library_dirs = [SHOGUN_LIB,LIB_PATH],
-                        libraries=['shogun','feat'],
+                        runtime_library_dirs = ['.'],
+                        libraries=['shogun'],
                         # extra_link_args = ['-lshogun'],      
                         language='c++'
                        )])
