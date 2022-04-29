@@ -229,11 +229,11 @@ class CMakeBuild(build_ext):
         # )
 
 # # # Clean old build/ directory if it exists
-try:
-    remove_tree("./build")
-    print("Removed old build directory.")
-except FileNotFoundError:
-    print("No existing build directory found - skipping.")
+# try:
+#     remove_tree("./build")
+#     print("Removed old build directory.")
+# except FileNotFoundError:
+#     print("No existing build directory found - skipping removal.")
 
 # add extra compile args based on platform
 extra_compile_args = ['-std=c++1y',
@@ -283,8 +283,8 @@ setup(
                         library_dirs = [SHOGUN_LIB, LIB_PATH],
                         links_to_dynamic = True,
                         # runtime_library_dirs = [SHOGUN_LIB,LIB_PATH],
-                        extra_link_args = ['-lshogun',
-                                           '-lfeat'],      
+                        libraries=['shogun','feat'],
+                        # extra_link_args = ['-lshogun'],      
                         language='c++'
                        )])
                   ),

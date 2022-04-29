@@ -41,16 +41,21 @@ void Population::init(const Individual& starting_model,
                       string filename
                       )
 {
+    cout << "Popoulation::init\n";
+    cout << "45\n";
     /*!
      *create random programs in the population, 
      * seeded by initial model weights and potentially saved models
      */
     int starting_size = 1;
 
+    cout << "51\n";
     if (!filename.empty())
     {
+        cout << "55\n";
         this->load(filename);
 
+        cout << "57\n";
         starting_size = this->individuals.size();
         cout << "individuals.size(): " << this->individuals.size() << endl;
         cout << "params.pop_size: " << params.pop_size << endl;
@@ -79,17 +84,25 @@ void Population::init(const Individual& starting_model,
         }
     }
     else
+    {
+        cout << "individuals.at(0):\n"; 
+        cout << &individuals.at(0); 
+        cout << "starting_model:\n"; 
+        cout << &starting_model; 
         individuals.at(0) = starting_model;
+    }
 
 
     /* if the starting pop is smaller than the 
      * set size of the population, initialize
      * additional individuals.*/
+    cout << "parallel\n";
     #pragma omp parallel for
     for (unsigned i = starting_size; i< individuals.size(); ++i)
     {          
         individuals.at(i).initialize(params, random, i);
     }
+    cout << "exit Population::init\n";
 }
 
 void Population::update(vector<size_t> survivors)
