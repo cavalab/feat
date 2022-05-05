@@ -134,7 +134,7 @@ namespace FT {
                     
                     backprop(stack_trace.at(i), ind.program, 
                             ind.program.subtree(roots.at(s)), 
-                            roots.at(s), Beta.at(s)/ml->N.scale.at(s), 
+                            roots.at(s), Beta.at(s), // /ml->N.scale.at(s), 
                             yhat, batch_data, params.class_weights);
                 }
 

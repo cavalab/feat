@@ -143,11 +143,16 @@ vector<T> softmax(const vector<T>& w)
 /// normalizes a matrix to unit variance, 0 mean centered.
 struct Normalizer
 {
-    Normalizer(bool sa=true): scale_all(sa) {};
+    Normalizer(bool sa=true, bool rm_offset=true)
+        : scale_all(sa)
+        , remove_offset(rm_offset)
+    {};
+
     vector<float> scale;
     vector<float> offset;
     vector<char> dtypes;
     bool scale_all;
+    bool remove_offset;
     
     /// fit the scale and offset of data. 
     template <typename T> 
@@ -158,19 +163,30 @@ struct Normalizer
         dtypes = dt; 
         for (unsigned int i=0; i<X.rows(); ++i)
         {
+             /* tmp = X.row(i); */ 
             // mean center
-            auto tmp = X.row(i).array()-X.row(i).mean();
+            if (remove_offset)
+            {
+                /* tmp = tmp.array() - tmp.mean(); */
+                offset.push_back(float(X.row(i).mean()));
+            }
+            else
+                offset.push_back(0.0);
             /* VectorXf tmp; */
             // scale by the standard deviation
             scale.push_back(
-                std::sqrt(tmp.square().sum()/(tmp.size()-1)));
-            offset.push_back(float(X.row(i).mean()));
+                std::sqrt(
+                    (X.row(i).array() - offset.at(i))
+                    .square()
+                    .sum()/(X.row(i).size()-1)
+                    )
+            );
         }
           
     }
     /// normalize matrix.
     template <typename T> 
-    void normalize(MatrixBase<T>& X)
+    void normalize(MatrixBase<T>& X) const 
     {  
         // normalize features
         for (unsigned int i=0; i<X.rows(); ++i)
@@ -183,9 +199,82 @@ struct Normalizer
             // scale, potentially skipping binary and categorical rows
             if (this->scale_all || dtypes.at(i)=='f')                   
             {
-                X.row(i) = X.row(i).array() - offset.at(i);
+                if (remove_offset)
+                    X.row(i) = X.row(i).array() - offset.at(i);
                 if (scale.at(i) > NEAR_ZERO)
                     X.row(i) = X.row(i).array()/scale.at(i);
+            }
+        }
+    }
+    /// return weights of a linear model, y = B*X, given weights of 
+    // y = B_norm*X_norm.
+    template <typename T> 
+    void normalize_weights(MatrixBase<T>& B) const 
+    {  
+        // Transform input, Bnorm, into B by dividing by scale.
+        // normalize features
+        for (unsigned int i=0; i<B.rows(); ++i)
+        {
+            if (std::isinf(scale.at(i)))
+            {
+                continue;
+            }
+            // scale, potentially skipping binary and categorical rows
+            if (this->scale_all || dtypes.at(i)=='f')                   
+            {
+                if (scale.at(i) > NEAR_ZERO)
+                    B.row(i) = B.row(i).array()/scale.at(i);
+            }
+        }
+    }
+    template <typename T> 
+    float normalize_offset(const MatrixBase<T>& Bn, float init_offset) const 
+    {  
+        // yn = Bn_0 + Bn_1 * xn_1 + ...
+        //    = Bn_0 + Bn_1 * (x-offset)/scale) + ...
+        //-> B_0  = Bn_0 - sum(Bn_i*offset_i/scale_i)
+        /* ArrayXf Bn = B.cast <float> (); */
+        float adjustment = 0;
+        // normalize features
+        for (unsigned int i=0; i<Bn.size(); ++i)
+        {
+            if (std::isinf(scale.at(i)))
+            {
+                continue;
+            }
+            float b = Bn(i);
+            // scale, potentially skipping binary and categorical rows
+            if (this->scale_all || dtypes.at(i)=='f')                   
+            {
+                if (scale.at(i) > NEAR_ZERO)
+                    adjustment += b*offset.at(i)/scale.at(i);
+            }
+        }
+        return init_offset - adjustment;
+    }
+    /// inverse normalize a matrix.
+    template <typename T> 
+    void invert(MatrixBase<T>& X) const 
+    {  
+        cout << "inverting X = " << X << endl;
+        // normalize features
+        for (unsigned int i=0; i<X.rows(); ++i)
+        {
+            if (std::isinf(scale.at(i)))
+            {
+                /* X.row(i) = Matrix<T, Dynamic, 1>::Zero(X.row(i).size()); */
+                continue;
+            }
+            // scale, potentially skipping binary and categorical rows
+            if (this->scale_all || dtypes.at(i)=='f')                   
+            {
+                cout << "X.row(i) = X.row(i).array()*scale.at(i) : \n\t";
+                cout << " = " << X.row(i).array() << "*" << scale.at(i) << endl;
+                if (scale.at(i) > NEAR_ZERO)
+                    X.row(i) = X.row(i).array()*scale.at(i);
+                cout << "X.row(i) = X.row(i).array() + offset.at(i) : \n\t";
+                cout << " = " << X.row(i).array() << " + " << offset.at(i) << endl;
+                X.row(i) = X.row(i).array() + offset.at(i);
             }
         }
     }

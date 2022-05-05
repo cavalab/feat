@@ -262,6 +262,13 @@ string Feat::get_eqn(bool sort)
     vector<float> weights = best_ind.ml->get_weights();
     float offset = best_ind.ml->get_bias(); 
 
+    if (params.normalize)
+    {
+        auto w = Map<VectorXf>(weights.data(), weights.size());
+        offset = this->N.normalize_offset(w, offset);
+        this->N.normalize_weights(w);
+    }
+
     vector<size_t> order(weights.size());
     if (sort)
     {
@@ -274,7 +281,11 @@ string Feat::get_eqn(bool sort)
         iota(order.begin(), order.end(), 0);
 
     string output;
-    output +=  to_string(offset) + "+";
+    output +=  to_string(offset);
+
+    if (weights.size() > 0)
+        if (weights.at(0) > 0)
+            output+= "+";
     int i = 0;
     for (const auto& o : order)
     {
@@ -282,7 +293,10 @@ string Feat::get_eqn(bool sort)
         output += "*";
         output += features.at(o);
         if (i < order.size()-1)
-            output += "+";
+        {
+            if (weights.at(i+1) > 0)
+                output+= "+";
+        }
         ++i;
     }
 

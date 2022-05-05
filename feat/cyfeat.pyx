@@ -355,7 +355,6 @@ cdef class CyFeat:
             # else:
             #     print(p,'rejected, type name:',type(getattr(self,p)).__name__)
         tmp = {p:getattr(self,p) for p in property_names}
-        # print('returning',tmp,'from _get_params()')
         return tmp
         # return json.loads(self.ft.get_params())
 

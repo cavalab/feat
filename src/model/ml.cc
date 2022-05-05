@@ -56,6 +56,16 @@ ML::ML(string ml, bool norm, bool classification, int n_classes)
     }
     this->C = C_DEFAULT.at(ml_type);
     this->init(true);
+
+    // force normalize to be ON if using a linear model; improves stability
+    if ( in({LARS, Ridge, SVM, LR, L1_LR}, ml_type) 
+         && !normalize
+       )
+    {
+        this->normalize = true;
+        logger.log("Using ML normalization since a linear method was specified",
+                   3);
+    }
 }
 
 void ML::init(bool assign_p_est)
@@ -248,8 +258,18 @@ vector<float> ML::get_weights() const
         else
         {
             auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(
-                    p_est)->get_w();
+                    p_est)->get_w().clone();
             
+            if (this->normalize)
+            {
+                /* cout << "inverting weights...\n"; */
+                 
+                auto tmp_map = Map<Eigen::VectorXd>(tmp.data(), 
+                                                    tmp.size()
+                                                   );
+                this->N.normalize_weights(tmp_map);
+
+            }   
             w.assign(tmp.data(), tmp.data()+tmp.size());          
         }
     }
@@ -561,7 +581,21 @@ float ML::get_bias() const
             return accumulate(biases.begin(), biases.end(), 0.0)/biases.size();
         }
         else
-            return dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_bias();
+        {
+            if (this->normalize)
+            {
+                float b = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_bias();
+                auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(
+                                                    p_est)->get_w().clone();
+                auto tmp_map = Map<Eigen::VectorXd>(tmp.data(), 
+                                                    tmp.size()
+                                                   );
+                return this->N.normalize_offset(tmp_map, b);
+                
+            }
+            else
+                return dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_bias();
+        }
     }
     else
         return 0;

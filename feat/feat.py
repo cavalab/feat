@@ -259,14 +259,9 @@ class Feat(CyFeat, BaseEstimator):
         for k in self.__dict__: 
             if k.endswith('_'):
                 print('adding',k,'type:',self.__dict__[k].__class__.__name__)
-                if self.__dict__[k].__class__.__name__ == 'int64':
-                    print('WPOIEJ:FAOSINF:ODJ')
                 feat_state[k] = self.__dict__[k]
 
         for k,v in feat_state.items():
-            # if v.__class__.__name__ == 'ndarray':
-            #     print(k,'is an ndarray')
-            # else:
             if v.__class__.__name__ == 'int64':
                 print(k,':',v.__class__.__name__,':',v)
         with open(filename, 'w') as of:

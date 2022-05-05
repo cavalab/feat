@@ -364,7 +364,7 @@ void Variation::delete_mutate(Individual& child,
      * @param params: parameters  
      * @return mutated child
      * */
-    logger.log("\t\tprogram: " + child.program_str(),3);
+    logger.log("\t\tprogram: " + child.program_str(),4);
     // loop thru child's program
     for (unsigned i = 0; i< child.program.size(); ++i)
     {
@@ -381,7 +381,7 @@ void Variation::delete_mutate(Individual& child,
             }
             logger.log("\t\tdelete mutating [ " + 
                     portion + " ] from program " +
-                    child.program_str(), 3);
+                    child.program_str(), 4);
 
             NodeVector terms;  // potential fns 
             
@@ -399,7 +399,7 @@ void Variation::delete_mutate(Individual& child,
             if (terms.size()==0)  // if no insertion terminals match, skip
             {
                 logger.log("\t\tnevermind, couldn't find a matching terminal",
-                        3);
+                        4);
                 continue;
             }
 
@@ -407,10 +407,10 @@ void Variation::delete_mutate(Individual& child,
             std::unique_ptr<Node> insertion = random_node(terms);
             
             string s; 
-            logger.log("\t\tinsertion: " + insertion->name + "\n", 3);
+            logger.log("\t\tinsertion: " + insertion->name + "\n", 4);
 
             // delete portion of program
-            if (logger.get_log_level() >=3)
+            if (logger.get_log_level() >=4)
             { 
                 std::string s="";
                 for (unsigned i = start; i<=end; ++i) 
@@ -418,7 +418,7 @@ void Variation::delete_mutate(Individual& child,
                     s+= child.program.at(i)->name + " ";
                 }
                 logger.log("\t\tdeleting " + std::to_string(start) + " to " + 
-                        std::to_string(end) + ": " + s, 3);
+                        std::to_string(end) + ": " + s, 4);
             }    
             child.program.erase(child.program.begin()+start,
                     child.program.begin()+end+1);
@@ -427,7 +427,7 @@ void Variation::delete_mutate(Individual& child,
             child.program.insert(child.program.begin()+start, 
                     insertion->clone());
             logger.log("\t\tresult of delete mutation: " + 
-                    child.program_str(), 3);
+                    child.program_str(), 4);
             continue;
         }
         /* std::cout << "i: " << i << "\n"; */ 
