@@ -1038,7 +1038,7 @@ vector<float> Feat::univariate_initial_model(DataRef &d, int n_feats)
     string ml_type = this->params.classification? 
         "LR" : "LinearRidgeRegression";
     
-    ML ml = ML(ml_type,true,params.classification,params.n_classes);
+    ML ml = ML(ml_type,params.normalize,params.classification,params.n_classes);
 
     bool pass = true;
 

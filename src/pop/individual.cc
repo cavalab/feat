@@ -38,16 +38,30 @@ void Individual::initialize(const Parameters& params, bool random, int id)
         /* depth =  r.rnd_int(1, std::min(params.max_depth,unsigned(3))); */
         depth =  r.rnd_int(1, params.max_depth);
     // make a program for each individual
-    char ot = r.random_choice(params.otypes);
-    this->program.make_program(params.functions, 
-                               params.terminals, 
-                               depth,
-                               params.term_weights,
-                               params.op_weights, 
-                               dim, 
-                               ot, 
-                               params.longitudinalMap, 
-                               params.ttypes);
+    int n_tries = 0; 
+    while (n_tries < 10)
+    {
+        try {
+            char ot = r.random_choice(params.otypes);
+            this->program.make_program(params.functions, 
+                                       params.terminals, 
+                                       depth,
+                                       params.term_weights,
+                                       params.op_weights, 
+                                       dim, 
+                                       ot, 
+                                       params.longitudinalMap, 
+                                       params.ttypes);
+            break;
+        }
+        catch (...) {
+            WARN("Failed to build tree. trying again ...");
+            n_tries++;
+            if (n_tries == 10)
+                THROW_RUNTIME_ERROR("Could not resolve tree building. Try changing otype");
+            this->program.clear();
+        }
+    }
     this->set_id(id);
 }
 
@@ -222,7 +236,7 @@ shared_ptr<CLabels> Individual::fit(const Data& d,
     Phi = out(d, false);      
     // calculate ML model from Phi
     logger.log("ML training on " + get_eqn(), 3);
-    this->ml = std::make_shared<ML>(params.ml, true, 
+    this->ml = std::make_shared<ML>(params.ml, params.normalize, 
             params.classification, params.n_classes);
     
     shared_ptr<CLabels> yh = this->ml->fit(Phi,d.y,params,pass,dtypes);
@@ -1007,7 +1021,7 @@ shared_ptr<CLabels> Individual::fit_tune(const Data& d,
     Phi = out(d, false);      
     // calculate ML model from Phi
     logger.log("ML training on " + get_eqn(), 3);
-    this->ml = std::make_shared<ML>(params.ml, true, 
+    this->ml = std::make_shared<ML>(params.ml, params.normalize, 
             params.classification, params.n_classes);
     bool pass = true; 
     shared_ptr<CLabels> yh = this->ml->fit_tune(Phi, d.y, 

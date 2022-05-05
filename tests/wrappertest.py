@@ -31,10 +31,13 @@ class TestFeatWrapper(unittest.TestCase):
         self.v = verbosity
         self.reg = FeatRegressor(verbosity=verbosity, 
                                  n_jobs=1, gens=2,
+                                 otype='f',
                                 random_state=42)
+        print(self.reg.get_params())
         self.clf = FeatClassifier(verbosity=verbosity, 
                                   n_jobs=1, 
                                   gens=2,
+                                  otype='f',
                                  random_state=42)
         diabetes = load_diabetes()
         self.X = diabetes.data

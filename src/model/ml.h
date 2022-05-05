@@ -81,7 +81,7 @@ class ML
     public:
         
         /* ML(const Parameters& params, bool norm=true); */
-        ML(string ml="LinearRidgeRegression", bool norm=true, 
+        ML(string ml="LinearRidgeRegression", bool norm=false, 
                 bool classification = false, int n_classes = 2);
 
         void init(bool assign_p_est=true);

@@ -1,4 +1,5 @@
 /* FEAT
+ *
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
@@ -259,6 +260,7 @@ void Parameters::set_otypes(bool terminals_set)
             else if (ttypes.size()==1 && ttypes.at(0)=='f')
             {
                 int only_floating_ops=0;
+
                 for (const auto& op : functions)
                 {
                     if (op->arity['f']==op->total_arity() && op->otype=='f')
@@ -266,6 +268,9 @@ void Parameters::set_otypes(bool terminals_set)
                 }
                 if (only_floating_ops == functions.size())
                 {
+                    logger.log(string("all terminal and function types are float") 
+                        + string("setting otype='f'...\n"),
+                        2);
                     otype='f';
                     otypes.push_back('f');
                 }

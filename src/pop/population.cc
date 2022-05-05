@@ -80,8 +80,6 @@ void Population::init(const Individual& starting_model,
     }
     else
     {
-        cout << &individuals.at(0); 
-        cout << &starting_model; 
         individuals.at(0) = starting_model;
     }
 
@@ -90,11 +88,10 @@ void Population::init(const Individual& starting_model,
      * set size of the population, initialize
      * additional individuals.*/
     #pragma omp parallel for
-    for (unsigned i = starting_size; i< individuals.size(); ++i)
+    for (int i = starting_size; i< individuals.size(); ++i)
     {          
         individuals.at(i).initialize(params, random, i);
     }
-    cout << "exit Population::init\n";
 }
 
 void Population::update(vector<size_t> survivors)

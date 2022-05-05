@@ -374,7 +374,14 @@ shared_ptr<CLabels> ML::fit(const MatrixXf& X, const VectorXf& y,
     logger.log("ML training on thread " 
                + std::to_string(omp_get_thread_num()) + "...",3," ");
     // *** Train the model ***  
-    p_est->train(features);
+    try
+    {
+        p_est->train(features);
+    }
+    catch (...)
+    {
+        logger.log("Shogun failed to train",3);
+    }
 
     logger.log("done!",3);
    
