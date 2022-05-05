@@ -904,8 +904,6 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
          original_yhat = ind.predict_proba(*d.o).row(0); 
     else
          original_yhat = ind.yhat; 
-    cout << "original_yhat ( " << original_yhat.rows() 
-        << "x" << original_yhat.cols() << ")\n"; 
 
     for (int i = 0; i < iterations; ++i)
     {

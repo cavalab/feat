@@ -507,8 +507,9 @@ bool Variation::correlation_delete_mutate(Individual& child,
             + "; corr = " + to_string(highest_corr), 3);
     if (f1 == 0 && f2 == 0)
     {
-        WARN("WARNING: couldn't get proper "
-                "correlations. aborting correlation_delete_mutate\n");
+        logger.log("WARNING: couldn't get proper "
+                   +"correlations. aborting correlation_delete_mutate",
+                   3);
         return false;
     }
     // pick the feature, f1 or f2, that is less correlated with y
