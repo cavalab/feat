@@ -24,10 +24,11 @@ jobs:
       - 
         name: Install
         run: | 
+          micromamba env list
           export CMAKE_BUILD_PARALLEL_LEVEL=4
           # python setup.py debug
-          # pip install .
-          python setup.py install
+          pip install .
+          # python setup.py install
 ########################################
 # docs
 ########################################
@@ -37,6 +38,7 @@ jobs:
       - 
         name: add docs environment
         run: |
+          micromamba info
           micromamba install -c conda-forge -y sphinx sphinx-material recommonmark seaborn nbsphinx
           micromamba install -c anaconda -y matplotlib jupyter 
           pip install sphinx-copybutton
@@ -55,10 +57,11 @@ jobs:
       - 
         name: prep sphinx docs
         run: |
+          micromamba info
           which python
-          mamba env list
           python -c "from feat import Feat"
           cd docs
+          which sphinx-build
           sphinx-build -b html ./ ../_site
       - 
         name: make sphinx docs
@@ -79,9 +82,9 @@ jobs:
         name: Wrapper Test 
         run: |
           # which python
-          # cd tests
+          cd tests
           # ls
-          python tests/wrappertest.py -v 1
+          python wrappertest.py -v 1
       # - 
       #   name: Notebook Test
       #   run: |
