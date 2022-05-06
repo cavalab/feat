@@ -29,8 +29,8 @@ jobs:
           micromamba env list
           export CMAKE_BUILD_PARALLEL_LEVEL=4
           # python setup.py debug
-          pip install . -v
-          # python setup.py install
+          # pip install . -v
+          python setup.py install
 ########################################
 # docs
 ########################################
