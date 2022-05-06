@@ -61,8 +61,8 @@ jobs:
         run: |
           micromamba info
           which python
-          python -c "from feat import Feat"
           cd docs
+          python -c "from feat import Feat"
           which sphinx-build
           sphinx-build -b html ./ ../_site
       - 
