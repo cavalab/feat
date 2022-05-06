@@ -113,6 +113,10 @@ print('LIB_PATH:',LIB_PATH)
 print('EIGEN_DIR:',EIGEN_DIR)
 print('SHOGUN_INCLUDE_DIR:',SHOGUN_INCLUDE_DIR)
 print('SHOGUN_LIB:',SHOGUN_LIB)
+
+if 'CMAKE_BUILD_PARALLEL_LEVEL' not in env_params:
+    print('setting build parallel level to 4')
+    os.environ['CMAKE_BUILD_PARALLEL_LEVEL'] = 4 
 ################################################################################
 
 ################################################################################
@@ -133,11 +137,6 @@ class CMakeExtension(Extension):
         Extension.__init__(self, name, sources=[])
         self.sourcedir = os.path.abspath(sourcedir)
 
-# class Cybuild_ext(build_ext):
-#     def run(self):
-#         build_ext.include_dirs += self.build_temp
-#         return build_ext.run(self)
-
 
 class CMakeBuild(build_ext):
     def build_extension(self, ext):
@@ -155,9 +154,9 @@ class CMakeBuild(build_ext):
 
         print("building extension...")
         
-        #cfg = "Debug" if self.debug else "Release"
+        cfg = "Debug" if self.debug else "Release"
         # cfg = "Debug"
-        cfg = "Release"
+        # cfg = "Release"
 
         # extdir = LIB_PATH
         extdir = os.path.abspath(

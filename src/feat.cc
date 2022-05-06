@@ -506,13 +506,26 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     this->stats = Log_Stats();
     params.use_batch = params.bp.batch_size>0;
 
-    string FEAT = (  
+    string FEAT;
+    if (params.verbosity == 1)
+    {
+        FEAT = (  
+      "/// Feature Engineering Automation Tool " 
+      "* \xc2\xa9 La Cava et al 2017 "
+      "* GPL3 \\\\\\\n"
+        );
+    }
+    else if (params.verbosity == 2)
+    {
+        FEAT = (  
       "/////////////////////////////////////////////////////////////////////\n"
       "//           * Feature Engineering Automation Tool *               //\n"
       "// La Cava et al. 2017                                             //\n"
       "// License: GPL v3                                                 //\n"
+      "// https://cavalab.org/feat                                        //\n"
       "/////////////////////////////////////////////////////////////////////\n"
-    );
+        );
+    }
     logger.log(FEAT,1);
 
     if (params.use_batch)
@@ -563,10 +576,6 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     /*     use_arch = true; */
     use_arch = false;
 
-    string log_msg = "functions set: [";
-    for (const auto& f: params.functions) log_msg += f->name + ", "; 
-    log_msg += "]\n";
-    logger.log(log_msg, 1);
     logger.log("scorer: " + params.scorer_, 1);
 
     // split data into training and test sets
@@ -1256,13 +1265,19 @@ VectorXf Feat::predict(MatrixXf& X,
 VectorXf Feat::predict_archive(int id, MatrixXf& X,
                        LongData Z)
 {
+    cout << "Feat::predict_archive\n";
     /* return predictions; */
+    cout << "Normalize" << endl;
     if (params.normalize)
         N.normalize(X);       
-    VectorXf predictions(X.cols(),params.n_classes);
+    cout << "params.n_classes:" << params.n_classes << endl;
+    cout << "X.cols(): " << X.cols() << endl;
+    VectorXf predictions(X.cols());
     VectorXf empty_y;
+    cout << "tmp_data\n"; 
     Data tmp_data(X,empty_y,Z);
 
+    cout << "individual prediction id " << "id\n";
     for (int i = 0; i < this->archive.individuals.size(); ++i)
     {
         Individual& ind = this->archive.individuals.at(i);

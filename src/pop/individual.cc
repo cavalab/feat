@@ -41,6 +41,9 @@ void Individual::initialize(const Parameters& params, bool random, int id)
     int n_tries = 0; 
     while (n_tries < 10)
     {
+        /* ostringstream msg; */
+        /* msg << "make program, try " << n_tries << ", id = " << id << endl; */
+        /* logger.log(msg.str(), 3); */
         try {
             char ot = r.random_choice(params.otypes);
             this->program.make_program(params.functions, 

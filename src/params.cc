@@ -274,6 +274,11 @@ void Parameters::set_otypes(bool terminals_set)
                     otype='f';
                     otypes.push_back('f');
                 }
+                else
+                {
+                    otypes.push_back('b');
+                    otypes.push_back('f');
+                }
             }
             else
             {
@@ -461,9 +466,13 @@ void Parameters::set_functions(string fs)
         fs.erase(0, pos + delim.length());
     } 
     
-    string log_msg = "functions set to [";
-    for (const auto& f: functions) log_msg += f->name + ", "; 
-    log_msg += "]\n";
+    string log_msg = "functions: [";
+    for (int i =0; i < functions.size(); ++i)
+    {
+        log_msg += functions.at(i)->name ;
+        if (i <= functions.size()-1)
+            log_msg + ", "; 
+    }
     
     logger.log(log_msg, 3);
     

@@ -32,12 +32,10 @@ class TestFeatWrapper(unittest.TestCase):
         self.v = verbosity
         self.reg = FeatRegressor(verbosity=verbosity, 
                                  n_jobs=1, gens=2,
-                                 otype='f',
                                 random_state=42)
         self.clf = FeatClassifier(verbosity=verbosity, 
                                   n_jobs=1, 
                                   gens=2,
-                                  otype='f',
                                  random_state=42)
         diabetes = load_diabetes()
         self.X = diabetes.data
@@ -222,7 +220,8 @@ class TestFeatWrapper(unittest.TestCase):
     def test_archive(self):
         """test archiving ability"""
         self.debug("Test archive")
-
+        print(self.X)
+        print(self.yc)
         self.clf.fit(self.X,self.yc)
         self.debug('grabbing archive..')
         archive = self.clf.get_archive()

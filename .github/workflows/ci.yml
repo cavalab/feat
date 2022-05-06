@@ -33,23 +33,24 @@ jobs:
       - 
         name: Install
         run: | 
-          # python setup.py install
-          pip install .
+          export CMAKE_BUILD_PARALLEL_LEVEL=4
+          python setup.py debug
+          # pip install .
       - 
         name: Wrapper Test 
         run: |
           # which python
           cd tests
           # ls
-          python wrappertest.py -v 2
-      - 
-        name: Notebook Test
-        run: |
-          # which python
-          cd tests
-          # ls
-          micromamba install jupyter
-          python nb_tests.py
+          python tests/wrappertest.py -v 1
+      # - 
+      #   name: Notebook Test
+      #   run: |
+      #     # which python
+      #     cd tests
+      #     # ls
+      #     micromamba install jupyter
+      #     python tests/nb_tests.py
 ########################################
 # docs
 ########################################

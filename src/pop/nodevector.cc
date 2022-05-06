@@ -251,11 +251,15 @@ void NodeVector::make_tree(const NodeVector& functions,
      * recursively builds a program with complete arguments.
      */
     // debugging output
-    /* std::cout << "current program: ["; */
-    /* for (const auto& p : *(this) ) std::cout << p->name << " "; */
-    /* std::cout << "]\n"; */
-    /* std::cout << "otype: " << otype << "\n"; */
-    /* std::cout << "max_d: " << max_d << "\n"; */
+     /* #ifdef NDEBUG */
+     /* #else */
+     /*  // debug code */
+     /*    std::cout << "current program: ["; */
+     /*    for (const auto& p : *(this) ) std::cout << p->name << " "; */
+     /*    std::cout << "]\n"; */
+     /*    std::cout << "otype: " << otype << "\n"; */
+     /*    std::cout << "max_d: " << max_d << "\n"; */
+     /* #endif */
 
     if (max_d == 0 || r.rnd_flt() < terminals.size()/(terminals.size()+functions.size())) 
     {
