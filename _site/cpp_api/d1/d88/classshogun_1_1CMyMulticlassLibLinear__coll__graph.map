@@ -1,0 +1,4 @@
+<map id="shogun::CMyMulticlassLibLinear" name="shogun::CMyMulticlassLibLinear">
+<area shape="rect" id="node1" title="multiclass LibLinear wrapper. Uses Crammer&#45;Singer formulation and gradient descent optimization algor..." alt="" coords="6,80,197,121"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,5,197,32"/>
+</map>

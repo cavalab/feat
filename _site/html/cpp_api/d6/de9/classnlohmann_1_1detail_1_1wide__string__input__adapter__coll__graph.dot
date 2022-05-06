@@ -1,0 +1,9 @@
+digraph "nlohmann::detail::wide_string_input_adapter&lt; BaseInputAdapter, WideCharType &gt;"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="nlohmann::detail::wide\l_string_input_adapter\l\< BaseInputAdapter, WideCharType \>",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" utf8_bytes" ,fontname="Helvetica"];
+  Node2 [label="std::array\< std::char\l_traits\< char \>::int\l_type, 4 \>",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+}

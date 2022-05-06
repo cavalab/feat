@@ -1,0 +1,8 @@
+digraph "Graphical Class Hierarchy"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node0 [label="nlohmann::basic_json\l::json_value",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d1/de3/unionnlohmann_1_1basic__json_1_1json__value.html",tooltip="a JSON value"];
+}

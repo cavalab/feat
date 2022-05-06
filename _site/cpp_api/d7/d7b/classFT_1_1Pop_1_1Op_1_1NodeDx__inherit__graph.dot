@@ -1,0 +1,48 @@
+digraph "FT::Pop::Op::NodeDx"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="FT::Pop::Op::NodeDx",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node2 -> Node1 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="FT::Pop::Op::Node",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d2/dfb/classFT_1_1Pop_1_1Op_1_1Node.html",tooltip="Represents nodes in a program."];
+  Node1 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="FT::Pop::Op::Node2dGaussian",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d7/d79/classFT_1_1Pop_1_1Op_1_1Node2dGaussian.html",tooltip=" "];
+  Node1 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="FT::Pop::Op::NodeAdd",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d1/dbd/classFT_1_1Pop_1_1Op_1_1NodeAdd.html",tooltip=" "];
+  Node1 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="FT::Pop::Op::NodeCos",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d0/d3a/classFT_1_1Pop_1_1Op_1_1NodeCos.html",tooltip=" "];
+  Node1 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="FT::Pop::Op::NodeCube",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d5/d62/classFT_1_1Pop_1_1Op_1_1NodeCube.html",tooltip=" "];
+  Node1 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="FT::Pop::Op::NodeDivide",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$db/d68/classFT_1_1Pop_1_1Op_1_1NodeDivide.html",tooltip=" "];
+  Node1 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="FT::Pop::Op::NodeExponent",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d8/d78/classFT_1_1Pop_1_1Op_1_1NodeExponent.html",tooltip=" "];
+  Node1 -> Node9 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="FT::Pop::Op::NodeExponential",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$de/d40/classFT_1_1Pop_1_1Op_1_1NodeExponential.html",tooltip=" "];
+  Node1 -> Node10 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="FT::Pop::Op::NodeGaussian",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$da/de8/classFT_1_1Pop_1_1Op_1_1NodeGaussian.html",tooltip=" "];
+  Node1 -> Node11 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node11 [label="FT::Pop::Op::NodeIf",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$db/df2/classFT_1_1Pop_1_1Op_1_1NodeIf.html",tooltip=" "];
+  Node1 -> Node12 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node12 [label="FT::Pop::Op::NodeIfThenElse",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d8/d60/classFT_1_1Pop_1_1Op_1_1NodeIfThenElse.html",tooltip=" "];
+  Node1 -> Node13 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node13 [label="FT::Pop::Op::NodeLog",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$de/d28/classFT_1_1Pop_1_1Op_1_1NodeLog.html",tooltip=" "];
+  Node1 -> Node14 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node14 [label="FT::Pop::Op::NodeLogit",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d6/d87/classFT_1_1Pop_1_1Op_1_1NodeLogit.html",tooltip=" "];
+  Node1 -> Node15 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node15 [label="FT::Pop::Op::NodeMultiply",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d2/dea/classFT_1_1Pop_1_1Op_1_1NodeMultiply.html",tooltip=" "];
+  Node1 -> Node16 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node16 [label="FT::Pop::Op::NodeRelu",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d8/da5/classFT_1_1Pop_1_1Op_1_1NodeRelu.html",tooltip=" "];
+  Node1 -> Node17 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node17 [label="FT::Pop::Op::NodeSin",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$de/d8d/classFT_1_1Pop_1_1Op_1_1NodeSin.html",tooltip=" "];
+  Node1 -> Node18 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node18 [label="FT::Pop::Op::NodeSqrt",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$dc/d88/classFT_1_1Pop_1_1Op_1_1NodeSqrt.html",tooltip=" "];
+  Node1 -> Node19 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node19 [label="FT::Pop::Op::NodeSquare",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d0/d22/classFT_1_1Pop_1_1Op_1_1NodeSquare.html",tooltip=" "];
+  Node1 -> Node20 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node20 [label="FT::Pop::Op::NodeSubtract",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d8/d61/classFT_1_1Pop_1_1Op_1_1NodeSubtract.html",tooltip=" "];
+  Node1 -> Node21 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node21 [label="FT::Pop::Op::NodeTanh",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$db/da6/classFT_1_1Pop_1_1Op_1_1NodeTanh.html",tooltip=" "];
+}

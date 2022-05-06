@@ -1,0 +1,8 @@
+digraph "Graphical Class Hierarchy"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node0 [label="FT::Util::Logger",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d9/da2/classFT_1_1Util_1_1Logger.html",tooltip="Defines a multi level static logger for feat."];
+}

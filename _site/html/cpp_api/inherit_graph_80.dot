@@ -1,0 +1,8 @@
+digraph "Graphical Class Hierarchy"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node0 [label="nlohmann::detail::is\l_compatible_string_type\l_impl\< BasicJsonType, Compatible\lStringType, enable_if_t\< is\l_detected_exact\< typename BasicJsonType\l::string_t::value_type, value_type\l_t, CompatibleStringType \>::value \> \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d0/dad/structnlohmann_1_1detail_1_1is__compatible__string__type__impl_3_01BasicJsonType_00_01Compatible494e9dc742c819c61e54b8282030b5b6.html",tooltip=" "];
+}

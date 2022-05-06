@@ -1,0 +1,53 @@
+digraph "FT::Pop::Population::SortComplexity"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="FT::Pop::Population\l::SortComplexity",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Sort population in increasing complexity."];
+  Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" pop" ,fontname="Helvetica"];
+  Node2 [label="FT::Pop::Population",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d6/d5f/structFT_1_1Pop_1_1Population.html",tooltip="Defines a population of programs and functions for constructing them."];
+  Node3 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" individuals" ,fontname="Helvetica"];
+  Node3 [label="std::vector\< FT::Pop\l::Individual \>",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+  Node4 -> Node3 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" elements" ,fontname="Helvetica"];
+  Node4 [label="FT::Pop::Individual",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$da/def/classFT_1_1Pop_1_1Individual.html",tooltip="individual programs in the population"];
+  Node5 -> Node4 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" program" ,fontname="Helvetica"];
+  Node5 [label="FT::Pop::NodeVector",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d5/daf/structFT_1_1Pop_1_1NodeVector.html",tooltip="an extension of a vector of unique pointers to nodes"];
+  Node6 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="std::vector\< std::unique\l_ptr\< Node \> \>",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip="STL class."];
+  Node7 -> Node6 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" elements" ,fontname="Helvetica"];
+  Node7 [label="T",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+  Node8 -> Node4 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" dtypes" ,fontname="Helvetica"];
+  Node8 [label="std::vector\< char \>",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+  Node9 -> Node4 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" eqn" ,fontname="Helvetica"];
+  Node9 [label="std::string",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip="STL class."];
+  Node10 -> Node9 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="std::basic_string\<\l char \>",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip="STL class."];
+  Node11 -> Node4 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" error\nyhat" ,fontname="Helvetica"];
+  Node11 [label="VectorXf",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+  Node12 -> Node4 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" parent_id" ,fontname="Helvetica"];
+  Node12 [label="std::vector\< int \>",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+  Node13 -> Node4 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" obj\nw\np" ,fontname="Helvetica"];
+  Node13 [label="std::vector\< float \>",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+  Node14 -> Node4 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" ml" ,fontname="Helvetica"];
+  Node14 [label="std::shared_ptr\< FT\l::Model::ML \>",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+  Node15 -> Node14 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" ptr" ,fontname="Helvetica"];
+  Node15 [label="FT::Model::ML",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$dd/d6f/classFT_1_1Model_1_1ML.html",tooltip="class that specifies the machine learning algorithm to pair with Feat."];
+  Node8 -> Node15 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" dtypes" ,fontname="Helvetica"];
+  Node16 -> Node15 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" N" ,fontname="Helvetica"];
+  Node16 [label="FT::Util::Normalizer",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$dd/d51/structFT_1_1Util_1_1Normalizer.html",tooltip="normalizes a matrix to unit variance, 0 mean centered."];
+  Node8 -> Node16 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" dtypes" ,fontname="Helvetica"];
+  Node13 -> Node16 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" offset\nscale" ,fontname="Helvetica"];
+  Node17 -> Node15 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" prob_type" ,fontname="Helvetica"];
+  Node17 [label="EProblemType",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+  Node18 -> Node15 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" p_est" ,fontname="Helvetica"];
+  Node18 [label="std::shared_ptr\< sh\l::CMachine \>",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+  Node9 -> Node15 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" ml_str" ,fontname="Helvetica"];
+  Node19 -> Node15 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" ml_hash" ,fontname="Helvetica"];
+  Node19 [label="std::map\< string, ML\l_TYPE \>",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+  Node9 -> Node19 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" keys" ,fontname="Helvetica"];
+  Node20 -> Node4 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" dominated" ,fontname="Helvetica"];
+  Node20 [label="std::vector\< unsigned\l int \>",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+  Node21 -> Node4 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" Phi" ,fontname="Helvetica"];
+  Node21 [label="MatrixXf",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+}
