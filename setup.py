@@ -136,18 +136,22 @@ class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=""):
         Extension.__init__(self, name, sources=[])
         self.sourcedir = os.path.abspath(sourcedir)
-
+import sysconfig
+platlib = sysconfig.get_path('platlib')
 
 class CMakeBuild(build_ext):
     def build_extension(self, ext):
         if not isinstance(ext, CMakeExtension):
             libfeatname = \
-                    '.'.join(self.ext_map['libfeat']._file_name[3:].split('.')[:-1])
+                    '.'.join(self.ext_map['feat.libfeat']._file_name[8:].split('.')[:-1])
             extdir = os.path.abspath(
-                os.path.dirname(self.get_ext_fullpath(self.ext_map['libfeat'].name))
+                os.path.dirname(self.get_ext_fullpath(self.ext_map['feat.libfeat'].name))
             )
             ext.libraries += [libfeatname]
             # ext.library_dirs += [extdir]
+            ext.library_dirs += [extdir.split('feat/')[-1]]
+            print('ext.libraries:',ext.libraries)
+            print('ext.library_dirs:',ext.library_dirs)
             # pdb.set_trace()
             # add a runtime directory to where this extension is ending up
             return super().build_extension(ext)
@@ -225,11 +229,11 @@ class CMakeBuild(build_ext):
         # linksuffix = '.'+extsuffix.split('.')[-1]
         # lib_linkname= f'{LIB_PATH}/libfeat{linksuffix}'
 
-        print(f'creating copy of {lib_fullname} named {lib_copyname} ')
-        shutil.copy(
-                   lib_fullname, 
-                   lib_copyname
-                  ) 
+        # print(f'creating copy of {lib_fullname} named {lib_copyname} ')
+        # shutil.copy(
+        #            lib_fullname, 
+        #            lib_copyname
+        #           ) 
         # print(f'creating a link to {lib_copyname} named {lib_linkname} ')
         # os.symlink(
         #     lib_copyname,
@@ -255,7 +259,9 @@ extra_compile_args = ['-std=c++1y',
 if platform == 'darwin':
     extra_compile_args.append('-Winconsistent-missing-override')
 ################################################################################
-
+# where FEAT ends up getting installed; used to specify runtime library
+# directory
+target_path = os.path.join(sysconfig.get_path('platlib'), 'feat')
 
 setup(
     name="feat-ml",
@@ -277,7 +283,7 @@ setup(
     # package_dir = {'','feat'},
     packages = ['feat'],
     # py_modules=['feat','metrics','versionstr'],
-    ext_modules = ([CMakeExtension("libfeat")]
+    ext_modules = ([CMakeExtension("feat.libfeat")]
                     + cythonize([Extension(
                         name='feat.cyfeat',
                         sources =  ["feat/cyfeat.pyx"],    # our cython source
@@ -289,9 +295,8 @@ setup(
                                        ),
                         extra_compile_args = extra_compile_args,
                         library_dirs = [SHOGUN_LIB, LIB_PATH],
-                        runtime_library_dirs = [LIB_PATH],
+                        runtime_library_dirs = [target_path],
                         libraries=['shogun'],
-                        # extra_link_args = ['-lshogun'],      
                         language='c++'
                        )])
                   ),
