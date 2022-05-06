@@ -4,6 +4,7 @@ Copyright 2016 William La Cava
 license: GNU/GPLv3
 """
 from feat import Feat, FeatRegressor, FeatClassifier 
+
 from sklearn.datasets import load_diabetes, make_blobs
 from sklearn.base import clone
 from sklearn.pipeline import make_pipeline
@@ -27,24 +28,30 @@ verbosity = 2
 class TestFeatWrapper(unittest.TestCase):
 
     def setUp(self):
+        """setup"""
         self.v = verbosity
-        self.reg = FeatRegressor(verbosity=verbosity, n_jobs=1, gens=2,
+        self.reg = FeatRegressor(verbosity=verbosity, 
+                                 n_jobs=1, gens=2,
                                 random_state=42)
-        self.clf = FeatClassifier(verbosity=verbosity, n_jobs=1, gens=2,
+        self.clf = FeatClassifier(verbosity=verbosity, 
+                                  n_jobs=1, 
+                                  gens=2,
                                  random_state=42)
         diabetes = load_diabetes()
         self.X = diabetes.data
         self.yr = diabetes.target
         self.yc = diabetes.target < np.median(diabetes.target)
+        self.yc = np.array([int(i) for i in self.yc])
 
     def debug(self,message):
         if ( self.v > 0 ):
             print (message)
 
     def test_sklearn_api(self):
+        """tests sklearn api"""
         # clf = self.clf
         # clf.classification = True
-        self.debug("Fit the Data")
+        self.debug("Check Estimator")
         check_generator = check_estimator(self.clf, generate_only=True)
         check_generator2 = check_estimator(self.reg, generate_only=True)
 
@@ -56,7 +63,6 @@ class TestFeatWrapper(unittest.TestCase):
                        'check_fit2d_1feature' 
                       ]
         for est, check in check_generator2:
-            # print(check)
             time_to_go=False
             for ch in skip_checks:
                 if ch in str(check):
@@ -65,7 +71,6 @@ class TestFeatWrapper(unittest.TestCase):
             check(est)
 
         for est, check in check_generator:
-            # print(check)
             time_to_go=False
             for ch in skip_checks:
                 if ch in str(check):
@@ -76,6 +81,7 @@ class TestFeatWrapper(unittest.TestCase):
 
     #Test 1: Assert the length of labels returned from predict
     def test_predict_length(self):
+        """prediction length"""
         self.debug("Fit the Data")
         self.clf.fit(self.X,self.yc)
 
@@ -89,7 +95,9 @@ class TestFeatWrapper(unittest.TestCase):
 
     #Test 2:  Assert the length of labels returned from fit_predict
     def test_fitpredict_length(self):
+        """fitpredict length"""
         self.debug("Calling fit_predict from Feat")
+        
         pred = self.reg.fit_predict(self.X,self.yr)
 
         self.debug("Comparing the length of labls in fit_predict vs actual ")
@@ -155,26 +163,32 @@ class TestFeatWrapper(unittest.TestCase):
             self.assertEqual(len(self.reg.stats_[key]), self.reg.gens)
 
     #Test ability to pickle feat model
-    def test_saving_loading(self):
-        self.debug("Pickle Feat object")
-    
+    def test_save_load(self):
+        self.debug("Test saving and reloading Feat objects")
+        # old_verbose = self.reg.verbosity
+        # self.reg.verbosity = 3 
         reg = clone(self.reg) 
         reg.fit(self.X, self.yr)
         initial_pred = reg.predict(self.X)
         reg.save('Feat_tmp.json')
 
-        loaded_reg = Feat().load('Feat_tmp.json')
-        # print('loaded_reg:',type(loaded_reg).__name__)
+        loaded_reg = FeatRegressor().load('Feat_tmp.json')
         loaded_pred = loaded_reg.predict(self.X)
+        diff = np.abs(initial_pred-loaded_pred)
+        cov = np.corrcoef(initial_pred, loaded_pred)[1,1]
         # print('initial pred:',initial_pred)
         # print('loaded pred:',loaded_pred)
-        diff = np.abs(initial_pred-loaded_pred)
+        # print('diff',diff)
+        if cov == 1 and np.mean(diff)>0.0001:
+            print('loaded regressor has the wrong scale/offset.',
+                  'probably a normalization issue.')
+
+
         for i,d in enumerate(diff):
             if d > 0.0001:
                 print('pred:',initial_pred[i],'loaded:',loaded_pred[i],
-                      'diff:',d)
-            assert(d < 0.0001)
-        # assert(all([ip==lp for ip,lp in zip(initial_pred, loaded_pred)]))
+                      'offset:',d,'scale:',initial_pred[i]/loaded_pred[i])
+        assert all([d < 0.0001 for d in diff])
 
         assert(reg.get_representation() == loaded_reg.get_representation())
         assert(reg.get_model() == loaded_reg.get_model())
@@ -204,7 +218,6 @@ class TestFeatWrapper(unittest.TestCase):
     def test_archive(self):
         """test archiving ability"""
         self.debug("Test archive")
-
         self.clf.fit(self.X,self.yc)
         self.debug('grabbing archive..')
         archive = self.clf.get_archive()

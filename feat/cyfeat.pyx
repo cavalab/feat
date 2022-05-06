@@ -159,7 +159,7 @@ cdef extern from "feat.h" namespace "FT":
         void load_population(string filename)
         bool fitted
 
-cdef class PyFeat:
+cdef class CyFeat:
     
     cdef Feat ft  # hold a c++ instance which we're wrapping
     def __cinit__(self, **kwargs):
@@ -355,7 +355,6 @@ cdef class PyFeat:
             # else:
             #     print(p,'rejected, type name:',type(getattr(self,p)).__name__)
         tmp = {p:getattr(self,p) for p in property_names}
-        # print('returning',tmp,'from _get_params()')
         return tmp
         # return json.loads(self.ft.get_params())
 

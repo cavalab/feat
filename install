@@ -56,11 +56,11 @@ fi
 
 if [ $choice == "y" ] ; then 
         echo "installing python module..."
-        cd python
-        rm -rf build 
-        rm -rf dist
-        mkdir lib/
-        cp ../build/libfeat_lib.so $CONDA_PREFIX/lib/
+        # cd feat
+        # rm -rf build 
+        # rm -rf dist
+        # mkdir lib/
+        # cp ../build/libfeat_lib.so $CONDA_PREFIX/lib/
         python setup.py install
         cd ..
 fi

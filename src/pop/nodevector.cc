@@ -251,11 +251,15 @@ void NodeVector::make_tree(const NodeVector& functions,
      * recursively builds a program with complete arguments.
      */
     // debugging output
-    /* std::cout << "current program: ["; */
-    /* for (const auto& p : *(this) ) std::cout << p->name << " "; */
-    /* std::cout << "]\n"; */
-    /* std::cout << "otype: " << otype << "\n"; */
-    /* std::cout << "max_d: " << max_d << "\n"; */
+     /* #ifdef NDEBUG */
+     /* #else */
+     /*  // debug code */
+     /*    std::cout << "current program: ["; */
+     /*    for (const auto& p : *(this) ) std::cout << p->name << " "; */
+     /*    std::cout << "]\n"; */
+     /*    std::cout << "otype: " << otype << "\n"; */
+     /*    std::cout << "max_d: " << max_d << "\n"; */
+     /* #endif */
 
     if (max_d == 0 || r.rnd_flt() < terminals.size()/(terminals.size()+functions.size())) 
     {
@@ -292,8 +296,10 @@ void NodeVector::make_tree(const NodeVector& functions,
             string ttypes = "";
             for (const auto& t : terminals)
                 ttypes += t->name + ": " + t->otype + "\n";
-            THROW_RUNTIME_ERROR("Error: make_tree couldn't find properly typed terminals\n"
-                               + ttypes);
+            std::ostringstream msg;
+            msg << "Error: make_tree couldn't find a terminal of "
+                << "type " << otype <<  ". terminal types:\n" << ttypes ; 
+            THROW_RUNTIME_ERROR(msg.str());
         }
     }
     else
@@ -367,13 +373,19 @@ void NodeVector::make_program(const NodeVector& functions,
                               vector<string> longitudinalMap, 
                               const vector<char>& term_types)
 {
-    for (unsigned i = 0; i<dim; ++i)    // build trees
+    for (int i = 0; i<dim; ++i)    // build trees
+    {
         make_tree(functions, terminals, max_d, term_weights, op_weights, otype, 
                   term_types);
+    }
     
     // reverse program so that it is post-fix notation
     std::reverse(begin(), end());
     assert(is_valid_program(terminals.size(), longitudinalMap));
+    if (!is_valid_program(terminals.size(), longitudinalMap))
+    {
+        THROW_RUNTIME_ERROR("make_program produced invalid program");
+    }
 }
 
 //serialization

@@ -56,6 +56,16 @@ ML::ML(string ml, bool norm, bool classification, int n_classes)
     }
     this->C = C_DEFAULT.at(ml_type);
     this->init(true);
+
+    // force normalize to be ON if using a linear model; improves stability
+    if ( in({LARS, Ridge, SVM, LR, L1_LR}, ml_type) 
+         && !normalize
+       )
+    {
+        this->normalize = true;
+        logger.log("Using ML normalization since a linear method was specified",
+                   3);
+    }
 }
 
 void ML::init(bool assign_p_est)
@@ -198,7 +208,7 @@ void ML::set_dtypes(const vector<char>& dtypes)
     this->dtypes = dtypes;
 }
 
-vector<float> ML::get_weights() const
+vector<float> ML::get_weights(bool norm_adjust) const
 {    
     /*!
      * @return weight vector from model.
@@ -248,8 +258,13 @@ vector<float> ML::get_weights() const
         else
         {
             auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(
-                    p_est)->get_w();
+                    p_est)->get_w().clone();
             
+            if (this->normalize && norm_adjust)
+            {
+                this->N.adjust_weights(tmp);
+
+            }   
             w.assign(tmp.data(), tmp.data()+tmp.size());          
         }
     }
@@ -374,7 +389,14 @@ shared_ptr<CLabels> ML::fit(const MatrixXf& X, const VectorXf& y,
     logger.log("ML training on thread " 
                + std::to_string(omp_get_thread_num()) + "...",3," ");
     // *** Train the model ***  
-    p_est->train(features);
+    try
+    {
+        p_est->train(features);
+    }
+    catch (...)
+    {
+        logger.log("Shogun failed to train",3);
+    }
 
     logger.log("done!",3);
    
@@ -540,7 +562,7 @@ VectorXf ML::labels_to_vector(const shared_ptr<CLabels>& labels)
     return yhatf;
 }
 
-float ML::get_bias() const
+float ML::get_bias(bool norm_adjust) const
 {   
     // get bias weight. only works with linear machines
     if ( in({L1_LR, LR, LARS, Ridge}, ml_type) )
@@ -554,7 +576,21 @@ float ML::get_bias() const
             return accumulate(biases.begin(), biases.end(), 0.0)/biases.size();
         }
         else
-            return dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_bias();
+        {
+            if (this->normalize && norm_adjust)
+            {
+                float b = dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_bias();
+                auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(
+                                                    p_est)->get_w().clone();
+                /* auto tmp_map = Map<Eigen::VectorXd>(tmp.data(), */ 
+                /*                                     tmp.size() */
+                /*                                    ); */
+                return this->N.adjust_offset(tmp, b);
+                
+            }
+            else
+                return dynamic_pointer_cast<sh::CLinearMachine>(p_est)->get_bias();
+        }
     }
     else
         return 0;
@@ -756,11 +792,12 @@ void to_json(json& j, const ML& ml)
         {
             vector<double> weights;
             auto tmp = dynamic_pointer_cast<sh::CLinearMachine>(
-                    ml.p_est)->get_w();
+                    ml.p_est)->get_w().clone();
             
             weights.assign(tmp.data(), tmp.data()+tmp.size());          
             j["w"] = weights;
-            j["bias"] = ml.get_bias();
+            j["bias"] = ml.get_bias(false);
+
         }
         
     }

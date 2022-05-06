@@ -124,9 +124,13 @@ list(REMOVE_ITEM sources ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cc)
 # executable
 
 if (CORE_USE_CUDA)
-    cuda_add_library(feat_lib SHARED ${sources} ${cuda_files})
+    cuda_add_library(feat SHARED ${sources} ${cuda_files})
 else()
-    add_library(feat_lib SHARED ${sources})
+    add_library(feat SHARED ${sources})
+    option(FEAT_LIB_SUFFIX "custom lib suffix" OFF)
+    if (FEAT_LIB_SUFFIX)
+        set_target_properties(feat PROPERTIES SUFFIX ${FEAT_LIB_SUFFIX} )
+    endif()
 endif()
 
 # executables
@@ -136,14 +140,14 @@ option(LIB_ONLY "only build a library" OFF)
 if (NOT LIB_ONLY)
     #feat executable
 
-    add_executable(feat src/main.cc)
+    add_executable(feat-ml src/main.cc)
 
     #link libraries for different executables
 
     if (CORE_USE_CUDA)
-        target_link_libraries(feat feat_lib shogun ${CUDA_LIBRARIES})
+        target_link_libraries(feat-ml feat shogun ${CUDA_LIBRARIES})
     else()
-        target_link_libraries(feat feat_lib shogun)
+        target_link_libraries(feat-ml feat shogun)
     endif()
 endif()
 
@@ -154,9 +158,9 @@ if (GTEST)
     add_executable(tests ${testsSrc})
     
     if (CORE_USE_CUDA)
-        target_link_libraries(tests feat_lib shogun ${CUDA_LIBRARIES} ${GTEST_LIBRARIES} pthread)
+        target_link_libraries(tests feat shogun ${CUDA_LIBRARIES} ${GTEST_LIBRARIES} pthread)
     else()
-        target_link_libraries(tests feat_lib shogun ${GTEST_LIBRARIES} pthread)
+        target_link_libraries(tests feat shogun ${GTEST_LIBRARIES} pthread)
     endif()
 endif()
 

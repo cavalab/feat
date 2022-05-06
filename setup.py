@@ -1,7 +1,10 @@
+import pdb
 #from distutils.core import setup
 import sys
+import os
+import shutil
 from setuptools import setup, find_packages
-from setuptools.extension import Extension
+from setuptools.extension import Extension, Library
 from setuptools.command.build_ext import build_ext
 from distutils.dir_util import remove_tree
 from Cython.Build import cythonize
@@ -72,7 +75,6 @@ print('package version:',package_version)
 
 ################################################################################
 # set paths
-import os
 
 env_params = os.environ.keys() 
 
@@ -87,18 +89,18 @@ if 'CONDA_PREFIX' in env_params:
 else:
     # ENV_PREFIX = os.environ
     LIB_PATH = os.environ['LD_LIBRARY_PATH'].split(':')[0]
-    INCLUDE_PATH = '/usr/path'
+    INCLUDE_PATH = '/usr/include/'
 
 
     if 'EIGEN3_INCLUDE_DIR' in env_params:
         EIGEN_DIR = os.environ['EIGEN3_INCLUDE_DIR'] 
     else:
-        EIGEN_DIR = '/usr/include/eigen3/'
+        EIGEN_DIR = INCLUDE_PATH+'/eigen3/'
 
     if 'SHOGUN_DIR' in env_params:
         SHOGUN_INCLUDE_DIR = os.environ['SHOGUN_DIR']
     else:
-        SHOGUN_INCLUDE_DIR = '/usr/include/'
+        SHOGUN_INCLUDE_DIR = INCLUDE_PATH
 
 
     if 'SHOGUN_LIB' in env_params:
@@ -112,6 +114,9 @@ print('EIGEN_DIR:',EIGEN_DIR)
 print('SHOGUN_INCLUDE_DIR:',SHOGUN_INCLUDE_DIR)
 print('SHOGUN_LIB:',SHOGUN_LIB)
 
+if 'CMAKE_BUILD_PARALLEL_LEVEL' not in env_params:
+    print('setting build parallel level to 4')
+    os.environ['CMAKE_BUILD_PARALLEL_LEVEL'] = 4 
 ################################################################################
 
 ################################################################################
@@ -133,21 +138,31 @@ class CMakeExtension(Extension):
         self.sourcedir = os.path.abspath(sourcedir)
 
 
-
 class CMakeBuild(build_ext):
     def build_extension(self, ext):
         if not isinstance(ext, CMakeExtension):
+            libfeatname = \
+                    '.'.join(self.ext_map['libfeat']._file_name[3:].split('.')[:-1])
+            extdir = os.path.abspath(
+                os.path.dirname(self.get_ext_fullpath(self.ext_map['libfeat'].name))
+            )
+            ext.libraries += [libfeatname]
+            # ext.library_dirs += [extdir]
+            # pdb.set_trace()
+            # add a runtime directory to where this extension is ending up
             return super().build_extension(ext)
 
         print("building extension...")
         
-        #cfg = "Debug" if self.debug else "Release"
+        cfg = "Debug" if self.debug else "Release"
         # cfg = "Debug"
-        cfg = "Release"
+        # cfg = "Release"
 
-        # extdir = os.path.abspath(
-        #     os.path.dirname(self.get_ext_fullpath(ext.name)))
-        extdir = LIB_PATH
+        # extdir = LIB_PATH
+        extdir = os.path.abspath(
+            os.path.dirname(self.get_ext_fullpath(ext.name))
+        )
+        extsuffix = '.'+'.'.join(ext._file_name.split('.')[-2:])
 
         cmake_generator = os.environ.get("CMAKE_GENERATOR", "")
         cmake_args = [
@@ -157,7 +172,8 @@ class CMakeBuild(build_ext):
             f"-DSHOGUN_LIB={SHOGUN_LIB}",
             f"-DEIGEN3_INCLUDE_DIR={EIGEN_DIR}",
             f"-DOMP={'OFF' if cfg=='Debug' else 'ON'}",
-            f"-DLIB_ONLY=ON" # only build feat library
+            f"-DLIB_ONLY=ON", # only build feat library
+            f"-DFEAT_LIB_SUFFIX={extsuffix}"
         ]
         build_args = []
 
@@ -202,13 +218,30 @@ class CMakeBuild(build_ext):
         subprocess.check_call(
             ["cmake", "--build", "."] + build_args, cwd=self.build_temp
         )
+        # # copy libfeat to the library path
+        lib_fullname= f'{extdir}/libfeat{extsuffix}'
+        lib_copyname= f'{LIB_PATH}/libfeat{extsuffix}'
+        # # symbolic link the feat library to one without the added platform info
+        # linksuffix = '.'+extsuffix.split('.')[-1]
+        # lib_linkname= f'{LIB_PATH}/libfeat{linksuffix}'
+
+        print(f'creating copy of {lib_fullname} named {lib_copyname} ')
+        shutil.copy(
+                   lib_fullname, 
+                   lib_copyname
+                  ) 
+        # print(f'creating a link to {lib_copyname} named {lib_linkname} ')
+        # os.symlink(
+        #     lib_copyname,
+        #     lib_linkname
+        # )
 
 # # # Clean old build/ directory if it exists
-try:
-    remove_tree("./build")
-    print("Removed old build directory.")
-except FileNotFoundError:
-    print("No existing build directory found - skipping.")
+# try:
+#     remove_tree("./build")
+#     print("Removed old build directory.")
+# except FileNotFoundError:
+#     print("No existing build directory found - skipping removal.")
 
 # add extra compile args based on platform
 extra_compile_args = ['-std=c++1y',
@@ -244,18 +277,21 @@ setup(
     # package_dir = {'','feat'},
     packages = ['feat'],
     # py_modules=['feat','metrics','versionstr'],
-    ext_modules = ([CMakeExtension("feat.feat_lib")]
-                    + cythonize([Extension(name='feat.pyfeat',
-                        sources =  ["feat/pyfeat.pyx"],    # our cython source
+    ext_modules = ([CMakeExtension("libfeat")]
+                    + cythonize([Extension(
+                        name='feat.cyfeat',
+                        sources =  ["feat/cyfeat.pyx"],    # our cython source
                         include_dirs = (['src',
                                          EIGEN_DIR, 
-                                         SHOGUN_INCLUDE_DIR]
+                                         SHOGUN_INCLUDE_DIR,
+                                        ]
                                    + eigency.get_includes(include_eigen=False)
                                        ),
                         extra_compile_args = extra_compile_args,
                         library_dirs = [SHOGUN_LIB, LIB_PATH],
-                        # runtime_library_dirs = [SHOGUN_LIB,LIB_PATH],
-                        extra_link_args = ['-lshogun','-lfeat_lib'],      
+                        runtime_library_dirs = [LIB_PATH],
+                        libraries=['shogun'],
+                        # extra_link_args = ['-lshogun'],      
                         language='c++'
                        )])
                   ),

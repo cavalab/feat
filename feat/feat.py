@@ -9,7 +9,7 @@ from .versionstr import __version__
 from sklearn.base import BaseEstimator, RegressorMixin, ClassifierMixin
 import numpy as np
 import pandas as pd
-from .pyfeat import PyFeat
+from .cyfeat import CyFeat
 from sklearn.metrics import mean_squared_error as mse
 from sklearn.metrics import log_loss
 from sklearn.utils import check_X_y, check_array
@@ -17,7 +17,7 @@ from sklearn.preprocessing import LabelEncoder
 import pdb
 import json
 
-class Feat(PyFeat, BaseEstimator):
+class Feat(CyFeat, BaseEstimator):
     """Feature Engineering Automation Tool
 
     Parameters
@@ -259,14 +259,9 @@ class Feat(PyFeat, BaseEstimator):
         for k in self.__dict__: 
             if k.endswith('_'):
                 print('adding',k,'type:',self.__dict__[k].__class__.__name__)
-                if self.__dict__[k].__class__.__name__ == 'int64':
-                    print('WPOIEJ:FAOSINF:ODJ')
                 feat_state[k] = self.__dict__[k]
 
         for k,v in feat_state.items():
-            # if v.__class__.__name__ == 'ndarray':
-            #     print(k,'is an ndarray')
-            # else:
             if v.__class__.__name__ == 'int64':
                 print(k,':',v.__class__.__name__,':',v)
         with open(filename, 'w') as of:

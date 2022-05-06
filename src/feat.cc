@@ -256,11 +256,19 @@ float Feat::get_fb(){ return params.feedback; }
 ///return best model
 string Feat::get_representation(){ return best_ind.get_eqn();}
 
-string Feat::get_eqn(bool sort) 
+string Feat::get_eqn(bool sort){ return this->get_eqn(sort, this->best_ind); };
+
+string Feat::get_eqn(bool sort, Individual& ind) 
 {   
-    vector<string> features = best_ind.get_features();
-    vector<float> weights = best_ind.ml->get_weights();
-    float offset = best_ind.ml->get_bias(); 
+    vector<string> features = ind.get_features();
+    vector<float> weights = ind.ml->get_weights();
+    float offset = ind.ml->get_bias(); 
+    
+    /* if (params.normalize) */
+    /* { */
+    /*     offset = this->N.adjust_offset(weights, offset); */
+    /*     this->N.adjust_weights(weights); */
+    /* } */
 
     vector<size_t> order(weights.size());
     if (sort)
@@ -274,7 +282,11 @@ string Feat::get_eqn(bool sort)
         iota(order.begin(), order.end(), 0);
 
     string output;
-    output +=  to_string(offset) + "+";
+    output +=  to_string(offset);
+
+    if (weights.size() > 0)
+        if (weights.at(0) > 0)
+            output+= "+";
     int i = 0;
     for (const auto& o : order)
     {
@@ -282,7 +294,10 @@ string Feat::get_eqn(bool sort)
         output += "*";
         output += features.at(o);
         if (i < order.size()-1)
-            output += "+";
+        {
+            if (weights.at(i+1) > 0)
+                output+= "+";
+        }
         ++i;
     }
 
@@ -294,6 +309,11 @@ string Feat::get_model(bool sort)
     vector<string> features = best_ind.get_features();
     vector<float> weights = best_ind.ml->get_weights();
     float offset = best_ind.ml->get_bias(); 
+    /* if (params.normalize) */
+    /* { */
+    /*     offset = this->N.adjust_offset(weights, offset); */
+    /*     this->N.adjust_weights(weights); */
+    /* } */
 
     vector<size_t> order(weights.size());
     if (sort)
@@ -493,13 +513,26 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     this->stats = Log_Stats();
     params.use_batch = params.bp.batch_size>0;
 
-    string FEAT = (  
+    string FEAT;
+    if (params.verbosity == 1)
+    {
+        FEAT = (  
+      "/// Feature Engineering Automation Tool " 
+      "* \xc2\xa9 La Cava et al 2017 "
+      "* GPL3 \\\\\\\n"
+        );
+    }
+    else if (params.verbosity == 2)
+    {
+        FEAT = (  
       "/////////////////////////////////////////////////////////////////////\n"
       "//           * Feature Engineering Automation Tool *               //\n"
       "// La Cava et al. 2017                                             //\n"
       "// License: GPL v3                                                 //\n"
+      "// https://cavalab.org/feat                                        //\n"
       "/////////////////////////////////////////////////////////////////////\n"
-    );
+        );
+    }
     logger.log(FEAT,1);
 
     if (params.use_batch)
@@ -550,10 +583,6 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     /*     use_arch = true; */
     use_arch = false;
 
-    string log_msg = "functions set: [";
-    for (const auto& f: params.functions) log_msg += f->name + ", "; 
-    log_msg += "]\n";
-    logger.log(log_msg, 1);
     logger.log("scorer: " + params.scorer_, 1);
 
     // split data into training and test sets
@@ -663,7 +692,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
         logger.log("generation limit reached",2);
     else
         logger.log("max time reached",2);
-    logger.log("best representation: " + best_ind.get_eqn(),2);
+
     logger.log("train score: " + std::to_string(this->min_loss), 2);
     logger.log("validation score: " + std::to_string(min_loss_v), 2);
     logger.log("fitting final model to all training data...",2);
@@ -697,8 +726,12 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
         log.close();
 
     this->fitted = true;
-    logger.log("\n===\nRun Completed. Total time taken is " 
-            + std::to_string(timer.Elapsed().count()) + "\n", 1);
+    logger.log("Run Completed. Total time taken is " 
+            + std::to_string(timer.Elapsed().count()) + " seconds", 1);
+    logger.log("best model: " + this->get_eqn(),1);
+    logger.log("tabular model:\n" + this->get_model(),2);
+    logger.log("/// ----------------------------------------------------------------- \\\\\\",
+            1);
 
 }
 
@@ -885,11 +918,11 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
     int end_size = tmp_ind.size();
     logger.log("pattern pruning reduced best model size by " 
             + to_string(starting_size - end_size)
-            + " nodes\n=========\n", 1);
+            + " nodes\n=========\n", 2);
     if (tmp_ind.size() < ind.size())
     {
         ind = tmp_ind;
-        logger.log("new model:" + ind.get_eqn(),2);
+        logger.log("new model:" + this->get_eqn(false, ind),2);
     }
 
     ///////////////////
@@ -904,8 +937,6 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
          original_yhat = ind.predict_proba(*d.o).row(0); 
     else
          original_yhat = ind.yhat; 
-    cout << "original_yhat ( " << original_yhat.rows() 
-        << "x" << original_yhat.cols() << ")\n"; 
 
     for (int i = 0; i < iterations; ++i)
     {
@@ -958,7 +989,7 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
             + to_string(starting_size - end_size)
             + " nodes\n=========\n", 2);
     if (end_size < starting_size)
-        logger.log("new model:" + ind.get_eqn(),2);
+        logger.log("new model:" + this->get_eqn(false, ind),2);
 
     /////////////////
     // prune subtrees
@@ -1014,8 +1045,8 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
     else
          new_yhat = ind.yhat; 
     VectorXf difference = new_yhat - original_yhat;
-    cout << "final % difference: " << difference.norm()/original_yhat.norm() 
-        << endl;
+    /* cout << "final % difference: " << difference.norm()/original_yhat.norm() */ 
+    /*     << endl; */
 }
 
 vector<float> Feat::univariate_initial_model(DataRef &d, int n_feats) 
@@ -1038,7 +1069,7 @@ vector<float> Feat::univariate_initial_model(DataRef &d, int n_feats)
     string ml_type = this->params.classification? 
         "LR" : "LinearRidgeRegression";
     
-    ML ml = ML(ml_type,true,params.classification,params.n_classes);
+    ML ml = ML(ml_type,params.normalize,params.classification,params.n_classes);
 
     bool pass = true;
 
@@ -1139,7 +1170,6 @@ void Feat::initial_model(DataRef &d)
                     std::unique_ptr<Node>(new NodeMedian()));
         }
     }
-    logger.log("initial model: " + best_ind.get_eqn(), 1);
     // fit model
 
     shared_ptr<CLabels> yhat;
@@ -1176,6 +1206,8 @@ void Feat::initial_model(DataRef &d)
     best_ind.fitness = min_loss;
     
     this->best_complexity = best_ind.get_complexity();
+
+    logger.log("initial model: " + this->get_eqn(), 1);
     logger.log("initial training score: " +std::to_string(min_loss),2);
     logger.log("initial validation score: " +std::to_string(this->min_loss_v),2);
 }
@@ -1245,13 +1277,19 @@ VectorXf Feat::predict(MatrixXf& X,
 VectorXf Feat::predict_archive(int id, MatrixXf& X,
                        LongData Z)
 {
+    /* cout << "Feat::predict_archive\n"; */
     /* return predictions; */
+    /* cout << "Normalize" << endl; */
     if (params.normalize)
         N.normalize(X);       
-    VectorXf predictions(X.cols(),params.n_classes);
+    /* cout << "params.n_classes:" << params.n_classes << endl; */
+    /* cout << "X.cols(): " << X.cols() << endl; */
+    VectorXf predictions(X.cols());
     VectorXf empty_y;
+    /* cout << "tmp_data\n"; */ 
     Data tmp_data(X,empty_y,Z);
 
+    /* cout << "individual prediction id " << id << "\n"; */
     for (int i = 0; i < this->archive.individuals.size(); ++i)
     {
         Individual& ind = this->archive.individuals.at(i);
@@ -1377,7 +1415,7 @@ bool Feat::update_best(const DataRef& d, bool validation)
             }
         }
     }
-    logger.log("current best model: " + this->best_ind.get_eqn(), 2);
+    logger.log("current best model: " + this->get_eqn(), 2);
     this->min_loss_v = bs; 
 
     return updated;
@@ -1538,7 +1576,9 @@ void Feat::print_stats(std::ofstream& log, float fraction)
         for (unsigned i = 0; i < num_models; ++i)
         {
             std::string lim_model;
-            std::string model = archive.individuals[i].get_eqn();
+
+            std::string model = this->get_eqn(false, archive.individuals[i]);
+            /* std::string model = archive.individuals[i].get_eqn(); */
             for (unsigned j = 0; j< std::min(model.size(),size_t(60)); ++j)
             {
                 lim_model.push_back(model.at(j));
@@ -1568,7 +1608,8 @@ void Feat::print_stats(std::ofstream& log, float fraction)
         for (unsigned j = 0; j < std::min(num_models,unsigned(f.size())); ++j)
         {     
             std::string lim_model;
-            std::string model = this->pop.individuals[f[j]].get_eqn();
+            std::string model = this->get_eqn(false,pop.individuals[f[j]]);
+            /* std::string model = this->pop.individuals[f[j]].get_eqn(); */
             for (unsigned j = 0; j< std::min(model.size(),size_t(60)); ++j)
                 lim_model.push_back(model.at(j));
             if (lim_model.size()==60) 

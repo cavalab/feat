@@ -79,14 +79,16 @@ void Population::init(const Individual& starting_model,
         }
     }
     else
+    {
         individuals.at(0) = starting_model;
+    }
 
 
     /* if the starting pop is smaller than the 
      * set size of the population, initialize
      * additional individuals.*/
     #pragma omp parallel for
-    for (unsigned i = starting_size; i< individuals.size(); ++i)
+    for (int i = starting_size; i< individuals.size(); ++i)
     {          
         individuals.at(i).initialize(params, random, i);
     }

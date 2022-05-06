@@ -1,4 +1,5 @@
 /* FEAT
+ *
 copyright 2017 William La Cava
 license: GNU/GPL v3
 */
@@ -254,6 +255,31 @@ void Parameters::set_otypes(bool terminals_set)
                 otype = 'b';
                 otypes.push_back('b');
             }           
+            // if terminals are all floating, and functions are all floating,
+            // set otypes to f
+            else if (ttypes.size()==1 && ttypes.at(0)=='f')
+            {
+                int only_floating_ops=0;
+
+                for (const auto& op : functions)
+                {
+                    if (op->arity['f']==op->total_arity() && op->otype=='f')
+                        ++only_floating_ops;
+                }
+                if (only_floating_ops == functions.size())
+                {
+                    logger.log(string("all terminal and function types are float") 
+                        + string("setting otype='f'...\n"),
+                        2);
+                    otype='f';
+                    otypes.push_back('f');
+                }
+                else
+                {
+                    otypes.push_back('b');
+                    otypes.push_back('f');
+                }
+            }
             else
             {
                 otypes.push_back('b');
@@ -440,9 +466,14 @@ void Parameters::set_functions(string fs)
         fs.erase(0, pos + delim.length());
     } 
     
-    string log_msg = "functions set to [";
-    for (const auto& f: functions) log_msg += f->name + ", "; 
-    log_msg += "]\n";
+    string log_msg = "functions: [";
+    for (int i =0; i < functions.size(); ++i)
+    {
+        log_msg += functions.at(i)->name ;
+        if (i < functions.size()-1)
+            log_msg += ", "; 
+    }
+    log_msg += "]";
     
     logger.log(log_msg, 3);
     

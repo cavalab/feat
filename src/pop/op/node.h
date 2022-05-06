@@ -56,7 +56,7 @@ namespace Op{
             string name;              				///< node type
             string variable_name;              		///< variable name, if any
             char otype;             				///< output type
-            std::map<char, unsigned int> arity;		///< floating arity of the operator 
+            std::map<char, unsigned int> arity;		///< arity of the operator 
             int complexity;         ///< complexity of node
             int visits = 0;
             
