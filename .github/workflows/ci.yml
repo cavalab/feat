@@ -1,12 +1,5 @@
 name: install, test, docs
-on:
-  push:
-    branches:
-      - fix_op_type_install
-  pull_request:
-    branches:
-      - fix_op_type_install
-
+on: [push, pull_request]
 
 env: 
   CACHE_NUMBER: 0
