@@ -27,30 +27,12 @@ jobs:
           export CMAKE_BUILD_PARALLEL_LEVEL=4
           # python setup.py debug
           pip install .
-      - 
-        name: Wrapper Test 
-        run: |
-          # which python
-          # cd tests
-          # ls
-          python tests/wrappertest.py -v 1
-      # - 
-      #   name: Notebook Test
-      #   run: |
-      #     # which python
-      #     cd tests
-      #     # ls
-      #     micromamba install jupyter
-      #     python tests/nb_tests.py
 ########################################
 # docs
 ########################################
       - 
         name: Install Doxygen
         run: sudo apt-get install doxygen
-      - 
-        name: Checkout code
-        uses: actions/checkout@v2
       - 
         name: add docs environment
         run: |
@@ -85,3 +67,21 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./_site
+########################################
+# tests
+########################################
+      - 
+        name: Wrapper Test 
+        run: |
+          # which python
+          # cd tests
+          # ls
+          python tests/wrappertest.py -v 1
+      # - 
+      #   name: Notebook Test
+      #   run: |
+      #     # which python
+      #     cd tests
+      #     # ls
+      #     micromamba install jupyter
+      #     python tests/nb_tests.py
