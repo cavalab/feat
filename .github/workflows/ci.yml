@@ -27,7 +27,6 @@ jobs:
         with:
           environment-file: environment.yml
           cache-env: true
-          cache-downloads: true
           # cache-downloads-key: ${{ runner.os }}-micromamba-${{ env.CACHE_NUMBER }}-${{hashFiles('environment.yml'}}
       - 
         name: Install
