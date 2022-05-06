@@ -295,7 +295,7 @@ string Feat::get_eqn(bool sort, Individual& ind)
         output += features.at(o);
         if (i < order.size()-1)
         {
-            if (weights.at(i+1) > 0)
+            if (order.at(i+1) > 0)
                 output+= "+";
         }
         ++i;
