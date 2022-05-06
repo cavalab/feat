@@ -25,8 +25,8 @@ jobs:
         name: Install
         run: | 
           export CMAKE_BUILD_PARALLEL_LEVEL=4
-          python setup.py debug
-          # pip install .
+          # python setup.py debug
+          pip install .
       - 
         name: Wrapper Test 
         run: |
@@ -64,16 +64,19 @@ jobs:
         run: |
           doxygen --version
       - 
-        name: doxygen docs
+        name: prep doxygen docs
         run: |
           cd docs
           mkdir doxygen_site/
           doxygen Doxyfile
       - 
-        name: sphinx docs
+        name: prep sphinx docs
         run: |
           cd docs
           sphinx-build -b html ./ ../_site
+      - 
+        name: make sphinx docs
+        run: |
           make html
       - 
         name: Deploy
