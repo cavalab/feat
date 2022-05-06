@@ -116,7 +116,7 @@ print('SHOGUN_LIB:',SHOGUN_LIB)
 
 if 'CMAKE_BUILD_PARALLEL_LEVEL' not in env_params:
     print('setting build parallel level to 4')
-    os.environ['CMAKE_BUILD_PARALLEL_LEVEL'] = 4 
+    os.environ['CMAKE_BUILD_PARALLEL_LEVEL'] = '4' 
 ################################################################################
 
 ################################################################################
