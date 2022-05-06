@@ -264,9 +264,8 @@ string Feat::get_eqn(bool sort)
 
     if (params.normalize)
     {
-        auto w = Map<VectorXf>(weights.data(), weights.size());
-        offset = this->N.normalize_offset(w, offset);
-        this->N.normalize_weights(w);
+        offset = this->N.adjust_offset(weights, offset);
+        this->N.adjust_weights(weights);
     }
 
     vector<size_t> order(weights.size());

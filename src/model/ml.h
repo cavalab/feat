@@ -91,7 +91,7 @@ class ML
         // map ml string names to enum values. 
         std::map<string, ML_TYPE> ml_hash;
         // return vector of weights for model. 
-        vector<float> get_weights() const;
+        vector<float> get_weights(bool norm_adjust=true) const;
         
         // train ml model on X and return label object. 
         shared_ptr<CLabels> fit(const MatrixXf& X, const VectorXf& y, 
@@ -126,7 +126,7 @@ class ML
         // set data types (for tree-based methods)            
         void set_dtypes(const vector<char>& dtypes);
         ///returns bias for linear machines  
-        float get_bias() const;
+        float get_bias(bool norm_adjust=true) const;
         void set_bias(float b);
         ///tune algorithm parameters
         shared_ptr<CLabels> fit_tune(MatrixXf& X, VectorXf& y, 

@@ -15,9 +15,11 @@ license: GNU/GPL v3
 #include <map>
 #include "../init.h"
 #include "error.h"
+#include <shogun/lib/common.h>                                                                      
 //#include "data.h"
 
 using namespace Eigen;
+
 
 namespace FT{
 /**
@@ -208,8 +210,9 @@ struct Normalizer
     }
     /// return weights of a linear model, y = B*X, given weights of 
     // y = B_norm*X_norm.
+    //
     template <typename T> 
-    void normalize_weights(MatrixBase<T>& B) const 
+    void adjust_weights(MatrixBase<T>& B) const 
     {  
         // Transform input, Bnorm, into B by dividing by scale.
         // normalize features
@@ -227,8 +230,23 @@ struct Normalizer
             }
         }
     }
+
+    template<typename T>
+    void adjust_weights(shogun::SGVector<T>& B) const 
+    {
+        auto tmp_map = Map<Eigen::Matrix<T,Dynamic,1>>(B.data(), B.size());
+        this->adjust_weights(tmp_map);
+    }
+
+    template<typename T>
+    void adjust_weights(vector<T>& B) const 
+    {
+        auto tmp_map = Map<Eigen::Matrix<T,Dynamic,1>>(B.data(), B.size());
+        this->adjust_weights(tmp_map);
+    }
+
     template <typename T> 
-    float normalize_offset(const MatrixBase<T>& Bn, float init_offset) const 
+    float adjust_offset(const MatrixBase<T>& Bn, float init_offset) const 
     {  
         // yn = Bn_0 + Bn_1 * xn_1 + ...
         //    = Bn_0 + Bn_1 * (x-offset)/scale) + ...
@@ -251,6 +269,20 @@ struct Normalizer
             }
         }
         return init_offset - adjustment;
+    }
+    template <typename T> 
+    float adjust_offset(const vector<T>& Bn, float init_offset) const 
+    {  
+        auto w = Map<const Eigen::Matrix<T,Dynamic,1>>(Bn.data(), Bn.size());
+        return this->adjust_offset(w, init_offset);
+
+    }
+    template <typename T> 
+    float adjust_offset(const shogun::SGVector<T>& Bn, float init_offset) const 
+    {  
+        auto w = Map<const Eigen::Matrix<T,Dynamic,1>>(Bn.data(), Bn.size());
+        return this->adjust_offset(w, init_offset);
+
     }
     /// inverse normalize a matrix.
     template <typename T> 
