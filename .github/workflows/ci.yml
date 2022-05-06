@@ -26,7 +26,8 @@ jobs:
         run: | 
           export CMAKE_BUILD_PARALLEL_LEVEL=4
           # python setup.py debug
-          pip install .
+          # pip install .
+          python setup.py install
 ########################################
 # docs
 ########################################
