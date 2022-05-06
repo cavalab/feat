@@ -470,9 +470,10 @@ void Parameters::set_functions(string fs)
     for (int i =0; i < functions.size(); ++i)
     {
         log_msg += functions.at(i)->name ;
-        if (i <= functions.size()-1)
-            log_msg + ", "; 
+        if (i < functions.size()-1)
+            log_msg += ", "; 
     }
+    log_msg += "]";
     
     logger.log(log_msg, 3);
     

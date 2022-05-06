@@ -51,7 +51,7 @@ class TestFeatWrapper(unittest.TestCase):
         """tests sklearn api"""
         # clf = self.clf
         # clf.classification = True
-        self.debug("Fit the Data")
+        self.debug("Check Estimator")
         check_generator = check_estimator(self.clf, generate_only=True)
         check_generator2 = check_estimator(self.reg, generate_only=True)
 
@@ -63,7 +63,6 @@ class TestFeatWrapper(unittest.TestCase):
                        'check_fit2d_1feature' 
                       ]
         for est, check in check_generator2:
-            # print(check)
             time_to_go=False
             for ch in skip_checks:
                 if ch in str(check):
@@ -72,7 +71,6 @@ class TestFeatWrapper(unittest.TestCase):
             check(est)
 
         for est, check in check_generator:
-            # print(check)
             time_to_go=False
             for ch in skip_checks:
                 if ch in str(check):
@@ -220,8 +218,6 @@ class TestFeatWrapper(unittest.TestCase):
     def test_archive(self):
         """test archiving ability"""
         self.debug("Test archive")
-        print(self.X)
-        print(self.yc)
         self.clf.fit(self.X,self.yc)
         self.debug('grabbing archive..')
         archive = self.clf.get_archive()
