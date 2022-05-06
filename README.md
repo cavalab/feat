@@ -1,6 +1,6 @@
 # FEAT
 
-[![Build Status](https://travis-ci.org/lacava/feat.svg?branch=master)](https://travis-ci.org/lacava/feat)
+[![Build Status](https://github.com/cavalab/feat/actions/workflows/ci.yml/badge.svg)](https://github.com/cavalab/feat/actions/workflows/ci.yml)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/lacava/feat/blob/master/LICENSE)
 
 **FEAT** is a feature engineering automation tool that learns new representations of raw data 
