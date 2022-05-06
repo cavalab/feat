@@ -21,14 +21,13 @@ jobs:
       - 
         name: Checkout code
         uses: actions/checkout@v2
-      - name: Install Conda environment with Micromamba
+      - 
+        name: Install Conda environment with Micromamba
         uses: mamba-org/provision-with-micromamba@main
         with:
           environment-file: environment.yml
-          # extra-specs: |
-          #   python=3.7
           cache-env: true
-          # cache-downloads: true
+          cache-downloads: true
           # cache-downloads-key: ${{ runner.os }}-micromamba-${{ env.CACHE_NUMBER }}-${{hashFiles('environment.yml'}}
       - 
         name: Install
