@@ -55,6 +55,9 @@ jobs:
       - 
         name: prep sphinx docs
         run: |
+          which python
+          mamba env list
+          python -c "from feat import Feat"
           cd docs
           sphinx-build -b html ./ ../_site
       - 
