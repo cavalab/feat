@@ -14,5 +14,5 @@ dependencies:
     - wheel=0.35.*
     - pip=20.*
     - pip:
-        - eigency==1.77
+        - eigency==1.80
         - pmlb==1.*
