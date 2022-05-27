@@ -179,18 +179,21 @@ void Parameters::set_term_weights(const vector<float>& w)
         }
            
     }
-    string weights = "terminal weights: ";
-    for (unsigned i = 0; i < terminals.size(); ++i)
+    if (terminals.size() < 20)
     {
-        weights += ("[" 
-                + terminals.at(i)->variable_name 
-                + " (" + 
-                terminals.at(i)->otype + "): " +
-                std::to_string(term_weights.at(i)) 
-                + "], "); 
+        string weights = "terminal weights: ";
+        for (unsigned i = 0; i < terminals.size(); ++i)
+        {
+            weights += ("[" 
+                    + terminals.at(i)->variable_name 
+                    + " (" + 
+                    terminals.at(i)->otype + "): " +
+                    std::to_string(term_weights.at(i)) 
+                    + "], "); 
+        }
+        weights += "\n";
+        logger.log(weights, 2);
     }
-    weights += "\n";
-    logger.log(weights, 2);
 }
 
 void Parameters::updateSize()

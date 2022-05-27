@@ -1207,7 +1207,7 @@ void Feat::initial_model(DataRef &d)
     
     this->best_complexity = best_ind.get_complexity();
 
-    logger.log("initial model: " + this->get_eqn(), 1);
+    logger.log("initial model: " + this->get_eqn(), 2);
     logger.log("initial training score: " +std::to_string(min_loss),2);
     logger.log("initial validation score: " +std::to_string(this->min_loss_v),2);
 }
