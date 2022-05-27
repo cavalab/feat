@@ -229,11 +229,11 @@ class CMakeBuild(build_ext):
         # linksuffix = '.'+extsuffix.split('.')[-1]
         # lib_linkname= f'{LIB_PATH}/libfeat{linksuffix}'
 
-        # print(f'creating copy of {lib_fullname} named {lib_copyname} ')
-        # shutil.copy(
-        #            lib_fullname, 
-        #            lib_copyname
-        #           ) 
+        print(f'creating copy of {lib_fullname} named {lib_copyname} ')
+        shutil.copy(
+                   lib_fullname, 
+                   lib_copyname
+                  ) 
         # print(f'creating a link to {lib_copyname} named {lib_linkname} ')
         # os.symlink(
         #     lib_copyname,
