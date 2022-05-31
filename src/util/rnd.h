@@ -116,7 +116,7 @@ namespace FT {
                     }
                 }
                 
-                float gasdev();
+                float norm(float mean=0, float sigma=1);
 
             private:
 

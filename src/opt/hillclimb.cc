@@ -46,7 +46,7 @@ namespace FT {
                         vector<float> W0 = pd->W;
                         for (int i = 0; i < pd->W.size(); ++i)
                         {   // perturb W[i] with gaussian noise
-                            pd->W.at(i) += r.gasdev()*pd->W.at(i)*this->step; 
+                            pd->W.at(i) += r.norm()*pd->W.at(i)*this->step; 
                             /* cout << "changed " << W0.at(i) << " to " << pd->W.at(i) << "\n"; */
                         }
                     }

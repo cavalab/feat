@@ -26,6 +26,7 @@ license: GNU/GPL v3
 #include "pop/op/node.h"
 #include "pop/archive.h" 
 #include "pop/op/longitudinal/n_median.h"
+#include "thresholdout.h"
 
 #ifdef USE_CUDA
     #include "pop/cuda-op/cuda_utils.h" 
@@ -93,8 +94,20 @@ class Feat
              bool val_from_arch=true, bool corr_delete_mutate=false, 
              float simplify=0.0, string protected_groups="",
              bool tune_initial=false, bool tune_final=true,
-             string starting_pop="");
+             string starting_pop="",
+             float thresh_tolerance=0.0,
+             float thresh_beta=0.0,
+             int thresh_budget=0
+             );
         
+        // set thresholdoutstuff
+        void set_thresh_tolerance(float t);         
+        void set_thresh_beta(float t);         
+        void set_thresh_budget(int b);         
+        float get_thresh_tolerance();         
+        float get_thresh_beta();         
+        int get_thresh_budget();         
+
         /// set size of population 
         void set_pop_size(int pop_size);
         
@@ -467,6 +480,8 @@ class Feat
     private:
         // Parameters
         Parameters params;  ///< hyperparameters of Feat 
+        Thresholdout Thresher;
+        bool thresholdout;
 
         Timer timer;       ///< start time of training
         // subclasses for main steps of the evolutionary routine

@@ -33,7 +33,11 @@ Feat::Feat(int pop_size, int gens, string ml,
        bool softmax_norm, int save_pop, bool normalize,
        bool val_from_arch, bool corr_delete_mutate, float simplify,
        string protected_groups, bool tune_initial, bool tune_final,
-       string starting_pop):
+       string starting_pop,
+       float thresh_tolerance,
+       float thresh_beta,
+       int thresh_budget
+       ):
           // construct subclasses
           params(pop_size, gens, ml, classification, max_stall, otype, 
                  verbosity, functions, cross_rate, root_xo_rate, max_depth, 
@@ -64,9 +68,33 @@ Feat::Feat(int pop_size, int gens, string ml,
     params.set_protected_groups(protected_groups);
     archive.set_objectives(params.objectives);
     fitted=false;
+    if (thresh_tolerance>0 && thresh_beta > 0.0){
+        this->thresholdout=true;
+        this->Thresher = Thresholdout(thresh_tolerance,
+                                      thresh_beta,
+                                      thresh_budget
+        ); 
+    }
 }
 
 
+/// set thresholdout stuff
+void Feat::set_thresh_tolerance(float t){
+    cout << "setting thresh tol to " << t << endl;
+    this->Thresher.tol= t;}         
+void Feat::set_thresh_beta(float beta){
+
+    cout << "setting thresh beta to " << beta << endl;
+    this->Thresher.certainty = beta;
+}         
+void Feat::set_thresh_budget(int b){
+    cout << "setting thresh budget to " << b << endl;
+    this->Thresher.B = b;
+}         
+
+float Feat::get_thresh_tolerance(){return this->Thresher.tol;}         
+float Feat::get_thresh_beta(){return this->Thresher.certainty;}         
+int Feat::get_thresh_budget(){return this->Thresher.B;}         
 /// set size of population 
 void Feat::set_pop_size(int pop_size){ params.pop_size = pop_size; }            
 
@@ -512,6 +540,19 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     // reset statistics
     this->stats = Log_Stats();
     params.use_batch = params.bp.batch_size>0;
+    // set thresholdout budget
+    if (this->get_thresh_tolerance()>0 && this->get_thresh_beta() > 0.0)
+    {
+        this->thresholdout=true;
+    }
+    if (thresholdout and this->Thresher.B==0)
+        this->Thresher.set_budget(X.size());
+    cout << "thresholdout: " << this->thresholdout << endl;
+    cout << "tol: " << this->Thresher.tol << endl;
+    cout << "Beta: " << this->Thresher.certainty << endl;
+    cout << "Budget: " << this->Thresher.B << endl;
+    /* char c; */
+    /* std::cin >> c; */ 
 
     string FEAT;
     if (params.verbosity == 1)
@@ -662,6 +703,8 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
         && g<params.gens                                                    
         // stall limit
         && (params.max_stall == 0 || stall_count < params.max_stall) 
+        // thresholdout
+        && (!thresholdout || this->Thresher.B > 0) 
         )      
     {
         fraction = params.max_time == -1 ? ((g+1)*1.0)/params.gens : 
@@ -1398,9 +1441,15 @@ bool Feat::update_best(const DataRef& d, bool validation)
 
     for (const auto& ind: pop_ref)
     {
+        // if validating from archive, only consider rank 1 inds. otherwise, all
         if (!val_from_arch || ind.rank == 1)
         {
-            f = ind.fitness_v;
+            if (this->thresholdout)
+            {
+                f = this->Thresher.thresh_validate(ind, *d.t, *d.v);
+            }
+            else
+                f = ind.fitness_v;
 
             if (f < bs 
                 || (f == bs && ind.get_complexity() < this->best_complexity)
@@ -1550,6 +1599,9 @@ void Feat::print_stats(std::ofstream& log, float fraction)
             << "/" << params.max_time 
             << " seconds (Generation "<< params.current_gen+1 
             << ") [" + bar + space + "]\n";
+
+    if (thresholdout)
+        std::cout << "Thresholdout Budget: " << this->Thresher.B << endl;
         
     std::cout << std::fixed << "Train Loss (Med): " 
               << stats.min_loss.back() << " (" 

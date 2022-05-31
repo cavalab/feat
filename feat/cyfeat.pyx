@@ -30,7 +30,10 @@ cdef extern from "feat.h" namespace "FT":
                bool stagewise_xo_tol, bool softmax_norm, int save_pop, 
                bool normalize, bool val_from_arch, bool corr_delete_mutate, 
                float simplify, string protected_groups, bool tune_initial,
-               bool tune_final, string starting_pop 
+               bool tune_final, string starting_pop, 
+               float thresh_tolerance,
+               float thresh_beta,
+               int thresh_budget
                ) except + 
 
         void fit(float * X, int rowsX, int colsX, float*  y , int lenY)
@@ -150,6 +153,13 @@ cdef extern from "feat.h" namespace "FT":
         void set_tune_final(bool)
         string get_starting_pop()
         void set_starting_pop(string)
+
+        float get_thresh_tolerance()
+        void set_thresh_tolerance(float)
+        float get_thresh_beta()
+        void set_thresh_beta(float)
+        int get_thresh_budget()
+        void set_thresh_budget(int)
 
         string get_stats()
         
@@ -679,6 +689,27 @@ cdef class CyFeat:
     def _starting_pop(self, value):
         if isinstance(value,str): value = value.encode() 
         self.ft.set_starting_pop(value)
+
+    @property
+    def _thresh_tolerance(self):  
+        return self.ft.get_thresh_tolerance()
+    @_thresh_tolerance.setter
+    def _thresh_tolerance(self, value):
+        self.ft.set_thresh_tolerance(value)
+
+    @property
+    def _thresh_beta(self):  
+        return self.ft.get_thresh_beta()
+    @_thresh_beta.setter
+    def _thresh_beta(self, value):
+        self.ft.set_thresh_beta(value)
+
+    @property
+    def _thresh_budget(self):  
+        return self.ft.get_thresh_budget()
+    @_thresh_budget.setter
+    def _thresh_budget(self, value):
+        self.ft.set_thresh_budget(value)
 
     @property
     def _fitted_(self):

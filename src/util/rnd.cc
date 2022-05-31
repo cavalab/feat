@@ -153,31 +153,34 @@ namespace FT {
             }
         }*/
             
-        float Rnd::gasdev()
-        //Returns a normally distributed deviate with zero mean and unit variance
+        float Rnd::norm(float mean, float sigma)
+        //Returns a normally distributed deviate with zero mean and sigma variance
         {
-            float ran = rnd_flt(-1,1);
-            static int iset=0;
-            static float gset;
-            float fac,rsq,v1,v2;
-            if (iset == 0) {// We don't have an extra deviate handy, so 
-                do{
-                    v1=float(2.0*rnd_flt(-1,1)-1.0); //pick two uniform numbers in the square ex
-                    v2=float(2.0*rnd_flt(-1,1)-1.0); //tending from -1 to +1 in each direction,
-                    rsq=v1*v1+v2*v2;	   //see if they are in the unit circle,
-                } while (rsq >= 1.0 || rsq == 0.0); //and if they are not, try again.
-                fac=float(sqrt(-2.0*log(rsq)/rsq));
-            //Now make the Box-Muller transformation to get two normal deviates. Return one and
-            //save the other for next time.
-            gset=v1*fac;
-            iset=1; //Set flag.
-            return v2*fac;
-            } 
-            else 
-            {		//We have an extra deviate handy,
-                iset=0;			//so unset the flag,
-                return gset;	//and return it.
-            }
+            std::normal_distribution<float> dist(mean, sigma);
+            return dist(rg.at(omp_get_thread_num()));
+
+            // float ran = rnd_flt(-1,1);
+            // static int iset=0;
+            // static float gset;
+            // float fac,rsq,v1,v2;
+            // if (iset == 0) {// We don't have an extra deviate handy, so 
+            //     do{
+            //         v1=float(2.0*rnd_flt(-1,1)-1.0); //pick two uniform numbers in the square ex
+            //         v2=float(2.0*rnd_flt(-1,1)-1.0); //tending from -1 to +1 in each direction,
+            //         rsq=v1*v1+v2*v2;	   //see if they are in the unit circle,
+            //     } while (rsq >= 1.0 || rsq == 0.0); //and if they are not, try again.
+            //     fac=float(sqrt(-2.0*log(rsq)/rsq));
+            // //Now make the Box-Muller transformation to get two normal deviates. Return one and
+            // //save the other for next time.
+            // gset=v1*fac;
+            // iset=1; //Set flag.
+            // return v2*fac;
+            // } 
+            // else 
+            // {		//We have an extra deviate handy,
+            //     iset=0;			//so unset the flag,
+            //     return gset;	//and return it.
+            // }
         }
         Rnd::~Rnd() {}
     }

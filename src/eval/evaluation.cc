@@ -30,7 +30,7 @@ namespace FT{
                 start = individuals.size()/2;
 
             // loop through individuals
-            /* #pragma omp parallel for */
+            #pragma omp parallel for 
             for (unsigned i = start; i<individuals.size(); ++i)
             {
                 Individual& ind = individuals.at(i);
