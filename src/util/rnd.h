@@ -117,6 +117,7 @@ namespace FT {
                 }
                 
                 float norm(float mean=0, float sigma=1);
+                float laplace(float lambda=1);
 
             private:
 

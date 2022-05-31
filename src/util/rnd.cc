@@ -153,6 +153,12 @@ namespace FT {
             }
         }*/
             
+        float Rnd::laplace(float lambda)
+        {
+            std::exponential_distribution<float> dist(lambda);
+            return dist(rg.at(omp_get_thread_num()));
+        }
+
         float Rnd::norm(float mean, float sigma)
         //Returns a normally distributed deviate with zero mean and sigma variance
         {
