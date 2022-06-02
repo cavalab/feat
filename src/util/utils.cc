@@ -271,28 +271,30 @@ float mean_square_corrcoef(const MatrixXf& X)
     return tmp.array().square().sum()/N;
 }
 
-void Log_Stats::update(int index,
-                       float timer_count,
-                       float bst_score,
-                       float bst_score_v,
-                       float md_score,
-                       float md_loss_v,
-                       unsigned md_size,
-                       unsigned md_complexity,
-                       unsigned md_num_params,
-                       unsigned md_dim)
-{
-    generation.push_back(index+1);
-    time.push_back(timer_count);
-    min_loss.push_back(bst_score);
-    min_loss_v.push_back(bst_score_v);
-    med_loss.push_back(md_score);
-    med_loss_v.push_back(md_loss_v);
-    med_size.push_back(md_size);
-    med_complexity.push_back(md_complexity);
-    med_num_params.push_back(md_num_params);
-    med_dim.push_back(md_dim);
-}
+/* void Log_Stats::update( */
+/*         int index, */
+/*         float timer_count, */
+/*         float bst_score, */
+/*         float bst_score_v, */
+/*         float md_score, */
+/*         float md_loss_v, */
+/*         unsigned md_size, */
+/*         unsigned md_complexity, */
+/*         unsigned md_num_params, */
+/*         unsigned md_dim */
+/* ) */ 
+/* { */
+/*     generation.push_back(index+1); */
+/*     time.push_back(timer_count); */
+/*     min_loss.push_back(bst_score); */
+/*     min_loss_v.push_back(bst_score_v); */
+/*     med_loss.push_back(md_score); */
+/*     med_loss_v.push_back(md_loss_v); */
+/*     med_size.push_back(md_size); */
+/*     med_complexity.push_back(md_complexity); */
+/*     med_num_params.push_back(md_num_params); */
+/*     med_dim.push_back(md_dim); */
+/* } */
 
 std::string ravel(const vector<string>& v, string sep)
 {

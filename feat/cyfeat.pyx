@@ -33,7 +33,8 @@ cdef extern from "feat.h" namespace "FT":
                bool tune_final, string starting_pop, 
                float thresh_tolerance,
                float thresh_beta,
-               int thresh_budget
+               int thresh_budget,
+               bool thresh_gauss
                ) except + 
 
         void fit(float * X, int rowsX, int colsX, float*  y , int lenY)
@@ -160,6 +161,8 @@ cdef extern from "feat.h" namespace "FT":
         void set_thresh_beta(float)
         int get_thresh_budget()
         void set_thresh_budget(int)
+        bool get_thresh_gauss()
+        void set_thresh_gauss(bool)
 
         string get_stats()
         
@@ -710,6 +713,13 @@ cdef class CyFeat:
     @_thresh_budget.setter
     def _thresh_budget(self, value):
         self.ft.set_thresh_budget(value)
+
+    @property
+    def _thresh_gauss(self):  
+        return self.ft.get_thresh_gauss()
+    @_thresh_gauss.setter
+    def _thresh_gauss(self, value):
+        self.ft.set_thresh_gauss(value)
 
     @property
     def _fitted_(self):

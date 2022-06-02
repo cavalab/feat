@@ -152,11 +152,18 @@ namespace FT {
                 return v[dis(rg[omp_get_thread_num()])]; 
             }
         }*/
+        float Rnd::exponential(float mean)
+        {
+            return -mean*std::log(rnd_flt());
+        }
+
             
         float Rnd::laplace(float lambda)
         {
-            std::exponential_distribution<float> dist(lambda);
-            return dist(rg.at(omp_get_thread_num()));
+            /* std::exponential_distribution<float> dist(lambda); */
+            auto a = this->exponential(lambda); 
+            auto b = this->exponential(lambda); 
+            return a-b;
         }
 
         float Rnd::norm(float mean, float sigma)

@@ -36,7 +36,8 @@ Feat::Feat(int pop_size, int gens, string ml,
        string starting_pop,
        float thresh_tolerance,
        float thresh_beta,
-       int thresh_budget
+       int thresh_budget,
+       bool thresh_gauss
        ):
           // construct subclasses
           params(pop_size, gens, ml, classification, max_stall, otype, 
@@ -91,10 +92,14 @@ void Feat::set_thresh_budget(int b){
     cout << "setting thresh budget to " << b << endl;
     this->Thresher.B = b;
 }         
+void Feat::set_thresh_gauss(bool g){
+    cout << "setting thresh gauss to " << g << endl;
+    this->Thresher.gauss = g;}         
 
 float Feat::get_thresh_tolerance(){return this->Thresher.tol;}         
 float Feat::get_thresh_beta(){return this->Thresher.certainty;}         
 int Feat::get_thresh_budget(){return this->Thresher.B;}         
+bool Feat::get_thresh_gauss(){return this->Thresher.gauss;}         
 /// set size of population 
 void Feat::set_pop_size(int pop_size){ params.pop_size = pop_size; }            
 
@@ -538,13 +543,12 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
     // signal handler
     signal(SIGINT, my_handler);
     // reset statistics
-    this->stats = Log_Stats();
+    this->stats = json({});
     params.use_batch = params.bp.batch_size>0;
     // set thresholdout budget
-    if (this->get_thresh_tolerance()>0 && this->get_thresh_beta() > 0.0)
-    {
-        this->thresholdout=true;
-    }
+    this->thresholdout= (this->get_thresh_tolerance()>0 
+                         && this->get_thresh_beta() > 0.0);
+
     if (thresholdout and this->Thresher.B==0)
         this->Thresher.set_budget(X.size());
     cout << "thresholdout: " << this->thresholdout << endl;
@@ -733,6 +737,8 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
         logger.log("learning stalled",2);
     else if ( g >= params.gens) 
         logger.log("generation limit reached",2);
+    else if (thresholdout && this->Thresher.B != 0)
+        logger.log("thresholdout budget reached",2);
     else
         logger.log("max time reached",2);
 
@@ -769,7 +775,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y,
         log.close();
 
     this->fitted = true;
-    logger.log("Run Completed. Total time taken is " 
+    logger.log("\nRun Completed. Total time taken is " 
             + std::to_string(timer.Elapsed().count()) + " seconds", 1);
     logger.log("best model: " + this->get_eqn(),1);
     logger.log("tabular model:\n" + this->get_model(),2);
@@ -1320,16 +1326,11 @@ VectorXf Feat::predict(MatrixXf& X,
 VectorXf Feat::predict_archive(int id, MatrixXf& X,
                        LongData Z)
 {
-    /* cout << "Feat::predict_archive\n"; */
-    /* return predictions; */
-    /* cout << "Normalize" << endl; */
     if (params.normalize)
         N.normalize(X);       
-    /* cout << "params.n_classes:" << params.n_classes << endl; */
-    /* cout << "X.cols(): " << X.cols() << endl; */
-    VectorXf predictions(X.cols());
+
     VectorXf empty_y;
-    /* cout << "tmp_data\n"; */ 
+
     Data tmp_data(X,empty_y,Z);
 
     /* cout << "individual prediction id " << id << "\n"; */
@@ -1342,9 +1343,8 @@ VectorXf Feat::predict_archive(int id, MatrixXf& X,
 
     }
 
-    THROW_INVALID_ARGUMENT("Could not find id = "
-            + to_string(id) + "in archive.");
-    return VectorXf();
+    WARN("Could not find id = " + to_string(id) + " in archive.");
+    return VectorXf(X.cols());
 }
 
 VectorXf Feat::predict_archive(int id, float * X, int rowsX,int colsX)
@@ -1358,7 +1358,7 @@ ArrayXXf Feat::predict_proba_archive(int id, MatrixXf& X,
 {
     if (params.normalize)
         N.normalize(X);       
-    ArrayXXf predictions(X.cols(),params.n_classes);
+
     VectorXf empty_y;
     Data tmp_data(X,empty_y,Z);
 
@@ -1371,9 +1371,9 @@ ArrayXXf Feat::predict_proba_archive(int id, MatrixXf& X,
 
     }
 
-    THROW_INVALID_ARGUMENT("Could not find id = "
-            + to_string(id) + "in archive.");
-    return ArrayXXf();
+    WARN("Could not find id = " + to_string(id) + " in archive.");
+    return ArrayXXf(X.cols(),params.n_classes);
+;
     
 }
 shared_ptr<CLabels> Feat::predict_labels(MatrixXf& X,
@@ -1479,6 +1479,31 @@ float Feat::score(MatrixXf& X, const VectorXf& y, LongData Z)
 
 void Feat::calculate_stats(const DataRef& d)
 {
+    vector<string> metrics = {
+        "generation",
+        "time",
+        "min_loss",
+        "min_loss_v",
+        "med_loss",
+        "med_loss_v",
+        "med_size",
+        "med_complexity",
+        "med_num_params",
+        "med_dim"
+    };
+    if (this->thresholdout)
+    {
+        metrics.push_back("min_thresh_loss");
+        metrics.push_back("med_thresh_loss");
+        metrics.push_back("thresh_budget");
+    }
+
+    // instantiate stats 
+    if (this->stats.size() == 0)
+    {
+        for (auto m : metrics)
+            stats[m] = json::array();
+    }
 
     VectorXf losses(this->pop.size());
     int i=0;
@@ -1487,23 +1512,43 @@ void Feat::calculate_stats(const DataRef& d)
         losses(i) = p.fitness;
         ++i;
     }
-    // min loss
-    float min_loss = losses.minCoeff();  
 
-    // median loss
-    float med_loss = median(losses.array());  
+    // calculate the median valiation loss 
+    ArrayXf val_losses(this->pop.individuals.size());
+    for (unsigned i = 0; i < this->pop.individuals.size(); ++i)
+        val_losses(i) = this->pop.individuals.at(i).fitness_v;
+
+    // min loss
+    stats["min_loss"].push_back( losses.minCoeff() );
+    stats["med_loss"].push_back( median(losses.array()) );  
+
+    stats["min_loss_v"].push_back( val_losses.minCoeff() );
+    stats["med_loss_v"].push_back( median(val_losses.array()) );  
+
+    if (thresholdout)
+    {
+        VectorXf thresh_losses(this->pop.size());
+        int i=0;
+        for (const auto& p: this->pop.individuals)
+        {
+            thresh_losses(i) = this->Thresher.thresh_validate(p, *d.t, *d.v, false);
+            ++i;
+        }
+        // min loss
+        stats["min_thresh_loss"].push_back( thresh_losses.minCoeff() );
+        stats["med_thresh_loss"].push_back( median(thresh_losses.array()) );  
+        stats["thresh_budget"].push_back(this->Thresher.B);
+    }
     
     // median program size
     ArrayXf Sizes(this->pop.size());
-    
     i = 0;
-    
     for (const auto& p : this->pop.individuals)
     { 
         Sizes(i) = p.size(); 
         ++i;
     }
-    unsigned med_size = median(Sizes);                        
+    stats["med_size"].push_back( median(Sizes) );
     
     // complexity
     ArrayXf Complexities(this->pop.size()); 
@@ -1533,15 +1578,10 @@ void Feat::calculate_stats(const DataRef& d)
     }
     
     /* unsigned med_size = median(Sizes); */ 
-    unsigned med_complexity = median(Complexities);            
-    unsigned med_num_params = median(Nparams);                
-    unsigned med_dim = median(Dims);                          
+    stats["med_complexity"].push_back( median(Complexities) );            
+    stats["med_num_params"].push_back( median(Nparams) );                
+    stats["med_dim"].push_back( median(Dims) );
     
-    // calculate the median valiation loss 
-    ArrayXf val_fitnesses(this->pop.individuals.size());
-    for (unsigned i = 0; i < this->pop.individuals.size(); ++i)
-        val_fitnesses(i) = this->pop.individuals.at(i).fitness_v;
-    float med_loss_v = median(val_fitnesses); 
         /* fitnesses.push_back(pop.individuals.at(i).fitness); */
     /* int idx = argmiddle(fitnesses); */
 
@@ -1556,17 +1596,18 @@ void Feat::calculate_stats(const DataRef& d)
     
     /* ///////////////////////////////////////////// */
    
+    stats["time"].push_back( timer.Elapsed().count() );
+    stats["generation"].push_back( params.current_gen );
     // update stats
-    stats.update(params.current_gen,
-                 timer.Elapsed().count(),
-                 min_loss,
-                 this->min_loss_v,
-                 med_loss,
-                 med_loss_v,
-                 med_size,
-                 med_complexity,
-                 med_num_params,
-                 med_dim);
+    /* stats.update(params.current_gen, */
+    /*              min_loss, */
+    /*              this->min_loss_v, */
+    /*              med_loss, */
+    /*              med_loss_v, */
+    /*              med_size, */
+    /*              med_complexity, */
+    /*              med_num_params, */
+    /*              med_dim); */
 }
 
 void Feat::print_stats(std::ofstream& log, float fraction)
@@ -1604,12 +1645,12 @@ void Feat::print_stats(std::ofstream& log, float fraction)
         std::cout << "Thresholdout Budget: " << this->Thresher.B << endl;
         
     std::cout << std::fixed << "Train Loss (Med): " 
-              << stats.min_loss.back() << " (" 
-              << stats.med_loss.back() << ")\n"
+              << stats["min_loss"].back() << " (" 
+              << stats["med_loss"].back() << ")\n"
               << "Val Loss (Med): " 
-              << this->min_loss_v << " (" << stats.med_loss_v.back() << ")\n"
+              << this->min_loss_v << " (" << stats["med_loss_v"].back() << ")\n"
               << "Median Size (Max): " 
-              << stats.med_size.back() << " (" << max_size << ")\n"
+              << stats["med_size"].back() << " (" << max_size << ")\n"
               << "Time (s): "   << timer << "\n";
     std::cout << "Representation Pareto Front--------------------------------------\n";
     std::cout << "Rank\t"; //Complexity\tLoss\tRepresentation\n";
@@ -1696,18 +1737,18 @@ void Feat::print_stats(std::ofstream& log, float fraction)
 
         log << params.current_gen  << sep
             << timer.Elapsed().count() << sep
-            << stats.min_loss.back()          << sep
+            << stats["min_loss"].back()          << sep
             << this->min_loss_v        << sep
-            << stats.med_loss.back()  << sep
-            << stats.med_loss_v.back() << sep
-            << stats.med_size.back()   << sep
-            << stats.med_complexity.back() << sep
-            << stats.med_num_params.back() << sep
-            << stats.med_dim.back()        << "\n"; 
+            << stats["med_loss"].back()  << sep
+            << stats["med_loss_v"].back() << sep
+            << stats["med_size"].back()   << sep
+            << stats["med_complexity"].back() << sep
+            << stats["med_num_params"].back() << sep
+            << stats["med_dim"].back()        << "\n"; 
     } 
 }
 //TODO: replace these with json
-string Feat::get_stats(){ json j; to_json(j, this->stats); return j.dump();}
+string Feat::get_stats(){ return this->stats.dump(); }
 
 /* vector<int> Feat::get_stats_gens(){return stats.generation;} */
 

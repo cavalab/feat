@@ -187,7 +187,8 @@ class Feat(CyFeat, BaseEstimator):
                  starting_pop="",
                  thresh_tolerance=0.0,
                  thresh_beta=0.0,
-                 thresh_budget=0
+                 thresh_budget=0,
+                 thresh_gauss=False
                 ):
         self.pop_size=pop_size
         self.gens=gens
@@ -235,6 +236,7 @@ class Feat(CyFeat, BaseEstimator):
         self.thresh_tolerance=thresh_tolerance
         self.thresh_beta=thresh_beta
         self.thresh_budget=thresh_budget
+        self.thresh_gauss=thresh_gauss
         
     def set_params(self, **params):
         for k,v in params.items():

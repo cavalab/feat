@@ -97,16 +97,19 @@ class Feat
              string starting_pop="",
              float thresh_tolerance=0.0,
              float thresh_beta=0.0,
-             int thresh_budget=0
+             int thresh_budget=0,
+             bool thresh_gauss=0
              );
         
         // set thresholdoutstuff
         void set_thresh_tolerance(float t);         
         void set_thresh_beta(float t);         
         void set_thresh_budget(int b);         
+        void set_thresh_gauss(bool g);         
         float get_thresh_tolerance();         
         float get_thresh_beta();         
         int get_thresh_budget();         
+        bool get_thresh_gauss();         
 
         /// set size of population 
         void set_pop_size(int pop_size);
@@ -506,7 +509,7 @@ class Feat
         int save_pop;  ///< controls whether pop is printed each gen
         bool val_from_arch; ///< model selection only uses Pareto front
         float simplify;  ///< post-run simplification
-        Log_Stats stats; ///< runtime stats
+        json stats; ///< runtime stats
         int random_state;
 
         /* functions */
