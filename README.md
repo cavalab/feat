@@ -38,9 +38,16 @@ In Review.
 
 Maintained by William La Cava (william.lacava at childrens.harvard.edu)
 
+Special thanks to these contributors:
+  - Tilak Raj Singh @tilakhere 
+  - Srinivas Suri @srinu634
+  - James P Taggert @JPT2
+  - Daniel Herman 
+  - Paul Lee
+  
 ## Acknowledgments
 
-This work is supported by grant R00-LM012926 from the National Library of Medicine. 
+This work is supported by grant K99-LM012926 and R00-LM012926 from the National Library of Medicine. 
 FEAT is being developed to learn clinical diagnostics in the [Cava Lab at Harvard Medical School](http://cavalab.org). 
 
 ## License
