@@ -54,8 +54,11 @@ class Feat(CyFeat, BaseEstimator):
         'b': boolean only
         'f': floating point only
     functions: string, optional (default: "")
-        What operators to use to build features. If functions="", all the
-        available functions are used. 
+        A comma-separated string of operators to use to build features. 
+        If functions="", all the available functions are used. 
+        Options: +, -, *, /, ^2, ^3, sqrt, sin, cos, exp, log, ^, logit, tanh, 
+        gauss, relu, split, split_c, b2f, c2f, and, or, not, xor, =, <, <=, >,
+        >=, if, ite
     max_depth: int, optional (default: 3)
         Maximum depth of a feature's tree representation.
     max_dim: int, optional (default: 10)
