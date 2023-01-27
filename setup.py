@@ -176,6 +176,7 @@ class CMakeBuild(build_ext):
             f"-DSHOGUN_LIB={SHOGUN_LIB}",
             f"-DEIGEN3_INCLUDE_DIR={EIGEN_DIR}",
             f"-DOMP={'OFF' if cfg=='Debug' else 'ON'}",
+            f"-DGTEST={'ON' if cfg=='Debug' else 'OFF'}",
             f"-DLIB_ONLY=ON", # only build feat library
             f"-DFEAT_LIB_SUFFIX={extsuffix}"
         ]
