@@ -365,7 +365,8 @@ class Feat
         ~Feat();
                     
         /// train a model.             
-        void fit(MatrixXf& X, VectorXf& y, LongData Z = LongData());
+        void fit(MatrixXf& X, VectorXf& y);
+        void fit(MatrixXf& X, VectorXf& y, LongData& Z);
                         
         void run_generation(unsigned int g,
                         vector<size_t> survivors,
@@ -375,15 +376,16 @@ class Feat
                         unsigned& stall_count);
                  
         /// train a model.             
-        void fit(float * X,int rowsX,int colsX, float * Y,int lenY);
+        // void fit(float * X,int rowsX,int colsX, float * Y,int lenY);
 
         /// train a model, first loading longitudinal samples (Z) from file.
         void fit_with_z(float * X, int rowsX, int colsX, 
                 float * Y, int lenY, string s, int * idx, int idx_size);
        
         /// predict on unseen data.             
-        VectorXf predict(MatrixXf& X, LongData Z = LongData());  
-        
+        VectorXf predict(MatrixXf& X, LongData& Z);  
+        VectorXf predict(MatrixXf& X);
+
         /// predict on unseen data from the whole archive             
         VectorXf predict_archive(int id, MatrixXf& X, 
                 LongData Z = LongData());  

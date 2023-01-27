@@ -3,7 +3,7 @@ channels:
     - conda-forge
 dependencies:
     - python
-    - cmake
+    - cmake>3.3
     - ninja
     - eigen
     - cython
@@ -12,6 +12,7 @@ dependencies:
     - setuptools
     - shogun-cpp
     - wheel
+    - pybind11>2.10
     - pip
     - pip:
         - eigency

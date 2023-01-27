@@ -173,7 +173,7 @@ cdef class CyFeat:
         X = X.transpose()
         arr_x = np.asfortranarray(X, dtype=np.float32)
         arr_y = np.asfortranarray(y, dtype=np.float32)
-
+        print("call self.ft.fit")
         self.ft.fit(&arr_x[0,0],X.shape[0],X.shape[1],&arr_y[0],len(arr_y))
 
     def _fit_with_z(self,np.ndarray X,np.ndarray y, str zfile, 

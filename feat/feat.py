@@ -9,7 +9,7 @@ from .versionstr import __version__
 from sklearn.base import BaseEstimator, RegressorMixin, ClassifierMixin
 import numpy as np
 import pandas as pd
-from .cyfeat import CyFeat
+from feat.cyfeat import CyFeat
 from sklearn.metrics import mean_squared_error as mse
 from sklearn.metrics import log_loss
 from sklearn.utils import check_X_y, check_array
@@ -284,6 +284,7 @@ class Feat(CyFeat, BaseEstimator):
         if zfile:
             self._fit_with_z(X,y,zfile,zids)
         else:
+            pdb.set_trace()
             self._fit(X,y)
 
         self.set_params(**{k[1:]:v for k,v in self._get_params().items() 

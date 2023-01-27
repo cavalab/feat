@@ -480,8 +480,13 @@ MatrixXf Feat::fit_transform(MatrixXf& X,
                        LongData Z)
                        { fit(X, y, Z); return transform(X, Z); }                                         
 
-void Feat::fit(MatrixXf& X, VectorXf& y,
-               LongData Z)
+void Feat::fit(MatrixXf& X, VectorXf& y)
+{
+    auto Z = LongData();
+    fit(X,y,Z);
+}
+
+void Feat::fit(MatrixXf& X, VectorXf& y, LongData& Z)
 {
 
     /*! 
@@ -818,26 +823,26 @@ void Feat::update_stall_count(unsigned& stall_count, bool best_updated)
 
     logger.log("stall count: " + std::to_string(stall_count), 2);
 }
-void Feat::fit(float * X, int rowsX, int colsX, float * Y, int lenY)
-{
-    MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
-    VectorXf vectY = Map<VectorXf>(Y,lenY);
+// void Feat::fit(float * X, int rowsX, int colsX, float * Y, int lenY)
+// {
+//     MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
+//     VectorXf vectY = Map<VectorXf>(Y,lenY);
 
-    Feat::fit(matX,vectY);
-}
+//     Feat::fit(matX,vectY);
+// }
 
-void Feat::fit_with_z(float * X, int rowsX, int colsX, float * Y, int lenY, string s, 
-                int * idx, int idx_size)
-{
+// void Feat::fit_with_z(float * X, int rowsX, int colsX, float * Y, int lenY, string s, 
+//                 int * idx, int idx_size)
+// {
 
-    MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
-    VectorXf vectY = Map<VectorXf>(Y,lenY);
-    auto Z = get_Z(s, idx, idx_size);
-    // TODO: make sure long fns are set
-    /* string longfns = "mean,median,max,min,variance,skew,kurtosis,slope,count"; */
+//     MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
+//     VectorXf vectY = Map<VectorXf>(Y,lenY);
+//     auto Z = get_Z(s, idx, idx_size);
+//     // TODO: make sure long fns are set
+//     /* string longfns = "mean,median,max,min,variance,skew,kurtosis,slope,count"; */
 
-    fit(matX,vectY,Z); 
-}
+//     fit(matX,vectY,Z); 
+// }
 
 void Feat::final_model(DataRef& d)	
 {
@@ -1263,8 +1268,14 @@ MatrixXf Feat::fit_transform(float * X, int rows_x, int cols_x, float * Y, int l
     return transform(matX);
 }
 
+VectorXf Feat::predict(MatrixXf& X)
+{
+    auto Z = LongData();
+    return predict(X,Z);
+}
+
 VectorXf Feat::predict(MatrixXf& X,
-                       LongData Z)
+                       LongData& Z)
 {        
     /* MatrixXf Phi = transform(X, Z); */
     if (params.normalize)
@@ -1345,11 +1356,11 @@ shared_ptr<CLabels> Feat::predict_labels(MatrixXf& X,
     return best_ind.predict(tmp_data);        
 }
 
-VectorXf Feat::predict(float * X, int rowsX,int colsX)
-{
-    MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
-    return predict(matX);
-}
+// VectorXf Feat::predict(float * X, int rowsX,int colsX)
+// {
+//     MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
+//     return predict(matX);
+// }
 
 
 VectorXf Feat::predict_with_z(float * X, int rowsX,int colsX, 
