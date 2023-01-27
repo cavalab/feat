@@ -67,9 +67,10 @@ jobs:
         name: add docs environment
         run: |
           micromamba info
-          micromamba install -c conda-forge -y sphinx sphinx-material recommonmark seaborn nbsphinx
-          micromamba install -c anaconda -y matplotlib jupyter 
-          pip install sphinx-copybutton
+          micromamba env update -f ci/docs-environment.yml
+          # micromamba install -c conda-forge -y sphinx sphinx-material recommonmark seaborn nbsphinx openssl
+          # micromamba install -c anaconda -y matplotlib jupyter 
+          # pip install sphinx-copybutton
           micromamba info
           micromamba list
       - 
