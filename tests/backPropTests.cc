@@ -1,4 +1,5 @@
 #include "testsHeader.h"
+#include <unsupported/Eigen/MatrixFunctions>
 
 using namespace Opt;
 
@@ -464,7 +465,7 @@ TEST(BackProp, MultiplyGradient)
     X.row(1) << 0.89560483,  0.87110481, -0.47065155,  0.32214509,  0.59596947,
         0.81329039,  0.39903285,  0.17607827,  0.84886707, -0.44261626;
 
-    y = (2*X.row(0))*(3*X.row(1));
+    y = (2*X.row(0).array())*(3*X.row(1).array());
         
     std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z; 
     
@@ -668,7 +669,8 @@ TEST(BackProp, ExpGradient)
        0.59444715, 0.14955871, 0.95985467, 0.29628456, 0.36876264;
     
     //y = exp(2x)
-    y << exp(1.2345*X.row(0).array());
+	y = 1.2345*X.row(0);
+    y = y.array().exp();
         
     std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z; 
     
@@ -704,7 +706,7 @@ TEST(BackProp, LogGradient)
        0.59444715, 0.14955871, 0.95985467, 0.29628456, 0.36876264;
     
     //y = log(2x)
-    y << log(2*X.row(0).array());
+    y = log(2*X.row(0).array());
         
     std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z; 
     
@@ -741,7 +743,7 @@ TEST(BackProp, SqrtGradient)
        0.59444715, 0.14955871, 0.95985467, 0.29628456, 0.36876264;
     
     //y = sqrt(2x)
-    y << sqrt(2*X.row(0).array());
+    y = sqrt(2*X.row(0).array());
         
     std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf> > > Z; 
     

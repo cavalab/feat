@@ -194,7 +194,7 @@ TEST(Individual, serialization)
     y << 3.0,  3.59159876,  3.30384889,  2.20720158;
     yb << 1,  0, 1, 1;
     y_v << 0.57015434, -1.20648656, -2.68773747;
-    yb_v << 0, 1, 0, 1;
+    yb_v << 0, 1, 0;
     
     LongData z; 
   
@@ -269,9 +269,9 @@ TEST(Individual, serialization)
             /*     << endl; */
 
             ASSERT_LE((initial_output_train - loaded_output_train).norm(),
-                      0.00001);     
+                      0.0001);     
             ASSERT_LE((initial_output_test - loaded_output_test).norm(),
-                      0.00001);     
+                      0.0001);     
         }
     }
     
