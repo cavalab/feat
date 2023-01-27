@@ -94,7 +94,9 @@ class Feat
         //      float simplify=0.0, string protected_groups="",
         //      bool tune_initial=false, bool tune_final=true,
         //      string starting_pop="");
-        Feat() = default;
+        Feat(){
+                cout << "constructedz\n";
+        };
         
         void init();
         /// set flag indicating whether fit has been called

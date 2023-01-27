@@ -239,12 +239,12 @@ class CMakeBuild(build_ext):
         #     lib_linkname
         # )
 
-# # # Clean old build/ directory if it exists
-try:
-    remove_tree("./build")
-    print("Removed old build directory.")
-except FileNotFoundError:
-    print("No existing build directory found - skipping removal.")
+# # # # Clean old build/ directory if it exists
+# try:
+#     remove_tree("./build")
+#     print("Removed old build directory.")
+# except FileNotFoundError:
+#     print("No existing build directory found - skipping removal.")
 
 # add extra compile args based on platform
 extra_compile_args = ['-std=c++1y',
