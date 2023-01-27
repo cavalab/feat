@@ -163,7 +163,7 @@ message("pybind11_DIR:${pybind11_DIR}")
 find_package(PythonLibs REQUIRED)
 include_directories("${PYTHON_INCLUDE_DIRS}")
 message("Python_INCLUDE_DIRS:${PYTHON_INCLUDE_DIRS}")
-target_link_libraries(feat ${PYTHON_LIBRARIES})
+target_link_libraries(feat ${PYTHON_LIBRARIES} shogun)
 
 # pybind11_add_module(brushgp ${CMAKE_CURRENT_SOURCE_DIR}/src/brushgp.cpp)
 # target_link_libraries(brushgp PRIVATE brush)

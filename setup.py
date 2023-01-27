@@ -222,17 +222,17 @@ class CMakeBuild(build_ext):
             ["cmake", "--build", "."] + build_args, cwd=self.build_temp
         )
         # # copy libfeat to the library path
-        lib_fullname= f'{extdir}/libfeat{extsuffix}'
-        lib_copyname= f'{LIB_PATH}/libfeat{extsuffix}'
+        # lib_fullname= f'{extdir}/libfeat{extsuffix}'
+        # lib_copyname= f'{LIB_PATH}/libfeat{extsuffix}'
         # # symbolic link the feat library to one without the added platform info
         # linksuffix = '.'+extsuffix.split('.')[-1]
         # lib_linkname= f'{LIB_PATH}/libfeat{linksuffix}'
 
-        print(f'creating copy of {lib_fullname} named {lib_copyname} ')
-        shutil.copy(
-                   lib_fullname, 
-                   lib_copyname
-                  ) 
+        # print(f'creating copy of {lib_fullname} named {lib_copyname} ')
+        # shutil.copy(
+        #            lib_fullname, 
+        #            lib_copyname
+        #           ) 
         # print(f'creating a link to {lib_copyname} named {lib_linkname} ')
         # os.symlink(
         #     lib_copyname,
@@ -240,11 +240,11 @@ class CMakeBuild(build_ext):
         # )
 
 # # # Clean old build/ directory if it exists
-# try:
-#     remove_tree("./build")
-#     print("Removed old build directory.")
-# except FileNotFoundError:
-#     print("No existing build directory found - skipping removal.")
+try:
+    remove_tree("./build")
+    print("Removed old build directory.")
+except FileNotFoundError:
+    print("No existing build directory found - skipping removal.")
 
 # add extra compile args based on platform
 extra_compile_args = ['-std=c++1y',
