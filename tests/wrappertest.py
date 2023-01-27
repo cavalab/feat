@@ -15,12 +15,14 @@ import sys
 import pandas as pd
 import numpy as np
 import pickle
-from sklearn.utils.estimator_checks import (check_estimator,
-                                            _pairwise_estimator_convert_X,
-                                           _enforce_estimator_tags_y)
-from sklearn.utils._testing import (set_random_state,
-                                    assert_allclose_dense_sparse
-                                   )
+from sklearn.utils.estimator_checks import (
+    check_estimator,
+    _enforce_estimator_tags_y
+)
+from sklearn.utils._testing import (
+    set_random_state,
+    assert_allclose_dense_sparse
+)
 
 verbosity = 2
 
