@@ -22,7 +22,6 @@ jobs:
         with:
           environment-file: environment.yml
           cache-env: true
-          # cache-downloads-key: ${{ runner.os }}-micromamba-${{ env.CACHE_NUMBER }}-${{hashFiles('environment.yml'}}
       - 
         name: Install
         run: | 
@@ -31,6 +30,33 @@ jobs:
           # python setup.py debug
           # pip install . -v
           python setup.py install
+########################################
+# tests
+########################################
+      - 
+        name: Test Import
+        run: |
+          # which python
+          cd ..
+          # ls
+          which python
+          micromamba info
+          python -c "from feat import Feat"
+      - 
+        name: Wrapper Test 
+        run: |
+          # which python
+          cd tests
+          # ls
+          python wrappertest.py -v 3
+      # - 
+      #   name: Notebook Test
+      #   run: |
+      #     # which python
+      #     cd tests
+      #     # ls
+      #     micromamba install jupyter
+      #     python tests/nb_tests.py
 ########################################
 # docs
 ########################################
@@ -77,30 +103,3 @@ jobs:
       #   with:
       #     github_token: ${{ secrets.GITHUB_TOKEN }}
       #     publish_dir: ./_site
-########################################
-# tests
-########################################
-      - 
-        name: Test Import
-        run: |
-          # which python
-          cd ..
-          # ls
-          which python
-          micromamba info
-          python -c "from feat import Feat"
-      - 
-        name: Wrapper Test 
-        run: |
-          # which python
-          cd tests
-          # ls
-          python wrappertest.py -v 3
-      # - 
-      #   name: Notebook Test
-      #   run: |
-      #     # which python
-      #     cd tests
-      #     # ls
-      #     micromamba install jupyter
-      #     python tests/nb_tests.py

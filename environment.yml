@@ -1,9 +1,9 @@
-name: feat2
+name: feat
 channels:
     - conda-forge
 dependencies:
     - python
-    - cmake=
+    - cmake
     - ninja
     - eigen
     - cython

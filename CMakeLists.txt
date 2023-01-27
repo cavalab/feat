@@ -67,15 +67,25 @@ message(STATUS "SHOGUN_LIB=${SHOGUN_LIB}")
 # Locate GTest
 option(GTEST "build tests" OFF)
 if (GTEST)
-    option(GTEST_DIR "use GTest environment path" OFF)
-    if (GTEST_DIR)
-        include_directories("$ENV{GTEST_DIR}/include")
+    # Locate GTest
+    include(FetchContent)
+    FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG release-1.12.1
+    )
+    # For Windows: Prevent overriding the parent project's compiler/linker settings
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(googletest)
+    # option(GTEST_DIR "use GTest environment path" OFF)
+    # if (GTEST_DIR)
+    #     include_directories("$ENV{GTEST_DIR}/include")
 
-    else()
-        message(STATUS "Searching for GTest using find_package...")
-        find_package(GTest REQUIRED)
-        include_directories(${GTEST_INCLUDE_DIRS})
-    endif()
+    # else()
+    #     message(STATUS "Searching for GTest using find_package...")
+    #     find_package(GTest REQUIRED)
+    #     include_directories(${GTEST_INCLUDE_DIRS})
+    # endif()
 endif()
 
 # autocomplete for YouCompleteMe needs commands to be exported
@@ -158,10 +168,11 @@ if (GTEST)
     add_executable(tests ${testsSrc})
     
     if (CORE_USE_CUDA)
-        target_link_libraries(tests feat shogun ${CUDA_LIBRARIES} ${GTEST_LIBRARIES} pthread)
+        target_link_libraries(tests feat shogun ${CUDA_LIBRARIES} gtest_main pthread)
     else()
-        target_link_libraries(tests feat shogun ${GTEST_LIBRARIES} pthread)
+        target_link_libraries(tests feat shogun gtest_main pthread)
     endif()
+    # Google tests
+    include(GoogleTest)
+    gtest_discover_tests(tests)
 endif()
-
-
