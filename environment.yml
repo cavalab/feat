@@ -12,7 +12,7 @@ dependencies:
     - setuptools
     - shogun-cpp
     - wheel
-    - pybind11>2.10
+    - pybind11
     - pip
     - pip:
         - eigency

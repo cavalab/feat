@@ -9,7 +9,8 @@ from .versionstr import __version__
 from sklearn.base import BaseEstimator, RegressorMixin, ClassifierMixin
 import numpy as np
 import pandas as pd
-from feat.cyfeat import CyFeat
+# from feat.cyfeat import CyFeat
+from _feat import cppFeat
 from sklearn.metrics import mean_squared_error as mse
 from sklearn.metrics import log_loss
 from sklearn.utils import check_X_y, check_array
@@ -17,7 +18,7 @@ from sklearn.preprocessing import LabelEncoder
 import pdb
 import json
 
-class Feat(CyFeat, BaseEstimator):
+class Feat(cppFeat, BaseEstimator):
     """Feature Engineering Automation Tool
 
     Parameters
@@ -238,37 +239,37 @@ class Feat(CyFeat, BaseEstimator):
             setattr(self,k,v)
         return self
 
-    def load(self, filename):
-        """Load a saved Feat state from file."""
-        with open(filename, 'r') as of:
-            feat_state = json.load(of)
-        # separate out the python-specific keys
-        py_keys = [k for k in feat_state if k.endswith('_')]
-        self.set_params(**{k:feat_state[k] for k in py_keys})
-        # remove python-specific keys before invoking c++ method
-        for k in py_keys: 
-            del feat_state[k]
-        self._load(json.dumps(feat_state))
+    # def load(self, filename):
+    #     """Load a saved Feat state from file."""
+    #     with open(filename, 'r') as of:
+    #         feat_state = json.load(of)
+    #     # separate out the python-specific keys
+    #     py_keys = [k for k in feat_state if k.endswith('_')]
+    #     self.set_params(**{k:feat_state[k] for k in py_keys})
+    #     # remove python-specific keys before invoking c++ method
+    #     for k in py_keys: 
+    #         del feat_state[k]
+    #     self._load(json.dumps(feat_state))
 
-        self.set_params(**{k[1:]:v for k,v in self._get_params().items()})
+    #     self.set_params(**{k[1:]:v for k,v in self._get_params().items()})
 
-        return self
+    #     return self
 
-    def save(self, filename):
-        """Save a Feat state to file."""
+    # def save(self, filename):
+    #     """Save a Feat state to file."""
 
-        feat_state = json.loads(self._save())
-        # add python-specific parameters
-        for k in self.__dict__: 
-            if k.endswith('_'):
-                print('adding',k,'type:',self.__dict__[k].__class__.__name__)
-                feat_state[k] = self.__dict__[k]
+    #     feat_state = json.loads(self._save())
+    #     # add python-specific parameters
+    #     for k in self.__dict__: 
+    #         if k.endswith('_'):
+    #             print('adding',k,'type:',self.__dict__[k].__class__.__name__)
+    #             feat_state[k] = self.__dict__[k]
 
-        for k,v in feat_state.items():
-            if v.__class__.__name__ == 'int64':
-                print(k,':',v.__class__.__name__,':',v)
-        with open(filename, 'w') as of:
-            json.dump(feat_state, of)
+    #     for k,v in feat_state.items():
+    #         if v.__class__.__name__ == 'int64':
+    #             print(k,':',v.__class__.__name__,':',v)
+    #     with open(filename, 'w') as of:
+    #         json.dump(feat_state, of)
 
     def get_params(self, deep=False, static_params=False):
         return {k:v for k,v in self.__dict__.items() if not k.endswith('_')}

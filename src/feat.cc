@@ -63,7 +63,7 @@ Feat::Feat(int pop_size, int gens, string ml,
     this->N = Normalizer(false);
     params.set_protected_groups(protected_groups);
     archive.set_objectives(params.objectives);
-    is_fitted=false;
+    set_is_fitted(false);
 }
 
 /// set size of population 
@@ -729,7 +729,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y, LongData& Z)
     if (log.is_open())
         log.close();
 
-    this->fitted = true;
+    set_is_fitted(true);
     logger.log("Run Completed. Total time taken is " 
             + std::to_string(timer.Elapsed().count()) + " seconds", 1);
     logger.log("best model: " + this->get_eqn(),1);

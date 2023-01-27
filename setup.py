@@ -7,9 +7,8 @@ from setuptools import setup, find_packages
 from setuptools.extension import Extension, Library
 from setuptools.command.build_ext import build_ext
 from distutils.dir_util import remove_tree
-from Cython.Build import cythonize
+# from Cython.Build import cythonize
 import subprocess
-import eigency 
 from sys import platform
 ################################################################################
 # PACKAGE VERSION #####
@@ -177,7 +176,6 @@ class CMakeBuild(build_ext):
             f"-DEIGEN3_INCLUDE_DIR={EIGEN_DIR}",
             f"-DOMP={'OFF' if cfg=='Debug' else 'ON'}",
             f"-DGTEST={'ON' if cfg=='Debug' else 'OFF'}",
-            f"-DLIB_ONLY=ON", # only build feat library
             f"-DFEAT_LIB_SUFFIX={extsuffix}"
         ]
         build_args = []
@@ -278,29 +276,12 @@ setup(
     install_requires=[
                       'Numpy',
                       'scikit-learn',
-                      'Cython',
                       'pandas'
     ],
     # package_dir = {'','feat'},
     packages = ['feat'],
     # py_modules=['feat','metrics','versionstr'],
-    ext_modules = ([CMakeExtension("feat.libfeat")]
-                    + cythonize([Extension(
-                        name='feat.cyfeat',
-                        sources =  ["feat/cyfeat.pyx"],    # our cython source
-                        include_dirs = (['src',
-                                         EIGEN_DIR, 
-                                         SHOGUN_INCLUDE_DIR,
-                                        ]
-                                   + eigency.get_includes(include_eigen=False)
-                                       ),
-                        extra_compile_args = extra_compile_args,
-                        library_dirs = [SHOGUN_LIB, LIB_PATH],
-                        runtime_library_dirs = [target_path],
-                        libraries=['shogun'],
-                        language='c++'
-                       )])
-                  ),
+    ext_modules = ([CMakeExtension("_feat")]),
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False
 )

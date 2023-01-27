@@ -32,7 +32,7 @@ PYBIND11_MODULE(_feat, m) {
 //     m.attr("__version__") = "dev";
 // #endif
 
-    py::class_<Feat>(m, "Feat")
+    py::class_<Feat>(m, "cppFeat")
         // .def("fit", &FT::Feat::fit)
         // .def("fit_with_z", &FT::Feat::fit_with_z)
         // .def("predict", &FT::Feat::predict)
