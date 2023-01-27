@@ -280,16 +280,17 @@ class Feat(cppFeat, BaseEstimator):
         X,y = self._clean(X, y, set_feature_names=True)
         self.n_features_in_ = X.shape[1]
 
-        self._set_params(**{'_'+k:v for k,v in self.get_params(
-                            static_params=True).items()})
-        if zfile:
-            self._fit_with_z(X,y,zfile,zids)
-        else:
-            pdb.set_trace()
-            self._fit(X,y)
+        # self._set_params(**{'_'+k:v for k,v in self.get_params(
+        #                     static_params=True).items()})
+        # if zfile:
+        #     self._fit_with_z(X,y,zfile,zids)
+        # else:
+        #     pdb.set_trace()
+        #     self._fit(X,y)
 
-        self.set_params(**{k[1:]:v for k,v in self._get_params().items() 
-                          if k.endswith('_')})
+        # self.set_params(**{k[1:]:v for k,v in self._get_params().items() 
+        #                   if k.endswith('_')})
+        super().fit(X,y)
 
         return self
 
@@ -407,30 +408,32 @@ class FeatClassifier(Feat):
                                  np.unique(np.asarray(y)))
                             )
        
-        return Feat.fit(self, X, y, zfile, zids)
+        super().fit(X,y)
+        return self
+        # return Feat.fit(self, X, y, zfile, zids)
 
-    def predict(self,X,zfile=None,zids=None):
-        return Feat.predict(self, X, zfile, zids)
+    # def predict(self,X,zfile=None,zids=None):
+    #     return Feat.predict(self, X, zfile, zids)
 
-    def predict_proba(self,X,zfile=None,zids=None):
-        """Return probabilities of predictions for data X"""
-        if not self._fitted_:
-            raise ValueError("Call fit before calling predict.")
+    # def predict_proba(self,X,zfile=None,zids=None):
+    #     """Return probabilities of predictions for data X"""
+    #     if not self._fitted_:
+    #         raise ValueError("Call fit before calling predict.")
 
-        X = check_array(X)
-        self._check_shape(X)
+    #     X = check_array(X)
+    #     self._check_shape(X)
 
-        if zfile:
-            tmp = self._predict_proba_with_z(X,zfile,zids)
-        else:
-            tmp = self._predict_proba(X)
+    #     if zfile:
+    #         tmp = self._predict_proba_with_z(X,zfile,zids)
+    #     else:
+    #         tmp = self._predict_proba(X)
         
-        # for binary classification, add a second column for 0 complement
-        if len(self.classes_) ==2:
-            tmp = tmp.ravel()
-            assert len(X) == len(tmp)
-            tmp = np.vstack((1-tmp,tmp)).transpose()
-        return tmp         
+    #     # for binary classification, add a second column for 0 complement
+    #     if len(self.classes_) ==2:
+    #         tmp = tmp.ravel()
+    #         assert len(X) == len(tmp)
+    #         tmp = np.vstack((1-tmp,tmp)).transpose()
+    #     return tmp         
 
     def predict_proba_archive(self,X,zfile=None,zids=None):
         """Returns a dictionary of prediction probabilities for all models."""

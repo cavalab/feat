@@ -2,8 +2,7 @@
 
 TEST(Selection, SelectionOperator)
 {
-    Feat feat(100, 100, "LinearRidgeRegression", false, 1);
-    feat.set_random_state(666);
+    Feat feat = make_estimator(100, 100, "LinearRidgeRegression", false, 1, 666);
     feat.set_scorer("mae");
     
     MatrixXf X(7,2); 

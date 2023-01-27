@@ -20,52 +20,74 @@ void __attribute__ ((destructor))  dtor()
 
 using namespace FT;
     
-Feat::Feat(int pop_size, int gens, string ml, 
-       bool classification, int verbosity, int max_stall,
-       string sel, string surv, float cross_rate, float root_xo_rate,
-       char otype, string functions, 
-       unsigned int max_depth, unsigned int max_dim, int random_state, 
-       bool erc, string obj, bool shuffle, 
-       float split, float fb, string scorer, string feature_names,
-       bool backprop,int iters, float lr, int batch_size, int n_jobs,
-       bool hillclimb, string logfile, int max_time,  bool residual_xo, 
-       bool stagewise_xo, bool stagewise_xo_tol,
-       bool softmax_norm, int save_pop, bool normalize,
-       bool val_from_arch, bool corr_delete_mutate, float simplify,
-       string protected_groups, bool tune_initial, bool tune_final,
-       string starting_pop):
-          // construct subclasses
-          params(pop_size, gens, ml, classification, max_stall, otype, 
-                 verbosity, functions, cross_rate, root_xo_rate, max_depth, 
-                 max_dim, erc, obj, shuffle, split, fb, scorer, feature_names, 
-                 backprop, iters, lr, batch_size, hillclimb, max_time,  
-                 residual_xo, stagewise_xo, stagewise_xo_tol, softmax_norm, 
-                 normalize, corr_delete_mutate, tune_initial, tune_final), 
-          selector( Selection(sel) ),
-          survivor( Selection(surv, true) ),
-          variator( Variation(cross_rate) ),
-          save_pop(save_pop),
-          val_from_arch(val_from_arch),
-          simplify(simplify),
-          starting_pop(starting_pop),
-          survival(surv),
-          random_state(random_state)
+// Feat::Feat(int pop_size, int gens, string ml, 
+//        bool classification, int verbosity, int max_stall,
+//        string sel, string surv, float cross_rate, float root_xo_rate,
+//        char otype, string functions, 
+//        unsigned int max_depth, unsigned int max_dim, int random_state, 
+//        bool erc, string obj, bool shuffle, 
+//        float split, float fb, string scorer, string feature_names,
+//        bool backprop,int iters, float lr, int batch_size, int n_jobs,
+//        bool hillclimb, string logfile, int max_time,  bool residual_xo, 
+//        bool stagewise_xo, bool stagewise_xo_tol,
+//        bool softmax_norm, int save_pop, bool normalize,
+//        bool val_from_arch, bool corr_delete_mutate, float simplify,
+//        string protected_groups, bool tune_initial, bool tune_final,
+//        string starting_pop):
+//           // construct subclasses
+//           params(pop_size, gens, ml, classification, max_stall, otype, 
+//                  verbosity, functions, cross_rate, root_xo_rate, max_depth, 
+//                  max_dim, erc, obj, shuffle, split, fb, scorer, feature_names, 
+//                  backprop, iters, lr, batch_size, hillclimb, max_time,  
+//                  residual_xo, stagewise_xo, stagewise_xo_tol, softmax_norm, 
+//                  normalize, corr_delete_mutate, tune_initial, tune_final), 
+//           selector( Selection(sel) ),
+//           survivor( Selection(surv, true) ),
+//           variator( Variation(cross_rate) ),
+//           save_pop(save_pop),
+//           val_from_arch(val_from_arch),
+//           simplify(simplify),
+//           starting_pop(starting_pop),
+//           survival(surv),
+//           random_state(random_state)
+// {
+//     if (n_jobs!=0)
+//         omp_set_num_threads(n_jobs);
+//     r.set_seed(random_state);
+//     str_dim = "";
+//     set_logfile(logfile);
+
+//     if (GPU)
+//         initialize_cuda();
+//     // set Feat's Normalizer to only normalize floats by default
+//     this->N = Normalizer(false);
+//     params.set_protected_groups(protected_groups);
+//     archive.set_objectives(params.objectives);
+//     set_is_fitted(false);
+// }
+
+/// @brief initialize Feat object for fitting.
+void Feat::init()
 {
-    if (n_jobs!=0)
-        omp_set_num_threads(n_jobs);
-    r.set_seed(random_state);
-    str_dim = "";
-    set_logfile(logfile);
+    if (params.n_jobs!=0)
+        omp_set_num_threads(params.n_jobs);
+    r.set_seed(params.random_state);
 
     if (GPU)
         initialize_cuda();
     // set Feat's Normalizer to only normalize floats by default
     this->N = Normalizer(false);
-    params.set_protected_groups(protected_groups);
-    archive.set_objectives(params.objectives);
+    this->archive.set_objectives(params.objectives);
     set_is_fitted(false);
-}
 
+    // start the clock
+    timer.Reset();
+    // signal handler
+    signal(SIGINT, my_handler);
+    // reset statistics
+    this->stats = Log_Stats();
+    params.use_batch = params.bp.batch_size>0;
+}
 /// set size of population 
 void Feat::set_pop_size(int pop_size){ params.pop_size = pop_size; }            
 
@@ -88,7 +110,7 @@ void Feat::set_verbosity(int verbosity){ params.set_verbosity(verbosity); }
 void Feat::set_max_stall(int max_stall){	params.max_stall = max_stall; }
             
 /// set selection method              
-void Feat::set_selection(string sel){ this->selector = Selection(sel); }
+void Feat::set_selection(string sel){ this->selector = Selection(sel, false); }
             
 /// set survivability              
 void Feat::set_survival(string surv)
@@ -131,7 +153,7 @@ void Feat::set_max_dim(unsigned int max_dim){	params.set_max_dim(max_dim); }
 /// set seeds for each core's random number generator              
 void Feat::set_random_state(int rs)
 { 
-    this->random_state=rs;
+    params.random_state=rs;
     r.set_seed(rs); 
 }
             
@@ -507,15 +529,7 @@ void Feat::fit(MatrixXf& X, VectorXf& y, LongData& Z)
      *	   6. produce offspring from parents via variation
      *	   7. select surviving individuals from parents and offspring
      */
-
-    // start the clock
-    timer.Reset();
-    r.set_seed(this->random_state); 
-    // signal handler
-    signal(SIGINT, my_handler);
-    // reset statistics
-    this->stats = Log_Stats();
-    params.use_batch = params.bp.batch_size>0;
+    this->init();
 
     string FEAT;
     if (params.verbosity == 1)
@@ -557,16 +571,16 @@ void Feat::fit(MatrixXf& X, VectorXf& y, LongData& Z)
     if (!logfile.empty())
         log.open(logfile, std::ofstream::app);
     
-    if(str_dim.compare("") != 0)
-    {
-        string dimension;
-        dimension = str_dim.substr(0, str_dim.length() - 1);
-        logger.log("STR DIM IS "+ dimension, 2);
-        logger.log("Cols are " + std::to_string(X.rows()), 2);
-        logger.log("Setting dimensionality as " + 
-                   std::to_string((int)(ceil(stod(dimension)*X.rows()))), 2);
-        set_max_dim(ceil(stod(dimension)*X.rows()));
-    }
+    // if(str_dim.compare("") != 0)
+    // {
+    //     string dimension;
+    //     dimension = str_dim.substr(0, str_dim.length() - 1);
+    //     logger.log("STR DIM IS "+ dimension, 2);
+    //     logger.log("Cols are " + std::to_string(X.rows()), 2);
+    //     logger.log("Setting dimensionality as " + 
+    //                std::to_string((int)(ceil(stod(dimension)*X.rows()))), 2);
+    //     set_max_dim(ceil(stod(dimension)*X.rows()));
+    // }
     
     params.init(X, y);       
     

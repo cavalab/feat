@@ -24,8 +24,7 @@ bool isValidProgram(NodeVector& program, unsigned num_features)
 
 TEST(Variation, MutationTests)
 {
-	Feat feat(100, 100, "LinearRidgeRegression", false, 1);
-	feat.set_random_state(666);
+	Feat feat = make_estimator(100, 100, "LinearRidgeRegression", false, 1, 66);
 	
     MatrixXf X(4,2); 
     MatrixXf X_v(3,2); 
@@ -103,8 +102,7 @@ TEST(Variation, MutationTests)
 
 TEST(Variation, CrossoverTests)
 {
-    Feat feat(100, 100, "LinearRidgeRegression", false, 1);
-	feat.set_random_state(666);
+    Feat feat = make_estimator(100, 100, "LinearRidgeRegression", false, 1, 666);
 	
     MatrixXf X(4,2); 
     MatrixXf X_v(3,2); 

@@ -8,6 +8,16 @@ license: GNU/GPL v3
 namespace FT{
 namespace Sel{
        
+Selection::Selection()
+{
+    /*!
+     * set type of selection operator.
+     */
+    this->type = "lexicase";
+    this->survival = false;
+    this->set_operator();
+}
+
 Selection::Selection(string type, bool survival)
 {
     /*!

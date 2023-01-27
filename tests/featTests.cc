@@ -2,8 +2,7 @@
 
 TEST(Feat, SettingFunctions)
 {
-	Feat feat(100, 10, "LinearRidgeRegression", false, 1);
-	feat.set_random_state(666);
+	Feat feat = make_estimator(100, 10, "LinearRidgeRegression", false, 1, 666);
     
     feat.set_pop_size(200);
     ASSERT_EQ(200, feat.get_pop_size());
@@ -54,8 +53,7 @@ TEST(Feat, SettingFunctions)
 
 TEST(Feat, predict)
 {
-    Feat feat(100, 10, "LinearRidgeRegression", false, 1);
-    feat.set_random_state(666);
+    Feat feat = make_estimator(100, 10, "LinearRidgeRegression", false, 1,666);
 
     
     MatrixXf X(7,2); 
@@ -92,8 +90,7 @@ TEST(Feat, predict)
 
 TEST(Feat, transform)
 {
-    Feat feat(100, 10, "LinearRidgeRegression", false, 1);
-    feat.set_random_state(666);
+    Feat feat = make_estimator(100, 10, "LinearRidgeRegression", false, 1, 666);
     
     MatrixXf X(7,2); 
     X << 0,1,  
@@ -134,8 +131,7 @@ TEST(Feat, transform)
 
 TEST(Feat, fit_predict)
 {
-    Feat feat(100, 10, "LinearRidgeRegression", false, 1);
-    feat.set_random_state(666);
+    Feat feat = make_estimator(100, 10, "LinearRidgeRegression", false, 1, 666);
     
     MatrixXf X(7,2); 
     X << 0,1,  
@@ -160,8 +156,7 @@ TEST(Feat, fit_predict)
 
 TEST(Feat, fit_transform)
 {
-    Feat feat(100, 10, "LinearRidgeRegression", false, 1);
-    feat.set_random_state(666);
+    Feat feat = make_estimator(100, 10, "LinearRidgeRegression", false, 1, 666);
    
     feat.set_verbosity(1);
 
@@ -194,8 +189,7 @@ TEST(Feat, fit_transform)
 
 TEST(Feat, simplification)
 {
-    Feat feat(100, 10, "LinearRidgeRegression", false, 1);
-    feat.set_random_state(666);
+    Feat feat = make_estimator(100, 10, "LinearRidgeRegression", false, 1, 666);
     feat.set_verbosity(2);
 
     MatrixXf X(7,2); 
@@ -280,9 +274,7 @@ TEST(Feat, simplification)
 
 TEST(Feat, serialization)
 {
-    Feat feat(100, 10, "LinearRidgeRegression", false, 1);
-    feat.set_random_state(666);
-    feat.set_verbosity(2);
+    Feat feat = make_estimator(100, 10, "LinearRidgeRegression", false, 2, 666);
 
     MatrixXf X(7,2); 
     X << 0,1,  

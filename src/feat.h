@@ -74,27 +74,29 @@ class Feat
         
         /// member initializer list constructor
           
-        Feat(int pop_size=100, int gens = 100, 
-             string ml = "LinearRidgeRegression", 
-             bool classification = false, int verbosity = 2, 
-             int max_stall = 0, string sel ="lexicase", 
-             string surv="nsga2", float cross_rate = 0.5, 
-             float root_xo_rate = 0.5, char otype='a', 
-             string functions = "", unsigned int max_depth = 3, 
-             unsigned int max_dim = 10, int random_state=-1, 
-             bool erc = false, string obj="fitness,complexity", 
-             bool shuffle=true, float split=0.75, float fb=0.5, 
-             string scorer="", string feature_names="",
-             bool backprop=false,int iters=10, float lr=0.1, 
-             int batch_size=0, int n_jobs=0, bool hillclimb=false, 
-             string logfile="", int max_time=-1, bool residual_xo = false, 
-             bool stagewise_xo = false, bool stagewise_tol = true, 
-             bool softmax_norm=false, int save_pop=0, bool normalize=true, 
-             bool val_from_arch=true, bool corr_delete_mutate=false, 
-             float simplify=0.0, string protected_groups="",
-             bool tune_initial=false, bool tune_final=true,
-             string starting_pop="");
+        // Feat(int pop_size=100, int gens = 100, 
+        //      string ml = "LinearRidgeRegression", 
+        //      bool classification = false, int verbosity = 2, 
+        //      int max_stall = 0, string sel ="lexicase", 
+        //      string surv="nsga2", float cross_rate = 0.5, 
+        //      float root_xo_rate = 0.5, char otype='a', 
+        //      string functions = "", unsigned int max_depth = 3, 
+        //      unsigned int max_dim = 10, int random_state=-1, 
+        //      bool erc = false, string obj="fitness,complexity", 
+        //      bool shuffle=true, float split=0.75, float fb=0.5, 
+        //      string scorer="", string feature_names="",
+        //      bool backprop=false,int iters=10, float lr=0.1, 
+        //      int batch_size=0, int n_jobs=0, bool hillclimb=false, 
+        //      string logfile="", int max_time=-1, bool residual_xo = false, 
+        //      bool stagewise_xo = false, bool stagewise_tol = true, 
+        //      bool softmax_norm=false, int save_pop=0, bool normalize=true, 
+        //      bool val_from_arch=true, bool corr_delete_mutate=false, 
+        //      float simplify=0.0, string protected_groups="",
+        //      bool tune_initial=false, bool tune_final=true,
+        //      string starting_pop="");
+        Feat() = default;
         
+        void init();
         /// set flag indicating whether fit has been called
         inline void set_is_fitted(bool f){is_fitted=f;}
         inline bool get_is_fitted(){return is_fitted;}
@@ -147,7 +149,7 @@ class Feat
         
         /// set seeds for each core's random number generator              
         void set_random_state(int random_state);
-        int get_random_state() { return this->random_state; };
+        int get_random_state() { return params.random_state; };
         /// returns the actual seed determined by the input argument.
         int get_random_state_() { return r.get_seed(); };
                     
@@ -498,7 +500,6 @@ class Feat
         bool val_from_arch; ///< model selection only uses Pareto front
         float simplify;  ///< post-run simplification
         Log_Stats stats; ///< runtime stats
-        int random_state;
 
         /* functions */
         /// updates best score
@@ -537,9 +538,8 @@ class Feat
                 str_dim,
                 starting_pop,
                 best_ind,
-                is_fitted,
-                random_state
-                );
+                is_fitted
+        );
                 
 };
 

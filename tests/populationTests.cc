@@ -2,9 +2,8 @@
 
 TEST(Population, PopulationTests)
 {
-	Feat feat(100, 100, "LinearRidgeRegression", false, 1);
+    Feat feat = make_estimator(100, 100, "LinearRidgeRegression", false, 1, 666);
     feat.set_n_jobs(1);
-	feat.set_random_state(666);
 	
     MatrixXf X(4,2); 
     MatrixXf X_v(3,2); 
