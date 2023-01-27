@@ -63,9 +63,8 @@ Feat::Feat(int pop_size, int gens, string ml,
     this->N = Normalizer(false);
     params.set_protected_groups(protected_groups);
     archive.set_objectives(params.objectives);
-    fitted=false;
+    is_fitted=false;
 }
-
 
 /// set size of population 
 void Feat::set_pop_size(int pop_size){ params.pop_size = pop_size; }            
@@ -127,7 +126,7 @@ void Feat::set_max_depth(unsigned int max_depth)
 void Feat::set_max_dim(unsigned int max_dim){	params.set_max_dim(max_dim); }
 
 ///set dimensionality as multiple of the number of columns
-void Feat::set_max_dim(string str){ str_dim = str; }            
+// void Feat::set_max_dim(string str){ str_dim = str; }            
 
 /// set seeds for each core's random number generator              
 void Feat::set_random_state(int rs)

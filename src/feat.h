@@ -95,6 +95,10 @@ class Feat
              bool tune_initial=false, bool tune_final=true,
              string starting_pop="");
         
+        /// set flag indicating whether fit has been called
+        inline void set_is_fitted(bool f){is_fitted=f;}
+        inline bool get_is_fitted(){return is_fitted;}
+
         /// set size of population 
         void set_pop_size(int pop_size);
         
@@ -139,7 +143,7 @@ class Feat
         void set_max_dim(unsigned int max_dim);
         
         ///set dimensionality as multiple of the number of columns
-        void set_max_dim(string str);
+        // void set_max_dim(string str);
         
         /// set seeds for each core's random number generator              
         void set_random_state(int random_state);
@@ -465,7 +469,7 @@ class Feat
         /// save Feat state to file.
         void save_to_file(string filename);
         
-        bool fitted; ///< keeps track of whether fit was called.
+        bool is_fitted; ///< keeps track of whether fit was called.
     private:
         // Parameters
         Parameters params;  ///< hyperparameters of Feat 
@@ -533,7 +537,7 @@ class Feat
                 str_dim,
                 starting_pop,
                 best_ind,
-                fitted,
+                is_fitted,
                 random_state
                 );
                 

@@ -174,21 +174,21 @@ pybind11_add_module(_feat ${CMAKE_CURRENT_SOURCE_DIR}/src/pybind.cc)
 target_link_libraries(_feat PRIVATE feat)
 # target_compile_definitions(brushgp PRIVATE VERSION_INFO=${EXAMPLE_VERSION_INFO})
 
-option(LIB_ONLY "only build a library" OFF)
+option(LIB_ONLY "only build a library" ON)
 
-if (NOT LIB_ONLY)
+# if (NOT LIB_ONLY)
     #feat executable
 
-    add_executable(feat-ml src/main.cc)
+    # add_executable(feat-ml src/main.cc)
 
     #link libraries for different executables
 
-    if (CORE_USE_CUDA)
-        target_link_libraries(feat-ml feat shogun ${CUDA_LIBRARIES})
-    else()
-        target_link_libraries(feat-ml feat shogun)
-    endif()
-endif()
+# if (CORE_USE_CUDA)
+#     target_link_libraries(feat-ml feat shogun ${CUDA_LIBRARIES})
+# else()
+#     target_link_libraries(feat-ml feat shogun)
+# endif()
+# endif()
 
 if (GTEST)
     # Link runTests with what we want to test and the GTest and pthread library
