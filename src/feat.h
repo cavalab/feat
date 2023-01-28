@@ -94,9 +94,10 @@ class Feat
         //      float simplify=0.0, string protected_groups="",
         //      bool tune_initial=false, bool tune_final=true,
         //      string starting_pop="");
-        Feat(){
-                cout << "constructedz\n";
-        };
+
+        Feat(){ cout << "constructedz\n"; }
+        /// destructor             
+        ~Feat(){} 
         
         void init();
         /// set flag indicating whether fit has been called
@@ -369,9 +370,6 @@ class Feat
         void set_val_from_arch(bool in){val_from_arch = in; };
 
 
-        /// destructor             
-        ~Feat();
-                    
         /// train a model.             
         void fit(MatrixXf& X, VectorXf& y);
         void fit(MatrixXf& X, VectorXf& y, LongData& Z);

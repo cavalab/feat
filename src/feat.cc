@@ -464,8 +464,6 @@ std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>> Feat::get_Z(string
     return Z;
 }
 
-/// destructor             
-Feat::~Feat(){} 
             
 ArrayXXf Feat::predict_proba(float * X, int rows_x, int cols_x) 
 {			    
