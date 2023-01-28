@@ -17,7 +17,7 @@ jobs:
         with:
           fetch-depth: 30
       - 
-        name: Install Feat environment with Micromamba
+        name: Load Feat environment with Micromamba
         uses: mamba-org/provision-with-micromamba@main
         with:
           environment-file: environment.yml
@@ -38,6 +38,12 @@ jobs:
       run:
         shell: bash -l {0}
     steps:
+      - 
+        name: Load Feat environment with Micromamba
+        uses: mamba-org/provision-with-micromamba@main
+        with:
+          environment-file: environment.yml
+          cache-env: true
       - 
         name: Test Import
         run: |
