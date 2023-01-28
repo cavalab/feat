@@ -32,8 +32,9 @@ PYBIND11_MODULE(_feat, m) {
 //     m.attr("__version__") = "dev";
 // #endif
 
-     py::class_<Feat>(m, "cppFeat")
-          .def(py::init<>())
+     py::class_<Feat>(m, "cppFeat", py::dynamic_attr() )
+          // .def(py::init<>())
+          .def(py::init([]() { Feat est; return est; }))
           .def("fit",
                static_cast<void (Feat::*)(MatrixXf& X, VectorXf& y)>(&Feat::fit),
                "fit from X,y data")
