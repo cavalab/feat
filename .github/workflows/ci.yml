@@ -27,8 +27,6 @@ jobs:
         run: | 
           micromamba env list
           export CMAKE_BUILD_PARALLEL_LEVEL=4
-          # python setup.py debug
-          # pip install . -v
           python setup.py install
 ########################################
 # tests
@@ -39,12 +37,11 @@ jobs:
     defaults:
       run:
         shell: bash -l {0}
+    steps:
       - 
         name: Test Import
         run: |
-          # which python
           cd ..
-          # ls
           which python
           micromamba info
           python -c "from feat import Feat"
@@ -72,6 +69,7 @@ jobs:
     defaults:
       run:
         shell: bash -l {0}
+    steps:
       - 
         name: add docs environment dependencies
         uses: mamba-org/provision-with-micromamba@main
