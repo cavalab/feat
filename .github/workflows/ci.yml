@@ -75,6 +75,9 @@ jobs:
         name: Install Doxygen
         run: sudo apt-get install doxygen
       - 
+        name: Install graphviz
+        run: sudo apt-get install graphviz
+      - 
         name: Check commands
         run: |
           doxygen --version
