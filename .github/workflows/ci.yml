@@ -35,7 +35,7 @@ jobs:
         run: |
           cd ..
           which python
-          micromamba info
+          # micromamba info
           python -c "from feat import Feat"
       - 
         name: Wrapper Test 
@@ -84,15 +84,18 @@ jobs:
       - 
         name: prep sphinx docs
         run: |
-          micromamba info
+          # micromamba info
           which python
           cd docs
-          python -c "from feat import Feat"
+          ls
+          # python -c "from feat import Feat"
           which sphinx-build
+          echo "sphinx-build -b html ./ ../_site"
           sphinx-build -b html ./ ../_site
       - 
         name: make sphinx docs
         run: |
+          ls
           cd docs
           make html
       - 
