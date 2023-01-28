@@ -5,7 +5,7 @@ env:
   CACHE_NUMBER: 0
 
 jobs:
-  build_and_test_and_docs:
+  build:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -17,7 +17,7 @@ jobs:
         with:
           fetch-depth: 30
       - 
-        name: Install Conda environment with Micromamba
+        name: Install Feat environment with Micromamba
         uses: mamba-org/provision-with-micromamba@main
         with:
           environment-file: environment.yml
@@ -33,6 +33,12 @@ jobs:
 ########################################
 # tests
 ########################################
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
       - 
         name: Test Import
         run: |
@@ -60,21 +66,30 @@ jobs:
 ########################################
 # docs
 ########################################
+  docs:
+    needs: build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+      - 
+        name: add docs environment dependencies
+        uses: mamba-org/provision-with-micromamba@main
+        with:
+          environment-file: environment.yml
+          cache-env: true
+          extra-specs: |
+            sphinx 
+            sphinx-material 
+            recommonmark 
+            seaborn 
+            nbsphinx 
+            matplotlib 
+            jupyter 
+            sphinx-copybutton
       - 
         name: Install Doxygen
         run: sudo apt-get install doxygen
-      - 
-        name: add docs environment
-        run: |
-          micromamba info
-          # micromamba create -f ci/docs-environment.yml
-          # conda activate --stack feat-docs
-          micromamba install -c conda-forge -y openssl 
-          micromamba install -c conda-forge -y sphinx sphinx-material recommonmark seaborn nbsphinx 
-          micromamba install -c anaconda -y matplotlib jupyter 
-          pip install sphinx-copybutton
-          micromamba info
-          micromamba list
       - 
         name: Check commands
         run: |
