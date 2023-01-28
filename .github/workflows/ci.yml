@@ -69,7 +69,8 @@ jobs:
           micromamba info
           # micromamba create -f ci/docs-environment.yml
           # conda activate --stack feat-docs
-          micromamba install -c conda-forge -y sphinx sphinx-material recommonmark seaborn nbsphinx openssl
+          micromamba install -c conda-forge -y openssl 
+          micromamba install -c conda-forge -y sphinx sphinx-material recommonmark seaborn nbsphinx 
           micromamba install -c anaconda -y matplotlib jupyter 
           pip install sphinx-copybutton
           micromamba info
