@@ -71,20 +71,10 @@ jobs:
             matplotlib 
             jupyter 
             sphinx-copybutton
-      - 
-        name: Install Doxygen
-        run: sudo apt-get install doxygen
-      - 
-        name: Install graphviz
-        run: sudo apt-get install graphviz
-      - 
-        name: Check commands
         run: |
+          sudo apt-get install doxygen
+          sudo apt-get install graphviz
           doxygen --version
-      - 
-        name: prep sphinx docs
-        run: |
-          # micromamba info
           which python
           cd docs
           ls
@@ -92,11 +82,6 @@ jobs:
           which sphinx-build
           echo "sphinx-build -b html ./ ../_site"
           sphinx-build -b html ./ ../_site
-      - 
-        name: make sphinx docs
-        run: |
-          ls
-          cd docs
           make html
       - 
         name: Deploy
