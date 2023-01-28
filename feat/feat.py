@@ -14,7 +14,6 @@ from sklearn.metrics import mean_squared_error as mse
 from sklearn.metrics import log_loss
 from sklearn.utils import check_X_y, check_array
 from sklearn.preprocessing import LabelEncoder
-import pdb
 import json
 
 class Feat(CyFeat, BaseEstimator):
