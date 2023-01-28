@@ -30,20 +30,6 @@ jobs:
 ########################################
 # tests
 ########################################
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - 
-        name: Checkout code
-        uses: actions/checkout@v3
-      - 
-        name: Load Feat environment with Micromamba
-        uses: mamba-org/provision-with-micromamba@main
-        with:
-          environment-file: environment.yml
-          cache-env: true
-          cache-downloads: true
       - 
         name: Test Import
         run: |
@@ -69,13 +55,6 @@ jobs:
 ########################################
 # docs
 ########################################
-  docs:
-    needs: [build, test]
-    runs-on: ubuntu-latest
-    steps:
-      - 
-        name: Checkout code
-        uses: actions/checkout@v3
       - 
         name: add docs environment dependencies
         uses: mamba-org/provision-with-micromamba@main
