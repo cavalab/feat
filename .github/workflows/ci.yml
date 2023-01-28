@@ -79,7 +79,7 @@ jobs:
         run: |
           doxygen --version
       - 
-        name: prep doxygen docs
+        name: make doxygen docs
         run: |
           cd docs
           mkdir doxygen_site/
