@@ -1,8 +1,0 @@
-digraph "Graphical Class Hierarchy"
-{
- // LATEX_PDF_SIZE
-  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
-  node [fontname="Helvetica",fontsize="10",shape=record];
-  rankdir="LR";
-  Node0 [label="FT::Model::ML",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$dd/d6f/classFT_1_1Model_1_1ML.html",tooltip="class that specifies the machine learning algorithm to pair with Feat."];
-}

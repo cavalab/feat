@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
  <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <meta content="Docutils 0.17.1: http://docutils.sourceforge.net/" name="generator"/>
+  <meta content="Docutils 0.19: https://docutils.sourceforge.io/" name="generator"/>
   <meta content="width=device-width,initial-scale=1" name="viewport"/>
   <meta content="ie=edge" http-equiv="x-ua-compatible"/>
   <meta content="Copy to clipboard" name="lang:clipboard.copy"/>
@@ -45,11 +45,9 @@
   <link href="_static/copybutton.css" rel="stylesheet" type="text/css"/>
   <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js">
   </script>
-  <script src="_static/jquery.js">
-  </script>
-  <script src="_static/underscore.js">
-  </script>
   <script src="_static/doctools.js">
+  </script>
+  <script src="_static/sphinx_highlight.js">
   </script>
   <script src="_static/clipboard.min.js">
   </script>
@@ -379,7 +377,7 @@
        <section id="installation">
         <h1 id="install--page-root">
          Installation
-         <a class="headerlink" href="#install--page-root" title="Permalink to this headline">
+         <a class="headerlink" href="#install--page-root" title="Permalink to this heading">
           ¶
          </a>
         </h1>
@@ -393,7 +391,7 @@
         <section id="conda">
          <h2 id="conda">
           Conda
-          <a class="headerlink" href="#conda" title="Permalink to this headline">
+          <a class="headerlink" href="#conda" title="Permalink to this heading">
            ¶
           </a>
          </h2>
@@ -407,11 +405,11 @@ Then the build process is the following:
          </p>
          <div class="highlight-bash notranslate">
           <div class="highlight">
-           <pre><span></span>git clone https://github.com/lacava/feat <span class="c1"># clone the repo</span>
-<span class="nb">cd</span> feat <span class="c1"># enter the directory</span>
-conda env create
-conda activate feat
-python setup.py install
+           <pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/lacava/feat<span class="w"> </span><span class="c1"># clone the repo</span>
+<span class="nb">cd</span><span class="w"> </span>feat<span class="w"> </span><span class="c1"># enter the directory</span>
+conda<span class="w"> </span>env<span class="w"> </span>create
+conda<span class="w"> </span>activate<span class="w"> </span>feat
+python<span class="w"> </span>setup.py<span class="w"> </span>install
 </pre>
           </div>
          </div>
@@ -426,9 +424,9 @@ Edit this lines:
          </p>
          <div class="highlight-bash notranslate">
           <div class="highlight">
-           <pre><span></span><span class="nb">export</span> <span class="nv">SHOGUN_LIB</span><span class="o">=</span>/your/shogun/lib/
-<span class="nb">export</span> <span class="nv">SHOGUN_DIR</span><span class="o">=</span>/your/shugn/include/
-<span class="nb">export</span> <span class="nv">EIGEN3_INCLUDE_DIR</span><span class="o">=</span>/your/eigen/eigen3/
+           <pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SHOGUN_LIB</span><span class="o">=</span>/your/shogun/lib/
+<span class="nb">export</span><span class="w"> </span><span class="nv">SHOGUN_DIR</span><span class="o">=</span>/your/shugn/include/
+<span class="nb">export</span><span class="w"> </span><span class="nv">EIGEN3_INCLUDE_DIR</span><span class="o">=</span>/your/eigen/eigen3/
 </pre>
           </div>
          </div>
@@ -436,7 +434,7 @@ Edit this lines:
         <section id="dependencies">
          <h2 id="dependencies">
           Dependencies
-          <a class="headerlink" href="#dependencies" title="Permalink to this headline">
+          <a class="headerlink" href="#dependencies" title="Permalink to this heading">
            ¶
           </a>
          </h2>
@@ -461,7 +459,7 @@ If you need Eigen and Shogun and don’t want to use conda, follow these instruc
          <section id="id1">
           <h3 id="id1">
            Eigen
-           <a class="headerlink" href="#id1" title="Permalink to this headline">
+           <a class="headerlink" href="#id1" title="Permalink to this heading">
             ¶
            </a>
           </h3>
@@ -493,12 +491,12 @@ If you need Eigen and Shogun and don’t want to use conda, follow these instruc
           <div class="highlight-bash notranslate">
            <div class="highlight">
             <pre><span></span><span class="c1"># Eigen 3.3.4</span>
-wget <span class="s2">"http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"</span>
-tar xzf <span class="m">3</span>.3.4.tar.gz
-mkdir eigen-3.3.4
-mv eigen-eigen*/* eigen-3.3.4
+wget<span class="w"> </span><span class="s2">"http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"</span>
+tar<span class="w"> </span>xzf<span class="w"> </span><span class="m">3</span>.3.4.tar.gz
+mkdir<span class="w"> </span>eigen-3.3.4
+mv<span class="w"> </span>eigen-eigen*/*<span class="w"> </span>eigen-3.3.4
 <span class="c1"># set an environmental variable to tell cmake where Eigen is</span>
-<span class="nb">export</span> <span class="nv">EIGEN3_INCLUDE_DIR</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/eigen-3.3.4/"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">EIGEN3_INCLUDE_DIR</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/eigen-3.3.4/"</span>
 </pre>
            </div>
           </div>
@@ -506,7 +504,7 @@ mv eigen-eigen*/* eigen-3.3.4
          <section id="id2">
           <h3 id="id2">
            Shogun
-           <a class="headerlink" href="#id2" title="Permalink to this headline">
+           <a class="headerlink" href="#id2" title="Permalink to this heading">
             ¶
            </a>
           </h3>
@@ -527,10 +525,10 @@ mv eigen-eigen*/* eigen-3.3.4
           </p>
           <div class="highlight-bash notranslate">
            <div class="highlight">
-            <pre><span></span>sudo add-apt-repository ppa:shogun-toolbox/nightly -y
-sudo apt-get update -y
-sudo apt-get install -qq --force-yes --no-install-recommends libshogun18
-sudo apt-get install -qq --force-yes --no-install-recommends libshogun-dev
+            <pre><span></span>sudo<span class="w"> </span>add-apt-repository<span class="w"> </span>ppa:shogun-toolbox/nightly<span class="w"> </span>-y
+sudo<span class="w"> </span>apt-get<span class="w"> </span>update<span class="w"> </span>-y
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-qq<span class="w"> </span>--force-yes<span class="w"> </span>--no-install-recommends<span class="w"> </span>libshogun18
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-qq<span class="w"> </span>--force-yes<span class="w"> </span>--no-install-recommends<span class="w"> </span>libshogun-dev
 </pre>
            </div>
           </div>
@@ -539,7 +537,7 @@ sudo apt-get install -qq --force-yes --no-install-recommends libshogun-dev
         <section id="running-the-tests">
          <h2 id="running-the-tests">
           Running the tests
-          <a class="headerlink" href="#running-the-tests" title="Permalink to this headline">
+          <a class="headerlink" href="#running-the-tests" title="Permalink to this heading">
            ¶
           </a>
          </h2>
@@ -561,9 +559,9 @@ Then you can use cmake to build the tests. From the repo root,
          </p>
          <div class="highlight-bash notranslate">
           <div class="highlight">
-           <pre><span></span>./configure tests   <span class="c1"># builds the test Makefile</span>
-make -C build tests <span class="c1"># compiles the tests</span>
-./build/tests <span class="c1"># runs the tests</span>
+           <pre><span></span>./configure<span class="w"> </span>tests<span class="w">   </span><span class="c1"># builds the test Makefile</span>
+make<span class="w"> </span>-C<span class="w"> </span>build<span class="w"> </span>tests<span class="w"> </span><span class="c1"># compiles the tests</span>
+./build/tests<span class="w"> </span><span class="c1"># runs the tests</span>
 </pre>
           </div>
          </div>
@@ -617,7 +615,7 @@ make -C build tests <span class="c1"># compiles the tests</span>
       <a href="http://www.sphinx-doc.org/">
        Sphinx
       </a>
-      4.5.0.
+      6.1.3.
              and
       <a href="https://github.com/bashtage/sphinx-material/">
        Material for

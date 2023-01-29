@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
  <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <meta content="Docutils 0.17.1: http://docutils.sourceforge.net/" name="generator"/>
+  <meta content="Docutils 0.19: https://docutils.sourceforge.io/" name="generator"/>
   <meta content="width=device-width,initial-scale=1" name="viewport"/>
   <meta content="ie=edge" http-equiv="x-ua-compatible"/>
   <meta content="Copy to clipboard" name="lang:clipboard.copy"/>
@@ -45,11 +45,9 @@
   <link href="../_static/copybutton.css" rel="stylesheet" type="text/css"/>
   <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js">
   </script>
-  <script src="../_static/jquery.js">
-  </script>
-  <script src="../_static/underscore.js">
-  </script>
   <script src="../_static/doctools.js">
+  </script>
+  <script src="../_static/sphinx_highlight.js">
   </script>
   <script src="../_static/clipboard.min.js">
   </script>
@@ -442,10 +440,11 @@ div.nboutput.container div.prompt > div {
     }
 }
 
-/* disable scrollbars on prompts */
+/* disable scrollbars and line breaks on prompts */
 div.nbinput.container div.prompt pre,
 div.nboutput.container div.prompt pre {
     overflow: hidden;
+    white-space: pre;
 }
 
 /* input/output area */
@@ -547,6 +546,7 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
 div.rendered_html table {
   border: none;
   border-collapse: collapse;
@@ -555,10 +555,14 @@ div.rendered_html table {
   font-size: 12px;
   table-layout: fixed;
 }
+.jp-RenderedHTMLCommon thead,
 div.rendered_html thead {
   border-bottom: 1px solid black;
   vertical-align: bottom;
 }
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
 div.rendered_html tr,
 div.rendered_html th,
 div.rendered_html td {
@@ -570,12 +574,15 @@ div.rendered_html td {
   max-width: none;
   border: none;
 }
+.jp-RenderedHTMLCommon th,
 div.rendered_html th {
   font-weight: bold;
 }
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
 div.rendered_html tbody tr:nth-child(odd) {
   background: #f5f5f5;
 }
+.jp-RenderedHTMLCommon tbody tr:hover,
 div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
@@ -583,7 +590,7 @@ div.rendered_html tbody tr:hover {
        <section id="Using-Feat’s-archive">
         <h1 id="examples-archive--page-root">
          Using Feat’s archive
-         <a class="headerlink" href="#examples-archive--page-root" title="Permalink to this headline">
+         <a class="headerlink" href="#examples-archive--page-root" title="Permalink to this heading">
           ¶
          </a>
         </h1>
@@ -640,7 +647,7 @@ div.rendered_html tbody tr:hover {
         <p>
          Then we set up a Feat instance and train the model, storing the final archive.
         </p>
-        <div class="nbinput docutils container">
+        <div class="nbinput nblast docutils container">
          <div class="prompt highlight-none notranslate">
           <div class="highlight">
            <pre><span></span>[2]:
@@ -649,10 +656,10 @@ div.rendered_html tbody tr:hover {
          </div>
          <div class="input_area highlight-ipython3 notranslate">
           <div class="highlight">
-           <pre><span></span><span class="kn">from</span> <span class="nn">feat</span> <span class="kn">import</span> <span class="n">Feat</span>
+           <pre><span></span><span class="kn">from</span> <span class="nn">feat</span> <span class="kn">import</span> <span class="n">FeatRegressor</span>
 
 
-<span class="n">fest</span> <span class="o">=</span> <span class="n">Feat</span><span class="p">(</span><span class="n">pop_size</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="c1"># population size</span>
+<span class="n">fest</span> <span class="o">=</span> <span class="n">FeatRegressor</span><span class="p">(</span><span class="n">pop_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="c1"># population size</span>
             <span class="n">gens</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="c1"># maximum generations</span>
             <span class="n">max_time</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="c1"># max time in seconds</span>
             <span class="n">max_depth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="c1"># constrain features depth</span>
@@ -663,11 +670,22 @@ div.rendered_html tbody tr:hover {
             <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="c1"># restricts to single thread</span>
             <span class="n">verbosity</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="c1"># verbose output (this will go to terminal, sry..)</span>
            <span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s1">'FEAT version:'</span><span class="p">,</span> <span class="n">fest</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
-<span class="c1"># train the model</span>
-<span class="n">fest</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_t</span><span class="p">,</span><span class="n">y_t</span><span class="p">)</span>
-<br/></pre>
+<br/><br/></pre>
+          </div>
+         </div>
+        </div>
+        <div class="nbinput docutils container">
+         <div class="prompt highlight-none notranslate">
+          <div class="highlight">
+           <pre><span></span>[4]:
+</pre>
+          </div>
+         </div>
+         <div class="input_area highlight-ipython3 notranslate">
+          <div class="highlight">
+           <pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">'FEAT version:'</span><span class="p">,</span> <span class="n">fest</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+<span class="n">fest</span>
+</pre>
           </div>
          </div>
         </div>
@@ -677,7 +695,7 @@ div.rendered_html tbody tr:hover {
          <div class="output_area docutils container">
           <div class="highlight">
            <pre>
-FEAT version: 0.4.1.post30
+FEAT version: 0.5.2.post54
 </pre>
           </div>
          </div>
@@ -685,23 +703,90 @@ FEAT version: 0.4.1.post30
         <div class="nboutput nblast docutils container">
          <div class="prompt highlight-none notranslate">
           <div class="highlight">
-           <pre><span></span>[2]:
+           <pre><span></span>[4]:
 </pre>
           </div>
          </div>
-         <div class="output_area docutils container">
-          <div class="highlight">
-           <pre>
-Feat(hillclimb=True, max_depth=2, max_dim=5, max_time=60, pop_size=500,
-     random_state=42, verbosity=2)
-</pre>
+         <div class="output_area rendered_html docutils container">
+          <style>
+           #sk-container-id-2 {color: black;background-color: white;}#sk-container-id-2 pre{padding: 0;}#sk-container-id-2 div.sk-toggleable {background-color: white;}#sk-container-id-2 label.sk-toggleable__label {cursor: pointer;display: block;width: 100%;margin-bottom: 0;padding: 0.3em;box-sizing: border-box;text-align: center;}#sk-container-id-2 label.sk-toggleable__label-arrow:before {content: "▸";float: left;margin-right: 0.25em;color: #696969;}#sk-container-id-2 label.sk-toggleable__label-arrow:hover:before {color: black;}#sk-container-id-2 div.sk-estimator:hover label.sk-toggleable__label-arrow:before {color: black;}#sk-container-id-2 div.sk-toggleable__content {max-height: 0;max-width: 0;overflow: hidden;text-align: left;background-color: #f0f8ff;}#sk-container-id-2 div.sk-toggleable__content pre {margin: 0.2em;color: black;border-radius: 0.25em;background-color: #f0f8ff;}#sk-container-id-2 input.sk-toggleable__control:checked~div.sk-toggleable__content {max-height: 200px;max-width: 100%;overflow: auto;}#sk-container-id-2 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {content: "▾";}#sk-container-id-2 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-2 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-2 input.sk-hidden--visually {border: 0;clip: rect(1px 1px 1px 1px);clip: rect(1px, 1px, 1px, 1px);height: 1px;margin: -1px;overflow: hidden;padding: 0;position: absolute;width: 1px;}#sk-container-id-2 div.sk-estimator {font-family: monospace;background-color: #f0f8ff;border: 1px dotted black;border-radius: 0.25em;box-sizing: border-box;margin-bottom: 0.5em;}#sk-container-id-2 div.sk-estimator:hover {background-color: #d4ebff;}#sk-container-id-2 div.sk-parallel-item::after {content: "";width: 100%;border-bottom: 1px solid gray;flex-grow: 1;}#sk-container-id-2 div.sk-label:hover label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-2 div.sk-serial::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: 0;}#sk-container-id-2 div.sk-serial {display: flex;flex-direction: column;align-items: center;background-color: white;padding-right: 0.2em;padding-left: 0.2em;position: relative;}#sk-container-id-2 div.sk-item {position: relative;z-index: 1;}#sk-container-id-2 div.sk-parallel {display: flex;align-items: stretch;justify-content: center;background-color: white;position: relative;}#sk-container-id-2 div.sk-item::before, #sk-container-id-2 div.sk-parallel-item::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: -1;}#sk-container-id-2 div.sk-parallel-item {display: flex;flex-direction: column;z-index: 1;position: relative;background-color: white;}#sk-container-id-2 div.sk-parallel-item:first-child::after {align-self: flex-end;width: 50%;}#sk-container-id-2 div.sk-parallel-item:last-child::after {align-self: flex-start;width: 50%;}#sk-container-id-2 div.sk-parallel-item:only-child::after {width: 0;}#sk-container-id-2 div.sk-dashed-wrapped {border: 1px dashed gray;margin: 0 0.4em 0.5em 0.4em;box-sizing: border-box;padding-bottom: 0.4em;background-color: white;}#sk-container-id-2 div.sk-label label {font-family: monospace;font-weight: bold;display: inline-block;line-height: 1.2em;}#sk-container-id-2 div.sk-label-container {text-align: center;}#sk-container-id-2 div.sk-container {/* jupyter's `normalize.less` sets `[hidden] { display: none; }` but bootstrap.min.css set `[hidden] { display: none !important; }` so we also need the `!important` here to be able to override the default hidden behavior on the sphinx rendered scikit-learn.org. See: https://github.com/scikit-learn/scikit-learn/issues/21755 */display: inline-block !important;position: relative;}#sk-container-id-2 div.sk-text-repr-fallback {display: none;}
+          </style>
+          <div class="sk-top-container" id="sk-container-id-2">
+           <div class="sk-text-repr-fallback">
+            <pre>FeatRegressor(backprop=False, batch_size=0, classification=False,
+              corr_delete_mutate=False, cross_rate=0.5, erc=False, fb=0.5,
+              feature_names='', functions='', gens=100, hillclimb=True,
+              iters=10, logfile='', lr=0.1, max_depth=2, max_dim=5, max_stall=0,
+              max_time=60, ml='LinearRidgeRegression', n_jobs=1, normalize=True,
+              obj='fitness,complexity', otype='a', pop_size=10,
+              protected_groups='', random_state=42, residual_xo=False,
+              root_xo_rate=0.5, save_pop=0, scorer='', ...)</pre>
+            <b>
+             In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook.
+             <br/>
+             On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.
+            </b>
+           </div>
+           <div class="sk-container" hidden="">
+            <div class="sk-item">
+             <div class="sk-estimator sk-toggleable">
+              <input checked="" class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-2" type="checkbox"/>
+              <label class="sk-toggleable__label sk-toggleable__label-arrow" for="sk-estimator-id-2">
+               FeatRegressor
+              </label>
+              <div class="sk-toggleable__content">
+               <pre>FeatRegressor(backprop=False, batch_size=0, classification=False,
+              corr_delete_mutate=False, cross_rate=0.5, erc=False, fb=0.5,
+              feature_names='', functions='', gens=100, hillclimb=True,
+              iters=10, logfile='', lr=0.1, max_depth=2, max_dim=5, max_stall=0,
+              max_time=60, ml='LinearRidgeRegression', n_jobs=1, normalize=True,
+              obj='fitness,complexity', otype='a', pop_size=10,
+              protected_groups='', random_state=42, residual_xo=False,
+              root_xo_rate=0.5, save_pop=0, scorer='', ...)</pre>
+              </div>
+             </div>
+            </div>
+           </div>
           </div>
          </div>
         </div>
         <div class="nbinput docutils container">
          <div class="prompt highlight-none notranslate">
           <div class="highlight">
-           <pre><span></span>[3]:
+           <pre><span></span>[ ]:
+</pre>
+          </div>
+         </div>
+         <div class="input_area highlight-ipython3 notranslate">
+          <div class="highlight">
+           <pre><span></span><span class="c1"># train the model</span>
+<span class="n">fest</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_t</span><span class="p">,</span><span class="n">y_t</span><span class="p">)</span>
+</pre>
+          </div>
+         </div>
+        </div>
+        <div class="nboutput nblast docutils container">
+         <div class="prompt empty docutils container">
+         </div>
+         <div class="output_area docutils container">
+          <div class="highlight">
+           <pre>
+&gt; <span class="ansi-green-fg">/home/bill/mambaforge/envs/feat2/lib/python3.11/site-packages/feat_ml-0.5.2.post54-py3.11-linux-x86_64.egg/feat/feat.py</span>(289)<span class="ansi-cyan-fg">fit</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-fg">    287 </span><span class="ansi-red-fg">            </span><span class="ansi-green-fg">import</span> pdb
+<span class="ansi-green-fg">    288 </span><span class="ansi-red-fg">            </span>pdb<span class="ansi-blue-fg">.</span>set_trace<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">--&gt; 289 </span><span class="ansi-red-fg">            </span>self<span class="ansi-blue-fg">.</span>_fit<span class="ansi-blue-fg">(</span>X<span class="ansi-blue-fg">,</span>y<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">    290 </span>
+<span class="ansi-green-fg">    291 </span><span class="ansi-red-fg">        self.set_params(**{k[1:]:v for k,v in self._get_params().items()
+</span>
+ipdb&gt; c
+</pre>
+          </div>
+         </div>
+        </div>
+        <div class="nbinput nblast docutils container">
+         <div class="prompt highlight-none notranslate">
+          <div class="highlight">
+           <pre><span></span>[ ]:
 </pre>
           </div>
          </div>
@@ -740,53 +825,13 @@ Feat(hillclimb=True, max_depth=2, max_dim=5, max_time=60, pop_size=500,
           </div>
          </div>
         </div>
-        <div class="nboutput nblast docutils container">
-         <div class="prompt empty docutils container">
-         </div>
-         <div class="output_area docutils container">
-          <div class="highlight">
-           <pre>
-complexity fitness validation fitness eqn
-1 1804.70947265625 1815.92822265625 [x_1]
-2 967.038330078125 1090.6053466796875 [x_1][x_0]
-3 931.5263061523438 916.8345336914062 [x_0][x_1][x_3]
-4 912.5177001953125 862.1056518554688 [x_0][x_1][x_2][x_3]
-6 669.4453735351562 900.9910888671875 [x_1][x_0][relu(0.00*x_1)]
-7 467.7828369140625 704.1397094726562 [x_0][tanh(1.26*x_1)]
-8 424.2886657714844 512.7071533203125 [x_0][tanh(1.34*x_1)][x_3]
-9 383.1601867675781 463.29949951171875 [tanh(1.39*x_1)][x_2][x_0][x_3]
-10 375.2489318847656 511.86627197265625 [tanh(0.98*x_1)][x_1][x_3][x_2][x_0]
-12 350.7279357910156 492.56195068359375 [tanh(2.54*x_0)][tanh(1.29*x_1)]
-13 319.4396667480469 426.8195495605469 [tanh(1.33*x_1)][x_2][tanh(2.41*x_0)]
-14 301.9866638183594 386.4537048339844 [tanh(1.38*x_1)][x_3][x_2][tanh(2.79*x_0)]
-15 297.632568359375 394.12969970703125 [tanh(2.86*x_0)][x_1][x_3][x_2][tanh(1.05*x_1)]
-17 282.73626708984375 392.1083068847656 [tanh(2.62*x_0)][relu(0.63*x_3)][x_2][tanh(1.39*x_1)]
-18 276.8981018066406 403.6515808105469 [tanh(2.66*x_0)][x_1][relu(0.61*x_3)][x_2][tanh(1.03*x_1)]
-19 266.9380187988281 261.5851135253906 [(0.26*x_2*(1.32*x_0+0.26*x_1))][x_0][x_1][tanh(1.14*x_1)][x_3]
-21 252.79739379882812 391.8340148925781 [(0.30*x_1*sqrt(|0.30*x_3|))][(0.44*x_2-0.01*x_1)][tanh(2.03*x_0)]
-22 249.07005310058594 313.2448425292969 [(0.28*x_2*(1.06*x_0+0.24*x_1))][x_1][x_0][tanh(1.11*x_1)][sqrt(|0.18*x_3|)]
-24 233.05250549316406 246.5561981201172 [(0.32*x_2*(1.16*x_0+0.27*x_1))][tanh(2.00*x_0)][x_0][x_1][sin(1.98*x_1)]
-26 215.35858154296875 1645.1624755859375 [tanh(1.18*x_1)][tanh(2.25*x_0)][x_3][(0.35*x_1-0.34*x_0)][(0.19*x_2*(1.42*x_0+0.29*x_1))]
-29 203.5608367919922 249.9871368408203 [(0.48*x_1+0.56*sqrt(|0.17*x_3|))][x_0][tanh(1.17*x_1)][(0.48*x_2*(0.29*x_0+0.07*x_1))][tanh(2.01*x_0)]
-30 202.99911499023438 258.62847900390625 [tanh(1.18*x_1)][tanh(1.88*x_0)][(0.46*x_1+0.18*(0.27*x_0-0.34*sqrt(|0.29*x_1|)))][(0.18*x_2*(0.74*x_0+0.19*x_1))]
-31 190.41644287109375 241.6823272705078 [tanh(1.20*x_1)][tanh(2.20*x_0)][x_3][(0.58*x_1+0.14*(0.19*x_0-0.25*sqrt(|0.19*x_3|)))][(0.23*x_2*(1.01*x_0+0.21*x_1))]
-36 188.87777709960938 259.40362548828125 [tanh(1.19*x_1)][tanh(1.98*x_0)][(0.48*x_1+0.17*(0.20*x_0-0.29*sqrt(|0.28*x_3|)))][(0.08*x_2*(1.30*x_0+0.30*x_1))][(0.88*x_2/0.95*x_0)]
-38 189.1365966796875 232.5410614013672 [tanh(1.22*x_1)][tanh(2.08*x_0)][(0.57*x_1+0.11*(0.25*x_0-0.23*sqrt(|0.18*x_3|)))][(0.23*x_2*(1.00*x_0+0.21*x_1))][exp(0.27*x_3)]
-46 181.5760498046875 239.0564727783203 [tanh(1.19*x_1)][tanh(1.98*x_0)][(0.48*x_1+0.17*(0.20*x_0-0.29*sqrt(|0.28*x_3|)))][(0.08*x_2*(1.30*x_0+0.30*x_1))][(0.88*x_2/0.95*tanh(1.85*x_0))]
-98 178.29383850097656 255.6151885986328 [tanh(1.05*x_1)][exp(0.58*tanh(1.79*x_0))][(0.31*x_3-0.88*log(1.37*(0.06*x_0/0.59*(0.47*x_3+1.14*x_2))))][(0.73*x_1+0.22*(0.15*x_0-0.26*sqrt(|0.15*x_3|)))][(0.28*x_2*(1.15*x_0+0.26*x_1))]
-104 177.51222229003906 253.17242431640625 [tanh(1.11*x_1)][exp(0.58*tanh(1.79*x_0))][(0.31*x_3-0.88*log(1.37*(0.06*x_0/0.59*(0.47*x_3+1.14*x_2))))][(0.73*x_1+0.22*(0.15*x_0-0.26*sqrt(|0.83*sqrt(|0.15*x_3|)|)))][(0.28*x_2*(1.15*x_0+0.26*x_1))]
-147 174.20518493652344 1227.4205322265625 [tanh(1.20*tanh(0.64*x_1))][exp(0.63*tanh(2.07*x_0))][(0.27*x_3-0.72*log(1.95*(0.04*x_0/0.79*(0.47*x_3+1.20*x_2))))][(0.55*x_1+0.21*(0.23*x_0-0.24*sqrt(|0.17*x_3|)))][exp(0.64*(0.21*x_2*(1.43*x_0+0.33*x_1)))]
-</pre>
-          </div>
-         </div>
-        </div>
         <p>
          For comparison, we can fit an Elastic Net and Random Forest regression model to the same data.
         </p>
         <div class="nbinput nblast docutils container">
          <div class="prompt highlight-none notranslate">
           <div class="highlight">
-           <pre><span></span>[4]:
+           <pre><span></span>[ ]:
 </pre>
           </div>
          </div>
@@ -806,7 +851,7 @@ complexity fitness validation fitness eqn
         <div class="nbinput nblast docutils container">
          <div class="prompt highlight-none notranslate">
           <div class="highlight">
-           <pre><span></span>[5]:
+           <pre><span></span>[ ]:
 </pre>
           </div>
          </div>
@@ -826,10 +871,10 @@ complexity fitness validation fitness eqn
         <p>
          Let’s look at the test set mean squared errors by method.
         </p>
-        <div class="nbinput docutils container">
+        <div class="nbinput nblast docutils container">
          <div class="prompt highlight-none notranslate">
           <div class="highlight">
-           <pre><span></span>[6]:
+           <pre><span></span>[ ]:
 </pre>
           </div>
          </div>
@@ -840,37 +885,20 @@ complexity fitness validation fitness eqn
           </div>
          </div>
         </div>
-        <div class="nboutput nblast docutils container">
-         <div class="prompt highlight-none notranslate">
-          <div class="highlight">
-           <pre><span></span>[6]:
-</pre>
-          </div>
-         </div>
-         <div class="output_area docutils container">
-          <div class="highlight">
-           <pre>
-{'feat': 258.74213477932375,
- 'rf': 347.15749506172847,
- 'elasticnet': 919.3515337699562}
-</pre>
-          </div>
-         </div>
-        </div>
         <section id="Visualizing-the-Archive">
          <h2 id="Visualizing-the-Archive">
           Visualizing the Archive
-          <a class="headerlink" href="#Visualizing-the-Archive" title="Permalink to this headline">
+          <a class="headerlink" href="#Visualizing-the-Archive" title="Permalink to this heading">
            ¶
           </a>
          </h2>
          <p>
           Let’s visualize this archive with the test scores. This gives us a sense of how increasing the representation complexity affects the quality of the model and its generalization.
          </p>
-         <div class="nbinput docutils container">
+         <div class="nbinput nblast docutils container">
           <div class="prompt highlight-none notranslate">
            <div class="highlight">
-            <pre><span></span>[9]:
+            <pre><span></span>[ ]:
 </pre>
            </div>
           </div>
@@ -933,27 +961,6 @@ complexity fitness validation fitness eqn
            </div>
           </div>
          </div>
-         <div class="nboutput docutils container">
-          <div class="prompt empty docutils container">
-          </div>
-          <div class="output_area docutils container">
-           <div class="highlight">
-            <pre>
-best: 38
-middle: 22
-small: 3
-complexity [1, 2, 3, 4, 6, 7, 8, 9, 10, 12, 13, 14, 15, 17, 18, 19, 21, 22, 24, 26, 29, 30, 31, 36, 38, 46, 98, 104, 147]
-</pre>
-           </div>
-          </div>
-         </div>
-         <div class="nboutput nblast docutils container">
-          <div class="prompt empty docutils container">
-          </div>
-          <div class="output_area docutils container">
-           <img alt="../_images/examples_archive_12_1.png" src="../_images/examples_archive_12_1.png"/>
-          </div>
-         </div>
          <p>
           Note that ElasticNet produces a similar test score to the linear representation in Feat’s archive, and that Random Forest’s test score is near the representation shown in the middle.
          </p>
@@ -972,34 +979,16 @@ complexity [1, 2, 3, 4, 6, 7, 8, 9, 10, 12, 13, 14, 15, 17, 18, 19, 21, 22, 24, 
           </code>
           will print a table of the learned features, optionally ordered by the magnitude of their weights.
          </p>
-         <div class="nbinput docutils container">
+         <div class="nbinput nblast docutils container">
           <div class="prompt highlight-none notranslate">
            <div class="highlight">
-            <pre><span></span>[8]:
+            <pre><span></span>[ ]:
 </pre>
            </div>
           </div>
           <div class="input_area highlight-ipython3 notranslate">
            <div class="highlight">
             <pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">fest</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
-</pre>
-           </div>
-          </div>
-         </div>
-         <div class="nboutput nblast docutils container">
-          <div class="prompt empty docutils container">
-          </div>
-          <div class="output_area docutils container">
-           <div class="highlight">
-            <pre>
-Weight  Feature
-1590.39         offset
--103.53 tanh(1.22*x_1)
-20.83   tanh(2.08*x_0)
-63.00   (0.57*x_1+0.11*(0.25*x_0-0.23*sqrt(|0.18*x_3|)))
--76.59  (0.23*x_2*(1.00*x_0+0.21*x_1))
--13.93  exp(0.27*x_3)
-
 </pre>
            </div>
           </div>
@@ -1054,7 +1043,7 @@ Weight  Feature
       <a href="http://www.sphinx-doc.org/">
        Sphinx
       </a>
-      4.5.0.
+      6.1.3.
              and
       <a href="https://github.com/bashtage/sphinx-material/">
        Material for

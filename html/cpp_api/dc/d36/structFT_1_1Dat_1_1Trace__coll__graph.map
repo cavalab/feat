@@ -1,8 +1,0 @@
-<map id="FT::Dat::Trace" name="FT::Dat::Trace">
-<area shape="rect" id="node1" title="used for tracing stack outputs for backprop algorithm." alt="" coords="233,184,343,211"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,95,179,121"/>
-<area shape="rect" id="node3" title=" " alt="" coords="203,95,373,121"/>
-<area shape="rect" id="node4" title=" " alt="" coords="253,5,323,32"/>
-<area shape="rect" id="node5" title=" " alt="" coords="397,95,568,121"/>
-<area shape="rect" id="node6" title=" " alt="" coords="447,5,518,32"/>
-</map>

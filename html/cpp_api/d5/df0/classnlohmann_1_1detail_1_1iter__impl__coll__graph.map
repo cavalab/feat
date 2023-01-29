@@ -1,5 +1,0 @@
-<map id="nlohmann::detail::iter_impl&lt; BasicJsonType &gt;" name="nlohmann::detail::iter_impl&lt; BasicJsonType &gt;">
-<area shape="rect" id="node1" title="a template for a bidirectional iterator for the basic_json class This class implements a both iterato..." alt="" coords="681,20,861,61"/>
-<area shape="rect" id="node2" href="$d7/d10/structnlohmann_1_1detail_1_1internal__iterator.html" title=" " alt="" coords="371,5,600,76"/>
-<area shape="rect" id="node3" href="$d2/d2c/classnlohmann_1_1detail_1_1primitive__iterator__t.html" title=" " alt="" coords="5,20,204,61"/>
-</map>

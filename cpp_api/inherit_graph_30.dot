@@ -1,8 +1,0 @@
-digraph "Graphical Class Hierarchy"
-{
- // LATEX_PDF_SIZE
-  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
-  node [fontname="Helvetica",fontsize="10",shape=record];
-  rankdir="LR";
-  Node0 [label="FT::Sel::NSGA2::sort_n",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$d5/d9e/structFT_1_1Sel_1_1NSGA2_1_1sort__n.html",tooltip="sort based on rank, breaking ties with crowding distance"];
-}

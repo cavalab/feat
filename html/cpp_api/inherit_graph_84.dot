@@ -1,8 +1,0 @@
-digraph "Graphical Class Hierarchy"
-{
- // LATEX_PDF_SIZE
-  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
-  node [fontname="Helvetica",fontsize="10",shape=record];
-  rankdir="LR";
-  Node0 [label="nlohmann::detail::is\l_constructible_string\l_type_impl\< BasicJsonType,\l ConstructibleStringType,\l enable_if_t\< is_detected\l_exact\< typename BasicJsonType\l::string_t::value_type, value\l_type_t, ConstructibleStringType\l \>::value \> \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$df/dc0/structnlohmann_1_1detail_1_1is__constructible__string__type__impl_3_01BasicJsonType_00_01Construe4743afb22172cdb3c5f428800835387.html",tooltip=" "];
-}

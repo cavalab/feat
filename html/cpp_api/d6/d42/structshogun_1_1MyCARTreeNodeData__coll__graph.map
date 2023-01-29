@@ -1,4 +1,0 @@
-<map id="shogun::MyCARTreeNodeData" name="shogun::MyCARTreeNodeData">
-<area shape="rect" id="node1" title="structure to store data of a node of CART. This can be used as a template type in TreeMachineNode cla..." alt="" coords="5,95,220,121"/>
-<area shape="rect" id="node2" title=" " alt="" coords="29,5,197,32"/>
-</map>
