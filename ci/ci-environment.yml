@@ -1,9 +1,8 @@
-# note: this should be used to update feat environment
-name: feat-docs
+name: feat-ci
 channels:
     - conda-forge
 dependencies:
-    # from feat environment
+    # for installing feat 
     - python=3.10
     - cmake
     - ninja
