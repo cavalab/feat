@@ -59,18 +59,9 @@ jobs:
         name: add docs environment dependencies
         uses: mamba-org/provision-with-micromamba@main
         with:
-          environment-file: environment.yml
+          environment-file: ci/docs-environment.yml
           cache-env: true
           cache-downloads: true
-          extra-specs: |
-            sphinx 
-            sphinx-material 
-            recommonmark 
-            seaborn 
-            nbsphinx 
-            matplotlib 
-            jupyter 
-            sphinx-copybutton
       - name: build docs
         run: |
           sudo apt-get install doxygen
@@ -81,6 +72,7 @@ jobs:
           ls
           echo "sphinx-build -b html ./ ../_site"
           # sphinx-build -b html ./ ../_site
+          micromamba info
           python -m sphinx.cmd.build -b html ./ ../_site
           make html
       - 

@@ -3,6 +3,22 @@ name: feat-docs
 channels:
     - conda-forge
 dependencies:
+    # from feat environment
+    - python=3.10
+    - cmake
+    - ninja
+    - eigen
+    - cython
+    - pandas
+    - scikit-learn
+    - setuptools
+    - shogun-cpp
+    - wheel
+    - pip
+    - pip:
+        - eigency
+        - pmlb
+    # for docs
     - sphinx
     - sphinx-material
     - recommonmark
