@@ -1,8 +1,8 @@
 # Feat C++ API
 
-This is the C++ API for [Feat](http://github.com/lacava/feat). 
+This is the C++ API for [Feat](http://cavalab.org/feat). 
 
-[Back to main documentation](http://lacava.github.io/feat)
+[Back to main documentation](http://cavalab.org/feat)
 
 ## Quick links
 
