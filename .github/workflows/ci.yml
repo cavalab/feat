@@ -79,10 +79,9 @@ jobs:
           which python
           cd docs
           ls
-          # python -c "from feat import Feat"
-          which sphinx-build
           echo "sphinx-build -b html ./ ../_site"
-          sphinx-build -b html ./ ../_site
+          # sphinx-build -b html ./ ../_site
+          python -m sphinx.cmd.build -b html ./ ../_site
           make html
       - 
         name: Deploy
