@@ -32,7 +32,7 @@ TEST(Feat, SettingFunctions)
     ASSERT_EQ('b', feat.params.otypes[0]);
     
     feat.set_verbosity(1);
-    feat.set_functions("+,-");
+    feat.set_functions({"+","-"});
     ASSERT_EQ(2, feat.params.functions.size());
     ASSERT_STREQ("+", feat.params.functions[0]->name.c_str());
     ASSERT_STREQ("-", feat.params.functions[1]->name.c_str());

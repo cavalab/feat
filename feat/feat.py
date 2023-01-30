@@ -70,7 +70,7 @@ class Feat(cppFeat, BaseEstimator):
         Random seed. If -1, will choose a random random_state.
     erc: boolean, optional (default: False)
         If true, ephemeral random constants are included as nodes in trees.
-    obj: str, optional (default: "fitness,complexity")
+    objectives: list[str], optional (default: "fitness,complexity")
         Objectives to use for multi-objective optimization.
     shuffle: boolean, optional (default: True)
         Whether to shuffle the training data before beginning training.
@@ -162,7 +162,7 @@ class Feat(cppFeat, BaseEstimator):
                  max_dim=10, 
                  random_state=0, 
                  erc= False , 
-                 obj="fitness,complexity", 
+                 objectives=["fitness","complexity"], 
                  shuffle=True, 
                  split=0.75, 
                  fb=0.5, 
@@ -206,7 +206,7 @@ class Feat(cppFeat, BaseEstimator):
         self.max_dim=max_dim
         self.random_state=random_state
         self.erc=erc
-        self.obj=obj
+        self.objectives=objectives
         self.shuffle=shuffle
         self.split=split
         self.fb=fb

@@ -106,21 +106,33 @@ class Feat
 
         /// set size of population 
         void set_pop_size(int pop_size);
+        /// return population size
+        int get_pop_size();
         
         /// set size of max generations              
         void set_gens(int gens);
+        ///return size of max generations
+        int get_gens();
                     
         /// set ML algorithm to use              
         void set_ml(string ml);
+        ///return ML algorithm string
+        string get_ml();
         
         /// set EProblemType for shogun              
         void set_classification(bool classification);
+        ///return type of classification flag set
+        bool get_classification();
              
         /// set level of debug info              
         void set_verbosity(int verbosity);
+        ///return current verbosity level set
+        int get_verbosity();
                     
         /// set maximum stall in learning, in generations
         void set_max_stall(int max_stall);
+        ///return maximum stall in learning, in generations
+        int get_max_stall();
                     
         /// set selection method              
         void set_selection(string sel);
@@ -139,7 +151,8 @@ class Feat
         void set_otype(char ot);
                     
         /// sets available functions based on comma-separated list.
-        void set_functions(string functions);
+        void set_functions(const vector<string>& fns){ params.set_functions(fns); };
+        vector<string> get_functions(){return params.get_functions();};
                     
         /// set max depth of programs              
         void set_max_depth(unsigned int max_depth);
@@ -162,8 +175,6 @@ class Feat
         /// flag to shuffle the input samples for train/test splits
         void set_shuffle(bool sh);
 
-        /// set objectives in feat
-        void set_objectives(string obj);
         
         /// set train fraction of dataset
         void set_split(float sp);
@@ -249,31 +260,18 @@ class Feat
          * getting functions
          */
 
-        ///return population size
-        int get_pop_size();
         
         ///return archive size
         int get_archive_size(){ return this->archive.individuals.size(); };
 
-        ///return size of max generations
-        int get_gens();
         
-        ///return ML algorithm string
-        string get_ml();
         
-        ///return type of classification flag set
-        bool get_classification();
-        
-        ///return maximum stall in learning, in generations
-        int get_max_stall();
         
         ///return program output type ('f', 'b')             
         vector<char> get_otypes();
         ///return parameter otype, used to set otypes
         char get_otype(){return params.otype;};
         
-        ///return current verbosity level set
-        int get_verbosity();
         
         ///return max_depth of programs
         int get_max_depth();
@@ -356,11 +354,11 @@ class Feat
         bool get_tune_final(){ return this->params.tune_final;};
         void set_tune_final(bool in){ this->params.tune_final = in;};
 
-        string get_functions(){return params.get_functions();};
-        string get_functions_(){return params.get_functions_();};
 
-        string get_obj(){return params.get_objectives(); };  
-        void set_obj(string in){return params.set_objectives(in); };  
+        /// get objectives for multi-objective search
+        auto get_objectives(){return params.get_objectives(); };  
+        /// set objectives for multi-objective search
+        void set_objectives(const vector<string>& obj){params.set_objectives(obj);};
 
         string get_protected_groups(){ return params.get_protected_groups(); };
         ///set protected groups for fairness

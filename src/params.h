@@ -40,7 +40,6 @@ struct Parameters
     vector<float> term_weights; ///< probability weighting of terminals
     vector<float> op_weights;   ///< probability weighting of functions
     NodeVector functions;       ///< function nodes available in programs
-    string function_str;       ///< the string arg passed to set_functions
     NodeVector terminals;       ///< terminal nodes available in programs
     ///<vector storing longitudinal data keys
     vector<std::string> longitudinalMap; 
@@ -50,7 +49,7 @@ struct Parameters
     unsigned int max_dim = 10;	///< maximum dimensionality of programs
     bool erc = false;			///< whether to include constants for terminals 
     unsigned num_features; ///< number of features
-    vector<string> objectives;///< Pareto objectives 
+    vector<string> objectives{"fitness","complexity"};///< Pareto objectives 
     bool shuffle = true;             ///< option to shuffle the data
     float split = 0.75;              ///< fraction of data to use for training
     vector<char> dtypes;      ///< data types of input parameters
@@ -102,17 +101,17 @@ struct Parameters
     
     HC hc;                                      ///< stochastic hill climbing parameters       
     
-    Parameters(int pop_size, int gens, string ml, bool classification, 
-            int max_stall, char ot, int verbosity, string fs, float cr, 
-            float root_xor, unsigned int max_depth, unsigned int max_dim, 
-            bool constant, string obj, bool sh, float sp, float fb, 
-            string sc, string fn, bool bckprp, int iters, float lr, int bs, 
-            bool hclimb, int maxt, bool res_xo, bool stg_xo, 
-            bool stg_xo_tol, bool sftmx, bool nrm, bool corr_mut, 
-            bool tune_init, bool tune_fin);
+    // Parameters(int pop_size, int gens, string ml, bool classification, 
+    //         int max_stall, char ot, int verbosity, string fs, float cr, 
+    //         float root_xor, unsigned int max_depth, unsigned int max_dim, 
+    //         bool constant, string obj, bool sh, float sp, float fb, 
+    //         string sc, string fn, bool bckprp, int iters, float lr, int bs, 
+    //         bool hclimb, int maxt, bool res_xo, bool stg_xo, 
+    //         bool stg_xo_tol, bool sftmx, bool nrm, bool corr_mut, 
+    //         bool tune_init, bool tune_fin);
 
-    Parameters() = default; 
-    ~Parameters();
+    Parameters(); 
+    ~Parameters(){};
     
     /*! checks initial parameter settings before training.
      *  make sure ml choice is valid for problem type.
@@ -137,12 +136,10 @@ struct Parameters
     std::unique_ptr<Node> createNode(std::string str, float d_val = 0, bool b_val = false, 
                                      size_t loc = 0, string name = "");
     
-    /// sets available functions based on comma-separated list.
-    void set_functions(string fs);
-    /// returns the function_str argument used to determine the function set.
-    string get_functions(){return this->function_str; }
     /// returns the set of functions to use determined at run-time.
-    string get_functions_();
+    vector<string> get_functions();
+    /// sets available functions and verifies output types.
+    void set_functions(const vector<string>& fns);
     
     /// max_size is max_dim binary trees of max_depth
     void updateSize();
@@ -164,9 +161,9 @@ struct Parameters
     void set_protected_groups(string fn); 
 
     /// get objectives as comma-delimited string
-    string get_objectives();
+    auto get_objectives(){ return objectives; };
     /// set the objectives
-    void set_objectives(string obj);
+    void set_objectives(const vector<string>& obj);
     
     /// set level of debug info
     void set_verbosity(int verbosity);

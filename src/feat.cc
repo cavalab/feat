@@ -135,8 +135,6 @@ void Feat::set_root_xo_rate(float cross_rate)
 /// set program output type ('f', 'b')              
 void Feat::set_otype(char ot){ params.set_otype(ot); }
             
-/// sets available functions based on comma-separated list.
-void Feat::set_functions(string functions){ params.set_functions(functions); }
             
 /// set max depth of programs              
 void Feat::set_max_depth(unsigned int max_depth)
@@ -162,9 +160,6 @@ void Feat::set_erc(bool erc){ params.erc = erc; }
 
 /// flag to shuffle the input samples for train/test splits
 void Feat::set_shuffle(bool sh){params.shuffle = sh;}
-
-/// set objectives in feat
-void Feat::set_objectives(string obj){ params.set_objectives(obj); }
 
 /// set train fraction of dataset
 void Feat::set_split(float sp){params.split = sp;}
