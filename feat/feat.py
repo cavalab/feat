@@ -194,7 +194,7 @@ class Feat(cppFeat, BaseEstimator):
                  tune_final=True, 
                  starting_pop="",
                 ):
-        cppFeat.__init__(self)
+        super().__init__()
         print('Feat init')
         print(vars(self))
         self.pop_size=pop_size
@@ -289,12 +289,15 @@ class Feat(cppFeat, BaseEstimator):
     #         json.dump(feat_state, of)
 
     def get_params(self, deep=False, static_params=False):
+        import pdb
+        pdb.set_trace()
+        print({k:v for k,v in super().__dict__.items() if not k.endswith('_')})
         return {k:v for k,v in self.__dict__.items() if not k.endswith('_')}
 
     def fit(self,X,y,Z=None):
         """Fit a model."""    
 
-        X,y = self._clean(X, y, set_feature_names=True)
+        # X,y = self._clean(X, y, set_feature_names=True)
         self.n_features_in_ = X.shape[1]
 
         # self._set_params(**{'_'+k:v for k,v in self.get_params(
@@ -310,9 +313,11 @@ class Feat(cppFeat, BaseEstimator):
         if Z:
             cppFeat.fit(X,y,Z)
         else:
-            y = np.array(y, dtype=np.float32, order='F').reshape(1,-1)
+            # y = np.array(y, dtype=np.float32, order='F').reshape(1,-1)
             print('X shape:',X.shape, 'y shape:',y.shape)
-            cppFeat.fit(X,y)
+            print('blah')
+            # cppFeat.fit(X,y)
+            super().fit(X,y)
 
         return self
 

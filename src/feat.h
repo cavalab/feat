@@ -37,7 +37,9 @@ license: GNU/GPL v3
 
 // stuff being used
 using Eigen::MatrixXf;
+using Eigen::ArrayXXf;
 using Eigen::VectorXf;
+using Eigen::ArrayXf;
 typedef Eigen::Array<bool,Eigen::Dynamic,1> ArrayXb;
 using std::vector;
 using std::string;
@@ -140,6 +142,8 @@ class Feat
         /// set survivability              
         void set_survival(string surv);
                     
+        ///return cross rate for variation
+        float get_cross_rate();
         /// set cross rate in variation              
         void set_cross_rate(float cross_rate);
         
@@ -147,6 +151,10 @@ class Feat
         void set_root_xo_rate(float cross_rate);
         float get_root_xo_rate(){return this->params.root_xo_rate;};
                     
+        ///return program output type ('f', 'b')             
+        vector<char> get_otypes();
+        ///return parameter otype, used to set otypes
+        char get_otype(){return params.otype;};
         /// set program output type ('f', 'b')              
         void set_otype(char ot);
                     
@@ -154,6 +162,8 @@ class Feat
         void set_functions(const vector<string>& fns){ params.set_functions(fns); };
         vector<string> get_functions(){return params.get_functions();};
                     
+        ///return max_depth of programs
+        int get_max_depth();
         /// set max depth of programs              
         void set_max_depth(unsigned int max_depth);
          
@@ -267,17 +277,9 @@ class Feat
         
         
         
-        ///return program output type ('f', 'b')             
-        vector<char> get_otypes();
-        ///return parameter otype, used to set otypes
-        char get_otype(){return params.otype;};
         
         
-        ///return max_depth of programs
-        int get_max_depth();
         
-        ///return cross rate for variation
-        float get_cross_rate();
         
         ///return max size of programs
         int get_max_size();
@@ -369,7 +371,7 @@ class Feat
 
 
         /// train a model.             
-        void fit(MatrixXf& X, VectorXf& y);
+        void fit(MatrixXf X, VectorXf y);
         void fit(MatrixXf& X, VectorXf& y, LongData& Z);
                         
         void run_generation(unsigned int g,

@@ -36,7 +36,7 @@ PYBIND11_MODULE(_feat, m) {
           // .def(py::init<>())
           .def(py::init([]() { Feat est; return est; }))
           .def("fit",
-               static_cast<void (Feat::*)(MatrixXf& X, VectorXf& y)>(&Feat::fit),
+               static_cast<void (Feat::*)(MatrixXf X, VectorXf y)>(&Feat::fit),
                "fit from X,y data")
           .def("fit",
                static_cast<void (Feat::*)(MatrixXf& X, VectorXf& y, LongData& Z)>(&Feat::fit),

@@ -494,7 +494,7 @@ MatrixXf Feat::fit_transform(MatrixXf& X,
                        LongData Z)
                        { fit(X, y, Z); return transform(X, Z); }                                         
 
-void Feat::fit(MatrixXf& X, VectorXf& y)
+void Feat::fit(MatrixXf X, VectorXf y)
 {
     auto Z = LongData();
     fit(X,y,Z);
