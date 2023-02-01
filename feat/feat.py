@@ -157,7 +157,11 @@ class Feat(cppFeat, BaseEstimator):
                  cross_rate=0.5, 
                  root_xo_rate=0.5, 
                  otype='a', 
-                 functions="", 
+                 functions= [
+                    "+","-","*","/","^2","^3","sqrt","sin","cos","exp","log","^",
+                    "logit","tanh","gauss","relu", "split","split_c",
+                    "b2f","c2f","and","or","not","xor","=","<","<=",">",">=","if","ite"
+                 ],
                  max_depth=3, 
                  max_dim=10, 
                  random_state=0, 
@@ -190,13 +194,21 @@ class Feat(cppFeat, BaseEstimator):
                  tune_final=True, 
                  starting_pop="",
                 ):
+        cppFeat.__init__(self)
+        print('Feat init')
+        print(vars(self))
         self.pop_size=pop_size
+        print(vars(self))
         self.gens=gens
         self.ml=ml
+        print('Feat minit')
+        print(vars(self))
         self.classification = classification
         self.verbosity=verbosity
         self.max_stall=max_stall
         self.sel=sel
+        print('Feat sinit')
+        print(vars(self))
         self.surv=surv
         self.cross_rate=cross_rate
         self.root_xo_rate=root_xo_rate
@@ -206,7 +218,9 @@ class Feat(cppFeat, BaseEstimator):
         self.max_dim=max_dim
         self.random_state=random_state
         self.erc=erc
+        print('Feat init')
         self.objectives=objectives
+        print(vars(self))
         self.shuffle=shuffle
         self.split=split
         self.fb=fb
@@ -218,6 +232,8 @@ class Feat(cppFeat, BaseEstimator):
         self.batch_size=batch_size
         self.n_jobs=n_jobs
         self.hillclimb=hillclimb
+        print('butts')
+        print(vars(self))
         self.logfile=logfile
         self.max_time=max_time
         self.residual_xo=residual_xo
@@ -233,6 +249,7 @@ class Feat(cppFeat, BaseEstimator):
         self.tune_initial=tune_initial
         self.tune_final=tune_final
         self.starting_pop=starting_pop
+        print('Feat init')
         
     def set_params(self, **params):
         for k,v in params.items():
@@ -274,7 +291,7 @@ class Feat(cppFeat, BaseEstimator):
     def get_params(self, deep=False, static_params=False):
         return {k:v for k,v in self.__dict__.items() if not k.endswith('_')}
 
-    def fit(self,X,y,zfile=None,zids=None):
+    def fit(self,X,y,Z=None):
         """Fit a model."""    
 
         X,y = self._clean(X, y, set_feature_names=True)
@@ -290,11 +307,16 @@ class Feat(cppFeat, BaseEstimator):
 
         # self.set_params(**{k[1:]:v for k,v in self._get_params().items() 
         #                   if k.endswith('_')})
-        super().fit(X,y)
+        if Z:
+            cppFeat.fit(X,y,Z)
+        else:
+            y = np.array(y, dtype=np.float32, order='F').reshape(1,-1)
+            print('X shape:',X.shape, 'y shape:',y.shape)
+            cppFeat.fit(X,y)
 
         return self
 
-    def predict(self,X,zfile=None,zids=None):
+    def predict(self,X,Z=None):
         """Predict on X."""
         if not self._fitted_:
             raise ValueError("Call fit before calling predict.")
@@ -302,12 +324,12 @@ class Feat(cppFeat, BaseEstimator):
         X = check_array(X)
         self._check_shape(X)
 
-        if zfile:
-            return self._predict_with_z(X,zfile,zids)
+        if Z:
+            return cppFeat.predict(X,Z)
         else:
-            return self._predict(X)
+            return cppFeat.predict(X)
 
-    def predict_archive(self,X,zfile=None,zids=None):
+    def predict_archive(self,X,Z=None):
         """Returns a list of dictionary predictions for all models."""
         if not self._fitted_:
             raise ValueError("Call fit before calling predict.")
@@ -315,9 +337,9 @@ class Feat(cppFeat, BaseEstimator):
         X = check_array(X)
         self._check_shape(X)
 
-        if zfile:
-            raise ImplementationError('longitudinal not implemented')
-            return 1
+        if Z:
+            raise NotImplementedError('longitudinal not implemented')
+            return
 
         archive = self.get_archive(justfront=False)
         preds = []
@@ -329,7 +351,7 @@ class Feat(cppFeat, BaseEstimator):
 
         return preds
 
-    def transform(self,X,zfile=None,zids=None):
+    def transform(self,X,Z):
         """Return the representation's transformation of X"""
         if not self._fitted_:
             raise ValueError("Call fit before calling transform.")
@@ -337,15 +359,15 @@ class Feat(cppFeat, BaseEstimator):
         X = check_array(X)
         self._check_shape(X)
 
-        if zfile:
-            return self._transform_with_z(X,zfile,zids)
+        if Z:
+            return cppFeat.transform(X,Z)
         else:
-            return self._transform(X)
+            return cppFeat.transform(X)
 
-    def fit_predict(self,X,y):
+    def fit_predict(self,X,y,Z=None):
         """Convenience method that runs fit(X,y) then predict(X)"""
-        self.fit(X,y)
-        result = self.predict(X)
+        self.fit(X,y,Z)
+        result = self.predict(X,Z)
         return result
 
     def fit_transform(self,X,y):
@@ -354,14 +376,14 @@ class Feat(cppFeat, BaseEstimator):
         result = self.transform(X)
         return result
 
-    def score(self,X,y,zfile=None,zids=None):
+    def score(self,X,y,Z=None):
         """Returns a score for the predictions of Feat on X versus true 
         labels y""" 
         if ( self.classification ):
-            yhat = self.predict_proba(X,zfile,zids)
+            yhat = self.predict_proba(X,Z)
             return log_loss(y,yhat, labels=y)
         else:
-            yhat = self.predict(X,zfile,zids).flatten()
+            yhat = self.predict(X,Z).flatten()
             return mse(y,yhat)
 
     def _clean(self, x, y, set_feature_names=False):
@@ -370,7 +392,7 @@ class Feat(cppFeat, BaseEstimator):
         if type(x).__name__ == 'DataFrame':
             if set_feature_names and len(list(x.columns)) == x.shape[1]:
                 self.feature_names = ','.join(x.columns)
-        return check_X_y(x,y, ensure_min_samples=2)
+        return check_X_y(x,y, ensure_min_samples=2, dtype=np.float32)
 
     def _check_shape(self, X):
         if X.shape[1] != self.n_features_in_:
@@ -384,6 +406,7 @@ class FeatRegressor(Feat):
         kwargs.update({'classification':False})
         if 'ml' not in kwargs: 
             kwargs['ml'] = 'LinearRidgeRegression'
+        print('FeatRegressor init. kwargs', kwargs)
         Feat.__init__(self,**kwargs)
 
 class FeatClassifier(Feat):

@@ -2,8 +2,10 @@ name: feat
 channels:
     - conda-forge
 dependencies:
-    - python
+    - python=3.10
     - cmake>3.3
+    - gcc
+    - gxx
     - ninja
     - eigen
     - cython
@@ -15,5 +17,4 @@ dependencies:
     - pybind11
     - pip
     - pip:
-        - eigency
         - pmlb

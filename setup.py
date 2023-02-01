@@ -278,9 +278,7 @@ setup(
                       'scikit-learn',
                       'pandas'
     ],
-    # package_dir = {'','feat'},
     packages = ['feat'],
-    # py_modules=['feat','metrics','versionstr'],
     ext_modules = ([CMakeExtension("_feat")]),
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False
