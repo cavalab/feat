@@ -288,35 +288,44 @@ class Feat(cppFeat, BaseEstimator):
     #     with open(filename, 'w') as of:
     #         json.dump(feat_state, of)
 
-    def get_params(self, deep=False, static_params=False):
-        import pdb
-        pdb.set_trace()
-        print({k:v for k,v in super().__dict__.items() if not k.endswith('_')})
-        return {k:v for k,v in self.__dict__.items() if not k.endswith('_')}
+    # def __str__(self):
+    #     return ' '.join(f'{k}: {v}' for k, v in self.get_params())
 
-    def fit(self,X,y,Z=None):
+    def get_params(self, deep=False, static_params=False):
+        # import pdb
+        # pdb.set_trace()
+        attribs = {k: v for k, v in self.__dict__.items() if not k.startswith("_")}
+
+        for name in dir(self.__class__):
+            # a protected property is somewhat uncommon but
+            # let's stay consistent with plain attribs
+            if name.startswith("_"):
+                continue  
+            obj = getattr(self.__class__, name)
+            if isinstance(obj, property):
+                val = obj.__get__(self, self.__class__)
+                attribs[name] = val
+
+        return attribs
+        # params = {
+        #     k:getattr(self,k) for k in cppFeat.__dict__.keys() 
+        # }
+        # params.update(self.__dict__)
+        # return {k:v for k,v in params.items() if not k.endswith('_')}
+
+    def fit(self, X, y, Z=None):
         """Fit a model."""    
 
-        # X,y = self._clean(X, y, set_feature_names=True)
         self.n_features_in_ = X.shape[1]
+        X,y = self._clean(X, y, set_feature_names=True)
 
-        # self._set_params(**{'_'+k:v for k,v in self.get_params(
-        #                     static_params=True).items()})
-        # if zfile:
-        #     self._fit_with_z(X,y,zfile,zids)
-        # else:
-        #     pdb.set_trace()
-        #     self._fit(X,y)
-
-        # self.set_params(**{k[1:]:v for k,v in self._get_params().items() 
-        #                   if k.endswith('_')})
         if Z:
-            cppFeat.fit(X,y,Z)
+            super().fit(X,y,Z)
         else:
             # y = np.array(y, dtype=np.float32, order='F').reshape(1,-1)
             print('X shape:',X.shape, 'y shape:',y.shape)
+            print('X type:',X.dtype, 'y type:',y.dtype)
             print('blah')
-            # cppFeat.fit(X,y)
             super().fit(X,y)
 
         return self
@@ -326,21 +335,19 @@ class Feat(cppFeat, BaseEstimator):
         if not self._fitted_:
             raise ValueError("Call fit before calling predict.")
 
-        X = check_array(X)
-        self._check_shape(X)
+        X = self._prep_X(X)
 
         if Z:
-            return cppFeat.predict(X,Z)
+            return super().predict(X,Z)
         else:
-            return cppFeat.predict(X)
+            return super().predict(X)
 
     def predict_archive(self,X,Z=None):
         """Returns a list of dictionary predictions for all models."""
         if not self._fitted_:
             raise ValueError("Call fit before calling predict.")
 
-        X = check_array(X)
-        self._check_shape(X)
+        X = self._prep_X(X)
 
         if Z:
             raise NotImplementedError('longitudinal not implemented')
@@ -361,13 +368,12 @@ class Feat(cppFeat, BaseEstimator):
         if not self._fitted_:
             raise ValueError("Call fit before calling transform.")
 
-        X = check_array(X)
-        self._check_shape(X)
+        X = self._prep_X(X)
 
         if Z:
-            return cppFeat.transform(X,Z)
+            return super().transform(X,Z)
         else:
-            return cppFeat.transform(X)
+            return super().transform(X)
 
     def fit_predict(self,X,y,Z=None):
         """Convenience method that runs fit(X,y) then predict(X)"""
@@ -391,13 +397,28 @@ class Feat(cppFeat, BaseEstimator):
             yhat = self.predict(X,Z).flatten()
             return mse(y,yhat)
 
+    def _prep_array(self, x):
+        """Converts dataframe to array, optionally returning feature names"""
+        x = np.asfortranarray(x, dtype=np.float32)
+        return x
+
+    def _prep_X(self, X):
+        X = check_array(X)
+        self._check_shape(X)
+        return self._prep_array(X).transpose()
+
     def _clean(self, x, y, set_feature_names=False):
         """Converts dataframe to array, optionally returning feature names"""
         feature_names = ''
         if type(x).__name__ == 'DataFrame':
             if set_feature_names and len(list(x.columns)) == x.shape[1]:
                 self.feature_names = ','.join(x.columns)
-        return check_X_y(x,y, ensure_min_samples=2, dtype=np.float32)
+        x, y = check_X_y(x,y, ensure_min_samples=2, dtype=np.float32)
+
+        x = self._prep_X(x)
+        y = self._prep_array(y)
+
+        return x,y
 
     def _check_shape(self, X):
         if X.shape[1] != self.n_features_in_:

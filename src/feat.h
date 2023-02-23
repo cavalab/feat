@@ -371,7 +371,7 @@ class Feat
 
 
         /// train a model.             
-        void fit(MatrixXf X, VectorXf y);
+        void fit(MatrixXf& X, VectorXf& y);
         void fit(MatrixXf& X, VectorXf& y, LongData& Z);
                         
         void run_generation(unsigned int g,

@@ -157,8 +157,8 @@ class CMakeBuild(build_ext):
 
         print("building extension...")
         
-        cfg = "Debug" if self.debug else "Release"
-        # cfg = "Debug"
+        # cfg = "Debug" if self.debug else "Release"
+        cfg = "Debug"
         # cfg = "Release"
 
         # extdir = LIB_PATH
@@ -175,7 +175,7 @@ class CMakeBuild(build_ext):
             f"-DSHOGUN_LIB={SHOGUN_LIB}",
             f"-DEIGEN3_INCLUDE_DIR={EIGEN_DIR}",
             f"-DOMP={'OFF' if cfg=='Debug' else 'ON'}",
-            f"-DGTEST={'ON' if cfg=='Debug' else 'OFF'}",
+            f"-DGTEST={'OFF' if cfg=='Debug' else 'OFF'}",
             f"-DFEAT_LIB_SUFFIX={extsuffix}"
         ]
         build_args = []

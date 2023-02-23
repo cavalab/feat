@@ -36,13 +36,13 @@ PYBIND11_MODULE(_feat, m) {
           // .def(py::init<>())
           .def(py::init([]() { Feat est; return est; }))
           .def("fit",
-               static_cast<void (Feat::*)(MatrixXf X, VectorXf y)>(&Feat::fit),
+               py::overload_cast<MatrixXf&, VectorXf&>(&Feat::fit),
                "fit from X,y data")
           .def("fit",
-               static_cast<void (Feat::*)(MatrixXf& X, VectorXf& y, LongData& Z)>(&Feat::fit),
+               py::overload_cast<MatrixXf&, VectorXf&, LongData&>(&Feat::fit),
                "fit from X,y,Z data")
           .def("predict",
-               static_cast<VectorXf (Feat::*)(MatrixXf& X)>(&Feat::predict),
+               py::overload_cast<MatrixXf&>(&Feat::predict),
                "predict from X data")
           .def_property("stats_", &Feat::get_stats, nullptr)
           .def_property("pop_size", &Feat::get_pop_size, &Feat::set_pop_size)
@@ -77,14 +77,17 @@ PYBIND11_MODULE(_feat, m) {
           .def_property("max_time", &Feat::get_max_time, &Feat::set_max_time)
           .def_property("residual_xo", &Feat::get_residual_xo, &Feat::set_residual_xo)
           .def_property("stagewise_xo", &Feat::get_stagewise_xo, &Feat::set_stagewise_xo)
-          .def_property("stagewise_xo_tol", &Feat::get_stagewise_xo_tol, &Feat::set_stagewise_xo_tol)
+          .def_property("stagewise_xo_tol", &Feat::get_stagewise_xo_tol, 
+               &Feat::set_stagewise_xo_tol)
           .def_property("softmax_norm", &Feat::get_softmax_norm, &Feat::set_softmax_norm)
           .def_property("save_pop", &Feat::get_save_pop, &Feat::set_save_pop)
           .def_property("normalize", &Feat::get_normalize, &Feat::set_normalize)
           .def_property("val_from_arch", &Feat::get_val_from_arch, &Feat::set_val_from_arch)
-          .def_property("corr_delete_mutate", &Feat::get_corr_delete_mutate, &Feat::set_corr_delete_mutate)
+          .def_property("corr_delete_mutate", &Feat::get_corr_delete_mutate, 
+               &Feat::set_corr_delete_mutate)
           .def_property("simplify", &Feat::get_simplify, &Feat::set_simplify)
-          .def_property("protected_groups", &Feat::get_protected_groups, &Feat::set_protected_groups)
+          .def_property("protected_groups", 
+               &Feat::get_protected_groups, &Feat::set_protected_groups)
           .def_property("tune_initial", &Feat::get_tune_initial, &Feat::set_tune_initial)
           .def_property("tune_final", &Feat::get_tune_final, &Feat::set_tune_final)
           .def_property("starting_pop", &Feat::get_starting_pop, &Feat::set_starting_pop)

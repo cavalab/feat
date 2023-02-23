@@ -69,6 +69,7 @@ using namespace FT;
 /// @brief initialize Feat object for fitting.
 void Feat::init()
 {
+    cout << "init\n";
     if (params.n_jobs!=0)
         omp_set_num_threads(params.n_jobs);
     r.set_seed(params.random_state);
@@ -494,7 +495,7 @@ MatrixXf Feat::fit_transform(MatrixXf& X,
                        LongData Z)
                        { fit(X, y, Z); return transform(X, Z); }                                         
 
-void Feat::fit(MatrixXf X, VectorXf y)
+void Feat::fit(MatrixXf& X, VectorXf& y)
 {
     auto Z = LongData();
     fit(X,y,Z);
@@ -523,8 +524,13 @@ void Feat::fit(MatrixXf& X, VectorXf& y, LongData& Z)
      *	   7. select surviving individuals from parents and offspring
      */
     this->init();
+    std::ofstream log;                      ///< log file stream
+    if (!logfile.empty())
+        log.open(logfile, std::ofstream::app);
+    params.init(X, y);       
 
     string FEAT;
+    cout << "params.verbosity: " << params.verbosity << "\n";
     if (params.verbosity == 1)
     {
         FEAT = (  
@@ -544,7 +550,6 @@ void Feat::fit(MatrixXf& X, VectorXf& y, LongData& Z)
       "/////////////////////////////////////////////////////////////////////\n"
         );
     }
-    logger.log(FEAT,1);
 
     if (params.use_batch)
     {
@@ -560,9 +565,6 @@ void Feat::fit(MatrixXf& X, VectorXf& y, LongData& Z)
                     + to_string(params.bp.batch_size), 2);
         }
     }
-    std::ofstream log;                      ///< log file stream
-    if (!logfile.empty())
-        log.open(logfile, std::ofstream::app);
     
     // if(str_dim.compare("") != 0)
     // {
@@ -575,13 +577,18 @@ void Feat::fit(MatrixXf& X, VectorXf& y, LongData& Z)
     //     set_max_dim(ceil(stod(dimension)*X.rows()));
     // }
     
-    params.init(X, y);       
+
+    logger.log(FEAT,1);
     
+    cout << "this->archive.set_objectives(params.objectives)\n";
     this->archive.set_objectives(params.objectives);
 
     // normalize data
     if (params.normalize)
+    {
+        cout << "N.fit_normalize(X,params.dtypes);\n" ;
         N.fit_normalize(X,params.dtypes);                   
+    }
     this->pop = Population(params.pop_size);
     this->evaluator = Evaluation(params.scorer_);
 
@@ -596,13 +603,18 @@ void Feat::fit(MatrixXf& X, VectorXf& y, LongData& Z)
 
     logger.log("scorer: " + params.scorer_, 1);
 
+    cout << "X: " << X << "\n";
+    cout << "y: " << y << "\n";
     // split data into training and test sets
     //Data data(X, y, Z, params.classification);
+    cout << "DataRef d(X, y, Z, params.classification, params.protected_groups);\n";
     DataRef d(X, y, Z, params.classification, params.protected_groups);
     //DataRef d;
     //d.setOriginalData(&data);
+    cout << "d.train_test_split(params.shuffle, params.split);";
     d.train_test_split(params.shuffle, params.split);
     // define terminals based on size of X
+    cout << "params.set_terminals(d.o->X.rows(), d.o->Z);";
     params.set_terminals(d.o->X.rows(), d.o->Z);        
 
     // initial model on raw input
