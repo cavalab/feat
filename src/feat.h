@@ -47,6 +47,7 @@ using std::unique_ptr;
 using std::shared_ptr;
 using std::make_shared;
 using std::cout; 
+namespace nl = nlohmann;
 
 /**
 * @namespace FT
@@ -97,7 +98,7 @@ class Feat
         //      bool tune_initial=false, bool tune_final=true,
         //      string starting_pop="");
 
-        Feat(){ cout << "constructedz\n"; }
+        Feat(){}
         /// destructor             
         ~Feat(){} 
         
@@ -167,6 +168,8 @@ class Feat
         /// set max depth of programs              
         void set_max_depth(unsigned int max_depth);
          
+        ///return max dimensionality of programs
+        int get_max_dim();
         /// set maximum dimensionality of programs              
         void set_max_dim(unsigned int max_dim);
         
@@ -179,29 +182,41 @@ class Feat
         /// returns the actual seed determined by the input argument.
         int get_random_state_() { return r.get_seed(); };
                     
+        ///return boolean value of erc flag
+        bool get_erc();
         /// flag to set whether to use variable or constants for terminals
         void set_erc(bool erc);
         
+        ///return whether option to shuffle the data is set or not
+        bool get_shuffle();
         /// flag to shuffle the input samples for train/test splits
         void set_shuffle(bool sh);
 
         
+        ///return fraction of data to use for training
+        float get_split();
         /// set train fraction of dataset
         void set_split(float sp);
         
+        ///return data types for input parameters
+        vector<char> get_dtypes();
         ///set data types for input parameters
         void set_dtypes(vector<char> dtypes);
 
+        ///get feedback setting
+        float get_fb();
         ///set feedback
         void set_fb(float fb);
 
+        /// get name
+        string get_logfile();
         ///set name for files
         void set_logfile(string s);
 
-        ///set scoring function
-        void set_scorer(string s);
         // returns the input argument for scorer.
         string get_scorer();
+        ///set scoring function
+        void set_scorer(string s);
         // returns the actual scorer determined by the input argument.
         string get_scorer_();
         
@@ -265,85 +280,6 @@ class Feat
         void set_normalize(bool in){params.normalize = in;};
         bool get_normalize(){return params.normalize;};
 
-
-        /*                                                      
-         * getting functions
-         */
-
-        
-        ///return archive size
-        int get_archive_size(){ return this->archive.individuals.size(); };
-
-        
-        
-        
-        
-        
-        
-        
-        ///return max size of programs
-        int get_max_size();
-        
-        ///return max dimensionality of programs
-        int get_max_dim();
-        
-        ///return boolean value of erc flag
-        bool get_erc();
-       
-        /// get name
-        string get_logfile();
-
-        ///return number of features
-        int get_num_features();
-        
-        ///return whether option to shuffle the data is set or not
-        bool get_shuffle();
-        
-        ///return fraction of data to use for training
-        float get_split();
-        
-        ///add custom node into feat
-        /* void add_function(unique_ptr<Node> N)
-         * { params.functions.push_back(N->clone()); } */
-        
-        ///return data types for input parameters
-        vector<char> get_dtypes();
-
-        ///return feedback setting
-        float get_fb();
-       
-        ///return best model
-        string get_representation();
-
-        ///return best model, in tabular form
-        string get_model(bool sort=true);
-
-        ///return best model as a single line equation 
-        string get_eqn(bool sort, Individual& ind);
-        string get_eqn(bool sort=false); 
-
-        ///get number of parameters in best
-        int get_n_params();
-
-        ///get dimensionality of best
-        int get_dim();
-
-        ///get dimensionality of best
-        int get_complexity();
-
-        ///return population as string
-        string get_archive(bool front=true);
-       
-        /// return the coefficients or importance scores of the best model. 
-        ArrayXf get_coefs();
-
-        /// return the number of nodes in the best model
-        int get_n_nodes();
-
-        /// get longitudinal data from file s
-        LongData get_Z(string s, 
-                int * idx, int idx_size);
-
         string get_sel(){return this->selector.get_type();};
         void set_sel(string in){this->selector.set_type(in); };
 
@@ -369,6 +305,39 @@ class Feat
         bool get_val_from_arch(){return val_from_arch; };
         void set_val_from_arch(bool in){val_from_arch = in; };
 
+        /*                                                      
+         * solo getters
+         */
+        ///return archive size
+        int get_archive_size(){ return this->archive.individuals.size(); };
+        ///return max size of programs
+        int get_max_size();
+        ///return number of features
+        int get_num_features();
+        ///return best model
+        string get_representation();
+        ///return best model, in tabular form
+        string get_model(bool sort=true);
+        ///return best model as a single line equation 
+        string get_eqn(bool sort, Individual& ind);
+        string get_eqn(bool sort=false); 
+        ///get number of parameters in best
+        int get_n_params();
+        ///get dimensionality of best
+        int get_dim();
+        ///get dimensionality of best
+        int get_complexity();
+        ///return population as string
+        vector<nl::json> get_archive(bool front);
+        /// return the coefficients or importance scores of the best model. 
+        ArrayXf get_coefs();
+        /// return the number of nodes in the best model
+        int get_n_nodes();
+        /// get longitudinal data from file s
+        LongData get_Z(string s, 
+                int * idx, int idx_size);
+
+
 
         /// train a model.             
         void fit(MatrixXf& X, VectorXf& y);
@@ -381,80 +350,34 @@ class Feat
                         float percentage,
                         unsigned& stall_count);
                  
-        /// train a model.             
-        // void fit(float * X,int rowsX,int colsX, float * Y,int lenY);
-
-        /// train a model, first loading longitudinal samples (Z) from file.
-        void fit_with_z(float * X, int rowsX, int colsX, 
-                float * Y, int lenY, string s, int * idx, int idx_size);
-       
         /// predict on unseen data.             
         VectorXf predict(MatrixXf& X, LongData& Z);  
         VectorXf predict(MatrixXf& X);
 
         /// predict on unseen data from the whole archive             
-        VectorXf predict_archive(int id, MatrixXf& X, 
-                LongData Z = LongData());  
-        VectorXf predict_archive(int id, float * X, int rowsX, int colsX);
-        ArrayXXf predict_proba_archive(int id, MatrixXf& X, 
-                LongData Z=LongData());
+        VectorXf predict_archive(int id, MatrixXf& X);  
+        VectorXf predict_archive(int id, MatrixXf& X, LongData& Z);
+        ArrayXXf predict_proba_archive(int id, MatrixXf& X, LongData& Z);
+        ArrayXXf predict_proba_archive(int id, MatrixXf& X);
 
-        ArrayXXf predict_proba_archive(int id, 
-                float * X, int rows_x, int cols_x);
         /// predict on unseen data. return CLabels.
-        shared_ptr<CLabels> predict_labels(MatrixXf& X,
-                         LongData Z = LongData());  
+        shared_ptr<CLabels> predict_labels(MatrixXf& X, LongData Z = LongData());  
 
         /// predict probabilities of each class.
-        ArrayXXf predict_proba(MatrixXf& X,
-                         LongData Z = LongData());  
-        
-        ArrayXXf predict_proba(float * X, int rows_x, int cols_x);
+        ArrayXXf predict_proba(MatrixXf& X, LongData& Z);  
+        ArrayXXf predict_proba(MatrixXf& X);
 
-        /// predict on unseen data, loading longitudinal samples (Z) from file.
-        VectorXf predict_with_z(float * X, int rowsX,int colsX, 
-                                string s, int * idx, int idx_size);
-
-        /// predict probabilities of each class.
-        ArrayXXf predict_proba_with_z(float * X, int rowsX,int colsX, 
-                                string s, int * idx, int idx_size);  
-
-        /// predict on unseen data.             
-        VectorXf predict(float * X, int rowsX, int colsX);      
-        
         /// transform an input matrix using a program.                          
-        MatrixXf transform(MatrixXf& X,
-                           LongData Z = LongData(),
-                           Individual *ind = 0);
+        MatrixXf transform(MatrixXf& X);
+        MatrixXf transform(MatrixXf& X, LongData& Z);
+        MatrixXf transform(MatrixXf& X, LongData Z, Individual *ind);
         
-        MatrixXf transform(float * X,  int rows_x, int cols_x);
-        
-        /// train a model, first loading longitudinal samples (Z) from file.
-        MatrixXf transform_with_z(float * X, int rowsX, int colsX, string s, 
-                                  int * idx, int idx_size);
-        
-        /// convenience function calls fit then predict.            
-        VectorXf fit_predict(MatrixXf& X,
-                             VectorXf& y,
-                             LongData Z = LongData());
-                             
-        VectorXf fit_predict(float * X, int rows_x, int cols_x, float * Y, 
-                int len_y);
-        
-        /// convenience function calls fit then transform. 
-        MatrixXf fit_transform(MatrixXf& X,
-                               VectorXf& y,
-                               LongData Z = LongData());
-                               
-        MatrixXf fit_transform(float * X, int rows_x, int cols_x, float * Y, 
-                int len_y);
-              
         /// scoring function 
         float score(MatrixXf& X, const VectorXf& y,
                  LongData Z = LongData()); 
         
         /// return statistics from the run as a json string
-        string get_stats();
+        nl::json get_stats();
 
         /// load best_ind from file
         void load_best_ind(string filename);
@@ -542,6 +465,10 @@ class Feat
         );
                 
 };
+
+// forward declarations
+void to_json(nl::json&, const Feat&);
+void from_json(const nl::json&, Feat&);
 
 // serialization
 } // FT

@@ -9,7 +9,6 @@ license: GNU/GPL v3
 #include <Eigen/Core>
 
 #include "../init.h"
-#include "json.hpp"
 using nlohmann::json;
 
 namespace Eigen

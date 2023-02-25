@@ -10,7 +10,7 @@ from sklearn.base import BaseEstimator, RegressorMixin, ClassifierMixin
 import numpy as np
 import pandas as pd
 # from feat.cyfeat import CyFeat
-from _feat import cppFeat
+from _feat import cppFeat, from_json, to_json
 from sklearn.metrics import mean_squared_error as mse
 from sklearn.metrics import log_loss
 from sklearn.utils import check_X_y, check_array
@@ -18,7 +18,7 @@ from sklearn.preprocessing import LabelEncoder
 import pdb
 import json
 
-class Feat(cppFeat, BaseEstimator):
+class Feat(BaseEstimator):
     """Feature Engineering Automation Tool
 
     Parameters
@@ -194,21 +194,13 @@ class Feat(cppFeat, BaseEstimator):
                  tune_final=True, 
                  starting_pop="",
                 ):
-        super().__init__()
-        print('Feat init')
-        print(vars(self))
         self.pop_size=pop_size
-        print(vars(self))
         self.gens=gens
         self.ml=ml
-        print('Feat minit')
-        print(vars(self))
         self.classification = classification
         self.verbosity=verbosity
         self.max_stall=max_stall
         self.sel=sel
-        print('Feat sinit')
-        print(vars(self))
         self.surv=surv
         self.cross_rate=cross_rate
         self.root_xo_rate=root_xo_rate
@@ -218,9 +210,7 @@ class Feat(cppFeat, BaseEstimator):
         self.max_dim=max_dim
         self.random_state=random_state
         self.erc=erc
-        print('Feat init')
         self.objectives=objectives
-        print(vars(self))
         self.shuffle=shuffle
         self.split=split
         self.fb=fb
@@ -232,8 +222,6 @@ class Feat(cppFeat, BaseEstimator):
         self.batch_size=batch_size
         self.n_jobs=n_jobs
         self.hillclimb=hillclimb
-        print('butts')
-        print(vars(self))
         self.logfile=logfile
         self.max_time=max_time
         self.residual_xo=residual_xo
@@ -249,12 +237,11 @@ class Feat(cppFeat, BaseEstimator):
         self.tune_initial=tune_initial
         self.tune_final=tune_final
         self.starting_pop=starting_pop
-        print('Feat init')
         
-    def set_params(self, **params):
-        for k,v in params.items():
-            setattr(self,k,v)
-        return self
+    # def set_params(self, **params):
+    #     for k,v in params.items():
+    #         setattr(self,k,v)
+    #     return self
 
     # def load(self, filename):
     #     """Load a saved Feat state from file."""
@@ -272,62 +259,85 @@ class Feat(cppFeat, BaseEstimator):
 
     #     return self
 
-    # def save(self, filename):
-    #     """Save a Feat state to file."""
+    def save(self, filename):
+        """Save a Feat state to file."""
 
-    #     feat_state = json.loads(self._save())
-    #     # add python-specific parameters
-    #     for k in self.__dict__: 
-    #         if k.endswith('_'):
-    #             print('adding',k,'type:',self.__dict__[k].__class__.__name__)
-    #             feat_state[k] = self.__dict__[k]
+        cfeat_state = {}
+        from_json(cfeat_state, self.cfeat_)
+        # self.cfeat_.save())
+        # add python-specific parameters
+        for k in self.__dict__: 
+            if k.endswith('_'):
+                print('adding',k,'type:',self.__dict__[k].__class__.__name__)
+                feat_state[k] = self.__dict__[k]
 
-    #     for k,v in feat_state.items():
-    #         if v.__class__.__name__ == 'int64':
-    #             print(k,':',v.__class__.__name__,':',v)
-    #     with open(filename, 'w') as of:
-    #         json.dump(feat_state, of)
+        # for k,v in feat_state.items():
+        #     if v.__class__.__name__ == 'int64':
+        #         print(k,':',v.__class__.__name__,':',v)
+        with open(filename, 'w') as of:
+            json.dump(feat_state, of)
 
     # def __str__(self):
     #     return ' '.join(f'{k}: {v}' for k, v in self.get_params())
+    # def get_params(self, deep=True):
+    #     return BaseEstimator.get_params(self,deep)
+    # def get_params(self, deep=True):
+    #     """
+    #     Get parameters for this estimator.
+    #     Parameters
+    #     ----------
+    #     deep : bool, default=True
+    #         If True, will return the parameters for this estimator and
+    #         contained subobjects that are estimators.
+    #     Returns
+    #     -------
+    #     params : dict
+    #         Parameter names mapped to their values.
+    #     """
+    #     out = dict()
+    #     for key in self._get_param_names():
+    #         value = getattr(self, key)
+    #         if deep and hasattr(value, "get_params") and not isinstance(value, type):
+    #             deep_items = value.get_params().items()
+    #             out.update((key + "__" + k, val) for k, val in deep_items)
+    #         out[key] = value
+    #     return out
 
-    def get_params(self, deep=False, static_params=False):
-        # import pdb
-        # pdb.set_trace()
-        attribs = {k: v for k, v in self.__dict__.items() if not k.startswith("_")}
+    # def get_params(self, deep=False):
+    #     attribs = BaseEstimator.get_params(self)
 
-        for name in dir(self.__class__):
-            # a protected property is somewhat uncommon but
-            # let's stay consistent with plain attribs
-            if name.startswith("_"):
-                continue  
-            obj = getattr(self.__class__, name)
-            if isinstance(obj, property):
-                val = obj.__get__(self, self.__class__)
-                attribs[name] = val
+    #     # get parameters that are pybind properties. these ones don't appear 
+    #     # in self.__dict__ so we have to pull them using dir(). 
+    #     for name in dir(self.__class__):
+    #         # ignore private and post-fit attributes
+    #         if name.startswith("_") or name.endswith("_"):
+    #             continue  
+    #         obj = getattr(self.__class__, name)
+    #         if isinstance(obj, property):
+    #             val = obj.__get__(self, self.__class__)
+    #             attribs[name] = val
+    #     return attribs
 
-        return attribs
-        # params = {
-        #     k:getattr(self,k) for k in cppFeat.__dict__.keys() 
-        # }
-        # params.update(self.__dict__)
-        # return {k:v for k,v in params.items() if not k.endswith('_')}
+    def _set_cfeat_params(self):
+        """Setup cpp feat estimator."""
+        self.cfeat_ = cppFeat()
+        params = self.get_params()
+        for k,v in params.items():
+            setattr(self.cfeat_, k, v)
 
     def fit(self, X, y, Z=None):
         """Fit a model."""    
+        self._set_cfeat_params() 
 
-        self.n_features_in_ = X.shape[1]
+        # self.n_features_in_ = X.shape[1]
         X,y = self._clean(X, y, set_feature_names=True)
 
         if Z:
-            super().fit(X,y,Z)
+            self.cfeat_.fit(X,y,Z)
         else:
-            # y = np.array(y, dtype=np.float32, order='F').reshape(1,-1)
-            print('X shape:',X.shape, 'y shape:',y.shape)
-            print('X type:',X.dtype, 'y type:',y.dtype)
-            print('blah')
-            super().fit(X,y)
+            self.cfeat_.fit(X,y)
 
+        self._fitted_ = True
         return self
 
     def predict(self,X,Z=None):
@@ -338,9 +348,9 @@ class Feat(cppFeat, BaseEstimator):
         X = self._prep_X(X)
 
         if Z:
-            return super().predict(X,Z)
+            return self.cfeat_.predict(X,Z)
         else:
-            return super().predict(X)
+            return self.cfeat_.predict(X)
 
     def predict_archive(self,X,Z=None):
         """Returns a list of dictionary predictions for all models."""
@@ -353,7 +363,7 @@ class Feat(cppFeat, BaseEstimator):
             raise NotImplementedError('longitudinal not implemented')
             return
 
-        archive = self.get_archive(justfront=False)
+        archive = self.cfeat_.get_archive(justfront=False)
         preds = []
         for ind in archive:
             tmp = {}
@@ -363,7 +373,7 @@ class Feat(cppFeat, BaseEstimator):
 
         return preds
 
-    def transform(self,X,Z):
+    def transform(self,X,Z=None):
         """Return the representation's transformation of X"""
         if not self._fitted_:
             raise ValueError("Call fit before calling transform.")
@@ -371,9 +381,11 @@ class Feat(cppFeat, BaseEstimator):
         X = self._prep_X(X)
 
         if Z:
-            return super().transform(X,Z)
+            Phi =  self.cfeat_.transform(X,Z)
         else:
-            return super().transform(X)
+            Phi = self.cfeat_.transform(X)
+
+        return Phi
 
     def fit_predict(self,X,y,Z=None):
         """Convenience method that runs fit(X,y) then predict(X)"""
@@ -381,11 +393,9 @@ class Feat(cppFeat, BaseEstimator):
         result = self.predict(X,Z)
         return result
 
-    def fit_transform(self,X,y):
+    def fit_transform(self,X,y,Z=None):
         """Convenience method that runs fit(X,y) then transform(X)"""
-        self.fit(X,y)
-        result = self.transform(X)
-        return result
+        return self.fit(X,y,Z).transform(X,Z)
 
     def score(self,X,y,Z=None):
         """Returns a score for the predictions of Feat on X versus true 
@@ -396,6 +406,15 @@ class Feat(cppFeat, BaseEstimator):
         else:
             yhat = self.predict(X,Z).flatten()
             return mse(y,yhat)
+
+    def get_coefs(self): 
+        return self.cfeat_.get_coefs()
+
+    @property
+    def stats_(self): 
+        if not self._fitted_:
+            raise ValueError("Call fit before asking for stats_.")
+        return self.cfeat_.get_stats()
 
     def _prep_array(self, x):
         """Converts dataframe to array, optionally returning feature names"""
@@ -432,8 +451,9 @@ class FeatRegressor(Feat):
         kwargs.update({'classification':False})
         if 'ml' not in kwargs: 
             kwargs['ml'] = 'LinearRidgeRegression'
-        print('FeatRegressor init. kwargs', kwargs)
         Feat.__init__(self,**kwargs)
+    def _get_param_names(self):
+        return Feat._get_param_names()
 
 class FeatClassifier(Feat):
     """Convenience method that enforces classification options.
@@ -446,12 +466,14 @@ class FeatClassifier(Feat):
             kwargs['ml'] = 'LR'
         Feat.__init__(self,**kwargs)
 
+    def _get_param_names(self):
+        return Feat._get_param_names()
     def fit(self,X,y,zfile=None,zids=None):
         self.classes_ = [int(i) for i in np.unique(np.asarray(y))]
-        if (any([i != j for i,j in zip(self.classes_,
-                                      np.arange(np.max(self.classes_))
-                                      )
-               ])):
+        if (any([
+            i != j 
+            for i,j in zip(self.classes_, np.arange(np.max(self.classes_)))
+        ])):
             raise ValueError('y must be a contiguous set of labels from ',
                              '0 to n_classes. y contains the values {}'.format(
                                  np.unique(np.asarray(y)))
@@ -461,49 +483,45 @@ class FeatClassifier(Feat):
         return self
         # return Feat.fit(self, X, y, zfile, zids)
 
-    # def predict(self,X,zfile=None,zids=None):
-    #     return Feat.predict(self, X, zfile, zids)
+    def predict(self,X,Z=None):
+        return super().predict(X, Z)
 
-    # def predict_proba(self,X,zfile=None,zids=None):
-    #     """Return probabilities of predictions for data X"""
-    #     if not self._fitted_:
-    #         raise ValueError("Call fit before calling predict.")
+    def predict_proba(self,X,Z=None):
+        """Return probabilities of predictions for data X"""
+        if not self._fitted_:
+            raise ValueError("Call fit before calling predict.")
 
-    #     X = check_array(X)
-    #     self._check_shape(X)
+        X = self._prep_X(X)
 
-    #     if zfile:
-    #         tmp = self._predict_proba_with_z(X,zfile,zids)
-    #     else:
-    #         tmp = self._predict_proba(X)
+        if Z:
+            tmp = self.predict_proba(X,Z)
+        else:
+            tmp = self.predict_proba(X)
         
-    #     # for binary classification, add a second column for 0 complement
-    #     if len(self.classes_) ==2:
-    #         tmp = tmp.ravel()
-    #         assert len(X) == len(tmp)
-    #         tmp = np.vstack((1-tmp,tmp)).transpose()
-    #     return tmp         
+        # for binary classification, add a second column for 0 complement
+        if len(self.classes_) ==2:
+            tmp = tmp.ravel()
+            assert len(X) == len(tmp)
+            tmp = np.vstack((1-tmp,tmp)).transpose()
+        return tmp         
 
-    def predict_proba_archive(self,X,zfile=None,zids=None):
+    def predict_proba_archive(self,X,Z=None,front=False):
         """Returns a dictionary of prediction probabilities for all models."""
 
         if not self._fitted_:
             raise ValueError("Call fit before calling predict.")
 
-        X = check_array(X)
-        self._check_shape(X)
+        X = self._prep_X(X)
 
-        if zfile:
-            raise ImplementationError('longitudinal not implemented')
-            # return self._predict_with_z(X,zfile,zids)
-            return 1
-
-        archive = self.get_archive()
+        archive = self.cfeat_.get_archive(front)
         probs = []
         for ind in archive:
             tmp = {}
             tmp['id'] = ind['id']
-            tmp['y_proba'] = self._predict_proba_archive(ind['id'], X)
+            if Z:
+                tmp['y_proba'] = self.cfeat_.predict_proba_archive(ind['id'], X, Z)
+            else:
+                tmp['y_proba'] = self.cfeat_.predict_proba_archive(ind['id'], X)
             probs.append(tmp)
 
         return probs

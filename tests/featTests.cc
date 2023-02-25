@@ -129,64 +129,6 @@ TEST(Feat, transform)
     ASSERT_TRUE(res.rows() <= feat.params.max_dim);
 }
 
-TEST(Feat, fit_predict)
-{
-    Feat feat = make_estimator(100, 10, "LinearRidgeRegression", false, 1, 666);
-    
-    MatrixXf X(7,2); 
-    X << 0,1,  
-         0.47942554,0.87758256,  
-         0.84147098,  0.54030231,
-         0.99749499,  0.0707372,
-         0.90929743, -0.41614684,
-         0.59847214, -0.80114362,
-         0.14112001,-0.9899925;
-
-    X.transposeInPlace();
-    
-    VectorXf y(7); 
-    // y = 2*x1 + 3.x2
-    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
-             -1.20648656, -2.68773747;
-    
-    feat.set_verbosity(1);
-         
-    ASSERT_EQ(feat.fit_predict(X, y).size(), 7);
-}
-
-TEST(Feat, fit_transform)
-{
-    Feat feat = make_estimator(100, 10, "LinearRidgeRegression", false, 1, 666);
-   
-    feat.set_verbosity(1);
-
-    MatrixXf X(7,2); 
-    X << 0,1,  
-         0.47942554,0.87758256,  
-         0.84147098,  0.54030231,
-         0.99749499,  0.0707372,
-         0.90929743, -0.41614684,
-         0.59847214, -0.80114362,
-         0.14112001,-0.9899925;
-
-    X.transposeInPlace();
-    
-    VectorXf y(7); 
-    // y = 2*x1 + 3.x2
-    y << 3.0,  3.59159876,  3.30384889,  2.20720158,  0.57015434,
-             -1.20648656, -2.68773747;
-    
-    MatrixXf res = feat.fit_transform(X, y);
-    ASSERT_EQ(res.cols(), 7);
-    
-    if (res.rows() > feat.params.max_dim)
-        std::cout << "res.rows(): " << res.rows() << 
-                    ", res.cols(): " << res.cols() << 
-                    ", params.max_dim: " << feat.params.max_dim << "\n";
-
-    ASSERT_TRUE(res.rows() <= feat.params.max_dim);
-}
-
 TEST(Feat, simplification)
 {
     Feat feat = make_estimator(100, 10, "LinearRidgeRegression", false, 1, 666);

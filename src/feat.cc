@@ -20,56 +20,9 @@ void __attribute__ ((destructor))  dtor()
 
 using namespace FT;
     
-// Feat::Feat(int pop_size, int gens, string ml, 
-//        bool classification, int verbosity, int max_stall,
-//        string sel, string surv, float cross_rate, float root_xo_rate,
-//        char otype, string functions, 
-//        unsigned int max_depth, unsigned int max_dim, int random_state, 
-//        bool erc, string obj, bool shuffle, 
-//        float split, float fb, string scorer, string feature_names,
-//        bool backprop,int iters, float lr, int batch_size, int n_jobs,
-//        bool hillclimb, string logfile, int max_time,  bool residual_xo, 
-//        bool stagewise_xo, bool stagewise_xo_tol,
-//        bool softmax_norm, int save_pop, bool normalize,
-//        bool val_from_arch, bool corr_delete_mutate, float simplify,
-//        string protected_groups, bool tune_initial, bool tune_final,
-//        string starting_pop):
-//           // construct subclasses
-//           params(pop_size, gens, ml, classification, max_stall, otype, 
-//                  verbosity, functions, cross_rate, root_xo_rate, max_depth, 
-//                  max_dim, erc, obj, shuffle, split, fb, scorer, feature_names, 
-//                  backprop, iters, lr, batch_size, hillclimb, max_time,  
-//                  residual_xo, stagewise_xo, stagewise_xo_tol, softmax_norm, 
-//                  normalize, corr_delete_mutate, tune_initial, tune_final), 
-//           selector( Selection(sel) ),
-//           survivor( Selection(surv, true) ),
-//           variator( Variation(cross_rate) ),
-//           save_pop(save_pop),
-//           val_from_arch(val_from_arch),
-//           simplify(simplify),
-//           starting_pop(starting_pop),
-//           survival(surv),
-//           random_state(random_state)
-// {
-//     if (n_jobs!=0)
-//         omp_set_num_threads(n_jobs);
-//     r.set_seed(random_state);
-//     str_dim = "";
-//     set_logfile(logfile);
-
-//     if (GPU)
-//         initialize_cuda();
-//     // set Feat's Normalizer to only normalize floats by default
-//     this->N = Normalizer(false);
-//     params.set_protected_groups(protected_groups);
-//     archive.set_objectives(params.objectives);
-//     set_is_fitted(false);
-// }
-
 /// @brief initialize Feat object for fitting.
 void Feat::init()
 {
-    cout << "init\n";
     if (params.n_jobs!=0)
         omp_set_num_threads(params.n_jobs);
     r.set_seed(params.random_state);
@@ -371,7 +324,7 @@ int Feat::get_complexity(){ return best_ind.get_complexity(); }
 int Feat::get_n_nodes(){ return best_ind.program.size(); }
 
 ///return population as string
-string Feat::get_archive(bool front)
+vector<json> Feat::get_archive(bool front)
 {
     /* TODO: maybe this should just return the to_json call of
      * the underlying population / archive. I guess the problem
@@ -408,6 +361,8 @@ string Feat::get_archive(bool front)
 
     bool includes_best_ind = false;
 
+    vector<json> json_archive;
+
     for (int i = 0; i < idx.size(); ++i)
     {
         Individual& ind = printed_pop->at(idx[i]); 
@@ -415,7 +370,8 @@ string Feat::get_archive(bool front)
         json j;
         to_json(j, ind);
 
-        r += j.dump();
+        // r += j.dump();
+        json_archive.push_back(j);
 
         if (i < idx.size() -1)
             r += "\n";
@@ -427,18 +383,16 @@ string Feat::get_archive(bool front)
     // add best_ind, if it is not included
     if (!includes_best_ind) 
     {
-        r += "\n";
         json j;
         to_json(j, best_ind);
-        r += j.dump();
+        json_archive.push_back(j);
     }
 
-    r += "\n";
     // delete pop pointer
     printed_pop = NULL;
     delete printed_pop;
     
-    return r;
+    return json_archive;
 }
 
 /// return the coefficients or importance scores of the best model. 
@@ -461,40 +415,6 @@ std::map<string, std::pair<vector<ArrayXf>, vector<ArrayXf>>> Feat::get_Z(string
 }
 
             
-ArrayXXf Feat::predict_proba(float * X, int rows_x, int cols_x) 
-{			    
-    MatrixXf matX = Map<MatrixXf>(X,rows_x,cols_x);
-    return predict_proba(matX);
-}
-
-ArrayXXf Feat::predict_proba_archive(int id, float * X, int rows_x, int cols_x) 
-{			    
-    MatrixXf matX = Map<MatrixXf>(X,rows_x,cols_x);
-    return predict_proba_archive(id,matX);
-}
-/// convenience function calls fit then predict.            
-VectorXf Feat::fit_predict(MatrixXf& X,
-                     VectorXf& y,
-                     LongData Z)
-{ 
-    fit(X, y, Z); 
-    return predict(X, Z); 
-} 
-                     
-VectorXf Feat::fit_predict(float * X, int rows_x, int cols_x, float * Y, int len_y)
-{
-    MatrixXf matX = Map<MatrixXf>(X,rows_x,cols_x);
-    VectorXf vectY = Map<VectorXf>(Y,len_y);
-    fit(matX,vectY); 
-    return predict(matX); 
-} 
-
-/// convenience function calls fit then transform. 
-MatrixXf Feat::fit_transform(MatrixXf& X,
-                       VectorXf& y,
-                       LongData Z)
-                       { fit(X, y, Z); return transform(X, Z); }                                         
-
 void Feat::fit(MatrixXf& X, VectorXf& y)
 {
     auto Z = LongData();
@@ -530,7 +450,6 @@ void Feat::fit(MatrixXf& X, VectorXf& y, LongData& Z)
     params.init(X, y);       
 
     string FEAT;
-    cout << "params.verbosity: " << params.verbosity << "\n";
     if (params.verbosity == 1)
     {
         FEAT = (  
@@ -580,13 +499,11 @@ void Feat::fit(MatrixXf& X, VectorXf& y, LongData& Z)
 
     logger.log(FEAT,1);
     
-    cout << "this->archive.set_objectives(params.objectives)\n";
     this->archive.set_objectives(params.objectives);
 
     // normalize data
     if (params.normalize)
     {
-        cout << "N.fit_normalize(X,params.dtypes);\n" ;
         N.fit_normalize(X,params.dtypes);                   
     }
     this->pop = Population(params.pop_size);
@@ -603,18 +520,13 @@ void Feat::fit(MatrixXf& X, VectorXf& y, LongData& Z)
 
     logger.log("scorer: " + params.scorer_, 1);
 
-    cout << "X: " << X << "\n";
-    cout << "y: " << y << "\n";
     // split data into training and test sets
     //Data data(X, y, Z, params.classification);
-    cout << "DataRef d(X, y, Z, params.classification, params.protected_groups);\n";
     DataRef d(X, y, Z, params.classification, params.protected_groups);
     //DataRef d;
     //d.setOriginalData(&data);
-    cout << "d.train_test_split(params.shuffle, params.split);";
     d.train_test_split(params.shuffle, params.split);
     // define terminals based on size of X
-    cout << "params.set_terminals(d.o->X.rows(), d.o->Z);";
     params.set_terminals(d.o->X.rows(), d.o->Z);        
 
     // initial model on raw input
@@ -841,26 +753,7 @@ void Feat::update_stall_count(unsigned& stall_count, bool best_updated)
 
     logger.log("stall count: " + std::to_string(stall_count), 2);
 }
-// void Feat::fit(float * X, int rowsX, int colsX, float * Y, int lenY)
-// {
-//     MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
-//     VectorXf vectY = Map<VectorXf>(Y,lenY);
 
-//     Feat::fit(matX,vectY);
-// }
-
-// void Feat::fit_with_z(float * X, int rowsX, int colsX, float * Y, int lenY, string s, 
-//                 int * idx, int idx_size)
-// {
-
-//     MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
-//     VectorXf vectY = Map<VectorXf>(Y,lenY);
-//     auto Z = get_Z(s, idx, idx_size);
-//     // TODO: make sure long fns are set
-//     /* string longfns = "mean,median,max,min,variance,skew,kurtosis,slope,count"; */
-
-//     fit(matX,vectY,Z); 
-// }
 
 void Feat::final_model(DataRef& d)	
 {
@@ -903,7 +796,6 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
 
     for (auto r : roots)
     {
-        /* cout << "r: " << r << "\n"; */
         size_t start = tmp_ind.program.subtree(r);
         int first_occurence = -2;
 
@@ -1235,6 +1127,15 @@ void Feat::initial_model(DataRef &d)
     logger.log("initial validation score: " +std::to_string(this->min_loss_v),2);
 }
 
+MatrixXf Feat::transform(MatrixXf& X)
+{
+    LongData Z;
+    return transform(X,Z);
+}
+MatrixXf Feat::transform(MatrixXf& X, LongData& Z)
+{
+    return transform(X,Z,nullptr);
+}
 MatrixXf Feat::transform(MatrixXf& X,
                          LongData Z,
                          Individual *ind)
@@ -1256,34 +1157,10 @@ MatrixXf Feat::transform(MatrixXf& X,
             THROW_RUNTIME_ERROR("You need to train a model using fit() "
                     "before making predictions.");
         
-        return best_ind.out(d, true);
+        return best_ind.out(d, true).transpose();
     }
 
-    return ind->out(d, true);
-}
-
-MatrixXf Feat::transform(float * X, int rows_x, int cols_x)
-{
-    MatrixXf matX = Map<MatrixXf>(X,rows_x,cols_x);
-    return transform(matX);
-    
-}
-
-MatrixXf Feat::transform_with_z(float * X, int rowsX, int colsX, string s, int * idx, int idx_size)
-{
-    MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
-    auto Z = get_Z(s, idx, idx_size);
-    
-    return transform(matX, Z);
-    
-}
-
-MatrixXf Feat::fit_transform(float * X, int rows_x, int cols_x, float * Y, int len_y)
-{
-    MatrixXf matX = Map<MatrixXf>(X,rows_x,cols_x);
-    VectorXf vectY = Map<VectorXf>(Y,len_y);
-    fit(matX,vectY); 
-    return transform(matX);
+    return ind->out(d, true).transpose();
 }
 
 VectorXf Feat::predict(MatrixXf& X)
@@ -1303,8 +1180,13 @@ VectorXf Feat::predict(MatrixXf& X,
     return best_ind.predict_vector(d_tmp);
 }
 
-VectorXf Feat::predict_archive(int id, MatrixXf& X,
-                       LongData Z)
+VectorXf Feat::predict_archive(int id, MatrixXf& X)
+{
+    LongData Z; 
+    return predict_archive(id, X, Z);
+}
+
+VectorXf Feat::predict_archive(int id, MatrixXf& X, LongData& Z)
 {
     /* cout << "Feat::predict_archive\n"; */
     /* return predictions; */
@@ -1333,14 +1215,12 @@ VectorXf Feat::predict_archive(int id, MatrixXf& X,
     return VectorXf();
 }
 
-VectorXf Feat::predict_archive(int id, float * X, int rowsX,int colsX)
+ArrayXXf Feat::predict_proba_archive(int id, MatrixXf& X)
 {
-    MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
-    return predict_archive(id, matX);
+    LongData Z;
+    return predict_proba_archive(id, X, Z);
 }
-
-ArrayXXf Feat::predict_proba_archive(int id, MatrixXf& X,
-                       LongData Z)
+ArrayXXf Feat::predict_proba_archive(int id, MatrixXf& X, LongData& Z)
 {
     if (params.normalize)
         N.normalize(X);       
@@ -1362,8 +1242,7 @@ ArrayXXf Feat::predict_proba_archive(int id, MatrixXf& X,
     return ArrayXXf();
     
 }
-shared_ptr<CLabels> Feat::predict_labels(MatrixXf& X,
-                       LongData Z)
+shared_ptr<CLabels> Feat::predict_labels(MatrixXf& X, LongData Z)
 {        
     /* MatrixXf Phi = transform(X, Z); */
     if (params.normalize)
@@ -1374,27 +1253,8 @@ shared_ptr<CLabels> Feat::predict_labels(MatrixXf& X,
     return best_ind.predict(tmp_data);        
 }
 
-// VectorXf Feat::predict(float * X, int rowsX,int colsX)
-// {
-//     MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
-//     return predict(matX);
-// }
-
-
-VectorXf Feat::predict_with_z(float * X, int rowsX,int colsX, 
-                                string s, int * idx, int idx_size)
+ArrayXXf Feat::predict_proba(MatrixXf& X, LongData& Z)
 {
-
-    MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
-    auto Z = get_Z(s, idx, idx_size);
-
-    return predict(matX,Z); 
-}
-
-ArrayXXf Feat::predict_proba(MatrixXf& X,
-                         LongData Z)
-{
-
     if (params.normalize)
         N.normalize(X);       
     VectorXf dummy;
@@ -1402,16 +1262,10 @@ ArrayXXf Feat::predict_proba(MatrixXf& X,
     return best_ind.predict_proba(d_tmp);
 }
 
-ArrayXXf Feat::predict_proba_with_z(float * X, int rowsX,int colsX, 
-                                string s, int * idx, int idx_size)
+ArrayXXf Feat::predict_proba(MatrixXf& X)
 {
-    MatrixXf matX = Map<MatrixXf>(X,rowsX,colsX);
-    auto Z = get_Z(s, idx, idx_size);
-    // TODO: make sure long fns are set
-    /* string longfns = "mean,median,max,min,variance,skew,kurtosis,"
-     * "slope,count"; */
-
-    return predict_proba(matX,Z); 
+    LongData Z;
+    return predict_proba(X,Z);
 }
 
 
@@ -1684,27 +1538,12 @@ void Feat::print_stats(std::ofstream& log, float fraction)
     } 
 }
 //TODO: replace these with json
-string Feat::get_stats(){ json j; to_json(j, this->stats); return j.dump();}
-
-/* vector<int> Feat::get_stats_gens(){return stats.generation;} */
-
-/* vector<float> Feat::get_stats_timers(){return stats.time;} */
-
-/* vector<float> Feat::get_stats_min_losses(){return stats.min_loss;} */
-
-/* vector<float> Feat::get_stats_min_losses_val(){return stats.min_loss_v;} */
-
-/* vector<float> Feat::get_stats_med_scores(){return stats.med_loss;} */
-
-/* vector<float> Feat::get_stats_med_loss_vals(){return stats.med_loss_v;} */
-
-/* vector<unsigned> Feat::get_stats_med_size(){return stats.med_size;} */
-
-/* vector<unsigned> Feat::get_stats_med_complexities(){return stats.med_complexity;} */
-
-/* vector<unsigned> Feat::get_stats_med_num_params(){return stats.med_num_params;} */
-
-/* vector<unsigned> Feat::get_stats_med_dim(){return stats.med_dim;} */
+json Feat::get_stats()
+{ 
+    json j; 
+    to_json(j, this->stats); 
+    return j;
+}
 
 void Feat::load_best_ind(string filename)
 {

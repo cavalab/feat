@@ -132,10 +132,10 @@ class TestFeatWrapper(unittest.TestCase):
         self.assertEqual( actual_value , expected_value )
         
     #Test 5:  Transform with Z
-    def test_transform_length_z(self,zfile=None,zids=None):
+    def test_transform_length_z(self,Z=None):
         self.debug("Calling fit")
         self.reg.fit(self.X,self.yr)
-        trans_X = self.reg.transform(self.X,zfile,zids)
+        trans_X = self.reg.transform(self.X,Z)
 
         self.debug("Comparing the length of labls in transform vs actual feature set ")
         expected_value = self.X.shape[0]
@@ -164,8 +164,8 @@ class TestFeatWrapper(unittest.TestCase):
         self.debug("Fit the Data")
         self.reg.fit(self.X,self.yr)
 
-        for key in self.reg.stats_:
-            self.assertEqual(len(self.reg.stats_[key]), self.reg.gens)
+        for key,value in self.reg.stats_.items():
+            self.assertEqual(len(value), self.reg.gens)
 
     #Test ability to pickle feat model
     def test_save_load(self):
@@ -225,7 +225,7 @@ class TestFeatWrapper(unittest.TestCase):
         self.debug("Test archive")
         self.clf.fit(self.X,self.yc)
         self.debug('grabbing archive..')
-        archive = self.clf.get_archive()
+        archive = self.clf.cfeat_.get_archive()
         self.debug('grabbing predictions..')
         preds = self.clf.predict_archive(self.X)
         self.debug('grabbing prediction probs..')

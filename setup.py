@@ -157,8 +157,8 @@ class CMakeBuild(build_ext):
 
         print("building extension...")
         
-        # cfg = "Debug" if self.debug else "Release"
-        cfg = "Debug"
+        cfg = "Debug" if self.debug else "Release"
+        # cfg = "Debug"
         # cfg = "Release"
 
         # extdir = LIB_PATH
@@ -212,6 +212,8 @@ class CMakeBuild(build_ext):
             if hasattr(self, "parallel") and self.parallel:
                 # CMake 3.12+ only.
                 build_args += ["-j{}".format(self.parallel)]
+        else:
+            print('cmake parallel level:',os.environ['CMAKE_BUILD_PARALLEL_LEVEL'])
 
         os.makedirs(self.build_temp, exist_ok=True)
 
@@ -272,7 +274,7 @@ setup(
         +package_version),
     license='GNU/GPLv3',
     description='A Feature Engineering Automation Tool',
-    python_requires='>=3',
+    python_requires='>=3.7',
     install_requires=[
                       'Numpy',
                       'scikit-learn',

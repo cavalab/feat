@@ -7,6 +7,20 @@ license: GNU/GPL v3
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 #include <pybind11/stl.h>
+// json support
+#include "pybind11_json/pybind11_json.hpp"
+#include "nlohmann/json.hpp"
+
+
+
+// py::dict obj = py::dict("number"_a=1234, "hello"_a="world");
+// // Automatic py::dict->nl::json conversion
+// nl::json j = obj;
+
+// // Automatic nl::json->py::object conversion
+// py::object result1 = j;
+// // Automatic nl::json->py::dict conversion
+// py::dict result2 = j;
 
 #include "feat.h"
 
@@ -15,6 +29,8 @@ license: GNU/GPL v3
 
 namespace py = pybind11;
 using namespace FT;
+namespace nl = nlohmann;
+using namespace pybind11::literals;
 
 PYBIND11_MODULE(_feat, m) {
     m.doc() = R"pbdoc(
@@ -35,15 +51,6 @@ PYBIND11_MODULE(_feat, m) {
      py::class_<Feat>(m, "cppFeat", py::dynamic_attr() )
           // .def(py::init<>())
           .def(py::init([]() { Feat est; return est; }))
-          .def("fit",
-               py::overload_cast<MatrixXf&, VectorXf&>(&Feat::fit),
-               "fit from X,y data")
-          .def("fit",
-               py::overload_cast<MatrixXf&, VectorXf&, LongData&>(&Feat::fit),
-               "fit from X,y,Z data")
-          .def("predict",
-               py::overload_cast<MatrixXf&>(&Feat::predict),
-               "predict from X data")
           .def_property("stats_", &Feat::get_stats, nullptr)
           .def_property("pop_size", &Feat::get_pop_size, &Feat::set_pop_size)
           .def_property("gens", &Feat::get_gens, &Feat::set_gens)
@@ -91,7 +98,53 @@ PYBIND11_MODULE(_feat, m) {
           .def_property("tune_initial", &Feat::get_tune_initial, &Feat::set_tune_initial)
           .def_property("tune_final", &Feat::get_tune_final, &Feat::set_tune_final)
           .def_property("starting_pop", &Feat::get_starting_pop, &Feat::set_starting_pop)
-          .def_property("fitted_", &Feat::get_is_fitted, &Feat::set_is_fitted)
+          // .def_property("fitted_", &Feat::get_is_fitted, &Feat::set_is_fitted)
+          .def("fit",
+               py::overload_cast<MatrixXf&, VectorXf&>(&Feat::fit),
+               "fit from X,y data")
+          .def("fit",
+               py::overload_cast<MatrixXf&, VectorXf&, LongData&>(&Feat::fit),
+               "fit from X,y,Z data")
+          .def("transform",
+               py::overload_cast<MatrixXf&>(&Feat::transform),
+               "transform from X data")
+          .def("transform",
+               py::overload_cast<MatrixXf&, LongData&>(&Feat::transform),
+               "transform from X,Z data")
+          .def("predict",
+               py::overload_cast<MatrixXf&>(&Feat::predict),
+               "predict from X data")
+          .def("predict",
+               py::overload_cast<MatrixXf&, LongData&>(&Feat::predict),
+               "predict from X,Z data")
+          .def("predict_proba",
+               py::overload_cast<MatrixXf&>(&Feat::predict_proba),
+               "predict probabilities from X data")
+          .def("predict_proba",
+               py::overload_cast<MatrixXf&, LongData&>(&Feat::predict_proba),
+               "predict probabilities from X data")
+          .def("predict_archive",
+               py::overload_cast<int,MatrixXf&>(&Feat::predict_archive),
+               "predict from individual in archive")
+          .def("predict_archive",
+               py::overload_cast<int,MatrixXf&,LongData&>(&Feat::predict_archive),
+               "predict from individual in archive")
+          .def("predict_proba_archive",
+               py::overload_cast<int,MatrixXf&>(&Feat::predict_proba_archive),
+               "predict from individual in archive")
+          .def("predict_proba_archive",
+               py::overload_cast<int,MatrixXf&,LongData&>(&Feat::predict_proba_archive),
+               "predict from individual in archive")
+          .def("get_archive",&Feat::get_archive, py::arg("front") = false)
+          .def("get_coefs",&Feat::get_coefs)
+          .def("save",&Feat::save)
+          .def("load",&Feat::save)
           ;
 
+     m.def("to_json", 
+          py::overload_cast<nl::json&,const Feat&>(&FT::to_json), 
+          "Converts Feat object to json");
+     m.def("from_json", 
+          py::overload_cast<const nl::json&,Feat&>(&FT::from_json), 
+          "Converts json to Feat object");
 }

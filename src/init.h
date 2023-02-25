@@ -37,7 +37,7 @@ typedef std::map<string,
                  std::pair<vector<Eigen::ArrayXf>, vector<Eigen::ArrayXf>>
                 > LongData;
 // internal includes
-#include "util/json.hpp"
+#include "nlohmann/json.hpp"
 using nlohmann::json;
 
 namespace FT{
