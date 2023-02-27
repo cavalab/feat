@@ -238,85 +238,37 @@ class Feat(BaseEstimator):
         self.tune_final=tune_final
         self.starting_pop=starting_pop
         
-    # def set_params(self, **params):
-    #     for k,v in params.items():
-    #         setattr(self,k,v)
-    #     return self
+    def load(self, filename):
+        """Load a saved Feat state from file."""
+        with open(filename, 'r') as of:
+            feat_state = json.load(of)
+        # separate out the python-specific keys
+        init_params = {k:v for k,v in feat_state.items() if not k.endswith('_')}
+        self.set_params(**init_params) 
+        for k,v in feat_state.items():
+            if k.endswith('_') and k != 'cfeat_':
+                setattr(self, k, v)
 
-    # def load(self, filename):
-    #     """Load a saved Feat state from file."""
-    #     with open(filename, 'r') as of:
-    #         feat_state = json.load(of)
-    #     # separate out the python-specific keys
-    #     py_keys = [k for k in feat_state if k.endswith('_')]
-    #     self.set_params(**{k:feat_state[k] for k in py_keys})
-    #     # remove python-specific keys before invoking c++ method
-    #     for k in py_keys: 
-    #         del feat_state[k]
-    #     self._load(json.dumps(feat_state))
+        if 'cfeat_' in feat_state.keys():
+            self.cfeat_ = cppFeat()
+            self.cfeat_.load(feat_state['cfeat_'])
+        else:
+            self._set_cfeat_params()
 
-    #     self.set_params(**{k[1:]:v for k,v in self._get_params().items()})
-
-    #     return self
+        return self
 
     def save(self, filename):
         """Save a Feat state to file."""
 
-        cfeat_state = {}
-        from_json(cfeat_state, self.cfeat_)
-        # self.cfeat_.save())
+        cfeat_state = self.cfeat_.save()
         # add python-specific parameters
-        for k in self.__dict__: 
-            if k.endswith('_'):
-                print('adding',k,'type:',self.__dict__[k].__class__.__name__)
-                feat_state[k] = self.__dict__[k]
-
-        # for k,v in feat_state.items():
-        #     if v.__class__.__name__ == 'int64':
-        #         print(k,':',v.__class__.__name__,':',v)
+        attribs = self.get_params()
+        for k,v in self.__dict__.items(): 
+            if k not in attribs.keys():
+                attribs[k] = v
+        attribs['cfeat_']  = cfeat_state
         with open(filename, 'w') as of:
-            json.dump(feat_state, of)
-
-    # def __str__(self):
-    #     return ' '.join(f'{k}: {v}' for k, v in self.get_params())
-    # def get_params(self, deep=True):
-    #     return BaseEstimator.get_params(self,deep)
-    # def get_params(self, deep=True):
-    #     """
-    #     Get parameters for this estimator.
-    #     Parameters
-    #     ----------
-    #     deep : bool, default=True
-    #         If True, will return the parameters for this estimator and
-    #         contained subobjects that are estimators.
-    #     Returns
-    #     -------
-    #     params : dict
-    #         Parameter names mapped to their values.
-    #     """
-    #     out = dict()
-    #     for key in self._get_param_names():
-    #         value = getattr(self, key)
-    #         if deep and hasattr(value, "get_params") and not isinstance(value, type):
-    #             deep_items = value.get_params().items()
-    #             out.update((key + "__" + k, val) for k, val in deep_items)
-    #         out[key] = value
-    #     return out
-
-    # def get_params(self, deep=False):
-    #     attribs = BaseEstimator.get_params(self)
-
-    #     # get parameters that are pybind properties. these ones don't appear 
-    #     # in self.__dict__ so we have to pull them using dir(). 
-    #     for name in dir(self.__class__):
-    #         # ignore private and post-fit attributes
-    #         if name.startswith("_") or name.endswith("_"):
-    #             continue  
-    #         obj = getattr(self.__class__, name)
-    #         if isinstance(obj, property):
-    #             val = obj.__get__(self, self.__class__)
-    #             attribs[name] = val
-    #     return attribs
+            json.dump(attribs, of)
 
     def _set_cfeat_params(self):
         """Setup cpp feat estimator."""
@@ -329,7 +281,6 @@ class Feat(BaseEstimator):
         """Fit a model."""    
         self._set_cfeat_params() 
 
-        # self.n_features_in_ = X.shape[1]
         X,y = self._clean(X, y, set_feature_names=True)
 
         if Z:
@@ -337,12 +288,12 @@ class Feat(BaseEstimator):
         else:
             self.cfeat_.fit(X,y)
 
-        self._fitted_ = True
+        self.is_fitted_ = True
         return self
 
     def predict(self,X,Z=None):
         """Predict on X."""
-        if not self._fitted_:
+        if not self.is_fitted_:
             raise ValueError("Call fit before calling predict.")
 
         X = self._prep_X(X)
@@ -354,7 +305,7 @@ class Feat(BaseEstimator):
 
     def predict_archive(self,X,Z=None):
         """Returns a list of dictionary predictions for all models."""
-        if not self._fitted_:
+        if not self.is_fitted_:
             raise ValueError("Call fit before calling predict.")
 
         X = self._prep_X(X)
@@ -363,19 +314,19 @@ class Feat(BaseEstimator):
             raise NotImplementedError('longitudinal not implemented')
             return
 
-        archive = self.cfeat_.get_archive(justfront=False)
+        archive = self.cfeat_.get_archive(False)
         preds = []
         for ind in archive:
             tmp = {}
             tmp['id'] = ind['id']
-            tmp['y_pred'] = self._predict_archive(ind['id'], X) 
+            tmp['y_pred'] = self.cfeat_.predict_archive(ind['id'], X) 
             preds.append(tmp)
 
         return preds
 
     def transform(self,X,Z=None):
         """Return the representation's transformation of X"""
-        if not self._fitted_:
+        if not self.is_fitted_:
             raise ValueError("Call fit before calling transform.")
 
         X = self._prep_X(X)
@@ -402,19 +353,17 @@ class Feat(BaseEstimator):
         labels y""" 
         if ( self.classification ):
             yhat = self.predict_proba(X,Z)
-            return log_loss(y,yhat, labels=y)
+            return log_loss(y, yhat, labels=y)
         else:
             yhat = self.predict(X,Z).flatten()
             return mse(y,yhat)
 
-    def get_coefs(self): 
-        return self.cfeat_.get_coefs()
 
     @property
     def stats_(self): 
-        if not self._fitted_:
+        if not self.is_fitted_:
             raise ValueError("Call fit before asking for stats_.")
-        return self.cfeat_.get_stats()
+        return self.cfeat_.stats_
 
     def _prep_array(self, x):
         """Converts dataframe to array, optionally returning feature names"""
@@ -429,11 +378,11 @@ class Feat(BaseEstimator):
     def _clean(self, x, y, set_feature_names=False):
         """Converts dataframe to array, optionally returning feature names"""
         feature_names = ''
-        if type(x).__name__ == 'DataFrame':
+        if isinstance(x, pd.DataFrame):
             if set_feature_names and len(list(x.columns)) == x.shape[1]:
                 self.feature_names = ','.join(x.columns)
         x, y = check_X_y(x,y, ensure_min_samples=2, dtype=np.float32)
-
+        self.n_features_in_ = x.shape[1]
         x = self._prep_X(x)
         y = self._prep_array(y)
 
@@ -444,6 +393,10 @@ class Feat(BaseEstimator):
             raise ValueError('The number of features ({}) in X do not match '
                              'the number of features used for training '
                              '({})'.format(X.shape[1],self.n_features_in_))
+    # wrappers
+    def get_representation(self): return self.cfeat_.get_representation()
+    def get_model(self): return self.cfeat_.get_model()
+    def get_coefs(self): return self.cfeat_.get_coefs()
 
 class FeatRegressor(Feat):
     """Convenience method that enforces regression options."""
@@ -488,27 +441,27 @@ class FeatClassifier(Feat):
 
     def predict_proba(self,X,Z=None):
         """Return probabilities of predictions for data X"""
-        if not self._fitted_:
+        if not self.is_fitted_:
             raise ValueError("Call fit before calling predict.")
 
         X = self._prep_X(X)
 
         if Z:
-            tmp = self.predict_proba(X,Z)
+            tmp = self.cfeat_.predict_proba(X,Z).transpose()
         else:
-            tmp = self.predict_proba(X)
+            tmp = self.cfeat_.predict_proba(X).transpose()
         
         # for binary classification, add a second column for 0 complement
-        if len(self.classes_) ==2:
+        if len(self.classes_) == 2 and tmp.shape[1] == 1:
             tmp = tmp.ravel()
-            assert len(X) == len(tmp)
+            assert X.shape[1] == len(tmp)
             tmp = np.vstack((1-tmp,tmp)).transpose()
         return tmp         
 
     def predict_proba_archive(self,X,Z=None,front=False):
         """Returns a dictionary of prediction probabilities for all models."""
 
-        if not self._fitted_:
+        if not self.is_fitted_:
             raise ValueError("Call fit before calling predict.")
 
         X = self._prep_X(X)

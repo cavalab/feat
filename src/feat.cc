@@ -1556,10 +1556,17 @@ void Feat::load_population(string filename, bool justfront)
     this->pop.load(filename);
 }
 
-void Feat::load(const string& feat_state)
+void Feat::load(const json& j)
 {
-    json j = json::parse(feat_state);
+    // json j = json::parse(feat_state);
     from_json(j, *this);
+}
+
+json Feat::save() const
+{
+    json j;
+    to_json(j, *this);
+    return j;
 }
 
 void Feat::load_from_file(string filename)
@@ -1577,14 +1584,6 @@ void Feat::load_from_file(string filename)
     logger.log("Loaded Feat state from " + filename,1);
 
     indata.close();
-}
-
-string Feat::save()
-{
-    json j;
-    to_json(j, *this);
-
-    return j.dump();
 }
 
 void Feat::save_to_file(string filename)

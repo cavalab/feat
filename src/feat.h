@@ -386,11 +386,12 @@ class Feat
         void load_population(string filename, bool justfront=false);
 
         /// load Feat state from a json string.
-        void load(const string& feat_state);
+        // void load(const string& feat_state);
+        void load(const json& j);
         /// load Feat state from file.
         void load_from_file(string filename);
         /// save and return a json Feat state as string.
-        string save();
+        json save() const;
         /// save Feat state to file.
         void save_to_file(string filename);
         

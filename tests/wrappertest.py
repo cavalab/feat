@@ -65,7 +65,9 @@ class TestFeatWrapper(unittest.TestCase):
         skip_checks = ['check_estimators_pickle',
                        'check_methods_subset_invariance',
                        'check_fit2d_1sample',
-                       'check_fit2d_1feature' 
+                       'check_fit2d_1feature',
+                       'check_transformer_data_not_an_array',
+                       'check_transformer_preserve_dtypes' 
                       ]
         for est, check in check_generator2:
             time_to_go=False

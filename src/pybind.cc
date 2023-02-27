@@ -138,7 +138,9 @@ PYBIND11_MODULE(_feat, m) {
           .def("get_archive",&Feat::get_archive, py::arg("front") = false)
           .def("get_coefs",&Feat::get_coefs)
           .def("save",&Feat::save)
-          .def("load",&Feat::save)
+          .def("load",&Feat::load)
+          .def("get_representation",&Feat::get_representation)
+          .def("get_model",&Feat::get_model, py::arg("sort") = true)
           ;
 
      m.def("to_json", 
