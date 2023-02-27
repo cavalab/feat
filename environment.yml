@@ -8,7 +8,6 @@ dependencies:
     - gxx
     - ninja
     - eigen
-    - cython
     - pandas
     - scikit-learn
     - setuptools

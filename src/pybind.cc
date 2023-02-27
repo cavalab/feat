@@ -142,11 +142,4 @@ PYBIND11_MODULE(_feat, m) {
           .def("get_representation",&Feat::get_representation)
           .def("get_model",&Feat::get_model, py::arg("sort") = true)
           ;
-
-     m.def("to_json", 
-          py::overload_cast<nl::json&,const Feat&>(&FT::to_json), 
-          "Converts Feat object to json");
-     m.def("from_json", 
-          py::overload_cast<const nl::json&,Feat&>(&FT::from_json), 
-          "Converts json to Feat object");
 }

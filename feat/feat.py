@@ -9,8 +9,7 @@ from .versionstr import __version__
 from sklearn.base import BaseEstimator, RegressorMixin, ClassifierMixin
 import numpy as np
 import pandas as pd
-# from feat.cyfeat import CyFeat
-from _feat import cppFeat, from_json, to_json
+from _feat import cppFeat
 from sklearn.metrics import mean_squared_error as mse
 from sklearn.metrics import log_loss
 from sklearn.utils import check_X_y, check_array
@@ -395,7 +394,7 @@ class Feat(BaseEstimator):
                              '({})'.format(X.shape[1],self.n_features_in_))
     # wrappers
     def get_representation(self): return self.cfeat_.get_representation()
-    def get_model(self): return self.cfeat_.get_model()
+    def get_model(self, sort=True): return self.cfeat_.get_model(sort)
     def get_coefs(self): return self.cfeat_.get_coefs()
 
 class FeatRegressor(Feat):
@@ -412,7 +411,6 @@ class FeatClassifier(Feat):
     """Convenience method that enforces classification options.
         Also includes methods for prediction probabilities.
     """
-    # classification_default = True
     def __init__(self,**kwargs):
         kwargs.update({'classification':True})
         if 'ml' not in kwargs: 
@@ -434,7 +432,6 @@ class FeatClassifier(Feat):
        
         super().fit(X,y)
         return self
-        # return Feat.fit(self, X, y, zfile, zids)
 
     def predict(self,X,Z=None):
         return super().predict(X, Z)
