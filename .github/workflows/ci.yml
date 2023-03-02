@@ -61,40 +61,18 @@ jobs:
 # docs
 ########################################
       - 
-        name: Install Doxygen
-        run: sudo apt-get install doxygen
-      - 
-        name: add docs environment
-        run: |
-          micromamba info
-          micromamba install -c conda-forge -y sphinx sphinx-material recommonmark seaborn nbsphinx
-          micromamba install -c anaconda -y matplotlib jupyter 
-          pip install sphinx-copybutton
-          micromamba info
-          micromamba list
-      - 
-        name: Check commands
-        run: |
-          doxygen --version
-      - 
-        name: prep doxygen docs
+        name: build docs
         run: |
           cd docs
+          sudo apt-get install doxygen
+          doxygen --version
+
+          micromamba info
+          pip install -r requirements.txt
+
           mkdir doxygen_site/
           doxygen Doxyfile
-      - 
-        name: prep sphinx docs
-        run: |
-          micromamba info
-          which python
-          cd docs
-          python -c "from feat import Feat"
-          which sphinx-build
-          sphinx-build -b html ./ ../_site
-      - 
-        name: make sphinx docs
-        run: |
-          cd docs
+
           make html
       - 
         name: Deploy
