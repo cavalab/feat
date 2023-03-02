@@ -42,6 +42,255 @@ void Feat::init()
     this->stats = Log_Stats();
     params.use_batch = params.bp.batch_size>0;
 }
+
+void Feat::fit(MatrixXf& X, VectorXf& y, LongData& Z)
+{
+
+    /*! 
+     *  Input:
+     
+     *       X: n_features x n_samples MatrixXf of features
+     *       y: VectorXf of labels 
+     
+     *  Output:
+     
+     *       updates best_estimator, hof
+    
+     *   steps:
+     *	   1. fit model yhat = f(X)
+     *	   2. generate transformations Phi(X) for each individual
+     *	   3. fit model yhat_new = f( Phi(X)) for each individual
+     *	   4. evaluate features
+     *	   5. selection parents
+     *	   6. produce offspring from parents via variation
+     *	   7. select surviving individuals from parents and offspring
+     */
+    this->init();
+    std::ofstream log;                      ///< log file stream
+    if (!logfile.empty())
+        log.open(logfile, std::ofstream::app);
+    params.init(X, y);       
+
+    string FEAT;
+    if (params.verbosity == 1)
+    {
+        FEAT = (  
+      "/// Feature Engineering Automation Tool " 
+      "* \xc2\xa9 La Cava et al 2017 "
+      "* GPL3 \\\\\\\n"
+        );
+    }
+    else if (params.verbosity == 2)
+    {
+        FEAT = (  
+      "/////////////////////////////////////////////////////////////////////\n"
+      "//           * Feature Engineering Automation Tool *               //\n"
+      "// La Cava et al. 2017                                             //\n"
+      "// License: GPL v3                                                 //\n"
+      "// https://cavalab.org/feat                                        //\n"
+      "/////////////////////////////////////////////////////////////////////\n"
+        );
+    }
+
+    if (params.use_batch)
+    {
+        if (params.bp.batch_size >= X.cols())
+        {
+            logger.log("turning off batch because X has fewer than " 
+                    + to_string(params.bp.batch_size) + " samples", 1);
+            params.use_batch = false;
+        }
+        else
+        {
+            logger.log("using batch with batch_size= " 
+                    + to_string(params.bp.batch_size), 2);
+        }
+    }
+    
+    // if(str_dim.compare("") != 0)
+    // {
+    //     string dimension;
+    //     dimension = str_dim.substr(0, str_dim.length() - 1);
+    //     logger.log("STR DIM IS "+ dimension, 2);
+    //     logger.log("Cols are " + std::to_string(X.rows()), 2);
+    //     logger.log("Setting dimensionality as " + 
+    //                std::to_string((int)(ceil(stod(dimension)*X.rows()))), 2);
+    //     set_max_dim(ceil(stod(dimension)*X.rows()));
+    // }
+    
+
+    logger.log(FEAT,1);
+    
+    this->archive.set_objectives(params.objectives);
+
+    // normalize data
+    if (params.normalize)
+    {
+        N.fit_normalize(X,params.dtypes);                   
+    }
+    this->pop = Population(params.pop_size);
+    this->evaluator = Evaluation(params.scorer_);
+
+    /* create an archive to save Pareto front, 
+     * unless NSGA-2 is being used for survival 
+     */
+    /* if (!survival.compare("nsga2")) */
+    /*     use_arch = false; */
+    /* else */
+    /*     use_arch = true; */
+    use_arch = false;
+
+    logger.log("scorer: " + params.scorer_, 1);
+
+    // split data into training and test sets
+    //Data data(X, y, Z, params.classification);
+    DataRef d(X, y, Z, params.classification, params.protected_groups);
+    //DataRef d;
+    //d.setOriginalData(&data);
+    d.train_test_split(params.shuffle, params.split);
+    // define terminals based on size of X
+    params.set_terminals(d.o->X.rows(), d.o->Z);        
+
+    // initial model on raw input
+    logger.log("Setting up data", 2);
+    float t0 =  timer.Elapsed().count();
+    
+    //data for batch training
+    MatrixXf Xb;
+    VectorXf yb;
+    LongData Zb;
+    Data db(Xb, yb, Zb, params.classification, params.protected_groups);
+    
+    Data *tmp_train;
+    
+    if(params.use_batch)
+    {
+        tmp_train = d.t;
+        d.t->get_batch(db, params.bp.batch_size);
+        d.setTrainingData(&db);
+    }
+    
+    if (params.classification) 
+        params.set_sample_weights(d.t->y); 
+    
+
+    // initialize population 
+    ////////////////////////
+    logger.log("Initializing population", 2);
+   
+    bool random = selector.get_type() == "random";
+
+    // initial model
+    ////////////////
+    logger.log("Fitting initial model", 2);
+    t0 =  timer.Elapsed().count();
+    initial_model(d);  
+    logger.log("Initial fitting took " 
+            + std::to_string(timer.Elapsed().count() - t0) + " seconds",2);
+
+    // initialize population with initial model and/or starting pop
+    pop.init(best_ind,params,random, this->starting_pop);
+    logger.log("Initial population:\n"+pop.print_eqns(),3);
+
+    // evaluate initial population
+    logger.log("Evaluating initial population",2);
+    evaluator.fitness(pop.individuals,*d.t,params);
+    evaluator.validation(pop.individuals,*d.v,params);
+    
+    logger.log("Initial population done",2);
+    logger.log(std::to_string(timer.Elapsed().count()) + " seconds",2);
+    
+    vector<size_t> survivors;
+    
+    if(params.use_batch)    // reset d to all training data
+        d.setTrainingData(tmp_train, true);
+
+    // =====================
+    // main generational loop
+    unsigned g = 0;
+    unsigned stall_count = 0;
+    float fraction = 0;
+    // continue until max gens is reached or max_time is up (if it is set)
+    
+    while(
+        // time limit
+        (params.max_time == -1 || params.max_time > timer.Elapsed().count())
+        // generation limit
+        && g<params.gens                                                    
+        // stall limit
+        && (params.max_stall == 0 || stall_count < params.max_stall) 
+        )      
+    {
+        fraction = params.max_time == -1 ? ((g+1)*1.0)/params.gens : 
+                                       timer.Elapsed().count()/params.max_time;
+        if(params.use_batch)
+        {
+            d.t->get_batch(db, params.bp.batch_size);
+            DataRef dbr;    // reference to minibatch data
+            dbr.setTrainingData(&db);
+            dbr.setValidationData(d.v);
+
+            if (params.classification)
+                params.set_sample_weights(dbr.t->y); 
+
+            run_generation(g, survivors, dbr, log, fraction, stall_count);
+        }
+        else
+        {
+            run_generation(g, survivors, d, log, fraction, stall_count);
+        }
+        
+        g++;
+    }
+    // =====================
+    if ( params.max_stall != 0 && stall_count >= params.max_stall)
+        logger.log("learning stalled",2);
+    else if ( g >= params.gens) 
+        logger.log("generation limit reached",2);
+    else
+        logger.log("max time reached",2);
+
+    logger.log("train score: " + std::to_string(this->min_loss), 2);
+    logger.log("validation score: " + std::to_string(min_loss_v), 2);
+    logger.log("fitting final model to all training data...",2);
+
+
+    // simplify the final model
+    if (simplify > 0.0)
+    {
+        this->best_ind.fit(*d.o, params);
+        simplify_model(d, this->best_ind);
+    }
+
+    // fit final model to best features
+    final_model(d);   
+
+    // if we're not using an archive, let's store the final population in the 
+    // archive
+    if (!use_arch)
+    {
+        archive.individuals = pop.individuals;
+    }
+
+    if (save_pop > 0)
+    {
+        pop.save(this->logfile+".pop.gen" + to_string(params.current_gen) 
+                + ".json");
+        this->best_ind.save(this->logfile+".best.json");
+    }
+    
+    if (log.is_open())
+        log.close();
+
+    set_is_fitted(true);
+    logger.log("Run Completed. Total time taken is " 
+            + std::to_string(timer.Elapsed().count()) + " seconds", 1);
+    logger.log("best model: " + this->get_eqn(),1);
+    logger.log("tabular model:\n" + this->get_model(),2);
+    logger.log("/// ----------------------------------------------------------------- \\\\\\",
+            1);
+
+}
 /// set size of population 
 void Feat::set_pop_size(int pop_size){ params.pop_size = pop_size; }            
 
@@ -421,254 +670,6 @@ void Feat::fit(MatrixXf& X, VectorXf& y)
     fit(X,y,Z);
 }
 
-void Feat::fit(MatrixXf& X, VectorXf& y, LongData& Z)
-{
-
-    /*! 
-     *  Input:
-     
-     *       X: n_features x n_samples MatrixXf of features
-     *       y: VectorXf of labels 
-     
-     *  Output:
-     
-     *       updates best_estimator, hof
-    
-     *   steps:
-     *	   1. fit model yhat = f(X)
-     *	   2. generate transformations Phi(X) for each individual
-     *	   3. fit model yhat_new = f( Phi(X)) for each individual
-     *	   4. evaluate features
-     *	   5. selection parents
-     *	   6. produce offspring from parents via variation
-     *	   7. select surviving individuals from parents and offspring
-     */
-    this->init();
-    std::ofstream log;                      ///< log file stream
-    if (!logfile.empty())
-        log.open(logfile, std::ofstream::app);
-    params.init(X, y);       
-
-    string FEAT;
-    if (params.verbosity == 1)
-    {
-        FEAT = (  
-      "/// Feature Engineering Automation Tool " 
-      "* \xc2\xa9 La Cava et al 2017 "
-      "* GPL3 \\\\\\\n"
-        );
-    }
-    else if (params.verbosity == 2)
-    {
-        FEAT = (  
-      "/////////////////////////////////////////////////////////////////////\n"
-      "//           * Feature Engineering Automation Tool *               //\n"
-      "// La Cava et al. 2017                                             //\n"
-      "// License: GPL v3                                                 //\n"
-      "// https://cavalab.org/feat                                        //\n"
-      "/////////////////////////////////////////////////////////////////////\n"
-        );
-    }
-
-    if (params.use_batch)
-    {
-        if (params.bp.batch_size >= X.cols())
-        {
-            logger.log("turning off batch because X has fewer than " 
-                    + to_string(params.bp.batch_size) + " samples", 1);
-            params.use_batch = false;
-        }
-        else
-        {
-            logger.log("using batch with batch_size= " 
-                    + to_string(params.bp.batch_size), 2);
-        }
-    }
-    
-    // if(str_dim.compare("") != 0)
-    // {
-    //     string dimension;
-    //     dimension = str_dim.substr(0, str_dim.length() - 1);
-    //     logger.log("STR DIM IS "+ dimension, 2);
-    //     logger.log("Cols are " + std::to_string(X.rows()), 2);
-    //     logger.log("Setting dimensionality as " + 
-    //                std::to_string((int)(ceil(stod(dimension)*X.rows()))), 2);
-    //     set_max_dim(ceil(stod(dimension)*X.rows()));
-    // }
-    
-
-    logger.log(FEAT,1);
-    
-    this->archive.set_objectives(params.objectives);
-
-    // normalize data
-    if (params.normalize)
-    {
-        N.fit_normalize(X,params.dtypes);                   
-    }
-    this->pop = Population(params.pop_size);
-    this->evaluator = Evaluation(params.scorer_);
-
-    /* create an archive to save Pareto front, 
-     * unless NSGA-2 is being used for survival 
-     */
-    /* if (!survival.compare("nsga2")) */
-    /*     use_arch = false; */
-    /* else */
-    /*     use_arch = true; */
-    use_arch = false;
-
-    logger.log("scorer: " + params.scorer_, 1);
-
-    // split data into training and test sets
-    //Data data(X, y, Z, params.classification);
-    DataRef d(X, y, Z, params.classification, params.protected_groups);
-    //DataRef d;
-    //d.setOriginalData(&data);
-    d.train_test_split(params.shuffle, params.split);
-    // define terminals based on size of X
-    params.set_terminals(d.o->X.rows(), d.o->Z);        
-
-    // initial model on raw input
-    logger.log("Setting up data", 2);
-    float t0 =  timer.Elapsed().count();
-    
-    //data for batch training
-    MatrixXf Xb;
-    VectorXf yb;
-    LongData Zb;
-    Data db(Xb, yb, Zb, params.classification, params.protected_groups);
-    
-    Data *tmp_train;
-    
-    if(params.use_batch)
-    {
-        tmp_train = d.t;
-        d.t->get_batch(db, params.bp.batch_size);
-        d.setTrainingData(&db);
-    }
-    
-    if (params.classification) 
-        params.set_sample_weights(d.t->y); 
-    
-
-    // initialize population 
-    ////////////////////////
-    logger.log("Initializing population", 2);
-   
-    bool random = selector.get_type() == "random";
-
-    // initial model
-    ////////////////
-    logger.log("Fitting initial model", 2);
-    t0 =  timer.Elapsed().count();
-    initial_model(d);  
-    logger.log("Initial fitting took " 
-            + std::to_string(timer.Elapsed().count() - t0) + " seconds",2);
-
-    // initialize population with initial model and/or starting pop
-    pop.init(best_ind,params,random, this->starting_pop);
-    logger.log("Initial population:\n"+pop.print_eqns(),3);
-
-    // evaluate initial population
-    logger.log("Evaluating initial population",2);
-    evaluator.fitness(pop.individuals,*d.t,params);
-    evaluator.validation(pop.individuals,*d.v,params);
-    
-    logger.log("Initial population done",2);
-    logger.log(std::to_string(timer.Elapsed().count()) + " seconds",2);
-    
-    vector<size_t> survivors;
-    
-    if(params.use_batch)    // reset d to all training data
-        d.setTrainingData(tmp_train, true);
-
-    // =====================
-    // main generational loop
-    unsigned g = 0;
-    unsigned stall_count = 0;
-    float fraction = 0;
-    // continue until max gens is reached or max_time is up (if it is set)
-    
-    while(
-        // time limit
-        (params.max_time == -1 || params.max_time > timer.Elapsed().count())
-        // generation limit
-        && g<params.gens                                                    
-        // stall limit
-        && (params.max_stall == 0 || stall_count < params.max_stall) 
-        )      
-    {
-        fraction = params.max_time == -1 ? ((g+1)*1.0)/params.gens : 
-                                       timer.Elapsed().count()/params.max_time;
-        if(params.use_batch)
-        {
-            d.t->get_batch(db, params.bp.batch_size);
-            DataRef dbr;    // reference to minibatch data
-            dbr.setTrainingData(&db);
-            dbr.setValidationData(d.v);
-
-            if (params.classification)
-                params.set_sample_weights(dbr.t->y); 
-
-            run_generation(g, survivors, dbr, log, fraction, stall_count);
-        }
-        else
-        {
-            run_generation(g, survivors, d, log, fraction, stall_count);
-        }
-        
-        g++;
-    }
-    // =====================
-    if ( params.max_stall != 0 && stall_count >= params.max_stall)
-        logger.log("learning stalled",2);
-    else if ( g >= params.gens) 
-        logger.log("generation limit reached",2);
-    else
-        logger.log("max time reached",2);
-
-    logger.log("train score: " + std::to_string(this->min_loss), 2);
-    logger.log("validation score: " + std::to_string(min_loss_v), 2);
-    logger.log("fitting final model to all training data...",2);
-
-
-    // simplify the final model
-    if (simplify > 0.0)
-    {
-        this->best_ind.fit(*d.o, params);
-        simplify_model(d, this->best_ind);
-    }
-
-    // fit final model to best features
-    final_model(d);   
-
-    // if we're not using an archive, let's store the final population in the 
-    // archive
-    if (!use_arch)
-    {
-        archive.individuals = pop.individuals;
-    }
-
-    if (save_pop > 0)
-    {
-        pop.save(this->logfile+".pop.gen" + to_string(params.current_gen) 
-                + ".json");
-        this->best_ind.save(this->logfile+".best.json");
-    }
-    
-    if (log.is_open())
-        log.close();
-
-    set_is_fitted(true);
-    logger.log("Run Completed. Total time taken is " 
-            + std::to_string(timer.Elapsed().count()) + " seconds", 1);
-    logger.log("best model: " + this->get_eqn(),1);
-    logger.log("tabular model:\n" + this->get_model(),2);
-    logger.log("/// ----------------------------------------------------------------- \\\\\\",
-            1);
-
-}
 
 void Feat::run_generation(unsigned int g,
                       vector<size_t> survivors,

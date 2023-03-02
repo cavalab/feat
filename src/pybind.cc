@@ -7,6 +7,7 @@ license: GNU/GPL v3
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 #include <pybind11/stl.h>
+#include <pybind11/iostream.h>
 // json support
 #include "pybind11_json/pybind11_json.hpp"
 #include "nlohmann/json.hpp"
@@ -142,4 +143,5 @@ PYBIND11_MODULE(_feat, m) {
           .def("get_representation",&Feat::get_representation)
           .def("get_model",&Feat::get_model, py::arg("sort") = true)
           ;
+     py::add_ostream_redirect(m, "ostream_redirect");
 }
