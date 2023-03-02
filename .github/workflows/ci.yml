@@ -67,12 +67,12 @@ jobs:
           sudo apt-get install doxygen graphviz
           doxygen --version
 
-          micromamba info
-          pip install -r requirements.txt
-
           mkdir doxygen_site/
           doxygen Doxyfile
 
+          micromamba info
+          micromamba install pandoc
+          pip install -r requirements.txt
           make html
       - 
         name: Deploy
