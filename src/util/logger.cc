@@ -58,7 +58,8 @@ namespace FT {
 	
             if (verbosity >= v)
             {
-                std::cout << m << sep;
+                // py::print(m);
+                // std::cout << m << sep;
                 msg += m+sep;
             }
             return msg;

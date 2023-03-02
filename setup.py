@@ -217,6 +217,8 @@ class CMakeBuild(build_ext):
 
         os.makedirs(self.build_temp, exist_ok=True)
 
+        print("cmake", ext.sourcedir,cmake_args) 
+        print(["cmake", "--build", "."] + build_args)
         subprocess.check_call(
             ["cmake", ext.sourcedir] + cmake_args, cwd=self.build_temp
         )
