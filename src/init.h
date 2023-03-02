@@ -33,6 +33,7 @@ using std::unique_ptr;
 using std::shared_ptr;
 using std::make_shared;
 using std::cout; 
+//TODO: document better
 typedef std::map<string, 
                  std::pair<vector<Eigen::ArrayXf>, vector<Eigen::ArrayXf>>
                 > LongData;

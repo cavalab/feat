@@ -64,7 +64,7 @@ jobs:
         name: build docs
         run: |
           cd docs
-          sudo apt-get install doxygen
+          sudo apt-get install doxygen graphviz
           doxygen --version
 
           micromamba info
