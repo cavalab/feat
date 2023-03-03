@@ -1,0 +1,41 @@
+<map id="FT::Feat" name="FT::Feat">
+<area shape="rect" id="node1" title="main class for the Feat learner." alt="" coords="1764,951,1836,977"/>
+<area shape="rect" id="node2" href="$d6/d5f/structFT_1_1Pop_1_1Population.html" title="Defines a population of programs and functions for constructing them." alt="" coords="1502,601,1647,628"/>
+<area shape="rect" id="node3" title=" " alt="" coords="1175,566,1327,607"/>
+<area shape="rect" id="node32" href="$d7/d9f/structFT_1_1Pop_1_1Archive.html" title=" " alt="" coords="1512,691,1637,717"/>
+<area shape="rect" id="node4" href="$da/def/classFT_1_1Pop_1_1Individual.html" title="individual programs in the population" alt="" coords="749,557,889,584"/>
+<area shape="rect" id="node5" href="$d5/daf/structFT_1_1Pop_1_1NodeVector.html" title="an extension of a vector of unique pointers to nodes" alt="" coords="365,904,516,931"/>
+<area shape="rect" id="node18" href="$de/d2c/structFT_1_1Parameters.html" title="holds the hyperparameters for Feat." alt="" coords="1515,951,1634,977"/>
+<area shape="rect" id="node6" title=" " alt="" coords="162,904,291,931"/>
+<area shape="rect" id="node7" title=" " alt="" coords="5,904,44,931"/>
+<area shape="rect" id="node8" title=" " alt="" coords="366,603,515,629"/>
+<area shape="rect" id="node17" href="$dd/d51/structFT_1_1Util_1_1Normalizer.html" title="normalizes a matrix to unit variance, 0 mean centered." alt="" coords="746,452,893,479"/>
+<area shape="rect" id="node9" title=" " alt="" coords="397,1221,484,1248"/>
+<area shape="rect" id="node20" title=" " alt="" coords="971,1079,1130,1105"/>
+<area shape="rect" id="node23" title=" " alt="" coords="957,1023,1144,1049"/>
+<area shape="rect" id="node24" title=" " alt="" coords="1168,1142,1335,1183"/>
+<area shape="rect" id="node25" href="$d2/dfb/classFT_1_1Pop_1_1Op_1_1Node.html" title="Represents nodes in a program." alt="" coords="751,1128,887,1155"/>
+<area shape="rect" id="node27" href="$de/d6e/structFT_1_1Sel_1_1Selection.html" title="interfaces with selection operators." alt="" coords="753,1467,885,1493"/>
+<area shape="rect" id="node34" href="$d8/d53/structFT_1_1Sel_1_1SelectionOperator.html" title="base class for selection operators." alt="" coords="725,925,914,952"/>
+<area shape="rect" id="node37" href="$d1/d91/classFT_1_1Eval_1_1Scorer.html" title="scoring class for Feat" alt="" coords="1191,1309,1312,1336"/>
+<area shape="rect" id="node38" title=" " alt="" coords="705,1292,933,1319"/>
+<area shape="rect" id="node10" title=" " alt="" coords="157,1214,296,1255"/>
+<area shape="rect" id="node11" title=" " alt="" coords="402,552,479,579"/>
+<area shape="rect" id="node12" title=" " alt="" coords="371,749,510,776"/>
+<area shape="rect" id="node29" href="$d8/dd3/structFT_1_1Util_1_1Log__Stats.html" title=" " alt="" coords="750,255,889,281"/>
+<area shape="rect" id="node35" title=" " alt="" coords="746,759,893,801"/>
+<area shape="rect" id="node13" title=" " alt="" coords="365,231,516,257"/>
+<area shape="rect" id="node14" title=" " alt="" coords="366,654,515,695"/>
+<area shape="rect" id="node15" title=" " alt="" coords="358,399,523,441"/>
+<area shape="rect" id="node16" title=" " alt="" coords="401,497,480,524"/>
+<area shape="rect" id="node19" href="$d0/d29/structFT_1_1Parameters_1_1HC.html" title=" " alt="" coords="1179,1259,1324,1285"/>
+<area shape="rect" id="node21" href="$d4/d04/structFT_1_1Parameters_1_1BP.html" title=" " alt="" coords="1180,741,1323,768"/>
+<area shape="rect" id="node22" title=" " alt="" coords="1177,792,1326,819"/>
+<area shape="rect" id="node26" title=" " alt="" coords="346,1110,535,1151"/>
+<area shape="rect" id="node28" title=" " alt="" coords="345,1478,536,1519"/>
+<area shape="rect" id="node30" title=" " alt="" coords="351,44,531,71"/>
+<area shape="rect" id="node31" href="$db/db7/classFT_1_1Util_1_1Timer.html" title="class for timing things." alt="" coords="1518,1517,1631,1544"/>
+<area shape="rect" id="node33" href="$dd/df1/structFT_1_1Sel_1_1NSGA2.html" title=" " alt="" coords="1193,691,1310,717"/>
+<area shape="rect" id="node36" href="$d6/d6f/classFT_1_1Eval_1_1Evaluation.html" title="evaluation mixin class for Feat" alt="" coords="1500,1156,1649,1183"/>
+<area shape="rect" id="node39" href="$d0/d80/classFT_1_1Vary_1_1Variation.html" title=" " alt="" coords="1505,1568,1644,1595"/>
+</map>

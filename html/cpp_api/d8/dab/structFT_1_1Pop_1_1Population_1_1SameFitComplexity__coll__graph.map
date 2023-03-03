@@ -1,0 +1,18 @@
+<map id="FT::Pop::Population::SameFitComplexity" name="FT::Pop::Population::SameFitComplexity">
+<area shape="rect" id="node1" title="check for same fitness and complexity to filter uniqueness." alt="" coords="1385,201,1544,242"/>
+<area shape="rect" id="node2" href="$d6/d5f/structFT_1_1Pop_1_1Population.html" title="Defines a population of programs and functions for constructing them." alt="" coords="1163,208,1308,235"/>
+<area shape="rect" id="node3" title=" " alt="" coords="887,201,1039,242"/>
+<area shape="rect" id="node4" href="$da/def/classFT_1_1Pop_1_1Individual.html" title="individual programs in the population" alt="" coords="633,208,773,235"/>
+<area shape="rect" id="node5" href="$d5/daf/structFT_1_1Pop_1_1NodeVector.html" title="an extension of a vector of unique pointers to nodes" alt="" coords="353,7,503,33"/>
+<area shape="rect" id="node6" title=" " alt="" coords="162,7,291,33"/>
+<area shape="rect" id="node7" title=" " alt="" coords="5,7,44,33"/>
+<area shape="rect" id="node8" title=" " alt="" coords="353,57,503,84"/>
+<area shape="rect" id="node9" title=" " alt="" coords="385,108,471,135"/>
+<area shape="rect" id="node10" title=" " alt="" coords="157,101,296,142"/>
+<area shape="rect" id="node11" title=" " alt="" coords="389,160,467,187"/>
+<area shape="rect" id="node12" title=" " alt="" coords="359,211,497,237"/>
+<area shape="rect" id="node13" title=" " alt="" coords="353,269,503,296"/>
+<area shape="rect" id="node14" title=" " alt="" coords="353,321,503,362"/>
+<area shape="rect" id="node15" title=" " alt="" coords="345,386,511,427"/>
+<area shape="rect" id="node16" title=" " alt="" coords="389,452,467,479"/>
+</map>
