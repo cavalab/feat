@@ -48,7 +48,7 @@ jobs:
           # which python
           cd tests
           # ls
-          python wrappertest.py -v 3
+          python wrappertest.py
       # - 
       #   name: Notebook Test
       #   run: |
