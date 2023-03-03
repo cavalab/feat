@@ -4,31 +4,35 @@ on: [push, pull_request]
 env: 
   CACHE_NUMBER: 0
 
+defaults:
+  run:
+    shell: bash -l {0}
+
 jobs:
-  build_and_test_and_docs:
+  build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash -l {0}
     steps:
       - 
         name: Checkout code
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 30
+      # - 
+      #   name: Load Feat environment with Micromamba
+      #   uses: mamba-org/provision-with-micromamba@main
+      #   with:
+      #     environment-file: environment.yml
+      #     cache-env: true
       - 
-        name: Install Conda environment with Micromamba
+        name: add docs environment dependencies
         uses: mamba-org/provision-with-micromamba@main
         with:
-          environment-file: environment.yml
+          environment-file: ci/ci-environment.yml
           cache-env: true
+          cache-downloads: true
       - 
         name: Install
         run: | 
           micromamba env list
           export CMAKE_BUILD_PARALLEL_LEVEL=4
-          # python setup.py debug
-          # pip install . -v
           python setup.py install
 ########################################
 # tests
@@ -36,11 +40,9 @@ jobs:
       - 
         name: Test Import
         run: |
-          # which python
           cd ..
-          # ls
           which python
-          micromamba info
+          # micromamba info
           python -c "from feat import Feat"
       - 
         name: Wrapper Test 

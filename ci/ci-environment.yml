@@ -1,0 +1,28 @@
+name: feat-ci
+channels:
+    - conda-forge
+dependencies:
+    # for installing feat 
+    - python=3.10
+    - cmake
+    - ninja
+    - eigen
+    - cython
+    - pandas
+    - scikit-learn
+    - setuptools
+    - shogun-cpp
+    - wheel
+    - pip
+    - pip:
+        - eigency
+        - pmlb
+    # for docs
+    - sphinx
+    - sphinx-material
+    - recommonmark
+    - nbsphinx
+    - matplotlib
+    - jupyter
+    - seaborn
+    - sphinx-copybutton

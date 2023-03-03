@@ -63,8 +63,8 @@ Table of Contents
     :maxdepth: 1
 
     examples/command_line
-    examples/archive.ipynb
-    examples/longitudinal.ipynb
+    examples/archive.rst
+    examples/longitudinal.rst
 
 .. toctree::
     :caption: API
