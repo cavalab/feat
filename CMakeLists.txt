@@ -2,6 +2,10 @@
 # copyright 2017 William La Cava 
 # license: GNU/GPL v3
 
+# cmake version
+cmake_minimum_required (VERSION 3.3)
+cmake_policy(VERSION 3.18)
+
 ######### Options ###########################
 option( CORE_USE_CUDA   "Use CUDA to speed up certain parts of the code."  OFF )
 #############################################
@@ -21,8 +25,6 @@ option( CORE_USE_CUDA   "Use CUDA to speed up certain parts of the code."  OFF )
 #endif()
 #############################################
 
-# version requirement for Eigen
-cmake_minimum_required (VERSION 3.0)
 # use c++ 14
 set (CMAKE_CXX_STANDARD 14)
 
@@ -144,22 +146,33 @@ else()
 endif()
 
 # executables
+########################################
+# generate python bindings
+find_package(Python COMPONENTS Interpreter Development REQUIRED)
 
-option(LIB_ONLY "only build a library" OFF)
+# Find pybind11
+find_package(pybind11 REQUIRED)
+include_directories("${pybind11_INCLUDE_DIRS}")
 
-if (NOT LIB_ONLY)
-    #feat executable
+message("Python_FOUND:${Python_FOUND}")
+message("Python_VERSION:${Python_VERSION}")
+message("Python_Development_FOUND:${Python_Development_FOUND}")
+message("Python_LIBRARIES:${Python_LIBRARIES}")
+message("pybind11_DIR:${pybind11_DIR}")
 
-    add_executable(feat-ml src/main.cc)
+find_package(PythonLibs REQUIRED)
+include_directories("${PYTHON_INCLUDE_DIRS}")
+message("Python_INCLUDE_DIRS:${PYTHON_INCLUDE_DIRS}")
+target_link_libraries(feat ${PYTHON_LIBRARIES} shogun)
 
-    #link libraries for different executables
+# pybind11_add_module(brushgp ${CMAKE_CURRENT_SOURCE_DIR}/src/brushgp.cpp)
+# target_link_libraries(brushgp PRIVATE brush)
+# target_compile_definitions(brushgp PRIVATE VERSION_INFO=${EXAMPLE_VERSION_INFO})
 
-    if (CORE_USE_CUDA)
-        target_link_libraries(feat-ml feat shogun ${CUDA_LIBRARIES})
-    else()
-        target_link_libraries(feat-ml feat shogun)
-    endif()
-endif()
+message("CMAKE_CURRENT_SOURCE_DIR:${CMAKE_CURRENT_SOURCE_DIR}")
+pybind11_add_module(_feat ${CMAKE_CURRENT_SOURCE_DIR}/src/pybind.cc)
+target_link_libraries(_feat PRIVATE feat)
+# target_compile_definitions(brushgp PRIVATE VERSION_INFO=${EXAMPLE_VERSION_INFO})
 
 if (GTEST)
     # Link runTests with what we want to test and the GTest and pthread library

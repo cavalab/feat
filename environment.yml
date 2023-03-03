@@ -3,16 +3,19 @@ channels:
     - conda-forge
 dependencies:
     - python=3.10
-    - cmake
+    - cmake>3.3
+    - gcc
+    - gxx
     - ninja
     - eigen
-    - cython
     - pandas
     - scikit-learn
     - setuptools
     - shogun-cpp
     - wheel
+    - pybind11
+    - nlohmann_json
+    - pybind11_json
     - pip
     - pip:
-        - eigency
         - pmlb

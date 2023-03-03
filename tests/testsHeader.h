@@ -35,4 +35,13 @@ using namespace shogun;
 
 using namespace FT;
 
+Feat make_estimator(
+    int pop_size,
+    int gens,
+    string ml,
+    bool classification,
+    int verbosity,
+    int random_state
+);
+
 #endif

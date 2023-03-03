@@ -24,36 +24,36 @@ using namespace Op;
 struct Parameters
 {
     std::map<std::string, Node*> node_map;
-    int pop_size; ///< population size
-    int gens;    ///< max generations
+    int random_state; ///< random seed
+    int pop_size = 100; ///< population size
+    int gens = 100;    ///< max generations
     int current_gen;///< holds current generation
     string ml;      ///< machine learner used with Feat
-    bool classification; ///< flag to conduct classification rather than 
-    int max_stall;      ///< maximum stall in learning, in generations
+    bool classification = false; ///< flag to conduct classification rather than 
+    int max_stall = 0;      ///< maximum stall in learning, in generations
     vector<char> otypes; ///< program output types ('f', 'b')
     vector<char> ttypes; ///< program terminal types ('f', 'b')
     char otype;         ///< user parameter for output type setup
     /*! amount of printing. 0: none, 1: minimal, 
      *  2: all*/
-    int verbosity;          
+    int verbosity = 0;          
     vector<float> term_weights; ///< probability weighting of terminals
     vector<float> op_weights;   ///< probability weighting of functions
     NodeVector functions;       ///< function nodes available in programs
-    string function_str;       ///< the string arg passed to set_functions
     NodeVector terminals;       ///< terminal nodes available in programs
     ///<vector storing longitudinal data keys
     vector<std::string> longitudinalMap; 
 
-    unsigned int max_depth;	///< max depth of programs
+    unsigned int max_depth = 3;	///< max depth of programs
     unsigned int max_size;	///< max size of programs (length)
-    unsigned int max_dim;	///< maximum dimensionality of programs
-    bool erc;			///< whether to include constants for terminals 
+    unsigned int max_dim = 10;	///< maximum dimensionality of programs
+    bool erc = false;			///< whether to include constants for terminals 
     unsigned num_features; ///< number of features
-    vector<string> objectives;///< Pareto objectives 
-    bool shuffle;             ///< option to shuffle the data
-    float split;              ///< fraction of data to use for training
+    vector<string> objectives{"fitness","complexity"};///< Pareto objectives 
+    bool shuffle = true;             ///< option to shuffle the data
+    float split = 0.75;              ///< fraction of data to use for training
     vector<char> dtypes;      ///< data types of input parameters
-    float feedback;           ///< strength of ml feedback on probabilities
+    float feedback = 0.5;           ///< strength of ml feedback on probabilities
     unsigned int n_classes;   ///< number of classes for classification 
     float cross_rate;         ///< cross rate for variation
     vector<int> classes;      ///< class labels
@@ -62,15 +62,15 @@ struct Parameters
     string scorer;                ///< loss function argument
     string scorer_;   ///< actual loss function used, determined by scorer
     vector<string> feature_names; ///< names of features
-    bool backprop;  ///< turns on backpropagation
-    bool hillclimb; ///< turns on parameter hill climbing
-    int max_time;  ///< max time for fit method
-    bool use_batch; ///< whether to use mini batch for training
-    bool residual_xo; ///< use residual crossover  
-    bool stagewise_xo; ///< use stagewise crossover  
-    bool stagewise_xo_tol; ///< use stagewise crossover  
-    bool corr_delete_mutate;    ///< use correlation delete mutation   
-    float root_xo_rate; ///<  crossover  
+    bool backprop = false;  ///< turns on backpropagation
+    bool hillclimb = false; ///< turns on parameter hill climbing
+    int max_time = -1;  ///< max time for fit method
+    bool use_batch = false; ///< whether to use mini batch for training
+    bool residual_xo=false; ///< use residual crossover  
+    bool stagewise_xo=false; ///< use stagewise crossover  
+    bool stagewise_xo_tol=true; ///< use stagewise crossover  
+    bool corr_delete_mutate=false;    ///< use correlation delete mutation   
+    float root_xo_rate = 0.5; ///<  crossover  
     bool softmax_norm; ///< use softmax norm on probabilities
     bool normalize;    ///< whether to normalize the input data
     vector<bool> protected_groups;  ///<protected attributes in X
@@ -78,13 +78,15 @@ struct Parameters
     bool tune_final; ///< tune final ML model
     ///< string of comma-delimited operator names, used to choose functions
     string fn_str;      
+    int n_jobs = 1; ///< number of parallel jobs
 
     struct BP 
     {
-       int iters;
-       float learning_rate;
-       int batch_size;
-       BP(int i, float l, int bs): iters(i), learning_rate(l), batch_size(bs) {}
+       int iters=10;
+       float learning_rate = 0.1;
+       int batch_size = 0;
+       BP(int i, float l, int bs): iters(i), learning_rate(l), batch_size(bs) {};
+       BP() = default;
     };
 
     BP bp;                                      ///< backprop parameters
@@ -93,21 +95,23 @@ struct Parameters
     {
        int iters;
        float step;
-       HC(int i, float s): iters(i), step(s) {}
+       HC(int i, float s): iters(i), step(s) {};
+       HC() = default;
     };
     
     HC hc;                                      ///< stochastic hill climbing parameters       
     
-    Parameters(int pop_size, int gens, string ml, bool classification, 
-            int max_stall, char ot, int verbosity, string fs, float cr, 
-            float root_xor, unsigned int max_depth, unsigned int max_dim, 
-            bool constant, string obj, bool sh, float sp, float fb, 
-            string sc, string fn, bool bckprp, int iters, float lr, int bs, 
-            bool hclimb, int maxt, bool res_xo, bool stg_xo, 
-            bool stg_xo_tol, bool sftmx, bool nrm, bool corr_mut, 
-            bool tune_init, bool tune_fin);
-    
-    ~Parameters();
+    // Parameters(int pop_size, int gens, string ml, bool classification, 
+    //         int max_stall, char ot, int verbosity, string fs, float cr, 
+    //         float root_xor, unsigned int max_depth, unsigned int max_dim, 
+    //         bool constant, string obj, bool sh, float sp, float fb, 
+    //         string sc, string fn, bool bckprp, int iters, float lr, int bs, 
+    //         bool hclimb, int maxt, bool res_xo, bool stg_xo, 
+    //         bool stg_xo_tol, bool sftmx, bool nrm, bool corr_mut, 
+    //         bool tune_init, bool tune_fin);
+
+    Parameters(); 
+    ~Parameters(){};
     
     /*! checks initial parameter settings before training.
      *  make sure ml choice is valid for problem type.
@@ -132,12 +136,10 @@ struct Parameters
     std::unique_ptr<Node> createNode(std::string str, float d_val = 0, bool b_val = false, 
                                      size_t loc = 0, string name = "");
     
-    /// sets available functions based on comma-separated list.
-    void set_functions(string fs);
-    /// returns the function_str argument used to determine the function set.
-    string get_functions(){return this->function_str; }
     /// returns the set of functions to use determined at run-time.
-    string get_functions_();
+    vector<string> get_functions();
+    /// sets available functions and verifies output types.
+    void set_functions(const vector<string>& fns);
     
     /// max_size is max_dim binary trees of max_depth
     void updateSize();
@@ -159,9 +161,9 @@ struct Parameters
     void set_protected_groups(string fn); 
 
     /// get objectives as comma-delimited string
-    string get_objectives();
+    auto get_objectives(){ return objectives; };
     /// set the objectives
-    void set_objectives(string obj);
+    void set_objectives(const vector<string>& obj);
     
     /// set level of debug info
     void set_verbosity(int verbosity);

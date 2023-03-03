@@ -7,9 +7,8 @@ from setuptools import setup, find_packages
 from setuptools.extension import Extension, Library
 from setuptools.command.build_ext import build_ext
 from distutils.dir_util import remove_tree
-from Cython.Build import cythonize
+# from Cython.Build import cythonize
 import subprocess
-import eigency 
 from sys import platform
 ################################################################################
 # PACKAGE VERSION #####
@@ -176,8 +175,7 @@ class CMakeBuild(build_ext):
             f"-DSHOGUN_LIB={SHOGUN_LIB}",
             f"-DEIGEN3_INCLUDE_DIR={EIGEN_DIR}",
             f"-DOMP={'OFF' if cfg=='Debug' else 'ON'}",
-            f"-DGTEST={'ON' if cfg=='Debug' else 'OFF'}",
-            f"-DLIB_ONLY=ON", # only build feat library
+            f"-DGTEST={'OFF' if cfg=='Debug' else 'OFF'}",
             f"-DFEAT_LIB_SUFFIX={extsuffix}"
         ]
         build_args = []
@@ -214,9 +212,13 @@ class CMakeBuild(build_ext):
             if hasattr(self, "parallel") and self.parallel:
                 # CMake 3.12+ only.
                 build_args += ["-j{}".format(self.parallel)]
+        else:
+            print('cmake parallel level:',os.environ['CMAKE_BUILD_PARALLEL_LEVEL'])
 
         os.makedirs(self.build_temp, exist_ok=True)
 
+        print("cmake", ext.sourcedir,cmake_args) 
+        print(["cmake", "--build", "."] + build_args)
         subprocess.check_call(
             ["cmake", ext.sourcedir] + cmake_args, cwd=self.build_temp
         )
@@ -224,24 +226,24 @@ class CMakeBuild(build_ext):
             ["cmake", "--build", "."] + build_args, cwd=self.build_temp
         )
         # # copy libfeat to the library path
-        lib_fullname= f'{extdir}/libfeat{extsuffix}'
-        lib_copyname= f'{LIB_PATH}/libfeat{extsuffix}'
+        # lib_fullname= f'{extdir}/libfeat{extsuffix}'
+        # lib_copyname= f'{LIB_PATH}/libfeat{extsuffix}'
         # # symbolic link the feat library to one without the added platform info
         # linksuffix = '.'+extsuffix.split('.')[-1]
         # lib_linkname= f'{LIB_PATH}/libfeat{linksuffix}'
 
-        print(f'creating copy of {lib_fullname} named {lib_copyname} ')
-        shutil.copy(
-                   lib_fullname, 
-                   lib_copyname
-                  ) 
+        # print(f'creating copy of {lib_fullname} named {lib_copyname} ')
+        # shutil.copy(
+        #            lib_fullname, 
+        #            lib_copyname
+        #           ) 
         # print(f'creating a link to {lib_copyname} named {lib_linkname} ')
         # os.symlink(
         #     lib_copyname,
         #     lib_linkname
         # )
 
-# # # Clean old build/ directory if it exists
+# # # # Clean old build/ directory if it exists
 # try:
 #     remove_tree("./build")
 #     print("Removed old build directory.")
@@ -274,33 +276,14 @@ setup(
         +package_version),
     license='GNU/GPLv3',
     description='A Feature Engineering Automation Tool',
-    python_requires='>=3',
+    python_requires='>=3.7',
     install_requires=[
                       'Numpy',
                       'scikit-learn',
-                      'Cython',
                       'pandas'
     ],
-    # package_dir = {'','feat'},
     packages = ['feat'],
-    # py_modules=['feat','metrics','versionstr'],
-    ext_modules = ([CMakeExtension("feat.libfeat")]
-                    + cythonize([Extension(
-                        name='feat.cyfeat',
-                        sources =  ["feat/cyfeat.pyx"],    # our cython source
-                        include_dirs = (['src',
-                                         EIGEN_DIR, 
-                                         SHOGUN_INCLUDE_DIR,
-                                        ]
-                                   + eigency.get_includes(include_eigen=False)
-                                       ),
-                        extra_compile_args = extra_compile_args,
-                        library_dirs = [SHOGUN_LIB, LIB_PATH],
-                        runtime_library_dirs = [target_path],
-                        libraries=['shogun'],
-                        language='c++'
-                       )])
-                  ),
+    ext_modules = ([CMakeExtension("_feat")]),
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False
 )

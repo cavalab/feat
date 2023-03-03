@@ -21,15 +21,15 @@ TEST(Parameters, paramsTests)
 	weights[0] = 10;
 	ASSERT_NO_THROW(ft.params.set_term_weights(weights)); //TODO should throw error here as vector is empty just 
 	
-	ft.params.set_functions("+,-,*,/");
+	vector<string> function_names = {"+", "-", "*", "/"};
+	ft.params.set_functions(function_names);
 	ASSERT_EQ(ft.params.functions.size(), 4);
 	
 	int i;
-	vector<string> function_names = {"+", "-", "*", "/"};
 	for(i = 0; i < 4; i ++)
 		ASSERT_STREQ(function_names[i].c_str(), ft.params.functions[i]->name.c_str());
 		
-	ft.params.set_objectives("fitness,complexity");
+	ft.params.set_objectives({"fitness","complexity"});
 	ASSERT_EQ(ft.params.objectives.size(), 2);
 	
 	ASSERT_STREQ(ft.params.objectives[0].c_str(), "fitness");

@@ -9,14 +9,14 @@ from .versionstr import __version__
 from sklearn.base import BaseEstimator, RegressorMixin, ClassifierMixin
 import numpy as np
 import pandas as pd
-from .cyfeat import CyFeat
+from _feat import cppFeat
 from sklearn.metrics import mean_squared_error as mse
 from sklearn.metrics import log_loss
 from sklearn.utils import check_X_y, check_array
 from sklearn.preprocessing import LabelEncoder
 import json
 
-class Feat(CyFeat, BaseEstimator):
+class Feat(BaseEstimator):
     """Feature Engineering Automation Tool
 
     Parameters
@@ -68,7 +68,7 @@ class Feat(CyFeat, BaseEstimator):
         Random seed. If -1, will choose a random random_state.
     erc: boolean, optional (default: False)
         If true, ephemeral random constants are included as nodes in trees.
-    obj: str, optional (default: "fitness,complexity")
+    objectives: list[str], optional (default: "fitness,complexity")
         Objectives to use for multi-objective optimization.
     shuffle: boolean, optional (default: True)
         Whether to shuffle the training data before beginning training.
@@ -155,12 +155,16 @@ class Feat(CyFeat, BaseEstimator):
                  cross_rate=0.5, 
                  root_xo_rate=0.5, 
                  otype='a', 
-                 functions="", 
+                 functions= [
+                    "+","-","*","/","^2","^3","sqrt","sin","cos","exp","log","^",
+                    "logit","tanh","gauss","relu", "split","split_c",
+                    "b2f","c2f","and","or","not","xor","=","<","<=",">",">=","if","ite"
+                 ],
                  max_depth=3, 
                  max_dim=10, 
                  random_state=0, 
                  erc= False , 
-                 obj="fitness,complexity", 
+                 objectives=["fitness","complexity"], 
                  shuffle=True, 
                  split=0.75, 
                  fb=0.5, 
@@ -204,7 +208,7 @@ class Feat(CyFeat, BaseEstimator):
         self.max_dim=max_dim
         self.random_state=random_state
         self.erc=erc
-        self.obj=obj
+        self.objectives=objectives
         self.shuffle=shuffle
         self.split=split
         self.fb=fb
@@ -232,147 +236,165 @@ class Feat(CyFeat, BaseEstimator):
         self.tune_final=tune_final
         self.starting_pop=starting_pop
         
-    def set_params(self, **params):
-        for k,v in params.items():
-            setattr(self,k,v)
-        return self
-
     def load(self, filename):
         """Load a saved Feat state from file."""
         with open(filename, 'r') as of:
             feat_state = json.load(of)
         # separate out the python-specific keys
-        py_keys = [k for k in feat_state if k.endswith('_')]
-        self.set_params(**{k:feat_state[k] for k in py_keys})
-        # remove python-specific keys before invoking c++ method
-        for k in py_keys: 
-            del feat_state[k]
-        self._load(json.dumps(feat_state))
+        init_params = {k:v for k,v in feat_state.items() if not k.endswith('_')}
+        self.set_params(**init_params) 
+        for k,v in feat_state.items():
+            if k.endswith('_') and k != 'cfeat_':
+                setattr(self, k, v)
 
-        self.set_params(**{k[1:]:v for k,v in self._get_params().items()})
+        if 'cfeat_' in feat_state.keys():
+            self.cfeat_ = cppFeat()
+            self.cfeat_.load(feat_state['cfeat_'])
+        else:
+            self._set_cfeat_params()
 
         return self
 
     def save(self, filename):
         """Save a Feat state to file."""
 
-        feat_state = json.loads(self._save())
+        cfeat_state = self.cfeat_.save()
         # add python-specific parameters
-        for k in self.__dict__: 
-            if k.endswith('_'):
-                print('adding',k,'type:',self.__dict__[k].__class__.__name__)
-                feat_state[k] = self.__dict__[k]
-
-        for k,v in feat_state.items():
-            if v.__class__.__name__ == 'int64':
-                print(k,':',v.__class__.__name__,':',v)
+        attribs = self.get_params()
+        for k,v in self.__dict__.items(): 
+            if k not in attribs.keys():
+                attribs[k] = v
+        attribs['cfeat_']  = cfeat_state
         with open(filename, 'w') as of:
-            json.dump(feat_state, of)
+            json.dump(attribs, of)
 
-    def get_params(self, deep=False, static_params=False):
-        return {k:v for k,v in self.__dict__.items() if not k.endswith('_')}
+    def _set_cfeat_params(self):
+        """Setup cpp feat estimator."""
+        self.cfeat_ = cppFeat()
+        params = self.get_params()
+        for k,v in params.items():
+            setattr(self.cfeat_, k, v)
 
-    def fit(self,X,y,zfile=None,zids=None):
+    def fit(self, X, y, Z=None):
         """Fit a model."""    
+        self._set_cfeat_params() 
 
         X,y = self._clean(X, y, set_feature_names=True)
-        self.n_features_in_ = X.shape[1]
 
-        self._set_params(**{'_'+k:v for k,v in self.get_params(
-                            static_params=True).items()})
-        if zfile:
-            self._fit_with_z(X,y,zfile,zids)
+        if Z:
+            self.cfeat_.fit(X,y,Z)
         else:
-            self._fit(X,y)
+            self.cfeat_.fit(X,y)
 
-        self.set_params(**{k[1:]:v for k,v in self._get_params().items() 
-                          if k.endswith('_')})
-
+        self.is_fitted_ = True
         return self
 
-    def predict(self,X,zfile=None,zids=None):
+    def predict(self,X,Z=None):
         """Predict on X."""
-        if not self._fitted_:
+        if not self.is_fitted_:
             raise ValueError("Call fit before calling predict.")
 
-        X = check_array(X)
-        self._check_shape(X)
+        X = self._prep_X(X)
 
-        if zfile:
-            return self._predict_with_z(X,zfile,zids)
+        if Z:
+            return self.cfeat_.predict(X,Z)
         else:
-            return self._predict(X)
+            return self.cfeat_.predict(X)
 
-    def predict_archive(self,X,zfile=None,zids=None):
+    def predict_archive(self,X,Z=None):
         """Returns a list of dictionary predictions for all models."""
-        if not self._fitted_:
+        if not self.is_fitted_:
             raise ValueError("Call fit before calling predict.")
 
-        X = check_array(X)
-        self._check_shape(X)
+        X = self._prep_X(X)
 
-        if zfile:
-            raise ImplementationError('longitudinal not implemented')
-            return 1
+        if Z:
+            raise NotImplementedError('longitudinal not implemented')
+            return
 
-        archive = self.get_archive(justfront=False)
+        archive = self.cfeat_.get_archive(False)
         preds = []
         for ind in archive:
             tmp = {}
             tmp['id'] = ind['id']
-            tmp['y_pred'] = self._predict_archive(ind['id'], X) 
+            tmp['y_pred'] = self.cfeat_.predict_archive(ind['id'], X) 
             preds.append(tmp)
 
         return preds
 
-    def transform(self,X,zfile=None,zids=None):
+    def transform(self,X,Z=None):
         """Return the representation's transformation of X"""
-        if not self._fitted_:
+        if not self.is_fitted_:
             raise ValueError("Call fit before calling transform.")
 
-        X = check_array(X)
-        self._check_shape(X)
+        X = self._prep_X(X)
 
-        if zfile:
-            return self._transform_with_z(X,zfile,zids)
+        if Z:
+            Phi =  self.cfeat_.transform(X,Z)
         else:
-            return self._transform(X)
+            Phi = self.cfeat_.transform(X)
 
-    def fit_predict(self,X,y):
+        return Phi
+
+    def fit_predict(self,X,y,Z=None):
         """Convenience method that runs fit(X,y) then predict(X)"""
-        self.fit(X,y)
-        result = self.predict(X)
+        self.fit(X,y,Z)
+        result = self.predict(X,Z)
         return result
 
-    def fit_transform(self,X,y):
+    def fit_transform(self,X,y,Z=None):
         """Convenience method that runs fit(X,y) then transform(X)"""
-        self.fit(X,y)
-        result = self.transform(X)
-        return result
+        return self.fit(X,y,Z).transform(X,Z)
 
-    def score(self,X,y,zfile=None,zids=None):
+    def score(self,X,y,Z=None):
         """Returns a score for the predictions of Feat on X versus true 
         labels y""" 
         if ( self.classification ):
-            yhat = self.predict_proba(X,zfile,zids)
-            return log_loss(y,yhat, labels=y)
+            yhat = self.predict_proba(X,Z)
+            return log_loss(y, yhat, labels=y)
         else:
-            yhat = self.predict(X,zfile,zids).flatten()
+            yhat = self.predict(X,Z).flatten()
             return mse(y,yhat)
+
+
+    @property
+    def stats_(self): 
+        if not self.is_fitted_:
+            raise ValueError("Call fit before asking for stats_.")
+        return self.cfeat_.stats_
+
+    def _prep_array(self, x):
+        """Converts dataframe to array, optionally returning feature names"""
+        x = np.asfortranarray(x, dtype=np.float32)
+        return x
+
+    def _prep_X(self, X):
+        X = check_array(X)
+        self._check_shape(X)
+        return self._prep_array(X).transpose()
 
     def _clean(self, x, y, set_feature_names=False):
         """Converts dataframe to array, optionally returning feature names"""
         feature_names = ''
-        if type(x).__name__ == 'DataFrame':
+        if isinstance(x, pd.DataFrame):
             if set_feature_names and len(list(x.columns)) == x.shape[1]:
                 self.feature_names = ','.join(x.columns)
-        return check_X_y(x,y, ensure_min_samples=2)
+        x, y = check_X_y(x,y, ensure_min_samples=2, dtype=np.float32)
+        self.n_features_in_ = x.shape[1]
+        x = self._prep_X(x)
+        y = self._prep_array(y)
+
+        return x,y
 
     def _check_shape(self, X):
         if X.shape[1] != self.n_features_in_:
             raise ValueError('The number of features ({}) in X do not match '
                              'the number of features used for training '
                              '({})'.format(X.shape[1],self.n_features_in_))
+    # wrappers
+    def get_representation(self): return self.cfeat_.get_representation()
+    def get_model(self, sort=True): return self.cfeat_.get_model(sort)
+    def get_coefs(self): return self.cfeat_.get_coefs()
 
 class FeatRegressor(Feat):
     """Convenience method that enforces regression options."""
@@ -381,74 +403,74 @@ class FeatRegressor(Feat):
         if 'ml' not in kwargs: 
             kwargs['ml'] = 'LinearRidgeRegression'
         Feat.__init__(self,**kwargs)
+    def _get_param_names(self):
+        return Feat._get_param_names()
 
 class FeatClassifier(Feat):
     """Convenience method that enforces classification options.
         Also includes methods for prediction probabilities.
     """
-    # classification_default = True
     def __init__(self,**kwargs):
         kwargs.update({'classification':True})
         if 'ml' not in kwargs: 
             kwargs['ml'] = 'LR'
         Feat.__init__(self,**kwargs)
 
+    def _get_param_names(self):
+        return Feat._get_param_names()
     def fit(self,X,y,zfile=None,zids=None):
         self.classes_ = [int(i) for i in np.unique(np.asarray(y))]
-        if (any([i != j for i,j in zip(self.classes_,
-                                      np.arange(np.max(self.classes_))
-                                      )
-               ])):
+        if (any([
+            i != j 
+            for i,j in zip(self.classes_, np.arange(np.max(self.classes_)))
+        ])):
             raise ValueError('y must be a contiguous set of labels from ',
                              '0 to n_classes. y contains the values {}'.format(
                                  np.unique(np.asarray(y)))
                             )
        
-        return Feat.fit(self, X, y, zfile, zids)
+        super().fit(X,y)
+        return self
 
-    def predict(self,X,zfile=None,zids=None):
-        return Feat.predict(self, X, zfile, zids)
+    def predict(self,X,Z=None):
+        return super().predict(X, Z)
 
-    def predict_proba(self,X,zfile=None,zids=None):
+    def predict_proba(self,X,Z=None):
         """Return probabilities of predictions for data X"""
-        if not self._fitted_:
+        if not self.is_fitted_:
             raise ValueError("Call fit before calling predict.")
 
-        X = check_array(X)
-        self._check_shape(X)
+        X = self._prep_X(X)
 
-        if zfile:
-            tmp = self._predict_proba_with_z(X,zfile,zids)
+        if Z:
+            tmp = self.cfeat_.predict_proba(X,Z).transpose()
         else:
-            tmp = self._predict_proba(X)
+            tmp = self.cfeat_.predict_proba(X).transpose()
         
         # for binary classification, add a second column for 0 complement
-        if len(self.classes_) ==2:
+        if len(self.classes_) == 2 and tmp.shape[1] == 1:
             tmp = tmp.ravel()
-            assert len(X) == len(tmp)
+            assert X.shape[1] == len(tmp)
             tmp = np.vstack((1-tmp,tmp)).transpose()
         return tmp         
 
-    def predict_proba_archive(self,X,zfile=None,zids=None):
+    def predict_proba_archive(self,X,Z=None,front=False):
         """Returns a dictionary of prediction probabilities for all models."""
 
-        if not self._fitted_:
+        if not self.is_fitted_:
             raise ValueError("Call fit before calling predict.")
 
-        X = check_array(X)
-        self._check_shape(X)
+        X = self._prep_X(X)
 
-        if zfile:
-            raise ImplementationError('longitudinal not implemented')
-            # return self._predict_with_z(X,zfile,zids)
-            return 1
-
-        archive = self.get_archive()
+        archive = self.cfeat_.get_archive(front)
         probs = []
         for ind in archive:
             tmp = {}
             tmp['id'] = ind['id']
-            tmp['y_proba'] = self._predict_proba_archive(ind['id'], X)
+            if Z:
+                tmp['y_proba'] = self.cfeat_.predict_proba_archive(ind['id'], X, Z)
+            else:
+                tmp['y_proba'] = self.cfeat_.predict_proba_archive(ind['id'], X)
             probs.append(tmp)
 
         return probs

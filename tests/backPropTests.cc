@@ -83,6 +83,7 @@ Node* parseToNode(std::string token) {
     } else if (token == "step") {
     	return new NodeStep();
     }
+	return nullptr;
 }
 
 class TestBackProp
