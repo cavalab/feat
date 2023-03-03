@@ -26,7 +26,7 @@ class Feat(BaseEstimator):
     gens: int, optional (default: 100)
         Number of iterations to train for
     ml: str, optional (default: "LinearRidgeRegression")
-        ML pairing. Choices: LinearRidgeRegression, Lasso, L1_LR, L2_LR
+        ML pairing. Choices: LinearRidgeRegression, Lasso, L1\_LR, L2\_LR
         FeatRegressor sets to "LinearRidgeRegression";
         FeatClassifier sets to L2 penalized LR ("LR")
     classification: boolean or None, optional (default: None)

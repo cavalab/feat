@@ -43,6 +43,7 @@ release = versionstr
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    "myst_parser",
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
     'sphinx.ext.coverage',
@@ -51,8 +52,12 @@ extensions = [
     'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
     'sphinx_copybutton',
-    'recommonmark',
-    'nbsphinx'
+    "sphinx.ext.mathjax",
+    'sphinx_math_dollar',
+    # 'recommonmark',
+    'nbsphinx',
+    # "sphinx.ext.viewcode",
+    # External stuff
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -61,7 +66,7 @@ templates_path = ['_templates']
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 
-source_suffix = ['.md']
+# source_suffix = ['.md']
 
 # The master toctree document.
 master_doc = 'index'
@@ -243,3 +248,17 @@ def linkcode_resolve(domain, info):
         return None
     filename = info['module'].replace('.', '/')
     return "https://github.com/cavalab/feat/blob/master/feat/%s.py" % filename
+
+mathjax_config = {
+    'tex2jax': {
+        'inlineMath': [ ["\\(","\\)"] ],
+        'displayMath': [["\\[","\\]"] ],
+    },
+}
+
+mathjax3_config = {
+  "tex": {
+    "inlineMath": [['\\(', '\\)']],
+    "displayMath": [["\\[", "\\]"]],
+  }
+}

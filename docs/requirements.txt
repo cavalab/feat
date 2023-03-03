@@ -8,4 +8,5 @@ numpydoc
 m2r2
 myst-parser
 nbsphinx
-sphinx-material 
+sphinx-material
+sphinx-math-dollar

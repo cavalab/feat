@@ -56,11 +56,11 @@ FEAT is being developed to learn clinical diagnostics in the [Cava Lab at Harvar
 
 ## License
 
-GNU GPLv3, see [LICENSE](LICENSE)
+GNU GPLv3, see [LICENSE](https://github.com/cavalab/feat/blob/master/LICENSE)
 
 <!-- end overview -->
 
-## Installation
+# Installation
 
 <!-- start installation -->
 
@@ -68,14 +68,14 @@ To see our installation process from scratch, check out the [Github
 actions
 workflow](http://github.com/lacava/feat/blob/master/.github/workflows/ci.yml).
 
-### Dependencies
+## Dependencies
 
 Feat uses [cmake](https://cmake.org/) to build. It also depends on the
 [Eigen](http://eigen.tuxfamily.org) matrix library for C++ as well as
 the [Shogun](http://shogun.ml) ML library. Both come in packages on
 conda that should work across platforms.
 
-### Install in a Conda Environment
+## Install in a Conda Environment
 
 The easiest option for install is to use the [conda environment we
 provide](http://github.com/lacava/feat/blob/master/environment.yml).
@@ -103,11 +103,11 @@ export EIGEN3_INCLUDE_DIR=/your/eigen/eigen3/
 If you need Eigen and Shogun and don\'t want to use conda, follow these
 instructions.
 
-### Eigen
+## Eigen
 
 Eigen is a header only package. We need Eigen 3 or greater.
 
-#### Debian/Ubuntu
+### Debian/Ubuntu
 
 On Debian systems, you can grab the package:
 
@@ -127,14 +127,14 @@ mv eigen-eigen*/* eigen-3.3.4
 export EIGEN3_INCLUDE_DIR="$(pwd)/eigen-3.3.4/"
 ```
 
-### Shogun
+## Shogun
 
 You don\'t have to compile Shogun, just download the binaries. [Their
 install guide is
 good.](https://github.com/shogun-toolbox/shogun/blob/develop/doc/readme/INSTALL.md#binaries)
 We\'ve listed two of the options here.
 
-#### Debian/Ubuntu
+### Debian/Ubuntu
 
 You can also get the Shogun packages:
 
@@ -144,6 +144,8 @@ sudo apt-get update -y
 sudo apt-get install -qq --force-yes --no-install-recommends libshogun18
 sudo apt-get install -qq --force-yes --no-install-recommends libshogun-dev
 ```
+
+<!-- end installation -->
 
 ## Running the tests
 
