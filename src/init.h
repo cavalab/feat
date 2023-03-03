@@ -33,11 +33,12 @@ using std::unique_ptr;
 using std::shared_ptr;
 using std::make_shared;
 using std::cout; 
+//TODO: document better
 typedef std::map<string, 
                  std::pair<vector<Eigen::ArrayXf>, vector<Eigen::ArrayXf>>
                 > LongData;
 // internal includes
-#include "util/json.hpp"
+#include "nlohmann/json.hpp"
 using nlohmann::json;
 
 namespace FT{

@@ -39,6 +39,8 @@ namespace FT{
             
                 /// constructor
                 Variation(float cr);
+
+                Variation() = default;
                            
                 /// update cross rate
                 void set_cross_rate(float cr);

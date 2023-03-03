@@ -1,0 +1,11 @@
+sphinx 
+recommonmark 
+seaborn 
+matplotlib 
+jupyter
+sphinx-copybutton
+numpydoc
+m2r2
+myst-parser
+nbsphinx
+sphinx-material 

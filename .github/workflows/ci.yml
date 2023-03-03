@@ -25,7 +25,7 @@ jobs:
         name: add docs environment dependencies
         uses: mamba-org/provision-with-micromamba@main
         with:
-          environment-file: ci/ci-environment.yml
+          environment-file: environment.yml
           cache-env: true
           cache-downloads: true
       - 
@@ -50,7 +50,7 @@ jobs:
           # which python
           cd tests
           # ls
-          python wrappertest.py -v 3
+          python wrappertest.py
       # - 
       #   name: Notebook Test
       #   run: |
@@ -62,18 +62,20 @@ jobs:
 ########################################
 # docs
 ########################################
-      - name: build docs
+      - 
+        name: build docs
         run: |
-          sudo apt-get install doxygen
-          sudo apt-get install graphviz
-          doxygen --version
-          which python
           cd docs
-          ls
-          echo "sphinx-build -b html ./ ../_site"
-          # sphinx-build -b html ./ ../_site
+          sudo apt-get install doxygen graphviz
+          doxygen --version
+
+          mkdir doxygen_site/
+          doxygen Doxyfile
+
           micromamba info
-          python -m sphinx.cmd.build -b html ./ ../_site
+          micromamba install pandoc
+          pip install -r requirements.txt
+          make html
       - 
         name: Deploy
         uses: peaceiris/actions-gh-pages@v3

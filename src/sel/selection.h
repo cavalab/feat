@@ -38,9 +38,9 @@ namespace FT{
             string type;
             bool survival;
             
-            Selection(string type="lexicase", bool survival=false);
-            
+            Selection(); 
             ~Selection();
+            Selection(string type, bool survival);
 
             void set_operator();
             

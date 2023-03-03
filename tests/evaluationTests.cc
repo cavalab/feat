@@ -3,8 +3,8 @@
 TEST(Evaluation, mse)
 {
 	
-    Feat ft;
-    
+    Feat ft = make_estimator(100, 10, "LinearRidgeRegression", false, 1, 666);
+
     VectorXf yhat(10), y(10), res(10);
 	yhat << 0.0,
 	        1.0,
@@ -57,7 +57,7 @@ TEST(Evaluation, bal_accuracy)
 {
     // test balanced zero one loss
 	
-    Feat ft;
+    Feat ft = make_estimator(100, 10, "LinearRidgeRegression", false, 1, 666);
     
     VectorXf yhat(10), y(10), res(10), loss(10);
 	
@@ -263,7 +263,8 @@ TEST(Evaluation, fpr)
 
 TEST(Evaluation, fitness)
 {
-	Feat ft;
+    Feat ft = make_estimator(100, 10, "LinearRidgeRegression", false, 1, 666);
+    ft.set_scorer("mse");
 	
 	MatrixXf X(10,1); 
     X << 0.0,  
@@ -314,7 +315,7 @@ TEST(Evaluation, fitness)
 
 TEST(Evaluation, out_ml)
 {
-    Feat ft;
+    Feat ft = make_estimator(100, 10, "LinearRidgeRegression", false, 1, 666);
 
 	MatrixXf X(7,2); 
     X << 0,1,  

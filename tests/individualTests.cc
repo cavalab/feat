@@ -32,8 +32,7 @@ bool checkBrackets(string str)
 
 TEST(Individual, EvalEquation)
 {
-	Feat feat(100, 100, "LinearRidgeRegression", false, 1);
-	feat.set_random_state(666);
+	Feat feat = make_estimator(100, 100, "LinearRidgeRegression", false, 1, 666);
 	
     MatrixXf X(4,2); 
     MatrixXf X_v(3,2); 
@@ -213,8 +212,7 @@ TEST(Individual, serialization)
     {
         cout << "model: " << model << endl;
         bool classification = in({"L1_LR","L2_LR"}, model);
-        Feat feat(100, 100, "LinearRidgeRegression", classification, 1);
-        feat.set_random_state(666);
+        Feat feat = make_estimator(100, 100, "LinearRidgeRegression", classification, 1, 666);
         if (classification)
         {
             feat.params.init(X,yb);

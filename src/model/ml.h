@@ -35,7 +35,7 @@ license: GNU/GPL v3
 #include "../params.h"
 #include "../eval/scorer.h"
 #include "../util/utils.h"
-#include "../util/json.hpp"
+#include "nlohmann/json.hpp"
 #include "../util/serialization.h"
 
 // stuff being used

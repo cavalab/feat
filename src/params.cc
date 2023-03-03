@@ -12,61 +12,66 @@ namespace FT{
 using namespace Util;
 using namespace Pop::Op;
     
-Parameters::Parameters(int pop_size, int gens, string ml, bool classification, 
-        int max_stall, char ot, int verbosity, string fs, float cr, 
-        float root_xor, unsigned int max_depth, 
-        unsigned int max_dim, bool constant, string obj, bool sh, float sp, 
-        float fb, string sc, string fn, bool bckprp, int iters, float lr,
-        int bs, bool hclimb, int maxt, bool res_xo, bool stg_xo, 
-        bool stg_xo_tol, bool sftmx, bool nrm, bool corr_mut, bool tune_init,
-        bool tune_fin):    
-        pop_size(pop_size),
-        gens(gens),
-        ml(ml),
-        classification(classification),
-        max_stall(max_stall), 
-        cross_rate(cr),
-        root_xo_rate(root_xor),
-        max_depth(max_depth),
-        max_dim(max_dim),
-        erc(constant),
-        shuffle(sh),
-        split(sp),
-        otype(ot),
-        feedback(fb),
-        backprop(bckprp),
-        bp(iters, lr, bs),
-        hillclimb(hclimb),
-        hc(iters, lr),
-        max_time(maxt),
-        residual_xo(res_xo),
-        stagewise_xo(stg_xo),
-        stagewise_xo_tol(stg_xo),
-        corr_delete_mutate(corr_mut),
-        softmax_norm(sftmx),
-        normalize(nrm),
-        tune_initial(tune_init),
-        tune_final(tune_fin),
-        scorer(sc)
-    {
-        set_verbosity(verbosity);
+// Parameters::Parameters(int pop_size, int gens, string ml, bool classification, 
+//         int max_stall, char ot, int verbosity, string fs, float cr, 
+//         float root_xor, unsigned int max_depth, 
+//         unsigned int max_dim, bool constant, string obj, bool sh, float sp, 
+//         float fb, string sc, string fn, bool bckprp, int iters, float lr,
+//         int bs, bool hclimb, int maxt, bool res_xo, bool stg_xo, 
+//         bool stg_xo_tol, bool sftmx, bool nrm, bool corr_mut, bool tune_init,
+//         bool tune_fin):    
+//         pop_size(pop_size),
+//         gens(gens),
+//         ml(ml),
+//         classification(classification),
+//         max_stall(max_stall), 
+//         cross_rate(cr),
+//         root_xo_rate(root_xor),
+//         max_depth(max_depth),
+//         max_dim(max_dim),
+//         erc(constant),
+//         shuffle(sh),
+//         split(sp),
+//         otype(ot),
+//         feedback(fb),
+//         backprop(bckprp),
+//         bp(iters, lr, bs),
+//         hillclimb(hclimb),
+//         hc(iters, lr),
+//         max_time(maxt),
+//         residual_xo(res_xo),
+//         stagewise_xo(stg_xo),
+//         stagewise_xo_tol(stg_xo),
+//         corr_delete_mutate(corr_mut),
+//         softmax_norm(sftmx),
+//         normalize(nrm),
+//         tune_initial(tune_init),
+//         tune_final(tune_fin),
+//         scorer(sc)
+//     {
+//         set_verbosity(verbosity);
             
-        set_functions(fs);
-        set_objectives(obj);
-        set_feature_names(fn);
-        updateSize();     
-        set_otypes();
-        n_classes = 2;
-        set_scorer(sc);
-        use_batch = bs>0;
-        set_current_gen(0);
-    }
+//         set_functions(fs);
+//         set_objectives(obj);
+//         set_feature_names(fn);
+//         updateSize();     
+//         set_otypes();
+//         n_classes = 2;
+//         set_scorer(sc);
+//         use_batch = bs>0;
+//         set_current_gen(0);
+//     }
 
-Parameters::~Parameters()
+Parameters::Parameters()
 {
-    
+    vector<string> default_fns {
+        "+","-","*","/","^2","^3","sqrt","sin","cos","exp","log","^",
+        "logit","tanh","gauss","relu",
+        "split","split_c",
+        "b2f","c2f","and","or","not","xor","=","<","<=",">",">=","if","ite"
+    };
+    set_functions(default_fns);
 }
-
 
 
 /*! checks initial parameter settings before training.
@@ -436,59 +441,69 @@ string Parameters::get_feature_names()
     return ravel(this->feature_names);
 }
 
-void Parameters::set_functions(string fs)
-{
-    /*! 
-     * Input: 
-     *
-     *		fs: string of comma-separated Node names
-     *
-     * Output:
-     *
-     *		modifies functions 
-     *
-     */
-    this->function_str = fs;
+// void Parameters::set_functions(const vector<string>& fns)
+// {
+//     /*! 
+//      * Input: 
+//      *
+//      *		fs: string of comma-separated Node names
+//      *
+//      * Output:
+//      *
+//      *		modifies functions 
+//      *
+//      */
+//     this->function_str = fs;
 
-    if (fs.empty())
-        fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
-              "logit,tanh,gauss,relu,"
-              "split,split_c,"
-              "b2f,c2f,and,or,not,xor,=,<,<=,>,>=,if,ite";
-    fs += ',';          // add delimiter to end 
-    string delim = ",";
-    size_t pos = 0;
-    string token;
-    this->functions.clear();
-    while ((pos = fs.find(delim)) != string::npos) 
-    {
-        token = fs.substr(0, pos);
+//     if (fs.empty())
+//         fs = "+,-,*,/,^2,^3,sqrt,sin,cos,exp,log,^,"
+//               "logit,tanh,gauss,relu,"
+//               "split,split_c,"
+//               "b2f,c2f,and,or,not,xor,=,<,<=,>,>=,if,ite";
+//     fs += ',';          // add delimiter to end 
+//     string delim = ",";
+//     size_t pos = 0;
+//     string token;
+//     this->functions.clear();
+//     while ((pos = fs.find(delim)) != string::npos) 
+//     {
+//         token = fs.substr(0, pos);
 
-        functions.push_back(createNode(token));
+//         functions.push_back(createNode(token));
 
-        fs.erase(0, pos + delim.length());
-    } 
+//         fs.erase(0, pos + delim.length());
+//     } 
     
-    string log_msg = "functions: [";
-    for (int i =0; i < functions.size(); ++i)
-    {
-        log_msg += functions.at(i)->name ;
-        if (i < functions.size()-1)
-            log_msg += ", "; 
-    }
-    log_msg += "]";
+//     string log_msg = "functions: [";
+//     for (int i =0; i < functions.size(); ++i)
+//     {
+//         log_msg += functions.at(i)->name ;
+//         if (i < functions.size()-1)
+//             log_msg += ", "; 
+//     }
+//     log_msg += "]";
     
-    logger.log(log_msg, 3);
+//     logger.log(log_msg, 3);
     
-    // reset output types
-    set_otypes();
-}
-string Parameters::get_functions_()
+//     // reset output types
+//     set_otypes();
+// }
+
+vector<string> Parameters::get_functions()
 {
     vector<string> fn_vec;
     for (const auto& fn : this->functions)
         fn_vec.push_back(fn->name);
-    return ravel(fn_vec);
+    return fn_vec;
+}
+
+void Parameters::set_functions(const vector<string>& fns)
+{
+    this->functions.clear();
+    for (const auto& f : fns)
+        functions.push_back(createNode(f));
+    // reset output types
+    set_otypes();
 }
 
 void Parameters::set_op_weights()
@@ -674,26 +689,23 @@ void Parameters::set_terminals(int nf, const LongData& Z)
 }
 
 
-void Parameters::set_objectives(string obj)
+void Parameters::set_objectives(const vector<string>& obj)
 {
     /*! Input: obj, a comma-separated list of objectives
      */
 
-    obj += ',';          // add delimiter to end 
-    string delim = ",";
-    size_t pos = 0;
-    string token;
-    objectives.clear();
-    while ((pos = obj.find(delim)) != string::npos) 
-    {
-        token = obj.substr(0, pos);
-        objectives.push_back(token);
-        obj.erase(0, pos + delim.length());
-    }
-}
-string Parameters::get_objectives()
-{
-    return ravel(this->objectives);
+    // obj += ',';          // add delimiter to end 
+    // string delim = ",";
+    // size_t pos = 0;
+    // string token;
+    // objectives.clear();
+    // while ((pos = obj.find(delim)) != string::npos) 
+    // {
+    //     token = obj.substr(0, pos);
+    //     objectives.push_back(token);
+    //     obj.erase(0, pos + delim.length());
+    // }
+    objectives=obj;
 }
 
 
