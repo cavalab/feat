@@ -3,13 +3,9 @@ channels:
     - conda-forge
 dependencies:
     - python=3.10
-<<<<<<< HEAD
     - cmake>3.3
     - gcc
     - gxx
-=======
-    - cmake
->>>>>>> ac183064725712e7915b9f95293b27d9a2ee80f3
     - ninja
     - eigen
     - pandas
