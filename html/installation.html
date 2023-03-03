@@ -57,7 +57,7 @@
   </script>
   <link href="genindex.html" rel="index" title="Index"/>
   <link href="search.html" rel="search" title="Search"/>
-  <link href="guide/overview.html" rel="next" title="Overview"/>
+  <link href="overview.html" rel="next" title="Overview"/>
   <link href="index.html" rel="prev" title="Feature Engineering Automation Tool"/>
   <link href="_static/icon.jpeg" rel="apple-touch-icon"/>
  </head>
@@ -74,7 +74,7 @@
   <input class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
   <label class="md-overlay" data-md-component="overlay" for="__drawer">
   </label>
-  <a class="md-skip" href="#install" tabindex="1">
+  <a class="md-skip" href="#installation" tabindex="1">
    Skip to content
   </a>
   <header class="md-header" data-md-component="header">
@@ -208,45 +208,54 @@
             </label>
             <ul class="md-nav__list" data-md-scrollfix="">
              <li class="md-nav__item">
-              <a class="md-nav__link" href="#install--page-root">
+              <a class="md-nav__link" href="#installation--page-root">
                Installation
               </a>
               <nav class="md-nav">
                <ul class="md-nav__list">
                 <li class="md-nav__item">
-                 <a class="md-nav__link" href="#conda">
-                  Conda
+                 <a class="md-nav__link" href="#dependencies">
+                  Dependencies
                  </a>
                 </li>
                 <li class="md-nav__item">
-                 <a class="md-nav__link" href="#dependencies">
-                  Dependencies
+                 <a class="md-nav__link" href="#install-in-a-conda-environment">
+                  Install in a Conda Environment
+                 </a>
+                </li>
+                <li class="md-nav__item">
+                 <a class="md-nav__link" href="#eigen">
+                  Eigen
                  </a>
                  <nav class="md-nav">
                   <ul class="md-nav__list">
                    <li class="md-nav__item">
-                    <a class="md-nav__link" href="#id1">
-                     Eigen
-                    </a>
-                   </li>
-                   <li class="md-nav__item">
-                    <a class="md-nav__link" href="#id2">
-                     Shogun
+                    <a class="md-nav__link" href="#debian-ubuntu">
+                     Debian/Ubuntu
                     </a>
                    </li>
                   </ul>
                  </nav>
                 </li>
                 <li class="md-nav__item">
-                 <a class="md-nav__link" href="#running-the-tests">
-                  Running the tests
+                 <a class="md-nav__link" href="#shogun">
+                  Shogun
                  </a>
+                 <nav class="md-nav">
+                  <ul class="md-nav__list">
+                   <li class="md-nav__item">
+                    <a class="md-nav__link" href="#id1">
+                     Debian/Ubuntu
+                    </a>
+                   </li>
+                  </ul>
+                 </nav>
                 </li>
                </ul>
               </nav>
              </li>
              <li class="md-nav__item">
-              <a class="md-nav__extra_link" href="_sources/install.rst.txt">
+              <a class="md-nav__extra_link" href="_sources/installation.md.txt">
                Show Source
               </a>
              </li>
@@ -254,20 +263,18 @@
            </nav>
           </li>
           <li class="md-nav__item">
-           <span class="md-nav__link caption">
-            <span class="caption-text">
-             User Guide
-            </span>
-           </span>
-          </li>
-          <li class="md-nav__item">
-           <a class="md-nav__link" href="guide/overview.html">
+           <a class="md-nav__link" href="overview.html">
             Overview
            </a>
           </li>
           <li class="md-nav__item">
-           <a class="md-nav__link" href="guide/basics.html">
+           <a class="md-nav__link" href="basics.html">
             Basic Usage
+           </a>
+          </li>
+          <li class="md-nav__item">
+           <a class="md-nav__link" href="contributing.html">
+            Contributing
            </a>
           </li>
           <li class="md-nav__item">
@@ -278,11 +285,6 @@
            </span>
           </li>
           <li class="md-nav__item">
-           <a class="md-nav__link" href="examples/command_line.html">
-            Command line example
-           </a>
-          </li>
-          <li class="md-nav__item">
            <a class="md-nav__link" href="examples/archive.html">
             Using Feat’s archive
            </a>
@@ -290,6 +292,11 @@
           <li class="md-nav__item">
            <a class="md-nav__link" href="examples/longitudinal.html">
             Using Longitudinal Data
+           </a>
+          </li>
+          <li class="md-nav__item">
+           <a class="md-nav__link" href="examples/longitudinal.html#longitudinal-format">
+            longitudinal format
            </a>
           </li>
           <li class="md-nav__item">
@@ -323,45 +330,54 @@
          </label>
          <ul class="md-nav__list" data-md-scrollfix="">
           <li class="md-nav__item">
-           <a class="md-nav__link" href="#install--page-root">
+           <a class="md-nav__link" href="#installation--page-root">
             Installation
            </a>
            <nav class="md-nav">
             <ul class="md-nav__list">
              <li class="md-nav__item">
-              <a class="md-nav__link" href="#conda">
-               Conda
+              <a class="md-nav__link" href="#dependencies">
+               Dependencies
               </a>
              </li>
              <li class="md-nav__item">
-              <a class="md-nav__link" href="#dependencies">
-               Dependencies
+              <a class="md-nav__link" href="#install-in-a-conda-environment">
+               Install in a Conda Environment
+              </a>
+             </li>
+             <li class="md-nav__item">
+              <a class="md-nav__link" href="#eigen">
+               Eigen
               </a>
               <nav class="md-nav">
                <ul class="md-nav__list">
                 <li class="md-nav__item">
-                 <a class="md-nav__link" href="#id1">
-                  Eigen
-                 </a>
-                </li>
-                <li class="md-nav__item">
-                 <a class="md-nav__link" href="#id2">
-                  Shogun
+                 <a class="md-nav__link" href="#debian-ubuntu">
+                  Debian/Ubuntu
                  </a>
                 </li>
                </ul>
               </nav>
              </li>
              <li class="md-nav__item">
-              <a class="md-nav__link" href="#running-the-tests">
-               Running the tests
+              <a class="md-nav__link" href="#shogun">
+               Shogun
               </a>
+              <nav class="md-nav">
+               <ul class="md-nav__list">
+                <li class="md-nav__item">
+                 <a class="md-nav__link" href="#id1">
+                  Debian/Ubuntu
+                 </a>
+                </li>
+               </ul>
+              </nav>
              </li>
             </ul>
            </nav>
           </li>
           <li class="md-nav__item">
-           <a class="md-nav__extra_link" href="_sources/install.rst.txt">
+           <a class="md-nav__extra_link" href="_sources/installation.md.txt">
             Show Source
            </a>
           </li>
@@ -375,62 +391,21 @@
      <div class="md-content">
       <article class="md-content__inner md-typeset" role="main">
        <section id="installation">
-        <h1 id="install--page-root">
+        <h1 id="installation--page-root">
          Installation
-         <a class="headerlink" href="#install--page-root" title="Permalink to this heading">
+         <a class="headerlink" href="#installation--page-root" title="Permalink to this heading">
           ¶
          </a>
         </h1>
         <p>
          To see our installation process from scratch, check out the
          <a class="reference external" href="http://github.com/lacava/feat/blob/master/.github/workflows/ci.yml">
-          Github actions workflow
+          Github
+actions
+workflow
          </a>
          .
         </p>
-        <section id="conda">
-         <h2 id="conda">
-          Conda
-          <a class="headerlink" href="#conda" title="Permalink to this heading">
-           ¶
-          </a>
-         </h2>
-         <p>
-          The easiest option for install is to use the
-          <a class="reference external" href="http://github.com/lacava/feat/blob/master/environment.yml">
-           conda environment we provide
-          </a>
-          .
-Then the build process is the following:
-         </p>
-         <div class="highlight-bash notranslate">
-          <div class="highlight">
-           <pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/lacava/feat<span class="w"> </span><span class="c1"># clone the repo</span>
-<span class="nb">cd</span><span class="w"> </span>feat<span class="w"> </span><span class="c1"># enter the directory</span>
-conda<span class="w"> </span>env<span class="w"> </span>create
-conda<span class="w"> </span>activate<span class="w"> </span>feat
-python<span class="w"> </span>setup.py<span class="w"> </span>install
-</pre>
-          </div>
-         </div>
-         <p>
-          If you want to roll your own with the dependencies, some other options are shown below.
-In this case, you need to tell the
-          <cite>
-           configure
-          </cite>
-          script where Shogun and Eigen are.
-Edit this lines:
-         </p>
-         <div class="highlight-bash notranslate">
-          <div class="highlight">
-           <pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SHOGUN_LIB</span><span class="o">=</span>/your/shogun/lib/
-<span class="nb">export</span><span class="w"> </span><span class="nv">SHOGUN_DIR</span><span class="o">=</span>/your/shugn/include/
-<span class="nb">export</span><span class="w"> </span><span class="nv">EIGEN3_INCLUDE_DIR</span><span class="o">=</span>/your/eigen/eigen3/
-</pre>
-          </div>
-         </div>
-        </section>
         <section id="dependencies">
          <h2 id="dependencies">
           Dependencies
@@ -443,34 +418,81 @@ Edit this lines:
           <a class="reference external" href="https://cmake.org/">
            cmake
           </a>
-          to build.
-It also depends on the
+          to build. It also depends on the
           <a class="reference external" href="http://eigen.tuxfamily.org">
            Eigen
           </a>
-          matrix library for C++ as well as the
+          matrix library for C++ as well as
+the
           <a class="reference external" href="http://shogun.ml">
            Shogun
           </a>
-          ML library.
-Both come in packages on conda that should work across platforms.
-If you need Eigen and Shogun and don’t want to use conda, follow these instructions.
+          ML library. Both come in packages on
+conda that should work across platforms.
          </p>
-         <section id="id1">
-          <h3 id="id1">
-           Eigen
-           <a class="headerlink" href="#id1" title="Permalink to this heading">
+        </section>
+        <section id="install-in-a-conda-environment">
+         <h2 id="install-in-a-conda-environment">
+          Install in a Conda Environment
+          <a class="headerlink" href="#install-in-a-conda-environment" title="Permalink to this heading">
+           ¶
+          </a>
+         </h2>
+         <p>
+          The easiest option for install is to use the
+          <a class="reference external" href="http://github.com/lacava/feat/blob/master/environment.yml">
+           conda environment we
+provide
+          </a>
+          .
+Then the build process is the following:
+         </p>
+         <div class="highlight-bash notranslate">
+          <div class="highlight">
+           <pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/lacava/feat<span class="w"> </span><span class="c1"># clone the repo</span>
+<span class="nb">cd</span><span class="w"> </span>feat<span class="w"> </span><span class="c1"># enter the directory</span>
+conda<span class="w"> </span>env<span class="w"> </span>create
+conda<span class="w"> </span>activate<span class="w"> </span>feat
+pip<span class="w"> </span>install<span class="w"> </span>.
+</pre>
+          </div>
+         </div>
+         <p>
+          If you want to roll your own with the dependencies, some other options
+are shown below. In this case, you need to tell the
+[configure]{.title-ref} script where Shogun and Eigen are. Edit this
+lines:
+         </p>
+         <div class="highlight-bash notranslate">
+          <div class="highlight">
+           <pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SHOGUN_LIB</span><span class="o">=</span>/your/shogun/lib/
+<span class="nb">export</span><span class="w"> </span><span class="nv">SHOGUN_DIR</span><span class="o">=</span>/your/shugn/include/
+<span class="nb">export</span><span class="w"> </span><span class="nv">EIGEN3_INCLUDE_DIR</span><span class="o">=</span>/your/eigen/eigen3/
+</pre>
+          </div>
+         </div>
+         <p>
+          If you need Eigen and Shogun and don’t want to use conda, follow these
+instructions.
+         </p>
+        </section>
+        <section id="eigen">
+         <h2 id="eigen">
+          Eigen
+          <a class="headerlink" href="#eigen" title="Permalink to this heading">
+           ¶
+          </a>
+         </h2>
+         <p>
+          Eigen is a header only package. We need Eigen 3 or greater.
+         </p>
+         <section id="debian-ubuntu">
+          <h3 id="debian-ubuntu">
+           Debian/Ubuntu
+           <a class="headerlink" href="#debian-ubuntu" title="Permalink to this heading">
             ¶
            </a>
           </h3>
-          <p>
-           Eigen is a header only package. We need Eigen 3 or greater.
-          </p>
-          <p>
-           <strong>
-            Debian/Ubuntu
-           </strong>
-          </p>
           <p>
            On Debian systems, you can grab the package:
           </p>
@@ -482,18 +504,21 @@ If you need Eigen and Shogun and don’t want to use conda, follow these instruc
            </div>
           </blockquote>
           <p>
-           You can also download the headers and put them somewhere. Then you just have to tell cmake where they are with the environmental variable
-           <cite>
-            EIGEN3_INCLUDE_DIR
-           </cite>
+           You can also download the headers and put them somewhere. Then you just
+have to tell cmake where they are with the environmental variable
+           <code class="docutils literal notranslate">
+            <span class="pre">
+             EIGEN3_INCLUDE_DIR
+            </span>
+           </code>
            . Example:
           </p>
           <div class="highlight-bash notranslate">
            <div class="highlight">
             <pre><span></span><span class="c1"># Eigen 3.3.4</span>
 wget<span class="w"> </span><span class="s2">"http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz"</span>
-tar<span class="w"> </span>xzf<span class="w"> </span><span class="m">3</span>.3.4.tar.gz
-mkdir<span class="w"> </span>eigen-3.3.4
+tar<span class="w"> </span>xzf<span class="w"> </span><span class="m">3</span>.3.4.tar.gz<span class="w"> </span>
+mkdir<span class="w"> </span>eigen-3.3.4<span class="w"> </span>
 mv<span class="w"> </span>eigen-eigen*/*<span class="w"> </span>eigen-3.3.4
 <span class="c1"># set an environmental variable to tell cmake where Eigen is</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">EIGEN3_INCLUDE_DIR</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/eigen-3.3.4/"</span>
@@ -501,25 +526,30 @@ mv<span class="w"> </span>eigen-eigen*/*<span class="w"> </span>eigen-3.3.4
            </div>
           </div>
          </section>
-         <section id="id2">
-          <h3 id="id2">
-           Shogun
-           <a class="headerlink" href="#id2" title="Permalink to this heading">
+        </section>
+        <section id="shogun">
+         <h2 id="shogun">
+          Shogun
+          <a class="headerlink" href="#shogun" title="Permalink to this heading">
+           ¶
+          </a>
+         </h2>
+         <p>
+          You don’t have to compile Shogun, just download the binaries.
+          <a class="reference external" href="https://github.com/shogun-toolbox/shogun/blob/develop/doc/readme/INSTALL.md#binaries">
+           Their
+install guide is
+good.
+          </a>
+          We’ve listed two of the options here.
+         </p>
+         <section id="id1">
+          <h3 id="id1">
+           Debian/Ubuntu
+           <a class="headerlink" href="#id1" title="Permalink to this heading">
             ¶
            </a>
           </h3>
-          <p>
-           You don’t have to compile Shogun, just download the binaries.
-           <a class="reference external" href="https://github.com/shogun-toolbox/shogun/blob/develop/doc/readme/INSTALL.md#binaries">
-            Their install guide is good.
-           </a>
-           We’ve listed two of the options here.
-          </p>
-          <p>
-           <strong>
-            Debian/Ubuntu
-           </strong>
-          </p>
           <p>
            You can also get the Shogun packages:
           </p>
@@ -533,38 +563,6 @@ sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w
            </div>
           </div>
          </section>
-        </section>
-        <section id="running-the-tests">
-         <h2 id="running-the-tests">
-          Running the tests
-          <a class="headerlink" href="#running-the-tests" title="Permalink to this heading">
-           ¶
-          </a>
-         </h2>
-         <p>
-          <em>
-           (optional)
-          </em>
-          If you want to run the tests, you need to install
-          <a class="reference external" href="https://github.com/google/googletest">
-           Google Test
-          </a>
-          .
-A useful guide to doing so is available
-          <a class="reference external" href="https://www.eriksmistad.no/getting-started-with-google-test-on-ubuntu/">
-           here
-          </a>
-          .
-Then you can use cmake to build the tests. From the repo root,
-         </p>
-         <div class="highlight-bash notranslate">
-          <div class="highlight">
-           <pre><span></span>./configure<span class="w"> </span>tests<span class="w">   </span><span class="c1"># builds the test Makefile</span>
-make<span class="w"> </span>-C<span class="w"> </span>build<span class="w"> </span>tests<span class="w"> </span><span class="c1"># compiles the tests</span>
-./build/tests<span class="w"> </span><span class="c1"># runs the tests</span>
-</pre>
-          </div>
-         </div>
         </section>
        </section>
       </article>
@@ -589,7 +587,7 @@ make<span class="w"> </span>-C<span class="w"> </span>build<span class="w"> </sp
        </span>
       </div>
      </a>
-     <a class="md-flex md-footer-nav__link md-footer-nav__link--next" href="guide/overview.html" rel="next" title="Overview">
+     <a class="md-flex md-footer-nav__link md-footer-nav__link--next" href="overview.html" rel="next" title="Overview">
       <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
        <span class="md-flex__ellipsis">
         <span class="md-footer-nav__direction">

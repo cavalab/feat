@@ -29,42 +29,45 @@
         font-family: "Roboto Mono", "Courier New", Courier, monospace
       }
   </style>
-  <link href="../_static/stylesheets/application.css" rel="stylesheet"/>
-  <link href="../_static/stylesheets/application-palette.css" rel="stylesheet"/>
-  <link href="../_static/stylesheets/application-fixes.css" rel="stylesheet"/>
-  <link href="../_static/fonts/material-icons.css" rel="stylesheet"/>
+  <link href="_static/stylesheets/application.css" rel="stylesheet"/>
+  <link href="_static/stylesheets/application-palette.css" rel="stylesheet"/>
+  <link href="_static/stylesheets/application-fixes.css" rel="stylesheet"/>
+  <link href="_static/fonts/material-icons.css" rel="stylesheet"/>
   <meta content="#2196f3" name="theme-color"/>
-  <script src="../_static/javascripts/modernizr.js">
+  <script src="_static/javascripts/modernizr.js">
   </script>
-  <link href="../_static/icon.jpeg" rel="apple-touch-icon"/>
+  <link href="_static/icon.jpeg" rel="apple-touch-icon"/>
   <title>
    Overview — FEAT
   </title>
-  <link href="../_static/pygments.css" rel="stylesheet" type="text/css"/>
-  <link href="../_static/material.css" rel="stylesheet" type="text/css"/>
-  <link href="../_static/copybutton.css" rel="stylesheet" type="text/css"/>
-  <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js">
+  <link href="_static/pygments.css" rel="stylesheet" type="text/css"/>
+  <link href="_static/material.css" rel="stylesheet" type="text/css"/>
+  <link href="_static/copybutton.css" rel="stylesheet" type="text/css"/>
+  <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js">
   </script>
-  <script src="../_static/doctools.js">
+  <script src="_static/doctools.js">
   </script>
-  <script src="../_static/sphinx_highlight.js">
+  <script src="_static/sphinx_highlight.js">
   </script>
-  <script src="../_static/clipboard.min.js">
+  <script src="_static/clipboard.min.js">
   </script>
-  <script src="../_static/copybutton.js">
+  <script src="_static/copybutton.js">
   </script>
   <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js">
   </script>
+  <script type="text/x-mathjax-config">
+   MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area", "displayMath": [["\\[", "\\]"]]}})
+  </script>
   <script>
-   window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}
+   window.MathJax = {"tex": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]]}}
   </script>
   <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
   </script>
-  <link href="../genindex.html" rel="index" title="Index"/>
-  <link href="../search.html" rel="search" title="Search"/>
+  <link href="genindex.html" rel="index" title="Index"/>
+  <link href="search.html" rel="search" title="Search"/>
   <link href="basics.html" rel="next" title="Basic Usage"/>
-  <link href="../install.html" rel="prev" title="Installation"/>
-  <link href="../_static/icon.jpeg" rel="apple-touch-icon"/>
+  <link href="installation.html" rel="prev" title="Installation"/>
+  <link href="_static/icon.jpeg" rel="apple-touch-icon"/>
  </head>
  <body data-md-color-accent="white" data-md-color-primary="deep" dir="ltr" purple="">
   <svg class="md-svg">
@@ -79,14 +82,14 @@
   <input class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
   <label class="md-overlay" data-md-component="overlay" for="__drawer">
   </label>
-  <a class="md-skip" href="#guide/overview" tabindex="1">
+  <a class="md-skip" href="#overview" tabindex="1">
    Skip to content
   </a>
   <header class="md-header" data-md-component="header">
    <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
      <div class="md-flex__cell md-flex__cell--shrink">
-      <a class="md-header-nav__button md-logo" href="../index.html" title="FEAT">
+      <a class="md-header-nav__button md-logo" href="index.html" title="FEAT">
        <i class="md-icon">
         𝜑
        </i>
@@ -113,7 +116,7 @@
        <label class="md-search__overlay" for="__search">
        </label>
        <div class="md-search__inner" role="search">
-        <form action="../search.html" class="md-search__form" method="get" name="search">
+        <form action="search.html" class="md-search__form" method="get" name="search">
          <input autocapitalize="off" autocomplete="off" class="md-search__input" data-md-component="query" data-md-state="active" name="q" placeholder="Search" spellcheck="false" type="text"/>
          <label class="md-icon md-search__icon" for="__search">
          </label>
@@ -150,11 +153,11 @@
        </a>
       </div>
      </div>
-     <script src="../_static/javascripts/version_dropdown.js">
+     <script src="_static/javascripts/version_dropdown.js">
      </script>
      <script>
-      var json_loc = "../"versions.json"",
-        target_loc = "../../",
+      var json_loc = ""versions.json"",
+        target_loc = "../",
         text = "Versions";
     $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
      </script>
@@ -169,12 +172,12 @@
        <div class="md-sidebar__inner">
         <nav class="md-nav md-nav--primary" data-md-level="0">
          <label class="md-nav__title md-nav__title--site" for="__drawer">
-          <a class="md-nav__button md-logo" href="../index.html" title="FEAT">
+          <a class="md-nav__button md-logo" href="index.html" title="FEAT">
            <i class="md-icon">
             𝜑
            </i>
           </a>
-          <a href="../index.html" title="FEAT">
+          <a href="index.html" title="FEAT">
            FEAT
           </a>
          </label>
@@ -200,16 +203,9 @@
            </span>
           </li>
           <li class="md-nav__item">
-           <a class="md-nav__link" href="../install.html">
+           <a class="md-nav__link" href="installation.html">
             Installation
            </a>
-          </li>
-          <li class="md-nav__item">
-           <span class="md-nav__link caption">
-            <span class="caption-text">
-             User Guide
-            </span>
-           </span>
           </li>
           <li class="md-nav__item">
            <input class="md-toggle md-nav__toggle" data-md-toggle="toc" id="__toc" type="checkbox"/>
@@ -225,7 +221,7 @@
             </label>
             <ul class="md-nav__list" data-md-scrollfix="">
              <li class="md-nav__item">
-              <a class="md-nav__link" href="#guide-overview--page-root">
+              <a class="md-nav__link" href="#overview--page-root">
                Overview
               </a>
               <nav class="md-nav">
@@ -254,7 +250,7 @@
               </nav>
              </li>
              <li class="md-nav__item">
-              <a class="md-nav__extra_link" href="../_sources/guide/overview.rst.txt">
+              <a class="md-nav__extra_link" href="_sources/overview.md.txt">
                Show Source
               </a>
              </li>
@@ -267,6 +263,11 @@
            </a>
           </li>
           <li class="md-nav__item">
+           <a class="md-nav__link" href="contributing.html">
+            Contributing
+           </a>
+          </li>
+          <li class="md-nav__item">
            <span class="md-nav__link caption">
             <span class="caption-text">
              Examples
@@ -274,18 +275,18 @@
            </span>
           </li>
           <li class="md-nav__item">
-           <a class="md-nav__link" href="../examples/command_line.html">
-            Command line example
-           </a>
-          </li>
-          <li class="md-nav__item">
-           <a class="md-nav__link" href="../examples/archive.html">
+           <a class="md-nav__link" href="examples/archive.html">
             Using Feat’s archive
            </a>
           </li>
           <li class="md-nav__item">
-           <a class="md-nav__link" href="../examples/longitudinal.html">
+           <a class="md-nav__link" href="examples/longitudinal.html">
             Using Longitudinal Data
+           </a>
+          </li>
+          <li class="md-nav__item">
+           <a class="md-nav__link" href="examples/longitudinal.html#longitudinal-format">
+            longitudinal format
            </a>
           </li>
           <li class="md-nav__item">
@@ -296,12 +297,12 @@
            </span>
           </li>
           <li class="md-nav__item">
-           <a class="md-nav__link" href="../py_api.html">
+           <a class="md-nav__link" href="py_api.html">
             Python API
            </a>
           </li>
           <li class="md-nav__item">
-           <a class="md-nav__link" href="../cpp_api.html">
+           <a class="md-nav__link" href="cpp_api.html">
             C++ API
            </a>
           </li>
@@ -319,7 +320,7 @@
          </label>
          <ul class="md-nav__list" data-md-scrollfix="">
           <li class="md-nav__item">
-           <a class="md-nav__link" href="#guide-overview--page-root">
+           <a class="md-nav__link" href="#overview--page-root">
             Overview
            </a>
            <nav class="md-nav">
@@ -348,7 +349,7 @@
            </nav>
           </li>
           <li class="md-nav__item">
-           <a class="md-nav__extra_link" href="../_sources/guide/overview.rst.txt">
+           <a class="md-nav__extra_link" href="_sources/overview.md.txt">
             Show Source
            </a>
           </li>
@@ -362,29 +363,29 @@
      <div class="md-content">
       <article class="md-content__inner md-typeset" role="main">
        <section id="overview">
-        <h1 id="guide-overview--page-root">
+        <h1 id="overview--page-root">
          Overview
-         <a class="headerlink" href="#guide-overview--page-root" title="Permalink to this heading">
+         <a class="headerlink" href="#overview--page-root" title="Permalink to this heading">
           ¶
          </a>
         </h1>
         <p>
-         This section describes the basic learning approach used by FEAT.
-A more detailed description, along with experiments, is available
+         This section describes the basic learning approach used by FEAT. A more
+detailed description, along with experiments, is available
          <a class="reference external" href="https://arxiv.org/abs/1807.00981">
           here
          </a>
-         and from [
-         <a class="footnote-reference brackets" href="#id7" id="id1" role="doc-noteref">
+         and from
+         <a class="footnote-reference brackets" href="#id5" id="id1" role="doc-noteref">
           <span class="fn-bracket">
            [
           </span>
-          3
+          1
           <span class="fn-bracket">
            ]
           </span>
          </a>
-         ].
+         .
         </p>
         <section id="representation-learning">
          <h2 id="representation-learning">
@@ -396,47 +397,40 @@ A more detailed description, along with experiments, is available
          <p>
           The goal of representation learning in regression or classification is
 to learn a new representation of your data that makes it easier to
-model. As an example, consider the figure below, where each point
-is a sample belonging to one of 4 colored classes. Here, we want to
-learn the equations on the axes of the right plot (labelled on the
-axes), which will make it easier classify the data belonging to each
-class.
+model. As an example, consider the figure below, where each point is a
+sample belonging to one of 4 colored classes. Here, we want to learn the
+equations on the axes of the right plot (labelled on the axes), which
+will make it easier classify the data belonging to each class.
          </p>
-         <figure class="align-default" id="id8">
-          <img alt="../_images/rep_learning_demo_2d.svg" src="../_images/rep_learning_demo_2d.svg"/>
-          <figcaption>
-           <p>
-            <span class="caption-text">
-             (Left) raw data. (Right) Data after transformation according to a
-2d representation shown on the axes (Image from [
-             <a class="footnote-reference brackets" href="#id5" id="id2" role="doc-noteref">
-              <span class="fn-bracket">
-               [
-              </span>
-              1
-              <span class="fn-bracket">
-               ]
-              </span>
-             </a>
-             ]).
+         <p>
+          <img alt="image1" src="_images/rep_learning_demo_2d.svg"/>
+         </p>
+         <p>
+          <em>
+           (Left) raw data. (Right) Data after transformation according to a 2d representation shown on the axes (Image from
+           <a class="footnote-reference brackets" href="#id6" id="id2" role="doc-noteref">
+            <span class="fn-bracket">
+             [
             </span>
-            <a class="headerlink" href="#id8" title="Permalink to this image">
-             ¶
-            </a>
-           </p>
-          </figcaption>
-         </figure>
+            2
+            <span class="fn-bracket">
+             ]
+            </span>
+           </a>
+           ).
+          </em>
+         </p>
          <p>
           It’s worth noting that the representation in the right panel will be
 easier for certain machine learning methods to classify, and harder for
-others. We’ve written FEAT to wrap around the Shogun ML
-toolbox, which means it could eventually learn representations for different ML
+others. We’ve written FEAT to wrap around the Shogun ML toolbox, which
+means it could eventually learn representations for different ML
 approaches. At the moment, linear and logistic regression with different
-penalizations are supported. In addition, decision trees (CART),
-support vector machines (SVM) and random forests are experimentally
-available. Because different feature transformations work better than others
-for a given ML method, FEAT uses the performance of the ML method as
-a measure of how good a candidate representation is during optimization.
+penalizations are supported. In addition, decision trees (CART), support
+vector machines (SVM) and random forests are experimentally available.
+Because different feature transformations work better than others for a
+given ML method, FEAT uses the performance of the ML method as a measure
+of how good a candidate representation is during optimization.
          </p>
         </section>
         <section id="approach">
@@ -446,30 +440,25 @@ a measure of how good a candidate representation is during optimization.
            ¶
           </a>
          </h2>
-         <figure class="align-center" id="id9">
-          <img alt="../_images/feat_diagram.svg" src="../_images/feat_diagram.svg"/>
-          <figcaption>
-           <p>
-            <span class="caption-text">
-             A) Steps in the learning process. B) How a single model is trained.
-Image from
-             <a class="footnote-reference brackets" href="#id7" id="id3" role="doc-noteref">
-              <span class="fn-bracket">
-               [
-              </span>
-              3
-              <span class="fn-bracket">
-               ]
-              </span>
-             </a>
-             .
+         <p>
+          <img alt="Feat Diagram" src="_images/feat_diagram.svg"/>
+          {.align-center}
+         </p>
+         <p>
+          <em>
+           A) Steps in the learning process. B) How a single model is trained.  Image from
+           <a class="footnote-reference brackets" href="#id7" id="id3" role="doc-noteref">
+            <span class="fn-bracket">
+             [
             </span>
-            <a class="headerlink" href="#id9" title="Permalink to this image">
-             ¶
-            </a>
-           </p>
-          </figcaption>
-         </figure>
+            3
+            <span class="fn-bracket">
+             ]
+            </span>
+           </a>
+           .
+          </em>
+         </p>
          <p>
           FEAT is a wrapper-based learning method that trains ML methods on a
 population of representations, and optimizes the representations to
@@ -485,17 +474,17 @@ produce the lowest error. FEAT uses a typical
           <span class="math notranslate nohighlight">
            \(\mu=\lambda=P\)
           </span>
-          . The method optimizes a population of potential
-representations,
+          . The method
+optimizes a population of potential representations,
           <span class="math notranslate nohighlight">
-           \(N = \{n_1\;\dots\;n_P\}\)
+           \(N = {n_1;\dots;n_P}\)
           </span>
           , where
           <span class="math notranslate nohighlight">
            \(n\)
           </span>
-          is an
-``individual” in the population, iterating through these steps:
+          is an ``individual” in the
+population, iterating through these steps:
          </p>
          <ul class="simple">
           <li>
@@ -504,13 +493,12 @@ representations,
             <span class="math notranslate nohighlight">
              \(\hat{y} = \mathbf{x}^T\hat{\beta}\)
             </span>
-            . Create
-an initial population
+            . Create an
+initial population
             <span class="math notranslate nohighlight">
              \(N\)
             </span>
-            consisting of this initial
-representation,
+            consisting of this initial representation,
             <span class="math notranslate nohighlight">
              \(\mathbf{\phi} = \mathbf{x}\)
             </span>
@@ -518,7 +506,8 @@ representation,
             <span class="math notranslate nohighlight">
              \(P-1\)
             </span>
-            randomly generated representations that sample
+            randomly generated
+representations that sample
             <span class="math notranslate nohighlight">
              \(\mathbf{x}\)
             </span>
@@ -569,8 +558,7 @@ representation,
               <span class="math notranslate nohighlight">
                \(P\)
               </span>
-              individuals using a survival
-algorithm.
+              individuals using a survival algorithm.
              </p>
             </li>
            </ul>
@@ -616,29 +604,49 @@ operators for handling sequential data.
           </a>
          </h2>
          <p>
-          By default, FEAT uses lexicase selection [
-          <a class="footnote-reference brackets" href="#id6" id="id4" role="doc-noteref">
+          By default, FEAT uses lexicase selection
+          <a class="footnote-reference brackets" href="#id8" id="id4" role="doc-noteref">
            <span class="fn-bracket">
             [
            </span>
-           2
+           4
            <span class="fn-bracket">
             ]
            </span>
           </a>
-          ] as the selection operation
-and NSGA-II for survival. This allows FEAT to maintain an archive of
-accuracy-complexity tradeoffs to aid in interpretability. FEAT also
-supports simulated annealing, tournament selection and random search.
+          as the selection
+operation and NSGA-II for survival. This allows FEAT to maintain an
+archive of accuracy-complexity tradeoffs to aid in interpretability.
+FEAT also supports simulated annealing, tournament selection and random
+search.
          </p>
+         <hr class="footnotes docutils"/>
          <aside class="footnote-list brackets">
           <aside class="footnote brackets" id="id5" role="note">
            <span class="label">
             <span class="fn-bracket">
              [
             </span>
-            <a href="#id2" role="doc-backlink">
+            <a href="#id1" role="doc-backlink">
              1
+            </a>
+            <span class="fn-bracket">
+             ]
+            </span>
+           </span>
+           <p>
+            La Cava, W., &amp; Moore, J. H. (2020). Learning feature spaces for
+regression with genetic programming. Genetic Programming and
+Evolvable Machines, 1-35.
+           </p>
+          </aside>
+          <aside class="footnote brackets" id="id6" role="note">
+           <span class="label">
+            <span class="fn-bracket">
+             [
+            </span>
+            <a href="#id2" role="doc-backlink">
+             2
             </a>
             <span class="fn-bracket">
              ]
@@ -650,13 +658,31 @@ Moore, J. H. (2018). Multidimensional genetic programming for
 multiclass classification. Swarm and Evolutionary Computation.
            </p>
           </aside>
-          <aside class="footnote brackets" id="id6" role="note">
+          <aside class="footnote brackets" id="id7" role="note">
+           <span class="label">
+            <span class="fn-bracket">
+             [
+            </span>
+            <a href="#id3" role="doc-backlink">
+             3
+            </a>
+            <span class="fn-bracket">
+             ]
+            </span>
+           </span>
+           <p>
+            La Cava, W., &amp; Moore, J. H. (2020). Learning feature spaces for
+regression with genetic programming. Genetic Programming and
+Evolvable Machines, 1-35.
+           </p>
+          </aside>
+          <aside class="footnote brackets" id="id8" role="note">
            <span class="label">
             <span class="fn-bracket">
              [
             </span>
             <a href="#id4" role="doc-backlink">
-             2
+             4
             </a>
             <span class="fn-bracket">
              ]
@@ -666,33 +692,6 @@ multiclass classification. Swarm and Evolutionary Computation.
             La Cava, W., Helmuth, T., Spector, L., &amp; Moore, J. H. (2018). A
 probabilistic and multi-objective analysis of lexicase selection and
 ε-lexicase selection. Evolutionary computation, 1-28.
-           </p>
-          </aside>
-          <aside class="footnote brackets" id="id7" role="note">
-           <span class="label">
-            <span class="fn-bracket">
-             [
-            </span>
-            3
-            <span class="fn-bracket">
-             ]
-            </span>
-           </span>
-           <span class="backrefs">
-            (
-            <a href="#id1" role="doc-backlink">
-             1
-            </a>
-            ,
-            <a href="#id3" role="doc-backlink">
-             2
-            </a>
-            )
-           </span>
-           <p>
-            La Cava, W., &amp; Moore, J. H. (2020).
-Learning feature spaces for regression with genetic programming.
-Genetic Programming and Evolvable Machines, 1-35.
            </p>
           </aside>
          </aside>
@@ -706,7 +705,7 @@ Genetic Programming and Evolvable Machines, 1-35.
   <footer class="md-footer">
    <div class="md-footer-nav">
     <nav class="md-footer-nav__inner md-grid">
-     <a class="md-flex md-footer-nav__link md-footer-nav__link--prev" href="../install.html" rel="prev" title="Installation">
+     <a class="md-flex md-footer-nav__link md-footer-nav__link--prev" href="installation.html" rel="prev" title="Installation">
       <div class="md-flex__cell md-flex__cell--shrink">
        <i class="md-icon md-icon--arrow-back md-footer-nav__button">
        </i>
@@ -756,7 +755,7 @@ Genetic Programming and Evolvable Machines, 1-35.
     </div>
    </div>
   </footer>
-  <script src="../_static/javascripts/application.js">
+  <script src="_static/javascripts/application.js">
   </script>
   <script>
    app.initialize({version: "1.0.4", url: {base: ".."}})

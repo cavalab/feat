@@ -57,7 +57,7 @@
   </script>
   <link href="genindex.html" rel="index" title="Index"/>
   <link href="search.html" rel="search" title="Search"/>
-  <link href="install.html" rel="next" title="Installation"/>
+  <link href="installation.html" rel="next" title="Installation"/>
   <link href="_static/icon.jpeg" rel="apple-touch-icon"/>
  </head>
  <body data-md-color-accent="white" data-md-color-primary="deep" dir="ltr" purple="">
@@ -201,25 +201,23 @@
            </span>
           </li>
           <li class="md-nav__item">
-           <a class="md-nav__link" href="install.html">
+           <a class="md-nav__link" href="installation.html">
             Installation
            </a>
           </li>
           <li class="md-nav__item">
-           <span class="md-nav__link caption">
-            <span class="caption-text">
-             User Guide
-            </span>
-           </span>
-          </li>
-          <li class="md-nav__item">
-           <a class="md-nav__link" href="guide/overview.html">
+           <a class="md-nav__link" href="overview.html">
             Overview
            </a>
           </li>
           <li class="md-nav__item">
-           <a class="md-nav__link" href="guide/basics.html">
+           <a class="md-nav__link" href="basics.html">
             Basic Usage
+           </a>
+          </li>
+          <li class="md-nav__item">
+           <a class="md-nav__link" href="contributing.html">
+            Contributing
            </a>
           </li>
           <li class="md-nav__item">
@@ -230,11 +228,6 @@
            </span>
           </li>
           <li class="md-nav__item">
-           <a class="md-nav__link" href="examples/command_line.html">
-            Command line example
-           </a>
-          </li>
-          <li class="md-nav__item">
            <a class="md-nav__link" href="examples/archive.html">
             Using Feat’s archive
            </a>
@@ -242,6 +235,11 @@
           <li class="md-nav__item">
            <a class="md-nav__link" href="examples/longitudinal.html">
             Using Longitudinal Data
+           </a>
+          </li>
+          <li class="md-nav__item">
+           <a class="md-nav__link" href="examples/longitudinal.html#longitudinal-format">
+            longitudinal format
            </a>
           </li>
           <li class="md-nav__item">
@@ -281,6 +279,11 @@
            <nav class="md-nav">
             <ul class="md-nav__list">
              <li class="md-nav__item">
+              <a class="md-nav__link" href="#references">
+               References
+              </a>
+             </li>
+             <li class="md-nav__item">
               <a class="md-nav__link" href="#contact">
                Contact
               </a>
@@ -291,29 +294,20 @@
               </a>
              </li>
              <li class="md-nav__item">
-              <a class="md-nav__link" href="#cite">
-               Cite
+              <a class="md-nav__link" href="#license">
+               License
               </a>
-             </li>
-             <li class="md-nav__item">
-              <a class="md-nav__link" href="#table-of-contents">
-               Table of Contents
-              </a>
-              <nav class="md-nav">
-               <ul class="md-nav__list">
-                <li class="md-nav__item">
-                 <a class="md-nav__link" href="#index">
-                  Index
-                 </a>
-                </li>
-               </ul>
-              </nav>
              </li>
             </ul>
            </nav>
           </li>
           <li class="md-nav__item">
-           <a class="md-nav__extra_link" href="_sources/index.rst.txt">
+           <a class="md-nav__link" href="#table-of-contents">
+            Table of Contents
+           </a>
+          </li>
+          <li class="md-nav__item">
+           <a class="md-nav__extra_link" href="_sources/index.md.txt">
             Show Source
            </a>
           </li>
@@ -334,51 +328,44 @@
          </a>
         </h1>
         <p>
+         <a class="reference external" href="https://github.com/cavalab/feat/actions/workflows/ci.yml">
+          <img alt="Build Status" src="https://github.com/cavalab/feat/actions/workflows/ci.yml/badge.svg"/>
+         </a>
+         <a class="reference external" href="https://github.com/lacava/feat/blob/master/LICENSE">
+          <img alt="License: GPL v3" src="https://img.shields.io/badge/License-GPL%20v3-blue.svg"/>
+         </a>
+        </p>
+        <p>
          <strong>
           FEAT
          </strong>
-         is a feature engineering automation tool that learns new
-representations of raw data to improve classifier and regressor
-performance. The underlying methods use Pareto optimization and
-evolutionary computation to search the space of possible
-transformations.
+         is a feature engineering automation tool that learns new representations of raw data
+to improve classifier and regressor performance.
+The underlying methods use Pareto optimization and evolutionary computation to search the space of possible transformations.
         </p>
         <p>
-         FEAT wraps around a user-chosen ML method and provides a set of
-representations that give the best performance for that method. Each
-individual in FEAT’s population is its own data representation.
+         FEAT wraps around a user-chosen ML method and provides a set of representations that give the best
+performance for that method.
+Each individual in FEAT’s population is its own data representation.
         </p>
-        <section id="contact">
-         <h2 id="contact">
-          Contact
-          <a class="headerlink" href="#contact" title="Permalink to this heading">
-           ¶
-          </a>
-         </h2>
-         <p>
-          Maintained by William La Cava (lacava at childrens dot harvard dot edu)
-         </p>
-        </section>
-        <section id="acknowledgments">
-         <h2 id="acknowledgments">
-          Acknowledgments
-          <a class="headerlink" href="#acknowledgments" title="Permalink to this heading">
-           ¶
-          </a>
-         </h2>
-         <p>
-          This work is supported by grant R00-LM012926 from the National Library of Medicine.
-FEAT is being developed to develop predictive health models by the
-          <a class="reference external" href="http://cavalab.org">
-           Cavalab
-          </a>
-          .
-         </p>
-        </section>
-        <section id="cite">
-         <h2 id="cite">
-          Cite
-          <a class="headerlink" href="#cite" title="Permalink to this heading">
+        <p>
+         FEAT uses the
+         <a class="reference external" href="http://shogun.ml">
+          Shogun C++ ML toolbox
+         </a>
+         to fit models.
+        </p>
+        <p>
+         Check out the
+         <a class="reference external" href="https://cavalab.org/feat">
+          documentation
+         </a>
+         for installation and examples.
+        </p>
+        <section id="references">
+         <h2 id="references">
+          References
+          <a class="headerlink" href="#references" title="Permalink to this heading">
            ¶
           </a>
          </h2>
@@ -391,195 +378,262 @@ FEAT is being developed to develop predictive health models by the
             </a>
            </p>
           </li>
-         </ol>
-         <p>
-          2. La Cava, W. &amp; Moore, Jason H. (2020).
+          <li>
+           <p>
+            La Cava, W. &amp; Moore, Jason H. (2020).
 Genetic programming approaches to learning fair classifiers.
 GECCO 2020.
-          <strong>
-           Best Paper Award
-          </strong>
-          .
-          <a class="reference external" href="https://dl.acm.org/doi/abs/10.1145/3377930.3390157">
-           ACM
-          </a>
-          ,
-          <a class="reference external" href="https://arxiv.org/abs/2004.13282">
-           arXiv
-          </a>
-          ,
-          <a class="reference external" href="https://github.com/lacava/fair_gp">
-           experiments
-          </a>
-         </p>
-         <p>
-          3. La Cava, W., Lee, P.C., Ajmal, I., Ding, X., Cohen, J.B., Solanki, P., Moore, J.H., and Herman, D.S (2021).
+            <strong>
+             Best Paper Award
+            </strong>
+            .
+            <a class="reference external" href="https://dl.acm.org/doi/abs/10.1145/3377930.3390157">
+             ACM
+            </a>
+            ,
+            <a class="reference external" href="https://arxiv.org/abs/2004.13282">
+             arXiv
+            </a>
+            ,
+            <a class="reference external" href="https://github.com/lacava/fair_gp">
+             experiments
+            </a>
+           </p>
+          </li>
+          <li>
+           <p>
+            La Cava, W., Lee, P.C., Ajmal, I., Ding, X., Cohen, J.B., Solanki, P., Moore, J.H., and Herman, D.S (2021).
 Application of concise machine learning to construct accurate and interpretable EHR computable phenotypes.
 In Review.
-          <a class="reference external" href="https://www.medrxiv.org/content/10.1101/2020.12.12.20248005v2">
-           medRxiv
-          </a>
-          ,
-          <a class="reference external" href="https://bitbucket.org/hermanlab/ehr_feat/">
-           experiments
-          </a>
-         </p>
+            <a class="reference external" href="https://www.medrxiv.org/content/10.1101/2020.12.12.20248005v2">
+             medRxiv
+            </a>
+            ,
+            <a class="reference external" href="https://bitbucket.org/hermanlab/ehr_feat/">
+             experiments
+            </a>
+           </p>
+          </li>
+         </ol>
         </section>
-        <section id="table-of-contents">
-         <h2 id="table-of-contents">
-          Table of Contents
-          <a class="headerlink" href="#table-of-contents" title="Permalink to this heading">
+        <section id="contact">
+         <h2 id="contact">
+          Contact
+          <a class="headerlink" href="#contact" title="Permalink to this heading">
            ¶
           </a>
          </h2>
-         <div class="toctree-wrapper compound">
-          <p class="caption" role="heading">
-           <span class="caption-text">
-            Getting Started
-           </span>
-          </p>
-          <ul>
-           <li class="toctree-l1">
-            <a class="reference internal" href="install.html">
-             Installation
-            </a>
-            <ul>
-             <li class="toctree-l2">
-              <a class="reference internal" href="install.html#conda">
-               Conda
-              </a>
-             </li>
-             <li class="toctree-l2">
-              <a class="reference internal" href="install.html#dependencies">
-               Dependencies
-              </a>
-             </li>
-             <li class="toctree-l2">
-              <a class="reference internal" href="install.html#running-the-tests">
-               Running the tests
-              </a>
-             </li>
-            </ul>
-           </li>
-          </ul>
-         </div>
-         <div class="toctree-wrapper compound">
-          <p class="caption" role="heading">
-           <span class="caption-text">
-            User Guide
-           </span>
-          </p>
-          <ul>
-           <li class="toctree-l1">
-            <a class="reference internal" href="guide/overview.html">
-             Overview
-            </a>
-            <ul>
-             <li class="toctree-l2">
-              <a class="reference internal" href="guide/overview.html#representation-learning">
-               Representation Learning
-              </a>
-             </li>
-             <li class="toctree-l2">
-              <a class="reference internal" href="guide/overview.html#approach">
-               Approach
-              </a>
-             </li>
-             <li class="toctree-l2">
-              <a class="reference internal" href="guide/overview.html#feature-representation">
-               Feature representation
-              </a>
-             </li>
-             <li class="toctree-l2">
-              <a class="reference internal" href="guide/overview.html#selection-and-archiving">
-               Selection and Archiving
-              </a>
-             </li>
-            </ul>
-           </li>
-           <li class="toctree-l1">
-            <a class="reference internal" href="guide/basics.html">
-             Basic Usage
-            </a>
-            <ul>
-             <li class="toctree-l2">
-              <a class="reference internal" href="guide/basics.html#typical-use-case">
-               Typical use case
-              </a>
-             </li>
-             <li class="toctree-l2">
-              <a class="reference internal" href="guide/basics.html#command-line">
-               Command line
-              </a>
-             </li>
-             <li class="toctree-l2">
-              <a class="reference internal" href="guide/basics.html#longitudinal-data">
-               Longitudinal data
-              </a>
-             </li>
-            </ul>
-           </li>
-          </ul>
-         </div>
-         <div class="toctree-wrapper compound">
-          <p class="caption" role="heading">
-           <span class="caption-text">
-            Examples
-           </span>
-          </p>
-          <ul>
-           <li class="toctree-l1">
-            <a class="reference internal" href="examples/command_line.html">
-             Command line example
-            </a>
-           </li>
-           <li class="toctree-l1">
-            <a class="reference internal" href="examples/archive.html">
-             Using Feat’s archive
-            </a>
-           </li>
-           <li class="toctree-l1">
-            <a class="reference internal" href="examples/longitudinal.html">
-             Using Longitudinal Data
-            </a>
-           </li>
-          </ul>
-         </div>
-         <div class="toctree-wrapper compound">
-          <p class="caption" role="heading">
-           <span class="caption-text">
-            API
-           </span>
-          </p>
-          <ul>
-           <li class="toctree-l1">
-            <a class="reference internal" href="py_api.html">
-             Python API
-            </a>
-           </li>
-           <li class="toctree-l1">
-            <a class="reference internal" href="cpp_api.html">
-             C++ API
-            </a>
-           </li>
-          </ul>
-         </div>
-         <section id="index">
-          <h3 id="index">
-           Index
-           <a class="headerlink" href="#index" title="Permalink to this heading">
-            ¶
-           </a>
-          </h3>
-          <p>
-           <a class="reference internal" href="genindex.html">
-            <span class="std std-ref">
-             Index
-            </span>
-           </a>
-          </p>
-         </section>
+         <p>
+          Maintained by William La Cava (william.lacava at childrens.harvard.edu)
+         </p>
         </section>
+        <section id="acknowledgments">
+         <h2 id="acknowledgments">
+          Acknowledgments
+          <a class="headerlink" href="#acknowledgments" title="Permalink to this heading">
+           ¶
+          </a>
+         </h2>
+         <p>
+          Special thanks to these contributors:
+         </p>
+         <ul class="simple">
+          <li>
+           <p>
+            Tilak Raj Singh @tilakhere
+           </p>
+          </li>
+          <li>
+           <p>
+            Srinivas Suri @srinu634
+           </p>
+          </li>
+          <li>
+           <p>
+            James P Taggert @JPT2
+           </p>
+          </li>
+          <li>
+           <p>
+            Daniel Herman
+           </p>
+          </li>
+          <li>
+           <p>
+            Paul Lee
+           </p>
+          </li>
+         </ul>
+         <p>
+          This work is supported by grant K99-LM012926 and R00-LM012926 from the National Library of Medicine.
+FEAT is being developed to learn clinical diagnostics in the
+          <a class="reference external" href="http://cavalab.org">
+           Cava Lab at Harvard Medical School
+          </a>
+          .
+         </p>
+        </section>
+        <section id="license">
+         <h2 id="license">
+          License
+          <a class="headerlink" href="#license" title="Permalink to this heading">
+           ¶
+          </a>
+         </h2>
+         <p>
+          GNU GPLv3, see
+          <a class="reference external" href="https://github.com/cavalab/feat/blob/master/LICENSE">
+           LICENSE
+          </a>
+         </p>
+        </section>
+       </section>
+       <section id="table-of-contents">
+        <h1 id="table-of-contents">
+         Table of Contents
+         <a class="headerlink" href="#table-of-contents" title="Permalink to this heading">
+          ¶
+         </a>
+        </h1>
+        <div class="toctree-wrapper compound">
+         <p class="caption" role="heading">
+          <span class="caption-text">
+           Getting Started
+          </span>
+         </p>
+         <ul>
+          <li class="toctree-l1">
+           <a class="reference internal" href="installation.html">
+            Installation
+           </a>
+           <ul>
+            <li class="toctree-l2">
+             <a class="reference internal" href="installation.html#dependencies">
+              Dependencies
+             </a>
+            </li>
+            <li class="toctree-l2">
+             <a class="reference internal" href="installation.html#install-in-a-conda-environment">
+              Install in a Conda Environment
+             </a>
+            </li>
+            <li class="toctree-l2">
+             <a class="reference internal" href="installation.html#eigen">
+              Eigen
+             </a>
+            </li>
+            <li class="toctree-l2">
+             <a class="reference internal" href="installation.html#shogun">
+              Shogun
+             </a>
+            </li>
+           </ul>
+          </li>
+          <li class="toctree-l1">
+           <a class="reference internal" href="overview.html">
+            Overview
+           </a>
+           <ul>
+            <li class="toctree-l2">
+             <a class="reference internal" href="overview.html#representation-learning">
+              Representation Learning
+             </a>
+            </li>
+            <li class="toctree-l2">
+             <a class="reference internal" href="overview.html#approach">
+              Approach
+             </a>
+            </li>
+            <li class="toctree-l2">
+             <a class="reference internal" href="overview.html#feature-representation">
+              Feature representation
+             </a>
+            </li>
+            <li class="toctree-l2">
+             <a class="reference internal" href="overview.html#selection-and-archiving">
+              Selection and Archiving
+             </a>
+            </li>
+           </ul>
+          </li>
+          <li class="toctree-l1">
+           <a class="reference internal" href="basics.html">
+            Basic Usage
+           </a>
+           <ul>
+            <li class="toctree-l2">
+             <a class="reference internal" href="basics.html#typical-use-case">
+              Typical use case
+             </a>
+            </li>
+            <li class="toctree-l2">
+             <a class="reference internal" href="basics.html#longitudinal-data">
+              Longitudinal data
+             </a>
+            </li>
+           </ul>
+          </li>
+          <li class="toctree-l1">
+           <a class="reference internal" href="contributing.html">
+            Contributing
+           </a>
+          </li>
+         </ul>
+        </div>
+        <div class="toctree-wrapper compound">
+         <p class="caption" role="heading">
+          <span class="caption-text">
+           Examples
+          </span>
+         </p>
+         <ul>
+          <li class="toctree-l1">
+           <a class="reference internal" href="examples/archive.html">
+            Using Feat’s archive
+           </a>
+          </li>
+          <li class="toctree-l1">
+           <a class="reference internal" href="examples/longitudinal.html">
+            Using Longitudinal Data
+           </a>
+          </li>
+          <li class="toctree-l1">
+           <a class="reference internal" href="examples/longitudinal.html#longitudinal-format">
+            longitudinal format
+           </a>
+          </li>
+         </ul>
+        </div>
+        <div class="toctree-wrapper compound">
+         <p class="caption" role="heading">
+          <span class="caption-text">
+           API
+          </span>
+         </p>
+         <ul>
+          <li class="toctree-l1">
+           <a class="reference internal" href="py_api.html">
+            Python API
+           </a>
+           <ul>
+            <li class="toctree-l2">
+             <a class="reference internal" href="py_api.html#feat.Feat">
+              <code class="docutils literal notranslate">
+               <span class="pre">
+                Feat
+               </span>
+              </code>
+             </a>
+            </li>
+           </ul>
+          </li>
+          <li class="toctree-l1">
+           <a class="reference internal" href="cpp_api.html">
+            C++ API
+           </a>
+          </li>
+         </ul>
+        </div>
        </section>
       </article>
      </div>
@@ -589,7 +643,7 @@ In Review.
   <footer class="md-footer">
    <div class="md-footer-nav">
     <nav class="md-footer-nav__inner md-grid">
-     <a class="md-flex md-footer-nav__link md-footer-nav__link--next" href="install.html" rel="next" title="Installation">
+     <a class="md-flex md-footer-nav__link md-footer-nav__link--next" href="installation.html" rel="next" title="Installation">
       <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
        <span class="md-flex__ellipsis">
         <span class="md-footer-nav__direction">
