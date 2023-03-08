@@ -102,13 +102,19 @@ PYBIND11_MODULE(_feat, m) {
           // .def_property("fitted_", &Feat::get_is_fitted, &Feat::set_is_fitted)
           .def("fit",
                py::overload_cast<MatrixXf&, VectorXf&>(&Feat::fit),
-               py::call_guard<py::scoped_ostream_redirect,
-                     py::scoped_estream_redirect>(),
+               py::call_guard<
+                    py::scoped_ostream_redirect,
+                    py::scoped_estream_redirect,
+                    py::gil_scoped_release
+                    >(),
                "fit from X,y data")
           .def("fit",
                py::overload_cast<MatrixXf&, VectorXf&, LongData&>(&Feat::fit),
-               py::call_guard<py::scoped_ostream_redirect,
-                     py::scoped_estream_redirect>(),
+               py::call_guard<
+                    py::scoped_ostream_redirect,
+                    py::scoped_estream_redirect,
+                    py::gil_scoped_release
+                    >(),
                "fit from X,y,Z data")
           .def("transform",
                py::overload_cast<MatrixXf&>(&Feat::transform),
