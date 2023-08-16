@@ -475,9 +475,9 @@ float Feat::get_fb(){ return params.feedback; }
 ///return best model
 string Feat::get_representation(){ return best_ind.get_eqn();}
 
-string Feat::get_eqn(bool sort){ return this->get_eqn(sort, this->best_ind); };
+string Feat::get_eqn(bool sort){ return this->get_ind_eqn(sort, this->best_ind); };
 
-string Feat::get_eqn(bool sort, Individual& ind) 
+string Feat::get_ind_eqn(bool sort, Individual& ind) 
 {   
     vector<string> features = ind.get_features();
     vector<float> weights = ind.ml->get_weights();
@@ -838,7 +838,7 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
     if (tmp_ind.size() < ind.size())
     {
         ind = tmp_ind;
-        logger.log("new model:" + this->get_eqn(false, ind),2);
+        logger.log("new model:" + this->get_ind_eqn(false, ind),2);
     }
 
     ///////////////////
@@ -905,7 +905,7 @@ void Feat::simplify_model(DataRef& d, Individual& ind)
             + to_string(starting_size - end_size)
             + " nodes\n=========\n", 2);
     if (end_size < starting_size)
-        logger.log("new model:" + this->get_eqn(false, ind),2);
+        logger.log("new model:" + this->get_ind_eqn(false, ind),2);
 
     /////////////////
     // prune subtrees
@@ -1461,7 +1461,7 @@ void Feat::print_stats(std::ofstream& log, float fraction)
         {
             std::string lim_model;
 
-            std::string model = this->get_eqn(false, archive.individuals[i]);
+            std::string model = this->get_ind_eqn(false, archive.individuals[i]);
             /* std::string model = archive.individuals[i].get_eqn(); */
             for (unsigned j = 0; j< std::min(model.size(),size_t(60)); ++j)
             {
@@ -1492,7 +1492,7 @@ void Feat::print_stats(std::ofstream& log, float fraction)
         for (unsigned j = 0; j < std::min(num_models,unsigned(f.size())); ++j)
         {     
             std::string lim_model;
-            std::string model = this->get_eqn(false,pop.individuals[f[j]]);
+            std::string model = this->get_ind_eqn(false,pop.individuals[f[j]]);
             /* std::string model = this->pop.individuals[f[j]].get_eqn(); */
             for (unsigned j = 0; j< std::min(model.size(),size_t(60)); ++j)
                 lim_model.push_back(model.at(j));

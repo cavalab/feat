@@ -12,9 +12,16 @@
 :maxdepth: 2
 
 installation
-overview
 basics
+```
+
+```{toctree} 
+:caption: User Guide 
+:maxdepth: 2
+
+
 contributing
+overview
 ```
 
 ```{toctree} 

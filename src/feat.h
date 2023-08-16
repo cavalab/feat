@@ -319,7 +319,7 @@ class Feat
         ///return best model, in tabular form
         string get_model(bool sort=true);
         ///return best model as a single line equation 
-        string get_eqn(bool sort, Individual& ind);
+        string get_ind_eqn(bool sort, Individual& ind);
         string get_eqn(bool sort=false); 
         ///get number of parameters in best
         int get_n_params();

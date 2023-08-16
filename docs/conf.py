@@ -52,7 +52,7 @@ extensions = [
     'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
     'sphinx_copybutton',
-    "sphinx.ext.mathjax",
+
     'sphinx_math_dollar',
     # 'recommonmark',
     'nbsphinx',
