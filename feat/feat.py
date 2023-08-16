@@ -277,9 +277,10 @@ class Feat(BaseEstimator):
 
     def fit(self, X, y, Z=None):
         """Fit a model."""    
-        self._set_cfeat_params() 
 
         X,y = self._clean(X, y, set_feature_names=True)
+
+        self._set_cfeat_params() 
 
         if Z:
             self.cfeat_.fit(X,y,Z)

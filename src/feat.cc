@@ -502,10 +502,11 @@ string Feat::get_ind_eqn(bool sort, Individual& ind)
 
     string output;
     output +=  to_string(offset);
-
     if (weights.size() > 0)
-        if (weights.at(0) > 0)
-            output+= "+";
+    {
+        if (weights.at(order.at(0)) > 0)
+            output += "+";
+    }
     int i = 0;
     for (const auto& o : order)
     {
@@ -514,7 +515,7 @@ string Feat::get_ind_eqn(bool sort, Individual& ind)
         output += features.at(o);
         if (i < order.size()-1)
         {
-            if (order.at(i+1) > 0)
+            if (weights.at(order.at(i+1)) > 0)
                 output+= "+";
         }
         ++i;
