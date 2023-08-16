@@ -433,9 +433,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a224e8fae47911360083d84f05c008fdc"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a224e8fae47911360083d84f05c008fdc">get_model</a> (bool sort=true)</td></tr>
 <tr class="memdesc:a224e8fae47911360083d84f05c008fdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">return best model, in tabular form  <a href="../../db/dff/classFT_1_1Feat.html#a224e8fae47911360083d84f05c008fdc">More...</a><br /></td></tr>
 <tr class="separator:a224e8fae47911360083d84f05c008fdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a100223c3fd51c97de878281dfbef006a"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a100223c3fd51c97de878281dfbef006a">get_eqn</a> (bool sort, <a class="el" href="../../da/def/classFT_1_1Pop_1_1Individual.html">Individual</a> &amp;ind)</td></tr>
-<tr class="memdesc:a100223c3fd51c97de878281dfbef006a"><td class="mdescLeft">&#160;</td><td class="mdescRight">return best model as a single line equation  <a href="../../db/dff/classFT_1_1Feat.html#a100223c3fd51c97de878281dfbef006a">More...</a><br /></td></tr>
-<tr class="separator:a100223c3fd51c97de878281dfbef006a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4395e3532fd8f12efcdd93b58776ca34"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a4395e3532fd8f12efcdd93b58776ca34">get_ind_eqn</a> (bool sort, <a class="el" href="../../da/def/classFT_1_1Pop_1_1Individual.html">Individual</a> &amp;ind)</td></tr>
+<tr class="memdesc:a4395e3532fd8f12efcdd93b58776ca34"><td class="mdescLeft">&#160;</td><td class="mdescRight">return best model as a single line equation  <a href="../../db/dff/classFT_1_1Feat.html#a4395e3532fd8f12efcdd93b58776ca34">More...</a><br /></td></tr>
+<tr class="separator:a4395e3532fd8f12efcdd93b58776ca34"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9cecd4a75782e4184c953e95b97229e1"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a9cecd4a75782e4184c953e95b97229e1">get_eqn</a> (bool sort=false)</td></tr>
 <tr class="separator:a9cecd4a75782e4184c953e95b97229e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b3b542d0b768a0ecccef42e062da5e3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/dff/classFT_1_1Feat.html#a5b3b542d0b768a0ecccef42e062da5e3">get_n_params</a> ()</td></tr>
@@ -1098,40 +1098,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a100223c3fd51c97de878281dfbef006a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a100223c3fd51c97de878281dfbef006a">&#9670;&nbsp;</a></span>get_eqn() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">string Feat::get_eqn </td>
-          <td>(</td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>sort</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="../../da/def/classFT_1_1Pop_1_1Individual.html">Individual</a> &amp;&#160;</td>
-          <td class="paramname"><em>ind</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>return best model as a single line equation </p>
-
-<p class="definition">Definition at line <a class="el" href="../../dc/d37/feat_8cc_source.html#l00480">480</a> of file <a class="el" href="../../dc/d37/feat_8cc_source.html">feat.cc</a>.</p>
-
-</div>
-</div>
 <a id="a9cecd4a75782e4184c953e95b97229e1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9cecd4a75782e4184c953e95b97229e1">&#9670;&nbsp;</a></span>get_eqn() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a9cecd4a75782e4184c953e95b97229e1">&#9670;&nbsp;</a></span>get_eqn()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1292,6 +1260,38 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="../../d3/dff/feat_8h_source.html#l00237">237</a> of file <a class="el" href="../../d3/dff/feat_8h_source.html">feat.h</a>.</p>
+
+</div>
+</div>
+<a id="a4395e3532fd8f12efcdd93b58776ca34"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4395e3532fd8f12efcdd93b58776ca34">&#9670;&nbsp;</a></span>get_ind_eqn()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string Feat::get_ind_eqn </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>sort</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../da/def/classFT_1_1Pop_1_1Individual.html">Individual</a> &amp;&#160;</td>
+          <td class="paramname"><em>ind</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>return best model as a single line equation </p>
+
+<p class="definition">Definition at line <a class="el" href="../../dc/d37/feat_8cc_source.html#l00480">480</a> of file <a class="el" href="../../dc/d37/feat_8cc_source.html">feat.cc</a>.</p>
 
 </div>
 </div>

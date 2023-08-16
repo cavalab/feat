@@ -69,7 +69,7 @@ var NAVTREEINDEX =
 "d5/d1f/individual_8h.html",
 "d7/da9/utils_8cc.html#a66a5c6b17b000fbed3eb8e9263db323d",
 "da/d3b/scorer_8h.html#a014994cf862ddb1ba5939a6d61730e0b",
-"db/dff/classFT_1_1Feat.html#a187e091658465679fdfd9c1738b39874",
+"db/dff/classFT_1_1Feat.html#a196908206d0377d2e148583e9e603e09",
 "dc/da7/structFT_1_1Opt_1_1BP__NODE.html",
 "de/d2c/structFT_1_1Parameters.html#a7b17dbd6ccc8cbac4f38bde7b51629ce",
 "df/d62/classshogun_1_1CMyMulticlassLibLinear.html#abd0a2b4b2110f1da1d34b535088397a5"

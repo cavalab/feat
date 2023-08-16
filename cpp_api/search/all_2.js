@@ -12,9 +12,8 @@ var searchData=
   ['best_5fcomplexity_35',['best_complexity',['../db/dff/classFT_1_1Feat.html#a42a16926828274a00a88489bd1e95dce',1,'FT::Feat']]],
   ['best_5find_36',['best_ind',['../db/dff/classFT_1_1Feat.html#a7cf6d268c2b010ebcc10ad95cac81831',1,'FT::Feat']]],
   ['best_5fmed_5fscore_37',['best_med_score',['../db/dff/classFT_1_1Feat.html#aea5c0f8b3eeb79a9684cc395e4a1ebf5',1,'FT::Feat']]],
-  ['bp_38',['BP',['../d4/d04/structFT_1_1Parameters_1_1BP.html#a8aed0ad2987571cb816a17380a4427a6',1,'FT::Parameters::BP::BP(int i, float l, int bs)'],['../d4/d04/structFT_1_1Parameters_1_1BP.html#a1773b5b2091f481cb217b39d962d0050',1,'FT::Parameters::BP::BP()=default']]],
-  ['bp_39',['bp',['../de/d2c/structFT_1_1Parameters.html#a95b0d025fc5e6c54bfff3b8e7106e526',1,'FT::Parameters']]],
-  ['bp_40',['BP',['../d4/d04/structFT_1_1Parameters_1_1BP.html',1,'FT::Parameters']]],
-  ['bp_5fnode_41',['BP_NODE',['../dc/da7/structFT_1_1Opt_1_1BP__NODE.html',1,'FT::Opt']]],
-  ['bs_42',['bs',['../dd/d3f/structFT_1_1Dat_1_1State.html#a3def2a5b7b5ea2a32ccad95209d2541d',1,'FT::Dat::State']]]
+  ['bp_38',['bp',['../de/d2c/structFT_1_1Parameters.html#a95b0d025fc5e6c54bfff3b8e7106e526',1,'FT::Parameters']]],
+  ['bp_39',['BP',['../d4/d04/structFT_1_1Parameters_1_1BP.html#a8aed0ad2987571cb816a17380a4427a6',1,'FT::Parameters::BP::BP(int i, float l, int bs)'],['../d4/d04/structFT_1_1Parameters_1_1BP.html#a1773b5b2091f481cb217b39d962d0050',1,'FT::Parameters::BP::BP()=default'],['../d4/d04/structFT_1_1Parameters_1_1BP.html',1,'FT::Parameters::BP']]],
+  ['bp_5fnode_40',['BP_NODE',['../dc/da7/structFT_1_1Opt_1_1BP__NODE.html',1,'FT::Opt']]],
+  ['bs_41',['bs',['../dd/d3f/structFT_1_1Dat_1_1State.html#a3def2a5b7b5ea2a32ccad95209d2541d',1,'FT::Dat::State']]]
 ];
