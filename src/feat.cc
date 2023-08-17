@@ -1203,6 +1203,10 @@ VectorXf Feat::predict_archive(int id, MatrixXf& X, LongData& Z)
     Data tmp_data(X,empty_y,Z);
 
     /* cout << "individual prediction id " << id << "\n"; */
+    if (id == best_ind.id)
+    {
+        return best_ind.predict_vector(tmp_data);
+    }
     for (int i = 0; i < this->archive.individuals.size(); ++i)
     {
         Individual& ind = this->archive.individuals.at(i);
@@ -1211,9 +1215,17 @@ VectorXf Feat::predict_archive(int id, MatrixXf& X, LongData& Z)
             return ind.predict_vector(tmp_data);
 
     }
+    for (int i = 0; i < this->pop.individuals.size(); ++i)
+    {
+        Individual& ind = this->pop.individuals.at(i);
+
+        if (id == ind.id)
+            return ind.predict_vector(tmp_data);
+
+    }
 
     THROW_INVALID_ARGUMENT("Could not find id = "
-            + to_string(id) + "in archive.");
+            + to_string(id) + "in archive or population.");
     return VectorXf();
 }
 

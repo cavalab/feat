@@ -302,7 +302,7 @@ class Feat(BaseEstimator):
         else:
             return self.cfeat_.predict(X)
 
-    def predict_archive(self,X,Z=None):
+    def predict_archive(self,X,Z=None,front=False):
         """Returns a list of dictionary predictions for all models."""
         if not self.is_fitted_:
             raise ValueError("Call fit before calling predict.")
@@ -313,9 +313,11 @@ class Feat(BaseEstimator):
             raise NotImplementedError('longitudinal not implemented')
             return
 
-        archive = self.cfeat_.get_archive(False)
+        archive = self.cfeat_.get_archive(front)
         preds = []
         for ind in archive:
+            if ind['id'] == 9234:
+                print('individual:',json.dumps(ind,indent=2))
             tmp = {}
             tmp['id'] = ind['id']
             tmp['y_pred'] = self.cfeat_.predict_archive(ind['id'], X) 
