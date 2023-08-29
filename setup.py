@@ -178,7 +178,8 @@ class CMakeBuild(build_ext):
             f"-DGTEST={'OFF' if cfg=='Debug' else 'OFF'}",
             f"-DFEAT_LIB_SUFFIX={extsuffix}"
         ]
-        build_args = []
+        # build_args = ['--verbose']
+        build_args = ['--verbose']
 
         if self.compiler.compiler_type != "msvc":
             if not cmake_generator:

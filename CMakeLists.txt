@@ -36,6 +36,9 @@ set (CMAKE_CXX_STANDARD 14)
 # project name
 project(Feat)
 
+
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 # add Eigen include paths
 if (DEFINED ENV{EIGEN3_INCLUDE_DIR})
     set(EIGEN3_INCLUDE_DIR $ENV{EIGEN3_INCLUDE_DIR})
