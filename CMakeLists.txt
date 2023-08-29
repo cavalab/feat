@@ -136,9 +136,9 @@ list(REMOVE_ITEM sources ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cc)
 # executable
 
 if (CORE_USE_CUDA)
-    cuda_add_library(feat SHARED ${sources} ${cuda_files})
+    cuda_add_library(feat STATIC ${sources} ${cuda_files})
 else()
-    add_library(feat SHARED ${sources})
+    add_library(feat STATIC ${sources})
     option(FEAT_LIB_SUFFIX "custom lib suffix" OFF)
     if (FEAT_LIB_SUFFIX)
         set_target_properties(feat PROPERTIES SUFFIX ${FEAT_LIB_SUFFIX} )
