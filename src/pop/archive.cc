@@ -78,10 +78,6 @@ namespace FT{
                         
             vector<Individual> tmp = pop.individuals;
 
-            #pragma omp parallel for
-            for (unsigned int i=0; i<tmp.size(); ++i)
-                tmp.at(i).set_obj(params.objectives);
-
             for (const auto& p : individuals)
                 tmp.push_back(p);
 

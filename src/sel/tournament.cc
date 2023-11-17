@@ -13,7 +13,7 @@ namespace FT{
          * @class Tournament
          */
         
-        Tournament::Tournament(bool surv){ name = "nsga2"; survival = surv; };
+        Tournament::Tournament(bool surv){ name = "tournament"; survival = surv; };
         
         Tournament::~Tournament(){}
         
