@@ -1548,9 +1548,6 @@ void Feat::log_stats(std::ofstream& log)
             << "med_size"       << sep 
             << "med_complexity" << sep 
             << "med_num_params" << sep
-            << "min_tests_used" << sep
-            << "med_tests_used" << sep
-            << "max_tests_used" << sep
             << "med_dim"        << "\n";
     }
     log << params.current_gen          << sep
@@ -1562,9 +1559,6 @@ void Feat::log_stats(std::ofstream& log)
         << stats.med_size.back()       << sep
         << stats.med_complexity.back() << sep
         << stats.med_num_params.back() << sep
-        << stats.min_tests_used.back() << sep
-        << stats.med_tests_used.back() << sep
-        << stats.max_tests_used.back() << sep
         << stats.med_dim.back()        << "\n"; 
 }
 
