@@ -1,10 +1,22 @@
 #include "testsHeader.h"
 
-TEST(Selection, SelectionOperator)
+class SelectionTest : public testing::TestWithParam<std::string> {
+protected:
+    void SetUp() override {
+        selectionType = GetParam();
+    }
+
+    std::string selectionType;
+};
+
+TEST_P(SelectionTest, SelectionOperator)
 {
     Feat feat = make_estimator(100, 100, "LinearRidgeRegression", false, 1, 666);
     feat.set_scorer("mae");
     
+    feat.set_selection(selectionType);
+    ASSERT_STREQ(selectionType.c_str(), feat.selector.get_type().c_str());
+
     MatrixXf X(7,2); 
     X << 0,1,  
          0.47942554,0.87758256,  
@@ -58,3 +70,7 @@ TEST(Selection, SelectionOperator)
     
     ASSERT_EQ(parents.size(), feat.get_pop_size());
 }
+
+INSTANTIATE_TEST_SUITE_P(AllSelectionTypes, SelectionTest,
+    testing::Values("lexicase", "fair_lexicase", "simanneal", "tournament",
+                    "offspring", "random", "nsga2"));
