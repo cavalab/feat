@@ -725,6 +725,9 @@ void Feat::run_generation(unsigned int g,
     else if(params.verbosity == 1)
         printProgress(fraction);
     
+    if (!logfile.empty())
+        log_stats(log);
+
     if (save_pop > 1)
         pop.save(this->logfile+".pop.gen" + 
                     to_string(params.current_gen) + ".json");
@@ -1539,13 +1542,13 @@ void Feat::print_stats(std::ofstream& log, float fraction)
                 << "med_dim\n";
         }
 
-        log << params.current_gen  << sep
-            << timer.Elapsed().count() << sep
-            << stats.min_loss.back()          << sep
-            << this->min_loss_v        << sep
-            << stats.med_loss.back()  << sep
-            << stats.med_loss_v.back() << sep
-            << stats.med_size.back()   << sep
+        log << params.current_gen          << sep
+            << timer.Elapsed().count()     << sep
+            << stats.min_loss.back()       << sep
+            << this->min_loss_v            << sep
+            << stats.med_loss.back()       << sep
+            << stats.med_loss_v.back()     << sep
+            << stats.med_size.back()       << sep
             << stats.med_complexity.back() << sep
             << stats.med_num_params.back() << sep
             << stats.med_dim.back()        << "\n"; 
