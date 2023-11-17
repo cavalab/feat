@@ -398,7 +398,10 @@ class Feat(BaseEstimator):
     def get_representation(self): return self.cfeat_.get_representation()
     def get_model(self, sort=True): return self.cfeat_.get_model(sort)
     def get_coefs(self): return self.cfeat_.get_coefs()
-
+    def get_n_params(self): return self.cfeat_.get_n_params()
+    def get_dim(self): return self.cfeat_.get_dim()
+    def get_n_nodes(self): return self.cfeat_.get_n_nodes()
+    
 class FeatRegressor(Feat):
     """Convenience method that enforces regression options."""
     def __init__(self,**kwargs):
