@@ -716,6 +716,13 @@ void Feat::run_generation(unsigned int g,
     if (params.max_stall > 0)
         update_stall_count(stall_count, updated_best);
 
+    if ( (use_arch || params.verbosity>1) || !logfile.empty()) {
+        // set objectives to make sure they are reported in log/verbose/arch
+        #pragma omp parallel for
+        for (unsigned int i=0; i<pop.size(); ++i)
+            pop.individuals.at(i).set_obj(params.objectives);
+    }
+
     logger.log("update archive...",2);
     if (use_arch) 
         archive.update(pop,params);
@@ -725,6 +732,9 @@ void Feat::run_generation(unsigned int g,
     else if(params.verbosity == 1)
         printProgress(fraction);
     
+    if (!logfile.empty())
+        log_stats(log);
+
     if (save_pop > 1)
         pop.save(this->logfile+".pop.gen" + 
                     to_string(params.current_gen) + ".json");
@@ -1357,7 +1367,8 @@ void Feat::calculate_stats(const DataRef& d)
     ArrayXf Complexities(this->pop.size()); 
     i = 0; 
     for (auto& p : this->pop.individuals)
-    { 
+    {
+        // Calculate to assure it gets reported in stats (even if's not used as an obj)
         Complexities(i) = p.get_complexity(); 
         ++i;
     }
@@ -1520,37 +1531,37 @@ void Feat::print_stats(std::ofstream& log, float fraction)
     }
    
     std::cout <<"\n\n";
-    
-    if (!logfile.empty())
-    {
-        // print stats in tabular format
-        string sep = ",";
-        if (params.current_gen == 0) // print header
-        {
-            log << "generation"     << sep
-                << "time"           << sep
-                << "min_loss"       << sep 
-                << "min_loss_val"   << sep 
-                << "med_loss"       << sep 
-                << "med_loss_val"   << sep 
-                << "med_size"       << sep 
-                << "med_complexity" << sep 
-                << "med_num_params" << sep
-                << "med_dim\n";
-        }
-
-        log << params.current_gen  << sep
-            << timer.Elapsed().count() << sep
-            << stats.min_loss.back()          << sep
-            << this->min_loss_v        << sep
-            << stats.med_loss.back()  << sep
-            << stats.med_loss_v.back() << sep
-            << stats.med_size.back()   << sep
-            << stats.med_complexity.back() << sep
-            << stats.med_num_params.back() << sep
-            << stats.med_dim.back()        << "\n"; 
-    } 
 }
+
+void Feat::log_stats(std::ofstream& log)
+{
+    // print stats in tabular format
+    string sep = ",";
+    if (params.current_gen == 0) // print header
+    {
+        log << "generation"     << sep
+            << "time"           << sep
+            << "min_loss"       << sep 
+            << "min_loss_val"   << sep 
+            << "med_loss"       << sep 
+            << "med_loss_val"   << sep 
+            << "med_size"       << sep 
+            << "med_complexity" << sep 
+            << "med_num_params" << sep
+            << "med_dim"        << "\n";
+    }
+    log << params.current_gen          << sep
+        << timer.Elapsed().count()     << sep
+        << stats.min_loss.back()       << sep
+        << this->min_loss_v            << sep
+        << stats.med_loss.back()       << sep
+        << stats.med_loss_v.back()     << sep
+        << stats.med_size.back()       << sep
+        << stats.med_complexity.back() << sep
+        << stats.med_num_params.back() << sep
+        << stats.med_dim.back()        << "\n"; 
+}
+
 //TODO: replace these with json
 json Feat::get_stats()
 { 

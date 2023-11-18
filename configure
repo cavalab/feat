@@ -38,7 +38,7 @@ elif [ "$1" == "lpc_cuda" ] ; then
     BUILD_DIR="buildGPU"
     OMP=OFF
     EXTRA_FLAGS="-DCORE_USE_CUDA=ON"
-elif [ "$1" == "tests" ||  "$1" == "test"  ] ; then 
+elif [[ "$1" == "tests" ||  "$1" == "test"  ]] ; then 
     EXTRA_FLAGS="-DGTEST=ON"
 elif [ "$1" == "gpu" ] ; then
     BUILD_DIR="buildGPU"
