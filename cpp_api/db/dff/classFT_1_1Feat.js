@@ -75,6 +75,7 @@ var classFT_1_1Feat =
     [ "load_best_ind", "db/dff/classFT_1_1Feat.html#a28571aefaae0fbbb29de65c1ad18dce6", null ],
     [ "load_from_file", "db/dff/classFT_1_1Feat.html#a85d50833b11a6d740c6520f77115adc8", null ],
     [ "load_population", "db/dff/classFT_1_1Feat.html#a444d7f002826f99957e0c50e7a75f0e1", null ],
+    [ "log_stats", "db/dff/classFT_1_1Feat.html#aaeb95d1c36802ef76e79707bda96949d", null ],
     [ "NLOHMANN_DEFINE_TYPE_INTRUSIVE", "db/dff/classFT_1_1Feat.html#ae2508aaf32b498a384bd39fb72203030", null ],
     [ "predict", "db/dff/classFT_1_1Feat.html#a0bcfde98771bc46eae0ed76e7d33087c", null ],
     [ "predict", "db/dff/classFT_1_1Feat.html#afb50f738ab9426355bef70b12b2215d2", null ],

@@ -1,5 +1,6 @@
 var NAVTREEINDEX7 =
 {
+"de/d2c/structFT_1_1Parameters.html#a7a9f2ad48ee7d68da04915e65c04dca4":[2,0,0,9,48],
 "de/d2c/structFT_1_1Parameters.html#a7b17dbd6ccc8cbac4f38bde7b51629ce":[2,0,0,9,44],
 "de/d2c/structFT_1_1Parameters.html#a7e11bd6f94c1474b695cc9c823e8ea46":[2,0,0,9,53],
 "de/d2c/structFT_1_1Parameters.html#a7f69b8478610b04752a59fb682e9bb9b":[2,0,0,9,66],
@@ -248,6 +249,5 @@ var NAVTREEINDEX7 =
 "df/d62/classshogun_1_1CMyMulticlassLibLinear.html#a694d882da74786559c3e421dca9f0e59":[2,0,1,4,26],
 "df/d62/classshogun_1_1CMyMulticlassLibLinear.html#a7a5eca0f6ef7d3ce791abbe1a06449c3":[2,0,1,4,3],
 "df/d62/classshogun_1_1CMyMulticlassLibLinear.html#a8ba0acbab8b10a79a8df5b17277c36ed":[2,0,1,4,18],
-"df/d62/classshogun_1_1CMyMulticlassLibLinear.html#aa1a825948668a318d6e450a60fa0c7e2":[2,0,1,4,27],
-"df/d62/classshogun_1_1CMyMulticlassLibLinear.html#ab193fd30a19e6832c9406b56f48858a1":[2,0,1,4,21]
+"df/d62/classshogun_1_1CMyMulticlassLibLinear.html#aa1a825948668a318d6e450a60fa0c7e2":[2,0,1,4,27]
 };
