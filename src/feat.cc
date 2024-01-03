@@ -567,8 +567,12 @@ int Feat::get_n_params(){ return best_ind.get_n_params(); }
 int Feat::get_dim(){ return best_ind.get_dim(); } 
 
 ///get dimensionality of best
-int Feat::get_complexity(){ return best_ind.get_complexity(); } 
-
+int Feat::get_complexity(){
+    // Making sure it is calculated before returning it
+    if (best_ind.get_complexity()==0)
+        best_ind.set_complexity();
+    return best_ind.get_complexity();
+} 
 
 /// return the number of nodes in the best model
 int Feat::get_n_nodes(){ return best_ind.program.size(); }
@@ -726,7 +730,7 @@ void Feat::run_generation(unsigned int g,
     
     logger.log("calculate stats...",2);
     calculate_stats(d);
-    
+
     if(params.verbosity>1)
         print_stats(log, fraction);    
     else if(params.verbosity == 1)

@@ -399,6 +399,7 @@ class Feat(BaseEstimator):
     def get_model(self, sort=True): return self.cfeat_.get_model(sort)
     def get_coefs(self): return self.cfeat_.get_coefs()
     def get_n_params(self): return self.cfeat_.get_n_params()
+    def get_complexity(self): return self.cfeat_.get_complexity()
     def get_dim(self): return self.cfeat_.get_dim()
     def get_n_nodes(self): return self.cfeat_.get_n_nodes()
 

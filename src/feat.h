@@ -325,7 +325,7 @@ class Feat
         int get_n_params();
         ///get dimensionality of best
         int get_dim();
-        ///get dimensionality of best
+        ///get complexity of best
         int get_complexity();
         ///return population as string
         vector<nl::json> get_archive(bool front);
