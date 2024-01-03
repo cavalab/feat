@@ -710,9 +710,6 @@ void Feat::run_generation(unsigned int g,
     logger.log("update best...",2);
     bool updated_best = update_best(d);
 
-    logger.log("calculate stats...",2);
-    calculate_stats(d);
-
     if (params.max_stall > 0)
         update_stall_count(stall_count, updated_best);
 
@@ -726,6 +723,9 @@ void Feat::run_generation(unsigned int g,
     logger.log("update archive...",2);
     if (use_arch) 
         archive.update(pop,params);
+    
+    logger.log("calculate stats...",2);
+    calculate_stats(d);
     
     if(params.verbosity>1)
         print_stats(log, fraction);    
