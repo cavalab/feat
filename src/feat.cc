@@ -1469,7 +1469,7 @@ void Feat::print_stats(std::ofstream& log, float fraction)
               << stats.min_loss.back() << " (" 
               << stats.med_loss.back() << ")\n"
               << "Val Loss (Med): " 
-              << this->min_loss_v << " (" << stats.med_loss_v.back() << ")\n"
+              << stats.min_loss_v.back() << " (" << stats.med_loss_v.back() << ")\n"
               << "Median Size (Max): " 
               << stats.med_size.back() << " (" << max_size << ")\n"
               << "Time (s): "   << timer << "\n";
@@ -1559,7 +1559,7 @@ void Feat::log_stats(std::ofstream& log)
     log << params.current_gen          << sep
         << timer.Elapsed().count()     << sep
         << stats.min_loss.back()       << sep
-        << this->min_loss_v            << sep
+        << stats.min_loss_v.back()     << sep
         << stats.med_loss.back()       << sep
         << stats.med_loss_v.back()     << sep
         << stats.med_size.back()       << sep
