@@ -711,12 +711,14 @@ void Feat::run_generation(unsigned int g,
     pop.update(survivors);
     logger.log("survivors:\n" + pop.print_eqns(), 3);
     
+    // we need to update best, so min_loss_v is updated inside stats
     logger.log("update best...",2);
     bool updated_best = update_best(d);
 
     if (params.max_stall > 0)
         update_stall_count(stall_count, updated_best);
 
+    logger.log("update objectives...",2);
     if ( (use_arch || params.verbosity>1) || !logfile.empty()) {
         // set objectives to make sure they are reported in log/verbose/arch
         #pragma omp parallel for
@@ -1297,7 +1299,7 @@ ArrayXXf Feat::predict_proba(MatrixXf& X)
 }
 
 
-bool Feat::update_best(const DataRef& d, bool validation)
+bool Feat::update_best(const DataRef& d, bool val)
 {
     float bs;
     bs = this->min_loss_v; 
