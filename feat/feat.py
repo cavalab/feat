@@ -184,7 +184,7 @@ class Feat(BaseEstimator):
                  softmax_norm=False, 
                  save_pop=0, 
                  normalize=True, 
-                 val_from_arch=True, 
+                 val_from_arch=False, 
                  corr_delete_mutate=False, 
                  simplify=0.0, 
                  protected_groups="", 

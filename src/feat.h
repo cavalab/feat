@@ -93,7 +93,7 @@ class Feat
         //      string logfile="", int max_time=-1, bool residual_xo = false, 
         //      bool stagewise_xo = false, bool stagewise_tol = true, 
         //      bool softmax_norm=false, int save_pop=0, bool normalize=true, 
-        //      bool val_from_arch=true, bool corr_delete_mutate=false, 
+        //      bool val_from_arch=false, bool corr_delete_mutate=false, 
         //      float simplify=0.0, string protected_groups="",
         //      bool tune_initial=false, bool tune_final=true,
         //      string starting_pop="");
