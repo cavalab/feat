@@ -29,9 +29,10 @@ GECCO 2020.
 [arXiv](https://arxiv.org/abs/2004.13282),
 [experiments](https://github.com/lacava/fair_gp)
 
-3. La Cava, W., Lee, P.C., Ajmal, I., Ding, X., Cohen, J.B., Solanki, P., Moore, J.H., and Herman, D.S (2021).
-Application of concise machine learning to construct accurate and interpretable EHR computable phenotypes.
-In Review.
+3. A flexible symbolic regression method for constructing interpretable clinical prediction models
+La Cava, W. G., Lee, P. C., Ajmal, I., Ding, X., Solanki, P., Cohen, J. B., Moore, J. H., & Herman, D. S. (2023). A flexible symbolic regression method for constructing interpretable clinical prediction models. Npj Digital Medicine, 6(1), 1–14.
+**HUMIES Silver Award winner**.
+[nature](https://www.nature.com/articles/s41746-023-00833-8),
 [medRxiv](https://www.medrxiv.org/content/10.1101/2020.12.12.20248005v2),
 [experiments](https://bitbucket.org/hermanlab/ehr_feat/)
 
