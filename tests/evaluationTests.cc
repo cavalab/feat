@@ -53,6 +53,58 @@ TEST(Evaluation, mse)
     ASSERT_TRUE(score == 28.5);
 }
 
+TEST(Evaluation, accuracy)
+{
+    // test zero one loss
+	
+    Feat ft = make_estimator(100, 10, "LinearRidgeRegression", false, 1, 666);
+    
+    VectorXf yhat(10), y(10), res(10), loss(10);
+	
+    y << 0.0,
+         1.0,
+         0.0,
+         0.0,
+         1.0,
+         0.0,
+         0.0,
+         1.0,
+         0.0,
+         0.0;
+    
+    yhat << 0.0,
+	        1.0,
+	        1.0,
+	        0.0,
+	        0.0, 
+	        1.0,
+	        1.0,
+	        0.0,
+	        0.0,
+	        0.0;
+	
+    res << 0.0,
+           0.0,
+           1.0,
+           0.0,
+           1.0,
+           1.0,
+           1.0,
+           1.0,
+           0.0,
+           0.0;
+           
+    float score = zero_one_loss(y, yhat, loss, ft.params.class_weights);
+    
+    if (loss != res)
+    {
+        std::cout << "loss:" << loss.transpose() << "\n";
+        std::cout << "res:" << res.transpose() << "\n";
+    }
+    ASSERT_TRUE(loss == res);
+    ASSERT_EQ(((int)(score*1000000)), 500000);
+}
+
 TEST(Evaluation, bal_accuracy)
 {
     // test balanced zero one loss

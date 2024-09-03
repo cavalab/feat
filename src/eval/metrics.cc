@@ -436,8 +436,9 @@ namespace FT
                    const vector<float>& class_weights)
         {
             loss = (yhat.cast<int>().array() != y.cast<int>().array()).cast<float>();
+
             //TODO: weight loss by sample weights
-            return loss.mean();
+            return 1.0 - loss.mean();
         }
         
         /// 1 - accuracy 
