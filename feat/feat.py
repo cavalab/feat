@@ -427,13 +427,14 @@ class FeatClassifier(Feat):
         return Feat._get_param_names()
     def fit(self,X,y,zfile=None,zids=None):
         self.classes_ = [int(i) for i in np.unique(np.asarray(y))]
+        self.classes_.sort()
         if (any([
             i != j 
             for i,j in zip(self.classes_, np.arange(np.max(self.classes_)))
         ])):
             raise ValueError('y must be a contiguous set of labels from ',
                              '0 to n_classes. y contains the values {}'.format(
-                                 np.unique(np.asarray(y)))
+                                self.classes_)
                             )
        
         super().fit(X,y)
