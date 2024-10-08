@@ -46,7 +46,7 @@ class TestFeatWrapper(unittest.TestCase):
         self.X = diabetes.data
         self.yr = diabetes.target
         self.yc = diabetes.target < np.median(diabetes.target)
-        self.yc = np.array([int(i) for i in self.yc])
+        self.yc = np.array([1 if i else 0 for i in self.yc])
 
     def debug(self,message):
         if ( self.v > 0 ):
