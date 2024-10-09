@@ -22,7 +22,7 @@ dependencies:
     - sphinx-material
     - recommonmark
     - nbsphinx
-    - lxml[html_clean]
+    - lxml_html_clean
     - matplotlib
     - jupyter
     - seaborn

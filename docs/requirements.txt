@@ -10,4 +10,4 @@ myst-parser
 nbsphinx
 sphinx-material
 sphinx-math-dollar
-lxml[html_clean]
+lxml_html_clean

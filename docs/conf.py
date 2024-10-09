@@ -56,7 +56,7 @@ extensions = [
     'sphinx_math_dollar',
     # 'recommonmark',
     'nbsphinx',
-    'lxml[html_clean]',
+    'lxml_html_clean',
     # "sphinx.ext.viewcode",
     # External stuff
 ]
