@@ -46,7 +46,7 @@ class TestFeatWrapper(unittest.TestCase):
         self.X = diabetes.data
         self.yr = diabetes.target
         self.yc = diabetes.target < np.median(diabetes.target)
-        self.yc = np.array([1 if i else 0 for i in self.yc])
+        self.yc = np.array([int(i) for i in self.yc])
 
     def debug(self,message):
         if ( self.v > 0 ):
@@ -67,7 +67,8 @@ class TestFeatWrapper(unittest.TestCase):
                        'check_fit2d_1sample',
                        'check_fit2d_1feature',
                        'check_transformer_data_not_an_array',
-                       'check_transformer_preserve_dtypes' 
+                       'check_transformer_preserve_dtypes',
+                       'check_estimators_dtypes'
                       ]
         for est, check in check_generator2:
             time_to_go=False
