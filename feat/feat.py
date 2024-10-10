@@ -316,8 +316,8 @@ class Feat(BaseEstimator):
         archive = self.cfeat_.get_archive(front)
         preds = []
         for ind in archive:
-            if ind['id'] == 9234:
-                print('individual:',json.dumps(ind,indent=2))
+            # if ind['id'] == 9234:
+            #     print('individual:',json.dumps(ind,indent=2))
             tmp = {}
             tmp['id'] = ind['id']
             tmp['y_pred'] = self.cfeat_.predict_archive(ind['id'], X) 
@@ -427,7 +427,6 @@ class FeatClassifier(Feat):
         return Feat._get_param_names()
     def fit(self,X,y,zfile=None,zids=None):
         self.classes_ = [int(i) for i in np.unique(np.asarray(y))]
-        self.classes_.sort()
         if (any([
             i != j 
             for i,j in zip(self.classes_, np.arange(np.max(self.classes_)))
