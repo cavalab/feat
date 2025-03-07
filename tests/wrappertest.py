@@ -67,7 +67,8 @@ class TestFeatWrapper(unittest.TestCase):
                        'check_fit2d_1sample',
                        'check_fit2d_1feature',
                        'check_transformer_data_not_an_array',
-                       'check_transformer_preserve_dtypes' 
+                       'check_transformer_preserve_dtypes',
+                       'check_estimators_dtypes'
                       ]
         for est, check in check_generator2:
             time_to_go=False

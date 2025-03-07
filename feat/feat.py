@@ -184,7 +184,7 @@ class Feat(BaseEstimator):
                  softmax_norm=False, 
                  save_pop=0, 
                  normalize=True, 
-                 val_from_arch=True, 
+                 val_from_arch=False, 
                  corr_delete_mutate=False, 
                  simplify=0.0, 
                  protected_groups="", 
@@ -316,8 +316,8 @@ class Feat(BaseEstimator):
         archive = self.cfeat_.get_archive(front)
         preds = []
         for ind in archive:
-            if ind['id'] == 9234:
-                print('individual:',json.dumps(ind,indent=2))
+            # if ind['id'] == 9234:
+            #     print('individual:',json.dumps(ind,indent=2))
             tmp = {}
             tmp['id'] = ind['id']
             tmp['y_pred'] = self.cfeat_.predict_archive(ind['id'], X) 
@@ -399,6 +399,7 @@ class Feat(BaseEstimator):
     def get_model(self, sort=True): return self.cfeat_.get_model(sort)
     def get_coefs(self): return self.cfeat_.get_coefs()
     def get_n_params(self): return self.cfeat_.get_n_params()
+    def get_complexity(self): return self.cfeat_.get_complexity()
     def get_dim(self): return self.cfeat_.get_dim()
     def get_n_nodes(self): return self.cfeat_.get_n_nodes()
 
@@ -432,7 +433,7 @@ class FeatClassifier(Feat):
         ])):
             raise ValueError('y must be a contiguous set of labels from ',
                              '0 to n_classes. y contains the values {}'.format(
-                                 np.unique(np.asarray(y)))
+                                self.classes_)
                             )
        
         super().fit(X,y)

@@ -362,6 +362,7 @@ namespace FT
 
             return loss;
         }
+
         /// 1 - balanced accuracy 
         float bal_zero_one_loss(const VectorXf& y, const VectorXf& yhat, 
                 VectorXf& loss, const vector<float>& class_weights)
@@ -406,6 +407,7 @@ namespace FT
             // set loss vectors if third argument supplied
             loss = (yhat.cast<int>().array() != y.cast<int>().array()).cast<float>();
 
+            // 1 - accuracy (so it becomes a minimization problem)
             return 1.0 - class_accuracies.mean();
         }
 
@@ -435,7 +437,11 @@ namespace FT
         float zero_one_loss(const VectorXf& y, const VectorXf& yhat, VectorXf& loss, 
                    const vector<float>& class_weights)
         {
+            // Feat's update_best and sel/surv steps always handles scores as
+            // minimization problems, so we need to invert the loss here. That's
+            // why we account for mismatches instead of correct classifications:
             loss = (yhat.cast<int>().array() != y.cast<int>().array()).cast<float>();
+
             //TODO: weight loss by sample weights
             return loss.mean();
         }

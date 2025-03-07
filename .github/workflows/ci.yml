@@ -23,7 +23,7 @@ jobs:
       #     cache-env: true
       - 
         name: add docs environment dependencies
-        uses: mamba-org/provision-with-micromamba@main
+        uses: mamba-org/setup-micromamba@v1
         with:
           environment-file: environment.yml
           cache-env: true
