@@ -13,7 +13,7 @@ FEAT wraps around a user-chosen ML method and provides a set of representations 
 performance for that method. 
 Each individual in FEAT's population is its own data representation. 
 
-FEAT uses the [Shogun C++ ML toolbox](http://shogun.ml) to fit models. 
+FEAT uses the [Shogun C++ ML toolbox](https://www.shogun-toolbox.org/) to fit models. 
 
 Check out the [documentation](https://cavalab.org/feat) for installation and examples. 
 
@@ -73,7 +73,7 @@ workflow](http://github.com/lacava/feat/blob/master/.github/workflows/ci.yml).
 
 Feat uses [cmake](https://cmake.org/) to build. It also depends on the
 [Eigen](http://eigen.tuxfamily.org) matrix library for C++ as well as
-the [Shogun](http://shogun.ml) ML library. Both come in packages on
+the [Shogun](https://www.shogun-toolbox.org/) ML library. Both come in packages on
 conda that should work across platforms.
 
 ## Install in a Conda Environment
